@@ -1,0 +1,22 @@
+message FileOptions {
+
+  optional string java_package = 1;
+  optional string java_outer_classname = 8;
+  optional bool java_multiple_files = 10 [default=false];
+  optional bool java_generate_equals_and_hash = 20 [default=false];
+
+  enum OptimizeMode {
+    SPEED = 1;        // Generate complete code for parsing, serialization, etc.
+    CODE_SIZE = 2;    // Use ReflectionOps to implement these methods.
+    LITE_RUNTIME = 3; // Generate code using MessageLite and the lite runtime.
+  }
+
+  optional OptimizeMode optimize_for = 9 [default=SPEED];
+  optional bool cc_generic_services = 16 [default=false];
+  optional bool java_generic_services = 17 [default=false];
+  optional bool py_generic_services = 18 [default=false];
+
+  repeated UninterpretedOption uninterpreted_option = 999;
+
+  extensions 1000 to max;
+}

@@ -1,0 +1,126 @@
+/*
+ * Copyright (c) 2011 Google Inc.
+ *
+ * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License v1.0 which accompanies this distribution, and is available at
+ *
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Author: alruiz@google.com (Alex Ruiz)
+ */
+
+grammar com.google.eclipse.protobuf.Protobuf with org.eclipse.xtext.common.Terminals
+
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+generate protobuf "http://www.google.com/eclipse/protobuf/Protobuf"
+
+Protobuf:
+  (package=Package)?
+  (imports+=Import)*
+  (options+=Option)*
+  (elements+=ProtobufElement)*;
+  
+Package:
+  'package' name=QualifiedName ';';
+
+Import: 
+  'import' importURI=STRING ';';
+
+QualifiedName:
+  ID ('.' ID)*;
+
+Option:
+  'option' name=ID '=' value=ValueRef ';';
+
+ProtobufElement:
+  Type | ExtendMessage;
+
+Type:
+  Message | Enum;
+
+Message:
+  'message' name=ID '{'
+  elements+=MessageElement*
+  ('extensions' extensionsFrom=INT 'to' (extensionsTo=INT | 'max') ';')?
+  '}';
+
+MessageElement:
+  Type | Property;
+
+Property:
+  modifier=Modifier type=AbstractTypeReference name=ID '=' index=INT (('[' 'default' '=' default=ValueRef
+  ']') | ('[' 'packed' '=' packed=BooleanRef ']'))? ';';
+
+enum Modifier:
+  required
+  | optional
+  | repeated;
+
+AbstractTypeReference:
+  ScalarTypeReference | TypeReference;
+
+ScalarTypeReference:
+  scalar=ScalarType;
+
+enum ScalarType:
+  double
+  | float
+  | int32
+  | int64
+  | uint32
+  | uint64
+  | sint32
+  | sint64
+  | fixed32
+  | fixed64
+  | sfixed32
+  | sfixed64
+  | bool
+  | string
+  | bytes;
+
+TypeReference:
+  type=[Type | QualifiedName];
+
+ValueRef:
+  LiteralRef
+  | BooleanRef
+  | IntRef
+  | FloatRef
+  | StringRef;
+
+LiteralRef:
+  literal=[Literal];
+
+BooleanRef:
+  boolean=BOOL;
+
+enum BOOL:
+  true
+  | false;
+
+IntRef:
+  int=INT;
+
+FloatRef:
+  float=FLOAT;
+
+StringRef:
+  string=STRING;
+
+Enum:
+  'enum' name=ID '{'
+  literals+=Literal*
+  '}' ';'?;
+
+Literal:
+  name=ID '=' index=INT ';';
+
+ExtendMessage:
+  'extend' message=[Message] '{'
+  elements+=MessageElement*
+  '}';
+
+terminal INT returns ecore::EInt: ('0'..'9')+;  
+terminal FLOAT returns ecore::EFloat: ('0'..'9')* ('.' ('0'..'9')+)?;
+  
