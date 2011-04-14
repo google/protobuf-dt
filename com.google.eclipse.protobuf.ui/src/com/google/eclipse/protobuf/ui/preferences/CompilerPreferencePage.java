@@ -40,6 +40,7 @@ import com.google.inject.Inject;
 public class CompilerPreferencePage extends PreferencePage implements IWorkbenchPreferencePage, IWorkbenchPropertyPage {
 
   private static final String PREFERENCE_PAGE_ID = "com.google.eclipse.protobuf.ui.preferences.CompilerPreferencePage";
+
   private Button btnEnableProjectSettings;
   private Link lnkEnableWorkspaceSettings;
   private Button btnCompileProtoFiles;
@@ -58,16 +59,17 @@ public class CompilerPreferencePage extends PreferencePage implements IWorkbench
   private Group grpOutput;
   private Text txtOutputFolderName;
   private Label lblOutputFolderName;
+  private Button btnRefreshResources;
+  private Group grpRefresh;
+  private Button btnRefreshProject;
+  private Button btnRefreshOutputFolder;
+  private Label lblOutputFolderRelative;
 
   private IProject project;
 
   private final IPreferenceStoreAccess preferenceStoreAccess;
 
   private Map<String, Object> dataMap;
-  private Button btnRefreshResources;
-  private Group grpRefresh;
-  private Button btnRefreshProject;
-  private Button btnRefreshOutputFolder;
 
   @Inject public CompilerPreferencePage(IPreferenceStoreAccess preferenceStoreAccess) {
     this.preferenceStoreAccess = preferenceStoreAccess;
@@ -118,12 +120,10 @@ public class CompilerPreferencePage extends PreferencePage implements IWorkbench
     btnUseProtocInCustomPath = new Button(grpCompilerLocation, SWT.RADIO);
     btnUseProtocInCustomPath.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 4, 1));
     btnUseProtocInCustomPath.setText(CompilerPreferencePage_customPath);
-    new Label(grpCompilerLocation, SWT.NONE);
 
     txtProtocFilePath = new Text(grpCompilerLocation, SWT.BORDER);
     txtProtocFilePath.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
     txtProtocFilePath.setEditable(false);
-    new Label(grpCompilerLocation, SWT.NONE);
 
     btnProtocPathBrowse = new Button(grpCompilerLocation, SWT.NONE);
     btnProtocPathBrowse.setText(CompilerPreferencePage_browseCustomPath);
@@ -145,16 +145,19 @@ public class CompilerPreferencePage extends PreferencePage implements IWorkbench
     btnPython.setText(CompilerPreferencePage_generatePython);
 
     grpOutput = new Group(cmpMain, SWT.NONE);
-    grpOutput.setLayout(new GridLayout(3, false));
+    grpOutput.setLayout(new GridLayout(2, false));
     grpOutput.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
     grpOutput.setText(CompilerPreferencePage_generatedCode);
 
     lblOutputFolderName = new Label(grpOutput, SWT.NONE);
     lblOutputFolderName.setText(CompilerPreferencePage_outputFolderName);
-    new Label(grpOutput, SWT.NONE);
 
     txtOutputFolderName = new Text(grpOutput, SWT.BORDER);
     txtOutputFolderName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+
+    lblOutputFolderRelative = new Label(grpOutput, SWT.NONE);
+    lblOutputFolderRelative.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
+    lblOutputFolderRelative.setText("* relative to the project's folder");
 
     tbtmRefresh = new TabItem(tabFolder, SWT.NONE);
     tbtmRefresh.setText(CompilerPreferencePage_refreshTab);
@@ -178,7 +181,6 @@ public class CompilerPreferencePage extends PreferencePage implements IWorkbench
     btnRefreshOutputFolder = new Button(grpRefresh, SWT.RADIO);
     btnRefreshOutputFolder.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
     btnRefreshOutputFolder.setText(CompilerPreferencePage_refreshOutputProject);
-    new Label(contents, SWT.NONE);
 
     updateFromPreferenceStore();
     addEventListeners();
@@ -381,6 +383,7 @@ public class CompilerPreferencePage extends PreferencePage implements IWorkbench
     grpOutput.setEnabled(enabled);
     lblOutputFolderName.setEnabled(enabled);
     txtOutputFolderName.setEnabled(enabled);
+    lblOutputFolderRelative.setEnabled(enabled);
   }
 
   private void setRefreshOptionsEnabled(boolean enabled) {
