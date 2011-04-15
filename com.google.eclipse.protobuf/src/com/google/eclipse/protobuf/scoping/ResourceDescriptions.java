@@ -39,9 +39,9 @@ public class ResourceDescriptions extends LoadOnDemandResourceDescriptions {
 
   @Override
   public void initialize(IResourceDescriptions newDelegate, Collection<URI> newValidUris, Resource newContext) {
-    this.delegate = newDelegate;
-    this.validUris = newValidUris;
-    this.context = newContext;
+    delegate = newDelegate;
+    validUris = newValidUris;
+    context = newContext;
   }
 
   @Override public Iterable<IResourceDescription> getAllResourceDescriptions() {
