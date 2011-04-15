@@ -51,7 +51,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
     IFolder outputFolder = findOrCreateOutputFolder(project, preferences.outputFolderName);
     for (Delta d : deltas) {
       IResourceDescription newResource = d.getNew();
-      String path = filePath(newResource);
+      String path = filePathIfIsProtoFile(newResource);
       if (path == null) continue;
       IFile source = project.getWorkspace().getRoot().getFile(new Path(path));
       generateSingleProto(source, preferences.protocPath, preferences.language, pathOf(outputFolder));
@@ -65,9 +65,10 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
     return outputFolder;
   }
 
-  private static String filePath(IResourceDescription r) {
+  private static String filePathIfIsProtoFile(IResourceDescription r) {
     if (r == null) return null;
     URI uri = r.getURI();
+    if (!uri.fileExtension().equals("proto")) return null;
     if (uri.scheme() == null) return uri.toFileString();
     StringBuilder b = new StringBuilder();
     int segmentCount = uri.segmentCount();
