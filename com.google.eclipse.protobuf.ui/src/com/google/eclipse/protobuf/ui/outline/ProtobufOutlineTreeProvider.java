@@ -19,11 +19,15 @@ import com.google.eclipse.protobuf.protobuf.*;
  */
 public class ProtobufOutlineTreeProvider extends DefaultOutlineTreeProvider {
 
+  boolean _isLeaf(Option o) {
+    return true;
+  }
+
   boolean _isLeaf(Property p) {
     return true;
   }
 
-  boolean _isLeaf(Option o) {
+  boolean _isLeaf(Service s) {
     return true;
   }
 }

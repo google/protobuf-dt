@@ -33,7 +33,7 @@ Option:
   'option' name=ID '=' value=ValueRef ';';
 
 ProtobufElement:
-  Type | ExtendMessage;
+  Type | ExtendMessage | Service;
 
 Type:
   Message | Enum;
@@ -120,6 +120,18 @@ ExtendMessage:
   'extend' message=[Message] '{'
   elements+=MessageElement*
   '}';
+
+Service:
+ 'service' name=ID '{'
+   rpc=Rpc
+ '}';
+
+Rpc: 
+  'rpc' name=ID  '(' argType=MessageReference ')' 'returns' '(' returnType=MessageReference ')' ';'
+;
+
+MessageReference:
+  type=[Message | QualifiedName];
 
 terminal INT returns ecore::EInt: ('0'..'9')+;  
 terminal FLOAT returns ecore::EFloat: ('0'..'9')* ('.' ('0'..'9')+)?;
