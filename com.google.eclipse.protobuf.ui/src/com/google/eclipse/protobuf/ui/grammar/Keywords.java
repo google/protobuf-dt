@@ -12,9 +12,11 @@ import static org.eclipse.xtext.GrammarUtil.containedKeywords;
 
 import java.util.List;
 
-import org.eclipse.xtext.*;
+import org.eclipse.xtext.IGrammarAccess;
+import org.eclipse.xtext.Keyword;
 
-import com.google.inject.*;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -25,6 +27,7 @@ public class Keywords {
   private Keyword bool;
   private Keyword boolTrue;
   private Keyword boolFalse;
+  private Keyword bytes;
   private Keyword openingBracket;
   private Keyword closingBracket;
   private Keyword defaultValue;
@@ -39,6 +42,7 @@ public class Keywords {
       if (assignIfIsBool(k)) continue;
       if (assignIfIsBoolTrue(k)) continue;
       if (assignIfIsBoolFalse(k)) continue;
+      if (assignIfIsBytes(k)) continue;
       if (assignIfIsOpeningBracket(k)) continue;
       if (assignIfIsClosingBracket(k)) continue;
       if (assignIfIsDefaultValue(k)) continue;
@@ -64,6 +68,12 @@ public class Keywords {
   private boolean assignIfIsBoolFalse(Keyword k) {
     if (!isKeywordValue(k, "false")) return false;
     boolFalse = k;
+    return true;
+  }
+
+  private boolean assignIfIsBytes(Keyword k) {
+    if (!isKeywordValue(k, "bytes")) return false;
+    bytes = k;
     return true;
   }
 
@@ -123,6 +133,10 @@ public class Keywords {
 
   public Keyword boolFalse() {
     return boolFalse;
+  }
+
+  public Keyword bytes() {
+    return bytes;
   }
 
   public Keyword openingBracket() {

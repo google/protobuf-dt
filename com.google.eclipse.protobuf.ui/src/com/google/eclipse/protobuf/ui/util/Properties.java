@@ -27,6 +27,13 @@ public class Properties {
 
   @Inject private Keywords keywords;
 
+  public boolean isPrimitiveProperty(Property p) {
+    AbstractTypeReference r = p.getType();
+    if (!(r instanceof ScalarTypeReference)) return false;
+    String typeName = ((ScalarTypeReference) r).getScalar().getName();
+    return !keywords.string().getValue().equals(typeName) && !keywords.bytes().getValue().equals(typeName);
+  }
+
   public boolean isStringProperty(Property p) {
     return keywords.string().getValue().equals(nameOfTypeIn(p));
   }

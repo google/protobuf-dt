@@ -20,9 +20,12 @@ import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
 import org.eclipse.xtext.ui.editor.contentassist.antlr.ParserBasedContentAssistContextFactory;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.ui.grammar.*;
-import com.google.eclipse.protobuf.ui.util.*;
+import com.google.eclipse.protobuf.protobuf.Literal;
+import com.google.eclipse.protobuf.protobuf.Property;
+import com.google.eclipse.protobuf.ui.grammar.CompoundElements;
+import com.google.eclipse.protobuf.ui.grammar.Keywords;
+import com.google.eclipse.protobuf.ui.util.Literals;
+import com.google.eclipse.protobuf.ui.util.Properties;
 import com.google.inject.Inject;
 
 /**
@@ -101,13 +104,24 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
 
   private String contentToInsert(String line, Property property) {
     boolean hasIndexAlready = PROPERTY_WITH_INDEX.matcher(line).matches();
-    if (hasIndexAlready) return semicolon;
+    if (hasIndexAlready) {
+      // we can still insert '[packed = true]' if necessary
+      if (shouldInsertPackedOption(property)) {
+        String content = compoundElements.packedInBrackets() + semicolon;
+        return addSpaceAtBeginning(line, content);
+      }
+      return semicolon;
+    }
     int index = properties.calculateIndexOf(property);
-    if (REPEATED.equals(property.getModifier())) {
+    if (shouldInsertPackedOption(property)) {
       String format = "= %d " + compoundElements.packedInBrackets() + "%s";
       return indexAndSemicolonToInsert(format, line, index);
     }
     return defaultIndexAndSemicolonToInsert(line, index);
+  }
+
+  private boolean shouldInsertPackedOption(Property property) {
+    return REPEATED.equals(property.getModifier()) && properties.isPrimitiveProperty(property);
   }
 
   private String defaultIndexAndSemicolonToInsert(String line, int index) {
@@ -116,6 +130,10 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
 
   private String indexAndSemicolonToInsert(String format, String line, int index) {
     String content = String.format(format, index, semicolon);
-    return (line.endsWith(" ")) ? content : " " + content;
+    return addSpaceAtBeginning(line, content);
+  }
+
+  private String addSpaceAtBeginning(String line, String contentToInsert) {
+    return (line.endsWith(" ")) ? contentToInsert : " " + contentToInsert;
   }
 }

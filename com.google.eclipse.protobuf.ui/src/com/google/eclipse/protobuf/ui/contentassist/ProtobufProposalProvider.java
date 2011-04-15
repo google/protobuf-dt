@@ -24,7 +24,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.scoping.GlobalScope;
-import com.google.eclipse.protobuf.ui.grammar.*;
+import com.google.eclipse.protobuf.ui.grammar.CompoundElements;
+import com.google.eclipse.protobuf.ui.grammar.Keywords;
 import com.google.eclipse.protobuf.ui.labeling.Images;
 import com.google.eclipse.protobuf.ui.util.*;
 import com.google.eclipse.protobuf.util.EObjectFinder;
@@ -197,13 +198,16 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       }
       acceptor.accept(proposal);
     }
-    if (REPEATED.equals(modifier)) proposeAndAccept(compoundElements.packedInBrackets(), context, acceptor);
+    if (REPEATED.equals(modifier) && properties.isPrimitiveProperty(p))
+      proposeAndAccept(compoundElements.packedInBrackets(), context, acceptor);
     return true;
   }
 
   private void proposePackedOption(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    Modifier modifier = extractModifierFromModel(context);
-    if (!REPEATED.equals(modifier)) return;
+    Property p = extractPropertyFrom(context);
+    if (p == null) return;
+    Modifier modifier = p.getModifier();
+    if (!REPEATED.equals(modifier) || !properties.isPrimitiveProperty(p)) return;
     proposeAndAccept(compoundElements.packed(), context, acceptor);
   }
 
@@ -225,11 +229,16 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   }
 
   private Modifier extractModifierFromModel(ContentAssistContext context) {
+    Property p = extractPropertyFrom(context);
+    return (p == null) ? null : p.getModifier();
+  }
+
+  private Property extractPropertyFrom(ContentAssistContext context) {
     EObject model = context.getCurrentModel();
     // this is most likely a bug in Xtext:
     if (!(model instanceof Property)) model = context.getPreviousModel();
     if (!(model instanceof Property)) return null;
-    return ((Property) model).getModifier();
+    return (Property) model;
   }
 
   private boolean isStringProperty(Property p) {
