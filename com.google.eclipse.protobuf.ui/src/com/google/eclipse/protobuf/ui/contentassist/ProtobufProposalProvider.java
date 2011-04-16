@@ -23,7 +23,7 @@ import org.eclipse.xtext.ui.editor.contentassist.*;
 import com.google.common.collect.ImmutableList;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.eclipse.protobuf.scoping.GlobalScope;
+import com.google.eclipse.protobuf.scoping.Globals;
 import com.google.eclipse.protobuf.ui.grammar.CompoundElements;
 import com.google.eclipse.protobuf.ui.grammar.Keywords;
 import com.google.eclipse.protobuf.ui.labeling.Images;
@@ -40,7 +40,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Inject private CompoundElements compoundElements;
   @Inject private EObjectFinder finder;
-  @Inject private GlobalScope globalScope;
+  @Inject private Globals globalScope;
   @Inject private PluginImageHelper imageHelper;
   @Inject private Images imageRegistry;
   @Inject private Keywords keywords;
