@@ -47,13 +47,10 @@ public class ProtobufQualifiedNameProvider extends DefaultDeclarativeQualifiedNa
   }
 
   private boolean qualifiedNameContainsPackageName(List<String> qualifiedNameSegments, String[] packageNameSegments) {
-    int fqnLength = qualifiedNameSegments.size();
-    int packageSegmentCount = packageNameSegments.length;
-    if (fqnLength <= packageSegmentCount) return false;
-    for (int i = 0; i < fqnLength; i++) {
-      if (i == packageSegmentCount) break;
+    int packageNameSegmentCount = packageNameSegments.length;
+    if (qualifiedNameSegments.size() <= packageNameSegmentCount) return false;
+    for (int i = 0; i < packageNameSegmentCount; i++)
       if (!qualifiedNameSegments.get(i).equals(packageNameSegments[i])) return false;
-    }
     return true;
   }
 }
