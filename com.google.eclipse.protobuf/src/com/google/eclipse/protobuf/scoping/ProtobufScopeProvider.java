@@ -34,7 +34,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   private static final boolean DO_NOT_IGNORE_CASE = false;
 
   @Inject private EObjectFinder finder;
-  @Inject private GlobalScope globalScope;
+  @Inject private Globals globals;
 
   @SuppressWarnings("unused")
   IScope scope_LiteralRef_literal(LiteralRef literalRef, EReference reference) {
@@ -43,8 +43,8 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
       Enum enumType = finder.enumTypeOfProperty((Property) container);
       if (enumType != null) return scopeForLiteralsIn(enumType);
     }
-    if (container instanceof Option && globalScope.isOptimizeForOption((Option) container)) {
-      Enum optimizedMode = globalScope.optimizedMode();
+    if (container instanceof Option && globals.isOptimizeForOption((Option) container)) {
+      Enum optimizedMode = globals.optimizedMode();
       return scopeForLiteralsIn(optimizedMode);
     }
     return null;

@@ -35,7 +35,7 @@ import com.google.inject.Singleton;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton
-public class GlobalScope {
+public class Globals {
 
   private Protobuf root;
 
@@ -45,7 +45,7 @@ public class GlobalScope {
 
   @Inject EObjectFinder finder;
 
-  @Inject public GlobalScope(IParser parser) {
+  @Inject public Globals(IParser parser) {
     try {
       XtextResource resource = new XtextResource(URI.createURI(""));
       IParseResult result = parser.parse(new InputStreamReader(globalScopeContents(), "UTF-8"));
