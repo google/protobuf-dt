@@ -28,14 +28,32 @@ public class ProtobufQualifiedNameProvider extends DefaultDeclarativeQualifiedNa
 
   /** {@inheritDoc} */
   @Override public QualifiedName getFullyQualifiedName(EObject obj) {
-    QualifiedName fqn = super.getFullyQualifiedName(obj);
-    if (fqn == null || obj instanceof Package) return fqn;
+    QualifiedName qualifiedName = super.getFullyQualifiedName(obj);
+    if (qualifiedName == null || obj instanceof Package) return qualifiedName;
     Package p = finder.findPackage(obj);
-    if (p == null) return fqn;
-    List<String> segments = new ArrayList<String>(fqn.getSegments());
+    if (p == null) return qualifiedName;
+    List<String> newQualifiedNameSegments = new ArrayList<String>();
+    List<String> qualifiedNameSegments = qualifiedName.getSegments();
     String packageName = p.getName();
-    if (packageName != null && !segments.isEmpty() && !packageName.equals(segments.get(0))) 
-      segments.add(0, packageName);
-    return QualifiedName.create(segments.toArray(new String[segments.size()]));
+    if (packageName != null) {
+      String[] packageNameSegments = packageName.split("\\.");
+      if (!qualifiedNameContainsPackageName(qualifiedNameSegments, packageNameSegments)) {
+        // add package to the new FQN
+        for (String packageSegment : packageNameSegments) newQualifiedNameSegments.add(packageSegment);
+      }
+    }
+    newQualifiedNameSegments.addAll(qualifiedNameSegments);
+    return QualifiedName.create(newQualifiedNameSegments.toArray(new String[newQualifiedNameSegments.size()]));
+  }
+
+  private boolean qualifiedNameContainsPackageName(List<String> qualifiedNameSegments, String[] packageNameSegments) {
+    int fqnLength = qualifiedNameSegments.size();
+    int packageSegmentCount = packageNameSegments.length;
+    if (fqnLength <= packageSegmentCount) return false;
+    for (int i = 0; i < fqnLength; i++) {
+      if (i == packageSegmentCount) break;
+      if (!qualifiedNameSegments.get(i).equals(packageNameSegments[i])) return false;
+    }
+    return true;
   }
 }
