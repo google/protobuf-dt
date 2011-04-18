@@ -8,17 +8,20 @@
  */
 package com.google.eclipse.protobuf;
 
-import org.eclipse.xtext.scoping.impl.ImportUriResolver;
-import org.eclipse.xtext.scoping.impl.LoadOnDemandResourceDescriptions;
+import org.eclipse.xtext.scoping.impl.*;
 
-import com.google.eclipse.protobuf.scoping.ResourceDescriptions;
-import com.google.eclipse.protobuf.scoping.SimpleImportUriResolver;
+import com.google.eclipse.protobuf.scoping.*;
 import com.google.inject.Binder;
 
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
  */
 public class ProtobufRuntimeModule extends com.google.eclipse.protobuf.AbstractProtobufRuntimeModule {
+
+  /** {@inheritDoc} */
+//  @Override public Class<? extends IQualifiedNameProvider> bindIQualifiedNameProvider() {
+//    return ProtobufQualifiedNameProvider.class;
+//  }
 
   public void configureImportUriResolver(Binder binder) {
     binder.bind(ImportUriResolver.class).to(SimpleImportUriResolver.class);
