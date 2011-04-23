@@ -242,7 +242,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   }
 
   private boolean isStringProperty(Property p) {
-    return STRING.equals(finder.scalarTypeOfProperty(p));
+    return STRING.equals(finder.scalarTypeOf(p));
   }
 
   @Override public void completeLiteral_Index(EObject model, Assignment assignment, ContentAssistContext context,
@@ -253,7 +253,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeProperty_Default(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    Enum enumType = finder.enumTypeOfProperty((Property) model);
+    Enum enumType = finder.enumTypeOf((Property) model);
     if (enumType == null) return;
     proposeAndAccept(enumType, context, acceptor);
   }

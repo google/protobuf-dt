@@ -21,7 +21,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class EObjectFinder {
 
-  public Enum enumTypeOfProperty(Property p) {
+  public Enum enumTypeOf(Property p) {
     AbstractTypeReference aTypeRef = (p).getType();
     if (aTypeRef instanceof TypeReference) {
       Type type = ((TypeReference) aTypeRef).getType();
@@ -30,19 +30,20 @@ public class EObjectFinder {
     return null;
   }
 
-  public ScalarType scalarTypeOfProperty(Property p) {
+  public ScalarType scalarTypeOf(Property p) {
     AbstractTypeReference aTypeRef = (p).getType();
     if (aTypeRef instanceof ScalarTypeReference)
       return ((ScalarTypeReference) aTypeRef).getScalar();
     return null;
   }
 
-  public Package findPackage(EObject o) {
+  public Package packageOf(EObject o) {
+    return rootOf(o).getPackage();
+  }
+  
+  public Protobuf rootOf(EObject o) {
     EObject current = o;
-    while (current != null) {
-      if (current instanceof Protobuf) return ((Protobuf) current).getPackage();
-      current = current.eContainer();
-    }
-    return null;
+    while (!(current instanceof Protobuf)) current = current.eContainer();
+    return (Protobuf) current;
   }
 }

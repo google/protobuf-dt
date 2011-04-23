@@ -8,49 +8,65 @@
  */
 package com.google.eclipse.protobuf.naming;
 
-import java.util.*;
+import static org.eclipse.xtext.util.SimpleAttributeResolver.newResolver;
+import static org.eclipse.xtext.util.Strings.isEmpty;
+import static org.eclipse.xtext.util.Tuples.pair;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.naming.*;
+import org.eclipse.xtext.naming.IQualifiedNameConverter;
+import org.eclipse.xtext.naming.IQualifiedNameProvider;
+import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.util.IResourceScopeCache;
+import org.eclipse.xtext.util.Pair;
 
+import com.google.common.base.Function;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.eclipse.protobuf.util.EObjectFinder;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 /**
  * Provides fully-qualified names for protobuf elements.
- *
+ * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ProtobufQualifiedNameProvider extends DefaultDeclarativeQualifiedNameProvider {
+public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.AbstractImpl {
+
+  @Inject private IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
+  @Inject private IResourceScopeCache cache = IResourceScopeCache.NullImpl.INSTANCE;
 
   @Inject private EObjectFinder finder;
+  
+  private Function<EObject, String> resolver = newResolver(String.class, "name");
 
-  /** {@inheritDoc} */
-  @Override public QualifiedName getFullyQualifiedName(EObject obj) {
-    QualifiedName qualifiedName = super.getFullyQualifiedName(obj);
-    if (qualifiedName == null || obj instanceof Package) return qualifiedName;
-    Package p = finder.findPackage(obj);
-    if (p == null) return qualifiedName;
-    List<String> newQualifiedNameSegments = new ArrayList<String>();
-    List<String> qualifiedNameSegments = qualifiedName.getSegments();
-    String packageName = p.getName();
-    if (packageName != null) {
-      String[] packageNameSegments = packageName.split("\\.");
-      if (!qualifiedNameContainsPackageName(qualifiedNameSegments, packageNameSegments)) {
-        // add package to the new FQN
-        for (String packageSegment : packageNameSegments) newQualifiedNameSegments.add(packageSegment);
+  public QualifiedName getFullyQualifiedName(final EObject obj) {
+    Pair<EObject, String> key = pair(obj, "fqn");
+    return cache.get(key, obj.eResource(), new Provider<QualifiedName>() {
+      public QualifiedName get() {
+        EObject current = obj;
+        String name = resolver.apply(current);
+        if (isEmpty(name)) return null;
+        QualifiedName qualifiedName = converter.toQualifiedName(name);
+        while (current.eContainer() != null) {
+          current = current.eContainer();
+          QualifiedName parentsQualifiedName = getFullyQualifiedName(current);
+          if (parentsQualifiedName != null)
+            return parentsQualifiedName.append(qualifiedName);
+        }
+        return addPackage(obj, qualifiedName);
       }
-    }
-    newQualifiedNameSegments.addAll(qualifiedNameSegments);
-    return QualifiedName.create(newQualifiedNameSegments.toArray(new String[newQualifiedNameSegments.size()]));
+    });
   }
 
-  private boolean qualifiedNameContainsPackageName(List<String> qualifiedNameSegments, String[] packageNameSegments) {
-    int packageNameSegmentCount = packageNameSegments.length;
-    if (qualifiedNameSegments.size() <= packageNameSegmentCount) return false;
-    for (int i = 0; i < packageNameSegmentCount; i++)
-      if (!qualifiedNameSegments.get(i).equals(packageNameSegments[i])) return false;
-    return true;
+  private QualifiedName addPackage(EObject obj, QualifiedName qualifiedName) {
+    if (qualifiedName == null || obj instanceof Package)
+      return qualifiedName;
+    Package p = finder.packageOf(obj);
+    if (p == null) return qualifiedName;
+    String packageName = p.getName();
+    if (isEmpty(packageName)) return qualifiedName;
+    QualifiedName packageQualifiedName = converter.toQualifiedName(packageName);
+    if (qualifiedName.startsWith(packageQualifiedName)) return qualifiedName;
+    return packageQualifiedName.append(qualifiedName);
   }
 }
