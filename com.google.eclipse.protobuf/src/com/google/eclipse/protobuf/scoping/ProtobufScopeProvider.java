@@ -8,16 +8,19 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static org.eclipse.emf.common.util.URI.createFileURI;
+import static org.eclipse.emf.common.util.URI.createURI;
+import static org.eclipse.emf.ecore.util.EcoreUtil.getAllContents;
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.resource.IEObjectDescription;
@@ -57,22 +60,39 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   @SuppressWarnings("unused")
   IScope scope_TypeReference_type(TypeReference typeRef, EReference reference) {
     Protobuf root = finder.rootOf(typeRef);
-    resolveImports(root);
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     for (Type type : getAllContentsOfType(root, Type.class)) {
-      descriptions.add(create(nameProvider.getFullyQualifiedName(type), type));
+      descriptions.add(describeUsingQualifiedName(type));
       descriptions.add(create(type.getName(), type));
     }
+    descriptions.addAll(importedTypes(root));
     return createScope(descriptions);
   }
 
-  private void resolveImports(Protobuf root) {
-    EList<Import> imports = root.getImports();
+  private List<IEObjectDescription> importedTypes(Protobuf root) {
     ResourceSet resourceSet = root.eResource().getResourceSet();
-    for (Import imp : imports) {
-      String importURI = uriResolver.apply(imp);
-      resourceSet.getResource(createFileURI(importURI), true);
+    List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
+    for (Import anImport : root.getImports()) {
+      URI importUri = createURI(uriResolver.apply(anImport));
+      Resource imported = resourceSet.getResource(importUri, true);
+      descriptions.addAll(describeTypesUsingQualifiedNames(imported));
     }
+    return descriptions;
+  }
+
+  private List<IEObjectDescription> describeTypesUsingQualifiedNames(Resource resource) {
+    List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
+    TreeIterator<Object> contents = getAllContents(resource, true);
+    while (contents.hasNext()) {
+      Object next = contents.next();
+      if (!(next instanceof Type)) continue;
+      descriptions.add(describeUsingQualifiedName((Type) next));
+    }
+    return descriptions;
+  }
+  
+  private IEObjectDescription describeUsingQualifiedName(Type type) {
+    return create(nameProvider.getFullyQualifiedName(type), type);
   }
   
   @SuppressWarnings("unused")
@@ -80,21 +100,21 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     EObject container = literalRef.eContainer();
     if (container instanceof Property) {
       Enum enumType = finder.enumTypeOf((Property) container);
-      if (enumType != null) return scopeForLiteralsIn(enumType);
+      if (enumType != null) return scopeForLiterals(enumType);
     }
     if (container instanceof Option && globals.isOptimizeForOption((Option) container)) {
       Enum optimizedMode = globals.optimizedMode();
-      return scopeForLiteralsIn(optimizedMode);
+      return scopeForLiterals(optimizedMode);
     }
     return null;
   }
 
-  private static IScope scopeForLiteralsIn(Enum enumType) {
-    List<IEObjectDescription> descriptions = literalDescriptions(enumType);
+  private static IScope scopeForLiterals(Enum enumType) {
+    List<IEObjectDescription> descriptions = describeLiterals(enumType);
     return createScope(descriptions);
   }
 
-  private static List<IEObjectDescription> literalDescriptions(Enum enumType) {
+  private static List<IEObjectDescription> describeLiterals(Enum enumType) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     for (Literal literal : enumType.getLiterals())
       descriptions.add(create(literal.getName(), literal));
