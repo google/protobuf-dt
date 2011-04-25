@@ -24,8 +24,9 @@ import com.google.inject.Singleton;
 public class Literals {
 
   public int calculateIndexOf(Literal l) {
-    int index = 0;
-    for (EObject o : l.eContainer().eContents()) {
+    int index = -1;
+    EObject container = l.eContainer();
+    for (EObject o : container.eContents()) {
       if (o == l || !(o instanceof Literal)) continue;
       Literal c = (Literal) o;
       index = max(index, c.getIndex());
