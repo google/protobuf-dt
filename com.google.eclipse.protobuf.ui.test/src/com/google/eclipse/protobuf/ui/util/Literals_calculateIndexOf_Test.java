@@ -8,7 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.util;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +38,7 @@ public class Literals_calculateIndexOf_Test {
     LiteralStub literal = new LiteralStub("HOME");
     anEnum.add(literal);
     int index = literals.calculateIndexOf(literal);
-    assertThat(index).isZero();
+    assertThat(index, equalTo(0));
   }
   
   @Test public void should_return_max_index_value_plus_one_for_new_literal() {
@@ -47,6 +48,6 @@ public class Literals_calculateIndexOf_Test {
     LiteralStub literal2 = new LiteralStub("WORK");
     anEnum.add(literal1, literal2);
     int index = literals.calculateIndexOf(literal2);
-    assertThat(index).isEqualTo(maxIndexValue + 1);
+    assertThat(index, equalTo(maxIndexValue + 1));
   }
 }
