@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry exported="true" kind="lib" path="junit-4.8.2.jar" sourcepath="junit-4.8.2-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="mockito-all-1.8.0.jar" sourcepath="mockito-all-1.8.0-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="fest-util-1.1.6.jar" sourcepath="fest-util-1.1.6-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="fest-assert-1.4.jar" sourcepath="fest-assert-1.4-sources.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
