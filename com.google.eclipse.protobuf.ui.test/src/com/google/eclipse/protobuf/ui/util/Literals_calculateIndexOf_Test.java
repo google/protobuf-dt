@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.util;
 
-import static com.google.eclipse.protobuf.ui.util.ProtobufElements.findLiteral;
+import static com.google.eclipse.protobuf.junit.Finder.findLiteral;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -38,7 +38,7 @@ public class Literals_calculateIndexOf_Test {
     proto.append("enum PhoneType {")
          .append("  MOBILE = 1;   ")
          .append("}               ");
-    Protobuf root = xtext.parse(proto.toString());
+    Protobuf root = xtext.parse(proto);
     Literal mobile = findLiteral("MOBILE", root);
     int index = literals.calculateIndexOf(mobile);
     assertThat(index, equalTo(0));
@@ -51,7 +51,7 @@ public class Literals_calculateIndexOf_Test {
          .append("  HOME = 5;     ")
          .append("  WORK = 9;     ")
          .append("}               ");
-    Protobuf root = xtext.parse(proto.toString());
+    Protobuf root = xtext.parse(proto);
     Literal work = findLiteral("WORK", root);
     int index = literals.calculateIndexOf(work);
     assertThat(index, equalTo(6));

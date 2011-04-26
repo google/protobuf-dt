@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.util;
 
-import static com.google.eclipse.protobuf.ui.util.ProtobufElements.findProperty;
+import static com.google.eclipse.protobuf.junit.Finder.findProperty;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -38,7 +38,7 @@ public class Properties_calculateTagNumberOf_Test {
     proto.append("message Person {           ")
          .append("  required string name = 2;")
          .append("}                          ");
-    Protobuf root = xtext.parse(proto.toString());
+    Protobuf root = xtext.parse(proto);
     Property name = findProperty("name", root);
     int index = properties.calculateTagNumberOf(name);
     assertThat(index, equalTo(1));
@@ -50,7 +50,7 @@ public class Properties_calculateTagNumberOf_Test {
          .append("  required string name = 6;")
          .append("  required int32 id = 8;   ")
          .append("}                          ");
-    Protobuf root = xtext.parse(proto.toString());
+    Protobuf root = xtext.parse(proto);
     Property id = findProperty("id", root);
     int index = properties.calculateTagNumberOf(id);
     assertThat(index, equalTo(7));

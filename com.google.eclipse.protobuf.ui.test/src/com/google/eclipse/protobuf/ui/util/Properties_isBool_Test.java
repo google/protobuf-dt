@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.util;
 
-import static com.google.eclipse.protobuf.ui.util.ProtobufElements.findProperty;
+import static com.google.eclipse.protobuf.junit.Finder.findProperty;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -38,7 +38,7 @@ public class Properties_isBool_Test {
     proto.append("message Person {           ")
          .append("  optional bool active = 1;")
          .append("}                          ");
-    Protobuf root = xtext.parse(proto.toString());
+    Protobuf root = xtext.parse(proto);
     Property active = findProperty("active", root);
     assertThat(properties.isBool(active), equalTo(true));
   }
@@ -48,7 +48,7 @@ public class Properties_isBool_Test {
     proto.append("message Person {           ")
          .append("  optional string name = 1;")
          .append("}                          ");
-    Protobuf root = xtext.parse(proto.toString());
+    Protobuf root = xtext.parse(proto);
     Property name = findProperty("name", root);
     assertThat(properties.isBool(name), equalTo(false));
   }

@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.util;
+package com.google.eclipse.protobuf.junit;
 
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
@@ -17,7 +17,7 @@ import com.google.eclipse.protobuf.protobuf.*;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-public final class ProtobufElements {
+public final class Finder {
   
   public static Literal findLiteral(String name, Protobuf root) {
     List<Literal> literals = getAllContentsOfType(root, Literal.class);
@@ -33,5 +33,5 @@ public final class ProtobufElements {
     return null;
   }
   
-  private ProtobufElements() {}
+  private Finder() {}
 }

@@ -42,6 +42,10 @@ public class XtextRule implements MethodRule {
     return injector.getInstance(type);
   }
 
+  public Protobuf parse(StringBuilder text) {
+    return parse(text.toString());
+  }
+  
   public Protobuf parse(String text) {
     ProtobufParser parser = injector.getInstance(ProtobufParser.class);
     IParseResult parseResult = parser.parse(new InputStreamReader(new StringInputStream(text)));
@@ -55,8 +59,7 @@ public class XtextRule implements MethodRule {
       this.base = base;
     }
 
-    /** {@inheritDoc} */
-    public void evaluate() throws Throwable {
+    @Override public void evaluate() throws Throwable {
       setUpInjector();
       base.evaluate();
     }
