@@ -22,7 +22,7 @@ import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.inject.Injector;
 
 /**
- * Understands SOMETHING DUMMY.
+ * Xtext rule that performs basic configuration of an Xtext environment.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
