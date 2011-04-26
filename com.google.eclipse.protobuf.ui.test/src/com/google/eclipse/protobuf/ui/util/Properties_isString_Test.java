@@ -19,11 +19,11 @@ import com.google.eclipse.protobuf.protobuf.Property;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 
 /**
- * Tests for <code>{@link Properties#calculateTagNumberOf(Property)}</code>.
+ * Tests for <code>{@link Properties#isString(Property)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Properties_calculateTagNumberOf_Test {
+public class Properties_isString_Test {
 
   @Rule public XtextRule xtext = new XtextRule();
 
@@ -33,26 +33,23 @@ public class Properties_calculateTagNumberOf_Test {
     properties = xtext.getInstanceOf(Properties.class);
   }
 
-  @Test public void should_return_one_for_first_and_only_property() {
+  @Test public void should_return_true_if_property_is_string() {
     StringBuilder proto = new StringBuilder();
     proto.append("message Person {           ")
-         .append("  required string name = 2;")
+         .append("  optional string name = 1;")
          .append("}                          ");
     Protobuf root = xtext.parse(proto.toString());
     Property name = findProperty("name", root);
-    int index = properties.calculateTagNumberOf(name);
-    assertThat(index, equalTo(1));
+    assertThat(properties.isString(name), equalTo(true));
   }
 
-  @Test public void should_return_max_tag_number_value_plus_one_for_new_property() {
+  @Test public void should_return_false_if_property_is_not_string() {
     StringBuilder proto = new StringBuilder();
     proto.append("message Person {           ")
-         .append("  required string name = 6;")
-         .append("  required int32 id = 8;   ")
+         .append("  optional bool active = 1;")
          .append("}                          ");
     Protobuf root = xtext.parse(proto.toString());
-    Property id = findProperty("id", root);
-    int index = properties.calculateTagNumberOf(id);
-    assertThat(index, equalTo(7));
+    Property active = findProperty("active", root);
+    assertThat(properties.isString(active), equalTo(false));
   }
 }

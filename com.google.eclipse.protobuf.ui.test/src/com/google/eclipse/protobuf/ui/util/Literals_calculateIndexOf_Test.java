@@ -8,17 +8,15 @@
  */
 package com.google.eclipse.protobuf.ui.util;
 
-import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
+import static com.google.eclipse.protobuf.ui.util.ProtobufElements.findLiteral;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-
-import java.util.List;
 
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.XtextRule;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.eclipse.protobuf.protobuf.Literal;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
 
 /**
  * Tests for <code>{@link Literals#calculateIndexOf(Literal)}</code>.
@@ -37,30 +35,25 @@ public class Literals_calculateIndexOf_Test {
 
   @Test public void should_return_zero_for_first_and_only_literal() {
     StringBuilder proto = new StringBuilder();
-    proto.append("enum PhoneType {");
-    proto.append("  MOBILE = 1;   ");
-    proto.append("}               ");
+    proto.append("enum PhoneType {")
+         .append("  MOBILE = 1;   ")
+         .append("}               ");
     Protobuf root = xtext.parse(proto.toString());
-    Literal mobileLiteral = allLiteralsInFirstEnum(root).get(0);
-    int index = literals.calculateIndexOf(mobileLiteral);
+    Literal mobile = findLiteral("MOBILE", root);
+    int index = literals.calculateIndexOf(mobile);
     assertThat(index, equalTo(0));
   }
 
   @Test public void should_return_max_index_value_plus_one_for_new_literal() {
     StringBuilder proto = new StringBuilder();
-    proto.append("enum PhoneType {");
-    proto.append("  MOBILE = 1;   ");
-    proto.append("  HOME = 5;     ");
-    proto.append("  WORK = 9;     ");
-    proto.append("}               ");
+    proto.append("enum PhoneType {")
+         .append("  MOBILE = 1;   ")
+         .append("  HOME = 5;     ")
+         .append("  WORK = 9;     ")
+         .append("}               ");
     Protobuf root = xtext.parse(proto.toString());
-    Literal workLiteral = allLiteralsInFirstEnum(root).get(2);
-    int index = literals.calculateIndexOf(workLiteral);
+    Literal work = findLiteral("WORK", root);
+    int index = literals.calculateIndexOf(work);
     assertThat(index, equalTo(6));
-  }
-
-  private List<Literal> allLiteralsInFirstEnum(Protobuf root) {
-    List<Enum> allEnums = getAllContentsOfType(root, Enum.class);
-    return allEnums.get(0).getLiterals();
   }
 }
