@@ -11,6 +11,7 @@ package com.google.eclipse.protobuf.ui.util;
 import static java.lang.Math.max;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.Keyword;
 
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.ui.grammar.Keywords;
@@ -18,7 +19,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
- * Utility methods for instances of <code>{@link Property}</code>.
+ * Utility methods re <code>{@link Property}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
@@ -27,19 +28,33 @@ public class Properties {
 
   @Inject private Keywords keywords;
 
-  public boolean isPrimitiveProperty(Property p) {
+  public boolean isPrimitive(Property p) {
     AbstractTypeReference r = p.getType();
     if (!(r instanceof ScalarTypeReference)) return false;
     String typeName = ((ScalarTypeReference) r).getScalar().getName();
     return !keywords.string().getValue().equals(typeName) && !keywords.bytes().getValue().equals(typeName);
   }
 
-  public boolean isStringProperty(Property p) {
-    return keywords.string().getValue().equals(nameOfTypeIn(p));
+  /**
+   * Indicates whether the given property is of type {@code bool}.
+   * @param p the given property.
+   * @return {@code true} if the given property is of type {@code bool}, {@code false} otherwise.
+   */
+  public boolean isBool(Property p) {
+    return isOfScalarType(p, keywords.bool());
   }
 
-  public boolean isBoolProperty(Property p) {
-    return keywords.bool().getValue().equals(nameOfTypeIn(p));
+  /**
+   * Indicates whether the given property is of type {@code string}.
+   * @param p the given property.
+   * @return {@code true} if the given property is of type {@code string}, {@code false} otherwise.
+   */
+  public boolean isString(Property p) {
+    return isOfScalarType(p, keywords.string());
+  }
+  
+  private boolean isOfScalarType(Property p, Keyword typeKeyword) {
+    return typeKeyword.getValue().equals(typeNameOf(p));
   }
 
   /**
@@ -47,7 +62,7 @@ public class Properties {
    * @param p the given {@code Property}.
    * @return the name of the type of the given {@code Property}.
    */
-  public String nameOfTypeIn(Property p) {
+  public String typeNameOf(Property p) {
     AbstractTypeReference r = p.getType();
     if (r instanceof ScalarTypeReference) return ((ScalarTypeReference) r).getScalar().getName();
     if (r instanceof TypeReference) {
@@ -57,7 +72,25 @@ public class Properties {
     return r.toString();
   }
 
-  public int calculateIndexOf(Property p) {
+  /**
+   * Calculates the tag number value for the given property. The calculated tag number value is the maximum of all the 
+   * tag number values of the given property's siblings, plus one. The minimum tag number value is 1.
+   * <p>
+   * For example, in the following message:
+   * 
+   * <pre>
+   * message Person {
+   *   required string name = 1;
+   *   optional string email = 2;
+   *   optional PhoneNumber phone =
+   * </pre>
+   * 
+   * The calculated tag number value for the property {@code PhoneNumber} will be 3.
+   * </p>
+   * @param p the given property.
+   * @return the calculated value for the tag number of the given property.
+   */
+  public int calculateTagNumberOf(Property p) {
     int index = 0;
     for (EObject o : p.eContainer().eContents()) {
       if (o == p || !(o instanceof Property)) continue;

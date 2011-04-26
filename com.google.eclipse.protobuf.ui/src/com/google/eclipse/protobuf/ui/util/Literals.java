@@ -16,13 +16,31 @@ import com.google.eclipse.protobuf.protobuf.Literal;
 import com.google.inject.Singleton;
 
 /**
- * Utility methods for instances of <code>{@link Literal}</code>.
+ * Utility methods related to <code>{@link Literal}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton
 public class Literals {
 
+  /**
+   * Calculates the index value for the given literal. The calculated index value is the maximum of all the index values
+   * of the given literal's siblings, plus one. The minimum index value is zero.
+   * <p>
+   * For example, in the following message:
+   * 
+   * <pre>
+   * enum PhoneType {
+   *   MOBILE = 0;
+   *   HOME = 1;
+   *   WORK =
+   * </pre>
+   * 
+   * The calculated index value for the literal {@code WORK} will be 2.
+   * </p>
+   * @param l the given literal.
+   * @return the calculated index value.
+   */
   public int calculateIndexOf(Literal l) {
     int index = -1;
     EObject container = l.eContainer();

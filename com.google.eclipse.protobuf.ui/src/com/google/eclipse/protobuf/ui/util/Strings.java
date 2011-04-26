@@ -13,7 +13,7 @@ import static java.lang.Character.toLowerCase;
 import com.google.inject.Singleton;
 
 /**
- * Utility classes for {@code String}s.
+ * Utility methods related to {@code String}.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */

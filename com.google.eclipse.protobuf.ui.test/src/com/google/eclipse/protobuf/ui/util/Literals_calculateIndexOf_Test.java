@@ -38,25 +38,25 @@ public class Literals_calculateIndexOf_Test {
   @Test public void should_return_zero_for_first_and_only_literal() {
     StringBuilder proto = new StringBuilder();
     proto.append("enum PhoneType {");
-    proto.append("  MOBILE = 0;   ");
+    proto.append("  MOBILE = 1;   ");
     proto.append("}               ");
     Protobuf root = xtext.parse(proto.toString());
-    Literal firstLiteral = allLiteralsInFirstEnum(root).get(0);
-    int index = literals.calculateIndexOf(firstLiteral);
+    Literal mobileLiteral = allLiteralsInFirstEnum(root).get(0);
+    int index = literals.calculateIndexOf(mobileLiteral);
     assertThat(index, equalTo(0));
   }
 
   @Test public void should_return_max_index_value_plus_one_for_new_literal() {
     StringBuilder proto = new StringBuilder();
     proto.append("enum PhoneType {");
-    proto.append("  MOBILE = 0;   ");
-    proto.append("  HOME = 1;     ");
-    proto.append("  WORK = 2;     ");
+    proto.append("  MOBILE = 1;   ");
+    proto.append("  HOME = 5;     ");
+    proto.append("  WORK = 9;     ");
     proto.append("}               ");
     Protobuf root = xtext.parse(proto.toString());
-    Literal lastLiteral = allLiteralsInFirstEnum(root).get(2);
-    int index = literals.calculateIndexOf(lastLiteral);
-    assertThat(index, equalTo(2));
+    Literal workLiteral = allLiteralsInFirstEnum(root).get(2);
+    int index = literals.calculateIndexOf(workLiteral);
+    assertThat(index, equalTo(6));
   }
 
   private List<Literal> allLiteralsInFirstEnum(Protobuf root) {

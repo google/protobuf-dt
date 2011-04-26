@@ -112,7 +112,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
       }
       return semicolon;
     }
-    int index = properties.calculateIndexOf(property);
+    int index = properties.calculateTagNumberOf(property);
     if (shouldInsertPackedOption(property)) {
       String format = "= %d " + compoundElements.packedInBrackets() + "%s";
       return indexAndSemicolonToInsert(format, line, index);
@@ -121,7 +121,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
   }
 
   private boolean shouldInsertPackedOption(Property property) {
-    return REPEATED.equals(property.getModifier()) && properties.isPrimitiveProperty(property);
+    return REPEATED.equals(property.getModifier()) && properties.isPrimitive(property);
   }
 
   private String defaultIndexAndSemicolonToInsert(String line, int index) {

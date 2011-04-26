@@ -61,7 +61,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     for (Property fileOption : globalScope.fileOptions()) {
       String displayString = fileOption.getName();
       String proposalText = displayString + " " + keywords.equalSign().getValue() + " ";
-      boolean isStringOption = properties.isStringProperty(fileOption);
+      boolean isStringOption = properties.isString(fileOption);
       if (isStringOption)
         proposalText = proposalText + compoundElements.emptyString() + keywords.semicolon().getValue();
       ICompletionProposal proposal = createCompletionProposal(proposalText, displayString, context);
@@ -83,11 +83,11 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       proposeAndAccept(globalScope.optimizedMode(), context, acceptor);
       return;
     }
-    if (properties.isStringProperty(fileOption)) {
+    if (properties.isString(fileOption)) {
       proposeEmptyString(context, acceptor);
       return;
     }
-    if (properties.isBoolProperty(fileOption)) {
+    if (properties.isBool(fileOption)) {
       proposeBooleanValues(context, acceptor);
       return;
     }
@@ -171,10 +171,10 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   private boolean isBoolProposalValid(ContentAssistContext context) {
     EObject model = context.getCurrentModel();
-    if (model instanceof Property) return properties.isBoolProperty((Property) model);
+    if (model instanceof Property) return properties.isBool((Property) model);
     if (model instanceof Option) {
       Property fileOption = globalScope.lookupFileOption(((Option) model).getName());
-      return fileOption != null && properties.isBoolProperty(fileOption);
+      return fileOption != null && properties.isBool(fileOption);
     }
     return false;
   }
@@ -198,7 +198,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       }
       acceptor.accept(proposal);
     }
-    if (REPEATED.equals(modifier) && properties.isPrimitiveProperty(p))
+    if (REPEATED.equals(modifier) && properties.isPrimitive(p))
       proposeAndAccept(compoundElements.packedInBrackets(), context, acceptor);
     return true;
   }
@@ -207,7 +207,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     Property p = extractPropertyFrom(context);
     if (p == null) return;
     Modifier modifier = p.getModifier();
-    if (!REPEATED.equals(modifier) || !properties.isPrimitiveProperty(p)) return;
+    if (!REPEATED.equals(modifier) || !properties.isPrimitive(p)) return;
     proposeAndAccept(compoundElements.packed(), context, acceptor);
   }
 
@@ -272,7 +272,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeProperty_Index(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    int index = properties.calculateIndexOf((Property) model);
+    int index = properties.calculateTagNumberOf((Property) model);
     proposeIndex(index, context, acceptor);
   }
 
@@ -282,7 +282,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeProperty_Name(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    String typeName = strings.firstCharToLowerCase(properties.nameOfTypeIn((Property) model));
+    String typeName = strings.firstCharToLowerCase(properties.typeNameOf((Property) model));
     int index = 1;
     String name = typeName + index;
     for (EObject o : model.eContainer().eContents()) {

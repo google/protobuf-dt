@@ -59,7 +59,7 @@ public class Labels {
   }
 
   private String labelFor(Property p) {
-    return String.format(PROPERTY_FORMAT, p.getName(), p.getIndex(), properties.nameOfTypeIn(p));
+    return String.format(PROPERTY_FORMAT, p.getName(), p.getIndex(), properties.typeNameOf(p));
   }
 
   private String labelFor(Protobuf p) {
