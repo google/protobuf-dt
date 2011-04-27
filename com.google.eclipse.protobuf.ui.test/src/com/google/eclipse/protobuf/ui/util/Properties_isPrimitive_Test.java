@@ -8,11 +8,9 @@
  */
 package com.google.eclipse.protobuf.ui.util;
 
-import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
+import static com.google.eclipse.protobuf.junit.Finder.allProperties;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-
-import java.util.List;
 
 import org.junit.*;
 
@@ -50,8 +48,7 @@ public class Properties_isPrimitive_Test {
          .append("  optional bool bool_1 = 10;     ")
          .append("}                                ");
     Protobuf root = xtext.parse(proto);
-    List<Property> allProperties = getAllContentsOfType(root, Property.class);
-    for (Property p : allProperties)
+    for (Property p : allProperties(root))
       assertThat(properties.isPrimitive(p), equalTo(true));
   }
 
@@ -67,8 +64,7 @@ public class Properties_isPrimitive_Test {
          .append("  optional string name = 1       ")
          .append("}                                ");
     Protobuf root = xtext.parse(proto);
-    List<Property> allProperties = getAllContentsOfType(root, Property.class);
-    for (Property p : allProperties)
+    for (Property p : allProperties(root))
       assertThat(properties.isPrimitive(p), equalTo(false));
   }
 }

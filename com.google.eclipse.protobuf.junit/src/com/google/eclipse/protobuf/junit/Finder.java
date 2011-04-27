@@ -33,5 +33,9 @@ public final class Finder {
     return null;
   }
   
+  public static List<Property> allProperties(Protobuf root) {
+    return getAllContentsOfType(root, Property.class);
+  }
+  
   private Finder() {}
 }
