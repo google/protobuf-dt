@@ -28,6 +28,13 @@ public class Properties {
 
   @Inject private Keywords keywords;
 
+  /**
+   * Indicates whether the type of the given property is primitive. Primitive types include: {@code double}, 
+   * {@code float}, {@code int32}, {@code int64}, {@code uint32}, {@code uint64}, {@code sint32}, {@code sint64},
+   * {@code fixed32}, {@code fixed64}, {@code sfixed32}, {@code sfixed64} and {@code bool}.
+   * @param p the given property.
+   * @return {@code true} if the type of the given property is primitive, {@code false} otherwise.
+   */
   public boolean isPrimitive(Property p) {
     AbstractTypeReference r = p.getType();
     if (!(r instanceof ScalarTypeReference)) return false;
@@ -41,7 +48,7 @@ public class Properties {
    * @return {@code true} if the given property is of type {@code bool}, {@code false} otherwise.
    */
   public boolean isBool(Property p) {
-    return isOfScalarType(p, keywords.bool());
+    return isScalarType(p, keywords.bool());
   }
 
   /**
@@ -50,10 +57,10 @@ public class Properties {
    * @return {@code true} if the given property is of type {@code string}, {@code false} otherwise.
    */
   public boolean isString(Property p) {
-    return isOfScalarType(p, keywords.string());
+    return isScalarType(p, keywords.string());
   }
   
-  private boolean isOfScalarType(Property p, Keyword typeKeyword) {
+  private boolean isScalarType(Property p, Keyword typeKeyword) {
     return typeKeyword.getValue().equals(typeNameOf(p));
   }
 
