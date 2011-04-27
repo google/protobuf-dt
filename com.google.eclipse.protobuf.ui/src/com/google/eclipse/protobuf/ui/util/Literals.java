@@ -9,8 +9,9 @@
 package com.google.eclipse.protobuf.ui.util;
 
 import static java.lang.Math.max;
+import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
-import org.eclipse.emf.ecore.EObject;
+import java.util.List;
 
 import com.google.eclipse.protobuf.protobuf.Literal;
 import com.google.inject.Singleton;
@@ -43,10 +44,9 @@ public class Literals {
    */
   public int calculateIndexOf(Literal l) {
     int index = -1;
-    EObject container = l.eContainer();
-    for (EObject o : container.eContents()) {
-      if (o == l || !(o instanceof Literal)) continue;
-      Literal c = (Literal) o;
+    List<Literal> allLiterals = getAllContentsOfType(l.eContainer(), Literal.class);
+    for (Literal c : allLiterals) {
+      if (c == l) continue;
       index = max(index, c.getIndex());
     }
     return ++index;

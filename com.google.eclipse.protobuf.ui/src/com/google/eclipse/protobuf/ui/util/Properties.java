@@ -9,8 +9,10 @@
 package com.google.eclipse.protobuf.ui.util;
 
 import static java.lang.Math.max;
+import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
-import org.eclipse.emf.ecore.EObject;
+import java.util.List;
+
 import org.eclipse.xtext.Keyword;
 
 import com.google.eclipse.protobuf.protobuf.*;
@@ -99,9 +101,9 @@ public class Properties {
    */
   public int calculateTagNumberOf(Property p) {
     int index = 0;
-    for (EObject o : p.eContainer().eContents()) {
-      if (o == p || !(o instanceof Property)) continue;
-      Property c = (Property) o;
+    List<Property> allProperties = getAllContentsOfType(p.eContainer(), Property.class);
+    for (Property c : allProperties) {
+      if (c == p) continue;
       index = max(index, c.getIndex());
     }
     return ++index;

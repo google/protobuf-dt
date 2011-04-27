@@ -20,6 +20,11 @@ import com.google.inject.Singleton;
 @Singleton
 public class Strings {
 
+  /**
+   * Returns a {@code String} with the same content as the given one, but with the first character in lower case.
+   * @param s the original {@code String}
+   * @return a {@code String} with the same content as the given one, but with the first character in lower case.
+   */
   public String firstCharToLowerCase(String s) {
     if (s == null) return null;
     if (s.length() == 0) return s;
