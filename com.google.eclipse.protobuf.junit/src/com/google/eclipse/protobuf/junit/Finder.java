@@ -27,8 +27,7 @@ public final class Finder {
   }
   
   public static Property findProperty(String name, Protobuf root) {
-    List<Property> proeperties = getAllContentsOfType(root, Property.class);
-    for (Property property : proeperties)
+    for (Property property : allProperties(root))
       if (name.equals(property.getName())) return property;
     return null;
   }
