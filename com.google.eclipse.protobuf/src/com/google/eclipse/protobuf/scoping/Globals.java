@@ -9,19 +9,15 @@
 package com.google.eclipse.protobuf.scoping;
 
 import static java.util.Collections.unmodifiableCollection;
-import static org.eclipse.core.runtime.FileLocator.*;
 
 import java.io.*;
-import java.net.URL;
 import java.util.*;
 
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.parser.IParser;
 import org.eclipse.xtext.resource.XtextResource;
-import org.osgi.framework.Bundle;
+import org.eclipse.xtext.util.StringInputStream;
 
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
@@ -30,7 +26,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
- * Protobuf elements accesible to any .proto file.
+ * Protobuf elements accessible to any .proto file.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
@@ -56,11 +52,30 @@ public class Globals {
     }
   }
 
-  private static InputStream globalScopeContents() throws IOException {
-    Bundle bundle = Platform.getBundle("com.google.eclipse.protobuf");
-    Path originPath = new Path("global.proto");
-    URL bundledFileURL = find(bundle, originPath, null);
-    return (InputStream) resolve(bundledFileURL).getContent();
+  private static InputStream globalScopeContents() {
+    return new StringInputStream(globalProto());
+  }
+
+  private static String globalProto() {
+    StringBuilder proto = new StringBuilder();
+    proto.append("message FileOptions {")
+         .append("  optional string java_package = 1;")
+         .append("  optional string java_outer_classname = 8;")
+         .append("  optional bool java_multiple_files = 10 [default=false];")
+         .append("  optional bool java_generate_equals_and_hash = 20 [default=false];")
+         .append("  enum OptimizeMode {")
+         .append("    SPEED = 1;")
+         .append("    CODE_SIZE = 2;")
+         .append("    LITE_RUNTIME = 3;")
+         .append("  }")
+         .append("  optional OptimizeMode optimize_for = 9 [default=SPEED];")
+         .append("  optional bool cc_generic_services = 16 [default=false];")
+         .append("  optional bool java_generic_services = 17 [default=false];")
+         .append("  optional bool py_generic_services = 18 [default=false];")
+         .append("  repeated UninterpretedOption uninterpreted_option = 999;")
+         .append("  extensions 1000 to max;")
+         .append("}");
+    return proto.toString();
   }
 
   private void init() {
