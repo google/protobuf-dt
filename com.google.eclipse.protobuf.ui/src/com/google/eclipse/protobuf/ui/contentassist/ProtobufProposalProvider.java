@@ -40,7 +40,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Inject private CompoundElements compoundElements;
   @Inject private EObjectFinder finder;
-  @Inject private Globals globalScope;
+  @Inject private Globals globals;
   @Inject private PluginImageHelper imageHelper;
   @Inject private Images imageRegistry;
   @Inject private Keywords keywords;
@@ -58,7 +58,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   }
 
   private void proposeCommonFileOptions(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    for (Property fileOption : globalScope.fileOptions()) {
+    for (Property fileOption : globals.fileOptions()) {
       String displayString = fileOption.getName();
       String proposalText = displayString + " " + keywords.equalSign().getValue() + " ";
       boolean isStringOption = properties.isString(fileOption);
@@ -77,10 +77,10 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Override public void completeOption_Value(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     Option option = (Option) model;
-    Property fileOption = globalScope.lookupFileOption(option.getName());
+    Property fileOption = globals.lookupFileOption(option.getName());
     if (fileOption == null) return;
-    if (globalScope.isOptimizeForOption(option)) {
-      proposeAndAccept(globalScope.optimizedMode(), context, acceptor);
+    if (globals.isOptimizeForOption(option)) {
+      proposeAndAccept(globals.optimizedMode(), context, acceptor);
       return;
     }
     if (properties.isString(fileOption)) {
@@ -173,7 +173,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     EObject model = context.getCurrentModel();
     if (model instanceof Property) return properties.isBool((Property) model);
     if (model instanceof Option) {
-      Property fileOption = globalScope.lookupFileOption(((Option) model).getName());
+      Property fileOption = globals.lookupFileOption(((Option) model).getName());
       return fileOption != null && properties.isBool(fileOption);
     }
     return false;

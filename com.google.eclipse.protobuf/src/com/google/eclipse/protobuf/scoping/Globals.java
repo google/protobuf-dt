@@ -9,11 +9,12 @@
 package com.google.eclipse.protobuf.scoping;
 
 import static java.util.Collections.unmodifiableCollection;
+import static org.eclipse.emf.common.util.URI.createURI;
+import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
 import java.io.*;
 import java.util.*;
 
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.parser.IParser;
 import org.eclipse.xtext.resource.XtextResource;
@@ -36,14 +37,14 @@ public class Globals {
   private Protobuf root;
 
   private boolean initialized;
-  private Map<String, Property> fileOptions = new LinkedHashMap<String, Property>();
+  private final Map<String, Property> fileOptions = new LinkedHashMap<String, Property>();
   private Enum optimizedMode;
 
   @Inject EObjectFinder finder;
 
   @Inject public Globals(IParser parser) {
     try {
-      XtextResource resource = new XtextResource(URI.createURI(""));
+      XtextResource resource = new XtextResource(createURI("globals.proto"));
       IParseResult result = parser.parse(new InputStreamReader(globalScopeContents(), "UTF-8"));
       root = (Protobuf) result.getRootASTElement();
       resource.getContents().add(root);
@@ -95,12 +96,9 @@ public class Globals {
   }
 
   private Message fileOptionsMessage() {
-    for (ProtobufElement e : root.getElements()) {
-      if (!(e instanceof Message)) continue;
-      Message m = (Message) e;
+    for (Message m : getAllContentsOfType(root, Message.class))
       if ("FileOptions".equals(m.getName())) return m;
-    }
-    return null;
+    throw new IllegalStateException("Unable to find message 'FileOptions'");
   }
 
   private void addFileOption(Property p) {
