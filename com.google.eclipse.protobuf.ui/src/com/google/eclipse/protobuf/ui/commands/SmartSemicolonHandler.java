@@ -10,6 +10,7 @@ package com.google.eclipse.protobuf.ui.commands;
 
 import static com.google.eclipse.protobuf.protobuf.Modifier.REPEATED;
 import static com.google.eclipse.protobuf.ui.grammar.CommonKeyword.SEMICOLON;
+import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.PACKED_EQUAL_TRUE_IN_BRACKETS;
 
 import java.util.regex.Pattern;
 
@@ -21,11 +22,8 @@ import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
 import org.eclipse.xtext.ui.editor.contentassist.antlr.ParserBasedContentAssistContextFactory;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
-import com.google.eclipse.protobuf.protobuf.Literal;
-import com.google.eclipse.protobuf.protobuf.Property;
-import com.google.eclipse.protobuf.ui.grammar.CompoundElements;
-import com.google.eclipse.protobuf.ui.util.Literals;
-import com.google.eclipse.protobuf.ui.util.Properties;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.ui.util.*;
 import com.google.inject.Inject;
 
 /**
@@ -42,18 +40,11 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
   private static final Pattern PROPERTY_WITH_INDEX =
       Pattern.compile("[\\s]+(.*)[\\s]+(.*)[\\s]+(.*)[\\s]+=[\\s]+[\\d]+(.*)");
 
-  private final CompoundElements compoundElements;
-
   @Inject private ParserBasedContentAssistContextFactory contextFactory;
   @Inject private Literals literals;
   @Inject private Properties properties;
 
-  private final String semicolon;
-
-  @Inject public SmartSemicolonHandler(CompoundElements compoundElements) {
-    this.compoundElements = compoundElements;
-    semicolon = SEMICOLON.value;
-  }
+  private final String semicolon = SEMICOLON.toString();
 
   /** {@inheritDoc} */
   @Override protected void insertContent(XtextEditor editor) {
@@ -107,14 +98,14 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
     if (hasIndexAlready) {
       // we can still insert '[packed = true]' if necessary
       if (shouldInsertPackedOption(property)) {
-        String content = compoundElements.packedInBrackets() + semicolon;
+        String content = PACKED_EQUAL_TRUE_IN_BRACKETS + semicolon;
         return addSpaceAtBeginning(line, content);
       }
       return semicolon;
     }
     int index = properties.calculateTagNumberOf(property);
     if (shouldInsertPackedOption(property)) {
-      String format = "= %d " + compoundElements.packedInBrackets() + "%s";
+      String format = "= %d " + PACKED_EQUAL_TRUE_IN_BRACKETS + "%s";
       return indexAndSemicolonToInsert(format, line, index);
     }
     return defaultIndexAndSemicolonToInsert(line, index);

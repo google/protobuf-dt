@@ -11,16 +11,19 @@ package com.google.eclipse.protobuf.ui.grammar;
 import org.eclipse.xtext.Keyword;
 
 /**
- * Set of common keywords (it may or may not include all the keywords in the grammar.)
+ * A commonly used keyword.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public enum CommonKeyword {
 
-  BOOL("bool"), TRUE("true"), FALSE("false"), BYTES("bytes"), OPENING_BRACKET("["), CLOSING_BRACKET("]"),
-  DEFAULT("default"), EQUAL("="), PACKED("packet"), SEMICOLON(":"), STRING("string");
+  // we used to get keywords from IGrammarAccess. The problem was that we still had to hardcode the keyword we were
+  // looking for. The code was too complicated and we had to change our implementation anyway.
 
-  public final String value;
+  BOOL("bool"), TRUE("true"), FALSE("false"), BYTES("bytes"), OPENING_BRACKET("["), CLOSING_BRACKET("]"),
+    DEFAULT("default"), EQUAL("="), PACKED("packet"), SEMICOLON(";"), STRING("string");
+
+  private final String value;
 
   private CommonKeyword(String value) {
     this.value = value;
@@ -32,5 +35,9 @@ public enum CommonKeyword {
 
   public boolean hasValueEqualTo(String s) {
     return value.equals(s);
+  }
+
+  @Override public String toString() {
+    return value;
   }
 }
