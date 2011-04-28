@@ -55,14 +55,38 @@ public enum CompoundElement {
     this.value = value;
   }
 
+  /**
+   * Indicates whether the value of this compound element is equal to the given {@code String}.
+   * @param s the value to compare to.
+   * @return {@code true} if the value of this compound element is equal to the given {@code String}, {@code false}
+   * otherwise.
+   */
+  public boolean hasValue(String s) {
+    return value.equals(s);
+  }
+
+  /**
+   * Returns the number of characters in this compound element.
+   * @return the number of characters in this compound element.
+   */
   public int charCount() {
     return value.length();
   }
 
+  /**
+   * Returns the index within this compound element of the first occurrence of the value of the specified keyword.
+   * @param keyword the given keyword.
+   * @return the index within this compound element of the first occurrence of the value of the specified keyword; -1
+   * if the value of the given keyword is not found.
+   */
   public int indexOf(CommonKeyword keyword) {
     return value.indexOf(keyword.toString());
   }
 
+  /**
+   * Returns the textual value of this compound element.
+   * @return the textual value of this compound element.
+   */
   @Override public String toString() {
     return value;
   }

@@ -141,7 +141,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     for (AbstractElement e : grammarElements) {
       if (!(e instanceof Assignment)) continue;
       Assignment a = (Assignment) e;
-      if (feature.hasValueEqualTo(a.getFeature()) && EQUAL.hasValueEqualTo(a.getOperator())) return true;
+      if (feature.hasValue(a.getFeature()) && EQUAL.hasValue(a.getOperator())) return true;
     }
     return false;
   }
@@ -149,33 +149,37 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Override public void completeKeyword(Keyword keyword, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     if (keyword == null) return;
-    if (isKeywordEqualToPreviousWordInEditor(keyword, context)) return;
-    if (TRUE.hasValueEqualTo(keyword) || FALSE.hasValueEqualTo(keyword)) {
-      if (!isBoolProposalValid(context)) return;
-    }
-    if (OPENING_BRACKET.hasValueEqualTo(keyword)) {
-      boolean proposalWasHandledAlready = proposeOpenBracket(context, acceptor);
-      if (proposalWasHandledAlready) return;
-    }
-    if (PACKED.hasValueEqualTo(keyword)) {
-      proposePackedOption(context, acceptor);
-      return;
-    }
-    if (DEFAULT.hasValueEqualTo(keyword)) {
-      proposeDefaultValue(context, acceptor);
-      return;
-    }
+    boolean proposalWasHandledAlready = completeKeyword(keyword.getValue(), context, acceptor);
+    if (proposalWasHandledAlready) return;
     super.completeKeyword(keyword, context, acceptor);
   }
 
-  private boolean isKeywordEqualToPreviousWordInEditor(Keyword keyword, ContentAssistContext context) {
+  private boolean completeKeyword(String keyword, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    if (isKeywordEqualToPreviousWordInEditor(keyword, context)) return true;
+    if (TRUE.hasValue(keyword) || FALSE.hasValue(keyword)) {
+      if (!isBoolProposalValid(context)) return true;
+    }
+    if (OPENING_BRACKET.hasValue(keyword)) {
+      return proposeOpenBracket(context, acceptor);
+    }
+    if (PACKED.hasValue(keyword)) {
+      proposePackedOption(context, acceptor);
+      return true;
+    }
+    if (DEFAULT.hasValue(keyword)) {
+      proposeDefaultValue(context, acceptor);
+      return true;
+    }
+    return false;
+  }
+
+  private boolean isKeywordEqualToPreviousWordInEditor(String keyword, ContentAssistContext context) {
     StyledText styledText = context.getViewer().getTextWidget();
-    String value = keyword.getValue();
-    int valueLength = value.length();
+    int valueLength = keyword.length();
     int start = styledText.getCaretOffset() - valueLength;
     if (start < 0) return false;
     String previousWord = styledText.getTextRange(start, valueLength);
-    return value.equals(previousWord);
+    return keyword.equals(previousWord);
   }
 
   private boolean isBoolProposalValid(ContentAssistContext context) {

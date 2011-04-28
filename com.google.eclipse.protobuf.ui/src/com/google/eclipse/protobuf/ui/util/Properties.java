@@ -37,7 +37,7 @@ public class Properties {
     AbstractTypeReference r = p.getType();
     if (!(r instanceof ScalarTypeReference)) return false;
     String typeName = ((ScalarTypeReference) r).getScalar().getName();
-    return !STRING.hasValueEqualTo(typeName) && !BYTES.hasValueEqualTo(typeName);
+    return !STRING.hasValue(typeName) && !BYTES.hasValue(typeName);
   }
 
   /**
@@ -59,7 +59,7 @@ public class Properties {
   }
 
   private boolean isScalarType(Property p, CommonKeyword typeKeyword) {
-    return typeKeyword.hasValueEqualTo(typeNameOf(p));
+    return typeKeyword.hasValue(typeNameOf(p));
   }
 
   /**

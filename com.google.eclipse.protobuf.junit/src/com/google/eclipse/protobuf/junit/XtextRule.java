@@ -12,16 +12,14 @@ import static org.eclipse.emf.common.util.URI.createURI;
 import static org.eclipse.emf.ecore.util.EcoreUtil.resolveAll;
 import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.linking.lazy.LazyLinkingResource;
 import org.eclipse.xtext.resource.*;
 import org.eclipse.xtext.util.StringInputStream;
 import org.junit.rules.MethodRule;
-import org.junit.runners.model.FrameworkMethod;
-import org.junit.runners.model.Statement;
+import org.junit.runners.model.*;
 
 import com.google.eclipse.protobuf.ProtobufStandaloneSetup;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
@@ -54,7 +52,7 @@ public class XtextRule implements MethodRule {
   }
 
   private XtextResource resourceFrom(InputStream input) {
-    return resourceFrom(input, createURI("mytestmodel.proto"));
+    return resourceFrom(input, createURI("mytestmodel.proto")); //$NON-NLS-1$
   }
 
   private XtextResource resourceFrom(InputStream input, URI uri) {

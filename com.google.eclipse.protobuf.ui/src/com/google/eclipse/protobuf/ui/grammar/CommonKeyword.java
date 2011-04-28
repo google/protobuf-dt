@@ -8,8 +8,6 @@
  */
 package com.google.eclipse.protobuf.ui.grammar;
 
-import org.eclipse.xtext.Keyword;
-
 /**
  * A commonly used keyword.
  *
@@ -18,10 +16,11 @@ import org.eclipse.xtext.Keyword;
 public enum CommonKeyword {
 
   // we used to get keywords from IGrammarAccess. The problem was that we still had to hardcode the keyword we were
-  // looking for. The code was too complicated and we had to change our implementation anyway.
+  // looking for. The code was too complicated and if the grammar changed for some reason, we had to change our
+  // implementation anyway.
 
   BOOL("bool"), TRUE("true"), FALSE("false"), BYTES("bytes"), OPENING_BRACKET("["), CLOSING_BRACKET("]"),
-    DEFAULT("default"), EQUAL("="), PACKED("packet"), SEMICOLON(";"), STRING("string");
+    DEFAULT("default"), EQUAL("="), PACKED("packed"), SEMICOLON(";"), STRING("string");
 
   private final String value;
 
@@ -29,14 +28,19 @@ public enum CommonKeyword {
     this.value = value;
   }
 
-  public boolean hasValueEqualTo(Keyword k) {
-    return hasValueEqualTo(k.getValue());
-  }
-
-  public boolean hasValueEqualTo(String s) {
+  /**
+   * Indicates whether the value of this keyword is equal to the given {@code String}.
+   * @param s the value to compare to.
+   * @return {@code true} if the value of this keyword is equal to the given {@code String}, {@code false} otherwise.
+   */
+  public boolean hasValue(String s) {
     return value.equals(s);
   }
 
+  /**
+   * Returns the textual value of this keyword.
+   * @return the textual value of this keyword.
+   */
   @Override public String toString() {
     return value;
   }
