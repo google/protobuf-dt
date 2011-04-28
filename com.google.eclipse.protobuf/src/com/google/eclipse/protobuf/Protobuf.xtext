@@ -49,7 +49,12 @@ Message:
   '}'(';')?;
 
 MessageElement:
-  Type | Property;
+  Type | Property | Group;
+
+Group:
+  modifier=Modifier 'group' name=ID '=' index=INT '{'
+  elements+=Property*
+  '}';
 
 Property:
   modifier=Modifier type=AbstractTypeReference name=ID '=' index=INT (('[' 'default' '=' default=ValueRef
