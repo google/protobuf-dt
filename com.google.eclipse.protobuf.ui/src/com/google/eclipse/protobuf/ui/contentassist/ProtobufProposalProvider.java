@@ -10,6 +10,7 @@ package com.google.eclipse.protobuf.ui.contentassist;
 
 import static com.google.eclipse.protobuf.protobuf.Modifier.*;
 import static com.google.eclipse.protobuf.protobuf.ScalarType.STRING;
+import static com.google.eclipse.protobuf.ui.grammar.CommonKeyword.*;
 import static java.lang.String.valueOf;
 
 import org.eclipse.emf.ecore.EObject;
@@ -24,8 +25,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.scoping.Globals;
+import com.google.eclipse.protobuf.ui.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.ui.grammar.CompoundElements;
-import com.google.eclipse.protobuf.ui.grammar.Keywords;
 import com.google.eclipse.protobuf.ui.labeling.Images;
 import com.google.eclipse.protobuf.ui.util.*;
 import com.google.eclipse.protobuf.util.EObjectFinder;
@@ -43,7 +44,6 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Inject private Globals globals;
   @Inject private PluginImageHelper imageHelper;
   @Inject private Images imageRegistry;
-  @Inject private Keywords keywords;
   @Inject private Literals literals;
   @Inject private Properties properties;
   @Inject private Strings strings;
@@ -60,10 +60,10 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   private void proposeCommonFileOptions(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     for (Property fileOption : globals.fileOptions()) {
       String displayString = fileOption.getName();
-      String proposalText = displayString + " " + keywords.equalSign().getValue() + " ";
+      String proposalText = displayString + " " + EQUAL.value + " ";
       boolean isStringOption = properties.isString(fileOption);
       if (isStringOption)
-        proposalText = proposalText + compoundElements.emptyString() + keywords.semicolon().getValue();
+        proposalText = proposalText + compoundElements.emptyString() + SEMICOLON.value;
       ICompletionProposal proposal = createCompletionProposal(proposalText, displayString, context);
       if (isStringOption && proposal instanceof ConfigurableCompletionProposal) {
         // set cursor between the proposal's quotes
@@ -94,8 +94,14 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   }
 
   private void proposeBooleanValues(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    proposeAndAccept(keywords.boolFalse().getValue(), context, acceptor);
-    proposeAndAccept(keywords.boolTrue().getValue(), context, acceptor);
+    CommonKeyword[] keywords = { FALSE, TRUE };
+    proposeAndAccept(keywords, context, acceptor);
+  }
+
+  private void proposeAndAccept(CommonKeyword[] keywords, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+    for (CommonKeyword keyword : keywords)
+      proposeAndAccept(keyword.value, context, acceptor);
   }
 
   @Override public void complete_ID(EObject model, RuleCall ruleCall, ContentAssistContext context,
@@ -123,7 +129,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   }
 
   private boolean isProposalForDefaultValue(ContentAssistContext context) {
-    return isProposalForAssignment(keywords.defaultValue().getValue(), context);
+    return isProposalForAssignment(DEFAULT.value, context);
   }
 
   private boolean isProposalForAssignment(String feature, ContentAssistContext context) {
@@ -131,7 +137,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     for (AbstractElement e : grammarElements) {
       if (!(e instanceof Assignment)) continue;
       Assignment a = (Assignment) e;
-      String equalSign = keywords.equalSign().getValue();
+      String equalSign = EQUAL.value;
       if (feature.equals(a.getFeature()) && equalSign.equals(a.getOperator())) return true;
     }
     return false;
@@ -141,18 +147,18 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ICompletionProposalAcceptor acceptor) {
     if (keyword == null) return;
     if (isKeywordEqualToPreviousWordInEditor(keyword, context)) return;
-    if (keyword.equals(keywords.boolTrue()) || keyword.equals(keywords.boolFalse())) {
+    if (TRUE.hasValueEqualTo(keyword) || FALSE.hasValueEqualTo(keyword)) {
       if (!isBoolProposalValid(context)) return;
     }
-    if (keyword.equals(keywords.openingBracket())) {
+    if (OPENING_BRACKET.hasValueEqualTo(keyword)) {
       boolean proposalWasHandledAlready = proposeOpenBracket(context, acceptor);
       if (proposalWasHandledAlready) return;
     }
-    if (keyword.equals(keywords.packed())) {
+    if (PACKED.hasValueEqualTo(keyword)) {
       proposePackedOption(context, acceptor);
       return;
     }
-    if (keyword.equals(keywords.defaultValue())) {
+    if (DEFAULT.hasValueEqualTo(keyword)) {
       proposeDefaultValue(context, acceptor);
       return;
     }
@@ -186,7 +192,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     Modifier modifier = p.getModifier();
     if (OPTIONAL.equals(modifier)) {
       String display = compoundElements.defaultValueInBrackets();
-      int cursorPosition = display.indexOf(keywords.closingBracket().getValue());
+      int cursorPosition = display.indexOf(CLOSING_BRACKET.value);
       if (isStringProperty(p)) {
         display = compoundElements.defaultStringValueInBrackets();
         cursorPosition++;

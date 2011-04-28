@@ -8,16 +8,14 @@
  */
 package com.google.eclipse.protobuf.ui.util;
 
+import static com.google.eclipse.protobuf.ui.grammar.CommonKeyword.*;
 import static java.lang.Math.max;
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
 import java.util.List;
 
-import org.eclipse.xtext.Keyword;
-
 import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.ui.grammar.Keywords;
-import com.google.inject.Inject;
+import com.google.eclipse.protobuf.ui.grammar.CommonKeyword;
 import com.google.inject.Singleton;
 
 /**
@@ -28,10 +26,8 @@ import com.google.inject.Singleton;
 @Singleton
 public class Properties {
 
-  @Inject private Keywords keywords;
-
   /**
-   * Indicates whether the type of the given property is primitive. Primitive types include: {@code double}, 
+   * Indicates whether the type of the given property is primitive. Primitive types include: {@code double},
    * {@code float}, {@code int32}, {@code int64}, {@code uint32}, {@code uint64}, {@code sint32}, {@code sint64},
    * {@code fixed32}, {@code fixed64}, {@code sfixed32}, {@code sfixed64} and {@code bool}.
    * @param p the given property.
@@ -41,7 +37,7 @@ public class Properties {
     AbstractTypeReference r = p.getType();
     if (!(r instanceof ScalarTypeReference)) return false;
     String typeName = ((ScalarTypeReference) r).getScalar().getName();
-    return !keywords.string().getValue().equals(typeName) && !keywords.bytes().getValue().equals(typeName);
+    return !STRING.hasValueEqualTo(typeName) && !BYTES.hasValueEqualTo(typeName);
   }
 
   /**
@@ -50,7 +46,7 @@ public class Properties {
    * @return {@code true} if the given property is of type {@code bool}, {@code false} otherwise.
    */
   public boolean isBool(Property p) {
-    return isScalarType(p, keywords.bool());
+    return isScalarType(p, BOOL);
   }
 
   /**
@@ -59,11 +55,11 @@ public class Properties {
    * @return {@code true} if the given property is of type {@code string}, {@code false} otherwise.
    */
   public boolean isString(Property p) {
-    return isScalarType(p, keywords.string());
+    return isScalarType(p, STRING);
   }
-  
-  private boolean isScalarType(Property p, Keyword typeKeyword) {
-    return typeKeyword.getValue().equals(typeNameOf(p));
+
+  private boolean isScalarType(Property p, CommonKeyword typeKeyword) {
+    return typeKeyword.hasValueEqualTo(typeNameOf(p));
   }
 
   /**
@@ -82,18 +78,18 @@ public class Properties {
   }
 
   /**
-   * Calculates the tag number value for the given property. The calculated tag number value is the maximum of all the 
+   * Calculates the tag number value for the given property. The calculated tag number value is the maximum of all the
    * tag number values of the given property's siblings, plus one. The minimum tag number value is 1.
    * <p>
    * For example, in the following message:
-   * 
+   *
    * <pre>
    * message Person {
    *   required string name = 1;
    *   optional string email = 2;
    *   optional PhoneNumber phone =
    * </pre>
-   * 
+   *
    * The calculated tag number value for the property {@code PhoneNumber} will be 3.
    * </p>
    * @param p the given property.

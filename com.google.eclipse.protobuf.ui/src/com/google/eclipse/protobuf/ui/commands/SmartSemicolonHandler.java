@@ -9,6 +9,7 @@
 package com.google.eclipse.protobuf.ui.commands;
 
 import static com.google.eclipse.protobuf.protobuf.Modifier.REPEATED;
+import static com.google.eclipse.protobuf.ui.grammar.CommonKeyword.SEMICOLON;
 
 import java.util.regex.Pattern;
 
@@ -23,7 +24,6 @@ import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 import com.google.eclipse.protobuf.protobuf.Literal;
 import com.google.eclipse.protobuf.protobuf.Property;
 import com.google.eclipse.protobuf.ui.grammar.CompoundElements;
-import com.google.eclipse.protobuf.ui.grammar.Keywords;
 import com.google.eclipse.protobuf.ui.util.Literals;
 import com.google.eclipse.protobuf.ui.util.Properties;
 import com.google.inject.Inject;
@@ -50,9 +50,9 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
 
   private final String semicolon;
 
-  @Inject public SmartSemicolonHandler(CompoundElements compoundElements, Keywords keywords) {
+  @Inject public SmartSemicolonHandler(CompoundElements compoundElements) {
     this.compoundElements = compoundElements;
-    semicolon = keywords.semicolon().getValue();
+    semicolon = SEMICOLON.value;
   }
 
   /** {@inheritDoc} */
