@@ -19,6 +19,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
+ * Common keywords used in the code base.
+ * 
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton
@@ -36,6 +38,10 @@ public class Keywords {
   private Keyword semicolon;
   private Keyword string;
 
+  /**
+   * Creates a new </code>{@link Keywords}</code>.
+   * @param grammarAccess contains the grammar whose keywords we'll be extracting.
+   */
   @Inject public Keywords(IGrammarAccess grammarAccess) {
     List<Keyword> allKeywords = containedKeywords(grammarAccess.getGrammar());
     for (Keyword k : allKeywords) {
@@ -123,46 +129,90 @@ public class Keywords {
     return expectedValue.equals(k.getValue());
   }
 
+  /**
+   * Returns the representation of the keyword "bool".
+   * @return the representation of the keyword "bool".
+   */
   public Keyword bool() {
     return bool;
   }
 
+  /**
+   * Returns the representation of the keyword "true".
+   * @return the representation of the keyword "true".
+   */
   public Keyword boolTrue() {
     return boolTrue;
   }
 
+  /**
+   * Returns the representation of the keyword "false".
+   * @return the representation of the keyword "false".
+   */
   public Keyword boolFalse() {
     return boolFalse;
   }
 
+  /**
+   * Returns the representation of the keyword "bytes".
+   * @return the representation of the keyword "bytes".
+   */
   public Keyword bytes() {
     return bytes;
   }
 
+  /**
+   * Returns the representation of the keyword "[".
+   * @return the representation of the keyword "[".
+   */
   public Keyword openingBracket() {
     return openingBracket;
   }
 
+  /**
+   * Returns the representation of the keyword "]".
+   * @return the representation of the keyword "]".
+   */
   public Keyword closingBracket() {
     return closingBracket;
   }
 
+  /**
+   * Returns the representation of the keyword "default".
+   * @return the representation of the keyword "default".
+   */
   public Keyword defaultValue() {
     return defaultValue;
   }
 
+  /**
+   * Returns the representation of the keyword "=".
+   * @return the representation of the keyword "=".
+   */
   public Keyword equalSign() {
     return equalSign;
   }
 
+  /**
+   * Returns the representation of the keyword "packed".
+   * @return the representation of the keyword "packed".
+   */
   public Keyword packed() {
     return packed;
   }
 
+  /**
+   * Returns the representation of the keyword ";".
+   * @return the representation of the keyword ";".
+   */
   public Keyword semicolon() {
     return semicolon;
   }
 
+  /**
+   * Returns the representation of the keyword "string".
+   * @return the representation of the keyword "string".
+   */
   public Keyword string() {
     return string;
   }

@@ -10,9 +10,12 @@ package com.google.eclipse.protobuf.ui.grammar;
 
 import org.eclipse.xtext.Keyword;
 
-import com.google.inject.*;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
+ * Common grammar elements composed of one or more keywords.
+ * 
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton
@@ -29,6 +32,10 @@ public class CompoundElements {
   private final String packed;
   private final String packedInBrackets;
 
+  /**
+   * Creates a new </code>{@link CompoundElements}</code>.
+   * @param keywords the keywords in our grammar.
+   */
   @Inject public CompoundElements(Keywords keywords) {
     inBracketsFormat = keywords.openingBracket().getValue() + "%s" + keywords.closingBracket().getValue();
     defaultValue = format("%s %s", keywords.defaultValue(), keywords.equalSign());
@@ -53,30 +60,58 @@ public class CompoundElements {
     return String.format(inBracketsFormat, element);
   }
 
+  /**
+   * Returns 'default ='.
+   * @return 'default ='.
+   */
   public String defaultValue() {
     return defaultValue;
   }
 
+  /**
+   * Returns '[default =]'.
+   * @return '[default =]'.
+   */
   public String defaultValueInBrackets() {
     return defaultValueInBrackets;
   }
 
+  /**
+   * Returns 'default = ""'.
+   * @return 'default = ""'.
+   */
   public String defaultStringValue() {
     return defaultStringValue;
   }
 
+  /**
+   * Returns '[default = ""]'.
+   * @return '[default = ""]'.
+   */
   public String defaultStringValueInBrackets() {
     return defaultStringValueInBrackets;
   }
 
+  /**
+   * Returns '""'.
+   * @return '""'.
+   */
   public String emptyString() {
     return EMPTY_STRING;
   }
 
+  /**
+   * Returns 'packed = true'.
+   * @return 'packed = true'.
+   */
   public String packed() {
     return packed;
   }
 
+  /**
+   * Returns '[packed = true]'.
+   * @return '[packed = true]'.
+   */
   public String packedInBrackets() {
     return packedInBrackets;
   }
