@@ -21,8 +21,8 @@ import org.junit.Test;
  */
 public class CompoundElement_toString_Test {
 
-  @Test public void should_return_keyword_value() {
-    assertThat(DEFAULT_EQUAL.toString(), equalTo("default ="));
+  @Test public void should_return_value() {
+    assertThat(DEFAULT_EQUAL.toString(), equalTo("default = "));
   }
 
 }

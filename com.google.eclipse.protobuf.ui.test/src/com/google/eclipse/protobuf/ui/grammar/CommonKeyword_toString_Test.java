@@ -21,7 +21,7 @@ import org.junit.Test;
  */
 public class CommonKeyword_toString_Test {
 
-  @Test public void should_return_keyword_value() {
+  @Test public void should_return_value() {
     assertThat(BOOL.toString(), equalTo("bool"));
   }
 

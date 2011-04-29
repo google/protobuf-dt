@@ -22,8 +22,8 @@ import org.junit.Test;
 public class CompoundElement_hasValue_Test {
 
   @Test public void should_return_true_if_value_is_equal_to_String() {
-    assertThat(DEFAULT_EQUAL.hasValue("default ="), equalTo(true));
-    assertThat(DEFAULT_EQUAL_IN_BRACKETS.hasValue("[default =]"), equalTo(true));
+    assertThat(DEFAULT_EQUAL.hasValue("default = "), equalTo(true));
+    assertThat(DEFAULT_EQUAL_IN_BRACKETS.hasValue("[default = ]"), equalTo(true));
     assertThat(EMPTY_STRING.hasValue("\"\""), equalTo(true));
     assertThat(DEFAULT_EQUAL_STRING.hasValue("default = \"\""), equalTo(true));
     assertThat(DEFAULT_EQUAL_STRING_IN_BRACKETS.hasValue("[default = \"\"]"), equalTo(true));

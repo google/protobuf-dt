@@ -17,7 +17,7 @@ import static com.google.eclipse.protobuf.ui.grammar.CommonKeyword.*;
  */
 public enum CompoundElement {
 
-  DEFAULT_EQUAL(join(DEFAULT, EQUAL)),
+  DEFAULT_EQUAL(join(DEFAULT, EQUAL, "")),
   DEFAULT_EQUAL_IN_BRACKETS(inBrackets(DEFAULT_EQUAL)),
   EMPTY_STRING("\"\""),
   DEFAULT_EQUAL_STRING(join(DEFAULT_EQUAL, EMPTY_STRING)),
@@ -25,14 +25,17 @@ public enum CompoundElement {
   PACKED_EQUAL_TRUE(join(PACKED, EQUAL, TRUE)),
   PACKED_EQUAL_TRUE_IN_BRACKETS(inBrackets(PACKED_EQUAL_TRUE));
 
+  private static final String SPACE = " ";
+
   private final String value;
 
   private static String join(Object...objects) {
     StringBuilder buffer = new StringBuilder();
     int count = objects.length;
     for (int i = 0; i < count; i++) {
-      buffer.append(objects[i].toString());
-      if (i < count - 1) buffer.append(" ");
+      String s = objects[i].toString();
+      buffer.append(s);
+      if (i < count - 1 && !s.endsWith(SPACE)) buffer.append(SPACE);
     }
     return buffer.toString();
   }
