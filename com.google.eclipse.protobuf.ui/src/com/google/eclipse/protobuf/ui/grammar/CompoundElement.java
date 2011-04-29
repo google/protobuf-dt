@@ -11,7 +11,7 @@ package com.google.eclipse.protobuf.ui.grammar;
 import static com.google.eclipse.protobuf.ui.grammar.CommonKeyword.*;
 
 /**
- * Element composed of one or more keywords.
+ * Element composed of more than one keyword.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
@@ -27,28 +27,18 @@ public enum CompoundElement {
 
   private final String value;
 
-  private static String join(CommonKeyword...keywords) {
+  private static String join(Object...objects) {
     StringBuilder buffer = new StringBuilder();
-    int count = keywords.length;
+    int count = objects.length;
     for (int i = 0; i < count; i++) {
-      buffer.append(keywords[i].toString());
-      if (i < count - 1) buffer.append(" ");
-    }
-    return buffer.toString();
-  }
-
-  private static String join(CompoundElement...elements) {
-    StringBuilder buffer = new StringBuilder();
-    int count = elements.length;
-    for (int i = 0; i < count; i++) {
-      buffer.append(elements[i].value);
+      buffer.append(objects[i].toString());
       if (i < count - 1) buffer.append(" ");
     }
     return buffer.toString();
   }
 
   private static String inBrackets(CompoundElement element) {
-    return String.format("[%s]", element.value);
+    return OPENING_BRACKET + element.value + CLOSING_BRACKET;
   }
 
   private CompoundElement(String value) {
@@ -66,7 +56,7 @@ public enum CompoundElement {
   }
 
   /**
-   * Returns the number of characters in this compound element.
+   * Returns the number of characters in this compound element (similar to calling {@code toString().length()}.)
    * @return the number of characters in this compound element.
    */
   public int charCount() {
@@ -74,7 +64,8 @@ public enum CompoundElement {
   }
 
   /**
-   * Returns the index within this compound element of the first occurrence of the value of the specified keyword.
+   * Returns the index within this compound element of the first occurrence of the value of the specified keyword
+   * (similar to calling {@code toString().indexOf(keyword.toString())}.
    * @param keyword the given keyword.
    * @return the index within this compound element of the first occurrence of the value of the specified keyword; -1
    * if the value of the given keyword is not found.
