@@ -58,7 +58,7 @@ Group:
 
 Property:
   modifier=Modifier type=AbstractTypeReference name=ID '=' index=INT (('[' 'default' '=' default=ValueRef
-  ']') | ('[' 'packed' '=' packed=BooleanRef ']'))? ';';
+  ']') | ('[' 'packed' '=' packed=BooleanRef ']') | ('[' 'deprecated' '=' deprecated=BooleanRef ']') )? ';';
 
 enum Modifier:
   required
@@ -142,6 +142,6 @@ Rpc:
 MessageReference:
   type=[Message | QualifiedName];
 
-terminal INT returns ecore::EInt: ('0'..'9')+;  
-terminal FLOAT returns ecore::EFloat: ('0'..'9')* ('.' ('0'..'9')+)?;
+terminal INT returns ecore::EInt: ('-')? ('0'..'9')+;  
+terminal FLOAT returns ecore::EFloat: ('-')? ('0'..'9')* ('.' ('0'..'9')+)?;
   
