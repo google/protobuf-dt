@@ -126,7 +126,7 @@ Literal:
   name=ID '=' index=INT ';';
 
 ExtendMessage:
-  'extend' message=[Message] '{'
+  'extend' message=MessageReference '{'
   elements+=MessageElement*
   '}';
 
