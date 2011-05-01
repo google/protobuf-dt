@@ -132,11 +132,11 @@ ExtendMessage:
 
 Service:
  'service' name=ID '{'
-   rpc=Rpc
+   rpcs+=Rpc*
  '}';
 
 Rpc: 
-  'rpc' name=ID  '(' argType=MessageReference ')' 'returns' '(' returnType=MessageReference ')' ';'
+  'rpc' name=ID  '(' argType=MessageReference ')' 'returns' '(' returnType=MessageReference ')' (('{' '}') | ';')
 ;
 
 MessageReference:
