@@ -60,7 +60,6 @@ public class ProtobufQualifiedNameProvider_getFullyQualifiedName_Test {
     assertThat(fqn.toString(), equalTo("fqn.test.Person.name"));
   }
 
-  
   @Test public void should_not_include_package_name_as_part_of_message_FQN_if_package_is_not_specified() {
     StringBuilder proto = new StringBuilder();
     proto.append("message Person {           ")

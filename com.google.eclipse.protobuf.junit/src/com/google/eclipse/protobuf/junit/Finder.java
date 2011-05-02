@@ -24,7 +24,13 @@ public final class Finder {
       if (name.equals(message.getName())) return message;
     return null;
   }
-  
+
+  public static Option findOption(String name, Protobuf root) {
+    for (Option option : root.getOptions())
+      if (name.equals(option.getName())) return option;
+    return null;
+  }
+
   public static Property findProperty(String name, Protobuf root) {
     for (Property property : allProperties(root))
       if (name.equals(property.getName())) return property;
