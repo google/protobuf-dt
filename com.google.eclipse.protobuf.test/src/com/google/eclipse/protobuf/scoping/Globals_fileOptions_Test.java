@@ -24,7 +24,7 @@ import com.google.eclipse.protobuf.protobuf.Property;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class GlobalsTest_fileOptions_Test {
+public class Globals_fileOptions_Test {
 
   @Rule public XtextRule xtext = new XtextRule();
   
