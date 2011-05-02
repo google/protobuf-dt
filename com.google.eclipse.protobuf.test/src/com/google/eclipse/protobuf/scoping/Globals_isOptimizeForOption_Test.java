@@ -33,7 +33,7 @@ public class Globals_isOptimizeForOption_Test {
     globals = xtext.getInstanceOf(Globals.class);
   }
   
-  @Test public void should_true_if_option_is_OptimizeForOption() {
+  @Test public void should_return_true_if_option_is_OptimizeForOption() {
     StringBuilder proto = new StringBuilder();
     proto.append("option java_generate_equals_and_hash = false;")
          .append("option optimize_for = CODE_SIZE;             "); 
@@ -42,7 +42,7 @@ public class Globals_isOptimizeForOption_Test {
     assertThat(globals.isOptimizeForOption(option), equalTo(true));
   }
 
-  @Test public void should_false_if_option_is_not_OptimizeForOption() {
+  @Test public void should_return_false_if_option_is_not_OptimizeForOption() {
     StringBuilder proto = new StringBuilder();
     proto.append("option java_generate_equals_and_hash = false;")
          .append("option optimize_for = CODE_SIZE;             "); 
@@ -51,7 +51,7 @@ public class Globals_isOptimizeForOption_Test {
     assertThat(globals.isOptimizeForOption(option), equalTo(false));
   }
 
-  @Test public void should_false_if_option_is_null() {
+  @Test public void should_return_false_if_option_is_null() {
     assertThat(globals.isOptimizeForOption(null), equalTo(false));
   }
 }
