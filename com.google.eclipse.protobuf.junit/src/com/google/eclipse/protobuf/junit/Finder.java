@@ -18,11 +18,10 @@ import com.google.eclipse.protobuf.protobuf.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public final class Finder {
-  
-  public static Literal findLiteral(String name, Protobuf root) {
-    List<Literal> literals = getAllContentsOfType(root, Literal.class);
-    for (Literal literal : literals)
-      if (name.equals(literal.getName())) return literal;
+
+  public static Message findMessage(String name, Protobuf root) {
+    for (Message message : getAllContentsOfType(root, Message.class))
+      if (name.equals(message.getName())) return message;
     return null;
   }
   
@@ -34,6 +33,13 @@ public final class Finder {
   
   public static List<Property> allProperties(Protobuf root) {
     return getAllContentsOfType(root, Property.class);
+  }
+  
+  public static Literal findLiteral(String name, Protobuf root) {
+    List<Literal> literals = getAllContentsOfType(root, Literal.class);
+    for (Literal literal : literals)
+      if (name.equals(literal.getName())) return literal;
+        return null;
   }
   
   private Finder() {}
