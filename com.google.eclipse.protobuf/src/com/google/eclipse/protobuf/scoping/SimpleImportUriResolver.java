@@ -17,6 +17,14 @@ import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 import com.google.eclipse.protobuf.protobuf.Import;
 
 /**
+ * Resolves URIs. This implementation mimics how protoc understands imported file URIs. For example, the URI 
+ * "platform:/resource/proto1.proto" is understood by EMF but not by protoc. The URI in the proto file needs to be 
+ * simply "proto1.proto" for protoc to understand it. 
+ * <p>
+ * This {@link ImportUriResolver} adds "platform:/resource" to any URI if is not specified, so EMF can find the
+ * imported resource.
+ * </p>
+ * 
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class SimpleImportUriResolver extends ImportUriResolver {
@@ -28,10 +36,14 @@ public class SimpleImportUriResolver extends ImportUriResolver {
    */
   public static final String URI_PREFIX = PREFIX + "/";
 
-  /** {@inheritDoc} */
+  /** 
+   * If the given {@code EObject} is a <code>{@link Import}</code>, this method will add "platform:/resource" to the
+   * URI of such import if not specified already.
+   * @param from the given element to resolve.
+   * @return the {@code String} representation of the given object's {@code URI}.
+   */
   @Override public String apply(EObject from) {
-    if (from instanceof Import)
-      fixUri((Import) from);
+    if (from instanceof Import) fixUri((Import) from);
     return super.apply(from);
   }
 
