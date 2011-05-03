@@ -43,4 +43,13 @@ public class ImportUriFixerAndResolver_apply_Test {
     assertThat(resolved, equalTo("platform:/resource/folder1/test.proto"));
   }
 
+  
+  @Test public void should_not_fix_import_URI_if_not_missing_scheme() {
+    StringBuilder proto = new StringBuilder();
+    proto.append("import \"platform:/resource/folder1/test.proto\";"); 
+    Protobuf root = xtext.parse(proto);
+    Import anImport = root.getImports().get(0);
+    String resolved = resolver.apply(anImport);
+    assertThat(resolved, equalTo("platform:/resource/folder1/test.proto"));
+  }
 }
