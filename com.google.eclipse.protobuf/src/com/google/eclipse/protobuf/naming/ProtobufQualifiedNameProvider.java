@@ -21,7 +21,7 @@ import org.eclipse.xtext.util.Pair;
 
 import com.google.common.base.Function;
 import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.eclipse.protobuf.util.EObjectFinder;
+import com.google.eclipse.protobuf.util.ProtobufElementFinder;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
@@ -35,7 +35,7 @@ public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.Abstra
   @Inject private IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
   @Inject private IResourceScopeCache cache = IResourceScopeCache.NullImpl.INSTANCE;
 
-  @Inject private EObjectFinder finder;
+  @Inject private ProtobufElementFinder finder;
   
   private Function<EObject, String> resolver = newResolver(String.class, "name");
 

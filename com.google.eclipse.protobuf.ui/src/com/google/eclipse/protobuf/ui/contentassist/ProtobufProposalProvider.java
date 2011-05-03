@@ -30,7 +30,7 @@ import com.google.eclipse.protobuf.ui.grammar.*;
 import com.google.eclipse.protobuf.ui.grammar.CompoundElement;
 import com.google.eclipse.protobuf.ui.labeling.Images;
 import com.google.eclipse.protobuf.ui.util.*;
-import com.google.eclipse.protobuf.util.EObjectFinder;
+import com.google.eclipse.protobuf.util.ProtobufElementFinder;
 import com.google.inject.Inject;
 
 /**
@@ -40,7 +40,7 @@ import com.google.inject.Inject;
  */
 public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
-  @Inject private EObjectFinder finder;
+  @Inject private ProtobufElementFinder finder;
   @Inject private Globals globals;
   @Inject private PluginImageHelper imageHelper;
   @Inject private Images imageRegistry;

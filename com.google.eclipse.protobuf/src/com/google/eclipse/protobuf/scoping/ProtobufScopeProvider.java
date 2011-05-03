@@ -38,7 +38,7 @@ import com.google.eclipse.protobuf.protobuf.Property;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.eclipse.protobuf.protobuf.Type;
 import com.google.eclipse.protobuf.protobuf.TypeReference;
-import com.google.eclipse.protobuf.util.EObjectFinder;
+import com.google.eclipse.protobuf.util.ProtobufElementFinder;
 import com.google.inject.Inject;
 
 /**
@@ -52,7 +52,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
 
   private static final boolean DO_NOT_IGNORE_CASE = false;
 
-  @Inject private EObjectFinder finder;
+  @Inject private ProtobufElementFinder finder;
   @Inject private Globals globals;
   @Inject private IQualifiedNameProvider nameProvider;
   @Inject private ImportUriResolver uriResolver;
