@@ -12,7 +12,7 @@ import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 
 import com.google.eclipse.protobuf.naming.ProtobufQualifiedNameProvider;
-import com.google.eclipse.protobuf.scoping.SimpleImportUriResolver;
+import com.google.eclipse.protobuf.scoping.ImportUriFixerAndResolver;
 import com.google.inject.Binder;
 
 /**
@@ -26,6 +26,6 @@ public class ProtobufRuntimeModule extends com.google.eclipse.protobuf.AbstractP
   }
 
   public void configureImportUriResolver(Binder binder) {
-    binder.bind(ImportUriResolver.class).to(SimpleImportUriResolver.class);
+    binder.bind(ImportUriResolver.class).to(ImportUriFixerAndResolver.class);
   }
 }

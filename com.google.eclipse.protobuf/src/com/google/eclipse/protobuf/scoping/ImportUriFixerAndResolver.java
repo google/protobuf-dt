@@ -8,8 +8,6 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import java.util.List;
-
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
@@ -27,7 +25,7 @@ import com.google.eclipse.protobuf.protobuf.Import;
  * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class SimpleImportUriResolver extends ImportUriResolver {
+public class ImportUriFixerAndResolver extends ImportUriResolver {
 
   private static final String PREFIX = "platform:/resource";
 
@@ -63,22 +61,9 @@ public class SimpleImportUriResolver extends ImportUriResolver {
    * We need to have the import URI as "platform:/resource/protobuf-test/folder/proto2.proto" for the editor to see it.
    */
   private void fixUri(Import i) {
-    String prefix = uriPrefix(i.eResource().getURI());
-    String uri = i.getImportURI();
-    if (!uri.startsWith(prefix)) {
-      if (!uri.startsWith(prefix)) prefix += "/";
-      i.setImportURI(prefix + uri);
-    }
-  }
-
-  private String uriPrefix(URI containerUri) {
-    StringBuilder prefix = new StringBuilder();
-    prefix.append(PREFIX);
-    int start = (containerUri.scheme() == null) ? 0 : 1; // ignore the scheme if present (e.g. "resource")
-    List<String> segments = containerUri.segmentsList();
-    int end = segments.size() - 1; // ignore file name (at the end of the URI)
-    for (int j = start; j < end; j++)
-      prefix.append("/").append(segments.get(j));
-    return prefix.toString();
+    URI importUri = URI.createURI(i.getImportURI());
+    if (importUri.scheme() != null) return;
+    URI fixedUri = URI.createURI(PREFIX).appendSegments(importUri.segments());
+    i.setImportURI(fixedUri.toString());
   }
 }

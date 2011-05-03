@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.labeling;
 
-import static com.google.eclipse.protobuf.scoping.SimpleImportUriResolver.URI_PREFIX;
+import static com.google.eclipse.protobuf.scoping.ImportUriFixerAndResolver.URI_PREFIX;
 
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.ui.util.Properties;
