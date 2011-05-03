@@ -8,16 +8,24 @@
  */
 package com.google.eclipse.protobuf.validation;
 
+import org.eclipse.xtext.validation.Check;
+
+import com.google.eclipse.protobuf.protobuf.Property;
+
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
 
-//	@Check
-//	public void checkGreetingStartsWithCapital(Greeting greeting) {
-//		if (!Character.isUpperCase(greeting.getName().charAt(0))) {
-//			warning("Name should start with a capital", MyDslPackage.GREETING__NAME);
-//		}
-//	}
+  /**
+   * Creates an error if the tag number of the given property is less than zero.
+   * @param property the given property.
+   */
+  @Check public void checkTagNumberIsGreaterThanZero(Property property) {
+    int index = property.getIndex();
+    if (index > 0) return;
+    String msg = (index == 0) ? "Field numbers must be positive integers." : "Expected field number.";
+    error(msg, property.eClass().getEStructuralFeature("index"));
+  }
 
 }

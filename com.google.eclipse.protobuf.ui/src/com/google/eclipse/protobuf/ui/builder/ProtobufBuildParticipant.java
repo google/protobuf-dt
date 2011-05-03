@@ -39,7 +39,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
   private static Logger logger = Logger.getLogger(ProtobufBuildParticipant.class);
 
   @Inject private IPreferenceStoreAccess preferenceStoreAccess;
-  @Inject private MarkerFactory markerFactory;
+  @Inject private ProtocOutputParser outputParser;
   @Inject private ProtocCommandFactory commandFactory;
 
   public void build(IBuildContext context, IProgressMonitor monitor) throws CoreException {
@@ -80,7 +80,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
   private void generateSingleProto(IFile source, String protocPath, TargetLanguage language, String outputFolderPath) {
     String command = commandFactory.protocCommand(source, protocPath, language, outputFolderPath);
     try {
-      source.deleteMarkers(MarkerFactory.MARKER_ID, true, DEPTH_INFINITE);
+      source.deleteMarkers(ProtocOutputParser.MARKER_ID, true, DEPTH_INFINITE);
       Process process = Runtime.getRuntime().exec(command);
       processStream(process.getErrorStream(), source);
       process.destroy();
@@ -96,8 +96,9 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
       reader = new InputStreamReader(stream);
       BufferedReader bufferedReader = new BufferedReader(reader);
       String line = null;
+      ProtocMarkerFactory markerFactory = new ProtocMarkerFactory(source);
       while ((line = bufferedReader.readLine()) != null) {
-        markerFactory.parseAndCreateMarkerIfNecessary(line, source);
+        outputParser.parseAndAddMarkerIfNecessary(line, markerFactory);
         System.out.println("[protoc] " + line);
       }
     } catch (Exception e) {
