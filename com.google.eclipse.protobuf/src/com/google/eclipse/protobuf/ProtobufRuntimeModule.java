@@ -10,10 +10,8 @@ package com.google.eclipse.protobuf;
 
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
-import org.eclipse.xtext.scoping.impl.LoadOnDemandResourceDescriptions;
 
 import com.google.eclipse.protobuf.naming.ProtobufQualifiedNameProvider;
-import com.google.eclipse.protobuf.scoping.ResourceDescriptions;
 import com.google.eclipse.protobuf.scoping.SimpleImportUriResolver;
 import com.google.inject.Binder;
 
@@ -29,9 +27,5 @@ public class ProtobufRuntimeModule extends com.google.eclipse.protobuf.AbstractP
 
   public void configureImportUriResolver(Binder binder) {
     binder.bind(ImportUriResolver.class).to(SimpleImportUriResolver.class);
-  }
-
-  public void configureLoadOnDemandResourceDescriptions(Binder binder) {
-    binder.bind(LoadOnDemandResourceDescriptions.class).to(ResourceDescriptions.class);
   }
 }
