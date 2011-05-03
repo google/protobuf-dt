@@ -22,8 +22,6 @@ import org.eclipse.core.runtime.CoreException;
  */
 class ProtocOutputParser {
 
-  static final String MARKER_ID = "com.google.eclipse.protobuf.ui.protocMarker";
-
   /*
    * (.*):(\\d+):(\\d+):\\s*(.*)
    * --1- ---2-- ---3-- -*- --4-

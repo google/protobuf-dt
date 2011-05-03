@@ -23,19 +23,20 @@ import org.eclipse.core.runtime.CoreException;
  */
 class ProtocMarkerFactory {
 
-  static final String MARKER_ID = "com.google.eclipse.protobuf.ui.protocMarker";
+  static final String PROTOC = "com.google.eclipse.protobuf.ui.protocMarker";
 
   private final IFile file;
   private final IMarker[] markers;
 
   ProtocMarkerFactory(IFile file) throws CoreException {
     this.file = file;
-    markers = this.file.findMarkers(FAST_VALIDATION, true, DEPTH_INFINITE);
+    file.deleteMarkers(PROTOC, true, DEPTH_INFINITE);
+    markers = file.findMarkers(FAST_VALIDATION, true, DEPTH_INFINITE);
   }
   
   void createErrorIfNecessary(String description, int lineNumber) throws CoreException {
     if (containsMarker(description, lineNumber)) return;
-    IMarker marker = file.createMarker(MARKER_ID);
+    IMarker marker = file.createMarker(PROTOC);
     marker.setAttribute(SEVERITY, SEVERITY_ERROR);
     marker.setAttribute(MESSAGE, description);
     marker.setAttribute(LINE_NUMBER, lineNumber);

@@ -80,7 +80,6 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
   private void generateSingleProto(IFile source, String protocPath, TargetLanguage language, String outputFolderPath) {
     String command = commandFactory.protocCommand(source, protocPath, language, outputFolderPath);
     try {
-      source.deleteMarkers(ProtocOutputParser.MARKER_ID, true, DEPTH_INFINITE);
       Process process = Runtime.getRuntime().exec(command);
       processStream(process.getErrorStream(), source);
       process.destroy();
