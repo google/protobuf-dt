@@ -38,7 +38,7 @@ class ProtocOutputParser {
     Matcher errorMatcher = ERROR_PATTERN.matcher(line);
     if (!errorMatcher.matches()) return;
     int lineNumber = parseInt(errorMatcher.group(2));
-    String description = errorMatcher.group(4);
-    markerFactory.createErrorIfNecessary(description, lineNumber);
+    String message = errorMatcher.group(4);
+    markerFactory.createErrorIfNecessary(message, lineNumber);
   }
 }

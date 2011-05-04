@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.junit.stubs;
 
+import static java.util.Collections.*;
+
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URI;
@@ -15,14 +17,15 @@ import java.util.*;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-public abstract class FileStub implements IFile {
+public class FileStub implements IFile {
 
-  private final Map<String, List<IMarker>> markersByType = new HashMap<String, List<IMarker>>();
+  private final Map<String, List<MarkerStub>> markersByType = new HashMap<String, List<MarkerStub>>();
 
   /** {@inheritDoc} */
   public void accept(IResourceProxyVisitor visitor, int memberFlags) throws CoreException {
@@ -41,6 +44,17 @@ public abstract class FileStub implements IFile {
 
   /** {@inheritDoc} */
   public void accept(IResourceVisitor visitor, int depth, int memberFlags) throws CoreException {
+    throw new UnsupportedOperationException();
+  }
+
+  /** {@inheritDoc} */
+  public void appendContents(InputStream source, boolean force, boolean keepHistory, IProgressMonitor monitor)
+      throws CoreException {
+    throw new UnsupportedOperationException();
+  }
+
+  /** {@inheritDoc} */
+  public void appendContents(InputStream source, int updateFlags, IProgressMonitor monitor) throws CoreException {
     throw new UnsupportedOperationException();
   }
 
@@ -75,19 +89,39 @@ public abstract class FileStub implements IFile {
   }
 
   /** {@inheritDoc} */
+  public void create(InputStream source, boolean force, IProgressMonitor monitor) throws CoreException {
+    throw new UnsupportedOperationException();
+  }
+
+  /** {@inheritDoc} */
+  public void create(InputStream source, int updateFlags, IProgressMonitor monitor) throws CoreException {
+    throw new UnsupportedOperationException();
+  }
+
+  /** {@inheritDoc} */
+  public void createLink(IPath localLocation, int updateFlags, IProgressMonitor monitor) throws CoreException {
+    throw new UnsupportedOperationException();
+  }
+
+  /** {@inheritDoc} */
+  public void createLink(URI location, int updateFlags, IProgressMonitor monitor) throws CoreException {
+    throw new UnsupportedOperationException();
+  }
+
+  /** {@inheritDoc} */
   public IMarker createMarker(String type) throws CoreException {
     MarkerStub marker = new MarkerStub(type);
-    List<IMarker> markers = markersByType.get(type);
-    if (markers == null) {
-      markers = new ArrayList<IMarker>();
-      markersByType.put(type, markers);
-    }
-    markers.add(marker);
+    addMarker(marker);
     return marker;
   }
 
   /** {@inheritDoc} */
   public IResourceProxy createProxy() {
+    throw new UnsupportedOperationException();
+  }
+
+  /** {@inheritDoc} */
+  public void delete(boolean force, boolean keepHistory, IProgressMonitor monitor) throws CoreException {
     throw new UnsupportedOperationException();
   }
 
@@ -103,7 +137,7 @@ public abstract class FileStub implements IFile {
 
   /** {@inheritDoc} */
   public void deleteMarkers(String type, boolean includeSubtypes, int depth) throws CoreException {
-    List<IMarker> markers = markersByType.get(type);
+    List<MarkerStub> markers = markersByType.get(type);
     if (markers != null) markers.clear();
   }
 
@@ -119,7 +153,7 @@ public abstract class FileStub implements IFile {
 
   /** {@inheritDoc} */
   public IMarker[] findMarkers(String type, boolean includeSubtypes, int depth) throws CoreException {
-    List<IMarker> markers = markersByType.get(type);
+    List<MarkerStub> markers = markersByType.get(type);
     if (markers == null) return new IMarker[0];
     return markers.toArray(new IMarker[markers.size()]);
   }
@@ -135,7 +169,52 @@ public abstract class FileStub implements IFile {
   }
 
   /** {@inheritDoc} */
+  public String getCharset() throws CoreException {
+    throw new UnsupportedOperationException();
+  }
+
+  /** {@inheritDoc} */
+  public String getCharset(boolean checkImplicit) throws CoreException {
+    throw new UnsupportedOperationException();
+  }
+
+  /** {@inheritDoc} */
+  public String getCharsetFor(Reader reader) throws CoreException {
+    throw new UnsupportedOperationException();
+  }
+
+  /** {@inheritDoc} */
+  public IContentDescription getContentDescription() throws CoreException {
+    throw new UnsupportedOperationException();
+  }
+
+  /** {@inheritDoc} */
+  public InputStream getContents() throws CoreException {
+    throw new UnsupportedOperationException();
+  }
+
+  /** {@inheritDoc} */
+  public InputStream getContents(boolean force) throws CoreException {
+    throw new UnsupportedOperationException();
+  }
+
+  /** {@inheritDoc} */
+  public int getEncoding() throws CoreException {
+    throw new UnsupportedOperationException();
+  }
+
+  /** {@inheritDoc} */
   public String getFileExtension() {
+    throw new UnsupportedOperationException();
+  }
+
+  /** {@inheritDoc} */
+  public IPath getFullPath() {
+    throw new UnsupportedOperationException();
+  }
+
+  /** {@inheritDoc} */
+  public IFileState[] getHistory(IProgressMonitor monitor) throws CoreException {
     throw new UnsupportedOperationException();
   }
 
@@ -165,12 +244,17 @@ public abstract class FileStub implements IFile {
   }
 
   /** {@inheritDoc} */
-  public IPathVariableManager getPathVariableManager() {
+  public String getName() {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
   public IContainer getParent() {
+    throw new UnsupportedOperationException();
+  }
+
+  /** {@inheritDoc} */
+  public IPathVariableManager getPathVariableManager() {
     throw new UnsupportedOperationException();
   }
 
@@ -265,11 +349,6 @@ public abstract class FileStub implements IFile {
   }
 
   /** {@inheritDoc} */
-  public boolean isVirtual() {
-    throw new UnsupportedOperationException();
-  }
-
-  /** {@inheritDoc} */
   public boolean isLinked(int options) {
     throw new UnsupportedOperationException();
   }
@@ -285,6 +364,11 @@ public abstract class FileStub implements IFile {
   }
 
   /** {@inheritDoc} */
+  public boolean isReadOnly() {
+    throw new UnsupportedOperationException();
+  }
+
+  /** {@inheritDoc} */
   public boolean isSynchronized(int depth) {
     throw new UnsupportedOperationException();
   }
@@ -296,6 +380,17 @@ public abstract class FileStub implements IFile {
 
   /** {@inheritDoc} */
   public boolean isTeamPrivateMember(int options) {
+    throw new UnsupportedOperationException();
+  }
+
+  /** {@inheritDoc} */
+  public boolean isVirtual() {
+    throw new UnsupportedOperationException();
+  }
+
+  /** {@inheritDoc} */
+  public void move(IPath destination, boolean force, boolean keepHistory, IProgressMonitor monitor)
+      throws CoreException {
     throw new UnsupportedOperationException();
   }
 
@@ -327,6 +422,38 @@ public abstract class FileStub implements IFile {
 
   /** {@inheritDoc} */
   public void revertModificationStamp(long value) throws CoreException {
+    throw new UnsupportedOperationException();
+  }
+
+  /** {@inheritDoc} */
+  public void setCharset(String newCharset) throws CoreException {
+    throw new UnsupportedOperationException();
+  }
+
+  /** {@inheritDoc} */
+  public void setCharset(String newCharset, IProgressMonitor monitor) throws CoreException {
+    throw new UnsupportedOperationException();
+  }
+
+  /** {@inheritDoc} */
+  public void setContents(IFileState source, boolean force, boolean keepHistory, IProgressMonitor monitor)
+      throws CoreException {
+    throw new UnsupportedOperationException();
+  }
+
+  /** {@inheritDoc} */
+  public void setContents(IFileState source, int updateFlags, IProgressMonitor monitor) throws CoreException {
+    throw new UnsupportedOperationException();
+  }
+
+  /** {@inheritDoc} */
+  public void setContents(InputStream source, boolean force, boolean keepHistory, IProgressMonitor monitor)
+      throws CoreException {
+    throw new UnsupportedOperationException();
+  }
+
+  /** {@inheritDoc} */
+  public void setContents(InputStream source, int updateFlags, IProgressMonitor monitor) throws CoreException {
     throw new UnsupportedOperationException();
   }
 
@@ -385,127 +512,24 @@ public abstract class FileStub implements IFile {
     throw new UnsupportedOperationException();
   }
 
-  /** {@inheritDoc} */
-  public void appendContents(InputStream source, boolean force, boolean keepHistory, IProgressMonitor monitor)
-      throws CoreException {
-    throw new UnsupportedOperationException();
+  public int markerCount(String type) {
+    List<MarkerStub> markers = markersByType.get(type);
+    return (markers == null) ? 0 : markers.size();
+  }
+  
+  public List<MarkerStub> markers(String type) {
+    List<MarkerStub> markers = markersByType.get(type);
+    if (markers == null) return emptyList();
+    return unmodifiableList(markers);
   }
 
-  /** {@inheritDoc} */
-  public void appendContents(InputStream source, int updateFlags, IProgressMonitor monitor) throws CoreException {
-    throw new UnsupportedOperationException();
-  }
-
-  /** {@inheritDoc} */
-  public void create(InputStream source, boolean force, IProgressMonitor monitor) throws CoreException {
-    throw new UnsupportedOperationException();
-  }
-
-  /** {@inheritDoc} */
-  public void create(InputStream source, int updateFlags, IProgressMonitor monitor) throws CoreException {
-    throw new UnsupportedOperationException();
-  }
-
-  /** {@inheritDoc} */
-  public void createLink(IPath localLocation, int updateFlags, IProgressMonitor monitor) throws CoreException {
-    throw new UnsupportedOperationException();
-  }
-
-  /** {@inheritDoc} */
-  public void createLink(URI location, int updateFlags, IProgressMonitor monitor) throws CoreException {
-    throw new UnsupportedOperationException();
-  }
-
-  /** {@inheritDoc} */
-  public void delete(boolean force, boolean keepHistory, IProgressMonitor monitor) throws CoreException {
-    throw new UnsupportedOperationException();
-  }
-
-  /** {@inheritDoc} */
-  public String getCharset() throws CoreException {
-    throw new UnsupportedOperationException();
-  }
-
-  /** {@inheritDoc} */
-  public String getCharset(boolean checkImplicit) throws CoreException {
-    throw new UnsupportedOperationException();
-  }
-
-  /** {@inheritDoc} */
-  public String getCharsetFor(Reader reader) throws CoreException {
-    throw new UnsupportedOperationException();
-  }
-
-  /** {@inheritDoc} */
-  public InputStream getContents() throws CoreException {
-    throw new UnsupportedOperationException();
-  }
-
-  /** {@inheritDoc} */
-  public InputStream getContents(boolean force) throws CoreException {
-    throw new UnsupportedOperationException();
-  }
-
-  /** {@inheritDoc} */
-  public int getEncoding() throws CoreException {
-    throw new UnsupportedOperationException();
-  }
-
-  /** {@inheritDoc} */
-  public IPath getFullPath() {
-    throw new UnsupportedOperationException();
-  }
-
-  /** {@inheritDoc} */
-  public IFileState[] getHistory(IProgressMonitor monitor) throws CoreException {
-    throw new UnsupportedOperationException();
-  }
-
-  /** {@inheritDoc} */
-  public String getName() {
-    throw new UnsupportedOperationException();
-  }
-
-  /** {@inheritDoc} */
-  public boolean isReadOnly() {
-    throw new UnsupportedOperationException();
-  }
-
-  /** {@inheritDoc} */
-  public void move(IPath destination, boolean force, boolean keepHistory, IProgressMonitor monitor)
-      throws CoreException {
-    throw new UnsupportedOperationException();
-  }
-
-  /** {@inheritDoc} */
-  public void setCharset(String newCharset) throws CoreException {
-    throw new UnsupportedOperationException();
-  }
-
-  /** {@inheritDoc} */
-  public void setCharset(String newCharset, IProgressMonitor monitor) throws CoreException {
-    throw new UnsupportedOperationException();
-  }
-
-  /** {@inheritDoc} */
-  public void setContents(InputStream source, boolean force, boolean keepHistory, IProgressMonitor monitor)
-      throws CoreException {
-    throw new UnsupportedOperationException();
-  }
-
-  /** {@inheritDoc} */
-  public void setContents(IFileState source, boolean force, boolean keepHistory, IProgressMonitor monitor)
-      throws CoreException {
-    throw new UnsupportedOperationException();
-  }
-
-  /** {@inheritDoc} */
-  public void setContents(InputStream source, int updateFlags, IProgressMonitor monitor) throws CoreException {
-    throw new UnsupportedOperationException();
-  }
-
-  /** {@inheritDoc} */
-  public void setContents(IFileState source, int updateFlags, IProgressMonitor monitor) throws CoreException {
-    throw new UnsupportedOperationException();
+  public void addMarker(MarkerStub marker) throws CoreException {
+    String type = marker.getType();
+    List<MarkerStub> markers = markersByType.get(type);
+    if (markers == null) {
+      markers = new ArrayList<MarkerStub>();
+      markersByType.put(type, markers);
+    }
+    markers.add(marker);
   }
 }

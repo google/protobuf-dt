@@ -36,8 +36,8 @@ public class ProtocOutputParser_parseAndAddMarkerIfNecessary_Test {
   }
   
   @Test public void should_attempt_to_create_IMarker_if_line_matches_error_pattern() throws CoreException {
-    String line = "test.proto:23:21: Expected field name";
+    String line = "test.proto:23:21: Expected field name.";
     outputParser.parseAndAddMarkerIfNecessary(line, markerFactory);
-    verify(markerFactory).createErrorIfNecessary("Expected field name", 23);
+    verify(markerFactory).createErrorIfNecessary("Expected field name.", 23);
   }
 }

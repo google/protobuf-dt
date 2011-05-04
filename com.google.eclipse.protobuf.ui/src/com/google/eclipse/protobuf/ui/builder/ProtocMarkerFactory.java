@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.CoreException;
  */
 class ProtocMarkerFactory {
 
-  static final String PROTOC = "com.google.eclipse.protobuf.ui.protocMarker";
+  private static final String PROTOC = "com.google.eclipse.protobuf.ui.protocMarker";
 
   private final IFile file;
   private final IMarker[] markers;
@@ -34,11 +34,11 @@ class ProtocMarkerFactory {
     markers = file.findMarkers(FAST_VALIDATION, true, DEPTH_INFINITE);
   }
   
-  void createErrorIfNecessary(String description, int lineNumber) throws CoreException {
-    if (containsMarker(description, lineNumber)) return;
+  void createErrorIfNecessary(String message, int lineNumber) throws CoreException {
+    if (containsMarker(message, lineNumber)) return;
     IMarker marker = file.createMarker(PROTOC);
     marker.setAttribute(SEVERITY, SEVERITY_ERROR);
-    marker.setAttribute(MESSAGE, description);
+    marker.setAttribute(MESSAGE, message);
     marker.setAttribute(LINE_NUMBER, lineNumber);
   }
   

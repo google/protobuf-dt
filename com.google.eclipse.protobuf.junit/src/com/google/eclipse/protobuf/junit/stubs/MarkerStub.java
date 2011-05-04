@@ -1,9 +1,6 @@
 /*
- * Copyright (c) 2011 Google Inc.
- *
- * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License v1.0 which accompanies this distribution, and is available at
- *
+ * Copyright (c) 2011 Google Inc. All rights reserved. This program and the accompanying materials are made available
+ * under the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.junit.stubs;
@@ -24,6 +21,14 @@ public class MarkerStub implements IMarker {
   private final Map<String, Object> attributes = new HashMap<String, Object>();
   private final String type;
   private final long creationTime;
+
+  public static MarkerStub error(String type, String description, int lineNumber) throws CoreException {
+    MarkerStub marker = new MarkerStub(type);
+    marker.setAttribute(SEVERITY, SEVERITY_ERROR);
+    marker.setAttribute(MESSAGE, description);
+    marker.setAttribute(LINE_NUMBER, lineNumber);
+    return marker;
+  }
 
   public MarkerStub(String type) {
     this.type = type;
@@ -79,7 +84,8 @@ public class MarkerStub implements IMarker {
   /** {@inheritDoc} */
   public Object[] getAttributes(String[] attributeNames) throws CoreException {
     List<Object> values = new ArrayList<Object>();
-    for (String name : attributeNames) values.add(attributes.get(name));
+    for (String name : attributeNames)
+      values.add(attributes.get(name));
     return values.toArray();
   }
 
@@ -131,5 +137,17 @@ public class MarkerStub implements IMarker {
   /** {@inheritDoc} */
   public void setAttributes(Map<String, ? extends Object> attributes) throws CoreException {
     this.attributes.putAll(attributes);
+  }
+
+  public int severity() throws CoreException {
+    return getAttribute(SEVERITY, -1);
+  }
+  
+  public String message() throws CoreException {
+    return (String) getAttribute(MESSAGE);
+  }
+
+  public int lineNumber() throws CoreException {
+    return getAttribute(LINE_NUMBER, -1);
   }
 }
