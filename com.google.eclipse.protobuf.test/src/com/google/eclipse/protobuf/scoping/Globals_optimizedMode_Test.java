@@ -8,13 +8,13 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.eclipse.protobuf.junit.EnumHasLiterals.hasLiterals;
+import static com.google.eclipse.protobuf.junit.matchers.EnumHasLiterals.hasLiterals;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 import org.junit.*;
 
-import com.google.eclipse.protobuf.junit.XtextRule;
+import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.Enum;
 
 /**

@@ -8,13 +8,13 @@
  */
 package com.google.eclipse.protobuf.ui.util;
 
-import static com.google.eclipse.protobuf.junit.Finder.findProperty;
+import static com.google.eclipse.protobuf.junit.util.Finder.findProperty;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 import org.junit.*;
 
-import com.google.eclipse.protobuf.junit.XtextRule;
+import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.Property;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 

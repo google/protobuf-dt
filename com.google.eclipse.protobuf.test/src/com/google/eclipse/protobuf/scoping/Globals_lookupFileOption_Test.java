@@ -14,7 +14,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.*;
 
-import com.google.eclipse.protobuf.junit.XtextRule;
+import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.Property;
 
 /**

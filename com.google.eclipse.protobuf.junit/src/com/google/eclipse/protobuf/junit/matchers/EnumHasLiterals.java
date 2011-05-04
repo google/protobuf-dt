@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.junit;
+package com.google.eclipse.protobuf.junit.matchers;
 
 import java.util.*;
 

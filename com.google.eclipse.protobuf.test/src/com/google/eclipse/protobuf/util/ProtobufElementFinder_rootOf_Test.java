@@ -8,14 +8,14 @@
  */
 package com.google.eclipse.protobuf.util;
 
-import static com.google.eclipse.protobuf.junit.Finder.findProperty;
+import static com.google.eclipse.protobuf.junit.util.Finder.findProperty;
 import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.Assert.assertThat;
 
 import org.eclipse.emf.ecore.EObject;
 import org.junit.*;
 
-import com.google.eclipse.protobuf.junit.XtextRule;
+import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.Property;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 
