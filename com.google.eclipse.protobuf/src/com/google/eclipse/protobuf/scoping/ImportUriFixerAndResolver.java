@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import java.util.List;
+
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
@@ -15,14 +17,14 @@ import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 import com.google.eclipse.protobuf.protobuf.Import;
 
 /**
- * Resolves URIs. This implementation mimics how protoc understands imported file URIs. For example, the URI 
- * "platform:/resource/proto1.proto" is understood by EMF but not by protoc. The URI in the proto file needs to be 
- * simply "proto1.proto" for protoc to understand it. 
+ * Resolves URIs. This implementation mimics how protoc understands imported file URIs. For example, the URI
+ * "platform:/resource/proto1.proto" is understood by EMF but not by protoc. The URI in the proto file needs to be
+ * simply "proto1.proto" for protoc to understand it.
  * <p>
  * This {@link ImportUriResolver} adds "platform:/resource" to any URI if is not specified, so EMF can find the
  * imported resource.
  * </p>
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ImportUriFixerAndResolver extends ImportUriResolver {
@@ -34,7 +36,7 @@ public class ImportUriFixerAndResolver extends ImportUriResolver {
    */
   public static final String URI_PREFIX = PREFIX + "/";
 
-  /** 
+  /**
    * If the given {@code EObject} is a <code>{@link Import}</code>, this method will add "platform:/resource" to the
    * URI of such import if not specified already.
    * @param from the given element to resolve.
@@ -61,9 +63,22 @@ public class ImportUriFixerAndResolver extends ImportUriResolver {
    * We need to have the import URI as "platform:/resource/protobuf-test/folder/proto2.proto" for the editor to see it.
    */
   private void fixUri(Import i) {
-    URI importUri = URI.createURI(i.getImportURI());
-    if (importUri.scheme() != null) return;
-    URI fixedUri = URI.createURI(PREFIX).appendSegments(importUri.segments());
-    i.setImportURI(fixedUri.toString());
+    String prefix = uriPrefix(i.eResource().getURI());
+    String uri = i.getImportURI();
+    if (!uri.startsWith(prefix)) {
+      if (!uri.startsWith(prefix)) prefix += "/";
+      i.setImportURI(prefix + uri);
+    }
+  }
+
+  private String uriPrefix(URI containerUri) {
+    StringBuilder prefix = new StringBuilder();
+    prefix.append(PREFIX);
+    int start = (containerUri.scheme() == null) ? 0 : 1; // ignore the scheme if present (e.g. "platform")
+    List<String> segments = containerUri.segmentsList();
+    int end = segments.size() - 1; // ignore file name (at the end of the URI)
+    for (int j = start; j < end; j++)
+      prefix.append("/").append(segments.get(j));
+    return prefix.toString();
   }
 }

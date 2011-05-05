@@ -53,9 +53,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     descriptions.addAll(innerTypes(message.eContainer()));
     descriptions.addAll(innerTypes(root));
     descriptions.addAll(importedTypes(root));
-    IScope scope = createScope(descriptions);
-    System.out.println("scope for property: " + ((Property) typeRef.eContainer()).getName() + ": " + scope);
-    return scope;
+    return createScope(descriptions);
   }
 
   private Collection<IEObjectDescription> innerTypes(EObject root) {
