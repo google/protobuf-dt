@@ -10,7 +10,6 @@ package com.google.eclipse.protobuf.scoping;
 
 import static org.eclipse.emf.common.util.URI.createURI;
 import static org.eclipse.emf.ecore.util.EcoreUtil.getAllContents;
-import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
 import java.util.ArrayList;
@@ -23,21 +22,14 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
+import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.IScope;
-import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider;
-import org.eclipse.xtext.scoping.impl.ImportUriResolver;
-import org.eclipse.xtext.scoping.impl.SimpleScope;
+import org.eclipse.xtext.scoping.impl.*;
 
+import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.eclipse.protobuf.protobuf.Import;
-import com.google.eclipse.protobuf.protobuf.Literal;
-import com.google.eclipse.protobuf.protobuf.LiteralRef;
-import com.google.eclipse.protobuf.protobuf.Option;
-import com.google.eclipse.protobuf.protobuf.Property;
-import com.google.eclipse.protobuf.protobuf.Protobuf;
-import com.google.eclipse.protobuf.protobuf.Type;
-import com.google.eclipse.protobuf.protobuf.TypeReference;
+import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.eclipse.protobuf.util.ProtobufElementFinder;
 import com.google.inject.Inject;
 
@@ -61,12 +53,36 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   IScope scope_TypeReference_type(TypeReference typeRef, EReference reference) {
     Protobuf root = finder.rootOf(typeRef);
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
-    for (Type type : getAllContentsOfType(root, Type.class)) {
-      descriptions.add(describeUsingQualifiedName(type));
-      descriptions.add(create(type.getName(), type));
-    }
+    Message message = (Message) typeRef.eContainer().eContainer();
+    addAllTypeDescriptionsInsideRoot(message, descriptions);
     descriptions.addAll(importedTypes(root));
     return createScope(descriptions);
+  }
+
+  private void addAllTypeDescriptionsInsideRoot(Message root, List<IEObjectDescription> descriptions) {
+    TreeIterator<EObject> allContents = root.eAllContents();
+    while (allContents.hasNext()) {
+      EObject element = allContents.next();
+      if (!(element instanceof Type)) continue;
+      Type type = (Type) element;
+      descriptions.addAll(describeUsingQualifiedNames(type));
+      descriptions.add(create(type.getName(), type));
+    }
+  }
+  
+  private List<IEObjectDescription> describeUsingQualifiedNames(Type type) {
+    List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
+    QualifiedName fqn = nameProvider.getFullyQualifiedName(type);
+    descriptions.add(create(fqn, type));
+    QualifiedName fqnWithoutPackage = removePackage(fqn, type);
+    if (fqnWithoutPackage != null) descriptions.add(create(fqnWithoutPackage, type));
+    return descriptions;
+  }
+
+  private QualifiedName removePackage(QualifiedName fqn, Type type) {
+    Package aPackage = finder.packageOf(type);
+    if (aPackage == null) return null;
+    return null;
   }
 
   private List<IEObjectDescription> importedTypes(Protobuf root) {
@@ -86,13 +102,10 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     while (contents.hasNext()) {
       Object next = contents.next();
       if (!(next instanceof Type)) continue;
-      descriptions.add(describeUsingQualifiedName((Type) next));
+      Type type = (Type) next;
+      descriptions.add(create(nameProvider.getFullyQualifiedName(type), type));
     }
     return descriptions;
-  }
-  
-  private IEObjectDescription describeUsingQualifiedName(Type type) {
-    return create(nameProvider.getFullyQualifiedName(type), type);
   }
   
   @SuppressWarnings("unused")

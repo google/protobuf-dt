@@ -150,4 +150,30 @@ public class MarkerStub implements IMarker {
   public int lineNumber() throws CoreException {
     return getAttribute(LINE_NUMBER, -1);
   }
+
+  @Override public boolean equals(Object obj) {
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (getClass() != obj.getClass()) return false;
+    MarkerStub other = (MarkerStub) obj;
+    if (attributes == null) {
+      if (other.attributes != null) return false;
+    } else if (!attributes.equals(other.attributes)) return false;
+    if (type == null) {
+      if (other.type != null) return false;
+    } else if (!type.equals(other.type)) return false;
+    return true;
+  }
+
+  @Override public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((attributes == null) ? 0 : attributes.hashCode());
+    result = prime * result + ((type == null) ? 0 : type.hashCode());
+    return result;
+  }
+
+  @Override public String toString() {
+    return "MarkerStub [attributes=" + attributes + "]";
+  }
 }
