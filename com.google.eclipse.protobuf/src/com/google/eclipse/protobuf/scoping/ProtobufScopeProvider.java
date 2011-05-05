@@ -10,7 +10,6 @@ package com.google.eclipse.protobuf.scoping;
 
 import static org.eclipse.emf.common.util.URI.createURI;
 import static org.eclipse.emf.ecore.util.EcoreUtil.getAllContents;
-import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
 import java.util.*;
@@ -48,25 +47,37 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   @SuppressWarnings("unused")
   IScope scope_TypeReference_type(TypeReference typeRef, EReference reference) {
     Protobuf root = finder.rootOf(typeRef);
-    List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
-    Message message = (Message) typeRef.eContainer().eContainer();
-    descriptions.addAll(allTypeDescriptionsInside(message));
+    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
+    EObject message = typeRef.eContainer().eContainer();
+    descriptions.addAll(innerTypes(message));
+    descriptions.addAll(innerTypes(message.eContainer()));
+    descriptions.addAll(innerTypes(root));
     descriptions.addAll(importedTypes(root));
     IScope scope = createScope(descriptions);
     System.out.println("scope for property: " + ((Property) typeRef.eContainer()).getName() + ": " + scope);
     return scope;
   }
 
-  private List<IEObjectDescription> allTypeDescriptionsInside(Message root) {
+  private Collection<IEObjectDescription> innerTypes(EObject root) {
+    return innerTypes(root, 0);
+  }
+
+  private Collection<IEObjectDescription> innerTypes(EObject root, int level) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
-    for (Type type : getAllContentsOfType(root, Type.class)) {
-      for (QualifiedName name : alternativeNamesProvider.alternativeFullyQualifiedNames(type))
-        descriptions.add(create(name, type));
+    for (EObject element : root.eContents()) {
+      if (!(element instanceof Type)) continue;
+      Type type = (Type) element;
+      List<QualifiedName> names = alternativeNamesProvider.alternativeFullyQualifiedNames(type);
+      int nameCount = names.size();
+      for (int i = level; i < nameCount; i++) descriptions.add(create(names.get(i), type));
+      descriptions.add(create(nameProvider.getFullyQualifiedName(type), type));
+      if (!(element instanceof Message)) continue;
+      descriptions.addAll(innerTypes(element, level + 1));
     }
     return descriptions;
   }
 
-  private List<IEObjectDescription> importedTypes(Protobuf root) {
+  private Collection<IEObjectDescription> importedTypes(Protobuf root) {
     ResourceSet resourceSet = root.eResource().getResourceSet();
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     for (Import anImport : root.getImports()) {
@@ -77,7 +88,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     return descriptions;
   }
 
-  private List<IEObjectDescription> describeTypesUsingQualifiedNames(Resource resource) {
+  private Collection<IEObjectDescription> describeTypesUsingQualifiedNames(Resource resource) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     TreeIterator<Object> contents = getAllContents(resource, true);
     while (contents.hasNext()) {
@@ -104,18 +115,18 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   }
 
   private static IScope scopeForLiterals(Enum enumType) {
-    List<IEObjectDescription> descriptions = describeLiterals(enumType);
+    Collection<IEObjectDescription> descriptions = describeLiterals(enumType);
     return createScope(descriptions);
   }
 
-  private static List<IEObjectDescription> describeLiterals(Enum enumType) {
+  private static Collection<IEObjectDescription> describeLiterals(Enum enumType) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     for (Literal literal : enumType.getLiterals())
       descriptions.add(create(literal.getName(), literal));
     return descriptions;
   }
 
-  private static IScope createScope(List<IEObjectDescription> descriptions) {
+  private static IScope createScope(Iterable<IEObjectDescription> descriptions) {
     return new SimpleScope(descriptions, DO_NOT_IGNORE_CASE);
   }
 }

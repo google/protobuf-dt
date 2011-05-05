@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static java.util.Collections.unmodifiableList;
 import static org.eclipse.xtext.util.SimpleAttributeResolver.newResolver;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 import static org.eclipse.xtext.util.Tuples.pair;
@@ -77,7 +78,7 @@ class AlternativeQualifiedNamesProvider {
           qualifiedName = converter.toQualifiedName(containerName).append(qualifiedName);
           names.add(qualifiedName);
         }
-        return names;
+        return unmodifiableList(names);
       }
     });
   }
