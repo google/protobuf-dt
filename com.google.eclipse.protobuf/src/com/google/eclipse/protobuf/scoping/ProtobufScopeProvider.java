@@ -10,26 +10,21 @@ package com.google.eclipse.protobuf.scoping;
 
 import static org.eclipse.emf.common.util.URI.createURI;
 import static org.eclipse.emf.ecore.util.EcoreUtil.getAllContents;
+import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import org.eclipse.emf.common.util.TreeIterator;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.xtext.naming.IQualifiedNameProvider;
-import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.emf.common.util.*;
+import org.eclipse.emf.ecore.*;
+import org.eclipse.emf.ecore.resource.*;
+import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.impl.*;
 
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.eclipse.protobuf.util.ProtobufElementFinder;
 import com.google.inject.Inject;
 
@@ -48,41 +43,27 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   @Inject private Globals globals;
   @Inject private IQualifiedNameProvider nameProvider;
   @Inject private ImportUriResolver uriResolver;
-  
+  @Inject private AlternativeQualifiedNamesProvider alternativeNamesProvider;
+
   @SuppressWarnings("unused")
   IScope scope_TypeReference_type(TypeReference typeRef, EReference reference) {
     Protobuf root = finder.rootOf(typeRef);
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     Message message = (Message) typeRef.eContainer().eContainer();
-    addAllTypeDescriptionsInsideRoot(message, descriptions);
+    descriptions.addAll(allTypeDescriptionsInside(message));
     descriptions.addAll(importedTypes(root));
-    return createScope(descriptions);
+    IScope scope = createScope(descriptions);
+    System.out.println("scope for property: " + ((Property) typeRef.eContainer()).getName() + ": " + scope);
+    return scope;
   }
 
-  private void addAllTypeDescriptionsInsideRoot(Message root, List<IEObjectDescription> descriptions) {
-    TreeIterator<EObject> allContents = root.eAllContents();
-    while (allContents.hasNext()) {
-      EObject element = allContents.next();
-      if (!(element instanceof Type)) continue;
-      Type type = (Type) element;
-      descriptions.addAll(describeUsingQualifiedNames(type));
-      descriptions.add(create(type.getName(), type));
-    }
-  }
-  
-  private List<IEObjectDescription> describeUsingQualifiedNames(Type type) {
+  private List<IEObjectDescription> allTypeDescriptionsInside(Message root) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
-    QualifiedName fqn = nameProvider.getFullyQualifiedName(type);
-    descriptions.add(create(fqn, type));
-    QualifiedName fqnWithoutPackage = removePackage(fqn, type);
-    if (fqnWithoutPackage != null) descriptions.add(create(fqnWithoutPackage, type));
+    for (Type type : getAllContentsOfType(root, Type.class)) {
+      for (QualifiedName name : alternativeNamesProvider.alternativeFullyQualifiedNames(type))
+        descriptions.add(create(name, type));
+    }
     return descriptions;
-  }
-
-  private QualifiedName removePackage(QualifiedName fqn, Type type) {
-    Package aPackage = finder.packageOf(type);
-    if (aPackage == null) return null;
-    return null;
   }
 
   private List<IEObjectDescription> importedTypes(Protobuf root) {
@@ -107,7 +88,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     }
     return descriptions;
   }
-  
+
   @SuppressWarnings("unused")
   IScope scope_LiteralRef_literal(LiteralRef literalRef, EReference reference) {
     EObject container = literalRef.eContainer();

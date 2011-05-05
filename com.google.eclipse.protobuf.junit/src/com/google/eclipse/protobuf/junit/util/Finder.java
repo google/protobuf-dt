@@ -13,11 +13,18 @@ import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 import java.util.List;
 
 import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Enum;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 public final class Finder {
+
+  public static Enum findEnum(String name, Protobuf root) {
+    for (Enum anEnum : getAllContentsOfType(root, Enum.class))
+      if (name.equals(anEnum.getName())) return anEnum;
+    return null;
+  }
 
   public static Message findMessage(String name, Protobuf root) {
     for (Message message : getAllContentsOfType(root, Message.class))
@@ -36,17 +43,17 @@ public final class Finder {
       if (name.equals(property.getName())) return property;
     return null;
   }
-  
+
   public static List<Property> allProperties(Protobuf root) {
     return getAllContentsOfType(root, Property.class);
   }
-  
+
   public static Literal findLiteral(String name, Protobuf root) {
     List<Literal> literals = getAllContentsOfType(root, Literal.class);
     for (Literal literal : literals)
       if (name.equals(literal.getName())) return literal;
         return null;
   }
-  
+
   private Finder() {}
 }
