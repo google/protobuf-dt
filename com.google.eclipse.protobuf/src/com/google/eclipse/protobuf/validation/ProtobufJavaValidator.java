@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.validation;
 
+import static com.google.eclipse.protobuf.validation.Messages.*;
+
 import org.eclipse.xtext.validation.Check;
 
 import com.google.eclipse.protobuf.protobuf.Property;
@@ -22,9 +24,10 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
    * @param property the given property.
    */
   @Check public void checkTagNumberIsGreaterThanZero(Property property) {
+    if (property.getName() == null) return; // we already show an error if name is null, no need to go further.
     int index = property.getIndex();
     if (index > 0) return;
-    String msg = (index == 0) ? "Field numbers must be positive integers." : "Expected field number.";
+    String msg = (index == 0) ? Error_fieldNumbersMustBePositive : Error_expectedFieldNumber;
     error(msg, property.eClass().getEStructuralFeature("index"));
   }
 

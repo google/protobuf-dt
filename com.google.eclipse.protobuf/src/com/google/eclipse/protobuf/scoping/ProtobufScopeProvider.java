@@ -81,12 +81,12 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     for (Import anImport : root.getImports()) {
       URI importUri = createURI(uriResolver.apply(anImport));
       Resource imported = resourceSet.getResource(importUri, true);
-      descriptions.addAll(describeTypesUsingQualifiedNames(imported));
+      descriptions.addAll(innerTypes(imported));
     }
     return descriptions;
   }
 
-  private Collection<IEObjectDescription> describeTypesUsingQualifiedNames(Resource resource) {
+  private Collection<IEObjectDescription> innerTypes(Resource resource) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     TreeIterator<Object> contents = getAllContents(resource, true);
     while (contents.hasNext()) {
