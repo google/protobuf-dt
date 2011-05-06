@@ -30,7 +30,7 @@ public class ProtobufLabelProvider extends DefaultEObjectLabelProvider {
   }
 
   @Override public Object text(Object o) {
-    String text = labels.labelFor(o);
+    Object text = labels.labelFor(o);
     return (text != null) ? text : super.text(o);
   }
 
