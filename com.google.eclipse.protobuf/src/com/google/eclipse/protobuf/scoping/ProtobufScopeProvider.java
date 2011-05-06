@@ -52,47 +52,61 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     descriptions.addAll(innerTypes(message));
     descriptions.addAll(innerTypes(message.eContainer()));
     descriptions.addAll(innerTypes(root));
-    descriptions.addAll(importedTypes(root));
+    descriptions.addAll(importedTypes(root, Type.class));
     return createScope(descriptions);
   }
 
   private Collection<IEObjectDescription> innerTypes(EObject root) {
-    return innerTypes(root, 0);
+    return innerTypes(root, Type.class);
   }
 
-  private Collection<IEObjectDescription> innerTypes(EObject root, int level) {
+  @SuppressWarnings("unused")
+  IScope scope_MessageReference_type(MessageReference msgRef, EReference reference) {
+    Protobuf root = finder.rootOf(msgRef);
+    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
+    Class<Message> targetType = Message.class;
+    descriptions.addAll(innerTypes(root, targetType));
+    descriptions.addAll(importedTypes(root, targetType));
+    return createScope(descriptions);
+  }
+
+  private <T extends Type> Collection<IEObjectDescription> innerTypes(EObject root, Class<T> targetType) {
+    return innerTypes(root, targetType, 0);
+  }
+
+  private <T extends Type> Collection<IEObjectDescription> innerTypes(EObject root, Class<T> targetType, int level) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     for (EObject element : root.eContents()) {
-      if (!(element instanceof Type)) continue;
-      Type type = (Type) element;
+      if (!targetType.isInstance(element)) continue;
+      T type = targetType.cast(element);
       List<QualifiedName> names = alternativeNamesProvider.alternativeFullyQualifiedNames(type);
       int nameCount = names.size();
       for (int i = level; i < nameCount; i++) descriptions.add(create(names.get(i), type));
       descriptions.add(create(nameProvider.getFullyQualifiedName(type), type));
       if (!(element instanceof Message)) continue;
-      descriptions.addAll(innerTypes(element, level + 1));
+      descriptions.addAll(innerTypes(element, targetType, level + 1));
     }
     return descriptions;
   }
 
-  private Collection<IEObjectDescription> importedTypes(Protobuf root) {
+  private <T extends Type> Collection<IEObjectDescription> importedTypes(Protobuf root, Class<T> targetType) {
     ResourceSet resourceSet = root.eResource().getResourceSet();
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     for (Import anImport : root.getImports()) {
       URI importUri = createURI(uriResolver.apply(anImport));
       Resource imported = resourceSet.getResource(importUri, true);
-      descriptions.addAll(innerTypes(imported));
+      descriptions.addAll(innerTypes(imported, targetType));
     }
     return descriptions;
   }
 
-  private Collection<IEObjectDescription> innerTypes(Resource resource) {
+  private <T extends Type> Collection<IEObjectDescription> innerTypes(Resource resource, Class<T> targetType) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     TreeIterator<Object> contents = getAllContents(resource, true);
     while (contents.hasNext()) {
       Object next = contents.next();
-      if (!(next instanceof Type)) continue;
-      Type type = (Type) next;
+      if (!targetType.isInstance(next)) continue;
+      T type = targetType.cast(next);
       descriptions.add(create(nameProvider.getFullyQualifiedName(type), type));
     }
     return descriptions;
