@@ -26,4 +26,6 @@ public class Messages extends NLS {
   public static String Error_expectedFieldNumber;
   public static String Error_missingFieldNumber;
   public static String Error_fieldNumbersMustBePositive;
+  public static String Error_unrecognizedSyntaxIdentifier;
+  public static String Error_expectedSyntaxIdentifier;
 }

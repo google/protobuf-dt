@@ -27,18 +27,17 @@ public class ProtobufSyntaxErrorMessageProvider extends SyntaxErrorMessageProvid
   @Override public SyntaxErrorMessage getSyntaxErrorMessage(IParserErrorContext context) {
     String message = context.getDefaultMessage();
     EObject currentContext = context.getCurrentContext();
-    if (currentContext instanceof Property) message = mapToProtocMessage((Property) currentContext, message);
+    if (currentContext instanceof Property) message =  mapToProtocMessage(message, (Property) currentContext);
+    if (currentContext == null && message.contains("RULE_STRING")) return null;
     return new SyntaxErrorMessage(message, SYNTAX_DIAGNOSITC);
   }
 
-  private String mapToProtocMessage(Property property, String message) {
-    if (message.contains("RULE_ID") && property.getName() == null) return Error_expectedFieldName;
-    if (message.equals("mismatched input ';' expecting '='") && property.getIndex() == 0) return Error_missingFieldNumber;
+  private String mapToProtocMessage(String message, Property property) {
+    if (message.contains("RULE_ID") && property.getName() == null)
+      return Error_expectedFieldName;
+    if (message.equals("mismatched input ';' expecting '='") && property.getIndex() == 0)
+      return Error_missingFieldNumber;
     return message;
-  }
-
-  @Override public SyntaxErrorMessage getSyntaxErrorMessage(IValueConverterErrorContext context) {
-    return new SyntaxErrorMessage(context.getDefaultMessage(), SYNTAX_DIAGNOSITC);
   }
 
 }

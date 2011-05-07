@@ -9,10 +9,11 @@
 package com.google.eclipse.protobuf.validation;
 
 import static com.google.eclipse.protobuf.validation.Messages.*;
+import static java.lang.String.format;
 
 import org.eclipse.xtext.validation.Check;
 
-import com.google.eclipse.protobuf.protobuf.Property;
+import com.google.eclipse.protobuf.protobuf.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -31,4 +32,10 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
     error(msg, property.eClass().getEStructuralFeature("index"));
   }
 
+  @Check public void checkSyntaxIsProto2(Syntax syntax) {
+    String name = syntax.getName();
+    if ("proto2".equals(name)) return;
+    String msg = (name == null) ? Error_expectedSyntaxIdentifier : format(Error_unrecognizedSyntaxIdentifier, name);
+    error(msg, syntax.eClass().getEStructuralFeature("name"));
+  }
 }
