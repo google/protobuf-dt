@@ -48,7 +48,9 @@ public class Images {
     IMAGES_BY_TYPE.put(Option.class, "option.gif");
     IMAGES_BY_TYPE.put(Package.class, "package.gif");
     IMAGES_BY_TYPE.put(Protobuf.class, "protobuf.gif");
+    IMAGES_BY_TYPE.put(Rpc.class, "rpc.gif");
     IMAGES_BY_TYPE.put(Service.class, "service.gif");
+    IMAGES_BY_TYPE.put(Syntax.class, "syntax.gif");
   }
 
   private static final List<String> STANDALONE_IMAGES = asList("extensions.gif");

@@ -8,12 +8,14 @@
  */
 package com.google.eclipse.protobuf.ui.outline;
 
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.ui.editor.outline.IOutlineNode;
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider;
 
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Customization of the default outline structure
+ * Customization of the default outline structure.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
@@ -27,7 +29,8 @@ public class ProtobufOutlineTreeProvider extends DefaultOutlineTreeProvider {
     return true;
   }
 
-  boolean _isLeaf(Service s) {
-    return true;
+  @Override protected void createNode(IOutlineNode parent, EObject modelElement) {
+    if (modelElement instanceof MessageReference) return;
+    super.createNode(parent, modelElement);
   }
 }

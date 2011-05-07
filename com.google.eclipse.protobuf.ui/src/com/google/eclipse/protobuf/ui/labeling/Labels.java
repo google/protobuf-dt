@@ -28,6 +28,10 @@ public class Labels {
   @Inject private Properties properties;
 
   public Object labelFor(Object o) {
+    if (o instanceof ExtendMessage) {
+      ExtendMessage extend = (ExtendMessage) o;
+      return labelFor(extend);
+    }
     if (o instanceof Import) {
       Import i = (Import) o;
       return labelFor(i);
@@ -44,7 +48,15 @@ public class Labels {
       Protobuf p = (Protobuf) o;
       return labelFor(p);
     }
+    if (o instanceof Rpc) {
+      Rpc r = (Rpc) o;
+      return labelFor(r);
+    }
     return null;
+  }
+
+  private Object labelFor(ExtendMessage extend) {
+    return messageName(extend.getMessage());
   }
 
   private Object labelFor(Import i) {
@@ -70,5 +82,16 @@ public class Labels {
   private Object labelFor(Protobuf p) {
     // TODO show this text till I figure out how to hide 'Protobuf' node in outline view
     return "Protocol Buffer";
+  }
+
+  private Object labelFor(Rpc r) {
+    StyledString text = new StyledString(r.getName());
+    String types = String.format(" : %s > %s", messageName(r.getArgType()), messageName(r.getReturnType()));
+    text.append(types, DECORATIONS_STYLER);
+    return text;
+  }
+
+  private String messageName(MessageReference r) {
+    return r.getType().getName();
   }
 }
