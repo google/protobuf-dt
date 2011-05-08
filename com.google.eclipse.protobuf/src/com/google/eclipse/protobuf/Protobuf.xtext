@@ -16,9 +16,7 @@ generate protobuf "http://www.google.com/eclipse/protobuf/Protobuf"
 
 Protobuf:
   (syntax=Syntax)?	
-  (package=Package)?
-  (imports+=Import)*
-  (options+=Option)*
+  ((package=Package)? & (imports+=Import)* & (options+=Option)*)
   (elements+=ProtobufElement)*;
 
 Syntax:
