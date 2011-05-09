@@ -8,15 +8,15 @@
  */
 package com.google.eclipse.protobuf.formatting;
 
-import org.eclipse.xtext.formatting.impl.*;
+import org.eclipse.xtext.formatting.impl.AbstractDeclarativeFormatter;
+import org.eclipse.xtext.formatting.impl.FormattingConfig;
 
 import com.google.eclipse.protobuf.services.ProtobufGrammarAccess;
 
 /**
  * This class contains custom formatting description.
  *
- * @see http://www.eclipse.org/Xtext/documentation/latest/xtext.html#formatting on how and when to use it
- * @see {@link org.eclipse.xtext.xtext.XtextFormattingTokenSerializer} as an example
+ * @see <a href="http://www.eclipse.org/Xtext/documentation/latest/xtext.html#formatting">Xtext Formatting</a>
  */
 public class ProtobufFormatter extends AbstractDeclarativeFormatter {
 

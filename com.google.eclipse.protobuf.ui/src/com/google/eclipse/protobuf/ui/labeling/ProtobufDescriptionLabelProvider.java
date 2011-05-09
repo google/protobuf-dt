@@ -15,6 +15,6 @@ import org.eclipse.xtext.ui.label.DefaultDescriptionLabelProvider;
  *
  * @author alruiz@google.com (Alex Ruiz)
  *
- * @see http://www.eclipse.org/Xtext/documentation/latest/xtext.html#labelProvider
+ * @see <a href="http://www.eclipse.org/Xtext/documentation/latest/xtext.html#labelProvider">Xtext Label Provider</a>
  */
 public class ProtobufDescriptionLabelProvider extends DefaultDescriptionLabelProvider {}

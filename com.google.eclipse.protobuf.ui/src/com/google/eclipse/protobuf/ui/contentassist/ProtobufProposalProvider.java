@@ -26,7 +26,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.scoping.Globals;
-import com.google.eclipse.protobuf.ui.grammar.*;
+import com.google.eclipse.protobuf.ui.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.ui.grammar.CompoundElement;
 import com.google.eclipse.protobuf.ui.labeling.Images;
 import com.google.eclipse.protobuf.ui.util.*;
@@ -36,7 +36,7 @@ import com.google.inject.Inject;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  *
- * @see http://www.eclipse.org/Xtext/documentation/latest/xtext.html#contentAssist on how to customize content assistant
+ * @see <a href="http://www.eclipse.org/Xtext/documentation/latest/xtext.html#contentAssist">Xtext Content Assist</a>
  */
 public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 

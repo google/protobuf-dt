@@ -14,10 +14,14 @@ import static org.eclipse.xtext.resource.EObjectDescription.create;
 
 import java.util.*;
 
-import org.eclipse.emf.common.util.*;
-import org.eclipse.emf.ecore.*;
-import org.eclipse.emf.ecore.resource.*;
-import org.eclipse.xtext.naming.*;
+import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.xtext.naming.IQualifiedNameProvider;
+import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.impl.*;
@@ -32,7 +36,7 @@ import com.google.inject.Inject;
  *
  * @author alruiz@google.com (Alex Ruiz)
  *
- * @see http://www.eclipse.org/Xtext/documentation/latest/xtext.html#scoping
+ * @see <a href="http://www.eclipse.org/Xtext/documentation/latest/xtext.html#scoping">Xtext Scoping</a>
  */
 public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
 

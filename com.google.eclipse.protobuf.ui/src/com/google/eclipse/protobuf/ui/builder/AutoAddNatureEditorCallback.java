@@ -18,11 +18,12 @@ import org.eclipse.xtext.ui.editor.XtextEditor;
 import com.google.inject.Inject;
 
 /**
- * Automatically adds <code>{@link XtextNature}</code> and <code>{@link ProtobufNature}</code> to a project if needed
- * (e.g. when opening a 'Protocol Buffer' editor for the first time.)
- *
+ * Automatically adds <code>{@link XtextNature}</code> to a project if needed (e.g. when opening a 'Protocol Buffer'
+ * editor for the first time.)
+ * 
  * @author alruiz@google.com (Alex Ruiz)
  */
+@SuppressWarnings("restriction")
 public class AutoAddNatureEditorCallback extends AbstractDirtyStateAwareEditorCallback {
 
   @Inject private ToggleXtextNatureAction xtext;

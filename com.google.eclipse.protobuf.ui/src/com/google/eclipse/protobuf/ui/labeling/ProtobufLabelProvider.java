@@ -18,7 +18,7 @@ import com.google.inject.Inject;
  *
  * @author alruiz@google.com (Alex Ruiz)
  *
- * @see http://www.eclipse.org/Xtext/documentation/latest/xtext.html#labelProvider
+ * @see <a href="http://www.eclipse.org/Xtext/documentation/latest/xtext.html#labelProvider">Xtext Label Provider</a>
  */
 public class ProtobufLabelProvider extends DefaultEObjectLabelProvider {
 
