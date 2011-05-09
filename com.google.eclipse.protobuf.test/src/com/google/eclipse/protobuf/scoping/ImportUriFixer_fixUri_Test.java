@@ -43,7 +43,6 @@ public class ImportUriFixer_fixUri_Test {
 
   @Test public void should_not_fix_import_URI_if_not_missing_scheme() {
     String importUri = "platform:/resource/testing/src/folder1/test.proto";
-    when(resourceChecker.resourceExists(importUri)).thenReturn(true);
     String fixed = fixer.fixUri(importUri, resourceUri, resourceChecker);
     assertThat(fixed, equalTo(importUri));
   }

@@ -39,8 +39,8 @@ class ImportUriFixer {
     if (importUri.startsWith(PREFIX)) return importUri;
     Pair<String, List<String>> importUriPair = pair(importUri, createURI(importUri).segmentsList());
     String fixed = fixUri(importUriPair, resourceUri, checker);
-    if (fixed == null) return importUri;
     System.out.println(resourceUri + " : " + importUri + " : " + fixed);
+    if (fixed == null) return importUri;
     return fixed;
   }
   
