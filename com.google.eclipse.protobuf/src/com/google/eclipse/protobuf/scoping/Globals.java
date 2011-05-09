@@ -87,11 +87,17 @@ public class Globals {
         addFileOption((Property) e);
         continue;
       }
-      if (e instanceof Enum && "OptimizeMode".equals(e.getName())) {
+      if (isOptimizeModeEnum(e)) {
         optimizedMode = (Enum) e;
         continue;
       }
     }
+  }
+  
+  private boolean isOptimizeModeEnum(MessageElement e) {
+    if (!(e instanceof Enum)) return false;
+    Enum anEnum = (Enum) e;
+    return "OptimizeMode".equals(anEnum.getName());
   }
 
   private Message fileOptionsMessage() {
