@@ -2,9 +2,14 @@
 
 package com.google.eclipse.protobuf.scoping;
 
+import static org.eclipse.emf.common.util.URI.createURI;
+import static org.eclipse.xtext.util.Tuples.pair;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.xtext.util.Pair;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -30,26 +35,39 @@ class ImportUriFixer {
    * If we import "folder/proto2.proto" into proto1.proto, proto1.proto will compile fine, but the editor will complain.
    * We need to have the import URI as "platform:/resource/protobuf-test/folder/proto2.proto" for the editor to see it.
    */
-  String fixUri(String importUri, URI resourceUri) {
+  String fixUri(String importUri, URI resourceUri, ResourceChecker checker) {
     if (importUri.startsWith(PREFIX)) return importUri;
-    String prefix = uriPrefix(URI.createURI(importUri).segmentsList(), resourceUri);
-    if (importUri.startsWith(prefix)) return importUri;
-    if (!prefix.endsWith(SEPARATOR)) prefix += SEPARATOR;
-    String fixed = prefix + importUri;
+    Pair<String, List<String>> importUriPair = pair(importUri, createURI(importUri).segmentsList());
+    String fixed = fixUri(importUriPair, resourceUri, checker);
+    if (fixed == null) return importUri;
     System.out.println(resourceUri + " : " + importUri + " : " + fixed);
     return fixed;
   }
+  
+  private String fixUri(Pair<String, List<String>> importUri, URI resourceUri, ResourceChecker checker) {
+    List<String> segments = resourceUri.segmentsList();
+    return fixUri(importUri, removeFirstAndLast(segments), checker);
+  }
 
-  private String uriPrefix(List<String> importUri, URI resourceUri) {
+  private List<String> removeFirstAndLast(List<String> list) {
+    if (list.isEmpty()) return list;
+    List<String> newList = new ArrayList<String>(list);
+    newList.remove(0);
+    newList.remove(newList.size() - 1);
+    return newList;
+  }
+  
+  private String fixUri(Pair<String, List<String>> importUri, List<String> resourceUri, ResourceChecker checker) {
     StringBuilder prefix = new StringBuilder();
     prefix.append(PREFIX);
-    String firstSegment = importUri.get(0);
-    List<String> segments = resourceUri.segmentsList();
-    int end = segments.size() - 1; // ignore file name (at the end of the URI)
-    for (int j = 1; j < end; j++) {
-      if (segments.get(j).equals(firstSegment)) break;
-      prefix.append(SEPARATOR).append(segments.get(j));
+    String firstSegment = importUri.getSecond().get(0);
+    for (String segment : resourceUri) {
+      if (segment.equals(firstSegment)) break;
+      prefix.append(SEPARATOR).append(segment);
     }
-    return prefix.toString();
+    prefix.append(SEPARATOR);
+    String fixed =  prefix.toString() + importUri.getFirst();
+    if (checker.resourceExists(fixed)) return fixed;
+    return null;
   }
 }

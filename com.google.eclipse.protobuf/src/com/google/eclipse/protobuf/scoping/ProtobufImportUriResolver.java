@@ -11,6 +11,7 @@ package com.google.eclipse.protobuf.scoping;
 import static com.google.eclipse.protobuf.scoping.ImportUriFixer.PREFIX;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 
 import com.google.eclipse.protobuf.protobuf.Import;
@@ -27,7 +28,7 @@ import com.google.inject.Inject;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ImportUriFixerAndResolver extends ImportUriResolver {
+public class ProtobufImportUriResolver extends ImportUriResolver {
 
   @Inject private ImportUriFixer uriFixer;
   
@@ -48,7 +49,8 @@ public class ImportUriFixerAndResolver extends ImportUriResolver {
   }
 
   private void fixUri(Import i) {
-    String fixed = uriFixer.fixUri(i.getImportURI(), i.eResource().getURI());
+    Resource resource = i.eResource();
+    String fixed = uriFixer.fixUri(i.getImportURI(), resource.getURI(), new ResourceChecker(resource.getResourceSet()));
     i.setImportURI(fixed);
   }
 }

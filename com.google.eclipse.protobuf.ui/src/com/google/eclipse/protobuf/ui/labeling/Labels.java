@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.labeling;
 
-import static com.google.eclipse.protobuf.scoping.ImportUriFixerAndResolver.URI_PREFIX;
+import static com.google.eclipse.protobuf.scoping.ProtobufImportUriResolver.URI_PREFIX;
 import static org.eclipse.jface.viewers.StyledString.DECORATIONS_STYLER;
 
 import org.eclipse.jface.viewers.StyledString;
