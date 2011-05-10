@@ -15,13 +15,13 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
 
+  public static String configureWorkspaceSettings;
+  public static String enableProjectSettings;
+
   static {
     Class<Messages> targetType = Messages.class;
     NLS.initializeMessages(targetType.getName(), targetType);
   }
-
+  
   private Messages() {}
-
-  public static String BasePreferencePage_enableProjectSettings;
-  public static String BasePreferencePage_configureWorkspaceSettings;
 }

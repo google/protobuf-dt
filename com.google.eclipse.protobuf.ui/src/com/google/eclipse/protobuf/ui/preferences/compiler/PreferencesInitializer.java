@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.compiler;
 
-import static com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferenceNames.*;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.*;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
@@ -19,7 +19,7 @@ import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class CompilerPreferencesInitializer implements IPreferenceStoreInitializer {
+public class PreferencesInitializer implements IPreferenceStoreInitializer {
 
   /** {@inheritDoc} */
   public void initialize(IPreferenceStoreAccess access) {

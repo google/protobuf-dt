@@ -8,8 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.compiler;
 
-import static com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferenceNames.*;
 import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.*;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.*;
 import static org.eclipse.core.resources.IResource.FOLDER;
 import static org.eclipse.core.runtime.IStatus.OK;
 
@@ -35,9 +35,9 @@ import com.google.inject.Inject;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class CompilerPreferencePage extends PreferenceAndPropertyPage {
+public class PreferencePage extends PreferenceAndPropertyPage {
 
-  private static final String PREFERENCE_PAGE_ID = CompilerPreferencePage.class.getName();
+  private static final String PREFERENCE_PAGE_ID = PreferencePage.class.getName();
 
   private Button btnCompileProtoFiles;
   private TabFolder tabFolder;
@@ -61,7 +61,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
   private Button btnRefreshOutputFolder;
   private Label lblOutputFolderRelative;
 
-  @Inject public CompilerPreferencePage(IPreferenceStoreAccess preferenceStoreAccess) {
+  @Inject public PreferencePage(IPreferenceStoreAccess preferenceStoreAccess) {
     super(preferenceStoreAccess);
   }
 
@@ -73,13 +73,13 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
 
     btnCompileProtoFiles = new Button(contents, SWT.CHECK);
     btnCompileProtoFiles.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
-    btnCompileProtoFiles.setText(CompilerPreferencePage_compileOnSave);
+    btnCompileProtoFiles.setText(compileOnSave);
 
     tabFolder = new TabFolder(contents, SWT.NONE);
     tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 
     tbtmMain = new TabItem(tabFolder, SWT.NONE);
-    tbtmMain.setText(CompilerPreferencePage_mainTab);
+    tbtmMain.setText(tabMain);
 
     Composite cmpMain = new Composite(tabFolder, SWT.NONE);
     tbtmMain.setControl(cmpMain);
@@ -88,58 +88,58 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     grpCompilerLocation = new Group(cmpMain, SWT.NONE);
     grpCompilerLocation.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
     grpCompilerLocation.setLayout(new GridLayout(4, false));
-    grpCompilerLocation.setText(CompilerPreferencePage_location);
+    grpCompilerLocation.setText(protocLocation);
 
     btnUseProtocInSystemPath = new Button(grpCompilerLocation, SWT.RADIO);
     btnUseProtocInSystemPath.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 4, 1));
-    btnUseProtocInSystemPath.setText(CompilerPreferencePage_systemPath);
+    btnUseProtocInSystemPath.setText(protocInSystemPath);
 
     btnUseProtocInCustomPath = new Button(grpCompilerLocation, SWT.RADIO);
     btnUseProtocInCustomPath.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 4, 1));
-    btnUseProtocInCustomPath.setText(CompilerPreferencePage_customPath);
+    btnUseProtocInCustomPath.setText(protocInCustomPath);
 
     txtProtocFilePath = new Text(grpCompilerLocation, SWT.BORDER);
     txtProtocFilePath.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
     txtProtocFilePath.setEditable(false);
 
     btnProtocPathBrowse = new Button(grpCompilerLocation, SWT.NONE);
-    btnProtocPathBrowse.setText(CompilerPreferencePage_browseCustomPath);
+    btnProtocPathBrowse.setText(browseCustomPath);
     new Label(grpCompilerLocation, SWT.NONE);
     new Label(grpCompilerLocation, SWT.NONE);
 
     grpTargetLanguage = new Group(cmpMain, SWT.NONE);
     grpTargetLanguage.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
     grpTargetLanguage.setLayout(new GridLayout(1, false));
-    grpTargetLanguage.setText(CompilerPreferencePage_targetLanguage);
+    grpTargetLanguage.setText(targetLanguage);
 
     btnJava = new Button(grpTargetLanguage, SWT.RADIO);
     btnJava.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
-    btnJava.setText(CompilerPreferencePage_generateJava);
+    btnJava.setText(generateJava);
 
     btnCpp = new Button(grpTargetLanguage, SWT.RADIO);
     btnCpp.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
-    btnCpp.setText(CompilerPreferencePage_generateCpp);
+    btnCpp.setText(generateCpp);
 
     btnPython = new Button(grpTargetLanguage, SWT.RADIO);
-    btnPython.setText(CompilerPreferencePage_generatePython);
+    btnPython.setText(generatePython);
 
     grpOutput = new Group(cmpMain, SWT.NONE);
     grpOutput.setLayout(new GridLayout(2, false));
     grpOutput.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-    grpOutput.setText(CompilerPreferencePage_generatedCode);
+    grpOutput.setText(generateCode);
 
     lblOutputFolderName = new Label(grpOutput, SWT.NONE);
-    lblOutputFolderName.setText(CompilerPreferencePage_outputFolderName);
+    lblOutputFolderName.setText(outputFolderName);
 
     txtOutputFolderName = new Text(grpOutput, SWT.BORDER);
     txtOutputFolderName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
     lblOutputFolderRelative = new Label(grpOutput, SWT.NONE);
     lblOutputFolderRelative.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
-    lblOutputFolderRelative.setText(CompilerPreferencePage_directChildOfProjectFolder);
+    lblOutputFolderRelative.setText(outputFolderChildOfProjectFolder);
 
     tbtmRefresh = new TabItem(tabFolder, SWT.NONE);
-    tbtmRefresh.setText(CompilerPreferencePage_refreshTab);
+    tbtmRefresh.setText(tabRefresh);
 
     Composite cmpRefresh = new Composite(tabFolder, SWT.NONE);
     tbtmRefresh.setControl(cmpRefresh);
@@ -147,7 +147,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
 
     btnRefreshResources = new Button(cmpRefresh, SWT.CHECK);
     btnRefreshResources.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-    btnRefreshResources.setText(CompilerPreferencePage_refreshResources);
+    btnRefreshResources.setText(refreshResources);
 
     grpRefresh = new Group(cmpRefresh, SWT.NONE);
     grpRefresh.setLayout(new GridLayout(1, false));
@@ -155,11 +155,11 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
 
     btnRefreshProject = new Button(grpRefresh, SWT.RADIO);
     btnRefreshProject.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-    btnRefreshProject.setText(CompilerPreferencePage_refreshProject);
+    btnRefreshProject.setText(refreshProject);
 
     btnRefreshOutputFolder = new Button(grpRefresh, SWT.RADIO);
     btnRefreshOutputFolder.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-    btnRefreshOutputFolder.setText(CompilerPreferencePage_refreshOutputProject);
+    btnRefreshOutputFolder.setText(refreshOutputProject);
     new Label(contents, SWT.NONE);
 
     updateFromPreferenceStore();
@@ -236,13 +236,13 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
   }
 
   private void checkState() {
-    String outputFolderName = txtOutputFolderName.getText();
-    if (outputFolderName == null || outputFolderName.length() == 0) {
-      pageIsNowInvalid(CompilerPreferencePage_error_noOutputFolderName);
+    String folderName = txtOutputFolderName.getText();
+    if (folderName == null || folderName.length() == 0) {
+      pageIsNowInvalid(errorNoOutputFolderName);
       return;
     }
     IWorkspace workspace = ResourcesPlugin.getWorkspace();
-    IStatus validFolderName = workspace.validateName(outputFolderName, FOLDER);
+    IStatus validFolderName = workspace.validateName(folderName, FOLDER);
     if (validFolderName.getCode() != OK) {
       pageIsNowInvalid(validFolderName.getMessage());
       return;
@@ -253,12 +253,12 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     }
     String text = txtProtocFilePath.getText();
     if (text == null || text.length() == 0) {
-      pageIsNowInvalid(CompilerPreferencePage_error_noSelection);
+      pageIsNowInvalid(errorNoSelection);
       return;
     }
     File file = new File(text);
     if (!file.isFile() || !"protoc".equals(file.getName())) {
-      pageIsNowInvalid(CompilerPreferencePage_error_invalidProtoc);
+      pageIsNowInvalid(errorInvalidProtoc);
       return;
     }
     pageIsNowValid();

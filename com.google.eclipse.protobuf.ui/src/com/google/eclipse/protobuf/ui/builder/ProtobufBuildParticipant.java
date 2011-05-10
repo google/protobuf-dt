@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.builder;
 
-import static com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferences.loadPreferences;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.Preferences.loadPreferences;
 import static com.google.eclipse.protobuf.ui.preferences.compiler.RefreshTarget.PROJECT;
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
 
@@ -24,8 +24,8 @@ import org.eclipse.xtext.resource.IResourceDescription;
 import org.eclipse.xtext.resource.IResourceDescription.Delta;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
-import com.google.eclipse.protobuf.ui.preferences.*;
 import com.google.eclipse.protobuf.ui.preferences.compiler.*;
+import com.google.eclipse.protobuf.ui.preferences.compiler.Preferences;
 import com.google.inject.Inject;
 
 /**
@@ -45,7 +45,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
 
   public void build(IBuildContext context, IProgressMonitor monitor) throws CoreException {
     IProject project = context.getBuiltProject();
-    CompilerPreferences preferences = loadPreferences(preferenceStoreAccess, project);
+    Preferences preferences = loadPreferences(preferenceStoreAccess, project);
     if (!preferences.compileProtoFiles) return;
     List<Delta> deltas = context.getDeltas();
     if (deltas.isEmpty()) return;

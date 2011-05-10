@@ -15,31 +15,31 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
 
+  public static String browseCustomPath;
+  public static String compileOnSave;
+  public static String errorInvalidProtoc;
+  public static String errorNoOutputFolderName;
+  public static String errorNoSelection;
+  public static String generateCpp;
+  public static String generateCode;
+  public static String generateJava;
+  public static String generatePython;
+  public static String outputFolderChildOfProjectFolder;
+  public static String outputFolderName;
+  public static String protocInCustomPath;
+  public static String protocInSystemPath;
+  public static String protocLocation;
+  public static String refreshOutputProject;
+  public static String refreshProject;
+  public static String refreshResources;
+  public static String tabMain;
+  public static String tabRefresh;
+  public static String targetLanguage;
+  
   static {
     Class<Messages> targetType = Messages.class;
     NLS.initializeMessages(targetType.getName(), targetType);
   }
-
-  private Messages() {}
   
-  public static String CompilerPreferencePage_mainTab;
-  public static String CompilerPreferencePage_refreshTab;
-  public static String CompilerPreferencePage_browseCustomPath;
-  public static String CompilerPreferencePage_compileOnSave;
-  public static String CompilerPreferencePage_customPath;
-  public static String CompilerPreferencePage_location;
-  public static String CompilerPreferencePage_systemPath;
-  public static String CompilerPreferencePage_targetLanguage;
-  public static String CompilerPreferencePage_generateJava;
-  public static String CompilerPreferencePage_generateCpp;
-  public static String CompilerPreferencePage_generatePython;
-  public static String CompilerPreferencePage_generatedCode;
-  public static String CompilerPreferencePage_outputFolderName;
-  public static String CompilerPreferencePage_directChildOfProjectFolder;
-  public static String CompilerPreferencePage_refreshResources;
-  public static String CompilerPreferencePage_refreshProject;
-  public static String CompilerPreferencePage_refreshOutputProject;
-  public static String CompilerPreferencePage_error_noSelection;
-  public static String CompilerPreferencePage_error_invalidProtoc;
-  public static String CompilerPreferencePage_error_noOutputFolderName;
+  private Messages() {}
 }

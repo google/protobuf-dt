@@ -60,11 +60,11 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
     contents.setLayout(new GridLayout(3, false));
     if (isPropertyPage()) {
       btnEnableProjectSettings = new Button(contents, SWT.CHECK);
-      btnEnableProjectSettings.setText(BasePreferencePage_enableProjectSettings);
+      btnEnableProjectSettings.setText(enableProjectSettings);
 
       lnkEnableWorkspaceSettings = new Link(contents, SWT.NONE);
       lnkEnableWorkspaceSettings.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-      lnkEnableWorkspaceSettings.setText("<a>" + BasePreferencePage_configureWorkspaceSettings + "</a>");
+      lnkEnableWorkspaceSettings.setText("<a>" + configureWorkspaceSettings + "</a>");
 
       Label label = new Label(contents, SWT.SEPARATOR | SWT.HORIZONTAL);
       label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
