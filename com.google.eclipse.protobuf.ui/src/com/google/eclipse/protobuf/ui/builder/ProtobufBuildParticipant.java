@@ -8,8 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.builder;
 
-import static com.google.eclipse.protobuf.ui.preferences.CompilerPreferences.loadPreferences;
-import static com.google.eclipse.protobuf.ui.preferences.RefreshTarget.PROJECT;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferences.loadPreferences;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.RefreshTarget.PROJECT;
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
 
 import java.io.*;
@@ -25,6 +25,7 @@ import org.eclipse.xtext.resource.IResourceDescription.Delta;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.eclipse.protobuf.ui.preferences.*;
+import com.google.eclipse.protobuf.ui.preferences.compiler.*;
 import com.google.inject.Inject;
 
 /**

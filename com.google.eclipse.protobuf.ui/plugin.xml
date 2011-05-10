@@ -63,8 +63,8 @@
       <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
     </page>
     <page category="com.google.eclipse.protobuf.Protobuf"
-      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.CompilerPreferencePage"
-      id="com.google.eclipse.protobuf.ui.preferences.CompilerPreferencePage" name="%page.name.2">
+      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferencePage"
+      id="com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferencePage" name="%page.name.2">
       <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
     </page>
   </extension>
@@ -161,8 +161,8 @@
   </extension>
   <extension point="org.eclipse.ui.propertyPages">
     <page
-      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.CompilerPreferencePage"
-      id="com.google.eclipse.protobuf.ui.properties.CompilerPropertyPage" name="%page.name.3" selectionFilter="single">
+      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferencePage"
+      id="com.google.eclipse.protobuf.ui.properties.compiler.CompilerPropertyPage" name="%page.name.3" selectionFilter="single">
     </page>
   </extension>
   <extension point="org.eclipse.xtext.builder.participant">

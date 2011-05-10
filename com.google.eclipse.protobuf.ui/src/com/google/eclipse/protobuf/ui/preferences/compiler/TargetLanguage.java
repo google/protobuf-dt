@@ -6,9 +6,9 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.preferences;
+package com.google.eclipse.protobuf.ui.preferences.compiler;
 
-import static com.google.eclipse.protobuf.ui.preferences.CompilerPreferenceNames.*;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferenceNames.*;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 

@@ -14,7 +14,7 @@ import java.util.Map;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 
-import com.google.eclipse.protobuf.ui.preferences.TargetLanguage;
+import com.google.eclipse.protobuf.ui.preferences.compiler.TargetLanguage;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

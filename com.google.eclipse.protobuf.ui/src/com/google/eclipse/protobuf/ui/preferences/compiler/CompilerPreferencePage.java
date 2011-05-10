@@ -6,10 +6,10 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.preferences;
+package com.google.eclipse.protobuf.ui.preferences.compiler;
 
-import static com.google.eclipse.protobuf.ui.preferences.CompilerPreferenceNames.*;
-import static com.google.eclipse.protobuf.ui.preferences.Messages.*;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferenceNames.*;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.*;
 import static org.eclipse.core.resources.IResource.FOLDER;
 import static org.eclipse.core.runtime.IStatus.OK;
 
@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
+import com.google.eclipse.protobuf.ui.preferences.PreferenceAndPropertyPage;
 import com.google.inject.Inject;
 
 /**
@@ -36,7 +37,7 @@ import com.google.inject.Inject;
  */
 public class CompilerPreferencePage extends PreferenceAndPropertyPage {
 
-  private static final String PREFERENCE_PAGE_ID = "com.google.eclipse.protobuf.ui.preferences.CompilerPreferencePage";
+  private static final String PREFERENCE_PAGE_ID = CompilerPreferencePage.class.getName();
 
   private Button btnCompileProtoFiles;
   private TabFolder tabFolder;
