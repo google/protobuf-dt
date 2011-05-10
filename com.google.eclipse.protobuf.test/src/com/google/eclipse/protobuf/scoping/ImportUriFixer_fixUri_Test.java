@@ -51,8 +51,8 @@ public class ImportUriFixer_fixUri_Test {
   }
 
   @Test public void should_fix_import_URI_even_if_overlapping_one_folder_only_with_resource_URI() {
-    String fixed = fixer.fixUri("src/proto/read-only/address.proto", resourceUri, resourceChecker);
-    assertThat(fixed, equalTo("platform:/resource/src/proto/read-only/address.proto"));  
+    String uri = fixer.fixUri("src/proto/read-only/address.proto", resourceUri, resourceChecker);
+    assertThat(uri, equalTo("platform:/resource/src/proto/read-only/address.proto"));  
   }
   
   private static class ResourceCheckerStub extends ResourceChecker {

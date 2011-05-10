@@ -21,6 +21,7 @@ public enum TargetLanguage {
 
   JAVA, CPP, PYTHON;
 
+  // TODO check if protoc can generate more than one language sources at the same time.
   static TargetLanguage find(IPreferenceStore store) {
     if (store.getBoolean(GENERATE_JAVA_CODE)) return JAVA;
     if (store.getBoolean(GENERATE_CPP_CODE)) return CPP;

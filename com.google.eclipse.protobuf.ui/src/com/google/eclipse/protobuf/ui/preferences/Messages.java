@@ -22,8 +22,9 @@ public class Messages extends NLS {
 
   private Messages() {}
 
-  public static String CompilerPreferencePage_enableProjectSettings;
-  public static String CompilerPreferencePage_configureWorkspaceSettings;
+  public static String BasePreferencePage_enableProjectSettings;
+  public static String BasePreferencePage_configureWorkspaceSettings;
+  
   public static String CompilerPreferencePage_mainTab;
   public static String CompilerPreferencePage_refreshTab;
   public static String CompilerPreferencePage_browseCustomPath;
@@ -37,6 +38,7 @@ public class Messages extends NLS {
   public static String CompilerPreferencePage_generatePython;
   public static String CompilerPreferencePage_generatedCode;
   public static String CompilerPreferencePage_outputFolderName;
+  public static String CompilerPreferencePage_directChildOfProjectFolder;
   public static String CompilerPreferencePage_refreshResources;
   public static String CompilerPreferencePage_refreshProject;
   public static String CompilerPreferencePage_refreshOutputProject;
