@@ -19,7 +19,7 @@ import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class PreferencesInitializer implements IPreferenceStoreInitializer {
+public class CompilerPreferencesInitializer implements IPreferenceStoreInitializer {
 
   /** {@inheritDoc} */
   public void initialize(IPreferenceStoreAccess access) {

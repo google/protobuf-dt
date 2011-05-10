@@ -17,7 +17,7 @@ import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
 import com.google.eclipse.protobuf.ui.builder.AutoAddNatureEditorCallback;
 import com.google.eclipse.protobuf.ui.outline.LinkWithEditor;
 import com.google.eclipse.protobuf.ui.outline.ProtobufOutlinePage;
-import com.google.eclipse.protobuf.ui.preferences.compiler.PreferencesInitializer;
+import com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferencesInitializer;
 import com.google.inject.Binder;
 import com.google.inject.name.Names;
 
@@ -50,7 +50,7 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
   public void configureCompilerPreferencesInitializer(Binder binder) {
     binder.bind(IPreferenceStoreInitializer.class)
           .annotatedWith(Names.named("compilerPreferences"))
-          .to(PreferencesInitializer.class);
+          .to(CompilerPreferencesInitializer.class);
   }
 
 }
