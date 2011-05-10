@@ -11,7 +11,6 @@ package com.google.eclipse.protobuf.scoping;
 import static org.eclipse.emf.common.util.URI.createURI;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
 
 import org.eclipse.emf.common.util.URI;
 import org.junit.Before;
@@ -25,32 +24,46 @@ import org.junit.Test;
 public class ImportUriFixer_fixUri_Test {
 
   private URI resourceUri;
-  private ResourceChecker resourceChecker;
+  private ResourceCheckerStub resourceChecker;
   private ImportUriFixer fixer;
 
   @Before public void setUp() {
-    resourceUri = createURI("platform:/resource/testing/src/test.proto");
-    resourceChecker = mock(ResourceChecker.class);
+    resourceUri = createURI("platform:/resource/src/proto/person.proto");
+    resourceChecker = new ResourceCheckerStub();
+    resourceChecker.resourceShouldAlwaysExist = true;
     fixer = new ImportUriFixer();
   }
 
   @Test public void should_fix_import_URI_if_missing_scheme() {
-    String expected = "platform:/resource/testing/src/folder1/test.proto";
-    when(resourceChecker.resourceExists(expected)).thenReturn(true);
-    String fixed = fixer.fixUri("folder1/test.proto", resourceUri, resourceChecker);
-    assertThat(fixed, equalTo(expected));  
+    String uri = fixer.fixUri("folder1/address.proto", resourceUri, resourceChecker);
+    assertThat(uri, equalTo("platform:/resource/src/proto/folder1/address.proto"));  
   }
 
   @Test public void should_not_fix_import_URI_if_not_missing_scheme() {
-    String importUri = "platform:/resource/testing/src/folder1/test.proto";
-    String fixed = fixer.fixUri(importUri, resourceUri, resourceChecker);
-    assertThat(fixed, equalTo(importUri));
+    String originalUri = "platform:/resource/src/proto/folder1/address.proto";
+    String uri = fixer.fixUri(originalUri, resourceUri, resourceChecker);
+    assertThat(uri, equalTo(originalUri));
   }
   
   @Test public void should_fix_import_URI_even_if_overlapping_folders_with_resource_URI() {
-    String expected = "platform:/resource/testing/src/folder1/test.proto";
-    when(resourceChecker.resourceExists(expected)).thenReturn(true);
-    String fixed = fixer.fixUri("testing/src/folder1/test.proto", resourceUri, resourceChecker);
-    assertThat(fixed, equalTo(expected));  
+    String uri = fixer.fixUri("src/proto/folder1/address.proto", resourceUri, resourceChecker);
+    assertThat(uri, equalTo("platform:/resource/src/proto/folder1/address.proto"));  
+  }
+
+  @Test public void should_fix_import_URI_even_if_overlapping_one_folder_only_with_resource_URI() {
+    String fixed = fixer.fixUri("src/proto/read-only/address.proto", resourceUri, resourceChecker);
+    assertThat(fixed, equalTo("platform:/resource/src/proto/read-only/address.proto"));  
+  }
+  
+  private static class ResourceCheckerStub extends ResourceChecker {
+    boolean resourceShouldAlwaysExist;
+    
+    ResourceCheckerStub() {
+      super(null);
+    }
+
+    @Override boolean resourceExists(String uri) {
+      return resourceShouldAlwaysExist;
+    }
   }
 }
