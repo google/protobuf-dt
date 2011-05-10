@@ -8,27 +8,39 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.paths;
 
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.*;
+import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.*;
+import static org.eclipse.core.runtime.IStatus.OK;
+
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
+import org.eclipse.xtext.util.Strings;
 
 import com.google.eclipse.protobuf.ui.preferences.PreferenceAndPropertyPage;
+import com.google.eclipse.protobuf.ui.util.FolderNameValidator;
 import com.google.inject.Inject;
 
 /**
+ * Preference page for import paths.
+ * 
  * @author alruiz@google.com (Alex Ruiz)
- *
  */
 public class PreferencePage extends PreferenceAndPropertyPage {
 
   private static final String PREFERENCE_PAGE_ID = PreferencePage.class.getName();
 
   private Group grpResolutionOfImported;
-  private Button btnOneFolderFor;
-  private Button btnLookForImported;
+  private Button btnOneFolderOnly;
+  private Button btnMultipleFolders;
   private Text txtFolderNames;
+
+  @Inject private FolderNameValidator folderNameValidator;
 
   @Inject public PreferencePage(IPreferenceStoreAccess preferenceStoreAccess) {
     super(preferenceStoreAccess);
@@ -42,26 +54,84 @@ public class PreferencePage extends PreferenceAndPropertyPage {
     grpResolutionOfImported = new Group(contents, SWT.NONE);
     grpResolutionOfImported.setLayout(new GridLayout(1, false));
     grpResolutionOfImported.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-    grpResolutionOfImported.setText("Resolution of imported files");
+    grpResolutionOfImported.setText(importedFilesResolution);
     
-    btnOneFolderFor = new Button(grpResolutionOfImported, SWT.RADIO);
-    btnOneFolderFor.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
-    btnOneFolderFor.setText("One folder for all .proto files");
+    btnOneFolderOnly = new Button(grpResolutionOfImported, SWT.RADIO);
+    btnOneFolderOnly.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
+    btnOneFolderOnly.setText(allProtosInOneFolder);
     
-    btnLookForImported = new Button(grpResolutionOfImported, SWT.RADIO);
-    btnLookForImported.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
-    btnLookForImported.setText("Look for imported files in folders:");
+    btnMultipleFolders = new Button(grpResolutionOfImported, SWT.RADIO);
+    btnMultipleFolders.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
+    btnMultipleFolders.setText(allProtosInMultipleFolders);
     
     txtFolderNames = new Text(grpResolutionOfImported, SWT.BORDER);
     txtFolderNames.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
     new Label(contents, SWT.NONE);
+    
+    updateFromPreferenceStore();
+    addEventListeners();
+    
     return contents;
   }
 
+  private void updateFromPreferenceStore() {
+    IPreferenceStore store = doGetPreferenceStore();
+    btnOneFolderOnly.setSelection(store.getBoolean(ALL_PROTOS_IN_ONE_FOLDER_ONLY));
+    btnMultipleFolders.setSelection(store.getBoolean(PROTOS_IN_MULTIPLE_FOLDERS));
+    txtFolderNames.setText(store.getString(FOLDER_NAMES));
+    boolean shouldEnablePathsOptions = true;
+    if (isPropertyPage()) {
+      boolean useProjectSettings = store.getBoolean(ENABLE_PROJECT_SETTINGS);
+      activateProjectSettings(useProjectSettings);
+      shouldEnablePathsOptions = shouldEnablePathsOptions & useProjectSettings;
+    }
+    enableProjectOptions(shouldEnablePathsOptions);
+  }
+
+  private void addEventListeners() {
+    addSelectionListener(new SelectionAdapter() {
+      @Override public void widgetSelected(SelectionEvent e) {
+        boolean selected = btnMultipleFolders.getSelection();
+        txtFolderNames.setEnabled(selected);
+        checkState();
+      }
+    }, btnOneFolderOnly, btnMultipleFolders);
+    txtFolderNames.addModifyListener(new ModifyListener() {
+      public void modifyText(ModifyEvent e) {
+        checkState();
+      }
+    });
+  }
+
+  private void checkState() {
+    if (txtFolderNames.isEnabled()) {
+      String folderNamesTogether = txtFolderNames.getText();
+      if (Strings.isEmpty(folderNamesTogether)) {
+        pageIsNowInvalid(errorNoFolderNames);
+        return;
+      }
+      String[] folderNames = folderNamesTogether.split("[\\s]*,[\\s]*"); //$NON-NLS-1$
+      for (String folderName : folderNames) {
+        IStatus validFolderName = folderNameValidator.validateFolderName(folderName);
+        if (validFolderName.getCode() != OK) {
+          pageIsNowInvalid(validFolderName.getMessage());
+          return;
+        }
+      }
+    }
+    pageIsNowValid();
+  }
+  
   /** {@inheritDoc} */
   @Override protected void onProjectSettingsActivation(boolean active) {
-    // TODO Auto-generated method stub
-
+    enableProjectOptions(active);
+  }
+  
+  private void enableProjectOptions(boolean enabled) {
+    grpResolutionOfImported.setEnabled(enabled);
+    btnOneFolderOnly.setEnabled(enabled);
+    btnMultipleFolders.setEnabled(enabled);
+    txtFolderNames.setEnabled(btnMultipleFolders.getSelection() && enabled);
   }
 
   /** {@inheritDoc} */
@@ -72,7 +142,5 @@ public class PreferencePage extends PreferenceAndPropertyPage {
   /** {@inheritDoc} */
   @Override protected void savePreferences() {
     // TODO Auto-generated method stub
-    
   }
-
 }

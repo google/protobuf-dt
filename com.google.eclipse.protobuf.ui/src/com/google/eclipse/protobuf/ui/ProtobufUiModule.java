@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui;
 
+import static com.google.inject.name.Names.named;
+
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.xtext.ui.editor.IXtextEditorCallback;
@@ -18,8 +20,8 @@ import com.google.eclipse.protobuf.ui.builder.AutoAddNatureEditorCallback;
 import com.google.eclipse.protobuf.ui.outline.LinkWithEditor;
 import com.google.eclipse.protobuf.ui.outline.ProtobufOutlinePage;
 import com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferencesInitializer;
+import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferencesInitializer;
 import com.google.inject.Binder;
-import com.google.inject.name.Names;
 
 /**
  * Use this class to register components to be used within the IDE.
@@ -48,9 +50,15 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
   }
 
   public void configureCompilerPreferencesInitializer(Binder binder) {
-    binder.bind(IPreferenceStoreInitializer.class)
-          .annotatedWith(Names.named("compilerPreferences"))
-          .to(CompilerPreferencesInitializer.class);
+    configurePreferenceInitializer(binder, "compilerPreferences", CompilerPreferencesInitializer.class);
   }
 
+  public void configurePathsPreferencesInitializer(Binder binder) {
+    configurePreferenceInitializer(binder, "pathsPreferences", PathsPreferencesInitializer.class);
+  }
+  
+  private void configurePreferenceInitializer(Binder binder, String name,
+      Class<? extends IPreferenceStoreInitializer> initializerType) {
+    binder.bind(IPreferenceStoreInitializer.class).annotatedWith(named(name)).to(initializerType);
+  }
 }

@@ -10,13 +10,11 @@ package com.google.eclipse.protobuf.ui.preferences.compiler;
 
 import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.*;
 import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.*;
-import static org.eclipse.core.resources.IResource.FOLDER;
 import static org.eclipse.core.runtime.IStatus.OK;
+import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import java.io.File;
 
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
@@ -27,6 +25,7 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.eclipse.protobuf.ui.preferences.PreferenceAndPropertyPage;
+import com.google.eclipse.protobuf.ui.util.FolderNameValidator;
 import com.google.inject.Inject;
 
 /**
@@ -60,6 +59,8 @@ public class PreferencePage extends PreferenceAndPropertyPage {
   private Button btnRefreshOutputFolder;
   private Label lblOutputFolderRelative;
 
+  @Inject private FolderNameValidator folderNameValidator;
+  
   @Inject public PreferencePage(IPreferenceStoreAccess preferenceStoreAccess) {
     super(preferenceStoreAccess);
   }
@@ -180,38 +181,31 @@ public class PreferencePage extends PreferenceAndPropertyPage {
     btnRefreshResources.setSelection(store.getBoolean(REFRESH_RESOURCES));
     btnRefreshProject.setSelection(store.getBoolean(REFRESH_PROJECT));
     btnRefreshOutputFolder.setSelection(store.getBoolean(REFRESH_OUTPUT_FOLDER));
-    boolean enableCompilerOptions = compileProtoFiles;
+    boolean shouldEnableCompilerOptions = compileProtoFiles;
     if (isPropertyPage()) {
       boolean useProjectSettings = store.getBoolean(ENABLE_PROJECT_SETTINGS);
       activateProjectSettings(useProjectSettings);
-      setProjectSpecificOptionsEnabled(useProjectSettings);
-      enableCompilerOptions = enableCompilerOptions && useProjectSettings;
+      enableProjectSpecificOptions(useProjectSettings);
+      shouldEnableCompilerOptions = shouldEnableCompilerOptions && useProjectSettings;
     }
-    setCompilerOptionsEnabled(enableCompilerOptions);
+    enableCompilerOptions(shouldEnableCompilerOptions);
   }
 
   private void addEventListeners() {
     btnCompileProtoFiles.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
         boolean selected = btnCompileProtoFiles.getSelection();
-        setCompilerOptionsEnabled(selected);
+        enableCompilerOptions(selected);
         checkState();
       }
     });
-    btnUseProtocInSystemPath.addSelectionListener(new SelectionAdapter() {
+    addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
-        boolean selected = btnCompileProtoFiles.getSelection();
-        setCompilerCustomPathOptionsEnabled(!selected);
+        boolean selected = btnUseProtocInCustomPath.getSelection();
+        enableCompilerCustomPathOptions(!selected);
         checkState();
       }
-    });
-    btnUseProtocInCustomPath.addSelectionListener(new SelectionAdapter() {
-      @Override public void widgetSelected(SelectionEvent e) {
-        boolean selected = btnCompileProtoFiles.getSelection();
-        setCompilerCustomPathOptionsEnabled(selected);
-        checkState();
-      }
-    });
+    }, btnUseProtocInCustomPath, btnUseProtocInSystemPath);
     btnProtocPathBrowse.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
         FileDialog dialog = new FileDialog(getShell(), SWT.OPEN | SWT.SHEET);
@@ -224,23 +218,20 @@ public class PreferencePage extends PreferenceAndPropertyPage {
         refreshResourcesOptionsEnabled(btnRefreshResources.getSelection());
       }
     });
-    ModifyListener modifyListener = new ModifyListener() {
+    addModifyListener(new ModifyListener() {
       public void modifyText(ModifyEvent e) {
         checkState();
       }
-    };
-    txtProtocFilePath.addModifyListener(modifyListener);
-    txtOutputFolderName.addModifyListener(modifyListener);
+    }, txtProtocFilePath, txtOutputFolderName);
   }
 
   private void checkState() {
     String folderName = txtOutputFolderName.getText();
-    if (folderName == null || folderName.length() == 0) {
+    if (isEmpty(folderName)) {
       pageIsNowInvalid(errorNoOutputFolderName);
       return;
     }
-    IWorkspace workspace = ResourcesPlugin.getWorkspace();
-    IStatus validFolderName = workspace.validateName(folderName, FOLDER);
+    IStatus validFolderName = folderNameValidator.validateFolderName(folderName);
     if (validFolderName.getCode() != OK) {
       pageIsNowInvalid(validFolderName.getMessage());
       return;
@@ -249,27 +240,17 @@ public class PreferencePage extends PreferenceAndPropertyPage {
       pageIsNowValid();
       return;
     }
-    String text = txtProtocFilePath.getText();
-    if (text == null || text.length() == 0) {
+    String protocPath = txtProtocFilePath.getText();
+    if (isEmpty(protocPath)) {
       pageIsNowInvalid(errorNoSelection);
       return;
     }
-    File file = new File(text);
+    File file = new File(protocPath);
     if (!file.isFile() || !"protoc".equals(file.getName())) {
       pageIsNowInvalid(errorInvalidProtoc);
       return;
     }
     pageIsNowValid();
-  }
-
-  private void pageIsNowValid() {
-    setErrorMessage(null);
-    setValid(true);
-  }
-
-  private void pageIsNowInvalid(String errorMessage) {
-    setErrorMessage(errorMessage);
-    setValid(false);
   }
 
   /** {@inheritDoc} */
@@ -291,33 +272,39 @@ public class PreferencePage extends PreferenceAndPropertyPage {
     if (isPropertyPage()) {
       boolean useProjectSettings = store.getDefaultBoolean(ENABLE_PROJECT_SETTINGS);
       activateProjectSettings(useProjectSettings);
-      setProjectSpecificOptionsEnabled(useProjectSettings);
+      enableProjectSpecificOptions(useProjectSettings);
       enableCompilerOptions = enableCompilerOptions && useProjectSettings;
     }
-    setCompilerOptionsEnabled(enableCompilerOptions);
+    enableCompilerOptions(enableCompilerOptions);
     super.performDefaults();
   }
+  
+  /** {@inheritDoc} */
+  @Override protected void onProjectSettingsActivation(boolean active) {
+    enableProjectSpecificOptions(active);
+    enableCompilerOptions(isEnabledAndSelected(btnCompileProtoFiles));
+  }
 
-  private void setProjectSpecificOptionsEnabled(boolean enabled) {
+  private void enableProjectSpecificOptions(boolean enabled) {
     btnCompileProtoFiles.setEnabled(enabled);
   }
 
-  private void setCompilerOptionsEnabled(boolean enabled) {
+  private void enableCompilerOptions(boolean enabled) {
     tabFolder.setEnabled(enabled);
-    setCompilerPathOptionsEnabled(enabled);
-    setTargetLanguageOptionsEnabled(enabled);
-    setOutputOptionsEnabled(enabled);
-    setRefreshOptionsEnabled(enabled);
+    enableCompilerPathOptions(enabled);
+    enableTargetLanguageOptions(enabled);
+    enableOutputOptions(enabled);
+    enableRefreshOptions(enabled);
   }
 
-  private void setCompilerPathOptionsEnabled(boolean enabled) {
+  private void enableCompilerPathOptions(boolean enabled) {
     grpCompilerLocation.setEnabled(enabled);
     btnUseProtocInSystemPath.setEnabled(enabled);
     btnUseProtocInCustomPath.setEnabled(enabled);
-    setCompilerCustomPathOptionsEnabled(customPathOptionSelectedAndEnabled());
+    enableCompilerCustomPathOptions(customPathOptionSelectedAndEnabled());
   }
 
-  private void setCompilerCustomPathOptionsEnabled(boolean enabled) {
+  private void enableCompilerCustomPathOptions(boolean enabled) {
     txtProtocFilePath.setEnabled(enabled);
     btnProtocPathBrowse.setEnabled(enabled);
   }
@@ -330,21 +317,21 @@ public class PreferencePage extends PreferenceAndPropertyPage {
     return b.isEnabled() && b.getSelection();
   }
 
-  private void setTargetLanguageOptionsEnabled(boolean enabled) {
+  private void enableTargetLanguageOptions(boolean enabled) {
     grpTargetLanguage.setEnabled(enabled);
     btnJava.setEnabled(enabled);
     btnCpp.setEnabled(enabled);
     btnPython.setEnabled(enabled);
   }
 
-  private void setOutputOptionsEnabled(boolean enabled) {
+  private void enableOutputOptions(boolean enabled) {
     grpOutput.setEnabled(enabled);
     lblOutputFolderName.setEnabled(enabled);
     txtOutputFolderName.setEnabled(enabled);
     lblOutputFolderRelative.setEnabled(enabled);
   }
 
-  private void setRefreshOptionsEnabled(boolean enabled) {
+  private void enableRefreshOptions(boolean enabled) {
     btnRefreshResources.setEnabled(enabled);
     refreshResourcesOptionsEnabled(isEnabledAndSelected(btnRefreshResources));
   }
@@ -372,12 +359,6 @@ public class PreferencePage extends PreferenceAndPropertyPage {
     store.setValue(REFRESH_RESOURCES, btnRefreshResources.getSelection());
     store.setValue(REFRESH_PROJECT, btnRefreshProject.getSelection());
     store.setValue(REFRESH_OUTPUT_FOLDER, btnRefreshOutputFolder.getSelection());
-  }
-  
-  /** {@inheritDoc} */
-  @Override protected void onProjectSettingsActivation(boolean active) {
-    setProjectSpecificOptionsEnabled(active);
-    setCompilerOptionsEnabled(isEnabledAndSelected(btnCompileProtoFiles));
   }
   
   /** {@inheritDoc} */

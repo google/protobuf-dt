@@ -18,8 +18,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
@@ -185,4 +184,40 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
    * Saves the current settings.
    */
   protected abstract void savePreferences();
+  
+  /**
+   * Adds the given <code>{@link SelectionListener}</code> to the given <code>{@link Button}</code>s.
+   * @param listener the listener to add.
+   * @param buttons the buttons to add the listener to.
+   */
+  protected static void addSelectionListener(SelectionListener listener, Button...buttons) {
+    for (Button button : buttons) button.addSelectionListener(listener);
+  }
+  
+  /**
+   * Adds the given <code>{@link ModifyListener}</code> to the given <code>{@link Text}</code> widgets.
+   * @param listener the listener to add.
+   * @param texts the text widgets to add the listener to.
+   */
+  protected static void addModifyListener(ModifyListener listener, Text...texts) {
+    for (Text text : texts) text.addModifyListener(listener);
+  }
+
+  /**
+   * Marks this page as "valid."
+   */
+  protected final void pageIsNowValid() {
+    setErrorMessage(null);
+    setValid(true);
+  }
+
+  /**
+   * Marks this page as "invalid."
+   * @param errorMessage the error message to display.
+   */
+  protected final void pageIsNowInvalid(String errorMessage) {
+    setErrorMessage(errorMessage);
+    setValid(false);
+  }
 }
+
