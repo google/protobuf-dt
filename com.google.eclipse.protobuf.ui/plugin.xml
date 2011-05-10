@@ -48,7 +48,7 @@
   </extension>
   <extension point="org.eclipse.ui.preferencePages">
     <page
-      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
+      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.RootPreferencePage"
       id="com.google.eclipse.protobuf.Protobuf" name="%page.name">
       <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
     </page>
@@ -65,6 +65,11 @@
     <page category="com.google.eclipse.protobuf.Protobuf"
       class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.compiler.PreferencePage"
       id="com.google.eclipse.protobuf.ui.preferences.compiler.PreferencePage" name="%page.name.2">
+      <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
+    </page>
+    <page category="com.google.eclipse.protobuf.Protobuf"
+      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.paths.PreferencePage"
+      id="com.google.eclipse.protobuf.ui.preferences.paths.PreferencePage" name="%page.name.3">
       <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
     </page>
   </extension>
@@ -161,8 +166,23 @@
   </extension>
   <extension point="org.eclipse.ui.propertyPages">
     <page
-      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.compiler.PreferencePage"
-      id="com.google.eclipse.protobuf.ui.properties.compiler.PropertyPage" name="%page.name.3" selectionFilter="single">
+      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.RootPreferencePage"
+      id="com.google.eclipse.protobuf.Protobuf"
+      name="%page.name" selectionFilter="single">
+    </page>
+    <page
+          category="com.google.eclipse.protobuf.Protobuf"
+          class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.compiler.PreferencePage"
+          id="com.google.eclipse.protobuf.ui.properties.compiler.PropertyPage"
+          name="%page.name.2"
+          selectionFilter="single">
+    </page>
+    <page
+          category="com.google.eclipse.protobuf.Protobuf"
+          class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.paths.PreferencePage"
+          id="com.google.eclipse.protobuf.ui.properties.paths.PropertyPage"
+          name="%page.name.3"
+          selectionFilter="single">
     </page>
   </extension>
   <extension point="org.eclipse.xtext.builder.participant">

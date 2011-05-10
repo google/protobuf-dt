@@ -23,8 +23,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
-import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eclipse.ui.IWorkbenchPropertyPage;
+import org.eclipse.ui.*;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.inject.Inject;
@@ -173,4 +172,17 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
   protected final boolean areProjectSettingsActive() {
     return btnEnableProjectSettings.getSelection();
   }
+
+  /** {@inheritDoc} */
+  public void init(IWorkbench workbench) {}
+
+  @Override public final boolean performOk() {
+    savePreferences();
+    return true;
+  }
+
+  /**
+   * Saves the current settings.
+   */
+  protected abstract void savePreferences();
 }
