@@ -20,6 +20,9 @@ import com.google.inject.Singleton;
 @Singleton
 public class Strings {
 
+  /** Pattern to split CSVs. */
+  public static final String CSV_PATTERN = "[\\s]*,[\\s]*";
+
   /**
    * Returns a {@code String} with the same content as the given one, but with the first character in lower case.
    * @param s the original {@code String}
@@ -32,5 +35,4 @@ public class Strings {
     chars[0] = toLowerCase(chars[0]);
     return new String(chars);
   }
-
 }

@@ -226,7 +226,7 @@ public class PreferencePage extends PreferenceAndPropertyPage {
   }
 
   private void checkState() {
-    String folderName = txtOutputFolderName.getText();
+    String folderName = txtOutputFolderName.getText().trim();
     if (isEmpty(folderName)) {
       pageIsNowInvalid(errorNoOutputFolderName);
       return;
@@ -345,9 +345,7 @@ public class PreferencePage extends PreferenceAndPropertyPage {
   /** {@inheritDoc} */
   @Override protected void savePreferences() {
     IPreferenceStore store = getPreferenceStore();
-    if (isPropertyPage()) {
-      store.setValue(ENABLE_PROJECT_SETTINGS, areProjectSettingsActive());
-    }
+    if (isPropertyPage()) store.setValue(ENABLE_PROJECT_SETTINGS, areProjectSettingsActive());
     store.setValue(COMPILE_PROTO_FILES, btnCompileProtoFiles.getSelection());
     store.setValue(USE_PROTOC_IN_SYSTEM_PATH, btnUseProtocInSystemPath.getSelection());
     store.setValue(USE_PROTOC_IN_CUSTOM_PATH, btnUseProtocInCustomPath.getSelection());
@@ -355,7 +353,7 @@ public class PreferencePage extends PreferenceAndPropertyPage {
     store.setValue(GENERATE_JAVA_CODE, btnJava.getSelection());
     store.setValue(GENERATE_CPP_CODE, btnCpp.getSelection());
     store.setValue(GENERATE_PYTHON_CODE, btnPython.getSelection());
-    store.setValue(OUTPUT_FOLDER_NAME, txtOutputFolderName.getText());
+    store.setValue(OUTPUT_FOLDER_NAME, txtOutputFolderName.getText().trim());
     store.setValue(REFRESH_RESOURCES, btnRefreshResources.getSelection());
     store.setValue(REFRESH_PROJECT, btnRefreshProject.getSelection());
     store.setValue(REFRESH_OUTPUT_FOLDER, btnRefreshOutputFolder.getSelection());

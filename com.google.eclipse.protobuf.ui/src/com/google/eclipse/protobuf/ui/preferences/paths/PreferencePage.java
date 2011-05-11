@@ -10,7 +10,9 @@ package com.google.eclipse.protobuf.ui.preferences.paths;
 
 import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.*;
 import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.*;
+import static com.google.eclipse.protobuf.ui.util.Strings.CSV_PATTERN;
 import static org.eclipse.core.runtime.IStatus.OK;
+import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -20,7 +22,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
-import org.eclipse.xtext.util.Strings;
 
 import com.google.eclipse.protobuf.ui.preferences.PreferenceAndPropertyPage;
 import com.google.eclipse.protobuf.ui.util.FolderNameValidator;
@@ -66,6 +67,9 @@ public class PreferencePage extends PreferenceAndPropertyPage {
     
     txtFolderNames = new Text(grpResolutionOfImported, SWT.BORDER);
     txtFolderNames.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+    
+    Label label = new Label(grpResolutionOfImported, SWT.NONE);
+    label.setText(folderNameHint);
     new Label(contents, SWT.NONE);
     
     updateFromPreferenceStore();
@@ -105,13 +109,12 @@ public class PreferencePage extends PreferenceAndPropertyPage {
 
   private void checkState() {
     if (txtFolderNames.isEnabled()) {
-      String folderNamesTogether = txtFolderNames.getText();
-      if (Strings.isEmpty(folderNamesTogether)) {
+      String folderNames = txtFolderNames.getText().trim();
+      if (isEmpty(folderNames)) {
         pageIsNowInvalid(errorNoFolderNames);
         return;
       }
-      String[] folderNames = folderNamesTogether.split("[\\s]*,[\\s]*"); //$NON-NLS-1$
-      for (String folderName : folderNames) {
+      for (String folderName : folderNames.split(CSV_PATTERN)) {
         IStatus validFolderName = folderNameValidator.validateFolderName(folderName);
         if (validFolderName.getCode() != OK) {
           pageIsNowInvalid(validFolderName.getMessage());
@@ -126,6 +129,21 @@ public class PreferencePage extends PreferenceAndPropertyPage {
   @Override protected void onProjectSettingsActivation(boolean active) {
     enableProjectOptions(active);
   }
+
+  @Override protected void performDefaults() {
+    IPreferenceStore store = doGetPreferenceStore();
+    btnOneFolderOnly.setSelection(store.getDefaultBoolean(ALL_PROTOS_IN_ONE_FOLDER_ONLY));
+    btnMultipleFolders.setSelection(store.getDefaultBoolean(PROTOS_IN_MULTIPLE_FOLDERS));
+    txtFolderNames.setText(store.getDefaultString(FOLDER_NAMES));
+    boolean shouldEnablePathsOptions = true;
+    if (isPropertyPage()) {
+      boolean useProjectSettings = store.getDefaultBoolean(ENABLE_PROJECT_SETTINGS);
+      activateProjectSettings(useProjectSettings);
+      shouldEnablePathsOptions = shouldEnablePathsOptions & useProjectSettings;
+    }
+    enableProjectOptions(shouldEnablePathsOptions);
+    super.performDefaults();
+  }
   
   private void enableProjectOptions(boolean enabled) {
     grpResolutionOfImported.setEnabled(enabled);
@@ -133,14 +151,18 @@ public class PreferencePage extends PreferenceAndPropertyPage {
     btnMultipleFolders.setEnabled(enabled);
     txtFolderNames.setEnabled(btnMultipleFolders.getSelection() && enabled);
   }
+  
+  /** {@inheritDoc} */
+  @Override protected void savePreferences() {
+    IPreferenceStore store = getPreferenceStore();
+    if (isPropertyPage()) store.setValue(ENABLE_PROJECT_SETTINGS, areProjectSettingsActive());
+    store.setValue(ALL_PROTOS_IN_ONE_FOLDER_ONLY, btnOneFolderOnly.getSelection());
+    store.setValue(PROTOS_IN_MULTIPLE_FOLDERS, btnMultipleFolders.getSelection());
+    store.setValue(FOLDER_NAMES, txtFolderNames.getText().trim());
+  }
 
   /** {@inheritDoc} */
   @Override protected String preferencePageId() {
     return PREFERENCE_PAGE_ID;
-  }
-
-  /** {@inheritDoc} */
-  @Override protected void savePreferences() {
-    // TODO Auto-generated method stub
   }
 }
