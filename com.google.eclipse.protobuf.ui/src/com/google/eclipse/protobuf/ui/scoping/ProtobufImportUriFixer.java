@@ -8,17 +8,24 @@
  */
 package com.google.eclipse.protobuf.ui.scoping;
 
+import static com.google.eclipse.protobuf.ui.preferences.paths.FileResolutionType.SINGLE_FOLDER;
 import static org.eclipse.emf.common.util.URI.createURI;
 import static org.eclipse.xtext.util.Tuples.pair;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 import org.eclipse.xtext.util.Pair;
 
 import com.google.eclipse.protobuf.scoping.ImportUriFixer;
 import com.google.eclipse.protobuf.scoping.ResourceChecker;
+import com.google.eclipse.protobuf.ui.preferences.paths.Preferences;
+import com.google.inject.Inject;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -27,6 +34,8 @@ public class ProtobufImportUriFixer implements ImportUriFixer {
   
   private static final String SEPARATOR = "/";
 
+  @Inject private IPreferenceStoreAccess access;
+  
   /*
    * The import URI is relative to the file where the import is. Protoc works fine, but the editor doesn't.
    * In order for the editor to see the import, we need to add to the import URI "platform:resource" and the parent
@@ -45,17 +54,34 @@ public class ProtobufImportUriFixer implements ImportUriFixer {
   public String fixUri(String importUri, URI resourceUri, ResourceChecker checker) {
     if (importUri.startsWith(PREFIX)) return importUri;
     Pair<String, List<String>> importUriPair = pair(importUri, createURI(importUri).segmentsList());
-    String fixed = fixUri(importUriPair, resourceUri, checker);
+    Preferences preferences = Preferences.loadPreferences(access, projectFrom(resourceUri));
+    String fixed = fixUri(importUriPair, resourceUri, checker, preferences);
     System.out.println(resourceUri + " : " + importUri + " : " + fixed);
     if (fixed == null) return importUri;
     return fixed;
   }
-  
-  private String fixUri(Pair<String, List<String>> importUri, URI resourceUri, ResourceChecker checker) {
-    List<String> segments = resourceUri.segmentsList();
-    return fixUri(importUri, removeFirstAndLast(segments), checker);
-  }
 
+  private static IProject projectFrom(URI resourceUri) {
+    IPath resourcePath = new Path(resourceUri.toPlatformString(true));
+    IFile resource = ResourcesPlugin.getWorkspace().getRoot().getFile(resourcePath);
+    return resource.getProject();
+  }
+  
+  private String fixUri(Pair<String, List<String>> importUri, URI resourceUri, ResourceChecker checker,
+      Preferences preferences) {
+    List<String> segments = removeFirstAndLast(resourceUri.segmentsList());
+    if (preferences.fileResolutionType.equals(SINGLE_FOLDER)) {
+      return fixUri(importUri, segments, checker);
+    }
+    List<String> folderNames = preferences.folderNames;
+    for (String folderName : folderNames) {
+      segments.set(1, folderName);
+      String fixed = fixUri(importUri, segments, checker);
+      if (fixed != null) return fixed;
+    }
+    return null;
+  }
+  
   private List<String> removeFirstAndLast(List<String> list) {
     if (list.isEmpty()) return list;
     List<String> newList = new ArrayList<String>(list);
