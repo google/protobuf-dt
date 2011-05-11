@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.scoping;
+package com.google.eclipse.protobuf.ui.scoping;
 
 import static org.eclipse.emf.common.util.URI.createURI;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -16,12 +16,14 @@ import org.eclipse.emf.common.util.URI;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.eclipse.protobuf.scoping.ResourceChecker;
+
 /**
  * Tests for <code>{@link ProtobufImportUriFixer#fixUri(String, URI, ResourceChecker)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ImportUriFixer_fixUri_Test {
+public class ProtobufImportUriFixer_fixUri_Test {
 
   private URI resourceUri;
   private ResourceCheckerStub resourceChecker;
@@ -62,7 +64,7 @@ public class ImportUriFixer_fixUri_Test {
       super(null);
     }
 
-    @Override boolean resourceExists(String uri) {
+    @Override public boolean resourceExists(String uri) {
       return resourceShouldAlwaysExist;
     }
   }

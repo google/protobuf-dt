@@ -14,17 +14,24 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
 /**
+ * Verifies that resources exist.
+ *  
  * @author alruiz@google.com (Alex Ruiz)
  */
-class ResourceChecker {
+public class ResourceChecker {
 
   private final ResourceSet resourceSet;
 
-  ResourceChecker(ResourceSet resourceSet) {
+  public ResourceChecker(ResourceSet resourceSet) {
     this.resourceSet = resourceSet;
   }
   
-  boolean resourceExists(String uri) {
+  /**
+   * Indicates whether the given URI belongs to an existing resource.
+   * @param uri the URI to check, as a {@code String}.
+   * @return {@code true} if the given URI belongs to an existing resource, {@code false} otherwise.
+   */
+  public boolean resourceExists(String uri) {
     Resource resource = resourceSet.getResource(createURI(uri), true);
     return resource != null && resource.getErrors().isEmpty();
   }

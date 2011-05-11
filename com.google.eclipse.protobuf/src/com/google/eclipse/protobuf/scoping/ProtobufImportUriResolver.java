@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.eclipse.protobuf.scoping.ProtobufImportUriFixer.PREFIX;
+import static com.google.eclipse.protobuf.scoping.ImportUriFixer.PREFIX;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -30,7 +30,7 @@ import com.google.inject.Inject;
  */
 public class ProtobufImportUriResolver extends ImportUriResolver {
 
-  @Inject private ProtobufImportUriFixer uriFixer;
+  @Inject private ImportUriFixer uriFixer;
   
   /**
    * Prefix used by EMF for resource URIs: "platform:/resource/".

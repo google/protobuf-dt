@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.scoping;
+package com.google.eclipse.protobuf.ui.scoping;
 
 import static org.eclipse.emf.common.util.URI.createURI;
 import static org.eclipse.xtext.util.Tuples.pair;
@@ -17,13 +17,14 @@ import java.util.List;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.util.Pair;
 
+import com.google.eclipse.protobuf.scoping.ImportUriFixer;
+import com.google.eclipse.protobuf.scoping.ResourceChecker;
+
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ProtobufImportUriFixer {
+public class ProtobufImportUriFixer implements ImportUriFixer {
   
-  public static final String PREFIX = "platform:/resource";
-
   private static final String SEPARATOR = "/";
 
   /*
