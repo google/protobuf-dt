@@ -20,9 +20,9 @@ import org.eclipse.xtext.util.Pair;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class ImportUriFixer {
+public class ProtobufImportUriFixer {
   
-  static final String PREFIX = "platform:/resource";
+  public static final String PREFIX = "platform:/resource";
 
   private static final String SEPARATOR = "/";
 
@@ -41,7 +41,7 @@ class ImportUriFixer {
    * If we import "folder/proto2.proto" into proto1.proto, proto1.proto will compile fine, but the editor will complain.
    * We need to have the import URI as "platform:/resource/protobuf-test/folder/proto2.proto" for the editor to see it.
    */
-  String fixUri(String importUri, URI resourceUri, ResourceChecker checker) {
+  public String fixUri(String importUri, URI resourceUri, ResourceChecker checker) {
     if (importUri.startsWith(PREFIX)) return importUri;
     Pair<String, List<String>> importUriPair = pair(importUri, createURI(importUri).segmentsList());
     String fixed = fixUri(importUriPair, resourceUri, checker);

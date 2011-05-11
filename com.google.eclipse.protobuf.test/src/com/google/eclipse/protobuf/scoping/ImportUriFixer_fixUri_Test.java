@@ -17,7 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests for <code>{@link ImportUriFixer#fixUri(String, URI, ResourceChecker)}</code>.
+ * Tests for <code>{@link ProtobufImportUriFixer#fixUri(String, URI, ResourceChecker)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
@@ -25,13 +25,13 @@ public class ImportUriFixer_fixUri_Test {
 
   private URI resourceUri;
   private ResourceCheckerStub resourceChecker;
-  private ImportUriFixer fixer;
+  private ProtobufImportUriFixer fixer;
 
   @Before public void setUp() {
     resourceUri = createURI("platform:/resource/src/proto/person.proto");
     resourceChecker = new ResourceCheckerStub();
     resourceChecker.resourceShouldAlwaysExist = true;
-    fixer = new ImportUriFixer();
+    fixer = new ProtobufImportUriFixer();
   }
 
   @Test public void should_fix_import_URI_if_missing_scheme() {
