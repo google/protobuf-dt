@@ -53,32 +53,35 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     Protobuf root = finder.rootOf(typeRef);
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     EObject message = typeRef.eContainer().eContainer();
-    descriptions.addAll(innerTypes(message));
-    descriptions.addAll(innerTypes(message.eContainer()));
-    descriptions.addAll(innerTypes(root));
+    descriptions.addAll(typesIn(message));
+    descriptions.addAll(typesIn(message.eContainer()));
+    descriptions.addAll(typesIn(root));
     descriptions.addAll(importedTypes(root, Type.class));
     return createScope(descriptions);
   }
 
-  private Collection<IEObjectDescription> innerTypes(EObject root) {
-    return innerTypes(root, Type.class);
+  private Collection<IEObjectDescription> typesIn(EObject root) {
+    return children(root, Type.class);
   }
 
   @SuppressWarnings("unused")
   IScope scope_MessageReference_type(MessageReference msgRef, EReference reference) {
     Protobuf root = finder.rootOf(msgRef);
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
-    Class<Message> targetType = Message.class;
-    descriptions.addAll(innerTypes(root, targetType));
-    descriptions.addAll(importedTypes(root, targetType));
+    descriptions.addAll(messagesIn(root));
+    descriptions.addAll(importedTypes(root, Message.class));
     return createScope(descriptions);
   }
 
-  private <T extends Type> Collection<IEObjectDescription> innerTypes(EObject root, Class<T> targetType) {
-    return innerTypes(root, targetType, 0);
+  private Collection<IEObjectDescription> messagesIn(EObject root) {
+    return children(root, Message.class);
   }
 
-  private <T extends Type> Collection<IEObjectDescription> innerTypes(EObject root, Class<T> targetType, int level) {
+  private <T extends Type> Collection<IEObjectDescription> children(EObject root, Class<T> targetType) {
+    return children(root, targetType, 0);
+  }
+
+  private <T extends Type> Collection<IEObjectDescription> children(EObject root, Class<T> targetType, int level) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     for (EObject element : root.eContents()) {
       if (!targetType.isInstance(element)) continue;
@@ -88,7 +91,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
       for (int i = level; i < nameCount; i++) descriptions.add(create(names.get(i), type));
       descriptions.add(create(nameProvider.getFullyQualifiedName(type), type));
       if (!(element instanceof Message)) continue;
-      descriptions.addAll(innerTypes(element, targetType, level + 1));
+      descriptions.addAll(children(element, targetType, level + 1));
     }
     return descriptions;
   }
