@@ -31,7 +31,7 @@ import com.google.inject.Inject;
 public class ProtobufImportUriResolver extends ImportUriResolver {
 
   @Inject private IFileUriResolver delegate;
-  
+
   /**
    * Prefix used by EMF for resource URIs: "platform:/resource/".
    */
@@ -44,13 +44,21 @@ public class ProtobufImportUriResolver extends ImportUriResolver {
    * @return the {@code String} representation of the given object's {@code URI}.
    */
   @Override public String apply(EObject from) {
-    if (from instanceof Import) fixUri((Import) from);
+    if (from instanceof Import) {
+      Import anImport = (Import) from;
+      String originalUri = anImport.getImportURI();
+      resolveImportUri(anImport);
+      String applied = super.apply(from);
+      anImport.setImportURI(originalUri);
+      return applied;
+    }
+    if (from instanceof Import) resolveImportUri((Import) from);
     return super.apply(from);
   }
 
-  private void fixUri(Import anImport) {
+  private void resolveImportUri(Import anImport) {
     Resource resource = anImport.eResource();
-    String fixed = delegate.resolveUri(anImport.getImportURI(), resource);
-    anImport.setImportURI(fixed);
+    String resolved = delegate.resolveUri(anImport.getImportURI(), resource);
+    anImport.setImportURI(resolved);
   }
 }
