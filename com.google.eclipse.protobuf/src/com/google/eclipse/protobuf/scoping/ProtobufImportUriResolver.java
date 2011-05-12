@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.eclipse.protobuf.scoping.ImportUriFixer.PREFIX;
+import static com.google.eclipse.protobuf.scoping.IFileUriResolver.PREFIX;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -18,7 +18,7 @@ import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.inject.Inject;
 
 /**
- * Resolves URIs. This implementation mimics how protoc understands imported file URIs. For example, the URI
+ * This implementation mimics how protoc understands URIs of imported files. For example, the URI
  * "platform:/resource/proto1.proto" is understood by EMF but not by protoc. The URI in the proto file needs to be
  * simply "proto1.proto" for protoc to understand it.
  * <p>
@@ -30,7 +30,7 @@ import com.google.inject.Inject;
  */
 public class ProtobufImportUriResolver extends ImportUriResolver {
 
-  @Inject private ImportUriFixer uriFixer;
+  @Inject private IFileUriResolver delegate;
   
   /**
    * Prefix used by EMF for resource URIs: "platform:/resource/".
@@ -50,8 +50,7 @@ public class ProtobufImportUriResolver extends ImportUriResolver {
 
   private void fixUri(Import anImport) {
     Resource resource = anImport.eResource();
-    ResourceChecker resourceChecker = new ResourceChecker(resource.getResourceSet());
-    String fixed = uriFixer.fixUri(anImport.getImportURI(), resource.getURI(), resourceChecker);
+    String fixed = delegate.resolveUri(anImport.getImportURI(), resource);
     anImport.setImportURI(fixed);
   }
 }

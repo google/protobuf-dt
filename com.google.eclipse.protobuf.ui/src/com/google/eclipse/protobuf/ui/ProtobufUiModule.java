@@ -16,13 +16,13 @@ import org.eclipse.xtext.ui.editor.IXtextEditorCallback;
 import org.eclipse.xtext.ui.editor.outline.actions.IOutlineContribution;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
 
-import com.google.eclipse.protobuf.scoping.ImportUriFixer;
+import com.google.eclipse.protobuf.scoping.IFileUriResolver;
 import com.google.eclipse.protobuf.ui.builder.AutoAddNatureEditorCallback;
 import com.google.eclipse.protobuf.ui.outline.LinkWithEditor;
 import com.google.eclipse.protobuf.ui.outline.ProtobufOutlinePage;
 import com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferencesInitializer;
 import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferencesInitializer;
-import com.google.eclipse.protobuf.ui.scoping.ProtobufImportUriFixer;
+import com.google.eclipse.protobuf.ui.scoping.FileUriResolver;
 import com.google.inject.Binder;
 
 /**
@@ -64,7 +64,7 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
     binder.bind(IPreferenceStoreInitializer.class).annotatedWith(named(name)).to(initializerType);
   }
   
-  public void configureImportUriResolver(Binder binder) {
-    binder.bind(ImportUriFixer.class).to(ProtobufImportUriFixer.class);
+  public void configureFileUriResolver(Binder binder) {
+    binder.bind(IFileUriResolver.class).to(FileUriResolver.class);
   }
 }
