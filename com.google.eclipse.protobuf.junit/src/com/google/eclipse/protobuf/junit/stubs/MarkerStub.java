@@ -1,6 +1,9 @@
 /*
- * Copyright (c) 2011 Google Inc. All rights reserved. This program and the accompanying materials are made available
- * under the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
+ * Copyright (c) 2011 Google Inc.
+ *
+ * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License v1.0 which accompanies this distribution, and is available at
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.junit.stubs;
@@ -11,7 +14,6 @@ import java.util.*;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -22,7 +24,7 @@ public class MarkerStub implements IMarker {
   private final String type;
   private final long creationTime;
 
-  public static MarkerStub error(String type, String description, int lineNumber) throws CoreException {
+  public static MarkerStub error(String type, String description, int lineNumber) {
     MarkerStub marker = new MarkerStub(type);
     marker.setAttribute(SEVERITY, SEVERITY_ERROR);
     marker.setAttribute(MESSAGE, description);
@@ -41,7 +43,7 @@ public class MarkerStub implements IMarker {
   }
 
   /** {@inheritDoc} */
-  public void delete() throws CoreException {
+  public void delete() {
     throw new UnsupportedOperationException();
   }
 
@@ -51,7 +53,7 @@ public class MarkerStub implements IMarker {
   }
 
   /** {@inheritDoc} */
-  public Object getAttribute(String attributeName) throws CoreException {
+  public Object getAttribute(String attributeName) {
     return attributes.get(attributeName);
   }
 
@@ -77,12 +79,12 @@ public class MarkerStub implements IMarker {
   }
 
   /** {@inheritDoc} */
-  public Map<String, Object> getAttributes() throws CoreException {
+  public Map<String, Object> getAttributes() {
     return unmodifiableMap(attributes);
   }
 
   /** {@inheritDoc} */
-  public Object[] getAttributes(String[] attributeNames) throws CoreException {
+  public Object[] getAttributes(String[] attributeNames) {
     List<Object> values = new ArrayList<Object>();
     for (String name : attributeNames)
       values.add(attributes.get(name));
@@ -90,7 +92,7 @@ public class MarkerStub implements IMarker {
   }
 
   /** {@inheritDoc} */
-  public long getCreationTime() throws CoreException {
+  public long getCreationTime() {
     return creationTime;
   }
 
@@ -105,49 +107,49 @@ public class MarkerStub implements IMarker {
   }
 
   /** {@inheritDoc} */
-  public String getType() throws CoreException {
+  public String getType() {
     return type;
   }
 
   /** {@inheritDoc} */
-  public boolean isSubtypeOf(String superType) throws CoreException {
+  public boolean isSubtypeOf(String superType) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void setAttribute(String attributeName, int value) throws CoreException {
+  public void setAttribute(String attributeName, int value) {
     attributes.put(attributeName, value);
   }
 
   /** {@inheritDoc} */
-  public void setAttribute(String attributeName, Object value) throws CoreException {
+  public void setAttribute(String attributeName, Object value) {
     attributes.put(attributeName, value);
   }
 
   /** {@inheritDoc} */
-  public void setAttribute(String attributeName, boolean value) throws CoreException {
+  public void setAttribute(String attributeName, boolean value) {
     attributes.put(attributeName, value);
   }
 
   /** {@inheritDoc} */
-  public void setAttributes(String[] attributeNames, Object[] values) throws CoreException {
+  public void setAttributes(String[] attributeNames, Object[] values) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void setAttributes(Map<String, ? extends Object> attributes) throws CoreException {
+  public void setAttributes(Map<String, ? extends Object> attributes) {
     this.attributes.putAll(attributes);
   }
 
-  public int severity() throws CoreException {
+  public int severity() {
     return getAttribute(SEVERITY, -1);
   }
   
-  public String message() throws CoreException {
+  public String message() {
     return (String) getAttribute(MESSAGE);
   }
 
-  public int lineNumber() throws CoreException {
+  public int lineNumber() {
     return getAttribute(LINE_NUMBER, -1);
   }
 

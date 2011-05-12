@@ -9,16 +9,14 @@
 package com.google.eclipse.protobuf.ui.preferences.paths;
 
 import static com.google.eclipse.protobuf.ui.preferences.paths.FileResolutionType.SINGLE_FOLDER;
-import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.*;
+import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.FOLDER_NAMES;
 import static com.google.eclipse.protobuf.ui.util.Strings.CSV_PATTERN;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 /**
  * Paths preferences, retrieved from an <code>{@link IPreferenceStore}</code>.
@@ -27,17 +25,10 @@ import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
  */
 public class Preferences {
 
-  public final FileResolutionType fileResolutionType;
-  public final List<String> folderNames; 
+  private final FileResolutionType fileResolutionType;
+  private final List<String> folderNames; 
   
-  public static Preferences loadPreferences(IPreferenceStoreAccess access, IProject project) {
-    IPreferenceStore store = access.getWritablePreferenceStore(project);
-    boolean useProjectPreferences = store.getBoolean(ENABLE_PROJECT_SETTINGS);
-    if (!useProjectPreferences) store = access.getWritablePreferenceStore();
-    return new Preferences(store);
-  }
-  
-  private Preferences(IPreferenceStore store) {
+  Preferences(IPreferenceStore store) {
     fileResolutionType = FileResolutionType.find(store);
     folderNames = folderNames(fileResolutionType, store);
   }
@@ -46,5 +37,13 @@ public class Preferences {
     if (types.equals(SINGLE_FOLDER)) return emptyList();
     String[] folderNames = store.getString(FOLDER_NAMES).split(CSV_PATTERN);
     return unmodifiableList(asList(folderNames));
+  }
+
+  public FileResolutionType fileResolutionType() {
+    return fileResolutionType;
+  }
+
+  public List<String> folderNames() {
+    return folderNames;
   }
 }

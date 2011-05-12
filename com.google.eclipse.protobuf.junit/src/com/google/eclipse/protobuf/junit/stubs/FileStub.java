@@ -28,38 +28,38 @@ public class FileStub implements IFile {
   private final Map<String, List<MarkerStub>> markersByType = new HashMap<String, List<MarkerStub>>();
 
   /** {@inheritDoc} */
-  public void accept(IResourceProxyVisitor visitor, int memberFlags) throws CoreException {
+  public void accept(IResourceProxyVisitor visitor, int memberFlags) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void accept(IResourceVisitor visitor) throws CoreException {
+  public void accept(IResourceVisitor visitor) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void accept(IResourceVisitor visitor, int depth, boolean includePhantoms) throws CoreException {
+  public void accept(IResourceVisitor visitor, int depth, boolean includePhantoms) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void accept(IResourceVisitor visitor, int depth, int memberFlags) throws CoreException {
+  public void accept(IResourceVisitor visitor, int depth, int memberFlags) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
   public void appendContents(InputStream source, boolean force, boolean keepHistory, IProgressMonitor monitor)
-      throws CoreException {
+      {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void appendContents(InputStream source, int updateFlags, IProgressMonitor monitor) throws CoreException {
+  public void appendContents(InputStream source, int updateFlags, IProgressMonitor monitor) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void clearHistory(IProgressMonitor monitor) throws CoreException {
+  public void clearHistory(IProgressMonitor monitor) {
     throw new UnsupportedOperationException();
   }
 
@@ -69,47 +69,47 @@ public class FileStub implements IFile {
   }
 
   /** {@inheritDoc} */
-  public void copy(IPath destination, boolean force, IProgressMonitor monitor) throws CoreException {
+  public void copy(IPath destination, boolean force, IProgressMonitor monitor) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void copy(IPath destination, int updateFlags, IProgressMonitor monitor) throws CoreException {
+  public void copy(IPath destination, int updateFlags, IProgressMonitor monitor) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void copy(IProjectDescription description, boolean force, IProgressMonitor monitor) throws CoreException {
+  public void copy(IProjectDescription description, boolean force, IProgressMonitor monitor) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void copy(IProjectDescription description, int updateFlags, IProgressMonitor monitor) throws CoreException {
+  public void copy(IProjectDescription description, int updateFlags, IProgressMonitor monitor) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void create(InputStream source, boolean force, IProgressMonitor monitor) throws CoreException {
+  public void create(InputStream source, boolean force, IProgressMonitor monitor) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void create(InputStream source, int updateFlags, IProgressMonitor monitor) throws CoreException {
+  public void create(InputStream source, int updateFlags, IProgressMonitor monitor) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void createLink(IPath localLocation, int updateFlags, IProgressMonitor monitor) throws CoreException {
+  public void createLink(IPath localLocation, int updateFlags, IProgressMonitor monitor) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void createLink(URI location, int updateFlags, IProgressMonitor monitor) throws CoreException {
+  public void createLink(URI location, int updateFlags, IProgressMonitor monitor) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public IMarker createMarker(String type) throws CoreException {
+  public IMarker createMarker(String type) {
     MarkerStub marker = new MarkerStub(type);
     addMarker(marker);
     return marker;
@@ -121,22 +121,22 @@ public class FileStub implements IFile {
   }
 
   /** {@inheritDoc} */
-  public void delete(boolean force, boolean keepHistory, IProgressMonitor monitor) throws CoreException {
+  public void delete(boolean force, boolean keepHistory, IProgressMonitor monitor) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void delete(boolean force, IProgressMonitor monitor) throws CoreException {
+  public void delete(boolean force, IProgressMonitor monitor) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void delete(int updateFlags, IProgressMonitor monitor) throws CoreException {
+  public void delete(int updateFlags, IProgressMonitor monitor) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void deleteMarkers(String type, boolean includeSubtypes, int depth) throws CoreException {
+  public void deleteMarkers(String type, boolean includeSubtypes, int depth) {
     List<MarkerStub> markers = markersByType.get(type);
     if (markers != null) markers.clear();
   }
@@ -147,19 +147,19 @@ public class FileStub implements IFile {
   }
 
   /** {@inheritDoc} */
-  public IMarker findMarker(long id) throws CoreException {
+  public IMarker findMarker(long id) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public IMarker[] findMarkers(String type, boolean includeSubtypes, int depth) throws CoreException {
+  public IMarker[] findMarkers(String type, boolean includeSubtypes, int depth) {
     List<MarkerStub> markers = markersByType.get(type);
     if (markers == null) return new IMarker[0];
     return markers.toArray(new IMarker[markers.size()]);
   }
 
   /** {@inheritDoc} */
-  public int findMaxProblemSeverity(String type, boolean includeSubtypes, int depth) throws CoreException {
+  public int findMaxProblemSeverity(String type, boolean includeSubtypes, int depth) {
     throw new UnsupportedOperationException();
   }
 
@@ -169,37 +169,37 @@ public class FileStub implements IFile {
   }
 
   /** {@inheritDoc} */
-  public String getCharset() throws CoreException {
+  public String getCharset() {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public String getCharset(boolean checkImplicit) throws CoreException {
+  public String getCharset(boolean checkImplicit) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public String getCharsetFor(Reader reader) throws CoreException {
+  public String getCharsetFor(Reader reader) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public IContentDescription getContentDescription() throws CoreException {
+  public IContentDescription getContentDescription() {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public InputStream getContents() throws CoreException {
+  public InputStream getContents() {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public InputStream getContents(boolean force) throws CoreException {
+  public InputStream getContents(boolean force) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public int getEncoding() throws CoreException {
+  @Deprecated public int getEncoding() {
     throw new UnsupportedOperationException();
   }
 
@@ -214,7 +214,7 @@ public class FileStub implements IFile {
   }
 
   /** {@inheritDoc} */
-  public IFileState[] getHistory(IProgressMonitor monitor) throws CoreException {
+  public IFileState[] getHistory(IProgressMonitor monitor) {
     throw new UnsupportedOperationException();
   }
 
@@ -259,12 +259,12 @@ public class FileStub implements IFile {
   }
 
   /** {@inheritDoc} */
-  public Map<QualifiedName, String> getPersistentProperties() throws CoreException {
+  public Map<QualifiedName, String> getPersistentProperties() {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public String getPersistentProperty(QualifiedName key) throws CoreException {
+  public String getPersistentProperty(QualifiedName key) {
     throw new UnsupportedOperationException();
   }
 
@@ -294,12 +294,12 @@ public class FileStub implements IFile {
   }
 
   /** {@inheritDoc} */
-  public Map<QualifiedName, Object> getSessionProperties() throws CoreException {
+  public Map<QualifiedName, Object> getSessionProperties() {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public Object getSessionProperty(QualifiedName key) throws CoreException {
+  public Object getSessionProperty(QualifiedName key) {
     throw new UnsupportedOperationException();
   }
 
@@ -354,7 +354,7 @@ public class FileStub implements IFile {
   }
 
   /** {@inheritDoc} */
-  public boolean isLocal(int depth) {
+  @Deprecated public boolean isLocal(int depth) {
     throw new UnsupportedOperationException();
   }
 
@@ -390,125 +390,125 @@ public class FileStub implements IFile {
 
   /** {@inheritDoc} */
   public void move(IPath destination, boolean force, boolean keepHistory, IProgressMonitor monitor)
-      throws CoreException {
+      {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void move(IPath destination, boolean force, IProgressMonitor monitor) throws CoreException {
+  public void move(IPath destination, boolean force, IProgressMonitor monitor) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void move(IPath destination, int updateFlags, IProgressMonitor monitor) throws CoreException {
+  public void move(IPath destination, int updateFlags, IProgressMonitor monitor) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
   public void move(IProjectDescription description, boolean force, boolean keepHistory, IProgressMonitor monitor)
-      throws CoreException {
+      {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void move(IProjectDescription description, int updateFlags, IProgressMonitor monitor) throws CoreException {
+  public void move(IProjectDescription description, int updateFlags, IProgressMonitor monitor) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void refreshLocal(int depth, IProgressMonitor monitor) throws CoreException {
+  public void refreshLocal(int depth, IProgressMonitor monitor) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void revertModificationStamp(long value) throws CoreException {
+  public void revertModificationStamp(long value) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void setCharset(String newCharset) throws CoreException {
+  @Deprecated public void setCharset(String newCharset) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void setCharset(String newCharset, IProgressMonitor monitor) throws CoreException {
+  public void setCharset(String newCharset, IProgressMonitor monitor) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
   public void setContents(IFileState source, boolean force, boolean keepHistory, IProgressMonitor monitor)
-      throws CoreException {
+      {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void setContents(IFileState source, int updateFlags, IProgressMonitor monitor) throws CoreException {
+  public void setContents(IFileState source, int updateFlags, IProgressMonitor monitor) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
   public void setContents(InputStream source, boolean force, boolean keepHistory, IProgressMonitor monitor)
-      throws CoreException {
+      {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void setContents(InputStream source, int updateFlags, IProgressMonitor monitor) throws CoreException {
+  public void setContents(InputStream source, int updateFlags, IProgressMonitor monitor) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void setDerived(boolean isDerived) throws CoreException {
+  @Deprecated public void setDerived(boolean isDerived) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void setDerived(boolean isDerived, IProgressMonitor monitor) throws CoreException {
+  public void setDerived(boolean isDerived, IProgressMonitor monitor) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void setHidden(boolean isHidden) throws CoreException {
+  public void setHidden(boolean isHidden) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void setLocal(boolean flag, int depth, IProgressMonitor monitor) throws CoreException {
+  @Deprecated public void setLocal(boolean flag, int depth, IProgressMonitor monitor) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public long setLocalTimeStamp(long value) throws CoreException {
+  public long setLocalTimeStamp(long value) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void setPersistentProperty(QualifiedName key, String value) throws CoreException {
+  public void setPersistentProperty(QualifiedName key, String value) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void setReadOnly(boolean readOnly) {
+  @Deprecated public void setReadOnly(boolean readOnly) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void setResourceAttributes(ResourceAttributes attributes) throws CoreException {
+  public void setResourceAttributes(ResourceAttributes attributes) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void setSessionProperty(QualifiedName key, Object value) throws CoreException {
+  public void setSessionProperty(QualifiedName key, Object value) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void setTeamPrivateMember(boolean isTeamPrivate) throws CoreException {
+  public void setTeamPrivateMember(boolean isTeamPrivate) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void touch(IProgressMonitor monitor) throws CoreException {
+  public void touch(IProgressMonitor monitor) {
     throw new UnsupportedOperationException();
   }
 
@@ -523,7 +523,7 @@ public class FileStub implements IFile {
     return unmodifiableList(markers);
   }
 
-  public void addMarker(MarkerStub marker) throws CoreException {
+  public void addMarker(MarkerStub marker) {
     String type = marker.getType();
     List<MarkerStub> markers = markersByType.get(type);
     if (markers == null) {
