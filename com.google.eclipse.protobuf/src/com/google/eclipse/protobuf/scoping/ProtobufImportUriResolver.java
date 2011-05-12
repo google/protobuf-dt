@@ -11,7 +11,6 @@ package com.google.eclipse.protobuf.scoping;
 import static com.google.eclipse.protobuf.scoping.IFileUriResolver.PREFIX;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 
 import com.google.eclipse.protobuf.protobuf.Import;
@@ -47,7 +46,7 @@ public class ProtobufImportUriResolver extends ImportUriResolver {
     if (from instanceof Import) {
       Import anImport = (Import) from;
       String originalUri = anImport.getImportURI();
-      resolveImportUri(anImport);
+      anImport.setImportURI(resolveImportUri(anImport));
       String applied = super.apply(from);
       anImport.setImportURI(originalUri);
       return applied;
@@ -56,9 +55,7 @@ public class ProtobufImportUriResolver extends ImportUriResolver {
     return super.apply(from);
   }
 
-  private void resolveImportUri(Import anImport) {
-    Resource resource = anImport.eResource();
-    String resolved = delegate.resolveUri(anImport.getImportURI(), resource);
-    anImport.setImportURI(resolved);
+  private String resolveImportUri(Import anImport) {
+    return delegate.resolveUri(anImport.getImportURI(), anImport.eResource());
   }
 }
