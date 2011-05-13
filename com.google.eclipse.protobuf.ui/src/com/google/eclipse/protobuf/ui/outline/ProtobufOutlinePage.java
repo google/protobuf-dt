@@ -8,7 +8,17 @@
  */
 package com.google.eclipse.protobuf.ui.outline;
 
-import org.eclipse.xtext.ui.editor.outline.impl.OutlinePage;
+import static com.google.common.collect.Collections2.filter;
+import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Collections.singletonList;
+
+import java.util.Collection;
+import java.util.List;
+
+import org.eclipse.xtext.ui.editor.outline.IOutlineNode;
+import org.eclipse.xtext.ui.editor.outline.impl.*;
+
+import com.google.common.base.Predicate;
 
 /**
  * Outline Page for Protocol Buffer editors.
@@ -17,11 +27,30 @@ import org.eclipse.xtext.ui.editor.outline.impl.OutlinePage;
  */
 public class ProtobufOutlinePage extends OutlinePage {
 
-  /**
-   * Indicates that the root node and its immediate children of the Outline View need to be expanded.
-   * @return 3.
-   */
-  @Override protected int getDefaultExpansionLevel() {
-    return 3;
+  @Override protected List<IOutlineNode> getInitiallyExpandedNodes() {
+    IOutlineNode rootNode = getTreeProvider().createRoot(getXtextDocument());
+    List<IOutlineNode> nodes = newArrayList(rootNode);
+    addChildrenToExpand(singletonList(rootNode), nodes, 3);
+    return nodes;
+  }
+
+  private void addChildrenToExpand(Collection<IOutlineNode> parents, List<IOutlineNode> nodes, int depth) {
+    if (depth < 1) return;
+    for (IOutlineNode parent : parents) {
+      Collection<IOutlineNode> children = childrenToExpand(parent);
+      nodes.addAll(children);
+      addChildrenToExpand(children, nodes, depth - 1);
+    }
+  }
+
+  private Collection<IOutlineNode> childrenToExpand(IOutlineNode parent) {
+    if (parent instanceof DocumentRootNode) {
+      return filter(parent.getChildren(), new Predicate<IOutlineNode>() {
+        public boolean apply(IOutlineNode node) {
+          return !(node instanceof EStructuralFeatureNode);
+        }
+      });
+    }
+    return parent.getChildren();
   }
 }

@@ -28,6 +28,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class Images {
 
+  private static final String GIF_EXTENSION = ".gif";
   private static final String DEFAULT_IMAGE = "empty.gif";
 
   private static final Map<Modifier, String> IMAGES_BY_MODIFIER = new HashMap<Modifier, String>();
@@ -47,22 +48,24 @@ public class Images {
     IMAGES_BY_TYPE.put(Message.class, "message.gif");
     IMAGES_BY_TYPE.put(Option.class, "option.gif");
     IMAGES_BY_TYPE.put(Package.class, "package.gif");
-    IMAGES_BY_TYPE.put(Protobuf.class, "protobuf.gif");
     IMAGES_BY_TYPE.put(Rpc.class, "rpc.gif");
     IMAGES_BY_TYPE.put(Service.class, "service.gif");
     IMAGES_BY_TYPE.put(Syntax.class, "syntax.gif");
   }
 
-  private static final List<String> STANDALONE_IMAGES = asList("extensions.gif");
+  private static final List<String> STANDALONE_IMAGES = asList("extensions.gif", "imports.gif", "options.gif");
 
   public String imageFor(Object o) {
+    if (o instanceof Keyword) {
+      Keyword k = (Keyword) o;
+      return imageFor(k);
+    }
     if (o instanceof Property) {
       Property p = (Property) o;
       return imageFor(p.getModifier());
     }
-    if (o instanceof Keyword) {
-      Keyword k = (Keyword) o;
-      return imageFor(k);
+    if (o instanceof String) {
+      return o + GIF_EXTENSION;
     }
     return imageFor(o.getClass());
   }
@@ -80,7 +83,7 @@ public class Images {
     Modifier m = Modifier.getByName(value);
     String image = IMAGES_BY_MODIFIER.get(m);
     if (image != null) return image;
-    String imageName = value + ".gif";
+    String imageName = value + GIF_EXTENSION;
     if (IMAGES_BY_TYPE.containsValue(imageName) || STANDALONE_IMAGES.contains(imageName)) return imageName;
     return DEFAULT_IMAGE;
   }

@@ -8,14 +8,14 @@
  */
 package com.google.eclipse.protobuf.ui.labeling;
 
-import static com.google.eclipse.protobuf.scoping.ProtobufImportUriResolver.URI_PREFIX;
 import static org.eclipse.jface.viewers.StyledString.DECORATIONS_STYLER;
 
 import org.eclipse.jface.viewers.StyledString;
 
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.ui.util.Properties;
-import com.google.inject.*;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Registry of commonly used text in the 'Protocol Buffer' editor.
@@ -44,10 +44,6 @@ public class Labels {
       Property p = (Property) o;
       return labelFor(p);
     }
-    if (o instanceof Protobuf) {
-      Protobuf p = (Protobuf) o;
-      return labelFor(p);
-    }
     if (o instanceof Rpc) {
       Rpc r = (Rpc) o;
       return labelFor(r);
@@ -60,9 +56,7 @@ public class Labels {
   }
 
   private Object labelFor(Import i) {
-    String uri = i.getImportURI();
-    if (uri == null || !uri.startsWith(URI_PREFIX)) return uri;
-    return uri.substring(URI_PREFIX.length());
+    return i.getImportURI();
   }
 
   private Object labelFor(Literal l) {
@@ -77,11 +71,6 @@ public class Labels {
     String indexAndType = String.format(" [%d] : %s", p.getIndex(), properties.typeNameOf(p));
     text.append(indexAndType, DECORATIONS_STYLER);
     return text;
-  }
-
-  private Object labelFor(Protobuf p) {
-    // TODO show this text till I figure out how to hide 'Protobuf' node in outline view
-    return "Protocol Buffer";
   }
 
   private Object labelFor(Rpc r) {
