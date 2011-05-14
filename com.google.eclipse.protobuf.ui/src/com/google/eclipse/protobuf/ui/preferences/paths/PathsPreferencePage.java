@@ -9,7 +9,7 @@
 package com.google.eclipse.protobuf.ui.preferences.paths;
 
 import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.*;
-import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.*;
+import static com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferenceNames.*;
 import static com.google.eclipse.protobuf.ui.util.Strings.CSV_PATTERN;
 import static org.eclipse.core.runtime.IStatus.OK;
 import static org.eclipse.xtext.util.Strings.isEmpty;
@@ -32,9 +32,9 @@ import com.google.inject.Inject;
  * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class PreferencePage extends PreferenceAndPropertyPage {
+public class PathsPreferencePage extends PreferenceAndPropertyPage {
 
-  private static final String PREFERENCE_PAGE_ID = PreferencePage.class.getName();
+  private static final String PREFERENCE_PAGE_ID = PathsPreferencePage.class.getName();
 
   private Group grpResolutionOfImported;
   private Button btnOneFolderOnly;
@@ -43,7 +43,7 @@ public class PreferencePage extends PreferenceAndPropertyPage {
 
   @Inject private FolderNameValidator folderNameValidator;
 
-  @Inject public PreferencePage(IPreferenceStoreAccess preferenceStoreAccess) {
+  @Inject public PathsPreferencePage(IPreferenceStoreAccess preferenceStoreAccess) {
     super(preferenceStoreAccess);
   }
 

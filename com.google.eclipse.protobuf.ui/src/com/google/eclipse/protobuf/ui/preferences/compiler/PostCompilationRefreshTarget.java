@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.compiler;
 
-import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.REFRESH_PROJECT;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferenceNames.REFRESH_PROJECT;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 
@@ -17,11 +17,11 @@ import org.eclipse.jface.preference.IPreferenceStore;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public enum RefreshTarget {
+public enum PostCompilationRefreshTarget {
 
   PROJECT, OUTPUT_FOLDER;
 
-  static RefreshTarget find(IPreferenceStore store) {
+  static PostCompilationRefreshTarget find(IPreferenceStore store) {
     if (store.getBoolean(REFRESH_PROJECT)) return PROJECT;
     return OUTPUT_FOLDER;
   }

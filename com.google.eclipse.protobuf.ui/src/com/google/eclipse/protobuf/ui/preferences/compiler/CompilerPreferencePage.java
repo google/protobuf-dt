@@ -9,7 +9,7 @@
 package com.google.eclipse.protobuf.ui.preferences.compiler;
 
 import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.*;
-import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.*;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferenceNames.*;
 import static org.eclipse.core.runtime.IStatus.OK;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
@@ -33,9 +33,9 @@ import com.google.inject.Inject;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class PreferencePage extends PreferenceAndPropertyPage {
+public class CompilerPreferencePage extends PreferenceAndPropertyPage {
 
-  private static final String PREFERENCE_PAGE_ID = PreferencePage.class.getName();
+  private static final String PREFERENCE_PAGE_ID = CompilerPreferencePage.class.getName();
 
   private Button btnCompileProtoFiles;
   private TabFolder tabFolder;
@@ -61,7 +61,7 @@ public class PreferencePage extends PreferenceAndPropertyPage {
 
   @Inject private FolderNameValidator folderNameValidator;
   
-  @Inject public PreferencePage(IPreferenceStoreAccess preferenceStoreAccess) {
+  @Inject public CompilerPreferencePage(IPreferenceStoreAccess preferenceStoreAccess) {
     super(preferenceStoreAccess);
   }
 

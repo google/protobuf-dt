@@ -11,12 +11,12 @@ package com.google.eclipse.protobuf.ui.preferences.paths;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-final class PreferenceNames {
+final class PathsPreferenceNames {
 
   static final String ENABLE_PROJECT_SETTINGS = "paths.enableProjectSettings";
   static final String ALL_PROTOS_IN_ONE_FOLDER_ONLY = "paths.oneFolderOnly";
   static final String PROTOS_IN_MULTIPLE_FOLDERS = "paths.multipleFolders";
   static final String FOLDER_NAMES = "paths.folderNames";
 
-  private PreferenceNames() {}
+  private PathsPreferenceNames() {}
 }

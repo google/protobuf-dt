@@ -8,8 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.paths;
 
-import static com.google.eclipse.protobuf.ui.preferences.paths.FileResolutionType.SINGLE_FOLDER;
-import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.FOLDER_NAMES;
+import static com.google.eclipse.protobuf.ui.preferences.paths.PathsResolutionType.SINGLE_FOLDER;
+import static com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferenceNames.FOLDER_NAMES;
 import static com.google.eclipse.protobuf.ui.util.Strings.CSV_PATTERN;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
@@ -23,23 +23,23 @@ import org.eclipse.jface.preference.IPreferenceStore;
  * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Preferences {
+public class PathsPreferences {
 
-  private final FileResolutionType fileResolutionType;
+  private final PathsResolutionType fileResolutionType;
   private final List<String> folderNames; 
   
-  Preferences(IPreferenceStore store) {
-    fileResolutionType = FileResolutionType.find(store);
+  PathsPreferences(IPreferenceStore store) {
+    fileResolutionType = PathsResolutionType.find(store);
     folderNames = folderNames(fileResolutionType, store);
   }
   
-  private static List<String> folderNames(FileResolutionType types, IPreferenceStore store) {
+  private static List<String> folderNames(PathsResolutionType types, IPreferenceStore store) {
     if (types.equals(SINGLE_FOLDER)) return emptyList();
     String[] folderNames = store.getString(FOLDER_NAMES).split(CSV_PATTERN);
     return unmodifiableList(asList(folderNames));
   }
 
-  public FileResolutionType fileResolutionType() {
+  public PathsResolutionType fileResolutionType() {
     return fileResolutionType;
   }
 

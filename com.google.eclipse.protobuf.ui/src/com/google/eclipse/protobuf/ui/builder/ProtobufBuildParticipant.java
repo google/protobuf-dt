@@ -8,8 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.builder;
 
-import static com.google.eclipse.protobuf.ui.preferences.compiler.Preferences.loadPreferences;
-import static com.google.eclipse.protobuf.ui.preferences.compiler.RefreshTarget.PROJECT;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferences.loadPreferences;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PostCompilationRefreshTarget.PROJECT;
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
 
 import java.io.*;
@@ -25,7 +25,7 @@ import org.eclipse.xtext.resource.IResourceDescription.Delta;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.eclipse.protobuf.ui.preferences.compiler.*;
-import com.google.eclipse.protobuf.ui.preferences.compiler.Preferences;
+import com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferences;
 import com.google.inject.Inject;
 
 /**
@@ -45,7 +45,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
 
   public void build(IBuildContext context, IProgressMonitor monitor) throws CoreException {
     IProject project = context.getBuiltProject();
-    Preferences preferences = loadPreferences(preferenceStoreAccess, project);
+    CompilerPreferences preferences = loadPreferences(preferenceStoreAccess, project);
     if (!preferences.compileProtoFiles) return;
     List<Delta> deltas = context.getDeltas();
     if (deltas.isEmpty()) return;
@@ -78,7 +78,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
     return b.length() == 0 ? null : b.toString();
   }
 
-  private void generateSingleProto(IFile source, String protocPath, TargetLanguage language, String outputFolderPath) {
+  private void generateSingleProto(IFile source, String protocPath, CompilerTargetLanguage language, String outputFolderPath) {
     String command = commandFactory.protocCommand(source, protocPath, language, outputFolderPath);
     try {
       Process process = Runtime.getRuntime().exec(command);
@@ -119,13 +119,13 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
     return r.getLocation().toOSString();
   }
 
-  private static void refresh(IFolder outputFolder, RefreshTarget refreshTarget, IProgressMonitor monitor)
+  private static void refresh(IFolder outputFolder, PostCompilationRefreshTarget refreshTarget, IProgressMonitor monitor)
       throws CoreException {
     IResource target = refreshTarget(outputFolder, refreshTarget);
     target.refreshLocal(DEPTH_INFINITE, monitor);
   }
 
-  private static IResource refreshTarget(IFolder outputFolder, RefreshTarget refreshTarget) {
+  private static IResource refreshTarget(IFolder outputFolder, PostCompilationRefreshTarget refreshTarget) {
     if (refreshTarget.equals(PROJECT)) return outputFolder.getProject();
     return outputFolder;
   }

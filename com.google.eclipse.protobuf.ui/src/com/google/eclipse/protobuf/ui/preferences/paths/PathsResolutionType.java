@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */package com.google.eclipse.protobuf.ui.preferences.paths;
 
-import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.ALL_PROTOS_IN_ONE_FOLDER_ONLY;
+import static com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferenceNames.ALL_PROTOS_IN_ONE_FOLDER_ONLY;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 
@@ -16,11 +16,11 @@ import org.eclipse.jface.preference.IPreferenceStore;
  * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-public enum FileResolutionType {
+public enum PathsResolutionType {
 
   SINGLE_FOLDER, MULTIPLE_FOLDERS;
   
-  static FileResolutionType find(IPreferenceStore store) {
+  static PathsResolutionType find(IPreferenceStore store) {
     if (store.getBoolean(ALL_PROTOS_IN_ONE_FOLDER_ONLY)) return SINGLE_FOLDER;
     return MULTIPLE_FOLDERS;
   }

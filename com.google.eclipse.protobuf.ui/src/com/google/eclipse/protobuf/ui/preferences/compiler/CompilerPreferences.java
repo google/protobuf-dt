@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.compiler;
 
-import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.*;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferenceNames.*;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -19,29 +19,29 @@ import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Preferences {
+public class CompilerPreferences {
 
   public final boolean compileProtoFiles;
   public final String protocPath;
-  public final TargetLanguage language;
+  public final CompilerTargetLanguage language;
   public final String outputFolderName;
   public final boolean refreshResources;
-  public final RefreshTarget refreshTarget;
+  public final PostCompilationRefreshTarget refreshTarget;
 
-  public static Preferences loadPreferences(IPreferenceStoreAccess access, IProject project) {
+  public static CompilerPreferences loadPreferences(IPreferenceStoreAccess access, IProject project) {
     IPreferenceStore store = access.getWritablePreferenceStore(project);
     boolean useProjectPreferences = store.getBoolean(ENABLE_PROJECT_SETTINGS);
     if (!useProjectPreferences) store = access.getWritablePreferenceStore();
-    return new Preferences(store);
+    return new CompilerPreferences(store);
   }
 
-  private Preferences(IPreferenceStore store) {
+  private CompilerPreferences(IPreferenceStore store) {
     compileProtoFiles = store.getBoolean(COMPILE_PROTO_FILES);
     boolean useProtocInSystemPath = store.getBoolean(USE_PROTOC_IN_SYSTEM_PATH);
     protocPath = (useProtocInSystemPath) ? "protoc" : store.getString(PROTOC_FILE_PATH);
-    language = TargetLanguage.find(store);
+    language = CompilerTargetLanguage.find(store);
     outputFolderName = store.getString(OUTPUT_FOLDER_NAME);
     refreshResources = store.getBoolean(REFRESH_RESOURCES);
-    refreshTarget = RefreshTarget.find(store);
+    refreshTarget = PostCompilationRefreshTarget.find(store);
   }
 }

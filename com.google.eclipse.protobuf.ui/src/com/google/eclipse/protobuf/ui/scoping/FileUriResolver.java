@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.scoping;
 
-import static com.google.eclipse.protobuf.ui.preferences.paths.FileResolutionType.SINGLE_FOLDER;
+import static com.google.eclipse.protobuf.ui.preferences.paths.PathsResolutionType.SINGLE_FOLDER;
 import static org.eclipse.emf.common.util.URI.createURI;
 import static org.eclipse.xtext.util.Tuples.pair;
 
@@ -22,8 +22,8 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.util.Pair;
 
 import com.google.eclipse.protobuf.scoping.IFileUriResolver;
-import com.google.eclipse.protobuf.ui.preferences.paths.PreferenceReader;
-import com.google.eclipse.protobuf.ui.preferences.paths.Preferences;
+import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferenceReader;
+import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
 import com.google.inject.Inject;
 
 /**
@@ -34,7 +34,7 @@ public class FileUriResolver implements IFileUriResolver {
   private static final String PREFIX = "platform:/resource";
   private static final String SEPARATOR = "/";
 
-  @Inject private PreferenceReader preferenceReader;
+  @Inject private PathsPreferenceReader preferenceReader;
   @Inject private Resources resources;
   
   /*
@@ -63,7 +63,7 @@ public class FileUriResolver implements IFileUriResolver {
   
   private String resolveUri(Pair<String, List<String>> importUri, URI resourceUri) {
     IProject project = resources.project(resourceUri);
-    Preferences preferences = preferenceReader.readFromPrefereceStore(project);
+    PathsPreferences preferences = preferenceReader.readFromPrefereceStore(project);
     List<String> segments = removeFirstAndLast(resourceUri.segmentsList());
     if (preferences.fileResolutionType().equals(SINGLE_FOLDER)) {
       return resolveUri(importUri, segments);

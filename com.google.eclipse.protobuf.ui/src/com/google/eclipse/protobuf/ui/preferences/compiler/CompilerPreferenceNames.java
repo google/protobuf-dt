@@ -11,7 +11,7 @@ package com.google.eclipse.protobuf.ui.preferences.compiler;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-final class PreferenceNames {
+final class CompilerPreferenceNames {
 
   static final String ENABLE_PROJECT_SETTINGS = "compiler.enableProjectSettings";
   static final String COMPILE_PROTO_FILES = "compiler.compileProtoFiles";
@@ -26,5 +26,5 @@ final class PreferenceNames {
   static final String REFRESH_PROJECT = "compiler.refreshProject";
   static final String REFRESH_OUTPUT_FOLDER = "compiler.refreshOutputProject";
 
-  private PreferenceNames() {}
+  private CompilerPreferenceNames() {}
 }

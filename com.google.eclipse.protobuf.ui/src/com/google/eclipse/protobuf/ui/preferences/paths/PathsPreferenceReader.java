@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.paths;
 
-import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.ENABLE_PROJECT_SETTINGS;
+import static com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferenceNames.ENABLE_PROJECT_SETTINGS;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -21,14 +21,14 @@ import com.google.inject.Inject;
  * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class PreferenceReader {
+public class PathsPreferenceReader {
 
   @Inject private IPreferenceStoreAccess storeAccess;
   
-  public Preferences readFromPrefereceStore(IProject project) {
+  public PathsPreferences readFromPrefereceStore(IProject project) {
     IPreferenceStore store = storeAccess.getWritablePreferenceStore(project);
     boolean useProject = store.getBoolean(ENABLE_PROJECT_SETTINGS);
     if (!useProject) store = storeAccess.getWritablePreferenceStore();
-    return new Preferences(store);
+    return new PathsPreferences(store);
   }
 }
