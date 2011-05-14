@@ -20,8 +20,8 @@ import com.google.eclipse.protobuf.scoping.IFileUriResolver;
 import com.google.eclipse.protobuf.ui.builder.AutoAddNatureEditorCallback;
 import com.google.eclipse.protobuf.ui.outline.LinkWithEditor;
 import com.google.eclipse.protobuf.ui.outline.ProtobufOutlinePage;
-import com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferencesInitializer;
-import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferencesInitializer;
+import com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferenceStoreInitializer;
+import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferenceStoreInitializer;
 import com.google.eclipse.protobuf.ui.scoping.FileUriResolver;
 import com.google.inject.Binder;
 
@@ -52,11 +52,11 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
   }
 
   public void configureCompilerPreferencesInitializer(Binder binder) {
-    configurePreferenceInitializer(binder, "compilerPreferences", CompilerPreferencesInitializer.class);
+    configurePreferenceInitializer(binder, "compilerPreferences", CompilerPreferenceStoreInitializer.class);
   }
 
   public void configurePathsPreferencesInitializer(Binder binder) {
-    configurePreferenceInitializer(binder, "pathsPreferences", PathsPreferencesInitializer.class);
+    configurePreferenceInitializer(binder, "pathsPreferences", PathsPreferenceStoreInitializer.class);
   }
   
   private void configurePreferenceInitializer(Binder binder, String name,
