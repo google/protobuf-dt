@@ -16,11 +16,11 @@ import org.eclipse.jface.preference.IPreferenceStore;
  * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-public enum PathsResolutionType {
+public enum PathResolutionType {
 
   SINGLE_DIRECTORY, MULTIPLE_DIRECTORIES;
   
-  static PathsResolutionType find(IPreferenceStore store) {
+  static PathResolutionType readFrom(IPreferenceStore store) {
     if (store.getBoolean(FILES_IN_ONE_DIRECTORY_ONLY)) return SINGLE_DIRECTORY;
     return MULTIPLE_DIRECTORIES;
   }

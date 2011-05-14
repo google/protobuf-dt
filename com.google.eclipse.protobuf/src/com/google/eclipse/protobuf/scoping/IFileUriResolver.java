@@ -14,21 +14,21 @@ import com.google.eclipse.protobuf.scoping.IFileUriResolver.NullFileUriResolver;
 import com.google.inject.ImplementedBy;
 
 /**
- * Resolves partial URIs converting them to full ones belonging to existing files.
- * 
+ * Resolves "import" URIs.
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 @ImplementedBy(NullFileUriResolver.class)
 public interface IFileUriResolver {
 
   /**
-   * Resolves the given partial URI.
-   * @param importUri the partial URI (comes from a {@code Import}.)
+   * Resolves the given 'import' URI.
+   * @param importUri the 'import' URI.
    * @param declaringResource the resource declaring the import.
-   * @return the resolved URI.
+   * @return the resolved URI, or {@code importUri} if resolution was not successful.
    */
   String resolveUri(String importUri, Resource declaringResource);
-  
+
   class NullFileUriResolver implements IFileUriResolver {
     public String resolveUri(String importUri, Resource declaringResource) {
       throw new UnsupportedOperationException();

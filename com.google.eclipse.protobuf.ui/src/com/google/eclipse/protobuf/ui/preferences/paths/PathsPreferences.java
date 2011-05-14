@@ -8,8 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.paths;
 
-import static com.google.eclipse.protobuf.ui.preferences.paths.PathsResolutionType.SINGLE_DIRECTORY;
 import static com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferenceNames.DIRECTORY_NAMES;
+import static com.google.eclipse.protobuf.ui.preferences.paths.PathResolutionType.SINGLE_DIRECTORY;
 import static com.google.eclipse.protobuf.ui.util.Strings.CSV_PATTERN;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
@@ -20,30 +20,30 @@ import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
  * Paths preferences, retrieved from an <code>{@link IPreferenceStore}</code>.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class PathsPreferences {
 
-  private final PathsResolutionType fileResolutionType;
-  private final List<String> folderNames; 
-  
+  private final PathResolutionType pathResolutionType;
+  private final List<String> directoryNames;
+
   PathsPreferences(IPreferenceStore store) {
-    fileResolutionType = PathsResolutionType.find(store);
-    folderNames = folderNames(fileResolutionType, store);
+    pathResolutionType = PathResolutionType.readFrom(store);
+    directoryNames = directoryNames(pathResolutionType, store);
   }
-  
-  private static List<String> folderNames(PathsResolutionType types, IPreferenceStore store) {
+
+  private static List<String> directoryNames(PathResolutionType types, IPreferenceStore store) {
     if (types.equals(SINGLE_DIRECTORY)) return emptyList();
-    String[] folderNames = store.getString(DIRECTORY_NAMES).split(CSV_PATTERN);
-    return unmodifiableList(asList(folderNames));
+    String[] directoryNames = store.getString(DIRECTORY_NAMES).split(CSV_PATTERN);
+    return unmodifiableList(asList(directoryNames));
   }
 
-  public PathsResolutionType fileResolutionType() {
-    return fileResolutionType;
+  public PathResolutionType pathResolutionType() {
+    return pathResolutionType;
   }
 
-  public List<String> folderNames() {
-    return folderNames;
+  public List<String> directoryNames() {
+    return directoryNames;
   }
 }

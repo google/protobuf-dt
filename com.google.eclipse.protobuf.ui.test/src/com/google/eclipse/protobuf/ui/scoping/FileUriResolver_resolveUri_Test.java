@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.scoping;
 
-import static com.google.eclipse.protobuf.ui.preferences.paths.FileResolutionType.SINGLE_FOLDER;
+import static com.google.eclipse.protobuf.ui.preferences.paths.PathResolutionType.SINGLE_DIRECTORY;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
@@ -35,8 +35,8 @@ public class FileUriResolver_resolveUri_Test {
   @Rule public XtextRule xtext = new XtextRule();
   
   private Resource resource;
-  private PreferenceReader preferenceReader;
-  private Preferences preferences;
+  private PathsPreferenceReader preferenceReader;
+  private PathsPreferences preferences;
   private IProject project;
   private Resources resources;
 
@@ -44,13 +44,13 @@ public class FileUriResolver_resolveUri_Test {
 
   @Before public void setUp() {
     resource = new ResourceStub("platform:/resource/src/proto/person.proto");
-    preferenceReader = mock(PreferenceReader.class);
-    preferences = mock(Preferences.class);
+    preferenceReader = mock(PathsPreferenceReader.class);
+    preferences = mock(PathsPreferences.class);
     project = mock(IProject.class);
     resources = mock(Resources.class);
     Module module = new Module() {
       public void configure(Binder binder) {
-        binder.bind(PreferenceReader.class).toInstance(preferenceReader);
+        binder.bind(PathsPreferenceReader.class).toInstance(preferenceReader);
         binder.bind(Resources.class).toInstance(resources);
         binder.bind(IFileUriResolver.class).to(FileUriResolver.class);
       }
@@ -60,34 +60,34 @@ public class FileUriResolver_resolveUri_Test {
   }
 
   @Test public void should_resolve_import_URI_if_missing_scheme() {
-    callStubs(SINGLE_FOLDER, true);
+    callStubs(SINGLE_DIRECTORY, true);
     String resolved = resolver.resolveUri("folder1/address.proto", resource);
     assertThat(resolved, equalTo("platform:/resource/src/proto/folder1/address.proto"));  
   }
   
   @Test public void should_not_resolve_import_URI_if_not_missing_scheme() {
-    callStubs(SINGLE_FOLDER, true);
+    callStubs(SINGLE_DIRECTORY, true);
     String original = "platform:/resource/src/proto/folder1/address.proto";
     String resolved = resolver.resolveUri(original, resource);
     assertThat(resolved, equalTo(original));
   }
   
   @Test public void should_resolve_import_URI_even_if_overlapping_folders_with_resource_URI() {
-    callStubs(SINGLE_FOLDER, true);
+    callStubs(SINGLE_DIRECTORY, true);
     String resolved = resolver.resolveUri("src/proto/folder1/address.proto", resource);
     assertThat(resolved, equalTo("platform:/resource/src/proto/folder1/address.proto"));  
   }
 
   @Test public void should_resolve_import_URI_even_if_overlapping_one_folder_only_with_resource_URI() {
-    callStubs(SINGLE_FOLDER, true);
+    callStubs(SINGLE_DIRECTORY, true);
     String resolved = resolver.resolveUri("src/proto/read-only/address.proto", resource);
     assertThat(resolved, equalTo("platform:/resource/src/proto/read-only/address.proto"));  
   }
 
-  private void callStubs(FileResolutionType type, boolean resolvedUriExists) {
+  private void callStubs(PathResolutionType type, boolean resolvedUriExists) {
     when(resources.project(resource.getURI())).thenReturn(project);
     when(preferenceReader.readFromPrefereceStore(project)).thenReturn(preferences);
-    when(preferences.fileResolutionType()).thenReturn(type);
+    when(preferences.pathResolutionType()).thenReturn(type);
     when(resources.fileExists(any(URI.class))).thenReturn(resolvedUriExists);
   }
 }

@@ -39,9 +39,9 @@ public class CompilerPreferences {
     compileProtoFiles = store.getBoolean(COMPILE_PROTO_FILES);
     boolean useProtocInSystemPath = store.getBoolean(USE_PROTOC_IN_SYSTEM_PATH);
     protocPath = (useProtocInSystemPath) ? "protoc" : store.getString(PROTOC_FILE_PATH);
-    language = CompilerTargetLanguage.find(store);
+    language = CompilerTargetLanguage.readFrom(store);
     outputFolderName = store.getString(OUTPUT_FOLDER_NAME);
     refreshResources = store.getBoolean(REFRESH_RESOURCES);
-    refreshTarget = PostCompilationRefreshTarget.find(store);
+    refreshTarget = PostCompilationRefreshTarget.readFrom(store);
   }
 }

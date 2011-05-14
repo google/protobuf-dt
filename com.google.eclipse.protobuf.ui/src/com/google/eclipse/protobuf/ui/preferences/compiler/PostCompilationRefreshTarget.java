@@ -21,7 +21,7 @@ public enum PostCompilationRefreshTarget {
 
   PROJECT, OUTPUT_FOLDER;
 
-  static PostCompilationRefreshTarget find(IPreferenceStore store) {
+  static PostCompilationRefreshTarget readFrom(IPreferenceStore store) {
     if (store.getBoolean(REFRESH_PROJECT)) return PROJECT;
     return OUTPUT_FOLDER;
   }

@@ -9,15 +9,17 @@
 package com.google.eclipse.protobuf.ui.scoping;
 
 import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.*;
 import org.eclipse.emf.common.util.URI;
+
+import com.google.inject.Singleton;
 
 /**
  * Utility methods related to resources (e.g. files, directories.)
- *  
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
+@Singleton
 public class Resources {
 
   /**
@@ -28,7 +30,7 @@ public class Resources {
   public IProject project(URI resourceUri) {
     return file(resourceUri).getProject();
   }
-  
+
   /**
    * Indicates whether the given URI belongs to an existing file.
    * @param fileUri the URI to check, as a {@code String}.
