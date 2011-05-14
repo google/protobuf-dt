@@ -8,8 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.paths;
 
-import static com.google.eclipse.protobuf.ui.preferences.paths.PathsResolutionType.SINGLE_FOLDER;
-import static com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferenceNames.FOLDER_NAMES;
+import static com.google.eclipse.protobuf.ui.preferences.paths.PathsResolutionType.SINGLE_DIRECTORY;
+import static com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferenceNames.DIRECTORY_NAMES;
 import static com.google.eclipse.protobuf.ui.util.Strings.CSV_PATTERN;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
@@ -34,8 +34,8 @@ public class PathsPreferences {
   }
   
   private static List<String> folderNames(PathsResolutionType types, IPreferenceStore store) {
-    if (types.equals(SINGLE_FOLDER)) return emptyList();
-    String[] folderNames = store.getString(FOLDER_NAMES).split(CSV_PATTERN);
+    if (types.equals(SINGLE_DIRECTORY)) return emptyList();
+    String[] folderNames = store.getString(DIRECTORY_NAMES).split(CSV_PATTERN);
     return unmodifiableList(asList(folderNames));
   }
 

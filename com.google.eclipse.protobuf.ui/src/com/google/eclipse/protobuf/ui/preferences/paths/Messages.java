@@ -15,11 +15,11 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
   
-  public static String allProtosInMultipleFolders;
-  public static String allProtosInOneFolder;
-  public static String errorNoFolderNames;
-  public static String folderNameHint;
-  public static String importedFilesResolution;
+  public static String directoryNameHint;
+  public static String errorNoDirectoryNames;
+  public static String filesInMultipleDirectories;
+  public static String filesInOneDirectoryOnly;
+  public static String importedFilesPathResolution;
 
   static {
     Class<Messages> targetType = Messages.class;

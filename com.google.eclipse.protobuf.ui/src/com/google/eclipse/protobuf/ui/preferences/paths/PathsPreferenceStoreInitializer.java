@@ -24,9 +24,9 @@ public class PathsPreferenceStoreInitializer implements IPreferenceStoreInitiali
   /** {@inheritDoc} */
   public void initialize(IPreferenceStoreAccess access) {
     IPreferenceStore store = access.getWritablePreferenceStore();
-    store.setDefault(ALL_PROTOS_IN_ONE_FOLDER_ONLY, true);
-    store.setDefault(PROTOS_IN_MULTIPLE_FOLDERS, false);
-    store.setDefault(FOLDER_NAMES, "");
+    store.setDefault(FILES_IN_ONE_DIRECTORY_ONLY, true);
+    store.setDefault(FILES_IN_MULTIPLE_DIRECTORIES, false);
+    store.setDefault(DIRECTORY_NAMES, "");
   }
 
 }

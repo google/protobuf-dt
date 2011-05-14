@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.scoping;
 
-import static com.google.eclipse.protobuf.ui.preferences.paths.PathsResolutionType.SINGLE_FOLDER;
+import static com.google.eclipse.protobuf.ui.preferences.paths.PathsResolutionType.SINGLE_DIRECTORY;
 import static org.eclipse.emf.common.util.URI.createURI;
 import static org.eclipse.xtext.util.Tuples.pair;
 
@@ -65,7 +65,7 @@ public class FileUriResolver implements IFileUriResolver {
     IProject project = resources.project(resourceUri);
     PathsPreferences preferences = preferenceReader.readFromPrefereceStore(project);
     List<String> segments = removeFirstAndLast(resourceUri.segmentsList());
-    if (preferences.fileResolutionType().equals(SINGLE_FOLDER)) {
+    if (preferences.fileResolutionType().equals(SINGLE_DIRECTORY)) {
       return resolveUri(importUri, segments);
     }
     for (String folderName : preferences.folderNames()) {

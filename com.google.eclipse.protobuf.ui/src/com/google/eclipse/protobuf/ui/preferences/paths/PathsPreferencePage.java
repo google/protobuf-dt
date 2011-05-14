@@ -55,21 +55,21 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
     grpResolutionOfImported = new Group(contents, SWT.NONE);
     grpResolutionOfImported.setLayout(new GridLayout(1, false));
     grpResolutionOfImported.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-    grpResolutionOfImported.setText(importedFilesResolution);
+    grpResolutionOfImported.setText(importedFilesPathResolution);
     
     btnOneFolderOnly = new Button(grpResolutionOfImported, SWT.RADIO);
     btnOneFolderOnly.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
-    btnOneFolderOnly.setText(allProtosInOneFolder);
+    btnOneFolderOnly.setText(filesInOneDirectoryOnly);
     
     btnMultipleFolders = new Button(grpResolutionOfImported, SWT.RADIO);
     btnMultipleFolders.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
-    btnMultipleFolders.setText(allProtosInMultipleFolders);
+    btnMultipleFolders.setText(filesInMultipleDirectories);
     
     txtFolderNames = new Text(grpResolutionOfImported, SWT.BORDER);
     txtFolderNames.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
     
     Label label = new Label(grpResolutionOfImported, SWT.NONE);
-    label.setText(folderNameHint);
+    label.setText(directoryNameHint);
     new Label(contents, SWT.NONE);
     
     updateFromPreferenceStore();
@@ -80,9 +80,9 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
 
   private void updateFromPreferenceStore() {
     IPreferenceStore store = doGetPreferenceStore();
-    btnOneFolderOnly.setSelection(store.getBoolean(ALL_PROTOS_IN_ONE_FOLDER_ONLY));
-    btnMultipleFolders.setSelection(store.getBoolean(PROTOS_IN_MULTIPLE_FOLDERS));
-    txtFolderNames.setText(store.getString(FOLDER_NAMES));
+    btnOneFolderOnly.setSelection(store.getBoolean(FILES_IN_ONE_DIRECTORY_ONLY));
+    btnMultipleFolders.setSelection(store.getBoolean(FILES_IN_MULTIPLE_DIRECTORIES));
+    txtFolderNames.setText(store.getString(DIRECTORY_NAMES));
     boolean shouldEnablePathsOptions = true;
     if (isPropertyPage()) {
       boolean useProjectSettings = store.getBoolean(ENABLE_PROJECT_SETTINGS);
@@ -111,7 +111,7 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
     if (txtFolderNames.isEnabled()) {
       String folderNames = txtFolderNames.getText().trim();
       if (isEmpty(folderNames)) {
-        pageIsNowInvalid(errorNoFolderNames);
+        pageIsNowInvalid(errorNoDirectoryNames);
         return;
       }
       for (String folderName : folderNames.split(CSV_PATTERN)) {
@@ -132,9 +132,9 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
 
   @Override protected void performDefaults() {
     IPreferenceStore store = doGetPreferenceStore();
-    btnOneFolderOnly.setSelection(store.getDefaultBoolean(ALL_PROTOS_IN_ONE_FOLDER_ONLY));
-    btnMultipleFolders.setSelection(store.getDefaultBoolean(PROTOS_IN_MULTIPLE_FOLDERS));
-    txtFolderNames.setText(store.getDefaultString(FOLDER_NAMES));
+    btnOneFolderOnly.setSelection(store.getDefaultBoolean(FILES_IN_ONE_DIRECTORY_ONLY));
+    btnMultipleFolders.setSelection(store.getDefaultBoolean(FILES_IN_MULTIPLE_DIRECTORIES));
+    txtFolderNames.setText(store.getDefaultString(DIRECTORY_NAMES));
     boolean shouldEnablePathsOptions = true;
     if (isPropertyPage()) {
       boolean useProjectSettings = store.getDefaultBoolean(ENABLE_PROJECT_SETTINGS);
@@ -156,9 +156,9 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
   @Override protected void savePreferences() {
     IPreferenceStore store = getPreferenceStore();
     if (isPropertyPage()) store.setValue(ENABLE_PROJECT_SETTINGS, areProjectSettingsActive());
-    store.setValue(ALL_PROTOS_IN_ONE_FOLDER_ONLY, btnOneFolderOnly.getSelection());
-    store.setValue(PROTOS_IN_MULTIPLE_FOLDERS, btnMultipleFolders.getSelection());
-    store.setValue(FOLDER_NAMES, txtFolderNames.getText().trim());
+    store.setValue(FILES_IN_ONE_DIRECTORY_ONLY, btnOneFolderOnly.getSelection());
+    store.setValue(FILES_IN_MULTIPLE_DIRECTORIES, btnMultipleFolders.getSelection());
+    store.setValue(DIRECTORY_NAMES, txtFolderNames.getText().trim());
   }
 
   /** {@inheritDoc} */
