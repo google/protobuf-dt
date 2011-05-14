@@ -8,8 +8,6 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.eclipse.protobuf.scoping.IFileUriResolver.PREFIX;
-
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 
@@ -32,11 +30,6 @@ public class ProtobufImportUriResolver extends ImportUriResolver {
   @Inject private IFileUriResolver delegate;
 
   /**
-   * Prefix used by EMF for resource URIs: "platform:/resource/".
-   */
-  public static final String URI_PREFIX = PREFIX + "/";
-
-  /**
    * If the given {@code EObject} is a <code>{@link Import}</code>, this method will add "platform:/resource" to the
    * URI of such import if not specified already.
    * @param from the given element to resolve.
@@ -45,10 +38,10 @@ public class ProtobufImportUriResolver extends ImportUriResolver {
   @Override public String apply(EObject from) {
     if (from instanceof Import) {
       Import anImport = (Import) from;
-      String originalUri = anImport.getImportURI();
+      // String originalUri = anImport.getImportURI();
       anImport.setImportURI(resolveImportUri(anImport));
       String applied = super.apply(from);
-      anImport.setImportURI(originalUri);
+      // anImport.setImportURI(originalUri);
       return applied;
     }
     if (from instanceof Import) resolveImportUri((Import) from);

@@ -12,7 +12,6 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
 
 /**
  * Utility methods related to resources (e.g. files, directories.)
@@ -22,12 +21,12 @@ import org.eclipse.emf.ecore.resource.Resource;
 public class Resources {
 
   /**
-   * Returns the project that contains the given resource.
-   * @param resource the given resource.
-   * @return the project that contains the given resource.
+   * Returns the project that contains the resource at the given URI.
+   * @param resourceUri the given URI.
+   * @return the project that contains the resource at the given URI.
    */
-  public IProject project(Resource resource) {
-    return file(resource.getURI()).getProject();
+  public IProject project(URI resourceUri) {
+    return file(resourceUri).getProject();
   }
   
   /**

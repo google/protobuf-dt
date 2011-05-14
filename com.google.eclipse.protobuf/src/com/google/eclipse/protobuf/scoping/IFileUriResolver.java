@@ -21,9 +21,6 @@ import com.google.inject.ImplementedBy;
 @ImplementedBy(NullFileUriResolver.class)
 public interface IFileUriResolver {
 
-  /** Prefix present in resolved URIs. */
-  String PREFIX = "platform:/resource";
-  
   /**
    * Resolves the given partial URI.
    * @param importUri the partial URI (comes from a {@code Import}.)

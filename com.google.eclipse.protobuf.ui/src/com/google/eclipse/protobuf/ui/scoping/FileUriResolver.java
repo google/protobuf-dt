@@ -15,6 +15,8 @@ import static org.eclipse.xtext.util.Tuples.pair;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.util.Pair;
@@ -29,6 +31,7 @@ import com.google.inject.Inject;
  */
 public class FileUriResolver implements IFileUriResolver {
   
+  private static final String PREFIX = "platform:/resource";
   private static final String SEPARATOR = "/";
 
   @Inject private PreferenceReader preferenceReader;
@@ -52,23 +55,22 @@ public class FileUriResolver implements IFileUriResolver {
   public String resolveUri(String importUri, Resource declaringResource) {
     if (importUri.startsWith(PREFIX)) return importUri;
     Pair<String, List<String>> importUriPair = pair(importUri, createURI(importUri).segmentsList());
-    Preferences preferences = preferenceReader.readFromPrefereceStore(resources.project(declaringResource));
-    URI resourceUri = declaringResource.getURI();
-    String fixed = resolveUri(importUriPair, resourceUri, preferences);
-    System.out.println(resourceUri + " : " + importUri + " : " + fixed);
-    if (fixed == null) return importUri;
-    return fixed;
+    String resolved = resolveUri(importUriPair, declaringResource.getURI());
+//    System.out.println(declaringResource.getURI() + " : " + importUri + " : " + resolved);
+    if (resolved == null) return importUri;
+    return resolved;
   }
   
-  private String resolveUri(Pair<String, List<String>> importUri, URI resourceUri, Preferences preferences) {
+  private String resolveUri(Pair<String, List<String>> importUri, URI resourceUri) {
+    IProject project = resources.project(resourceUri);
+    Preferences preferences = preferenceReader.readFromPrefereceStore(project);
     List<String> segments = removeFirstAndLast(resourceUri.segmentsList());
     if (preferences.fileResolutionType().equals(SINGLE_FOLDER)) {
       return resolveUri(importUri, segments);
     }
     for (String folderName : preferences.folderNames()) {
-      segments.set(1, folderName);
-      String fixed = resolveUri(importUri, segments);
-      if (fixed != null) return fixed;
+      String resolved = resolveUri(importUri, folderName, project);
+      if (resolved != null) return resolved;
     }
     return null;
   }
@@ -82,16 +84,20 @@ public class FileUriResolver implements IFileUriResolver {
   }
   
   private String resolveUri(Pair<String, List<String>> importUri, List<String> resourceUri) {
-    StringBuilder prefix = new StringBuilder();
-    // prefix.append(PREFIX);
+    StringBuilder pathBuilder = new StringBuilder();
     String firstSegment = importUri.getSecond().get(0);
     for (String segment : resourceUri) {
       if (segment.equals(firstSegment)) break;
-      prefix.append(SEPARATOR).append(segment);
+      pathBuilder.append(segment).append(SEPARATOR);
     }
-    prefix.append(SEPARATOR);
-    String fixed = PREFIX + prefix.toString() + importUri.getFirst();
-    if (resources.fileExists(createURI(fixed))) return fixed;
-    return null;
+    String resolved = PREFIX + SEPARATOR + pathBuilder.toString() + importUri.getFirst();
+    return (resources.fileExists(createURI(resolved))) ? resolved : null;
+  }
+  
+  private String resolveUri(Pair<String, List<String>> importUri, String folderName, IProject project) {
+    String path = folderName + SEPARATOR + importUri.getFirst();
+    IResource findMember = project.findMember(path);
+    boolean exists = (findMember != null) ? findMember.exists() : false;
+    return (exists) ? PREFIX +  project.getFullPath() + SEPARATOR + path : null;
   }
 }

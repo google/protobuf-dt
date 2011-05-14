@@ -85,7 +85,7 @@ public class FileUriResolver_resolveUri_Test {
   }
 
   private void callStubs(FileResolutionType type, boolean resolvedUriExists) {
-    when(resources.project(resource)).thenReturn(project);
+    when(resources.project(resource.getURI())).thenReturn(project);
     when(preferenceReader.readFromPrefereceStore(project)).thenReturn(preferences);
     when(preferences.fileResolutionType()).thenReturn(type);
     when(resources.fileExists(any(URI.class))).thenReturn(resolvedUriExists);
