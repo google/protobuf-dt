@@ -10,6 +10,7 @@ package com.google.eclipse.protobuf.ui.preferences.compiler;
 
 import static com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferenceNames.*;
 import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.*;
+import static java.util.Arrays.asList;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import java.io.File;
@@ -22,7 +23,7 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.eclipse.protobuf.ui.preferences.PreferenceAndPropertyPage;
-import com.google.eclipse.protobuf.ui.util.DirectoryNameValidator;
+import com.google.eclipse.protobuf.ui.util.*;
 import com.google.inject.Inject;
 
 /**
@@ -57,6 +58,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
   private Label lblOutputFolderRelative;
 
   @Inject private DirectoryNameValidator directoryNameValidator;
+  @Inject private SwtEventListeners eventListeners;
 
   @Inject public CompilerPreferencePage(IPreferenceStoreAccess preferenceStoreAccess) {
     super(preferenceStoreAccess);
@@ -196,13 +198,13 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
         checkState();
       }
     });
-    addSelectionListener(new SelectionAdapter() {
+    eventListeners.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
         boolean selected = btnUseProtocInCustomPath.getSelection();
         enableCompilerCustomPathOptions(!selected);
         checkState();
       }
-    }, btnUseProtocInCustomPath, btnUseProtocInSystemPath);
+    }, asList(btnUseProtocInCustomPath, btnUseProtocInSystemPath));
     btnProtocPathBrowse.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
         FileDialog dialog = new FileDialog(getShell(), SWT.OPEN | SWT.SHEET);
@@ -215,11 +217,11 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
         refreshResourcesOptionsEnabled(btnRefreshResources.getSelection());
       }
     });
-    addModifyListener(new ModifyListener() {
+    eventListeners.addModifyListener(new ModifyListener() {
       public void modifyText(ModifyEvent e) {
         checkState();
       }
-    }, txtProtocFilePath, txtOutputFolderName);
+    }, asList(txtProtocFilePath, txtOutputFolderName));
   }
 
   private void checkState() {

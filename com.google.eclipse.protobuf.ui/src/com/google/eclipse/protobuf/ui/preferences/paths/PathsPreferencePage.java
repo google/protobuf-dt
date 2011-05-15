@@ -10,6 +10,7 @@ package com.google.eclipse.protobuf.ui.preferences.paths;
 
 import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.*;
 import static com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferenceNames.*;
+import static java.util.Arrays.asList;
 import static org.eclipse.xtext.util.Strings.*;
 
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -20,7 +21,7 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.eclipse.protobuf.ui.preferences.PreferenceAndPropertyPage;
-import com.google.eclipse.protobuf.ui.util.DirectoryNameValidator;
+import com.google.eclipse.protobuf.ui.util.*;
 import com.google.inject.Inject;
 
 /**
@@ -39,6 +40,7 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
   private DirectoryNamesEditor directoryNamesEditor;
 
   @Inject private DirectoryNameValidator directoryNameValidator;
+  @Inject private SwtEventListeners eventListeners;
 
   @Inject public PathsPreferencePage(IPreferenceStoreAccess preferenceStoreAccess) {
     super(preferenceStoreAccess);
@@ -62,7 +64,7 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
     btnMultipleFolders.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
     btnMultipleFolders.setText(filesInMultipleDirectories);
 
-    directoryNamesEditor = new DirectoryNamesEditor(grpResolutionOfImported, directoryNameValidator);
+    directoryNamesEditor = new DirectoryNamesEditor(grpResolutionOfImported, directoryNameValidator, eventListeners);
     directoryNamesEditor.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
     new Label(contents, SWT.NONE);
 
@@ -87,14 +89,14 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
   }
 
   private void addEventListeners() {
-    addSelectionListener(new SelectionAdapter() {
+    eventListeners.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
         boolean selected = btnMultipleFolders.getSelection();
         directoryNamesEditor.setEnabled(selected);
         checkState();
       }
-    }, btnOneFolderOnly, btnMultipleFolders);
-    directoryNamesEditor.onRemove(new SelectionAdapter() {
+    }, asList(btnOneFolderOnly, btnMultipleFolders));
+    directoryNamesEditor.onAddOrRemove(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
         checkState();
       }

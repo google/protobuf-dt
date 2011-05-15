@@ -15,12 +15,10 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.jface.preference.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.*;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
@@ -29,7 +27,7 @@ import com.google.inject.Inject;
 
 /**
  * Base class for pages that set up both "Workspace Preferences" and "Project Properties."
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public abstract class PreferenceAndPropertyPage extends PreferencePage implements IWorkbenchPreferencePage, IWorkbenchPropertyPage {
@@ -47,7 +45,7 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
   }
 
   /**
-   * Creates the <code>{@link Composite}</code> to be used as the base container in implementations of 
+   * Creates the <code>{@link Composite}</code> to be used as the base container in implementations of
    * <code>{@link #createContents(Composite)}</code>.
    * @param parent the parent {@code Composite}.
    * @return the created {@code Composite}.
@@ -71,7 +69,7 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
     addEventListeners();
     return contents;
   }
-  
+
   private void addEventListeners() {
     if (isPropertyPage()) {
       btnEnableProjectSettings.addSelectionListener(new SelectionAdapter() {
@@ -89,7 +87,7 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
   }
 
   /**
-   * Notification that the "Enable project specific settings" check button has been selected. 
+   * Notification that the "Enable project specific settings" check button has been selected.
    * @param projectSettingsActive indicates the selection of the "Enable project specific settings" check button.
    */
   protected abstract void onProjectSettingsActivation(boolean projectSettingsActive);
@@ -104,7 +102,7 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
    * @return the id of this preference page.
    */
   protected abstract String preferencePageId();
-  
+
   /**
    * Returns the <code>{@link IProject}</code> that owns the properties shown in this page.
    * @return the project that owns the properties shown in this page.
@@ -132,7 +130,7 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
 
   /**
    * Indicates whether this page is a "Project Properties" page or not.
-   * @return {@code true} if this page is a "Project Properties" page, or {@code false} if this page is a 
+   * @return {@code true} if this page is a "Project Properties" page, or {@code false} if this page is a
    * "Worspace Settings" page.
    */
   protected final boolean isPropertyPage() {
@@ -146,24 +144,24 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
   }
 
   /** {@inheritDoc} */
-  @SuppressWarnings("unchecked") 
+  @SuppressWarnings("unchecked")
   @Override public final void applyData(Object data) {
     if (data instanceof Map) this.dataMap = (Map<String, Object>) data;
   }
-  
+
   /**
-   * Activates or deactivates the project-specific settings. 
+   * Activates or deactivates the project-specific settings.
    * @param active indicates whether the project-specific settings should be active or not.
    */
   protected final void activateProjectSettings(boolean active) {
     btnEnableProjectSettings.setSelection(active);
     updateEnableWorkspaceSettingsLink();
   }
-  
+
   private void updateEnableWorkspaceSettingsLink() {
     lnkEnableWorkspaceSettings.setEnabled(!areProjectSettingsActive());
   }
-  
+
   /**
    * Indicates if the project-specific settings are active or not.
    * @return {@code true} if the project-specific settings are active; {@code false} otherwise.
@@ -184,24 +182,6 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
    * Saves the current settings.
    */
   protected abstract void savePreferences();
-  
-  /**
-   * Adds the given <code>{@link SelectionListener}</code> to the given <code>{@link Button}</code>s.
-   * @param listener the listener to add.
-   * @param buttons the buttons to add the listener to.
-   */
-  protected static void addSelectionListener(SelectionListener listener, Button...buttons) {
-    for (Button button : buttons) button.addSelectionListener(listener);
-  }
-  
-  /**
-   * Adds the given <code>{@link ModifyListener}</code> to the given <code>{@link Text}</code> widgets.
-   * @param listener the listener to add.
-   * @param texts the text widgets to add the listener to.
-   */
-  protected static void addModifyListener(ModifyListener listener, Text...texts) {
-    for (Text text : texts) text.addModifyListener(listener);
-  }
 
   /**
    * Marks this page as "valid."
