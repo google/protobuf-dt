@@ -26,7 +26,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.scoping.Globals;
-import com.google.eclipse.protobuf.ui.grammar.CommonKeyword;
+import com.google.eclipse.protobuf.ui.grammar.*;
 import com.google.eclipse.protobuf.ui.grammar.CompoundElement;
 import com.google.eclipse.protobuf.ui.labeling.Images;
 import com.google.eclipse.protobuf.ui.util.*;
@@ -40,6 +40,8 @@ import com.google.inject.Inject;
  */
 public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
+  private static final String SPACE = " ";
+
   @Inject private ProtobufElementFinder finder;
   @Inject private Globals globals;
   @Inject private PluginImageHelper imageHelper;
@@ -47,6 +49,22 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Inject private Literals literals;
   @Inject private Properties properties;
   @Inject private Strings strings;
+
+  /** {@inheritDoc} */
+  @Override public void completeProtobuf_Syntax(EObject model, Assignment assignment, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+  }
+
+  @Override public void completeSyntax_Name(EObject model, Assignment assignment, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+    proposeAndAccept(PROTO2_IN_QUOTES, context, acceptor);
+  }
+
+  @Override public void complete_Syntax(EObject model, RuleCall ruleCall, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+    String proposal = SYNTAX + SPACE + EQUAL_PROTO2_IN_QUOTES;
+    proposeAndAccept(proposal, imageHelper.getImage(imageRegistry.imageFor(Syntax.class)), context, acceptor);
+  }
 
   @Override public void completeOption_Name(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
@@ -60,7 +78,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   private void proposeCommonFileOptions(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     for (Property fileOption : globals.fileOptions()) {
       String displayString = fileOption.getName();
-      String proposalText = displayString + " " + EQUAL + " ";
+      String proposalText = displayString + SPACE + EQUAL + SPACE;
       boolean isStringOption = properties.isString(fileOption);
       if (isStringOption)
         proposalText = proposalText + EMPTY_STRING + SEMICOLON;
@@ -119,17 +137,17 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       proposeEmptyString(context, acceptor);
       return;
     }
-    if (model instanceof Option) return;
+    if (model instanceof Option || model instanceof Syntax) return;
+    for (AbstractElement element : context.getFirstSetGrammarElements()) {
+      if (!(element instanceof Assignment)) continue;
+      Assignment assignment = (Assignment) element;
+      if (EQUAL.hasValue(assignment.getOperator()) && assignment.getFeature().equals("name")) return;
+    }
     super.complete_STRING(model, ruleCall, context, acceptor);
   }
 
   private void proposeEmptyString(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    ICompletionProposal proposal = createCompletionProposal(EMPTY_STRING, context);
-    if (proposal instanceof ConfigurableCompletionProposal) {
-      ConfigurableCompletionProposal configurable = (ConfigurableCompletionProposal) proposal;
-      configurable.setCursorPosition(1);
-    }
-    acceptor.accept(proposal);
+    createAndAccept(EMPTY_STRING, 1, context, acceptor);
   }
 
   private boolean isProposalForDefaultValue(ContentAssistContext context) {
@@ -155,9 +173,17 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   }
 
   private boolean completeKeyword(String keyword, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    if (isKeywordEqualToPreviousWordInEditor(keyword, context)) return true;
-    if (TRUE.hasValue(keyword) || FALSE.hasValue(keyword)) {
-      if (!isBoolProposalValid(context)) return true;
+    if (isLastWordFromCaretPositionEqualTo(keyword, context)) return true;
+    if (DEFAULT.hasValue(keyword)) {
+      proposeDefaultValue(context, acceptor);
+      return true;
+    }
+    if (EQUAL.hasValue(keyword)) {
+      EObject grammarElement = context.getLastCompleteNode().getGrammarElement();
+      if (isKeyword(grammarElement, SYNTAX)) {
+        proposeEqualProto2(context, acceptor);
+        return true;
+      }
     }
     if (OPENING_BRACKET.hasValue(keyword)) {
       return proposeOpenBracket(context, acceptor);
@@ -166,20 +192,27 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       proposePackedOption(context, acceptor);
       return true;
     }
-    if (DEFAULT.hasValue(keyword)) {
-      proposeDefaultValue(context, acceptor);
-      return true;
+    if (TRUE.hasValue(keyword) || FALSE.hasValue(keyword)) {
+      if (!isBoolProposalValid(context)) return true;
     }
     return false;
   }
 
-  private boolean isKeywordEqualToPreviousWordInEditor(String keyword, ContentAssistContext context) {
+  private void proposeEqualProto2(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    proposeAndAccept(EQUAL_PROTO2_IN_QUOTES, context, acceptor);
+  }
+
+  private boolean isKeyword(EObject object, CommonKeyword keyword) {
+    return object instanceof Keyword && keyword.hasValue(((Keyword)object).getValue());
+  }
+
+  private boolean isLastWordFromCaretPositionEqualTo(String word, ContentAssistContext context) {
     StyledText styledText = context.getViewer().getTextWidget();
-    int valueLength = keyword.length();
+    int valueLength = word.length();
     int start = styledText.getCaretOffset() - valueLength;
     if (start < 0) return false;
     String previousWord = styledText.getTextRange(start, valueLength);
-    return keyword.equals(previousWord);
+    return word.equals(previousWord);
   }
 
   private boolean isBoolProposalValid(ContentAssistContext context) {
@@ -204,12 +237,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
         display = DEFAULT_EQUAL_STRING_IN_BRACKETS;
         cursorPosition++;
       }
-      ICompletionProposal proposal = createCompletionProposal(display, context);
-      if (proposal instanceof ConfigurableCompletionProposal) {
-        ConfigurableCompletionProposal configurable = (ConfigurableCompletionProposal) proposal;
-        configurable.setCursorPosition(cursorPosition);
-      }
-      acceptor.accept(proposal);
+      createAndAccept(display, cursorPosition, context, acceptor);
     }
     if (REPEATED.equals(modifier) && properties.isPrimitive(p))
       proposeAndAccept(PACKED_EQUAL_TRUE_IN_BRACKETS, context, acceptor);
@@ -238,6 +266,11 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       display = DEFAULT_EQUAL_STRING;
       cursorPosition++;
     }
+    createAndAccept(display, cursorPosition, context, acceptor);
+  }
+
+  private void createAndAccept(CompoundElement display, int cursorPosition, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
     ICompletionProposal proposal = createCompletionProposal(display, context);
     if (proposal instanceof ConfigurableCompletionProposal) {
       ConfigurableCompletionProposal configurable = (ConfigurableCompletionProposal) proposal;
@@ -288,7 +321,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   private void proposeAndAccept(String proposalText, Image image, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    ICompletionProposal proposal = createCompletionProposal(proposalText, proposalText, image, context);
+    String s = addSpaceAtBeginning(proposalText, context);
+    ICompletionProposal proposal = createCompletionProposal(s, proposalText, image, context);
     acceptor.accept(proposal);
   }
 
@@ -322,14 +356,19 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   }
 
   private void proposeAndAccept(String proposalText, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    ICompletionProposal proposal = createCompletionProposal(proposalText, context);
-    acceptor.accept(proposal);
+    String s = addSpaceAtBeginning(proposalText, context);
+    acceptor.accept(createCompletionProposal(s, context));
   }
 
-  @Override protected ICompletionProposal createCompletionProposal(String proposal,
-      ContentAssistContext contentAssistContext) {
-    return createCompletionProposal(proposal, null, defaultImage(), getPriorityHelper().getDefaultPriority(),
-        contentAssistContext.getPrefix(), contentAssistContext);
+  private String addSpaceAtBeginning(String proposal, ContentAssistContext context) {
+    if (!isLastWordFromCaretPositionEqualTo(SPACE, context)) return SPACE + proposal;
+    return proposal;
+  }
+
+  @Override protected ICompletionProposal createCompletionProposal(String proposalText, ContentAssistContext context) {
+    String s = addSpaceAtBeginning(proposalText, context);
+    return createCompletionProposal(s, null, defaultImage(), getPriorityHelper().getDefaultPriority(),
+        context.getPrefix(), context);
   }
 
   private Image defaultImage() {

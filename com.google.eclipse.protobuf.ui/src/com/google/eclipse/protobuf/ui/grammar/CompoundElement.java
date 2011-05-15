@@ -11,25 +11,37 @@ package com.google.eclipse.protobuf.ui.grammar;
 import static com.google.eclipse.protobuf.ui.grammar.CommonKeyword.*;
 
 /**
- * Element composed of more than one keyword.
+ * Element composed of one or more keywords.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public enum CompoundElement {
 
-  DEFAULT_EQUAL(join(DEFAULT, EQUAL, "")),
+  DEFAULT_EQUAL(joinWithWhitespace(DEFAULT, EQUAL, "")),
   DEFAULT_EQUAL_IN_BRACKETS(inBrackets(DEFAULT_EQUAL)),
-  EMPTY_STRING("\"\""),
-  DEFAULT_EQUAL_STRING(join(DEFAULT_EQUAL, EMPTY_STRING)),
+  QUOTE("\""),
+  EMPTY_STRING(join(QUOTE, QUOTE)),
+  DEFAULT_EQUAL_STRING(joinWithWhitespace(DEFAULT_EQUAL, EMPTY_STRING)),
   DEFAULT_EQUAL_STRING_IN_BRACKETS(inBrackets(DEFAULT_EQUAL_STRING)),
-  PACKED_EQUAL_TRUE(join(PACKED, EQUAL, TRUE)),
-  PACKED_EQUAL_TRUE_IN_BRACKETS(inBrackets(PACKED_EQUAL_TRUE));
+  PACKED_EQUAL_TRUE(joinWithWhitespace(PACKED, EQUAL, TRUE)),
+  PACKED_EQUAL_TRUE_IN_BRACKETS(inBrackets(PACKED_EQUAL_TRUE)),
+  PROTO2_IN_QUOTES(join(QUOTE, "proto2", QUOTE, SEMICOLON)),
+  EQUAL_PROTO2_IN_QUOTES(joinWithWhitespace(EQUAL, PROTO2_IN_QUOTES));
 
   private static final String SPACE = " ";
 
   private final String value;
 
   private static String join(Object...objects) {
+    StringBuilder buffer = new StringBuilder();
+    int count = objects.length;
+    for (int i = 0; i < count; i++) {
+      buffer.append(objects[i].toString());
+    }
+    return buffer.toString();
+  }
+
+  private static String joinWithWhitespace(Object...objects) {
     StringBuilder buffer = new StringBuilder();
     int count = objects.length;
     for (int i = 0; i < count; i++) {
