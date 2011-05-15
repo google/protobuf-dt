@@ -8,24 +8,21 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.compiler;
 
-import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.*;
 import static com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferenceNames.*;
-import static org.eclipse.core.runtime.IStatus.OK;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.*;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import java.io.File;
 
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.eclipse.protobuf.ui.preferences.PreferenceAndPropertyPage;
-import com.google.eclipse.protobuf.ui.util.FolderNameValidator;
+import com.google.eclipse.protobuf.ui.util.DirectoryNameValidator;
 import com.google.inject.Inject;
 
 /**
@@ -59,8 +56,8 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
   private Button btnRefreshOutputFolder;
   private Label lblOutputFolderRelative;
 
-  @Inject private FolderNameValidator folderNameValidator;
-  
+  @Inject private DirectoryNameValidator directoryNameValidator;
+
   @Inject public CompilerPreferencePage(IPreferenceStoreAccess preferenceStoreAccess) {
     super(preferenceStoreAccess);
   }
@@ -231,9 +228,9 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
       pageIsNowInvalid(errorNoOutputFolderName);
       return;
     }
-    IStatus validFolderName = folderNameValidator.validateFolderName(folderName);
-    if (validFolderName.getCode() != OK) {
-      pageIsNowInvalid(validFolderName.getMessage());
+    String invalidDirectoryName = directoryNameValidator.validateDirectoryName(folderName);
+    if (invalidDirectoryName != null) {
+      pageIsNowInvalid(invalidDirectoryName);
       return;
     }
     if (!customPathOptionSelectedAndEnabled()) {
@@ -278,7 +275,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     enableCompilerOptions(enableCompilerOptions);
     super.performDefaults();
   }
-  
+
   /** {@inheritDoc} */
   @Override protected void onProjectSettingsActivation(boolean active) {
     enableProjectSpecificOptions(active);
@@ -358,7 +355,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     store.setValue(REFRESH_PROJECT, btnRefreshProject.getSelection());
     store.setValue(REFRESH_OUTPUT_FOLDER, btnRefreshOutputFolder.getSelection());
   }
-  
+
   /** {@inheritDoc} */
   @Override protected String preferencePageId() {
     return PREFERENCE_PAGE_ID;

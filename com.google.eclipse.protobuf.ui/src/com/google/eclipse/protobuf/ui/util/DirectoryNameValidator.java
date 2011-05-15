@@ -9,23 +9,24 @@
 package com.google.eclipse.protobuf.ui.util;
 
 import static org.eclipse.core.resources.IResource.FOLDER;
+import static org.eclipse.core.runtime.IStatus.OK;
 
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.IStatus;
 
 import com.google.inject.Singleton;
 
 /**
  * Validates names of folders.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton
-public class FolderNameValidator {
+public class DirectoryNameValidator {
 
-  public IStatus validateFolderName(String folderName) {
+  public String validateDirectoryName(String directoryName) {
     IWorkspace workspace = ResourcesPlugin.getWorkspace();
-    return workspace.validateName(folderName, FOLDER);
+    IStatus isValid = workspace.validateName(directoryName, FOLDER);
+    return (isValid.getCode() == OK) ? null : isValid.getMessage();
   }
 }
