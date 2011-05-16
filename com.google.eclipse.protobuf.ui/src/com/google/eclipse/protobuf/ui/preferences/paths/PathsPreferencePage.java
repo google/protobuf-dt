@@ -20,6 +20,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
+import org.eclipse.xtext.ui.PluginImageHelper;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.eclipse.protobuf.ui.preferences.PreferenceAndPropertyPage;
@@ -39,9 +40,10 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
   private Group grpResolutionOfImported;
   private Button btnOneFolderOnly;
   private Button btnMultipleFolders;
-  private DirectoryNamesEditor directoryNamesEditor;
+  private DirectoryPathsEditor directoryPathsEditor;
 
   @Inject private EventListeners eventListeners;
+  @Inject private PluginImageHelper imageHelper;
 
   @Inject public PathsPreferencePage(IPreferenceStoreAccess preferenceStoreAccess) {
     super(preferenceStoreAccess);
@@ -65,8 +67,8 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
     btnMultipleFolders.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
     btnMultipleFolders.setText(filesInMultipleDirectories);
 
-    directoryNamesEditor = new DirectoryNamesEditor(grpResolutionOfImported, eventListeners);
-    directoryNamesEditor.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+    directoryPathsEditor = new DirectoryPathsEditor(grpResolutionOfImported, imageHelper, eventListeners);
+    directoryPathsEditor.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
     new Label(contents, SWT.NONE);
 
     updateFromPreferenceStore();
@@ -79,7 +81,7 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
     IPreferenceStore store = doGetPreferenceStore();
     btnOneFolderOnly.setSelection(store.getBoolean(FILES_IN_ONE_DIRECTORY_ONLY));
     btnMultipleFolders.setSelection(store.getBoolean(FILES_IN_MULTIPLE_DIRECTORIES));
-    setDirectoryNames(store.getString(DIRECTORY_NAMES));
+    setDirectoryNames(store.getString(DIRECTORY_PATHS));
     boolean shouldEnablePathsOptions = true;
     if (isPropertyPage()) {
       boolean useProjectSettings = store.getBoolean(ENABLE_PROJECT_SETTINGS);
@@ -93,11 +95,11 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
     eventListeners.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
         boolean selected = btnMultipleFolders.getSelection();
-        directoryNamesEditor.setEnabled(selected);
+        directoryPathsEditor.setEnabled(selected);
         checkState();
       }
     }, asList(btnOneFolderOnly, btnMultipleFolders));
-    directoryNamesEditor.onAddOrRemove(new SelectionAdapter() {
+    directoryPathsEditor.onAddOrRemove(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
         checkState();
       }
@@ -105,7 +107,7 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
   }
 
   private void checkState() {
-    if (directoryNamesEditor.isEnabled() && directoryNamesEditor.directoryPaths().isEmpty()) {
+    if (directoryPathsEditor.isEnabled() && directoryPathsEditor.directoryPaths().isEmpty()) {
       pageIsNowInvalid(errorNoDirectoryNames);
       return;
     }
@@ -121,7 +123,7 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
     IPreferenceStore store = doGetPreferenceStore();
     btnOneFolderOnly.setSelection(store.getDefaultBoolean(FILES_IN_ONE_DIRECTORY_ONLY));
     btnMultipleFolders.setSelection(store.getDefaultBoolean(FILES_IN_MULTIPLE_DIRECTORIES));
-    setDirectoryNames(store.getDefaultString(DIRECTORY_NAMES));
+    setDirectoryNames(store.getDefaultString(DIRECTORY_PATHS));
     boolean shouldEnablePathsOptions = true;
     if (isPropertyPage()) {
       boolean useProjectSettings = store.getDefaultBoolean(ENABLE_PROJECT_SETTINGS);
@@ -133,14 +135,14 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
   }
 
   private void setDirectoryNames(String directoryNames) {
-    directoryNamesEditor.addDirectoryPaths(split(directoryNames, COMMA_DELIMITER));
+    directoryPathsEditor.addDirectoryPaths(split(directoryNames, COMMA_DELIMITER));
   }
 
   private void enableProjectOptions(boolean enabled) {
     grpResolutionOfImported.setEnabled(enabled);
     btnOneFolderOnly.setEnabled(enabled);
     btnMultipleFolders.setEnabled(enabled);
-    directoryNamesEditor.setEnabled(btnMultipleFolders.getSelection() && enabled);
+    directoryPathsEditor.setEnabled(btnMultipleFolders.getSelection() && enabled);
   }
 
   /** {@inheritDoc} */
@@ -149,11 +151,11 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
     if (isPropertyPage()) store.setValue(ENABLE_PROJECT_SETTINGS, areProjectSettingsActive());
     store.setValue(FILES_IN_ONE_DIRECTORY_ONLY, btnOneFolderOnly.getSelection());
     store.setValue(FILES_IN_MULTIPLE_DIRECTORIES, btnMultipleFolders.getSelection());
-    store.setValue(DIRECTORY_NAMES, directoryNames());
+    store.setValue(DIRECTORY_PATHS, directoryNames());
   }
 
   private String directoryNames() {
-    return concat(COMMA_DELIMITER, directoryNamesEditor.directoryPaths());
+    return concat(COMMA_DELIMITER, directoryPathsEditor.directoryPaths());
   }
 
   /** {@inheritDoc} */

@@ -8,9 +8,11 @@
  */
 package com.google.eclipse.protobuf.ui.scoping;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.emf.common.util.URI;
 
+import com.google.eclipse.protobuf.ui.preferences.paths.DirectoryPath;
 import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
 
 /**
@@ -20,8 +22,8 @@ class MultipleDirectoriesFileResolver implements FileResolverStrategy {
 
   /** {@inheritDoc} */
   public String resolveUri(String importUri, URI declaringResourceUri, PathsPreferences preferences, IProject project) {
-    for (String directoryName : preferences.directoryNames()) {
-      String resolved = resolveUri(importUri, directoryName, project);
+    for (DirectoryPath directoryPath : preferences.directoryPaths()) {
+      String resolved = resolveUri(importUri, directoryPath.value(), project);
       if (resolved != null) return resolved;
     }
     return null;

@@ -26,7 +26,7 @@ public class PathsPreferenceStoreInitializer implements IPreferenceStoreInitiali
     IPreferenceStore store = access.getWritablePreferenceStore();
     store.setDefault(FILES_IN_ONE_DIRECTORY_ONLY, true);
     store.setDefault(FILES_IN_MULTIPLE_DIRECTORIES, false);
-    store.setDefault(DIRECTORY_NAMES, "");
+    store.setDefault(DIRECTORY_PATHS, "");
   }
 
 }

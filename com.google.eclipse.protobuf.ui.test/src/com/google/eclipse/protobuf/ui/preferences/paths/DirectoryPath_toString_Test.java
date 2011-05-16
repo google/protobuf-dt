@@ -14,19 +14,19 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
 /**
- * Tests for <code>{@link ImportPath#toString()}</code>
+ * Tests for <code>{@link DirectoryPath#toString()}</code>
  * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ImportPath_toString_Test {
+public class DirectoryPath_toString_Test {
 
   @Test public void should_specify_is_workspace_path() {
-    ImportPath path = new ImportPath("/test/src", true);
+    DirectoryPath path = new DirectoryPath("/test/src", true);
     assertThat(path.toString(), equalTo("${workspace_loc:/test/src}"));
   }
 
   @Test public void should_return_plain_value_if_it_is_not_workspace_path() {
-    ImportPath path = new ImportPath("/test/src", false);
+    DirectoryPath path = new DirectoryPath("/test/src", false);
     assertThat(path.toString(), equalTo("/test/src"));
   }
 }

@@ -8,12 +8,12 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.paths;
 
-import static com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferenceNames.DIRECTORY_NAMES;
 import static com.google.eclipse.protobuf.ui.preferences.paths.PathResolutionType.SINGLE_DIRECTORY;
+import static com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferenceNames.DIRECTORY_PATHS;
 import static com.google.eclipse.protobuf.ui.util.Strings.CSV_PATTERN;
-import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -26,24 +26,27 @@ import org.eclipse.jface.preference.IPreferenceStore;
 public class PathsPreferences {
 
   private final PathResolutionType pathResolutionType;
-  private final List<String> directoryNames;
+  private final List<DirectoryPath> directoryPaths;
 
   PathsPreferences(IPreferenceStore store) {
     pathResolutionType = PathResolutionType.readFrom(store);
-    directoryNames = directoryNames(pathResolutionType, store);
+    directoryPaths = directoryPaths(pathResolutionType, store);
   }
 
-  private static List<String> directoryNames(PathResolutionType types, IPreferenceStore store) {
+  private static List<DirectoryPath> directoryPaths(PathResolutionType types, IPreferenceStore store) {
     if (types.equals(SINGLE_DIRECTORY)) return emptyList();
-    String[] directoryNames = store.getString(DIRECTORY_NAMES).split(CSV_PATTERN);
-    return unmodifiableList(asList(directoryNames));
+    List<DirectoryPath> paths = new ArrayList<DirectoryPath>();
+    for (String directoryPath : store.getString(DIRECTORY_PATHS).split(CSV_PATTERN)) {
+      paths.add(DirectoryPath.parse(directoryPath));
+    }
+    return unmodifiableList(paths);
   }
 
   public PathResolutionType pathResolutionType() {
     return pathResolutionType;
   }
 
-  public List<String> directoryNames() {
-    return directoryNames;
+  public List<DirectoryPath> directoryPaths() {
+    return directoryPaths;
   }
 }

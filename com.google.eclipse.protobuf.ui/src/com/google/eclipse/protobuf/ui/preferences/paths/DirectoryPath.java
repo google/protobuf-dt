@@ -14,20 +14,20 @@ import java.util.regex.Pattern;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class ImportPath {
+public class DirectoryPath {
 
   private static final Pattern WORKSPACE_PATH_PATTERN = Pattern.compile("\\$\\{workspace_loc:(.*)\\}");
   
-  final String value;
-  final boolean isWorkspacePath;
+  private final String value;
+  private final boolean isWorkspacePath;
 
-  static ImportPath parse(String path) {
+  static DirectoryPath parse(String path) {
     Matcher matcher = WORKSPACE_PATH_PATTERN.matcher(path);
-    if (matcher.matches()) return new ImportPath(matcher.group(1), true);
-    return new ImportPath(path, false);
+    if (matcher.matches()) return new DirectoryPath(matcher.group(1), true);
+    return new DirectoryPath(path, false);
   }
   
-  ImportPath(String path, boolean isWorkspacePath) {
+  DirectoryPath(String path, boolean isWorkspacePath) {
     this.value = path;
     this.isWorkspacePath = isWorkspacePath;
   }
@@ -36,5 +36,13 @@ class ImportPath {
   @Override public String toString() {
     if (!isWorkspacePath) return value;
     return "${workspace_loc:" + value + "}";
+  }
+
+  public String value() {
+    return value;
+  }
+
+  public boolean isWorkspacePath() {
+    return isWorkspacePath;
   }
 }

@@ -31,7 +31,7 @@ public class IncludeDialog extends Dialog {
   private Shell shell;
   private boolean result;
   
-  private ImportPath selectedPath;
+  private DirectoryPath selectedPath;
 
   private Text txtPath;
   private Button btnWorkspace;
@@ -134,7 +134,7 @@ public class IncludeDialog extends Dialog {
     });
     btnOk.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
-        selectedPath = new ImportPath(txtPath.getText().trim(), btnIsWorkspacePath.getSelection());
+        selectedPath = new DirectoryPath(txtPath.getText().trim(), btnIsWorkspacePath.getSelection());
         result = true;
         shell.dispose();
       }
@@ -164,7 +164,7 @@ public class IncludeDialog extends Dialog {
    * Returns the path selected by the user.
    * @return the path selected by the user.
    */
-  public ImportPath getSelectedPath() {
+  public DirectoryPath getSelectedPath() {
     return selectedPath;
   }
 }

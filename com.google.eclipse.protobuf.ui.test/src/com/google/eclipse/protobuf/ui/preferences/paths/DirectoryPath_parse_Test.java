@@ -14,21 +14,21 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
 /**
- * Tests for <code>{@link ImportPath#parse(String)}</code>
+ * Tests for <code>{@link DirectoryPath#parse(String)}</code>
  * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ImportPath_parse_Test {
+public class DirectoryPath_parse_Test {
 
   @Test public void should_parse_workspace_path() {
-    ImportPath path = ImportPath.parse("${workspace_loc:/test/src}");
-    assertThat(path.value, equalTo("/test/src"));
-    assertThat(path.isWorkspacePath, equalTo(true));
+    DirectoryPath path = DirectoryPath.parse("${workspace_loc:/test/src}");
+    assertThat(path.value(), equalTo("/test/src"));
+    assertThat(path.isWorkspacePath(), equalTo(true));
   }
 
   @Test public void should_parse_file_system_path() {
-    ImportPath path = ImportPath.parse("/test/src");
-    assertThat(path.value, equalTo("/test/src"));
-    assertThat(path.isWorkspacePath, equalTo(false));
+    DirectoryPath path = DirectoryPath.parse("/test/src");
+    assertThat(path.value(), equalTo("/test/src"));
+    assertThat(path.isWorkspacePath(), equalTo(false));
   }
 }
