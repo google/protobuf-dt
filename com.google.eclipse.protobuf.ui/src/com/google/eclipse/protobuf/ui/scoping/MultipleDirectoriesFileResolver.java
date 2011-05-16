@@ -8,8 +8,6 @@
  */
 package com.google.eclipse.protobuf.ui.scoping;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.emf.common.util.URI;
 
 import com.google.eclipse.protobuf.ui.preferences.paths.DirectoryPath;
@@ -20,19 +18,25 @@ import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
  */
 class MultipleDirectoriesFileResolver implements FileResolverStrategy {
 
+  private final Resources resources;
+
+  MultipleDirectoriesFileResolver(Resources resources) {
+    this.resources = resources;
+  }
+
   /** {@inheritDoc} */
-  public String resolveUri(String importUri, URI declaringResourceUri, PathsPreferences preferences, IProject project) {
+  public String resolveUri(String importUri, URI declaringResourceUri, PathsPreferences preferences) {
     for (DirectoryPath directoryPath : preferences.directoryPaths()) {
-      String resolved = resolveUri(importUri, directoryPath.value(), project);
+      if (!directoryPath.isWorkspacePath()) continue; // TODO file system is not supported yet.
+      String resolved = resolveUriInWorkspace(importUri, directoryPath.value());
       if (resolved != null) return resolved;
     }
     return null;
   }
 
-  private String resolveUri(String importUri, String directoryName, IProject project) {
-    String path = directoryName + SEPARATOR + importUri;
-    IResource findMember = project.findMember(path);
-    boolean exists = (findMember != null) ? findMember.exists() : false;
-    return (exists) ? PREFIX +  project.getFullPath() + SEPARATOR + path : null;
+  private String resolveUriInWorkspace(String importUri, String directoryName) {
+    String path = PREFIX + directoryName + SEPARATOR + importUri;
+    boolean exists = resources.fileExists(URI.createURI(path));
+    return (exists) ? path : null;
   }
 }

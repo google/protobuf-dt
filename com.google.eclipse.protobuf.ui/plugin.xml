@@ -67,11 +67,6 @@
       id="com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferencePage" name="%page.name.2">
       <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
     </page>
-    <page category="com.google.eclipse.protobuf.Protobuf"
-      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferencePage"
-      id="com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferencePage" name="%page.name.3">
-      <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
-    </page>
   </extension>
   <extension point="org.eclipse.ui.keywords">
     <keyword id="com.google.eclipse.protobuf.ui.keyword_Protobuf" label="%keyword.label" />

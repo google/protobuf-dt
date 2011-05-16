@@ -13,7 +13,6 @@ package com.google.eclipse.protobuf.ui.preferences.paths;
  */
 final class PathsPreferenceNames {
 
-  static final String ENABLE_PROJECT_SETTINGS = "paths.enableProjectSettings";
   static final String FILES_IN_ONE_DIRECTORY_ONLY = "paths.filesInOneDirectoryOnly";
   static final String FILES_IN_MULTIPLE_DIRECTORIES = "paths.filesInMultipleDirectories";
   static final String DIRECTORY_PATHS = "paths.directoryPaths";

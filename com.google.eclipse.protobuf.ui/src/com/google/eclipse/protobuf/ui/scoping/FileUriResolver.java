@@ -55,7 +55,7 @@ public class FileUriResolver implements IFileUriResolver {
   private String resolveUri(String importUri, URI resourceUri) {
     IProject project = resources.project(resourceUri);
     PathsPreferences preferences = preferenceReader.readFromPrefereceStore(project);
-    return resolver(preferences).resolveUri(importUri, resourceUri, preferences, project);
+    return resolver(preferences).resolveUri(importUri, resourceUri, preferences);
   }
 
   private FileResolverStrategy resolver(PathsPreferences preferences) {

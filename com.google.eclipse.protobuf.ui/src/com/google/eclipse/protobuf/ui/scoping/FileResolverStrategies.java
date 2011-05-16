@@ -14,7 +14,8 @@ import static com.google.inject.internal.Maps.newHashMap;
 import java.util.Map;
 
 import com.google.eclipse.protobuf.ui.preferences.paths.PathResolutionType;
-import com.google.inject.*;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -26,7 +27,7 @@ class FileResolverStrategies {
 
   @Inject FileResolverStrategies(Resources resources) {
     strategies.put(SINGLE_DIRECTORY, new SingleDirectoryFileResolver(resources));
-    strategies.put(MULTIPLE_DIRECTORIES, new MultipleDirectoriesFileResolver());
+    strategies.put(MULTIPLE_DIRECTORIES, new MultipleDirectoriesFileResolver(resources));
   }
 
   FileResolverStrategy strategyFor(PathResolutionType type) {

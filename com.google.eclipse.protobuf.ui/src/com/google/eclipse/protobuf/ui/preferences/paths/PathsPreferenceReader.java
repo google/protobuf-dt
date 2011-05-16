@@ -8,8 +8,6 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.paths;
 
-import static com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferenceNames.ENABLE_PROJECT_SETTINGS;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
@@ -27,8 +25,6 @@ public class PathsPreferenceReader {
   
   public PathsPreferences readFromPrefereceStore(IProject project) {
     IPreferenceStore store = storeAccess.getWritablePreferenceStore(project);
-    boolean useProject = store.getBoolean(ENABLE_PROJECT_SETTINGS);
-    if (!useProject) store = storeAccess.getWritablePreferenceStore();
     return new PathsPreferences(store);
   }
 }
