@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.eclipse.protobuf.ui.preferences.PreferenceAndPropertyPage;
+import com.google.eclipse.protobuf.ui.swt.EventListeners;
 import com.google.eclipse.protobuf.ui.util.*;
 import com.google.inject.Inject;
 
@@ -58,7 +59,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
   private Label lblOutputFolderRelative;
 
   @Inject private DirectoryNameValidator directoryNameValidator;
-  @Inject private SwtEventListeners eventListeners;
+  @Inject private EventListeners eventListeners;
 
   @Inject public CompilerPreferencePage(IPreferenceStoreAccess preferenceStoreAccess) {
     super(preferenceStoreAccess);

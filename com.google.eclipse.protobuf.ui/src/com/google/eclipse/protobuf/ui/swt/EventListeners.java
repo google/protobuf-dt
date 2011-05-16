@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.util;
+package com.google.eclipse.protobuf.ui.swt;
 
 import java.util.Collection;
 
@@ -21,7 +21,7 @@ import com.google.inject.Singleton;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton
-public class SwtEventListeners {
+public class EventListeners {
 
   /**
    * Adds the given <code>{@link SelectionListener}</code> to the given <code>{@link Button}</code>s.

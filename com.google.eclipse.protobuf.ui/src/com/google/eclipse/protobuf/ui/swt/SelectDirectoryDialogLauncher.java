@@ -16,6 +16,8 @@ import static org.eclipse.ui.views.navigator.ResourceComparator.NAME;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
@@ -24,16 +26,16 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.views.navigator.ResourceComparator;
 
 /**
- * Launches a dialog where users can browse a workspace.
+ * Launches dialog where users can select a directory (either in a workspace or the file system.)
  * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class BrowseWorkspaceDialogLauncher {
+public class SelectDirectoryDialogLauncher {
 
   private static final String PLUGIN_ID = "com.google.eclipse.protobuf.ui";
 
-  public static String showSelectWorkspaceDirectoryDialog(Shell shell, String text, IProject project) {
-    String currentPathText = text.replaceAll("\"", "");
+  public static String showWorkspaceDirectoryDialog(Shell shell, String initialPath, IProject project) {
+    String currentPathText = initialPath.replaceAll("\"", "");
     IPath path = new Path(currentPathText);
     ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(shell, new WorkbenchLabelProvider(),
         new WorkbenchContentProvider());
@@ -60,10 +62,17 @@ public class BrowseWorkspaceDialogLauncher {
     StringBuilder b = new StringBuilder();
     return b.append("${").append("workspace_loc:").append(resource.getFullPath()).append("}").toString();
   }
+  
+  public static String showFileSystemFolderDialog(Shell shell, String filterPath) {
+    DirectoryDialog dialog = new DirectoryDialog(shell, SWT.OPEN | SWT.APPLICATION_MODAL);
+    if (filterPath != null && filterPath.trim().length() != 0) dialog.setFilterPath(filterPath);
+    dialog.setMessage(browseFileSystemFolderPrompt);
+    return dialog.open();
+  }
 
   private static IWorkspaceRoot workspaceRoot() {
     return ResourcesPlugin.getWorkspace().getRoot();
   }
 
-  private BrowseWorkspaceDialogLauncher() {}
+  private SelectDirectoryDialogLauncher() {}
 }

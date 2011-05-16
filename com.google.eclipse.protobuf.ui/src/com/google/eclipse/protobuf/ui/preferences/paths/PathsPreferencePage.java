@@ -15,13 +15,15 @@ import static org.eclipse.xtext.util.Strings.*;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.layout.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.eclipse.protobuf.ui.preferences.PreferenceAndPropertyPage;
-import com.google.eclipse.protobuf.ui.util.*;
+import com.google.eclipse.protobuf.ui.swt.EventListeners;
 import com.google.inject.Inject;
 
 /**
@@ -39,8 +41,7 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
   private Button btnMultipleFolders;
   private DirectoryNamesEditor directoryNamesEditor;
 
-  @Inject private DirectoryNameValidator directoryNameValidator;
-  @Inject private SwtEventListeners eventListeners;
+  @Inject private EventListeners eventListeners;
 
   @Inject public PathsPreferencePage(IPreferenceStoreAccess preferenceStoreAccess) {
     super(preferenceStoreAccess);

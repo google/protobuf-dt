@@ -9,7 +9,7 @@
 package com.google.eclipse.protobuf.ui.preferences.paths;
 
 import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.*;
-import static com.google.eclipse.protobuf.ui.swt.BrowseWorkspaceDialogLauncher.showSelectWorkspaceDirectoryDialog;
+import static com.google.eclipse.protobuf.ui.swt.SelectDirectoryDialogLauncher.*;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import org.eclipse.swt.SWT;
@@ -78,6 +78,7 @@ public class IncludeDialog extends Dialog {
     
     txtPath = new Text(shell, SWT.BORDER);
     txtPath.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+    txtPath.setEditable(false);
     
     btnIsWorkspacePath = new Button(shell, SWT.CHECK);
     btnIsWorkspacePath.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false, 1, 1));
@@ -116,10 +117,19 @@ public class IncludeDialog extends Dialog {
   private void addEventListeners() {
     btnWorkspace.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
-        String path = showSelectWorkspaceDirectoryDialog(shell, txtPath.getText(), null);
+        String path = showWorkspaceDirectoryDialog(shell, txtPath.getText(), null);
         if (path != null) {
           txtPath.setText(path.trim());
           btnIsWorkspacePath.setSelection(true);
+        }
+      }
+    });
+    btnFileSystem.addSelectionListener(new SelectionAdapter() {
+      @Override public void widgetSelected(SelectionEvent e) {
+        String path = showFileSystemFolderDialog(shell, txtPath.getText());
+        if (path != null) {
+          txtPath.setText(path.trim());
+          btnIsWorkspacePath.setSelection(false);
         }
       }
     });

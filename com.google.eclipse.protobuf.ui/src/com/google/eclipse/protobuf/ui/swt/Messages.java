@@ -15,6 +15,7 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
 
+  public static String browseFileSystemFolderPrompt;
   public static String browseWorkspaceFolderPrompt;
   public static String browseWorkspaceFolderTitle;
   public static String errorElementIsNotDirectory;
