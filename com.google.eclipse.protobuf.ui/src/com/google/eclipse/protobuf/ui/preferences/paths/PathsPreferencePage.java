@@ -105,7 +105,7 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
   }
 
   private void checkState() {
-    if (directoryNamesEditor.isEnabled() && directoryNamesEditor.directoryNames().isEmpty()) {
+    if (directoryNamesEditor.isEnabled() && directoryNamesEditor.directoryPaths().isEmpty()) {
       pageIsNowInvalid(errorNoDirectoryNames);
       return;
     }
@@ -133,7 +133,7 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
   }
 
   private void setDirectoryNames(String directoryNames) {
-    directoryNamesEditor.addDirectoryNames(split(directoryNames, COMMA_DELIMITER));
+    directoryNamesEditor.addDirectoryPaths(split(directoryNames, COMMA_DELIMITER));
   }
 
   private void enableProjectOptions(boolean enabled) {
@@ -153,7 +153,7 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
   }
 
   private String directoryNames() {
-    return concat(COMMA_DELIMITER, directoryNamesEditor.directoryNames());
+    return concat(COMMA_DELIMITER, directoryNamesEditor.directoryPaths());
   }
 
   /** {@inheritDoc} */

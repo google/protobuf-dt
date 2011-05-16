@@ -31,8 +31,7 @@ public class IncludeDialog extends Dialog {
   private Shell shell;
   private boolean result;
   
-  private String enteredPath;
-  private boolean isWorkspacePath;
+  private ImportPath selectedPath;
 
   private Text txtPath;
   private Button btnWorkspace;
@@ -135,8 +134,7 @@ public class IncludeDialog extends Dialog {
     });
     btnOk.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
-        enteredPath = txtPath.getText().trim();
-        isWorkspacePath = btnIsWorkspacePath.getSelection();
+        selectedPath = new ImportPath(txtPath.getText().trim(), btnIsWorkspacePath.getSelection());
         result = true;
         shell.dispose();
       }
@@ -163,18 +161,10 @@ public class IncludeDialog extends Dialog {
   }
 
   /**
-   * Returns the path entered/selected by the user.
-   * @return the path entered/selected by the user.
+   * Returns the path selected by the user.
+   * @return the path selected by the user.
    */
-  public String getEnteredPath() {
-    return enteredPath;
-  }
-
-  /**
-   * Indicates whether the path returned by <code>{@link #getEnteredPath()}</code> is a workspace path.
-   * @return {@code true} if the entered path is a workspace path; {@code false} otherwise.
-   */
-  public boolean isWorkspacePath() {
-    return isWorkspacePath;
+  public ImportPath getSelectedPath() {
+    return selectedPath;
   }
 }

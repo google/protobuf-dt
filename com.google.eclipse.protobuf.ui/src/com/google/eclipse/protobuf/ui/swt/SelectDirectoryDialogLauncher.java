@@ -59,8 +59,7 @@ public class SelectDirectoryDialogLauncher {
     if (dialog.open() != OK) return null;
     IResource resource = (IResource) dialog.getFirstResult();
     if (resource == null) return null;
-    StringBuilder b = new StringBuilder();
-    return b.append("${").append("workspace_loc:").append(resource.getFullPath()).append("}").toString();
+    return resource.getFullPath().toString();
   }
   
   public static String showFileSystemFolderDialog(Shell shell, String filterPath) {

@@ -10,6 +10,8 @@ package com.google.eclipse.protobuf.ui.preferences.paths;
 
 import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.*;
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
+import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import java.util.*;
 import java.util.List;
@@ -32,14 +34,14 @@ public class DirectoryNamesEditor extends Composite {
 
   private final EventListeners eventListeners;
 
-  private final Table tblDirectoryNames;
-  private final TableViewer tblDirectoryNamesViewer;
+  private final Table tblDirectoryPaths;
+  private final TableViewer tblDirectoryPathsViewer;
   private final Button btnAdd;
   private final Button btnRemove;
   private final Button btnUp;
   private final Button btnDown;
 
-  private final LinkedList<String> directoryNames = new LinkedList<String>();
+  private final LinkedList<ImportPath> importPaths = new LinkedList<ImportPath>();
   
   private SelectionListener onChangeListener;
 
@@ -50,12 +52,12 @@ public class DirectoryNamesEditor extends Composite {
     this.eventListeners = eventListeners;
     setLayout(new GridLayout(2, false));
     
-    tblDirectoryNames = new Table(this, SWT.BORDER | SWT.FULL_SELECTION);
-    tblDirectoryNames.setLinesVisible(true);
-    tblDirectoryNames.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+    tblDirectoryPaths = new Table(this, SWT.BORDER | SWT.FULL_SELECTION);
+    tblDirectoryPaths.setLinesVisible(true);
+    tblDirectoryPaths.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
-    tblDirectoryNamesViewer = new TableViewer(tblDirectoryNames);
-    tblDirectoryNamesViewer.setContentProvider(new IStructuredContentProvider() {
+    tblDirectoryPathsViewer = new TableViewer(tblDirectoryPaths);
+    tblDirectoryPathsViewer.setContentProvider(new IStructuredContentProvider() {
       public Object[] getElements(Object inputElement) {
         return (Object[]) inputElement;
       }
@@ -92,7 +94,7 @@ public class DirectoryNamesEditor extends Composite {
   }
 
   private void addEventListeners() {
-    tblDirectoryNames.addSelectionListener(new SelectionAdapter() {
+    tblDirectoryPaths.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
         enableButtonsDependingOnTableSelection();
       }
@@ -101,7 +103,7 @@ public class DirectoryNamesEditor extends Composite {
       @Override public void widgetSelected(SelectionEvent e) {
         IncludeDialog dialog = new IncludeDialog(getShell(), includeDirectoryTitle);
         if (dialog.open()) {
-          directoryNames.add(dialog.getEnteredPath());
+          importPaths.add(dialog.getSelectedPath());
           updateTable();
           enableButtonsDependingOnTableSelection();
         }
@@ -109,9 +111,9 @@ public class DirectoryNamesEditor extends Composite {
     });
     btnRemove.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
-        int index = tblDirectoryNames.getSelectionIndex();
+        int index = tblDirectoryPaths.getSelectionIndex();
         if (index < 0) return;
-        directoryNames.remove(index);
+        importPaths.remove(index);
         updateTable();
         enableButtonsDependingOnTableSelection();
       }
@@ -129,21 +131,22 @@ public class DirectoryNamesEditor extends Composite {
   }
 
   private void swap(boolean goUp) {
-    int index = tblDirectoryNames.getSelectionIndex();
+    int index = tblDirectoryPaths.getSelectionIndex();
     if (index < 0) return;
     int target = goUp ? index - 1 : index + 1;
-    TableItem[] selection = tblDirectoryNames.getSelection();
-    directoryNames.remove(index);
-    directoryNames.add(target, selection[0].getText());
+    int[] selection = tblDirectoryPaths.getSelectionIndices();
+    ImportPath path = importPaths.get(selection[0]);
+    importPaths.remove(index);
+    importPaths.add(target, path);
     updateTable();
-    tblDirectoryNames.setSelection(target);
+    tblDirectoryPaths.setSelection(target);
     enableButtonsDependingOnTableSelection();
   }
 
   /** {@inheritDoc} */
   @Override public void setEnabled(boolean enabled) {
     super.setEnabled(enabled);
-    tblDirectoryNames.setEnabled(enabled);
+    tblDirectoryPaths.setEnabled(enabled);
     btnAdd.setEnabled(enabled);
     if (enabled) {
       enableButtonsDependingOnTableSelection();
@@ -155,8 +158,8 @@ public class DirectoryNamesEditor extends Composite {
   }
 
   private void enableButtonsDependingOnTableSelection() {
-    int selectionIndex = tblDirectoryNames.getSelectionIndex();
-    int size = tblDirectoryNames.getItemCount();
+    int selectionIndex = tblDirectoryPaths.getSelectionIndex();
+    int size = tblDirectoryPaths.getItemCount();
     boolean hasSelection = selectionIndex >= 0;
     btnRemove.setEnabled(hasSelection);
     boolean hasElements = size > 1;
@@ -164,21 +167,26 @@ public class DirectoryNamesEditor extends Composite {
     btnDown.setEnabled(hasElements && hasSelection && selectionIndex < size - 1);
   }
 
-  public List<String> directoryNames() {
-    // return unmodifiableList(asList(tblDirectoryNames.getItems()));
-    return null;
+  public List<String> directoryPaths() {
+    List<String> paths = new ArrayList<String>();
+    for (ImportPath path : importPaths)
+      paths.add(path.toString());
+    return unmodifiableList(paths);
   }
 
-  public void addDirectoryNames(Collection<String> names) {
-    directoryNames.clear();
-    directoryNames.addAll(names);
+  public void addDirectoryPaths(Collection<String> paths) {
+    importPaths.clear();
+    for (String path : paths) {
+      if (isEmpty(path)) continue;
+      importPaths.add(ImportPath.parse(path));
+    }
     updateTable();
   }
   
   private void updateTable() {
-    tblDirectoryNamesViewer.setInput(directoryNames.toArray());
-    if (tblDirectoryNames.getItemCount() > 0 && tblDirectoryNames.getSelectionCount() == 0)
-      tblDirectoryNames.setSelection(0);
+    tblDirectoryPathsViewer.setInput(importPaths.toArray());
+    if (tblDirectoryPaths.getItemCount() > 0 && tblDirectoryPaths.getSelectionCount() == 0)
+      tblDirectoryPaths.setSelection(0);
   }
 
   public void onAddOrRemove(SelectionListener listener) {
