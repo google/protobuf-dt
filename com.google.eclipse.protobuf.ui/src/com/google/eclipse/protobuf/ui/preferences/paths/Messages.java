@@ -16,6 +16,9 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 
   public static String add;
+  public static String browseFileSystem;
+  public static String browseWorkspace;
+  public static String cancel;
   public static String directoryNameInputMessage;
   public static String directoryNameInputTitle;
   public static String down;
@@ -24,6 +27,10 @@ public class Messages extends NLS {
   public static String filesInMultipleDirectories;
   public static String filesInOneDirectoryOnly;
   public static String importedFilesPathResolution;
+  public static String includeDirectoryPrompt;
+  public static String includeDirectoryTitle;
+  public static String isWorkspacePathCheck;
+  public static String ok;
   public static String remove;
   public static String up;
 

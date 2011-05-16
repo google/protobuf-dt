@@ -64,7 +64,7 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
     btnMultipleFolders.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
     btnMultipleFolders.setText(filesInMultipleDirectories);
 
-    directoryNamesEditor = new DirectoryNamesEditor(grpResolutionOfImported, directoryNameValidator, eventListeners);
+    directoryNamesEditor = new DirectoryNamesEditor(grpResolutionOfImported, eventListeners);
     directoryNamesEditor.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
     new Label(contents, SWT.NONE);
 
