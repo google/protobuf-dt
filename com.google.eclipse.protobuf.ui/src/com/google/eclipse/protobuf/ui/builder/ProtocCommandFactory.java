@@ -15,11 +15,16 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 
 import com.google.eclipse.protobuf.ui.preferences.compiler.CompilerTargetLanguage;
+import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferenceReader;
+import com.google.inject.Inject;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 class ProtocCommandFactory {
+
+  @Inject private PathsPreferenceReader pathsPreferenceReader;
+
   private static final Map<CompilerTargetLanguage, String> LANG_OUT_FLAG = new HashMap<CompilerTargetLanguage, String>();
 
   static {
