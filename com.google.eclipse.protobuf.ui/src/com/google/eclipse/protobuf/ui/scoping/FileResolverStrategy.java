@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.scoping;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.util.URI;
 
 import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
@@ -18,7 +19,7 @@ import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
 interface FileResolverStrategy {
 
   String PREFIX = "platform:/resource";
-  String SEPARATOR = "/";
+  char SEPARATOR = IPath.SEPARATOR;
 
   String resolveUri(String importUri, URI declaringResourceUri, PathsPreferences preferences);
 }
