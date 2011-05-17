@@ -9,12 +9,15 @@
 package com.google.eclipse.protobuf.ui.builder;
 
 import static com.google.eclipse.protobuf.ui.preferences.compiler.PostCompilationRefreshTarget.PROJECT;
+import static java.util.Collections.unmodifiableList;
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.filesystem.*;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.emf.common.util.URI;
@@ -23,6 +26,7 @@ import org.eclipse.xtext.resource.IResourceDescription;
 import org.eclipse.xtext.resource.IResourceDescription.Delta;
 
 import com.google.eclipse.protobuf.ui.preferences.compiler.*;
+import com.google.eclipse.protobuf.ui.preferences.paths.*;
 import com.google.inject.Inject;
 
 /**
@@ -39,6 +43,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
   @Inject private ProtocOutputParser outputParser;
   @Inject private ProtocCommandFactory commandFactory;
   @Inject private CompilerPreferenceReader compilerPreferenceReader;
+  @Inject private PathsPreferenceReader pathsPreferenceReader;
 
   public void build(IBuildContext context, IProgressMonitor monitor) throws CoreException {
     IProject project = context.getBuiltProject();
@@ -47,12 +52,13 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
     List<Delta> deltas = context.getDeltas();
     if (deltas.isEmpty()) return;
     IFolder outputFolder = findOrCreateOutputFolder(project, preferences.outputFolderName);
+    List<String> importRoots = importRoots(project);
     for (Delta d : deltas) {
       IResourceDescription newResource = d.getNew();
       String path = filePathIfIsProtoFile(newResource);
       if (path == null) continue;
       IFile source = project.getWorkspace().getRoot().getFile(new Path(path));
-      generateSingleProto(source, preferences.protocPath, preferences.language, pathOf(outputFolder));
+      generateSingleProto(source, preferences.protocPath, importRoots, preferences.language, pathOf(outputFolder));
     }
     if (preferences.refreshResources) refresh(outputFolder, preferences.refreshTarget, monitor);
   }
@@ -61,6 +67,35 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
     IFolder outputFolder = project.getFolder(outputFolderName);
     if (!outputFolder.exists()) outputFolder.create(true, true, NO_MONITOR);
     return outputFolder;
+  }
+
+  private List<String> importRoots(IProject project) {
+    List<String> paths = new ArrayList<String>();
+    PathsPreferences preferences = pathsPreferenceReader.readFromPrefereceStore(project);
+    List<DirectoryPath> directoryPaths = preferences.directoryPaths();
+    for (DirectoryPath path : directoryPaths) {
+      String location = locationOfDirectory(path, project);
+      if (location != null) paths.add(location);
+    }
+    return unmodifiableList(paths);
+  }
+
+  private String locationOfDirectory(DirectoryPath path, IProject project) {
+    if (path.isWorkspacePath()) return locationOfWorkspaceDirectory(path, project);
+    return locationOfFileSystemDirectory(path);
+  }
+
+  private String locationOfWorkspaceDirectory(DirectoryPath path, IProject project) {
+    IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+    IFolder folder = root.getFolder(new Path(path.value()));
+    return pathOf(folder);
+  }
+
+  private String locationOfFileSystemDirectory(DirectoryPath path) {
+    IFileSystem fileSystem = EFS.getLocalFileSystem();
+    IFileInfo fileInfo = fileSystem.getStore(new Path(path.value())).fetchInfo();
+    if (!fileInfo.isDirectory()) return null;
+    return path.value();
   }
 
   private static String filePathIfIsProtoFile(IResourceDescription r) {
@@ -75,8 +110,10 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
     return b.length() == 0 ? null : b.toString();
   }
 
-  private void generateSingleProto(IFile source, String protocPath, CompilerTargetLanguage language, String outputFolderPath) {
-    String command = commandFactory.protocCommand(source, protocPath, language, outputFolderPath);
+  private void generateSingleProto(IFile source, String protocPath, List<String> importRoots,
+      CompilerTargetLanguage language, String outputFolderPath) {
+    String command = commandFactory.protocCommand(source, protocPath, importRoots, language, outputFolderPath);
+    System.out.println(command);
     try {
       Process process = Runtime.getRuntime().exec(command);
       processStream(process.getErrorStream(), source);

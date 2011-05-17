@@ -8,22 +8,17 @@
  */
 package com.google.eclipse.protobuf.ui.builder;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 
 import com.google.eclipse.protobuf.ui.preferences.compiler.CompilerTargetLanguage;
-import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferenceReader;
-import com.google.inject.Inject;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 class ProtocCommandFactory {
-
-  @Inject private PathsPreferenceReader pathsPreferenceReader;
 
   private static final Map<CompilerTargetLanguage, String> LANG_OUT_FLAG = new HashMap<CompilerTargetLanguage, String>();
 
@@ -32,12 +27,12 @@ class ProtocCommandFactory {
       LANG_OUT_FLAG.put(lang, "--" + lang.name().toLowerCase() + "_out=");
   }
 
-  String protocCommand(IFile protoFile, String protocPath, CompilerTargetLanguage language, String outputFolderPath) {
+  String protocCommand(IFile protoFile, String protocPath, List<String> importRoots, CompilerTargetLanguage language,
+      String outputFolderPath) {
     IPath protoFilePath = protoFile.getLocation();
     StringBuilder command = new StringBuilder();
     command.append(protocPath).append(" ");
-    String protoFileFolder = protoFilePath.toFile().getParentFile().toString();
-    command.append("-I=").append(protoFileFolder).append(" ");
+    for (String importRoot : importRoots) command.append("-I=").append(importRoot).append(" ");
     command.append(langOutFlag(language)).append(outputFolderPath).append(" ");
     command.append(protoFilePath.toOSString());
     return command.toString();

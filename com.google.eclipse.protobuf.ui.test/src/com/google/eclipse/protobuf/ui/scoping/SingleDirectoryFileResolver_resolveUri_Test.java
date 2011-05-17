@@ -29,12 +29,10 @@ public class SingleDirectoryFileResolver_resolveUri_Test {
 
   private static URI resourceUri;
   private static PathsPreferences preferences;
-  private static IProject project;
 
   @BeforeClass public static void setUpOnce() {
     resourceUri = createURI("platform:/resource/src/proto/person.proto");
     preferences = mock(PathsPreferences.class);
-    project = mock(IProject.class);
   }
 
   private Resources resources;
@@ -47,19 +45,19 @@ public class SingleDirectoryFileResolver_resolveUri_Test {
 
   @Test public void should_resolve_import_URI_if_missing_scheme() {
     when(resources.fileExists(any(URI.class))).thenReturn(true);
-    String resolved = resolver.resolveUri("folder1/address.proto", resourceUri, preferences, project);
+    String resolved = resolver.resolveUri("folder1/address.proto", resourceUri, preferences);
     assertThat(resolved, equalTo("platform:/resource/src/proto/folder1/address.proto"));
   }
 
   @Test public void should_resolve_import_URI_even_if_overlapping_folders_with_resource_URI() {
     when(resources.fileExists(any(URI.class))).thenReturn(true);
-    String resolved = resolver.resolveUri("src/proto/folder1/address.proto", resourceUri, preferences, project);
+    String resolved = resolver.resolveUri("src/proto/folder1/address.proto", resourceUri, preferences);
     assertThat(resolved, equalTo("platform:/resource/src/proto/folder1/address.proto"));
   }
 
   @Test public void should_resolve_import_URI_even_if_overlapping_one_folder_only_with_resource_URI() {
     when(resources.fileExists(any(URI.class))).thenReturn(true);
-    String resolved = resolver.resolveUri("src/proto/read-only/address.proto", resourceUri, preferences, project);
+    String resolved = resolver.resolveUri("src/proto/read-only/address.proto", resourceUri, preferences);
     assertThat(resolved, equalTo("platform:/resource/src/proto/read-only/address.proto"));
   }
 }

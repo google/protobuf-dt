@@ -18,13 +18,14 @@ import java.io.File;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.layout.*;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.eclipse.protobuf.ui.preferences.PreferenceAndPropertyPage;
 import com.google.eclipse.protobuf.ui.swt.EventListeners;
-import com.google.eclipse.protobuf.ui.util.*;
+import com.google.eclipse.protobuf.ui.util.DirectoryNameValidator;
 import com.google.inject.Inject;
 
 /**
@@ -202,7 +203,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     eventListeners.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
         boolean selected = btnUseProtocInCustomPath.getSelection();
-        enableCompilerCustomPathOptions(!selected);
+        enableCompilerCustomPathOptions(selected);
         checkState();
       }
     }, asList(btnUseProtocInCustomPath, btnUseProtocInSystemPath));
