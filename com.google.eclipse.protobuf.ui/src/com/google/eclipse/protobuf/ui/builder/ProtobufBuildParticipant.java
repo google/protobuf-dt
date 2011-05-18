@@ -111,7 +111,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
   }
 
   private void generateSingleProto(IFile source, String protocPath, List<String> importRoots,
-      CompilerTargetLanguage language, String outputFolderPath) {
+      TargetLanguage language, String outputFolderPath) {
     String command = commandFactory.protocCommand(source, protocPath, importRoots, language, outputFolderPath);
     System.out.println(command);
     try {

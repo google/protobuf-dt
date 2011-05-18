@@ -17,7 +17,8 @@ import java.io.File;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
@@ -46,21 +47,14 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
   private Button btnUseProtocInCustomPath;
   private Text txtProtocFilePath;
   private Button btnProtocPathBrowse;
-  private Group grpTargetLanguage;
-  private Button btnJava;
-  private Button btnCpp;
-  private Button btnPython;
-  private Group grpOutput;
-  private Text txtOutputFolderName;
-  private Label lblOutputFolderName;
   private Button btnRefreshResources;
   private Group grpRefresh;
   private Button btnRefreshProject;
   private Button btnRefreshOutputFolder;
-  private Label lblOutputFolderRelative;
 
   @Inject private DirectoryNameValidator directoryNameValidator;
   @Inject private EventListeners eventListeners;
+  private TargetLanguageOutputDirectoryEditor targetLanguageOutputDirectoryEditor;
 
   @Inject public CompilerPreferencePage(IPreferenceStoreAccess preferenceStoreAccess) {
     super(preferenceStoreAccess);
@@ -107,36 +101,8 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     new Label(grpCompilerLocation, SWT.NONE);
     new Label(grpCompilerLocation, SWT.NONE);
 
-    grpTargetLanguage = new Group(cmpMain, SWT.NONE);
-    grpTargetLanguage.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-    grpTargetLanguage.setLayout(new GridLayout(1, false));
-    grpTargetLanguage.setText(targetLanguage);
-
-    btnJava = new Button(grpTargetLanguage, SWT.RADIO);
-    btnJava.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
-    btnJava.setText(generateJava);
-
-    btnCpp = new Button(grpTargetLanguage, SWT.RADIO);
-    btnCpp.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
-    btnCpp.setText(generateCpp);
-
-    btnPython = new Button(grpTargetLanguage, SWT.RADIO);
-    btnPython.setText(generatePython);
-
-    grpOutput = new Group(cmpMain, SWT.NONE);
-    grpOutput.setLayout(new GridLayout(2, false));
-    grpOutput.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-    grpOutput.setText(generateCode);
-
-    lblOutputFolderName = new Label(grpOutput, SWT.NONE);
-    lblOutputFolderName.setText(outputFolderName);
-
-    txtOutputFolderName = new Text(grpOutput, SWT.BORDER);
-    txtOutputFolderName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-
-    lblOutputFolderRelative = new Label(grpOutput, SWT.NONE);
-    lblOutputFolderRelative.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
-    lblOutputFolderRelative.setText(outputFolderChildOfProjectFolder);
+    targetLanguageOutputDirectoryEditor = new TargetLanguageOutputDirectoryEditor(cmpMain);
+    targetLanguageOutputDirectoryEditor.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
     tbtmRefresh = new TabItem(tabFolder, SWT.NONE);
     tbtmRefresh.setText(tabRefresh);
@@ -175,10 +141,6 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     btnUseProtocInSystemPath.setSelection(store.getBoolean(USE_PROTOC_IN_SYSTEM_PATH));
     btnUseProtocInCustomPath.setSelection(store.getBoolean(USE_PROTOC_IN_CUSTOM_PATH));
     txtProtocFilePath.setText(store.getString(PROTOC_FILE_PATH));
-    btnJava.setSelection(store.getBoolean(GENERATE_JAVA_CODE));
-    btnCpp.setSelection(store.getBoolean(GENERATE_CPP_CODE));
-    btnPython.setSelection(store.getBoolean(GENERATE_PYTHON_CODE));
-    txtOutputFolderName.setText(store.getString(OUTPUT_FOLDER_NAME));
     btnRefreshResources.setSelection(store.getBoolean(REFRESH_RESOURCES));
     btnRefreshProject.setSelection(store.getBoolean(REFRESH_PROJECT));
     btnRefreshOutputFolder.setSelection(store.getBoolean(REFRESH_OUTPUT_FOLDER));
@@ -219,24 +181,19 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
         refreshResourcesOptionsEnabled(btnRefreshResources.getSelection());
       }
     });
-    eventListeners.addModifyListener(new ModifyListener() {
-      public void modifyText(ModifyEvent e) {
-        checkState();
-      }
-    }, asList(txtProtocFilePath, txtOutputFolderName));
   }
 
   private void checkState() {
-    String folderName = txtOutputFolderName.getText().trim();
-    if (isEmpty(folderName)) {
-      pageIsNowInvalid(errorNoOutputFolderName);
-      return;
-    }
-    String invalidDirectoryName = directoryNameValidator.validateDirectoryName(folderName);
-    if (invalidDirectoryName != null) {
-      pageIsNowInvalid(invalidDirectoryName);
-      return;
-    }
+//    String folderName = txtOutputFolderName.getText().trim();
+//    if (isEmpty(folderName)) {
+//      pageIsNowInvalid(errorNoOutputFolderName);
+//      return;
+//    }
+//    String invalidDirectoryName = directoryNameValidator.validateDirectoryName(folderName);
+//    if (invalidDirectoryName != null) {
+//      pageIsNowInvalid(invalidDirectoryName);
+//      return;
+//    }
     if (!customPathOptionSelectedAndEnabled()) {
       pageIsNowValid();
       return;
@@ -262,10 +219,10 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     btnUseProtocInSystemPath.setSelection(store.getDefaultBoolean(USE_PROTOC_IN_SYSTEM_PATH));
     btnUseProtocInCustomPath.setSelection(store.getDefaultBoolean(USE_PROTOC_IN_CUSTOM_PATH));
     txtProtocFilePath.setText(store.getDefaultString(PROTOC_FILE_PATH));
-    btnJava.setSelection(store.getDefaultBoolean(GENERATE_JAVA_CODE));
-    btnCpp.setSelection(store.getDefaultBoolean(GENERATE_CPP_CODE));
-    btnPython.setSelection(store.getDefaultBoolean(GENERATE_PYTHON_CODE));
-    txtOutputFolderName.setText(store.getDefaultString(OUTPUT_FOLDER_NAME));
+//    btnJava.setSelection(store.getDefaultBoolean(GENERATE_JAVA_CODE));
+//    btnCpp.setSelection(store.getDefaultBoolean(GENERATE_CPP_CODE));
+//    btnPython.setSelection(store.getDefaultBoolean(GENERATE_PYTHON_CODE));
+//    txtOutputFolderName.setText(store.getDefaultString(OUTPUT_FOLDER_NAME));
     btnRefreshResources.setSelection(store.getDefaultBoolean(REFRESH_RESOURCES));
     btnRefreshProject.setSelection(store.getDefaultBoolean(REFRESH_PROJECT));
     btnRefreshOutputFolder.setSelection(store.getDefaultBoolean(REFRESH_OUTPUT_FOLDER));
@@ -319,17 +276,9 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
   }
 
   private void enableTargetLanguageOptions(boolean enabled) {
-    grpTargetLanguage.setEnabled(enabled);
-    btnJava.setEnabled(enabled);
-    btnCpp.setEnabled(enabled);
-    btnPython.setEnabled(enabled);
   }
 
   private void enableOutputOptions(boolean enabled) {
-    grpOutput.setEnabled(enabled);
-    lblOutputFolderName.setEnabled(enabled);
-    txtOutputFolderName.setEnabled(enabled);
-    lblOutputFolderRelative.setEnabled(enabled);
   }
 
   private void enableRefreshOptions(boolean enabled) {
@@ -351,10 +300,10 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     store.setValue(USE_PROTOC_IN_SYSTEM_PATH, btnUseProtocInSystemPath.getSelection());
     store.setValue(USE_PROTOC_IN_CUSTOM_PATH, btnUseProtocInCustomPath.getSelection());
     store.setValue(PROTOC_FILE_PATH, txtProtocFilePath.getText());
-    store.setValue(GENERATE_JAVA_CODE, btnJava.getSelection());
-    store.setValue(GENERATE_CPP_CODE, btnCpp.getSelection());
-    store.setValue(GENERATE_PYTHON_CODE, btnPython.getSelection());
-    store.setValue(OUTPUT_FOLDER_NAME, txtOutputFolderName.getText().trim());
+//    store.setValue(GENERATE_JAVA_CODE, btnJava.getSelection());
+//    store.setValue(GENERATE_CPP_CODE, btnCpp.getSelection());
+//    store.setValue(GENERATE_PYTHON_CODE, btnPython.getSelection());
+//    store.setValue(OUTPUT_FOLDER_NAME, txtOutputFolderName.getText().trim());
     store.setValue(REFRESH_RESOURCES, btnRefreshResources.getSelection());
     store.setValue(REFRESH_PROJECT, btnRefreshProject.getSelection());
     store.setValue(REFRESH_OUTPUT_FOLDER, btnRefreshOutputFolder.getSelection());

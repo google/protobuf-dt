@@ -17,12 +17,27 @@ import org.eclipse.jface.preference.IPreferenceStore;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public enum CompilerTargetLanguage {
+public enum TargetLanguage {
 
-  JAVA, CPP, PYTHON;
+  JAVA("Java"), CPP("C++"), PYTHON("Python");
+
+  private String name;
+
+  private TargetLanguage(String name) {
+    this.name = name;
+  }
+
+  /**
+   * Returns this language's name.
+   * @return this language's name.
+   */
+  public String languageName() {
+    return name;
+  }
 
   // TODO check if protoc can generate more than one language sources at the same time.
-  static CompilerTargetLanguage readFrom(IPreferenceStore store) {
+  // TODO remove
+  static TargetLanguage readFrom(IPreferenceStore store) {
     if (store.getBoolean(GENERATE_JAVA_CODE)) return JAVA;
     if (store.getBoolean(GENERATE_CPP_CODE)) return CPP;
     if (store.getBoolean(GENERATE_PYTHON_CODE)) return PYTHON;
