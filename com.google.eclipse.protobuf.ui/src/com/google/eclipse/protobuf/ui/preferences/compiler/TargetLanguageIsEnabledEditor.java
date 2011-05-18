@@ -18,8 +18,11 @@ import org.eclipse.swt.SWT;
  */
 class TargetLanguageIsEnabledEditor extends EditingSupport {
 
+  private final ColumnViewer viewer;
+
   TargetLanguageIsEnabledEditor(ColumnViewer viewer) {
     super(viewer);
+    this.viewer = viewer;
   }
 
   @Override protected CellEditor getCellEditor(Object element) {
@@ -36,5 +39,6 @@ class TargetLanguageIsEnabledEditor extends EditingSupport {
 
   @Override protected void setValue(Object element, Object value) {
     ((TargetLanguagePreference)element).enabled((Boolean)value);
+    viewer.refresh();
   }
 }

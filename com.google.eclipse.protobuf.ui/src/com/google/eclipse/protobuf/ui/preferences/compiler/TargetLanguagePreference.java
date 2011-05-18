@@ -27,11 +27,11 @@ public class TargetLanguagePreference {
   }
 
   /**
-   * Returns the name of the language.
-   * @return the name of the language.
+   * Returns the language.
+   * @return the language.
    */
-  public String language() {
-    return language.languageName();
+  public TargetLanguage language() {
+    return language;
   }
 
   /**

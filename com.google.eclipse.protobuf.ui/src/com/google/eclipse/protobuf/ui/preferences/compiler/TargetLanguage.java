@@ -17,11 +17,13 @@ import org.eclipse.jface.preference.IPreferenceStore;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public enum TargetLanguage {
+public class TargetLanguage {
 
-  JAVA("Java"), CPP("C++"), PYTHON("Python");
+  public static final TargetLanguage JAVA = new TargetLanguage("Java");
+  public static final TargetLanguage CPP = new TargetLanguage("C++");
+  public static final TargetLanguage PYTHON = new TargetLanguage("Python");
 
-  private String name;
+  private final String name;
 
   private TargetLanguage(String name) {
     this.name = name;
@@ -31,7 +33,7 @@ public enum TargetLanguage {
    * Returns this language's name.
    * @return this language's name.
    */
-  public String languageName() {
+  public String name() {
     return name;
   }
 
@@ -42,5 +44,10 @@ public enum TargetLanguage {
     if (store.getBoolean(GENERATE_CPP_CODE)) return CPP;
     if (store.getBoolean(GENERATE_PYTHON_CODE)) return PYTHON;
     return JAVA;
+  }
+
+  // TODO remove
+  public static TargetLanguage[] values() {
+    return new TargetLanguage[] { JAVA, CPP, PYTHON };
   }
 }

@@ -22,6 +22,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
+import org.eclipse.xtext.ui.PluginImageHelper;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.eclipse.protobuf.ui.preferences.PreferenceAndPropertyPage;
@@ -52,6 +53,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
   private Button btnRefreshProject;
   private Button btnRefreshOutputFolder;
 
+  @Inject private PluginImageHelper imageHelper;
   @Inject private DirectoryNameValidator directoryNameValidator;
   @Inject private EventListeners eventListeners;
   private TargetLanguageOutputDirectoryEditor targetLanguageOutputDirectoryEditor;
@@ -101,7 +103,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     new Label(grpCompilerLocation, SWT.NONE);
     new Label(grpCompilerLocation, SWT.NONE);
 
-    targetLanguageOutputDirectoryEditor = new TargetLanguageOutputDirectoryEditor(cmpMain);
+    targetLanguageOutputDirectoryEditor = new TargetLanguageOutputDirectoryEditor(cmpMain, imageHelper);
     targetLanguageOutputDirectoryEditor.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
     tbtmRefresh = new TabItem(tabFolder, SWT.NONE);

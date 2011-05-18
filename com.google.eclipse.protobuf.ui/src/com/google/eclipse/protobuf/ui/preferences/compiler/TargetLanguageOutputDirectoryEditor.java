@@ -8,11 +8,15 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.compiler;
 
+import static com.google.eclipse.protobuf.ui.preferences.compiler.TargetLanguage.*;
+
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
+import org.eclipse.xtext.ui.PluginImageHelper;
 
 /**
  * Editor where users can specify which are the target languages for protoc and the location of the output folders for
@@ -21,36 +25,48 @@ import org.eclipse.swt.widgets.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class TargetLanguageOutputDirectoryEditor extends Composite {
-  private Table table;
 
-  /**
-   * Creates a new </code>{@link TargetLanguageOutputDirectoryEditor}</code>.
-   * @param parent a widget which will be the parent of the new instance (cannot be {@code null}.)
-   */
-  public TargetLanguageOutputDirectoryEditor(Composite parent) {
+  public TargetLanguageOutputDirectoryEditor(Composite parent, final PluginImageHelper imageHelper) {
     super(parent, SWT.NONE);
     setLayout(new GridLayout(1, false));
 
     TableViewer tableViewer = new TableViewer(this, SWT.BORDER | SWT.FULL_SELECTION);
 
-    table = tableViewer.getTable();
+    Table table = tableViewer.getTable();
     table.setHeaderVisible(true);
     table.setLinesVisible(true);
     table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
+    TableViewerColumn tblclmnVwrEnabled = new TableViewerColumn(tableViewer, SWT.NONE);
+    TableColumn tblclmnEnabled = tblclmnVwrEnabled.getColumn();
+    tblclmnEnabled.setResizable(false);
+    tblclmnEnabled.setWidth(27);
+    tblclmnVwrEnabled.setLabelProvider(new ColumnLabelProvider() {
+      @Override public String getText(Object element) {
+        return "";
+      }
+
+      @Override public Image getImage(Object element) {
+        boolean enabled = ((TargetLanguagePreference)element).isEnabled();
+        return imageHelper.getImage(enabled ? "checked.gif" : "unchecked.gif");
+      }
+    });
+    tblclmnVwrEnabled.setEditingSupport(new TargetLanguageIsEnabledEditor(tableViewer));
+
     TableViewerColumn tblclmnVwrLanguage = new TableViewerColumn(tableViewer, SWT.NONE);
     TableColumn tblclmnLanguage = tblclmnVwrLanguage.getColumn();
+    tblclmnLanguage.setResizable(false);
     tblclmnLanguage.setWidth(100);
     tblclmnLanguage.setText("Language");
     tblclmnVwrLanguage.setLabelProvider(new ColumnLabelProvider() {
       @Override public String getText(Object element) {
-        return ((TargetLanguagePreference)element).language();
+        return ((TargetLanguagePreference)element).language().name();
       }
     });
-    tblclmnVwrLanguage.setEditingSupport(new TargetLanguageIsEnabledEditor(tableViewer));
 
     TableViewerColumn tblclmnVwrOutputDirectory = new TableViewerColumn(tableViewer, SWT.NONE);
     TableColumn tblclmnOutputDirectory = tblclmnVwrOutputDirectory.getColumn();
+    tblclmnOutputDirectory.setResizable(false);
     tblclmnOutputDirectory.setWidth(100);
     tblclmnOutputDirectory.setText("Output Directory");
     tblclmnVwrOutputDirectory.setLabelProvider(new ColumnLabelProvider() {
@@ -65,9 +81,9 @@ public class TargetLanguageOutputDirectoryEditor extends Composite {
 
   private TargetLanguagePreference[] languages() {
     TargetLanguagePreference[] languages = new TargetLanguagePreference[3];
-    languages[1] = new TargetLanguagePreference(TargetLanguage.JAVA, "", true);
-    languages[0] = new TargetLanguagePreference(TargetLanguage.CPP, "", true);
-    languages[2] = new TargetLanguagePreference(TargetLanguage.PYTHON, "", true);
+    languages[0] = new TargetLanguagePreference(JAVA, "", true);
+    languages[1] = new TargetLanguagePreference(CPP, "", true);
+    languages[2] = new TargetLanguagePreference(PYTHON, "", true);
     return languages;
   }
 }
