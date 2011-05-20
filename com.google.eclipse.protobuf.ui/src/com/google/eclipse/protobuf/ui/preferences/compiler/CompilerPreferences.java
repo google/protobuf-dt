@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.compiler;
 
-import static com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferenceNames.*;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.*;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 
@@ -19,20 +19,40 @@ import org.eclipse.jface.preference.IPreferenceStore;
  */
 public class CompilerPreferences {
 
-  public final boolean compileProtoFiles;
-  public final String protocPath;
-  public final TargetLanguage language;
-  public final String outputFolderName;
-  public final boolean refreshResources;
-  public final PostCompilationRefreshTarget refreshTarget;
+  private final boolean compileProtoFiles;
+  private final String protocPath;
+  private final TargetLanguagePreferences languages;
+  private final boolean refreshResources;
+  private final PostCompilationRefreshTarget refreshTarget;
 
   CompilerPreferences(IPreferenceStore store) {
     compileProtoFiles = store.getBoolean(COMPILE_PROTO_FILES);
     boolean useProtocInSystemPath = store.getBoolean(USE_PROTOC_IN_SYSTEM_PATH);
     protocPath = (useProtocInSystemPath) ? "protoc" : store.getString(PROTOC_FILE_PATH);
-    language = TargetLanguage.readFrom(store);
-    outputFolderName = store.getString(OUTPUT_FOLDER_NAME);
+    languages = new TargetLanguagePreferences(store);
     refreshResources = store.getBoolean(REFRESH_RESOURCES);
     refreshTarget = PostCompilationRefreshTarget.readFrom(store);
   }
+
+  public boolean shouldCompileProtoFiles() {
+    return compileProtoFiles;
+  }
+
+  public String protocPath() {
+    return protocPath;
+  }
+
+  public TargetLanguagePreferences languages() {
+    return languages;
+  }
+
+  public boolean shouldRefreshResources() {
+    return refreshResources;
+  }
+
+  public PostCompilationRefreshTarget refreshTarget() {
+    return refreshTarget;
+  }
+
+
 }

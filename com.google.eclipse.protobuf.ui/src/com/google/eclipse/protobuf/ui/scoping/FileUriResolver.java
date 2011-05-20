@@ -25,7 +25,7 @@ import com.google.inject.Inject;
  */
 public class FileUriResolver implements IFileUriResolver {
 
-  @Inject private PathsPreferenceReader preferenceReader;
+  @Inject private PathsPreferencesProvider preferenceReader;
   @Inject private FileResolverStrategies resolvers;
   @Inject private Resources resources;
 
@@ -54,7 +54,7 @@ public class FileUriResolver implements IFileUriResolver {
 
   private String resolveUri(String importUri, URI resourceUri) {
     IProject project = resources.project(resourceUri);
-    PathsPreferences preferences = preferenceReader.readFromPrefereceStore(project);
+    PathsPreferences preferences = preferenceReader.getPreferences(project);
     return resolver(preferences).resolveUri(importUri, resourceUri, preferences);
   }
 

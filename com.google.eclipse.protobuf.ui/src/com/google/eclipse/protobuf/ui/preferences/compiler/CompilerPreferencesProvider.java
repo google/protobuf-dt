@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.compiler;
 
-import static com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferenceNames.ENABLE_PROJECT_SETTINGS;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.ENABLE_PROJECT_SETTINGS;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -21,11 +21,11 @@ import com.google.inject.Inject;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class CompilerPreferenceReader {
+public class CompilerPreferencesProvider {
 
   @Inject private IPreferenceStoreAccess storeAccess;
 
-  public CompilerPreferences readFromPrefereceStore(IProject project) {
+  public CompilerPreferences getPreferences(IProject project) {
     IPreferenceStore store = storeAccess.getWritablePreferenceStore(project);
     boolean useProjectPreferences = store.getBoolean(ENABLE_PROJECT_SETTINGS);
     if (!useProjectPreferences) store = storeAccess.getWritablePreferenceStore();

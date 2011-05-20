@@ -19,11 +19,11 @@ import com.google.inject.Inject;
  * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class PathsPreferenceReader {
+public class PathsPreferencesProvider {
 
   @Inject private IPreferenceStoreAccess storeAccess;
   
-  public PathsPreferences readFromPrefereceStore(IProject project) {
+  public PathsPreferences getPreferences(IProject project) {
     IPreferenceStore store = storeAccess.getWritablePreferenceStore(project);
     return new PathsPreferences(store);
   }

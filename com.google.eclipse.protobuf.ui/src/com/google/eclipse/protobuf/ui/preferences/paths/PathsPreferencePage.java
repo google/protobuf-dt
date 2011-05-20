@@ -9,7 +9,7 @@
 package com.google.eclipse.protobuf.ui.preferences.paths;
 
 import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.*;
-import static com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferenceNames.*;
+import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.*;
 import static java.util.Arrays.asList;
 import static org.eclipse.xtext.util.Strings.*;
 

@@ -11,7 +11,7 @@ package com.google.eclipse.protobuf.ui.preferences.compiler;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-final class CompilerPreferenceNames {
+final class PreferenceNames {
 
   static final String ENABLE_PROJECT_SETTINGS = "compiler.enableProjectSettings";
   static final String COMPILE_PROTO_FILES = "compiler.compileProtoFiles";
@@ -21,10 +21,12 @@ final class CompilerPreferenceNames {
   static final String GENERATE_JAVA_CODE = "compiler.generateJavaCode";
   static final String GENERATE_CPP_CODE = "compiler.generateCppCode";
   static final String GENERATE_PYTHON_CODE = "compiler.generatePythonCode";
-  static final String OUTPUT_FOLDER_NAME = "compiler.outputFolderName";
+  static final String JAVA_OUTPUT_DIRECTORY = "compiler.javaOutputDirectory";
+  static final String CPP_OUTPUT_DIRECTORY = "compiler.cppOutputDirectory";
+  static final String PYTHON_OUTPUT_DIRECTORY = "compiler.pythonOutputDirectory";
   static final String REFRESH_RESOURCES = "compiler.refreshResources";
   static final String REFRESH_PROJECT = "compiler.refreshProject";
-  static final String REFRESH_OUTPUT_FOLDER = "compiler.refreshOutputProject";
+  static final String REFRESH_OUTPUT_DIRECTORY = "compiler.refreshOutputDirectory";
 
-  private CompilerPreferenceNames() {}
+  private PreferenceNames() {}
 }

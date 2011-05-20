@@ -9,7 +9,7 @@
 package com.google.eclipse.protobuf.ui.preferences.paths;
 
 import static com.google.eclipse.protobuf.ui.preferences.paths.PathResolutionType.SINGLE_DIRECTORY;
-import static com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferenceNames.DIRECTORY_PATHS;
+import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.DIRECTORY_PATHS;
 import static com.google.eclipse.protobuf.ui.util.Strings.CSV_PATTERN;
 import static java.util.Collections.*;
 

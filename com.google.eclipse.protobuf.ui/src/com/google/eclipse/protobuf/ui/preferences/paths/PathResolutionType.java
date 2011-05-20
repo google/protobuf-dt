@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */package com.google.eclipse.protobuf.ui.preferences.paths;
 
-import static com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferenceNames.FILES_IN_ONE_DIRECTORY_ONLY;
+import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.FILES_IN_ONE_DIRECTORY_ONLY;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 

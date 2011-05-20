@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.compiler;
 
-import static com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferenceNames.*;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.*;
 import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.*;
 import static java.util.Arrays.asList;
 import static org.eclipse.xtext.util.Strings.isEmpty;
@@ -145,7 +145,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     txtProtocFilePath.setText(store.getString(PROTOC_FILE_PATH));
     btnRefreshResources.setSelection(store.getBoolean(REFRESH_RESOURCES));
     btnRefreshProject.setSelection(store.getBoolean(REFRESH_PROJECT));
-    btnRefreshOutputFolder.setSelection(store.getBoolean(REFRESH_OUTPUT_FOLDER));
+    btnRefreshOutputFolder.setSelection(store.getBoolean(REFRESH_OUTPUT_DIRECTORY));
     boolean shouldEnableCompilerOptions = compileProtoFiles;
     if (isPropertyPage()) {
       boolean useProjectSettings = store.getBoolean(ENABLE_PROJECT_SETTINGS);
@@ -227,7 +227,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
 //    txtOutputFolderName.setText(store.getDefaultString(OUTPUT_FOLDER_NAME));
     btnRefreshResources.setSelection(store.getDefaultBoolean(REFRESH_RESOURCES));
     btnRefreshProject.setSelection(store.getDefaultBoolean(REFRESH_PROJECT));
-    btnRefreshOutputFolder.setSelection(store.getDefaultBoolean(REFRESH_OUTPUT_FOLDER));
+    btnRefreshOutputFolder.setSelection(store.getDefaultBoolean(REFRESH_OUTPUT_DIRECTORY));
     boolean enableCompilerOptions = compileProtoFiles;
     if (isPropertyPage()) {
       boolean useProjectSettings = store.getDefaultBoolean(ENABLE_PROJECT_SETTINGS);
@@ -308,7 +308,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
 //    store.setValue(OUTPUT_FOLDER_NAME, txtOutputFolderName.getText().trim());
     store.setValue(REFRESH_RESOURCES, btnRefreshResources.getSelection());
     store.setValue(REFRESH_PROJECT, btnRefreshProject.getSelection());
-    store.setValue(REFRESH_OUTPUT_FOLDER, btnRefreshOutputFolder.getSelection());
+    store.setValue(REFRESH_OUTPUT_DIRECTORY, btnRefreshOutputFolder.getSelection());
   }
 
   /** {@inheritDoc} */

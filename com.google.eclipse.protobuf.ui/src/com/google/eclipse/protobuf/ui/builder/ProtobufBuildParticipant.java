@@ -13,8 +13,7 @@ import static java.util.Collections.unmodifiableList;
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.filesystem.*;
@@ -22,7 +21,7 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.builder.IXtextBuilderParticipant;
-import org.eclipse.xtext.resource.IResourceDescription;
+import org.eclipse.xtext.resource.*;
 import org.eclipse.xtext.resource.IResourceDescription.Delta;
 
 import com.google.eclipse.protobuf.ui.preferences.compiler.*;
@@ -42,25 +41,25 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
 
   @Inject private ProtocOutputParser outputParser;
   @Inject private ProtocCommandFactory commandFactory;
-  @Inject private CompilerPreferenceReader compilerPreferenceReader;
-  @Inject private PathsPreferenceReader pathsPreferenceReader;
+  @Inject private CompilerPreferencesProvider compilerPreferencesProvider;
+  @Inject private PathsPreferencesProvider pathsPreferencesProvider;
 
   public void build(IBuildContext context, IProgressMonitor monitor) throws CoreException {
     IProject project = context.getBuiltProject();
-    CompilerPreferences preferences = compilerPreferenceReader.readFromPrefereceStore(project);
-    if (!preferences.compileProtoFiles) return;
+    CompilerPreferences preferences = compilerPreferencesProvider.getPreferences(project);
+    if (!preferences.shouldCompileProtoFiles()) return;
     List<Delta> deltas = context.getDeltas();
     if (deltas.isEmpty()) return;
-    IFolder outputFolder = findOrCreateOutputFolder(project, preferences.outputFolderName);
-    List<String> importRoots = importRoots(project);
-    for (Delta d : deltas) {
-      IResourceDescription newResource = d.getNew();
-      String path = filePathIfIsProtoFile(newResource);
-      if (path == null) continue;
-      IFile source = project.getWorkspace().getRoot().getFile(new Path(path));
-      generateSingleProto(source, preferences.protocPath, importRoots, preferences.language, pathOf(outputFolder));
-    }
-    if (preferences.refreshResources) refresh(outputFolder, preferences.refreshTarget, monitor);
+//    IFolder outputFolder = findOrCreateOutputFolder(project, preferences.outputFolderName);
+//    List<String> importRoots = importRoots(project);
+//    for (Delta d : deltas) {
+//      IResourceDescription newResource = d.getNew();
+//      String path = filePathIfIsProtoFile(newResource);
+//      if (path == null) continue;
+//      IFile source = project.getWorkspace().getRoot().getFile(new Path(path));
+//      generateSingleProto(source, preferences.protocPath(), importRoots, preferences.language, pathOf(outputFolder));
+//    }
+//    if (preferences.shouldRefreshResources()) refresh(outputFolder, preferences.refreshTarget(), monitor);
   }
 
   private static IFolder findOrCreateOutputFolder(IProject project, String outputFolderName) throws CoreException {
@@ -71,7 +70,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
 
   private List<String> importRoots(IProject project) {
     List<String> paths = new ArrayList<String>();
-    PathsPreferences preferences = pathsPreferenceReader.readFromPrefereceStore(project);
+    PathsPreferences preferences = pathsPreferencesProvider.getPreferences(project);
     List<DirectoryPath> directoryPaths = preferences.directoryPaths();
     for (DirectoryPath path : directoryPaths) {
       String location = locationOfDirectory(path, project);

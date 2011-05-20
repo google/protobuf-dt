@@ -11,11 +11,11 @@ package com.google.eclipse.protobuf.ui.preferences.paths;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-final class PathsPreferenceNames {
+final class PreferenceNames {
 
   static final String FILES_IN_ONE_DIRECTORY_ONLY = "paths.filesInOneDirectoryOnly";
   static final String FILES_IN_MULTIPLE_DIRECTORIES = "paths.filesInMultipleDirectories";
   static final String DIRECTORY_PATHS = "paths.directoryPaths";
 
-  private PathsPreferenceNames() {}
+  private PreferenceNames() {}
 }

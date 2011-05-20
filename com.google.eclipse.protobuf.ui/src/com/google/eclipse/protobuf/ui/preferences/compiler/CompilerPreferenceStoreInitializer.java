@@ -8,11 +8,10 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.compiler;
 
-import static com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferenceNames.*;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.*;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
-import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
+import org.eclipse.xtext.ui.editor.preferences.*;
 
 /**
  * Initializes default values for the "Compiler" preferences.
@@ -27,9 +26,13 @@ public class CompilerPreferenceStoreInitializer implements IPreferenceStoreIniti
     store.setDefault(ENABLE_PROJECT_SETTINGS, false);
     store.setDefault(USE_PROTOC_IN_SYSTEM_PATH, true);
     store.setDefault(GENERATE_JAVA_CODE, true);
-    store.setDefault(OUTPUT_FOLDER_NAME, "src-gen");
+    store.setDefault(GENERATE_CPP_CODE, false);
+    store.setDefault(GENERATE_PYTHON_CODE, false);
+    store.setDefault(JAVA_OUTPUT_DIRECTORY, "src-gen-java");
+    store.setDefault(CPP_OUTPUT_DIRECTORY, "src-gen-cpp");
+    store.setDefault(PYTHON_OUTPUT_DIRECTORY, "src-gen-python");
     store.setDefault(REFRESH_RESOURCES, true);
-    store.setDefault(REFRESH_OUTPUT_FOLDER, true);
+    store.setDefault(REFRESH_OUTPUT_DIRECTORY, true);
   }
 
 }
