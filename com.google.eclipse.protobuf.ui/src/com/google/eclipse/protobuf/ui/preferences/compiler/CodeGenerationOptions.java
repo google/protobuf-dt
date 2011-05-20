@@ -9,54 +9,54 @@
 package com.google.eclipse.protobuf.ui.preferences.compiler;
 
 import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.*;
-import static com.google.eclipse.protobuf.ui.preferences.compiler.TargetLanguage.*;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.SupportedLanguage.*;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
- * Contains a <code>{@link TargetLanguage}</code> per language supported by protoc.
+ * Contains a <code>{@link SupportedLanguage}</code> per language supported by protoc.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class TargetLanguagePreferences {
+public class CodeGenerationOptions {
 
-  private final TargetLanguagePreference javaPreference;
-  private final TargetLanguagePreference cppPreference;
-  private final TargetLanguagePreference pythonPreference;
+  private final CodeGenerationOption javaPreference;
+  private final CodeGenerationOption cppPreference;
+  private final CodeGenerationOption pythonPreference;
 
-  TargetLanguagePreferences(IPreferenceStore store) {
+  CodeGenerationOptions(IPreferenceStore store) {
     javaPreference = javaPreference(store);
     cppPreference = cppPreference(store);
     pythonPreference = pythonPreference(store);
   }
 
-  private static TargetLanguagePreference javaPreference(IPreferenceStore store) {
+  private static CodeGenerationOption javaPreference(IPreferenceStore store) {
     boolean enabled = store.getBoolean(GENERATE_JAVA_CODE);
     String outputDirectory = store.getString(JAVA_OUTPUT_DIRECTORY);
-    return new TargetLanguagePreference(JAVA, outputDirectory, enabled);
+    return new CodeGenerationOption(JAVA, outputDirectory, enabled);
   }
 
-  private static TargetLanguagePreference cppPreference(IPreferenceStore store) {
+  private static CodeGenerationOption cppPreference(IPreferenceStore store) {
     boolean enabled = store.getBoolean(GENERATE_CPP_CODE);
     String outputDirectory = store.getString(CPP_OUTPUT_DIRECTORY);
-    return new TargetLanguagePreference(CPP, outputDirectory, enabled);
+    return new CodeGenerationOption(CPP, outputDirectory, enabled);
   }
 
-  private static TargetLanguagePreference pythonPreference(IPreferenceStore store) {
+  private static CodeGenerationOption pythonPreference(IPreferenceStore store) {
     boolean enabled = store.getBoolean(GENERATE_PYTHON_CODE);
     String outputDirectory = store.getString(PYTHON_OUTPUT_DIRECTORY);
-    return new TargetLanguagePreference(PYTHON, outputDirectory, enabled);
+    return new CodeGenerationOption(PYTHON, outputDirectory, enabled);
   }
 
-  public TargetLanguagePreference java() {
+  public CodeGenerationOption java() {
     return javaPreference;
   }
 
-  public TargetLanguagePreference cpp() {
+  public CodeGenerationOption cpp() {
     return cppPreference;
   }
 
-  public TargetLanguagePreference python() {
+  public CodeGenerationOption python() {
     return pythonPreference;
   }
 }

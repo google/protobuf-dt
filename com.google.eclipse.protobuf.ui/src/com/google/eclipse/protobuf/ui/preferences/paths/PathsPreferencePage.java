@@ -10,8 +10,13 @@ package com.google.eclipse.protobuf.ui.preferences.paths;
 
 import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.*;
 import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.*;
+import static com.google.eclipse.protobuf.ui.swt.EventListeners.addSelectionListener;
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 import static org.eclipse.xtext.util.Strings.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
@@ -25,7 +30,6 @@ import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.eclipse.protobuf.ui.preferences.DataChangedListener;
 import com.google.eclipse.protobuf.ui.preferences.PreferenceAndPropertyPage;
-import com.google.eclipse.protobuf.ui.swt.EventListeners;
 import com.google.inject.Inject;
 
 /**
@@ -43,7 +47,6 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
   private Button btnMultipleFolders;
   private DirectoryPathsEditor directoryPathsEditor;
 
-  @Inject private EventListeners eventListeners;
   @Inject private PluginImageHelper imageHelper;
 
   @Inject public PathsPreferencePage(IPreferenceStoreAccess preferenceStoreAccess) {
@@ -69,7 +72,7 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
     btnMultipleFolders.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
     btnMultipleFolders.setText(filesInMultipleDirectories);
 
-    directoryPathsEditor = new DirectoryPathsEditor(grpResolutionOfImported, imageHelper, eventListeners);
+    directoryPathsEditor = new DirectoryPathsEditor(grpResolutionOfImported, imageHelper);
     directoryPathsEditor.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
     new Label(contents, SWT.NONE);
 
@@ -83,12 +86,12 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
     IPreferenceStore store = doGetPreferenceStore();
     btnOneFolderOnly.setSelection(store.getBoolean(FILES_IN_ONE_DIRECTORY_ONLY));
     btnMultipleFolders.setSelection(store.getBoolean(FILES_IN_MULTIPLE_DIRECTORIES));
-    setDirectoryNames(store.getString(DIRECTORY_PATHS));
+    setDirectoryPaths(store.getString(DIRECTORY_PATHS));
     enableProjectOptions(true);
   }
 
   private void addEventListeners() {
-    eventListeners.addSelectionListener(new SelectionAdapter() {
+    addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
         boolean selected = btnMultipleFolders.getSelection();
         directoryPathsEditor.setEnabled(selected);
@@ -119,13 +122,18 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
     IPreferenceStore store = doGetPreferenceStore();
     btnOneFolderOnly.setSelection(store.getDefaultBoolean(FILES_IN_ONE_DIRECTORY_ONLY));
     btnMultipleFolders.setSelection(store.getDefaultBoolean(FILES_IN_MULTIPLE_DIRECTORIES));
-    setDirectoryNames(store.getDefaultString(DIRECTORY_PATHS));
+    setDirectoryPaths(store.getDefaultString(DIRECTORY_PATHS));
     enableProjectOptions(true);
     super.performDefaults();
   }
 
-  private void setDirectoryNames(String directoryNames) {
-    directoryPathsEditor.addDirectoryPaths(split(directoryNames, COMMA_DELIMITER));
+  private void setDirectoryPaths(String directoryPaths) {
+    List<DirectoryPath> paths = new ArrayList<DirectoryPath>();
+    for (String path : split(directoryPaths, COMMA_DELIMITER)) {
+      if (isEmpty(path)) continue;
+      paths.add(DirectoryPath.parse(path));
+    }
+    directoryPathsEditor.directoryPaths(unmodifiableList(paths));
   }
 
   private void enableProjectOptions(boolean enabled) {
@@ -144,7 +152,11 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
   }
 
   private String directoryNames() {
-    return concat(COMMA_DELIMITER, directoryPathsEditor.directoryPaths());
+    List<String> pathsAsText = new ArrayList<String>();
+    for (DirectoryPath path : directoryPathsEditor.directoryPaths()) {
+      pathsAsText.add(path.toString());
+    }
+    return concat(COMMA_DELIMITER, pathsAsText);
   }
 
   /** {@inheritDoc} */

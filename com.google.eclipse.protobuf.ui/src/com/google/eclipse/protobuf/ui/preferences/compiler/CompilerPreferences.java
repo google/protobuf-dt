@@ -21,7 +21,7 @@ public class CompilerPreferences {
 
   private final boolean compileProtoFiles;
   private final String protocPath;
-  private final TargetLanguagePreferences languages;
+  private final CodeGenerationOptions languages;
   private final boolean refreshResources;
   private final PostCompilationRefreshTarget refreshTarget;
 
@@ -29,7 +29,7 @@ public class CompilerPreferences {
     compileProtoFiles = store.getBoolean(COMPILE_PROTO_FILES);
     boolean useProtocInSystemPath = store.getBoolean(USE_PROTOC_IN_SYSTEM_PATH);
     protocPath = (useProtocInSystemPath) ? "protoc" : store.getString(PROTOC_FILE_PATH);
-    languages = new TargetLanguagePreferences(store);
+    languages = new CodeGenerationOptions(store);
     refreshResources = store.getBoolean(REFRESH_RESOURCES);
     refreshTarget = PostCompilationRefreshTarget.readFrom(store);
   }
@@ -42,7 +42,7 @@ public class CompilerPreferences {
     return protocPath;
   }
 
-  public TargetLanguagePreferences languages() {
+  public CodeGenerationOptions languages() {
     return languages;
   }
 

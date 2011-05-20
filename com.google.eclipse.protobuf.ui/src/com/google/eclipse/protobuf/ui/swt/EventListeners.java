@@ -10,25 +10,24 @@ package com.google.eclipse.protobuf.ui.swt;
 
 import java.util.Collection;
 
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.widgets.*;
-
-import com.google.inject.Singleton;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * Utility methods related to SWT event listeners.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
-public class EventListeners {
+public final class EventListeners {
 
   /**
    * Adds the given <code>{@link SelectionListener}</code> to the given <code>{@link Button}</code>s.
    * @param listener the listener to add.
    * @param buttons the buttons to add the listener to.
    */
-  public void addSelectionListener(SelectionListener listener, Collection<Button> buttons) {
+  public static void addSelectionListener(SelectionListener listener, Collection<Button> buttons) {
     for (Button button : buttons) button.addSelectionListener(listener);
   }
 
@@ -37,7 +36,7 @@ public class EventListeners {
    * @param listener the listener to remove.
    * @param buttons the buttons to remove the listener to.
    */
-  public void removeSelectionListener(SelectionListener listener, Collection<Button> buttons) {
+  public static void removeSelectionListener(SelectionListener listener, Collection<Button> buttons) {
     for (Button button : buttons) button.removeSelectionListener(listener);
   }
 
@@ -46,8 +45,9 @@ public class EventListeners {
    * @param listener the listener to add.
    * @param texts the text widgets to add the listener to.
    */
-  public void addModifyListener(ModifyListener listener, Collection<Text> texts) {
+  public static void addModifyListener(ModifyListener listener, Collection<Text> texts) {
     for (Text text : texts) text.addModifyListener(listener);
   }
 
+  private EventListeners() {}
 }

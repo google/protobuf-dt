@@ -10,8 +10,13 @@ package com.google.eclipse.protobuf.ui.preferences.compiler;
 
 import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -24,28 +29,28 @@ import org.eclipse.xtext.ui.PluginImageHelper;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class TargetLanguageOutputDirectoryEditor extends Composite {
+public class CodeGenerationOptionsEditor extends Composite {
 
-  private static final TargetLanguagePreference[] NO_PREFERENCES = new TargetLanguagePreference[0];
-
-  private final Table tblLanguageOutput;
-  private final TableViewer tblVwrLanguageOutput;
+  private final Table tblCodeGenerationOptions;
+  private final TableViewer tblVwrCodeGenerationOptions;
   private final Button btnEdit;
 
-  private TargetLanguagePreferences preferences;
+  private final List<CodeGenerationOption> displayedOptions = new ArrayList<CodeGenerationOption>();
+  
+  private CodeGenerationOptions options;
 
-  public TargetLanguageOutputDirectoryEditor(Composite parent, final PluginImageHelper imageHelper) {
+  public CodeGenerationOptionsEditor(Composite parent, final PluginImageHelper imageHelper) {
     super(parent, SWT.NONE);
     setLayout(new GridLayout(1, false));
 
-    tblVwrLanguageOutput = new TableViewer(this, SWT.BORDER | SWT.FULL_SELECTION);
+    tblVwrCodeGenerationOptions = new TableViewer(this, SWT.BORDER | SWT.FULL_SELECTION);
 
-    tblLanguageOutput = tblVwrLanguageOutput.getTable();
-    tblLanguageOutput.setHeaderVisible(true);
-    tblLanguageOutput.setLinesVisible(true);
-    tblLanguageOutput.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+    tblCodeGenerationOptions = tblVwrCodeGenerationOptions.getTable();
+    tblCodeGenerationOptions.setHeaderVisible(true);
+    tblCodeGenerationOptions.setLinesVisible(true);
+    tblCodeGenerationOptions.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
-    TableViewerColumn tblclmnVwrEnabled = new TableViewerColumn(tblVwrLanguageOutput, SWT.NONE);
+    TableViewerColumn tblclmnVwrEnabled = new TableViewerColumn(tblVwrCodeGenerationOptions, SWT.NONE);
     TableColumn tblclmnEnabled = tblclmnVwrEnabled.getColumn();
     tblclmnEnabled.setResizable(false);
     tblclmnEnabled.setWidth(27);
@@ -55,30 +60,30 @@ public class TargetLanguageOutputDirectoryEditor extends Composite {
       }
 
       @Override public Image getImage(Object element) {
-        boolean enabled = ((TargetLanguagePreference)element).isEnabled();
+        boolean enabled = ((CodeGenerationOption)element).isEnabled();
         return imageHelper.getImage(enabled ? "checked.gif" : "unchecked.gif"); //$NON-NLS-1$ //$NON-NLS-2$
       }
     });
 
-    TableViewerColumn tblclmnVwrLanguage = new TableViewerColumn(tblVwrLanguageOutput, SWT.NONE);
+    TableViewerColumn tblclmnVwrLanguage = new TableViewerColumn(tblVwrCodeGenerationOptions, SWT.NONE);
     TableColumn tblclmnLanguage = tblclmnVwrLanguage.getColumn();
     tblclmnLanguage.setResizable(false);
     tblclmnLanguage.setWidth(100);
     tblclmnLanguage.setText(language);
     tblclmnVwrLanguage.setLabelProvider(new ColumnLabelProvider() {
       @Override public String getText(Object element) {
-        return ((TargetLanguagePreference)element).language().name();
+        return ((CodeGenerationOption)element).language().name();
       }
     });
 
-    TableViewerColumn tblclmnVwrOutputDirectory = new TableViewerColumn(tblVwrLanguageOutput, SWT.NONE);
+    TableViewerColumn tblclmnVwrOutputDirectory = new TableViewerColumn(tblVwrCodeGenerationOptions, SWT.NONE);
     TableColumn tblclmnOutputDirectory = tblclmnVwrOutputDirectory.getColumn();
     tblclmnOutputDirectory.setResizable(false);
     tblclmnOutputDirectory.setWidth(100);
     tblclmnOutputDirectory.setText(outputDirectory);
     tblclmnVwrOutputDirectory.setLabelProvider(new ColumnLabelProvider() {
       @Override public String getText(Object element) {
-        return ((TargetLanguagePreference)element).outputDirectory();
+        return ((CodeGenerationOption)element).outputDirectory();
       }
     });
 
@@ -86,31 +91,38 @@ public class TargetLanguageOutputDirectoryEditor extends Composite {
     btnEdit.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
     btnEdit.setText(edit);
 
-    tblVwrLanguageOutput.setContentProvider(ArrayContentProvider.getInstance());
+    tblVwrCodeGenerationOptions.setContentProvider(ArrayContentProvider.getInstance());
+    
+    addEventListeners();
     updateTable();
   }
 
-  public void preferences(TargetLanguagePreferences newPreferences) {
-    preferences = newPreferences;
+  private void addEventListeners() {
+    btnEdit.addSelectionListener(new SelectionAdapter() {
+      @Override public void widgetSelected(SelectionEvent e) {
+        CodeGenerationOption option = displayedOptions.get(tblCodeGenerationOptions.getSelectionIndex());
+        EditCodeGenerationOptionDialog dialog = new EditCodeGenerationOptionDialog(getShell(), option);
+        if (dialog.open()) tblVwrCodeGenerationOptions.refresh();
+      }
+    });
+  }
+
+  public void codeGenerationOptions(CodeGenerationOptions newOptions) {
+    options = newOptions;
+    displayedOptions.clear();
+    displayedOptions.add(options.java());
+    displayedOptions.add(options.cpp());
+    displayedOptions.add(options.python());
     updateTable();
   }
 
   private void updateTable() {
-    tblVwrLanguageOutput.setInput(preferences());
-  }
-
-  private TargetLanguagePreference[] preferences() {
-    if (preferences == null) return NO_PREFERENCES;
-    TargetLanguagePreference[] languages = new TargetLanguagePreference[3];
-    languages[0] = preferences.java();
-    languages[1] = preferences.cpp();
-    languages[2] = preferences.python();
-    return languages;
+    tblVwrCodeGenerationOptions.setInput(displayedOptions);
   }
 
   /** {@inheritDoc} */
   @Override public void setEnabled(boolean enabled) {
-    tblLanguageOutput.setEnabled(enabled);
+    tblCodeGenerationOptions.setEnabled(enabled);
     btnEdit.setEnabled(enabled);
     super.setEnabled(enabled);
   }

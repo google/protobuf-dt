@@ -19,10 +19,10 @@ import org.eclipse.jface.preference.IPreferenceStore;
  */
 public enum PostCompilationRefreshTarget {
 
-  PROJECT, OUTPUT_FOLDER;
+  PROJECT, OUTPUT_DIRECTORIES;
 
   static PostCompilationRefreshTarget readFrom(IPreferenceStore store) {
     if (store.getBoolean(REFRESH_PROJECT)) return PROJECT;
-    return OUTPUT_FOLDER;
+    return OUTPUT_DIRECTORIES;
   }
 }

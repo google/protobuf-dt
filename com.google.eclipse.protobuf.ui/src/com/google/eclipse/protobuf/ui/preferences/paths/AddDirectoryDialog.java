@@ -10,11 +10,11 @@ package com.google.eclipse.protobuf.ui.preferences.paths;
 
 import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.*;
 import static com.google.eclipse.protobuf.ui.swt.SelectDirectoryDialogLauncher.*;
+import static com.google.eclipse.protobuf.ui.swt.Shells.centerShell;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
@@ -153,18 +153,14 @@ public class AddDirectoryDialog extends Dialog {
   }
 
   private void centerWindow() {
-    Rectangle parentRect = parent.getBounds();
-    Rectangle shellRect = shell.getBounds();
-    int x = parentRect.x + (parentRect.width - shellRect.width) / 2;
-    int y = parentRect.y + (parentRect.height - shellRect.height) / 2;
-    shell.setBounds(x, y, shellRect.width, shellRect.height);
+    centerShell(shell, parent);
   }
 
   /**
    * Returns the path selected by the user.
    * @return the path selected by the user.
    */
-  public DirectoryPath getSelectedPath() {
+  public DirectoryPath selectedPath() {
     return selectedPath;
   }
 }

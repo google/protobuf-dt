@@ -17,15 +17,15 @@ import org.eclipse.jface.preference.IPreferenceStore;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class TargetLanguage {
+public class SupportedLanguage {
 
-  public static final TargetLanguage JAVA = new TargetLanguage("Java");
-  public static final TargetLanguage CPP = new TargetLanguage("C++");
-  public static final TargetLanguage PYTHON = new TargetLanguage("Python");
+  public static final SupportedLanguage JAVA = new SupportedLanguage("Java");
+  public static final SupportedLanguage CPP = new SupportedLanguage("C++");
+  public static final SupportedLanguage PYTHON = new SupportedLanguage("Python");
 
   private final String name;
 
-  private TargetLanguage(String name) {
+  private SupportedLanguage(String name) {
     this.name = name;
   }
 
@@ -39,7 +39,7 @@ public class TargetLanguage {
 
   // TODO check if protoc can generate more than one language sources at the same time.
   // TODO remove
-  static TargetLanguage readFrom(IPreferenceStore store) {
+  static SupportedLanguage readFrom(IPreferenceStore store) {
     if (store.getBoolean(GENERATE_JAVA_CODE)) return JAVA;
     if (store.getBoolean(GENERATE_CPP_CODE)) return CPP;
     if (store.getBoolean(GENERATE_PYTHON_CODE)) return PYTHON;
@@ -47,7 +47,7 @@ public class TargetLanguage {
   }
 
   // TODO remove
-  public static TargetLanguage[] values() {
-    return new TargetLanguage[] { JAVA, CPP, PYTHON };
+  public static SupportedLanguage[] values() {
+    return new SupportedLanguage[] { JAVA, CPP, PYTHON };
   }
 }

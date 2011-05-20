@@ -12,21 +12,21 @@ import java.util.*;
 
 import org.eclipse.core.resources.IFile;
 
-import com.google.eclipse.protobuf.ui.preferences.compiler.TargetLanguage;
+import com.google.eclipse.protobuf.ui.preferences.compiler.SupportedLanguage;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 class ProtocCommandFactory {
 
-  private static final Map<TargetLanguage, String> LANG_OUT_FLAG = new HashMap<TargetLanguage, String>();
+  private static final Map<SupportedLanguage, String> LANG_OUT_FLAG = new HashMap<SupportedLanguage, String>();
 
   static {
-    for (TargetLanguage lang : TargetLanguage.values())
+    for (SupportedLanguage lang : SupportedLanguage.values())
       LANG_OUT_FLAG.put(lang, "--" + lang.name().toLowerCase() + "_out=");
   }
 
-  String protocCommand(IFile protoFile, String protocPath, List<String> importRoots, TargetLanguage language,
+  String protocCommand(IFile protoFile, String protocPath, List<String> importRoots, SupportedLanguage language,
       String outputFolderPath) {
     StringBuilder command = new StringBuilder();
     command.append(protocPath).append(" ");
@@ -36,7 +36,7 @@ class ProtocCommandFactory {
     return command.toString();
   }
 
-  private String langOutFlag(TargetLanguage targetLanguage) {
+  private String langOutFlag(SupportedLanguage targetLanguage) {
     return LANG_OUT_FLAG.get(targetLanguage);
   }
 }

@@ -10,6 +10,7 @@ package com.google.eclipse.protobuf.ui.preferences.compiler;
 
 import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.*;
 import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.*;
+import static com.google.eclipse.protobuf.ui.swt.EventListeners.addSelectionListener;
 import static java.util.Arrays.asList;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
@@ -26,7 +27,6 @@ import org.eclipse.xtext.ui.PluginImageHelper;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.eclipse.protobuf.ui.preferences.PreferenceAndPropertyPage;
-import com.google.eclipse.protobuf.ui.swt.EventListeners;
 import com.google.eclipse.protobuf.ui.util.DirectoryNameValidator;
 import com.google.inject.Inject;
 
@@ -48,7 +48,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
   private Button btnUseProtocInCustomPath;
   private Text txtProtocFilePath;
   private Button btnProtocPathBrowse;
-  private TargetLanguageOutputDirectoryEditor outputDirectoryEditor;
+  private CodeGenerationOptionsEditor codeGenerationOptionsEditor;
   private Button btnRefreshResources;
   private Group grpRefresh;
   private Button btnRefreshProject;
@@ -56,7 +56,6 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
 
   @Inject private PluginImageHelper imageHelper;
   @Inject private DirectoryNameValidator directoryNameValidator;
-  @Inject private EventListeners eventListeners;
   private Group grpCodeGeneration;
 
   @Inject public CompilerPreferencePage(IPreferenceStoreAccess preferenceStoreAccess) {
@@ -109,8 +108,8 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     grpCodeGeneration.setText(codeGeneration);
     grpCodeGeneration.setLayout(new GridLayout(1, false));
 
-    outputDirectoryEditor = new TargetLanguageOutputDirectoryEditor(grpCodeGeneration, imageHelper);
-    outputDirectoryEditor.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
+    codeGenerationOptionsEditor = new CodeGenerationOptionsEditor(grpCodeGeneration, imageHelper);
+    codeGenerationOptionsEditor.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
 
     tbtmRefresh = new TabItem(tabFolder, SWT.NONE);
     tbtmRefresh.setText(tabRefresh);
@@ -152,8 +151,8 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     btnRefreshResources.setSelection(store.getBoolean(REFRESH_RESOURCES));
     btnRefreshProject.setSelection(store.getBoolean(REFRESH_PROJECT));
     btnRefreshOutputFolder.setSelection(store.getBoolean(REFRESH_OUTPUT_DIRECTORY));
-    TargetLanguagePreferences languagePreferences = new TargetLanguagePreferences(store);
-    outputDirectoryEditor.preferences(languagePreferences);
+    CodeGenerationOptions languagePreferences = new CodeGenerationOptions(store);
+    codeGenerationOptionsEditor.codeGenerationOptions(languagePreferences);
     boolean shouldEnableCompilerOptions = compileProtoFiles;
     if (isPropertyPage()) {
       boolean useProjectSettings = store.getBoolean(ENABLE_PROJECT_SETTINGS);
@@ -172,7 +171,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
         checkState();
       }
     });
-    eventListeners.addSelectionListener(new SelectionAdapter() {
+    addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
         boolean selected = btnUseProtocInCustomPath.getSelection();
         enableCompilerCustomPathOptions(selected);
@@ -286,7 +285,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
 
   private void enableOutputOptions(boolean enabled) {
     grpCodeGeneration.setEnabled(enabled);
-    outputDirectoryEditor.setEnabled(enabled);
+    codeGenerationOptionsEditor.setEnabled(enabled);
   }
 
   private void enableRefreshOptions(boolean enabled) {

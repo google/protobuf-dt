@@ -13,24 +13,24 @@ package com.google.eclipse.protobuf.ui.preferences.compiler;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class TargetLanguagePreference {
+public class CodeGenerationOption {
 
-  private final TargetLanguage language;
+  private final SupportedLanguage language;
 
   private String outputDirectory;
   private boolean enabled;
 
-  TargetLanguagePreference(TargetLanguage language, String outputDirectory, boolean enabled) {
+  CodeGenerationOption(SupportedLanguage language, String outputDirectory, boolean enabled) {
     this.language = language;
     this.outputDirectory = outputDirectory;
     this.enabled = enabled;
   }
 
   /**
-   * Returns the language.
-   * @return the language.
+   * Returns the supported language.
+   * @return the supported language.
    */
-  public TargetLanguage language() {
+  public SupportedLanguage language() {
     return language;
   }
 
