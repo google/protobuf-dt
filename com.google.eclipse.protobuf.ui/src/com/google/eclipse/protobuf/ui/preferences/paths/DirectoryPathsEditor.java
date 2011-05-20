@@ -25,6 +25,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.xtext.ui.PluginImageHelper;
 
+import com.google.eclipse.protobuf.ui.preferences.DataChangedListener;
 import com.google.eclipse.protobuf.ui.swt.EventListeners;
 
 /**
@@ -45,7 +46,7 @@ public class DirectoryPathsEditor extends Composite {
 
   private final LinkedList<DirectoryPath> importPaths = new LinkedList<DirectoryPath>();
 
-  private SelectionListener onChangeListener;
+  private SelectionListener dataChangedListener;
 
   public DirectoryPathsEditor(Composite parent, PluginImageHelper imageHelper, EventListeners eventListeners) {
     super(parent, SWT.NONE);
@@ -55,14 +56,8 @@ public class DirectoryPathsEditor extends Composite {
     setLayout(new GridLayout(2, false));
 
     tblVwrDirectoryPaths = new TableViewer(this, SWT.BORDER | SWT.FULL_SELECTION);
-    tblVwrDirectoryPaths.setContentProvider(new IStructuredContentProvider() {
-      public Object[] getElements(Object inputElement) {
-        return (Object[]) inputElement;
-      }
-      public void dispose() {}
-      public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {}
-    });
     tblVwrDirectoryPaths.setLabelProvider(new RichLabelProvider(imageHelper));
+    tblVwrDirectoryPaths.setContentProvider(ArrayContentProvider.getInstance());
 
     tblDirectoryPaths = tblVwrDirectoryPaths.getTable();
     tblDirectoryPaths.setLinesVisible(true);
@@ -104,7 +99,7 @@ public class DirectoryPathsEditor extends Composite {
     });
     btnAdd.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
-        IncludeDialog dialog = new IncludeDialog(getShell(), includeDirectoryTitle);
+        AddDirectoryDialog dialog = new AddDirectoryDialog(getShell(), includeDirectoryTitle);
         if (dialog.open()) {
           importPaths.add(dialog.getSelectedPath());
           updateTable();
@@ -193,10 +188,14 @@ public class DirectoryPathsEditor extends Composite {
       tblDirectoryPaths.setSelection(0);
   }
 
-  public void onAddOrRemove(SelectionListener listener) {
-    if (onChangeListener != null) eventListeners.removeSelectionListener(onChangeListener, asList(btnAdd, btnRemove));
-    onChangeListener = listener;
-    eventListeners.addSelectionListener(onChangeListener, asList(btnAdd, btnRemove));
+  public void setDataChangedListener(final DataChangedListener listener) {
+    if (dataChangedListener != null) eventListeners.removeSelectionListener(dataChangedListener, asList(btnAdd, btnRemove));
+    dataChangedListener = new SelectionAdapter() {
+      @Override public void widgetSelected(SelectionEvent e) {
+        listener.dataChanged();
+      }
+    };
+    eventListeners.addSelectionListener(dataChangedListener, asList(btnAdd, btnRemove));
   }
 
   private static class RichLabelProvider extends LabelProvider implements ITableLabelProvider {

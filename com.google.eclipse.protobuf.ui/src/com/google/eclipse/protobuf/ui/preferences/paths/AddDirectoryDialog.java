@@ -20,17 +20,17 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
 /**
- * Dialog where users can enter/select a path (in the workspace or file system) to be included in resolution of imports.
- * 
+ * Dialog where users can select a path (in the workspace or file system) to be included in resolution of imports.
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class IncludeDialog extends Dialog {
+public class AddDirectoryDialog extends Dialog {
 
   private final Shell parent;
 
   private Shell shell;
   private boolean result;
-  
+
   private DirectoryPath selectedPath;
 
   private Text txtPath;
@@ -41,11 +41,11 @@ public class IncludeDialog extends Dialog {
   private Button btnOk;
 
   /**
-   * Creates a new </code>{@link IncludeDialog}</code>.
+   * Creates a new </code>{@link AddDirectoryDialog}</code>.
    * @param parent a shell which will be the parent of the new instance.
    * @param title the title of this dialog.
    */
-  public IncludeDialog(Shell parent, String title) {
+  public AddDirectoryDialog(Shell parent, String title) {
     super(parent, SWT.NONE);
     this.parent = parent;
     getStyle();
@@ -63,53 +63,53 @@ public class IncludeDialog extends Dialog {
     createAndCenterContent();
     shell.open();
     Display display = parent.getDisplay();
-    while (!shell.isDisposed()) 
+    while (!shell.isDisposed())
       if (!display.readAndDispatch()) display.sleep();
     return result;
   }
 
   private void createAndCenterContent() {
     shell.setLayout(new GridLayout(2, false));
-    
+
     Label label = new Label(shell, SWT.NONE);
     label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
     label.setText(includeDirectoryPrompt);
-    
+
     txtPath = new Text(shell, SWT.BORDER);
     txtPath.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
     txtPath.setEditable(false);
-    
+
     btnIsWorkspacePath = new Button(shell, SWT.CHECK);
     btnIsWorkspacePath.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false, 1, 1));
     btnIsWorkspacePath.setText(isWorkspacePathCheck);
-    
+
     Composite composite = new Composite(shell, SWT.NONE);
     composite.setLayout(new GridLayout(2, true));
     new Label(composite, SWT.NONE);
-    
+
     btnWorkspace = new Button(composite, SWT.NONE);
     btnWorkspace.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
     btnWorkspace.setText(browseWorkspace);
     new Label(composite, SWT.NONE);
-    
+
     btnFileSystem = new Button(composite, SWT.NONE);
     btnFileSystem.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
     btnFileSystem.setText(browseFileSystem);
-    
+
     btnOk = new Button(composite, SWT.NONE);
     btnOk.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
     btnOk.setEnabled(false);
     btnOk.setText(ok);
-    
+
     btnCancel = new Button(composite, SWT.NONE);
     btnCancel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
     btnCancel.setText(cancel);
-    
+
     addEventListeners();
-    
+
     shell.setDefaultButton(btnOk);
     shell.pack();
-    
+
     centerWindow();
   }
 

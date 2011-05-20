@@ -8,8 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.compiler;
 
-import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.*;
 import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.*;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.*;
 import static java.util.Arrays.asList;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
@@ -48,6 +48,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
   private Button btnUseProtocInCustomPath;
   private Text txtProtocFilePath;
   private Button btnProtocPathBrowse;
+  private TargetLanguageOutputDirectoryEditor outputDirectoryEditor;
   private Button btnRefreshResources;
   private Group grpRefresh;
   private Button btnRefreshProject;
@@ -56,7 +57,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
   @Inject private PluginImageHelper imageHelper;
   @Inject private DirectoryNameValidator directoryNameValidator;
   @Inject private EventListeners eventListeners;
-  private TargetLanguageOutputDirectoryEditor targetLanguageOutputDirectoryEditor;
+  private Group grpCodeGeneration;
 
   @Inject public CompilerPreferencePage(IPreferenceStoreAccess preferenceStoreAccess) {
     super(preferenceStoreAccess);
@@ -103,8 +104,13 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     new Label(grpCompilerLocation, SWT.NONE);
     new Label(grpCompilerLocation, SWT.NONE);
 
-    targetLanguageOutputDirectoryEditor = new TargetLanguageOutputDirectoryEditor(cmpMain, imageHelper);
-    targetLanguageOutputDirectoryEditor.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+    grpCodeGeneration = new Group(cmpMain, SWT.NONE);
+    grpCodeGeneration.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+    grpCodeGeneration.setText(codeGeneration);
+    grpCodeGeneration.setLayout(new GridLayout(1, false));
+
+    outputDirectoryEditor = new TargetLanguageOutputDirectoryEditor(grpCodeGeneration, imageHelper);
+    outputDirectoryEditor.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
 
     tbtmRefresh = new TabItem(tabFolder, SWT.NONE);
     tbtmRefresh.setText(tabRefresh);
@@ -146,6 +152,8 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     btnRefreshResources.setSelection(store.getBoolean(REFRESH_RESOURCES));
     btnRefreshProject.setSelection(store.getBoolean(REFRESH_PROJECT));
     btnRefreshOutputFolder.setSelection(store.getBoolean(REFRESH_OUTPUT_DIRECTORY));
+    TargetLanguagePreferences languagePreferences = new TargetLanguagePreferences(store);
+    outputDirectoryEditor.preferences(languagePreferences);
     boolean shouldEnableCompilerOptions = compileProtoFiles;
     if (isPropertyPage()) {
       boolean useProjectSettings = store.getBoolean(ENABLE_PROJECT_SETTINGS);
@@ -206,7 +214,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
       return;
     }
     File file = new File(protocPath);
-    if (!file.isFile() || !"protoc".equals(file.getName())) {
+    if (!file.isFile() || !"protoc".equals(file.getName())) { //$NON-NLS-1$
       pageIsNowInvalid(errorInvalidProtoc);
       return;
     }
@@ -252,7 +260,6 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
   private void enableCompilerOptions(boolean enabled) {
     tabFolder.setEnabled(enabled);
     enableCompilerPathOptions(enabled);
-    enableTargetLanguageOptions(enabled);
     enableOutputOptions(enabled);
     enableRefreshOptions(enabled);
   }
@@ -277,10 +284,9 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     return b.isEnabled() && b.getSelection();
   }
 
-  private void enableTargetLanguageOptions(boolean enabled) {
-  }
-
   private void enableOutputOptions(boolean enabled) {
+    grpCodeGeneration.setEnabled(enabled);
+    outputDirectoryEditor.setEnabled(enabled);
   }
 
   private void enableRefreshOptions(boolean enabled) {

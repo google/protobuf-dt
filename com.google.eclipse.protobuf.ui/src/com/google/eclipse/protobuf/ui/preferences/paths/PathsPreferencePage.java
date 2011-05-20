@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.xtext.ui.PluginImageHelper;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
+import com.google.eclipse.protobuf.ui.preferences.DataChangedListener;
 import com.google.eclipse.protobuf.ui.preferences.PreferenceAndPropertyPage;
 import com.google.eclipse.protobuf.ui.swt.EventListeners;
 import com.google.inject.Inject;
@@ -94,8 +95,8 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
         checkState();
       }
     }, asList(btnOneFolderOnly, btnMultipleFolders));
-    directoryPathsEditor.onAddOrRemove(new SelectionAdapter() {
-      @Override public void widgetSelected(SelectionEvent e) {
+    directoryPathsEditor.setDataChangedListener(new DataChangedListener() {
+      public void dataChanged() {
         checkState();
       }
     });
