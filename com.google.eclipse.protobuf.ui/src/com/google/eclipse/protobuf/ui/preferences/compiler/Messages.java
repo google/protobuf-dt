@@ -16,9 +16,13 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 
   public static String browseCustomPath;
+  public static String cancel;
   public static String codeGeneration;
   public static String compileOnSave;
   public static String edit;
+  public static String editCodeGenerationOptionTitle;
+  public static String enabled;
+  public static String errorEnterDirectoryName;
   public static String errorInvalidProtoc;
   public static String errorNoOutputFolderName;
   public static String errorNoSelection;
@@ -27,7 +31,9 @@ public class Messages extends NLS {
   public static String generateJava;
   public static String generatePython;
   public static String language;
+  public static String ok;
   public static String outputDirectory;
+  public static String outputDirectoryPrompt;
   public static String outputFolderChildOfProjectFolder;
   public static String outputFolderName;
   public static String protocInCustomPath;

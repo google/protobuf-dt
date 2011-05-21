@@ -18,16 +18,13 @@ import java.io.File;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.xtext.ui.PluginImageHelper;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.eclipse.protobuf.ui.preferences.PreferenceAndPropertyPage;
-import com.google.eclipse.protobuf.ui.util.DirectoryNameValidator;
 import com.google.inject.Inject;
 
 /**
@@ -48,6 +45,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
   private Button btnUseProtocInCustomPath;
   private Text txtProtocFilePath;
   private Button btnProtocPathBrowse;
+  private Group grpCodeGeneration;
   private CodeGenerationOptionsEditor codeGenerationOptionsEditor;
   private Button btnRefreshResources;
   private Group grpRefresh;
@@ -55,8 +53,6 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
   private Button btnRefreshOutputFolder;
 
   @Inject private PluginImageHelper imageHelper;
-  @Inject private DirectoryNameValidator directoryNameValidator;
-  private Group grpCodeGeneration;
 
   @Inject public CompilerPreferencePage(IPreferenceStoreAccess preferenceStoreAccess) {
     super(preferenceStoreAccess);

@@ -8,13 +8,17 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.compiler;
 
+import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.*;
 import static com.google.eclipse.protobuf.ui.swt.Shells.centerShell;
+import static org.eclipse.core.resources.IResource.FOLDER;
+import static org.eclipse.core.runtime.IStatus.OK;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
 /**
@@ -32,6 +36,7 @@ public class EditCodeGenerationOptionDialog extends Dialog {
 
   private Text txtOutputDirectory;
   private Button btnEnabled;
+  private Label lblError;
   private Button btnOk;
   private Button btnCancel;
 
@@ -45,7 +50,7 @@ public class EditCodeGenerationOptionDialog extends Dialog {
     this.parent = parent;
     this.option = option;
     getStyle();
-    setText("Preferences for " + option.language().name());
+    setText(editCodeGenerationOptionTitle + option.language().name());
   }
   /**
    * Opens this dialog.
@@ -71,19 +76,18 @@ public class EditCodeGenerationOptionDialog extends Dialog {
 
     btnEnabled = new Button(shell, SWT.CHECK);
     btnEnabled.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 3, 1));
-    btnEnabled.setText("Enabled");
+    btnEnabled.setText(enabled);
     btnEnabled.setSelection(option.isEnabled());
 
     Label lblOutputDirectoryName = new Label(shell, SWT.NONE);
-    lblOutputDirectoryName.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-    lblOutputDirectoryName.setText("Output directory name:");
+    lblOutputDirectoryName.setText(outputDirectoryPrompt);
 
     txtOutputDirectory = new Text(shell, SWT.BORDER);
     txtOutputDirectory.setEnabled(option.isEnabled());
     txtOutputDirectory.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
     txtOutputDirectory.setText(option.outputDirectory());
 
-    Label lblError = new Label(shell, SWT.NONE);
+    lblError = new Label(shell, SWT.NONE);
     lblError.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 
     Composite composite = new Composite(shell, SWT.NONE);
@@ -94,33 +98,31 @@ public class EditCodeGenerationOptionDialog extends Dialog {
     btnOk.setEnabled(false);
     btnOk.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
     btnOk.setBounds(0, 0, 92, 29);
-    btnOk.setText("OK");
+    btnOk.setText(ok);
 
     btnCancel = new Button(composite, SWT.NONE);
     btnCancel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-    btnCancel.setText("Cancel");
+    btnCancel.setText(cancel);
 
     addEventListeners();
-    
+
     shell.setDefaultButton(btnOk);
     shell.pack();
-    
+
     centerWindow();
   }
-  
+
   private void addEventListeners() {
     btnEnabled.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
-        boolean enabled = btnEnabled.getSelection();
-        txtOutputDirectory.setEnabled(enabled);
-        btnOk.setEnabled(!enabled || (enabled && outputDirectoryEntered()));
+        txtOutputDirectory.setEnabled(btnEnabled.getSelection());
         checkState();
       }
     });
     btnOk.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
         option.enabled(btnEnabled.getSelection());
-        option.outputDirectory(txtOutputDirectory.getText());
+        option.outputDirectory(enteredOuptutDirectory());
         result = true;
         shell.dispose();
       }
@@ -133,16 +135,47 @@ public class EditCodeGenerationOptionDialog extends Dialog {
     txtOutputDirectory.addModifyListener(new ModifyListener() {
       public void modifyText(ModifyEvent e) {
         checkState();
-        btnOk.setEnabled(outputDirectoryEntered());
       }
     });
   }
 
   private void checkState() {
+    if (btnEnabled.getSelection()) {
+      if (!outputDirectoryEntered()) {
+        pageIsNowInvalid(errorEnterDirectoryName);
+        return;
+      }
+      String errorMessage = validateDirectoryName(enteredOuptutDirectory());
+      if (errorMessage != null) {
+        pageIsNowInvalid(errorMessage);
+        return;
+      }
+    }
+    pageIsNowValid();
   }
-  
+
+  private String validateDirectoryName(String directoryName) {
+    IWorkspace workspace = ResourcesPlugin.getWorkspace();
+    IStatus isValid = workspace.validateName(directoryName, FOLDER);
+    return (isValid.getCode() == OK) ? null : isValid.getMessage();
+  }
+
+  private void pageIsNowInvalid(String errorMessage) {
+    lblError.setText(errorMessage);
+    btnOk.setEnabled(false);
+  }
+
+  private void pageIsNowValid() {
+    lblError.setText("");
+    btnOk.setEnabled(true);
+  }
+
   private boolean outputDirectoryEntered() {
-    return !isEmpty(txtOutputDirectory.getText().trim());
+    return !isEmpty(enteredOuptutDirectory());
+  }
+
+  private String enteredOuptutDirectory() {
+    return txtOutputDirectory.getText().trim();
   }
 
   private void centerWindow() {
