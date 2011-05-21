@@ -19,7 +19,7 @@ public class Messages extends NLS {
   public static String cancel;
   public static String codeGeneration;
   public static String compileOnSave;
-  public static String edit;
+  public static String editSelected;
   public static String editCodeGenerationOptionTitle;
   public static String enabled;
   public static String errorEnterDirectoryName;

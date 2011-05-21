@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.xtext.ui.PluginImageHelper;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
-import com.google.eclipse.protobuf.ui.preferences.PreferenceAndPropertyPage;
+import com.google.eclipse.protobuf.ui.preferences.*;
 import com.google.inject.Inject;
 
 /**
@@ -46,13 +46,14 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
   private Text txtProtocFilePath;
   private Button btnProtocPathBrowse;
   private Group grpCodeGeneration;
-  private CodeGenerationOptionsEditor codeGenerationOptionsEditor;
+  private CodeGenerationEditor codeGenerationEditor;
   private Button btnRefreshResources;
   private Group grpRefresh;
   private Button btnRefreshProject;
   private Button btnRefreshOutputFolder;
 
   @Inject private PluginImageHelper imageHelper;
+  @Inject private CodeGenerationPreferencesProvider codeGenerationPreferencesProvider;
 
   @Inject public CompilerPreferencePage(IPreferenceStoreAccess preferenceStoreAccess) {
     super(preferenceStoreAccess);
@@ -104,8 +105,8 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     grpCodeGeneration.setText(codeGeneration);
     grpCodeGeneration.setLayout(new GridLayout(1, false));
 
-    codeGenerationOptionsEditor = new CodeGenerationOptionsEditor(grpCodeGeneration, imageHelper);
-    codeGenerationOptionsEditor.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
+    codeGenerationEditor = new CodeGenerationEditor(grpCodeGeneration, imageHelper);
+    codeGenerationEditor.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
 
     tbtmRefresh = new TabItem(tabFolder, SWT.NONE);
     tbtmRefresh.setText(tabRefresh);
@@ -147,8 +148,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     btnRefreshResources.setSelection(store.getBoolean(REFRESH_RESOURCES));
     btnRefreshProject.setSelection(store.getBoolean(REFRESH_PROJECT));
     btnRefreshOutputFolder.setSelection(store.getBoolean(REFRESH_OUTPUT_DIRECTORY));
-    CodeGenerationOptions languagePreferences = new CodeGenerationOptions(store);
-    codeGenerationOptionsEditor.codeGenerationOptions(languagePreferences);
+    codeGenerationEditor.codeGenerationOptions(codeGenerationPreferencesProvider.getPreferences(store));
     boolean shouldEnableCompilerOptions = compileProtoFiles;
     if (isPropertyPage()) {
       boolean useProjectSettings = store.getBoolean(ENABLE_PROJECT_SETTINGS);
@@ -186,19 +186,14 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
         refreshResourcesOptionsEnabled(btnRefreshResources.getSelection());
       }
     });
+    codeGenerationEditor.setDataChangedListener(new DataChangedListener() {
+      public void dataChanged() {
+        checkState();
+      }
+    });
   }
 
   private void checkState() {
-//    String folderName = txtOutputFolderName.getText().trim();
-//    if (isEmpty(folderName)) {
-//      pageIsNowInvalid(errorNoOutputFolderName);
-//      return;
-//    }
-//    String invalidDirectoryName = directoryNameValidator.validateDirectoryName(folderName);
-//    if (invalidDirectoryName != null) {
-//      pageIsNowInvalid(invalidDirectoryName);
-//      return;
-//    }
     if (!customPathOptionSelectedAndEnabled()) {
       pageIsNowValid();
       return;
@@ -224,13 +219,10 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     btnUseProtocInSystemPath.setSelection(store.getDefaultBoolean(USE_PROTOC_IN_SYSTEM_PATH));
     btnUseProtocInCustomPath.setSelection(store.getDefaultBoolean(USE_PROTOC_IN_CUSTOM_PATH));
     txtProtocFilePath.setText(store.getDefaultString(PROTOC_FILE_PATH));
-//    btnJava.setSelection(store.getDefaultBoolean(GENERATE_JAVA_CODE));
-//    btnCpp.setSelection(store.getDefaultBoolean(GENERATE_CPP_CODE));
-//    btnPython.setSelection(store.getDefaultBoolean(GENERATE_PYTHON_CODE));
-//    txtOutputFolderName.setText(store.getDefaultString(OUTPUT_FOLDER_NAME));
     btnRefreshResources.setSelection(store.getDefaultBoolean(REFRESH_RESOURCES));
     btnRefreshProject.setSelection(store.getDefaultBoolean(REFRESH_PROJECT));
     btnRefreshOutputFolder.setSelection(store.getDefaultBoolean(REFRESH_OUTPUT_DIRECTORY));
+    codeGenerationEditor.codeGenerationOptions(codeGenerationPreferencesProvider.getDefaults(store));
     boolean enableCompilerOptions = compileProtoFiles;
     if (isPropertyPage()) {
       boolean useProjectSettings = store.getDefaultBoolean(ENABLE_PROJECT_SETTINGS);
@@ -248,27 +240,27 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     enableCompilerOptions(isEnabledAndSelected(btnCompileProtoFiles));
   }
 
-  private void enableProjectSpecificOptions(boolean enabled) {
-    btnCompileProtoFiles.setEnabled(enabled);
+  private void enableProjectSpecificOptions(boolean isEnabled) {
+    btnCompileProtoFiles.setEnabled(isEnabled);
   }
 
-  private void enableCompilerOptions(boolean enabled) {
-    tabFolder.setEnabled(enabled);
-    enableCompilerPathOptions(enabled);
-    enableOutputOptions(enabled);
-    enableRefreshOptions(enabled);
+  private void enableCompilerOptions(boolean isEnabled) {
+    tabFolder.setEnabled(isEnabled);
+    enableCompilerPathOptions(isEnabled);
+    enableOutputOptions(isEnabled);
+    enableRefreshOptions(isEnabled);
   }
 
-  private void enableCompilerPathOptions(boolean enabled) {
-    grpCompilerLocation.setEnabled(enabled);
-    btnUseProtocInSystemPath.setEnabled(enabled);
-    btnUseProtocInCustomPath.setEnabled(enabled);
+  private void enableCompilerPathOptions(boolean isEnabled) {
+    grpCompilerLocation.setEnabled(isEnabled);
+    btnUseProtocInSystemPath.setEnabled(isEnabled);
+    btnUseProtocInCustomPath.setEnabled(isEnabled);
     enableCompilerCustomPathOptions(customPathOptionSelectedAndEnabled());
   }
 
-  private void enableCompilerCustomPathOptions(boolean enabled) {
-    txtProtocFilePath.setEnabled(enabled);
-    btnProtocPathBrowse.setEnabled(enabled);
+  private void enableCompilerCustomPathOptions(boolean isEnabled) {
+    txtProtocFilePath.setEnabled(isEnabled);
+    btnProtocPathBrowse.setEnabled(isEnabled);
   }
 
   private boolean customPathOptionSelectedAndEnabled() {
@@ -279,20 +271,20 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     return b.isEnabled() && b.getSelection();
   }
 
-  private void enableOutputOptions(boolean enabled) {
-    grpCodeGeneration.setEnabled(enabled);
-    codeGenerationOptionsEditor.setEnabled(enabled);
+  private void enableOutputOptions(boolean isEnabled) {
+    grpCodeGeneration.setEnabled(isEnabled);
+    codeGenerationEditor.setEnabled(isEnabled);
   }
 
-  private void enableRefreshOptions(boolean enabled) {
-    btnRefreshResources.setEnabled(enabled);
+  private void enableRefreshOptions(boolean isEnabled) {
+    btnRefreshResources.setEnabled(isEnabled);
     refreshResourcesOptionsEnabled(isEnabledAndSelected(btnRefreshResources));
   }
 
-  private void refreshResourcesOptionsEnabled(boolean enabled) {
-    grpRefresh.setEnabled(enabled);
-    btnRefreshProject.setEnabled(enabled);
-    btnRefreshOutputFolder.setEnabled(enabled);
+  private void refreshResourcesOptionsEnabled(boolean isEnabled) {
+    grpRefresh.setEnabled(isEnabled);
+    btnRefreshProject.setEnabled(isEnabled);
+    btnRefreshOutputFolder.setEnabled(isEnabled);
   }
 
   /** {@inheritDoc} */
@@ -303,13 +295,10 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     store.setValue(USE_PROTOC_IN_SYSTEM_PATH, btnUseProtocInSystemPath.getSelection());
     store.setValue(USE_PROTOC_IN_CUSTOM_PATH, btnUseProtocInCustomPath.getSelection());
     store.setValue(PROTOC_FILE_PATH, txtProtocFilePath.getText());
-//    store.setValue(GENERATE_JAVA_CODE, btnJava.getSelection());
-//    store.setValue(GENERATE_CPP_CODE, btnCpp.getSelection());
-//    store.setValue(GENERATE_PYTHON_CODE, btnPython.getSelection());
-//    store.setValue(OUTPUT_FOLDER_NAME, txtOutputFolderName.getText().trim());
     store.setValue(REFRESH_RESOURCES, btnRefreshResources.getSelection());
     store.setValue(REFRESH_PROJECT, btnRefreshProject.getSelection());
     store.setValue(REFRESH_OUTPUT_DIRECTORY, btnRefreshOutputFolder.getSelection());
+    codeGenerationPreferencesProvider.save(store, codeGenerationEditor.codeGenerationOptions());
   }
 
   /** {@inheritDoc} */

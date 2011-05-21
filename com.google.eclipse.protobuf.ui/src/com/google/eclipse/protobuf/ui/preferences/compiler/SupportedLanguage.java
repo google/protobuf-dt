@@ -8,9 +8,6 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.compiler;
 
-import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.*;
-
-import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
  * Languages supported by protoc.
@@ -19,14 +16,16 @@ import org.eclipse.jface.preference.IPreferenceStore;
  */
 public class SupportedLanguage {
 
-  public static final SupportedLanguage JAVA = new SupportedLanguage("Java");
-  public static final SupportedLanguage CPP = new SupportedLanguage("C++");
-  public static final SupportedLanguage PYTHON = new SupportedLanguage("Python");
+  public static final SupportedLanguage JAVA = new SupportedLanguage("Java", "java");
+  public static final SupportedLanguage CPP = new SupportedLanguage("C++", "cpp");
+  public static final SupportedLanguage PYTHON = new SupportedLanguage("Python", "python");
 
   private final String name;
+  private final String code;
 
-  private SupportedLanguage(String name) {
+  private SupportedLanguage(String name, String code) {
     this.name = name;
+    this.code = code;
   }
 
   /**
@@ -37,16 +36,18 @@ public class SupportedLanguage {
     return name;
   }
 
-  // TODO check if protoc can generate more than one language sources at the same time.
-  // TODO remove
-  static SupportedLanguage readFrom(IPreferenceStore store) {
-    if (store.getBoolean(GENERATE_JAVA_CODE)) return JAVA;
-    if (store.getBoolean(GENERATE_CPP_CODE)) return CPP;
-    if (store.getBoolean(GENERATE_PYTHON_CODE)) return PYTHON;
-    return JAVA;
+  /**
+   * Returns this language's code.
+   * @return this language's code.
+   */
+  public String code() {
+    return code;
   }
 
-  // TODO remove
+  /**
+   * Returns all the supported languages.
+   * @return all the supported languages.
+   */
   public static SupportedLanguage[] values() {
     return new SupportedLanguage[] { JAVA, CPP, PYTHON };
   }

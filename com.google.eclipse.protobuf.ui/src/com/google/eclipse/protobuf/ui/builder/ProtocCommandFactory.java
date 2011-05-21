@@ -10,7 +10,7 @@ package com.google.eclipse.protobuf.ui.builder;
 
 import java.util.*;
 
-import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.*;
 
 import com.google.eclipse.protobuf.ui.preferences.compiler.SupportedLanguage;
 
@@ -23,15 +23,21 @@ class ProtocCommandFactory {
 
   static {
     for (SupportedLanguage lang : SupportedLanguage.values())
-      LANG_OUT_FLAG.put(lang, "--" + lang.name().toLowerCase() + "_out=");
+      LANG_OUT_FLAG.put(lang, "--" + lang.code() + "_out=");
   }
 
-  String protocCommand(IFile protoFile, String protocPath, List<String> importRoots, SupportedLanguage language,
-      String outputFolderPath) {
+  String protocCommand(IFile protoFile, String protocPath, List<String> importRoots,
+      OutputDirectories outputDirectories) {
     StringBuilder command = new StringBuilder();
     command.append(protocPath).append(" ");
-    for (String importRoot : importRoots) command.append("-I=").append(importRoot).append(" ");
-    command.append(langOutFlag(language)).append(outputFolderPath).append(" ");
+    for (String importRoot : importRoots) {
+      command.append("-I=").append(importRoot).append(" ");
+    }
+    for (SupportedLanguage language : SupportedLanguage.values()) {
+      IFolder outputDirectory = outputDirectories.outputDirectoryFor(language);
+      if (outputDirectory == null) continue;
+      command.append(langOutFlag(language)).append(outputDirectory.getLocation().toOSString()).append(" ");
+    }
     command.append(protoFile.getLocation().toOSString());
     return command.toString();
   }

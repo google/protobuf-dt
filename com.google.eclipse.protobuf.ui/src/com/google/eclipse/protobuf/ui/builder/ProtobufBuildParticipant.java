@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.builder;
 
+import static com.google.eclipse.protobuf.ui.builder.OutputDirectories.findOrCreateOutputDirectories;
 import static com.google.eclipse.protobuf.ui.preferences.compiler.PostCompilationRefreshTarget.PROJECT;
 import static java.util.Collections.unmodifiableList;
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
@@ -35,8 +36,6 @@ import com.google.inject.Inject;
  */
 public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
 
-  private static final NullProgressMonitor NO_MONITOR = new NullProgressMonitor();
-
   private static Logger logger = Logger.getLogger(ProtobufBuildParticipant.class);
 
   @Inject private ProtocOutputParser outputParser;
@@ -50,22 +49,16 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
     if (!preferences.shouldCompileProtoFiles()) return;
     List<Delta> deltas = context.getDeltas();
     if (deltas.isEmpty()) return;
-//    IFolder outputFolder = findOrCreateOutputFolder(project, preferences.outputFolderName);
-//    List<String> importRoots = importRoots(project);
-//    for (Delta d : deltas) {
-//      IResourceDescription newResource = d.getNew();
-//      String path = filePathIfIsProtoFile(newResource);
-//      if (path == null) continue;
-//      IFile source = project.getWorkspace().getRoot().getFile(new Path(path));
-//      generateSingleProto(source, preferences.protocPath(), importRoots, preferences.language, pathOf(outputFolder));
-//    }
-//    if (preferences.shouldRefreshResources()) refresh(outputFolder, preferences.refreshTarget(), monitor);
-  }
-
-  private static IFolder findOrCreateOutputFolder(IProject project, String outputFolderName) throws CoreException {
-    IFolder outputFolder = project.getFolder(outputFolderName);
-    if (!outputFolder.exists()) outputFolder.create(true, true, NO_MONITOR);
-    return outputFolder;
+    OutputDirectories outputDirectories = findOrCreateOutputDirectories(project, preferences.codeGenerationOptions());
+    List<String> importRoots = importRoots(project);
+    for (Delta d : deltas) {
+      IResourceDescription newResource = d.getNew();
+      String path = filePathIfIsProtoFile(newResource);
+      if (path == null) continue;
+      IFile source = project.getWorkspace().getRoot().getFile(new Path(path));
+      generateSingleProto(source, preferences.protocPath(), importRoots, outputDirectories);
+    }
+    if (preferences.shouldRefreshResources()) refresh(project, outputDirectories, preferences.refreshTarget(), monitor);
   }
 
   private List<String> importRoots(IProject project) {
@@ -87,7 +80,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
   private String locationOfWorkspaceDirectory(DirectoryPath path, IProject project) {
     IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
     IFolder folder = root.getFolder(new Path(path.value()));
-    return pathOf(folder);
+    return folder.getLocation().toOSString();
   }
 
   private String locationOfFileSystemDirectory(DirectoryPath path) {
@@ -110,8 +103,8 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
   }
 
   private void generateSingleProto(IFile source, String protocPath, List<String> importRoots,
-      SupportedLanguage language, String outputFolderPath) {
-    String command = commandFactory.protocCommand(source, protocPath, importRoots, language, outputFolderPath);
+      OutputDirectories outputDirectories) {
+    String command = commandFactory.protocCommand(source, protocPath, importRoots, outputDirectories);
     System.out.println(command);
     try {
       Process process = Runtime.getRuntime().exec(command);
@@ -148,18 +141,16 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
     } catch (IOException ignored) {}
   }
 
-  private static String pathOf(IResource r) {
-    return r.getLocation().toOSString();
+  private static void refresh(IProject project, OutputDirectories outputDirectories,
+      PostCompilationRefreshTarget refreshTarget, IProgressMonitor monitor) throws CoreException {
+    if (refreshTarget.equals(PROJECT)) {
+      refresh(project, monitor);
+      return;
+    }
+    for (IFolder outputDirectory : outputDirectories.values()) refresh(outputDirectory, monitor);
   }
 
-  private static void refresh(IFolder outputFolder, PostCompilationRefreshTarget refreshTarget, IProgressMonitor monitor)
-      throws CoreException {
-    IResource target = refreshTarget(outputFolder, refreshTarget);
+  private static void refresh(IResource target, IProgressMonitor monitor) throws CoreException {
     target.refreshLocal(DEPTH_INFINITE, monitor);
-  }
-
-  private static IResource refreshTarget(IFolder outputFolder, PostCompilationRefreshTarget refreshTarget) {
-    if (refreshTarget.equals(PROJECT)) return outputFolder.getProject();
-    return outputFolder;
   }
 }

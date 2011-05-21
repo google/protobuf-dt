@@ -9,6 +9,9 @@
 package com.google.eclipse.protobuf.ui.preferences.compiler;
 
 import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.*;
+import static java.util.Collections.unmodifiableList;
+
+import java.util.List;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 
@@ -21,15 +24,15 @@ public class CompilerPreferences {
 
   private final boolean compileProtoFiles;
   private final String protocPath;
-  private final CodeGenerationOptions languages;
+  private final List<CodeGeneration> codeGenerationOptions;
   private final boolean refreshResources;
   private final PostCompilationRefreshTarget refreshTarget;
 
-  CompilerPreferences(IPreferenceStore store) {
+  CompilerPreferences(IPreferenceStore store, List<CodeGeneration> codeGenerationOptions) {
     compileProtoFiles = store.getBoolean(COMPILE_PROTO_FILES);
     boolean useProtocInSystemPath = store.getBoolean(USE_PROTOC_IN_SYSTEM_PATH);
     protocPath = (useProtocInSystemPath) ? "protoc" : store.getString(PROTOC_FILE_PATH);
-    languages = new CodeGenerationOptions(store);
+    this.codeGenerationOptions = unmodifiableList(codeGenerationOptions);
     refreshResources = store.getBoolean(REFRESH_RESOURCES);
     refreshTarget = PostCompilationRefreshTarget.readFrom(store);
   }
@@ -42,8 +45,8 @@ public class CompilerPreferences {
     return protocPath;
   }
 
-  public CodeGenerationOptions languages() {
-    return languages;
+  public List<CodeGeneration> codeGenerationOptions() {
+    return codeGenerationOptions;
   }
 
   public boolean shouldRefreshResources() {

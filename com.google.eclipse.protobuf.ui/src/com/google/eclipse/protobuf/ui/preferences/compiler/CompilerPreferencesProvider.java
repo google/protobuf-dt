@@ -24,11 +24,12 @@ import com.google.inject.Inject;
 public class CompilerPreferencesProvider {
 
   @Inject private IPreferenceStoreAccess storeAccess;
+  @Inject private CodeGenerationPreferencesProvider codeGenerationPreferencesProvider;
 
   public CompilerPreferences getPreferences(IProject project) {
     IPreferenceStore store = storeAccess.getWritablePreferenceStore(project);
     boolean useProjectPreferences = store.getBoolean(ENABLE_PROJECT_SETTINGS);
     if (!useProjectPreferences) store = storeAccess.getWritablePreferenceStore();
-    return new CompilerPreferences(store);
+    return new CompilerPreferences(store, codeGenerationPreferencesProvider.getPreferences(store));
   }
 }

@@ -18,9 +18,9 @@ final class PreferenceNames {
   static final String USE_PROTOC_IN_SYSTEM_PATH = "compiler.useProtocInSystemPath";
   static final String USE_PROTOC_IN_CUSTOM_PATH = "compiler.useProtocInCustomPath";
   static final String PROTOC_FILE_PATH = "compiler.protocFilePath";
-  static final String GENERATE_JAVA_CODE = "compiler.generateJavaCode";
-  static final String GENERATE_CPP_CODE = "compiler.generateCppCode";
-  static final String GENERATE_PYTHON_CODE = "compiler.generatePythonCode";
+  static final String GENERATE_JAVA_CODE = "compiler.javaCodeGenerationEnabled";
+  static final String GENERATE_CPP_CODE = "compiler.cppCodeGenerationEnabled";
+  static final String GENERATE_PYTHON_CODE = "compiler.pythonCodeGenerationEnabled";
   static final String JAVA_OUTPUT_DIRECTORY = "compiler.javaOutputDirectory";
   static final String CPP_OUTPUT_DIRECTORY = "compiler.cppOutputDirectory";
   static final String PYTHON_OUTPUT_DIRECTORY = "compiler.pythonOutputDirectory";

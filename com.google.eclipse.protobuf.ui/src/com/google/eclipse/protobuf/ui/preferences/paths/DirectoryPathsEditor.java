@@ -9,8 +9,6 @@
 package com.google.eclipse.protobuf.ui.preferences.paths;
 
 import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.*;
-import static com.google.eclipse.protobuf.ui.swt.EventListeners.*;
-import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 
 import java.util.*;
@@ -20,8 +18,7 @@ import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.xtext.ui.PluginImageHelper;
 
@@ -43,7 +40,7 @@ public class DirectoryPathsEditor extends Composite {
 
   private final LinkedList<DirectoryPath> importPaths = new LinkedList<DirectoryPath>();
 
-  private SelectionListener dataChangedListener;
+  private DataChangedListener dataChangedListener;
 
   public DirectoryPathsEditor(Composite parent, PluginImageHelper imageHelper) {
     super(parent, SWT.NONE);
@@ -100,6 +97,7 @@ public class DirectoryPathsEditor extends Composite {
           importPaths.add(dialog.selectedPath());
           updateTable();
           enableButtonsDependingOnTableSelection();
+          notifyDataHasChanged();
         }
       }
     });
@@ -110,6 +108,7 @@ public class DirectoryPathsEditor extends Composite {
         importPaths.remove(index);
         updateTable();
         enableButtonsDependingOnTableSelection();
+        notifyDataHasChanged();
       }
     });
     btnUp.addSelectionListener(new SelectionAdapter() {
@@ -177,14 +176,12 @@ public class DirectoryPathsEditor extends Composite {
       tblDirectoryPaths.setSelection(0);
   }
 
-  public void setDataChangedListener(final DataChangedListener listener) {
-    if (dataChangedListener != null) removeSelectionListener(dataChangedListener, asList(btnAdd, btnRemove));
-    dataChangedListener = new SelectionAdapter() {
-      @Override public void widgetSelected(SelectionEvent e) {
-        listener.dataChanged();
-      }
-    };
-    addSelectionListener(dataChangedListener, asList(btnAdd, btnRemove));
+  public void setDataChangedListener(DataChangedListener listener) {
+    dataChangedListener = listener;
+  }
+
+  private void notifyDataHasChanged() {
+    if (dataChangedListener != null) dataChangedListener.dataChanged();
   }
 
   private static class RichLabelProvider extends LabelProvider implements ITableLabelProvider {

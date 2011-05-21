@@ -26,26 +26,26 @@ import org.eclipse.swt.widgets.*;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class EditCodeGenerationOptionDialog extends Dialog {
+public class EditCodeGenerationDialog extends Dialog {
 
   private final Shell parent;
-  private final CodeGenerationOption option;
+  private final CodeGeneration option;
 
   private boolean result;
   private Shell shell;
 
   private Text txtOutputDirectory;
   private Button btnEnabled;
-  private Label lblError;
+  private Text lblError;
   private Button btnOk;
   private Button btnCancel;
 
   /**
-   * Creates a new </code>{@link EditCodeGenerationOptionDialog}</code>.
+   * Creates a new </code>{@link EditCodeGenerationDialog}</code>.
    * @param parent a shell which will be the parent of the new instance.
    * @param option the code generation option to edit.
    */
-  public EditCodeGenerationOptionDialog(Shell parent, CodeGenerationOption option) {
+  public EditCodeGenerationDialog(Shell parent, CodeGeneration option) {
     super(parent, SWT.NONE);
     this.parent = parent;
     this.option = option;
@@ -72,7 +72,7 @@ public class EditCodeGenerationOptionDialog extends Dialog {
     shell = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL | SWT.RESIZE);
     shell.setSize(564, 158);
     shell.setText(getText());
-    shell.setLayout(new GridLayout(2, true));
+    shell.setLayout(new GridLayout(2, false));
 
     btnEnabled = new Button(shell, SWT.CHECK);
     btnEnabled.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 3, 1));
@@ -84,14 +84,24 @@ public class EditCodeGenerationOptionDialog extends Dialog {
 
     txtOutputDirectory = new Text(shell, SWT.BORDER);
     txtOutputDirectory.setEnabled(option.isEnabled());
-    txtOutputDirectory.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
+    GridData gd_txtOutputDirectory = new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1);
+    gd_txtOutputDirectory.widthHint = 200;
+    txtOutputDirectory.setLayoutData(gd_txtOutputDirectory);
     txtOutputDirectory.setText(option.outputDirectory());
 
-    lblError = new Label(shell, SWT.NONE);
-    lblError.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+    lblError = new Text(shell, SWT.READ_ONLY | SWT.WRAP);
+    GridData gd_lblError = new GridData(GridData.GRAB_HORIZONTAL
+            | GridData.HORIZONTAL_ALIGN_FILL);
+    gd_lblError.horizontalSpan = 2;
+    lblError.setLayoutData(gd_lblError);
+    lblError.setBackground(lblError.getDisplay()
+            .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+//
+//    lblError = new Label(shell, SWT.NONE);
+//    lblError.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 
     Composite composite = new Composite(shell, SWT.NONE);
-    composite.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 2, 1));
+    composite.setLayoutData(new GridData(SWT.RIGHT, SWT.BOTTOM, true, true, 2, 1));
     composite.setLayout(new GridLayout(2, true));
 
     btnOk = new Button(composite, SWT.NONE);

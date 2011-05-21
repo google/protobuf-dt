@@ -9,19 +9,20 @@
 package com.google.eclipse.protobuf.ui.preferences.compiler;
 
 import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.*;
+import static java.util.Collections.unmodifiableList;
 
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.xtext.ui.PluginImageHelper;
+
+import com.google.eclipse.protobuf.ui.preferences.DataChangedListener;
 
 /**
  * Editor where users can specify which are the target languages for protoc and the location of the output folders for
@@ -29,17 +30,17 @@ import org.eclipse.xtext.ui.PluginImageHelper;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class CodeGenerationOptionsEditor extends Composite {
+public class CodeGenerationEditor extends Composite {
 
   private final Table tblCodeGenerationOptions;
   private final TableViewer tblVwrCodeGenerationOptions;
   private final Button btnEdit;
 
-  private final List<CodeGenerationOption> displayedOptions = new ArrayList<CodeGenerationOption>();
-  
-  private CodeGenerationOptions options;
+  private final List<CodeGeneration> options = new ArrayList<CodeGeneration>();
 
-  public CodeGenerationOptionsEditor(Composite parent, final PluginImageHelper imageHelper) {
+  private DataChangedListener dataChangedListener;
+
+  public CodeGenerationEditor(Composite parent, final PluginImageHelper imageHelper) {
     super(parent, SWT.NONE);
     setLayout(new GridLayout(1, false));
 
@@ -60,8 +61,8 @@ public class CodeGenerationOptionsEditor extends Composite {
       }
 
       @Override public Image getImage(Object element) {
-        boolean enabled = ((CodeGenerationOption)element).isEnabled();
-        return imageHelper.getImage(enabled ? "checked.gif" : "unchecked.gif"); //$NON-NLS-1$ //$NON-NLS-2$
+        boolean optionEnabled = ((CodeGeneration)element).isEnabled();
+        return imageHelper.getImage(optionEnabled ? "checked.gif" : "unchecked.gif"); //$NON-NLS-1$ //$NON-NLS-2$
       }
     });
 
@@ -72,7 +73,7 @@ public class CodeGenerationOptionsEditor extends Composite {
     tblclmnLanguage.setText(language);
     tblclmnVwrLanguage.setLabelProvider(new ColumnLabelProvider() {
       @Override public String getText(Object element) {
-        return ((CodeGenerationOption)element).language().name();
+        return ((CodeGeneration)element).language().name();
       }
     });
 
@@ -83,41 +84,52 @@ public class CodeGenerationOptionsEditor extends Composite {
     tblclmnOutputDirectory.setText(outputDirectory);
     tblclmnVwrOutputDirectory.setLabelProvider(new ColumnLabelProvider() {
       @Override public String getText(Object element) {
-        return ((CodeGenerationOption)element).outputDirectory();
+        return ((CodeGeneration)element).outputDirectory();
       }
     });
 
     btnEdit = new Button(this, SWT.NONE);
     btnEdit.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-    btnEdit.setText(edit);
+    btnEdit.setText(editSelected);
 
     tblVwrCodeGenerationOptions.setContentProvider(ArrayContentProvider.getInstance());
-    
+
     addEventListeners();
     updateTable();
   }
 
   private void addEventListeners() {
+    tblCodeGenerationOptions.addSelectionListener(new SelectionAdapter() {
+      @Override public void widgetSelected(SelectionEvent e) {
+        btnEdit.setEnabled(tblCodeGenerationOptions.getSelectionIndex() > -1);
+      }
+    });
     btnEdit.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
-        CodeGenerationOption option = displayedOptions.get(tblCodeGenerationOptions.getSelectionIndex());
-        EditCodeGenerationOptionDialog dialog = new EditCodeGenerationOptionDialog(getShell(), option);
-        if (dialog.open()) tblVwrCodeGenerationOptions.refresh();
+        int selectionIndex = tblCodeGenerationOptions.getSelectionIndex();
+        CodeGeneration option = options.get(selectionIndex);
+        EditCodeGenerationDialog dialog = new EditCodeGenerationDialog(getShell(), option);
+        if (dialog.open()) {
+          tblVwrCodeGenerationOptions.refresh();
+          if (dataChangedListener != null) dataChangedListener.dataChanged();
+        }
       }
     });
   }
 
-  public void codeGenerationOptions(CodeGenerationOptions newOptions) {
-    options = newOptions;
-    displayedOptions.clear();
-    displayedOptions.add(options.java());
-    displayedOptions.add(options.cpp());
-    displayedOptions.add(options.python());
+  public List<CodeGeneration> codeGenerationOptions() {
+    return unmodifiableList(options);
+  }
+
+  public void codeGenerationOptions(List<CodeGeneration> newOptions) {
+    options.clear();
+    options.addAll(newOptions);
     updateTable();
   }
 
   private void updateTable() {
-    tblVwrCodeGenerationOptions.setInput(displayedOptions);
+    tblVwrCodeGenerationOptions.setInput(options);
+    if (!options.isEmpty()) tblCodeGenerationOptions.setSelection(0);
   }
 
   /** {@inheritDoc} */
@@ -125,5 +137,9 @@ public class CodeGenerationOptionsEditor extends Composite {
     tblCodeGenerationOptions.setEnabled(enabled);
     btnEdit.setEnabled(enabled);
     super.setEnabled(enabled);
+  }
+
+  public void setDataChangedListener(DataChangedListener listener) {
+    dataChangedListener = listener;
   }
 }

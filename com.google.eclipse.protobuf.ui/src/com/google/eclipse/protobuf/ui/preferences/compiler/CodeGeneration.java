@@ -8,19 +8,20 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.compiler;
 
+
 /**
  * Indicates whether code generation for a specific language is enabled and where the generated code should be placed.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class CodeGenerationOption {
+public class CodeGeneration {
 
   private final SupportedLanguage language;
 
   private String outputDirectory;
   private boolean enabled;
 
-  CodeGenerationOption(SupportedLanguage language, String outputDirectory, boolean enabled) {
+  CodeGeneration(SupportedLanguage language, String outputDirectory, boolean enabled) {
     this.language = language;
     this.outputDirectory = outputDirectory;
     this.enabled = enabled;
