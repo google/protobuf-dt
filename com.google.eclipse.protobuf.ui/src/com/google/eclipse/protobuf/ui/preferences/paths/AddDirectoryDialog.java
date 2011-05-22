@@ -15,8 +15,7 @@ import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
 /**
@@ -58,7 +57,8 @@ public class AddDirectoryDialog extends Dialog {
    */
   public boolean open() {
     result = false;
-    shell = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL | SWT.RESIZE);
+    shell = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+    shell.setSize(503, 254);
     shell.setText(getText());
     createAndCenterContent();
     shell.open();
@@ -79,29 +79,35 @@ public class AddDirectoryDialog extends Dialog {
     txtPath.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
     txtPath.setEditable(false);
 
-    btnIsWorkspacePath = new Button(shell, SWT.CHECK);
-    btnIsWorkspacePath.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false, 1, 1));
+    Composite cmpCheckBox = new Composite(shell, SWT.NONE);
+    cmpCheckBox.setEnabled(false);
+    cmpCheckBox.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
+    cmpCheckBox.setLayout(new GridLayout(1, false));
+
+    btnIsWorkspacePath = new Button(cmpCheckBox, SWT.CHECK);
+    btnIsWorkspacePath.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
+    btnIsWorkspacePath.setSize(158, 24);
     btnIsWorkspacePath.setText(isWorkspacePathCheck);
 
-    Composite composite = new Composite(shell, SWT.NONE);
-    composite.setLayout(new GridLayout(2, true));
-    new Label(composite, SWT.NONE);
+    Composite cmpButtons = new Composite(shell, SWT.NONE);
+    cmpButtons.setLayout(new GridLayout(2, true));
+    new Label(cmpButtons, SWT.NONE);
 
-    btnWorkspace = new Button(composite, SWT.NONE);
+    btnWorkspace = new Button(cmpButtons, SWT.NONE);
     btnWorkspace.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
     btnWorkspace.setText(browseWorkspace);
-    new Label(composite, SWT.NONE);
+    new Label(cmpButtons, SWT.NONE);
 
-    btnFileSystem = new Button(composite, SWT.NONE);
-    btnFileSystem.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-    btnFileSystem.setText(browseFileSystem);
+        btnFileSystem = new Button(cmpButtons, SWT.NONE);
+        btnFileSystem.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+        btnFileSystem.setText(browseFileSystem);
 
-    btnOk = new Button(composite, SWT.NONE);
+    btnOk = new Button(cmpButtons, SWT.NONE);
     btnOk.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
     btnOk.setEnabled(false);
     btnOk.setText(ok);
 
-    btnCancel = new Button(composite, SWT.NONE);
+    btnCancel = new Button(cmpButtons, SWT.NONE);
     btnCancel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
     btnCancel.setText(cancel);
 
