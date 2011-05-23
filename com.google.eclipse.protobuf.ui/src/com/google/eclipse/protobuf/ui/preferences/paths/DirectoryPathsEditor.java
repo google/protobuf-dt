@@ -10,6 +10,7 @@ package com.google.eclipse.protobuf.ui.preferences.paths;
 
 import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.*;
 import static java.util.Collections.unmodifiableList;
+import static org.eclipse.jface.window.Window.OK;
 
 import java.util.*;
 import java.util.List;
@@ -92,8 +93,8 @@ public class DirectoryPathsEditor extends Composite {
     });
     btnAdd.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
-        AddDirectoryDialog dialog = new AddDirectoryDialog(getShell(), includeDirectoryTitle);
-        if (dialog.open()) {
+        AddDirectoryDialog dialog = new AddDirectoryDialog(getShell());
+        if (dialog.open() == OK) {
           importPaths.add(dialog.selectedPath());
           updateTable();
           enableButtonsDependingOnTableSelection();

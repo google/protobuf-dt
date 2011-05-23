@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.swt;
+package com.google.eclipse.protobuf.ui.preferences.paths;
 
 import static com.google.eclipse.protobuf.ui.swt.Messages.*;
 import static org.eclipse.core.runtime.IStatus.ERROR;
@@ -17,24 +17,25 @@ import static org.eclipse.ui.views.navigator.ResourceComparator.NAME;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.DirectoryDialog;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
-import org.eclipse.ui.dialogs.ISelectionStatusValidator;
-import org.eclipse.ui.model.WorkbenchContentProvider;
-import org.eclipse.ui.model.WorkbenchLabelProvider;
+import org.eclipse.swt.widgets.*;
+import org.eclipse.ui.dialogs.*;
+import org.eclipse.ui.model.*;
 import org.eclipse.ui.views.navigator.ResourceComparator;
 
 /**
- * Launches dialog where users can select a directory (either in a workspace or the file system.)
- * 
+ * Launchers for dialogs where users can select a directory (either in a workspace or the file system.)
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class SelectDirectoryDialogLauncher {
+class SelectDirectoryDialogs {
 
   private static final String PLUGIN_ID = "com.google.eclipse.protobuf.ui";
 
-  public static String showWorkspaceDirectoryDialog(Shell shell, String initialPath, IProject project) {
+  static String showWorkspaceDirectoryDialog(Shell shell, String initialPath) {
+    return showWorkspaceDirectoryDialog(shell, initialPath, null);
+  }
+
+  static String showWorkspaceDirectoryDialog(Shell shell, String initialPath, IProject project) {
     String currentPathText = initialPath.replaceAll("\"", "");
     IPath path = new Path(currentPathText);
     ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(shell, new WorkbenchLabelProvider(),
@@ -61,8 +62,8 @@ public class SelectDirectoryDialogLauncher {
     if (resource == null) return null;
     return resource.getFullPath().toString();
   }
-  
-  public static String showFileSystemFolderDialog(Shell shell, String filterPath) {
+
+  static String showFileSystemFolderDialog(Shell shell, String filterPath) {
     DirectoryDialog dialog = new DirectoryDialog(shell, SWT.OPEN | SWT.APPLICATION_MODAL);
     if (filterPath != null && filterPath.trim().length() != 0) dialog.setFilterPath(filterPath);
     dialog.setMessage(browseFileSystemFolderPrompt);
@@ -73,5 +74,5 @@ public class SelectDirectoryDialogLauncher {
     return ResourcesPlugin.getWorkspace().getRoot();
   }
 
-  private SelectDirectoryDialogLauncher() {}
+  private SelectDirectoryDialogs() {}
 }
