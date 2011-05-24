@@ -16,6 +16,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 import com.google.eclipse.protobuf.scoping.IFileUriResolver;
 import com.google.eclipse.protobuf.ui.preferences.paths.*;
+import com.google.eclipse.protobuf.ui.util.Resources;
 import com.google.inject.Inject;
 
 /**

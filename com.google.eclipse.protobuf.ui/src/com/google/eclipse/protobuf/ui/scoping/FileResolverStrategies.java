@@ -14,6 +14,7 @@ import static com.google.inject.internal.Maps.newHashMap;
 import java.util.Map;
 
 import com.google.eclipse.protobuf.ui.preferences.paths.PathResolutionType;
+import com.google.eclipse.protobuf.ui.util.Resources;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

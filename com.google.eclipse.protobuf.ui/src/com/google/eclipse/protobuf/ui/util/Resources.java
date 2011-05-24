@@ -6,10 +6,11 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.scoping;
+package com.google.eclipse.protobuf.ui.util;
 
 import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
 
 import com.google.inject.Singleton;
@@ -40,9 +41,23 @@ public class Resources {
     return file(fileUri).exists();
   }
 
-  private IFile file(URI uri) {
-    IPath resourcePath = new Path(uri.toPlatformString(true));
+  /**
+   * Returns a handle to file identified by the given URI.
+   * @param uri the given URI.
+   * @return a handle to file identified by the given URI.
+   */
+  public IFile file(URI uri) {
+    IPath resourcePath = pathOf(uri);
     IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
     return root.getFile(resourcePath);
+  }
+
+  /**
+   * Constructs a new path from the given URI.
+   * @param uri the given URI.
+   * @return the constructed path.
+   */
+  public IPath pathOf(URI uri) {
+    return new Path(uri.toPlatformString(true));
   }
 }

@@ -9,9 +9,17 @@
 
 package com.google.eclipse.protobuf.ui.editor;
 
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
+import org.eclipse.ui.*;
+import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.part.FileEditorInput;
+
+import com.google.eclipse.protobuf.ui.util.Resources;
 
 /**
  * A hyperlink for imported .proto files.
@@ -21,25 +29,13 @@ import org.eclipse.jface.text.hyperlink.IHyperlink;
 class ImportHyperlink implements IHyperlink {
 
   private final URI importUri;
-  private final String uriText;
   private final IRegion region;
+  private final Resources resources;
 
-  ImportHyperlink(URI importUri, String uriText, IRegion region) {
+  ImportHyperlink(URI importUri, IRegion region, Resources resources) {
     this.importUri = importUri;
-    this.uriText = uriText;
     this.region = region;
-  }
-
-  public IRegion getHyperlinkRegion() {
-    return region;
-  }
-
-  public String getTypeLabel() {
-    return "type";
-  }
-
-  public String getHyperlinkText() {
-    return "text";
+    this.resources = resources;
   }
 
   public void open() {
@@ -49,10 +45,35 @@ class ImportHyperlink implements IHyperlink {
   }
 
   private void openFromWorkspace() {
-    System.out.println("open from Workspace");
+    IFile file = resources.file(importUri);
+    IEditorInput editorInput = new FileEditorInput(file);
+    IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+    try {
+      page.openEditor(editorInput, "com.google.eclipse.protobuf.Protobuf");
+    } catch (PartInitException e) {
+      e.printStackTrace();
+    }
   }
 
   private void openFromFileSystem() {
-    System.out.println("open from file system");
+    IFileStore fileStore = EFS.getLocalFileSystem().getStore(resources.pathOf(importUri));
+    IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+    try {
+      IDE.openEditorOnFileStore(page, fileStore);
+    } catch (PartInitException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public String getTypeLabel() {
+    return null;
+  }
+
+  public IRegion getHyperlinkRegion() {
+    return region;
+  }
+
+  public String getHyperlinkText() {
+    return null;
   }
 }

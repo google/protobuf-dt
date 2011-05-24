@@ -17,6 +17,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.util.Pair;
 
 import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
+import com.google.eclipse.protobuf.ui.util.Resources;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
