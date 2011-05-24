@@ -18,7 +18,6 @@ public class Messages extends NLS {
   public static String add;
   public static String browseFileSystem;
   public static String browseWorkspace;
-  public static String cancel;
   public static String directoryNameInputMessage;
   public static String directoryNameInputTitle;
   public static String down;
@@ -30,7 +29,6 @@ public class Messages extends NLS {
   public static String includeDirectoryPrompt;
   public static String includeDirectoryTitle;
   public static String isWorkspacePathCheck;
-  public static String ok;
   public static String remove;
   public static String up;
 
