@@ -18,13 +18,16 @@ import java.io.File;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.layout.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.xtext.ui.PluginImageHelper;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
-import com.google.eclipse.protobuf.ui.preferences.*;
+import com.google.eclipse.protobuf.ui.preferences.DataChangedListener;
+import com.google.eclipse.protobuf.ui.preferences.PreferenceAndPropertyPage;
 import com.google.inject.Inject;
 
 /**
@@ -194,6 +197,17 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
   }
 
   private void checkState() {
+    boolean atLeastOneEnabled = false;
+    for (CodeGeneration option : codeGenerationEditor.codeGenerationOptions()) {
+      if (option.isEnabled()) {
+        atLeastOneEnabled = true;
+        break;
+      }
+    }
+    if (!atLeastOneEnabled) {
+      pageIsNowInvalid(errorNoLanguageEnabled);
+      return;
+    }
     if (!customPathOptionSelectedAndEnabled()) {
       pageIsNowValid();
       return;

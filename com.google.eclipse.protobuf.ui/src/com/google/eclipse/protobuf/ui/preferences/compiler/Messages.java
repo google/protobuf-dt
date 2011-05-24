@@ -23,6 +23,7 @@ public class Messages extends NLS {
   public static String enabled;
   public static String errorEnterDirectoryName;
   public static String errorInvalidProtoc;
+  public static String errorNoLanguageEnabled;
   public static String errorNoOutputFolderName;
   public static String errorNoSelection;
   public static String generateCpp;
