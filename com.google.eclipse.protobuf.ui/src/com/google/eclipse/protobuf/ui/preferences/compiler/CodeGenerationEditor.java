@@ -10,6 +10,7 @@ package com.google.eclipse.protobuf.ui.preferences.compiler;
 
 import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.*;
 import static java.util.Collections.unmodifiableList;
+import static org.eclipse.jface.window.Window.OK;
 
 import java.util.*;
 import java.util.List;
@@ -109,7 +110,7 @@ public class CodeGenerationEditor extends Composite {
         int selectionIndex = tblCodeGenerationOptions.getSelectionIndex();
         CodeGeneration option = options.get(selectionIndex);
         EditCodeGenerationDialog dialog = new EditCodeGenerationDialog(getShell(), option);
-        if (dialog.open()) {
+        if (dialog.open() == OK) {
           tblVwrCodeGenerationOptions.refresh();
           if (dataChangedListener != null) dataChangedListener.dataChanged();
         }

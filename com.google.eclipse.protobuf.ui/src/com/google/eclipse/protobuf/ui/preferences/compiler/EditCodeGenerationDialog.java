@@ -9,36 +9,32 @@
 package com.google.eclipse.protobuf.ui.preferences.compiler;
 
 import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.*;
-import static com.google.eclipse.protobuf.ui.swt.Shells.centerShell;
 import static org.eclipse.core.resources.IResource.FOLDER;
-import static org.eclipse.core.runtime.IStatus.OK;
+import static org.eclipse.jface.dialogs.IDialogConstants.OK_ID;
+import static org.eclipse.swt.layout.GridData.*;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.layout.*;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
+
+import com.google.eclipse.protobuf.ui.preferences.InputDialog;
 
 /**
  * Dialog where users can edit a single code generation option.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class EditCodeGenerationDialog extends Dialog {
+public class EditCodeGenerationDialog extends InputDialog {
 
-  private final Shell parent;
   private final CodeGeneration option;
-
-  private boolean result;
-  private Shell shell;
 
   private Text txtOutputDirectory;
   private Button btnEnabled;
-  private Text lblError;
-  private Button btnOk;
-  private Button btnCancel;
+  private Text txtError;
 
   /**
    * Creates a new </code>{@link EditCodeGenerationDialog}</code>.
@@ -46,80 +42,40 @@ public class EditCodeGenerationDialog extends Dialog {
    * @param option the code generation option to edit.
    */
   public EditCodeGenerationDialog(Shell parent, CodeGeneration option) {
-    super(parent, SWT.NONE);
-    this.parent = parent;
+    super(parent, editCodeGenerationOptionTitle + option.language().name());
     this.option = option;
-    getStyle();
-    setText(editCodeGenerationOptionTitle + option.language().name());
-  }
-  /**
-   * Opens this dialog.
-   * @return {@code true} if the user made a selection and pressed "OK" or {@code false} if the user pressed "Cancel."
-   */
-  public boolean open() {
-    result = false;
-    shell = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL | SWT.RESIZE);
-    shell.setText(getText());
-    createAndCenterContent();
-    shell.open();
-    Display display = parent.getDisplay();
-    while (!shell.isDisposed())
-      if (!display.readAndDispatch()) display.sleep();
-    return result;
   }
 
-  private void createAndCenterContent() {
-    shell = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL | SWT.RESIZE);
-    shell.setSize(564, 158);
-    shell.setText(getText());
-    shell.setLayout(new GridLayout(2, false));
+  /** {@inheritDoc} */
+  @Override protected Control createDialogArea(Composite parent) {
+    Composite cmpDialogArea = (Composite) super.createDialogArea(parent);
 
-    btnEnabled = new Button(shell, SWT.CHECK);
+    btnEnabled = new Button(cmpDialogArea, SWT.CHECK);
     btnEnabled.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 3, 1));
     btnEnabled.setText(enabled);
     btnEnabled.setSelection(option.isEnabled());
 
-    Label lblOutputDirectoryName = new Label(shell, SWT.NONE);
+    Label lblOutputDirectoryName = new Label(cmpDialogArea, SWT.NONE);
     lblOutputDirectoryName.setText(outputDirectoryPrompt);
 
-    txtOutputDirectory = new Text(shell, SWT.BORDER);
+    txtOutputDirectory = new Text(cmpDialogArea, SWT.BORDER);
     txtOutputDirectory.setEnabled(option.isEnabled());
+
     GridData gd_txtOutputDirectory = new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1);
     gd_txtOutputDirectory.widthHint = 200;
     txtOutputDirectory.setLayoutData(gd_txtOutputDirectory);
     txtOutputDirectory.setText(option.outputDirectory());
 
-    lblError = new Text(shell, SWT.READ_ONLY | SWT.WRAP);
-    GridData gd_lblError = new GridData(GridData.GRAB_HORIZONTAL
-            | GridData.HORIZONTAL_ALIGN_FILL);
+    txtError = new Text(cmpDialogArea, SWT.READ_ONLY | SWT.WRAP);
+    GridData gd_lblError = new GridData(GRAB_HORIZONTAL | HORIZONTAL_ALIGN_FILL);
     gd_lblError.horizontalSpan = 2;
-    lblError.setLayoutData(gd_lblError);
-    lblError.setBackground(lblError.getDisplay()
-            .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
-//
-//    lblError = new Label(shell, SWT.NONE);
-//    lblError.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-
-    Composite composite = new Composite(shell, SWT.NONE);
-    composite.setLayoutData(new GridData(SWT.RIGHT, SWT.BOTTOM, true, true, 2, 1));
-    composite.setLayout(new GridLayout(2, true));
-
-    btnOk = new Button(composite, SWT.NONE);
-    btnOk.setEnabled(false);
-    btnOk.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-    btnOk.setBounds(0, 0, 92, 29);
-    btnOk.setText(ok);
-
-    btnCancel = new Button(composite, SWT.NONE);
-    btnCancel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-    btnCancel.setText(cancel);
+    txtError.setLayoutData(gd_lblError);
+    txtError.setBackground(txtError.getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
 
     addEventListeners();
 
-    shell.setDefaultButton(btnOk);
-    shell.pack();
-
-    centerWindow();
+    applyDialogFont(cmpDialogArea);
+    return cmpDialogArea;
   }
 
   private void addEventListeners() {
@@ -127,19 +83,6 @@ public class EditCodeGenerationDialog extends Dialog {
       @Override public void widgetSelected(SelectionEvent e) {
         txtOutputDirectory.setEnabled(btnEnabled.getSelection());
         checkState();
-      }
-    });
-    btnOk.addSelectionListener(new SelectionAdapter() {
-      @Override public void widgetSelected(SelectionEvent e) {
-        option.enabled(btnEnabled.getSelection());
-        option.outputDirectory(enteredOuptutDirectory());
-        result = true;
-        shell.dispose();
-      }
-    });
-    btnCancel.addSelectionListener(new SelectionAdapter() {
-      @Override public void widgetSelected(SelectionEvent e) {
-        shell.dispose();
       }
     });
     txtOutputDirectory.addModifyListener(new ModifyListener() {
@@ -171,13 +114,20 @@ public class EditCodeGenerationDialog extends Dialog {
   }
 
   private void pageIsNowInvalid(String errorMessage) {
-    lblError.setText(errorMessage);
-    btnOk.setEnabled(false);
+    txtError.setText(errorMessage);
+    getButton(OK_ID).setEnabled(false);
   }
 
   private void pageIsNowValid() {
-    lblError.setText("");
-    btnOk.setEnabled(true);
+    txtError.setText("");
+    getButton(OK_ID).setEnabled(true);
+  }
+
+  /** {@inheritDoc} */
+  @Override protected void okPressed() {
+    option.enabled(btnEnabled.getSelection());
+    option.outputDirectory(enteredOuptutDirectory());
+    super.okPressed();
   }
 
   private boolean outputDirectoryEntered() {
@@ -186,9 +136,5 @@ public class EditCodeGenerationDialog extends Dialog {
 
   private String enteredOuptutDirectory() {
     return txtOutputDirectory.getText().trim();
-  }
-
-  private void centerWindow() {
-    centerShell(shell, parent);
   }
 }

@@ -27,7 +27,7 @@ import org.eclipse.ui.views.navigator.ResourceComparator;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-class SelectDirectoryDialogs {
+class DirectorySelectionDialogs {
 
   private static final String PLUGIN_ID = "com.google.eclipse.protobuf.ui";
 
@@ -74,5 +74,5 @@ class SelectDirectoryDialogs {
     return ResourcesPlugin.getWorkspace().getRoot();
   }
 
-  private SelectDirectoryDialogs() {}
+  private DirectorySelectionDialogs() {}
 }
