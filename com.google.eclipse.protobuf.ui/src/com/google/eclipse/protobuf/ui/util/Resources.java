@@ -47,17 +47,12 @@ public class Resources {
    * @return a handle to file identified by the given URI.
    */
   public IFile file(URI uri) {
-    IPath resourcePath = pathOf(uri);
     IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-    return root.getFile(resourcePath);
+    return root.getFile(pathOf(uri));
   }
 
-  /**
-   * Constructs a new path from the given URI.
-   * @param uri the given URI.
-   * @return the constructed path.
-   */
-  public IPath pathOf(URI uri) {
-    return new Path(uri.toPlatformString(true));
+  private IPath pathOf(URI uri) {
+    String s = uri.toPlatformString(true);
+    return new Path(s);
   }
 }

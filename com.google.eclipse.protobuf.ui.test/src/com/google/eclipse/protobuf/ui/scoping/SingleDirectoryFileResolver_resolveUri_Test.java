@@ -14,14 +14,14 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.common.util.URI;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
+import com.google.eclipse.protobuf.ui.util.Resources;
 
 /**
- * Tests for <code>{@link SingleDirectoryFileResolver#resolveUri(String, URI, PathsPreferences, IProject)}</code>.
+ * Tests for <code>{@link SingleDirectoryFileResolver#resolveUri(String, URI, PathsPreferences)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */

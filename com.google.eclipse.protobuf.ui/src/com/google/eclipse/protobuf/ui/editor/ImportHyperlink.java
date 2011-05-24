@@ -12,11 +12,12 @@ package com.google.eclipse.protobuf.ui.editor;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.ui.*;
-import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 
 import com.google.eclipse.protobuf.ui.util.Resources;
@@ -47,19 +48,19 @@ class ImportHyperlink implements IHyperlink {
   private void openFromWorkspace() {
     IFile file = resources.file(importUri);
     IEditorInput editorInput = new FileEditorInput(file);
-    IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-    try {
-      page.openEditor(editorInput, "com.google.eclipse.protobuf.Protobuf");
-    } catch (PartInitException e) {
-      e.printStackTrace();
-    }
+    openFile(editorInput, "com.google.eclipse.protobuf.Protobuf");
   }
 
   private void openFromFileSystem() {
-    IFileStore fileStore = EFS.getLocalFileSystem().getStore(resources.pathOf(importUri));
+    IFileStore fileStore = EFS.getLocalFileSystem().getStore(new Path(importUri.toFileString()));
+    IEditorInput editorInput = new FileStoreEditorInput(fileStore);
+    openFile(editorInput, "org.eclipse.ui.DefaultTextEditor");
+  }
+
+  private void openFile(IEditorInput editorInput, String editorId) {
     IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
     try {
-      IDE.openEditorOnFileStore(page, fileStore);
+      page.openEditor(editorInput, editorId);
     } catch (PartInitException e) {
       e.printStackTrace();
     }
