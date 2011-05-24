@@ -10,6 +10,7 @@ package com.google.eclipse.protobuf.ui;
 
 import static com.google.inject.name.Names.named;
 
+import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.xtext.ui.editor.IXtextEditorCallback;
@@ -18,6 +19,7 @@ import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
 
 import com.google.eclipse.protobuf.scoping.IFileUriResolver;
 import com.google.eclipse.protobuf.ui.builder.AutoAddNatureEditorCallback;
+import com.google.eclipse.protobuf.ui.editor.ProtobufHyperlinkDetector;
 import com.google.eclipse.protobuf.ui.outline.LinkWithEditor;
 import com.google.eclipse.protobuf.ui.outline.ProtobufOutlinePage;
 import com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferenceStoreInitializer;
@@ -40,6 +42,10 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
     return ProtobufOutlinePage.class;
   }
 
+  @Override public Class<? extends IHyperlinkDetector> bindIHyperlinkDetector() {
+    return ProtobufHyperlinkDetector.class;
+  }
+
   @Override public Class<? extends IXtextEditorCallback> bindIXtextEditorCallback() {
     return AutoAddNatureEditorCallback.class;
   }
@@ -58,12 +64,12 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
   public void configurePathsPreferencesInitializer(Binder binder) {
     configurePreferenceInitializer(binder, "pathsPreferences", PathsPreferenceStoreInitializer.class);
   }
-  
+
   private void configurePreferenceInitializer(Binder binder, String name,
       Class<? extends IPreferenceStoreInitializer> initializerType) {
     binder.bind(IPreferenceStoreInitializer.class).annotatedWith(named(name)).to(initializerType);
   }
-  
+
   public void configureFileUriResolver(Binder binder) {
     binder.bind(IFileUriResolver.class).to(FileUriResolver.class);
   }
