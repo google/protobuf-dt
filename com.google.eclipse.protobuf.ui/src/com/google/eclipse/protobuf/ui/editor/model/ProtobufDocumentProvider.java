@@ -8,6 +8,8 @@ package com.google.eclipse.protobuf.ui.editor.model;
 import static com.google.eclipse.protobuf.ui.ProtobufUiModule.PLUGIN_ID;
 import static org.eclipse.core.runtime.IStatus.ERROR;
 import static org.eclipse.emf.common.util.URI.createURI;
+import static org.eclipse.emf.ecore.util.EcoreUtil.resolveAll;
+import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
 import static org.eclipse.xtext.validation.CheckMode.FAST_ONLY;
 
 import java.io.*;
@@ -19,9 +21,8 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.ide.FileStoreEditorInput;
-import org.eclipse.xtext.parser.IParseResult;
-import org.eclipse.xtext.parser.IParser;
-import org.eclipse.xtext.resource.XtextResource;
+import org.eclipse.xtext.linking.lazy.LazyLinkingResource;
+import org.eclipse.xtext.resource.*;
 import org.eclipse.xtext.ui.editor.model.XtextDocument;
 import org.eclipse.xtext.ui.editor.model.XtextDocumentProvider;
 import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionProvider;
@@ -43,8 +44,9 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
   
   @Inject private Closeables closeables;
   @Inject private IssueResolutionProvider issueResolutionProvider;
-  @Inject private IParser parser;
+  @Inject private IResourceFactory resourceFactory;
   @Inject private IResourceValidator resourceValidator;
+  @Inject private XtextResourceSet resourceSet;
   
   @Override protected ElementInfo createElementInfo(Object element) throws CoreException {
     if (element instanceof FileStoreEditorInput) return createElementInfo((FileStoreEditorInput) element);
@@ -87,12 +89,10 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
   private IDocument createDocument(FileStoreEditorInput input) throws CoreException {
     XtextDocument document = createEmptyDocument();
     File file = fileFrom(input);
-    XtextResource resource = new XtextResource(createURI(file.toURI().toString()));
     try {
       String contents = contentsOf(file);
       document.set(contents);
-      IParseResult result = parser.parse(readerFor(new StringInputStream(contents)));
-      resource.getContents().add(result.getRootASTElement());
+      XtextResource resource = createResource(file.toURI().toString(), new StringInputStream(contents));
       document.setInput(resource);
       return document;
     } catch (Throwable t) {
@@ -133,5 +133,21 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
   
   private Reader readerFor(InputStream inputStream) throws IOException {
     return new InputStreamReader(inputStream, ENCODING);
+  }
+  
+  private XtextResource createResource(String uri, InputStream input) {
+    XtextResource resource = (XtextResource) resourceFactory.createResource(createURI(uri));
+    resourceSet.getResources().add(resource);
+    try {
+      resource.load(input, null);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    if (resource instanceof LazyLinkingResource) {
+      ((LazyLinkingResource) resource).resolveLazyCrossReferences(NullImpl);
+      return resource;
+    }
+    resolveAll(resource);
+    return resource;
   }
 }
