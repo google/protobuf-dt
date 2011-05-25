@@ -39,6 +39,7 @@ import com.google.inject.Inject;
 public class ProtobufDocumentProvider extends XtextDocumentProvider {
 
   private static final String ENCODING = "UTF-8";
+  private static final String FILE_SCHEME = "file";
   
   @Inject private Closeables closeables;
   @Inject private IssueResolutionProvider issueResolutionProvider;
@@ -46,34 +47,35 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
   @Inject private IResourceValidator resourceValidator;
   
   @Override protected ElementInfo createElementInfo(Object element) throws CoreException {
-    if (element instanceof FileStoreEditorInput) {
-      FileStoreEditorInput input = (FileStoreEditorInput) element;
-      IDocument document = null;
-      IStatus status = null;
-      try {
-        document = createDocument(element);
-      } catch (CoreException e) {
-        handleCoreException(e, "ProtobufDocumentProvider.createElementInfo");
-        document = createEmptyDocument();
-        status = e.getStatus();
-      }
-      IFileStore store = EFS.getLocalFileSystem().getStore(fileFrom(input).toURI());
-      IFileInfo fileInfo = store.fetchInfo();
-      IAnnotationModel model = createAnnotationModel(element);
-      // new FileSynchronizer(input).install();
-      FileInfo info = new FileInfo(document, model, null);
-      info.fModificationStamp = fileInfo.getLastModified();
-      info.fStatus = status;
-      info.fEncoding = ENCODING;
-      cacheEncodingState(element);
-      XtextDocument xtextDocument = (XtextDocument) document;
-      AnnotationIssueProcessor annotationIssueProcessor = new AnnotationIssueProcessor(xtextDocument, model,
-          issueResolutionProvider);
-      ValidationJob job = new ValidationJob(resourceValidator, xtextDocument, annotationIssueProcessor, FAST_ONLY);
-      xtextDocument.setValidationJob(job);
-      return info;
-    }
+    if (element instanceof FileStoreEditorInput) return createElementInfo((FileStoreEditorInput) element);
     return super.createElementInfo(element);
+  }
+
+  private ElementInfo createElementInfo(FileStoreEditorInput input) throws CoreException {
+    IDocument document = null;
+    IStatus status = null;
+    try {
+      document = createDocument(input);
+    } catch (CoreException e) {
+      handleCoreException(e, "ProtobufDocumentProvider.createElementInfo");
+      document = createEmptyDocument();
+      status = e.getStatus();
+    }
+    IFileStore store = EFS.getLocalFileSystem().getStore(fileFrom(input).toURI());
+    IFileInfo fileInfo = store.fetchInfo();
+    IAnnotationModel model = createAnnotationModel(input);
+    // new FileSynchronizer(input).install();
+    FileInfo info = new FileInfo(document, model, null);
+    info.fModificationStamp = fileInfo.getLastModified();
+    info.fStatus = status;
+    info.fEncoding = ENCODING;
+    cacheEncodingState(input);
+    XtextDocument xtextDocument = (XtextDocument) document;
+    AnnotationIssueProcessor annotationIssueProcessor = new AnnotationIssueProcessor(xtextDocument, model,
+        issueResolutionProvider);
+    ValidationJob job = new ValidationJob(resourceValidator, xtextDocument, annotationIssueProcessor, FAST_ONLY);
+    xtextDocument.setValidationJob(job);
+    return info;
   }
 
   /** {@inheritDoc} */
@@ -86,13 +88,14 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
       try {
         String contents = contentsOf(file);
         document.set(contents);
-        IParseResult result = parser.parse(new InputStreamReader(new StringInputStream(contents), ENCODING));
+        IParseResult result = parser.parse(readerFor(new StringInputStream(contents)));
         resource.getContents().add(result.getRootASTElement());
         document.setInput(resource);
         return document;
       } catch (Throwable t) {
-        if (t instanceof CoreException) throw (CoreException) t;
-        throw wrapWithCoreException(t);
+        String message = t.getMessage();
+        if (message == null) message = "";
+        throw new CoreException(new Status(ERROR, PLUGIN_ID, message, t));
       }
     }
     return super.createDocument(element);
@@ -101,19 +104,19 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
   private File fileFrom(IURIEditorInput input) {
     URI uri = input.getURI();
     String scheme = uri.getScheme();
-    if (scheme != "file") {
-      String cleanUri = uri.toString().replaceFirst(scheme, "file");
+    if (scheme != FILE_SCHEME) {
+      String cleanUri = uri.toString().replaceFirst(scheme, FILE_SCHEME);
       uri = URI.create(cleanUri);
     }
     return new File(uri);
   }
 
-  private String contentsOf(File file) throws CoreException {
+  private String contentsOf(File file) throws IOException {
     Reader reader = null;
-    InputStream contentStream = null;
+    InputStream inputStream = null;
     try {
-      contentStream = new FileInputStream(file);
-      reader = new BufferedReader(new InputStreamReader(contentStream, ENCODING), DEFAULT_FILE_SIZE);
+      inputStream = new FileInputStream(file);
+      reader = new BufferedReader(readerFor(inputStream), DEFAULT_FILE_SIZE);
       StringBuilder contents = new StringBuilder(DEFAULT_FILE_SIZE);
       char[] buffer = new char[2048];
       int character = reader.read(buffer);
@@ -122,19 +125,12 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
         character = reader.read(buffer);
       }
       return contents.toString();
-    } catch (IOException e) {
-      throw wrapWithCoreException(e);
     } finally {
-      if (!closeables.close(reader)) closeables.close(contentStream);
+      if (!closeables.close(reader)) closeables.close(inputStream);
     }
   }
   
-  private CoreException wrapWithCoreException(Throwable cause) {
-    return new CoreException(new Status(ERROR, PLUGIN_ID, messageOf(cause), cause));
-  }
-  
-  private String messageOf(Throwable t) {
-    String message = t.getMessage();
-    return (message != null) ? message : "";
+  private Reader readerFor(InputStream inputStream) throws IOException {
+    return new InputStreamReader(inputStream, ENCODING);
   }
 }
