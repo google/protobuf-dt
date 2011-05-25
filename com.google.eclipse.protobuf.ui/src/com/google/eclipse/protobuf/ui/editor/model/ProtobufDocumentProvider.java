@@ -80,25 +80,26 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
 
   /** {@inheritDoc} */
   @Override protected IDocument createDocument(Object element) throws CoreException {
-    if (element instanceof FileStoreEditorInput) {
-      XtextDocument document = createEmptyDocument();
-      FileStoreEditorInput input = (FileStoreEditorInput) element;
-      File file = fileFrom(input);
-      XtextResource resource = new XtextResource(createURI(file.toURI().toString()));
-      try {
-        String contents = contentsOf(file);
-        document.set(contents);
-        IParseResult result = parser.parse(readerFor(new StringInputStream(contents)));
-        resource.getContents().add(result.getRootASTElement());
-        document.setInput(resource);
-        return document;
-      } catch (Throwable t) {
-        String message = t.getMessage();
-        if (message == null) message = "";
-        throw new CoreException(new Status(ERROR, PLUGIN_ID, message, t));
-      }
-    }
+    if (element instanceof FileStoreEditorInput) return createDocument((FileStoreEditorInput) element);
     return super.createDocument(element);
+  }
+
+  private IDocument createDocument(FileStoreEditorInput input) throws CoreException {
+    XtextDocument document = createEmptyDocument();
+    File file = fileFrom(input);
+    XtextResource resource = new XtextResource(createURI(file.toURI().toString()));
+    try {
+      String contents = contentsOf(file);
+      document.set(contents);
+      IParseResult result = parser.parse(readerFor(new StringInputStream(contents)));
+      resource.getContents().add(result.getRootASTElement());
+      document.setInput(resource);
+      return document;
+    } catch (Throwable t) {
+      String message = t.getMessage();
+      if (message == null) message = "";
+      throw new CoreException(new Status(ERROR, PLUGIN_ID, message, t));
+    }
   }
   
   private File fileFrom(IURIEditorInput input) {
