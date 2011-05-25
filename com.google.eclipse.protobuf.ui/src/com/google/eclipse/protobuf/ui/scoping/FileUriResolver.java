@@ -8,14 +8,15 @@
  */
 package com.google.eclipse.protobuf.ui.scoping;
 
-import static com.google.eclipse.protobuf.ui.scoping.FileResolverStrategy.PREFIX;
+import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import com.google.eclipse.protobuf.scoping.IFileUriResolver;
-import com.google.eclipse.protobuf.ui.preferences.paths.*;
+import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
+import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferencesProvider;
 import com.google.eclipse.protobuf.ui.util.Resources;
 import com.google.inject.Inject;
 
@@ -46,15 +47,19 @@ public class FileUriResolver implements IFileUriResolver {
    * We need to have the import URI as "platform:/resource/protobuf-test/folder/proto2.proto" for the editor to see it.
    */
   public String resolveUri(String importUri, Resource declaringResource) {
-    if (importUri.startsWith(PREFIX)) return importUri;
+    if (hasScheme(importUri)) return importUri;
     String resolved = resolveUri(importUri, declaringResource.getURI());
-//    System.out.println(declaringResource.getURI() + " : " + importUri + " : " + resolved);
-    if (resolved == null) return importUri;
-    return resolved;
+    return (resolved == null) ? importUri : resolved;
+  }
+
+  private boolean hasScheme(String importUri) {
+    String scheme = URI.createURI(importUri).scheme();
+    return !isEmpty(scheme);
   }
 
   private String resolveUri(String importUri, URI resourceUri) {
     IProject project = resources.project(resourceUri);
+    if (project == null) project = resources.activeProject();
     PathsPreferences preferences = preferenceReader.getPreferences(project);
     return resolver(preferences).resolveUri(importUri, resourceUri, preferences);
   }

@@ -6,9 +6,12 @@
 package com.google.eclipse.protobuf.ui.editor.model;
 
 import static com.google.eclipse.protobuf.ui.ProtobufUiModule.PLUGIN_ID;
+import static java.util.Collections.singletonMap;
 import static org.eclipse.core.runtime.IStatus.ERROR;
 import static org.eclipse.emf.common.util.URI.createURI;
+import static org.eclipse.emf.ecore.resource.ContentHandler.UNSPECIFIED_CONTENT_TYPE;
 import static org.eclipse.emf.ecore.util.EcoreUtil.resolveAll;
+import static org.eclipse.xtext.resource.XtextResource.OPTION_ENCODING;
 import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
 import static org.eclipse.xtext.validation.CheckMode.FAST_ONLY;
 
@@ -17,21 +20,24 @@ import java.net.URI;
 
 import org.eclipse.core.filesystem.*;
 import org.eclipse.core.runtime.*;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.xtext.linking.lazy.LazyLinkingResource;
-import org.eclipse.xtext.resource.*;
+import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.model.XtextDocument;
 import org.eclipse.xtext.ui.editor.model.XtextDocumentProvider;
 import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionProvider;
 import org.eclipse.xtext.ui.editor.validation.AnnotationIssueProcessor;
 import org.eclipse.xtext.ui.editor.validation.ValidationJob;
+import org.eclipse.xtext.ui.resource.IResourceSetProvider;
 import org.eclipse.xtext.util.StringInputStream;
 import org.eclipse.xtext.validation.IResourceValidator;
 
 import com.google.eclipse.protobuf.ui.util.Closeables;
+import com.google.eclipse.protobuf.ui.util.Resources;
 import com.google.inject.Inject;
 
 /**
@@ -41,13 +47,13 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
 
   private static final String ENCODING = "UTF-8";
   private static final String FILE_SCHEME = "file";
-  
+
   @Inject private Closeables closeables;
   @Inject private IssueResolutionProvider issueResolutionProvider;
-  @Inject private IResourceFactory resourceFactory;
+  @Inject private IResourceSetProvider resourceSetProvider;
   @Inject private IResourceValidator resourceValidator;
-  @Inject private XtextResourceSet resourceSet;
-  
+  @Inject private Resources resources;
+
   @Override protected ElementInfo createElementInfo(Object element) throws CoreException {
     if (element instanceof FileStoreEditorInput) return createElementInfo((FileStoreEditorInput) element);
     return super.createElementInfo(element);
@@ -101,7 +107,7 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
       throw new CoreException(new Status(ERROR, PLUGIN_ID, message, t));
     }
   }
-  
+
   private File fileFrom(IURIEditorInput input) {
     URI uri = input.getURI();
     String scheme = uri.getScheme();
@@ -130,16 +136,16 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
       if (!closeables.close(reader)) closeables.close(inputStream);
     }
   }
-  
+
   private Reader readerFor(InputStream inputStream) throws IOException {
     return new InputStreamReader(inputStream, ENCODING);
   }
-  
+
   private XtextResource createResource(String uri, InputStream input) {
-    XtextResource resource = (XtextResource) resourceFactory.createResource(createURI(uri));
-    resourceSet.getResources().add(resource);
+    ResourceSet resourceSet = resourceSetProvider.get(resources.activeProject());
+    XtextResource resource = (XtextResource) resourceSet.createResource(createURI(uri), UNSPECIFIED_CONTENT_TYPE);
     try {
-      resource.load(input, null);
+      resource.load(input, singletonMap(OPTION_ENCODING, ENCODING));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

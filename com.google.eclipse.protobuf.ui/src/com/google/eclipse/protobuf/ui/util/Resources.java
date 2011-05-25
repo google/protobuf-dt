@@ -12,6 +12,9 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.ui.*;
+import org.eclipse.ui.views.navigator.ResourceNavigator;
 
 import com.google.inject.Singleton;
 
@@ -26,10 +29,25 @@ public class Resources {
   /**
    * Returns the project that contains the resource at the given URI.
    * @param resourceUri the given URI.
-   * @return the project that contains the resource at the given URI.
+   * @return the project that contains the resource at the given URI, or {@code null} if the resource at the given URI
+   * is not in a workspace.
    */
   public IProject project(URI resourceUri) {
-    return file(resourceUri).getProject();
+    IFile file = file(resourceUri);
+    return (file != null) ? file.getProject() : null;
+  }
+
+  public IProject activeProject() {
+    IViewReference[] references = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences();
+    for (IViewReference reference : references) {
+      IViewPart part = reference.getView(false);
+      if (!(part instanceof ResourceNavigator)) continue;
+      ResourceNavigator navigator = (ResourceNavigator) part;
+      StructuredSelection sel = (StructuredSelection) navigator.getTreeViewer().getSelection();
+      IResource resource = (IResource) sel.getFirstElement();
+      return resource.getProject();
+    }
+    return null;
   }
 
   /**
@@ -38,21 +56,24 @@ public class Resources {
    * @return {@code true} if the given URI belongs to an existing file, {@code false} otherwise.
    */
   public boolean fileExists(URI fileUri) {
-    return file(fileUri).exists();
+    IFile file = file(fileUri);
+    return (file != null) ? file.exists() : false;
   }
 
   /**
-   * Returns a handle to file identified by the given URI.
+   * Returns a handle to a workspace file identified by the given URI.
    * @param uri the given URI.
-   * @return a handle to file identified by the given URI.
+   * @return a handle to a workspace file identified by the given URI or {@code null} if the URI does not belong to a 
+   * workspace file.
    */
   public IFile file(URI uri) {
     IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-    return root.getFile(pathOf(uri));
+    IPath path = pathOf(uri);
+    return (path != null) ? root.getFile(path) : null;
   }
 
   private IPath pathOf(URI uri) {
-    String s = uri.toPlatformString(true);
-    return new Path(s);
+    String platformUri = uri.toPlatformString(true);
+    return (platformUri != null) ? new Path(platformUri) : null;
   }
 }
