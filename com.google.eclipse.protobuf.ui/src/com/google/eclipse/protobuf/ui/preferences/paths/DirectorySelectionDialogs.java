@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.paths;
 
+import static com.google.eclipse.protobuf.ui.ProtobufUiModule.PLUGIN_ID;
 import static com.google.eclipse.protobuf.ui.swt.Messages.*;
 import static org.eclipse.core.runtime.IStatus.ERROR;
 import static org.eclipse.core.runtime.Status.OK_STATUS;
@@ -17,9 +18,12 @@ import static org.eclipse.ui.views.navigator.ResourceComparator.NAME;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.*;
-import org.eclipse.ui.dialogs.*;
-import org.eclipse.ui.model.*;
+import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
+import org.eclipse.ui.dialogs.ISelectionStatusValidator;
+import org.eclipse.ui.model.WorkbenchContentProvider;
+import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.views.navigator.ResourceComparator;
 
 /**
@@ -28,8 +32,6 @@ import org.eclipse.ui.views.navigator.ResourceComparator;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class DirectorySelectionDialogs {
-
-  private static final String PLUGIN_ID = "com.google.eclipse.protobuf.ui";
 
   static String showWorkspaceDirectoryDialog(Shell shell, String initialPath) {
     return showWorkspaceDirectoryDialog(shell, initialPath, null);

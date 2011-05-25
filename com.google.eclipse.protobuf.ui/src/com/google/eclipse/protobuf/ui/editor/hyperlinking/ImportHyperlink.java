@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.editor;
+package com.google.eclipse.protobuf.ui.editor.hyperlinking;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -53,7 +53,7 @@ class ImportHyperlink implements IHyperlink {
   private void openFromFileSystem() {
     IFileStore fileStore = EFS.getLocalFileSystem().getStore(new Path(importUri.toFileString()));
     IEditorInput editorInput = new FileStoreEditorInput(fileStore);
-    openFile(editorInput, "org.eclipse.ui.DefaultTextEditor");
+    openFile(editorInput, "com.google.eclipse.protobuf.Protobuf"/*"org.eclipse.ui.DefaultTextEditor"*/);
   }
 
   private void openFile(IEditorInput editorInput, String editorId) {

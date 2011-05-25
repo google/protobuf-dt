@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.editor;
+package com.google.eclipse.protobuf.ui.editor.hyperlinking;
 
 import static org.eclipse.emf.common.util.URI.createURI;
 

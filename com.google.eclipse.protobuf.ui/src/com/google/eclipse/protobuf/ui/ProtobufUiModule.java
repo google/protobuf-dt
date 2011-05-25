@@ -14,12 +14,14 @@ import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.xtext.ui.editor.IXtextEditorCallback;
+import org.eclipse.xtext.ui.editor.model.XtextDocumentProvider;
 import org.eclipse.xtext.ui.editor.outline.actions.IOutlineContribution;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
 
 import com.google.eclipse.protobuf.scoping.IFileUriResolver;
 import com.google.eclipse.protobuf.ui.builder.AutoAddNatureEditorCallback;
-import com.google.eclipse.protobuf.ui.editor.ProtobufHyperlinkDetector;
+import com.google.eclipse.protobuf.ui.editor.hyperlinking.ProtobufHyperlinkDetector;
+import com.google.eclipse.protobuf.ui.editor.model.ProtobufDocumentProvider;
 import com.google.eclipse.protobuf.ui.outline.LinkWithEditor;
 import com.google.eclipse.protobuf.ui.outline.ProtobufOutlinePage;
 import com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferenceStoreInitializer;
@@ -33,6 +35,8 @@ import com.google.inject.Binder;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufUiModule extends AbstractProtobufUiModule {
+
+  public static final String PLUGIN_ID = "com.google.eclipse.protobuf.ui";
 
   public ProtobufUiModule(AbstractUIPlugin plugin) {
     super(plugin);
@@ -72,5 +76,9 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
 
   public void configureFileUriResolver(Binder binder) {
     binder.bind(IFileUriResolver.class).to(FileUriResolver.class);
+  }
+
+  public void configureDocumentProvider(Binder binder) {
+    binder.bind(XtextDocumentProvider.class).to(ProtobufDocumentProvider.class);
   }
 }
