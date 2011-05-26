@@ -9,10 +9,13 @@
 package com.google.eclipse.protobuf.ui;
 
 import static com.google.inject.name.Names.named;
+import static org.eclipse.ui.PlatformUI.isWorkbenchRunning;
 
 import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.eclipse.xtext.ui.LanguageSpecific;
+import org.eclipse.xtext.ui.editor.IURIEditorOpener;
 import org.eclipse.xtext.ui.editor.IXtextEditorCallback;
 import org.eclipse.xtext.ui.editor.model.XtextDocumentProvider;
 import org.eclipse.xtext.ui.editor.outline.actions.IOutlineContribution;
@@ -20,6 +23,7 @@ import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
 
 import com.google.eclipse.protobuf.scoping.IFileUriResolver;
 import com.google.eclipse.protobuf.ui.builder.AutoAddNatureEditorCallback;
+import com.google.eclipse.protobuf.ui.editor.ProtobufUriEditorOpener;
 import com.google.eclipse.protobuf.ui.editor.hyperlinking.ProtobufHyperlinkDetector;
 import com.google.eclipse.protobuf.ui.editor.model.ProtobufDocumentProvider;
 import com.google.eclipse.protobuf.ui.outline.LinkWithEditor;
@@ -80,5 +84,12 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
 
   public void configureDocumentProvider(Binder binder) {
     binder.bind(XtextDocumentProvider.class).to(ProtobufDocumentProvider.class);
+  }
+
+  @Override public void configureLanguageSpecificURIEditorOpener(Binder binder) {
+    if (!isWorkbenchRunning())return;
+    binder.bind(IURIEditorOpener.class)
+          .annotatedWith(LanguageSpecific.class)
+          .to(ProtobufUriEditorOpener.class);
   }
 }

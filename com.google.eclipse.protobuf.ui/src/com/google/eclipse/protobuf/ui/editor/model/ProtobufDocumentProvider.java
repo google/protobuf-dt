@@ -6,6 +6,7 @@
 package com.google.eclipse.protobuf.ui.editor.model;
 
 import static com.google.eclipse.protobuf.ui.ProtobufUiModule.PLUGIN_ID;
+import static com.google.eclipse.protobuf.ui.util.Resources.URI_SCHEME_FOR_FILES;
 import static java.util.Collections.singletonMap;
 import static org.eclipse.core.runtime.IStatus.ERROR;
 import static org.eclipse.emf.common.util.URI.createURI;
@@ -46,7 +47,6 @@ import com.google.inject.Inject;
 public class ProtobufDocumentProvider extends XtextDocumentProvider {
 
   private static final String ENCODING = "UTF-8";
-  private static final String FILE_SCHEME = "file";
 
   @Inject private Closeables closeables;
   @Inject private IssueResolutionProvider issueResolutionProvider;
@@ -111,8 +111,8 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
   private File fileFrom(IURIEditorInput input) {
     URI uri = input.getURI();
     String scheme = uri.getScheme();
-    if (scheme != FILE_SCHEME) {
-      String cleanUri = uri.toString().replaceFirst(scheme, FILE_SCHEME);
+    if (scheme != URI_SCHEME_FOR_FILES) {
+      String cleanUri = uri.toString().replaceFirst(scheme, URI_SCHEME_FOR_FILES);
       uri = URI.create(cleanUri);
     }
     return new File(uri);

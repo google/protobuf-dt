@@ -8,16 +8,13 @@
  */
 package com.google.eclipse.protobuf.ui.editor.hyperlinking;
 
-import org.eclipse.core.filesystem.EFS;
-import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.Path;
+import static com.google.eclipse.protobuf.ui.util.Resources.URI_SCHEME_FOR_FILES;
+
+import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
-import org.eclipse.ui.*;
-import org.eclipse.ui.ide.FileStoreEditorInput;
-import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.PartInitException;
 
 import com.google.eclipse.protobuf.ui.util.Resources;
 
@@ -28,6 +25,8 @@ import com.google.eclipse.protobuf.ui.util.Resources;
  */
 class ImportHyperlink implements IHyperlink {
 
+  private static Logger logger = Logger.getLogger(ImportHyperlink.class);
+  
   private final URI importUri;
   private final IRegion region;
   private final Resources resources;
@@ -40,28 +39,11 @@ class ImportHyperlink implements IHyperlink {
 
   public void open() {
     String scheme = importUri.scheme();
-    if ("platform".equals(scheme)) openFromWorkspace();
-    if ("file".equals(scheme)) openFromFileSystem();
-  }
-
-  private void openFromWorkspace() {
-    IFile file = resources.file(importUri);
-    IEditorInput editorInput = new FileEditorInput(file);
-    openFile(editorInput, "com.google.eclipse.protobuf.Protobuf");
-  }
-
-  private void openFromFileSystem() {
-    IFileStore fileStore = EFS.getLocalFileSystem().getStore(new Path(importUri.toFileString()));
-    IEditorInput editorInput = new FileStoreEditorInput(fileStore);
-    openFile(editorInput, "com.google.eclipse.protobuf.Protobuf"/*"org.eclipse.ui.DefaultTextEditor"*/);
-  }
-
-  private void openFile(IEditorInput editorInput, String editorId) {
-    IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
     try {
-      page.openEditor(editorInput, editorId);
+      if ("platform".equals(scheme)) resources.openProtoFileInPlatform(importUri);
+      if (URI_SCHEME_FOR_FILES.equals(scheme)) resources.openProtoFileInFileSystem(importUri);
     } catch (PartInitException e) {
-      e.printStackTrace();
+      logger.error("Unable to open " + importUri.toString(), e);
     }
   }
 
