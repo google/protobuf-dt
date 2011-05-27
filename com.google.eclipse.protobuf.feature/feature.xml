@@ -24,6 +24,10 @@ Google, Inc. - initial API and implementation
       %license
    </license>
 
+   <url>
+      <update label="protobuf-dt" url="http://code.google.com/svn/trunk/update-site"/>
+   </url>
+
    <requires>
       <import plugin="org.eclipse.xtext"/>
       <import plugin="org.eclipse.xtext.util"/>
