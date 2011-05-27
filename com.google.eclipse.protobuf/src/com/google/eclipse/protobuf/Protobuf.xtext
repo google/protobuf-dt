@@ -50,7 +50,7 @@ MessageElement:
   Type | Property | Group | ExtendMessage;
 
 Group:
-  modifier=Modifier 'group' name=ID '=' index=INT '{'
+  modifier=Modifier 'group' name=ID '=' index=INT ('[' 'deprecated' '=' deprecated=BooleanRef ']')? '{'
   elements+=Property*
   '}'(';')?;
 
