@@ -1,3 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
+   <feature url="features/com.google.eclipse.protobuf_1.0.0.201105262305.jar" id="com.google.eclipse.protobuf" version="1.0.0.201105262305"/>
 </site>

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Eclipse-ExtensibleAPI: true
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.0.qualifier
 Bundle-SymbolicName: com.google.eclipse.protobuf; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext,

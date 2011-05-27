@@ -2,7 +2,7 @@
 <feature
       id="com.google.eclipse.protobuf"
       label="Development Environment for Protocol Buffers"
-      version="1.0.0"
+      version="1.0.0.qualifier"
       provider-name="Google">
 
    <description url="https://code.google.com/p/protobuf-dt/">
