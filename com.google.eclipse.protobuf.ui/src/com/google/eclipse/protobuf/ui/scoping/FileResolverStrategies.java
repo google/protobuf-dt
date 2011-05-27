@@ -9,8 +9,8 @@
 package com.google.eclipse.protobuf.ui.scoping;
 
 import static com.google.eclipse.protobuf.ui.preferences.paths.PathResolutionType.*;
-import static com.google.inject.internal.Maps.newHashMap;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.google.eclipse.protobuf.ui.preferences.paths.PathResolutionType;
@@ -24,11 +24,12 @@ import com.google.inject.Singleton;
 @Singleton
 class FileResolverStrategies {
 
-  private final Map<PathResolutionType, FileResolverStrategy> strategies = newHashMap();
+  private final Map<PathResolutionType, FileResolverStrategy> strategies = 
+      new HashMap<PathResolutionType, FileResolverStrategy>();
 
-  @Inject FileResolverStrategies(Resources resources) {
+  @Inject FileResolverStrategies(PathMapping mapping, Resources resources) {
     strategies.put(SINGLE_DIRECTORY, new SingleDirectoryFileResolver(resources));
-    strategies.put(MULTIPLE_DIRECTORIES, new MultipleDirectoriesFileResolver(resources));
+    strategies.put(MULTIPLE_DIRECTORIES, new MultipleDirectoriesFileResolver(mapping, resources));
   }
 
   FileResolverStrategy strategyFor(PathResolutionType type) {
