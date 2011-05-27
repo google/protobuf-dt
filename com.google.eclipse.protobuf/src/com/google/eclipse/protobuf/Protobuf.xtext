@@ -47,7 +47,7 @@ Message:
   '}'(';')?;
 
 MessageElement:
-  Type | Property | Group | ExtendMessage;
+  Type | Property | Group | ExtendMessage | Option;
 
 Group:
   modifier=Modifier 'group' name=ID '=' index=INT ('[' 'deprecated' '=' deprecated=BooleanRef ']')? '{'
@@ -55,9 +55,11 @@ Group:
   '}'(';')?;
 
 Property:
-  modifier=Modifier type=AbstractTypeReference name=ID '=' index=INT (('[' 'default' '=' default=ValueRef
-  ']') | ('[' 'packed' '=' packed=BooleanRef ']') | ('[' 'deprecated' '=' deprecated=BooleanRef ']')
-  | ('[' 'default' '=' default=ValueRef ',' 'deprecated' '=' deprecated=BooleanRef ']') )? ';';
+  modifier=Modifier type=AbstractTypeReference name=ID '=' index=INT 
+  (('[' 'default' '=' default=ValueRef ']') 
+    | ('[' 'packed' '=' packed=BooleanRef ']') 
+    | ('[' 'deprecated' '=' deprecated=BooleanRef ']')
+    | ('[' 'default' '=' default=ValueRef ',' 'deprecated' '=' deprecated=BooleanRef ']') )? ';';
 
 enum Modifier:
   required
