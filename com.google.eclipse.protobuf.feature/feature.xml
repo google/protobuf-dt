@@ -5,7 +5,7 @@
       version="1.0.0"
       provider-name="Google">
 
-   <description>
+   <description url="https://code.google.com/p/protobuf-dt/">
       An Eclipse-based Development Environment for Protocol Buffers
    </description>
 
