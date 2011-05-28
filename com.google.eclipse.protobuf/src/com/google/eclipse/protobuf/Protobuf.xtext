@@ -32,7 +32,7 @@ QualifiedName:
   ID ('.' ID)*;
 
 Option:
-  'option' name=ID '=' value=ValueRef ';';
+  (('option' name=ID '=' value=ValueRef ';') | ('option' '('name=ID')' '=' value=ValueRef ';') );
 
 ProtobufElement:
   Type | ExtendMessage | Service;
@@ -137,7 +137,8 @@ Service:
  '}';
 
 Rpc: 
-  'rpc' name=ID  '(' argType=MessageReference ')' 'returns' '(' returnType=MessageReference ')' (('{' '}') | ';')
+  'rpc' name=ID  '(' argType=MessageReference ')' 'returns' '(' returnType=MessageReference ')' 
+  (('{' options+=Option* '}') | ';')
 ;
 
 MessageReference:
