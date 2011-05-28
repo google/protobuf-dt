@@ -34,9 +34,9 @@ public class ProtobufSyntaxErrorMessageProvider extends SyntaxErrorMessageProvid
 
   private String mapToProtocMessage(String message, Property property) {
     if (message.contains("RULE_ID") && property.getName() == null)
-      return Error_expectedFieldName;
+      return expectedFieldName;
     if (message.equals("mismatched input ';' expecting '='") && property.getIndex() == 0)
-      return Error_missingFieldNumber;
+      return missingFieldNumber;
     return message;
   }
 

@@ -15,17 +15,17 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
 
+  public static String expectedFieldName;
+  public static String expectedFieldNumber;
+  public static String expectedSyntaxIdentifier;
+  public static String fieldNumberAlreadyUsed;
+  public static String fieldNumbersMustBePositive;
+  public static String missingFieldNumber;
+  public static String unrecognizedSyntaxIdentifier;
+
   static {
     Class<Messages> targetType = Messages.class;
     NLS.initializeMessages(targetType.getName(), targetType);
   }
-
   private Messages() {}
-
-  public static String Error_expectedFieldName;
-  public static String Error_expectedFieldNumber;
-  public static String Error_missingFieldNumber;
-  public static String Error_fieldNumbersMustBePositive;
-  public static String Error_unrecognizedSyntaxIdentifier;
-  public static String Error_expectedSyntaxIdentifier;
 }
