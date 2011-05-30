@@ -30,7 +30,6 @@ public class CommonKeyword_hasValue_Test {
     assertThat(CLOSING_BRACKET.hasValue("]"), equalTo(true));
     assertThat(DEFAULT.hasValue("default"), equalTo(true));
     assertThat(EQUAL.hasValue("="), equalTo(true));
-    assertThat(PACKED.hasValue("packed"), equalTo(true));
     assertThat(SEMICOLON.hasValue(";"), equalTo(true));
     assertThat(STRING.hasValue("string"), equalTo(true));
   }

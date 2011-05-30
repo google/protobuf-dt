@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.contentassist;
 
-import static com.google.eclipse.protobuf.protobuf.Modifier.*;
+import static com.google.eclipse.protobuf.protobuf.Modifier.OPTIONAL;
 import static com.google.eclipse.protobuf.protobuf.ScalarType.STRING;
 import static com.google.eclipse.protobuf.ui.grammar.CommonKeyword.*;
 import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.*;
@@ -189,10 +189,6 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (OPENING_BRACKET.hasValue(keyword)) {
       return proposeOpenBracket(context, acceptor);
     }
-    if (PACKED.hasValue(keyword)) {
-      proposePackedOption(context, acceptor);
-      return true;
-    }
     if (TRUE.hasValue(keyword) || FALSE.hasValue(keyword)) {
       if (!isBoolProposalValid(context)) return true;
     }
@@ -240,17 +236,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       }
       createAndAccept(display, cursorPosition, context, acceptor);
     }
-    if (REPEATED.equals(modifier) && properties.isPrimitive(p))
-      proposeAndAccept(PACKED_EQUAL_TRUE_IN_BRACKETS, context, acceptor);
     return true;
-  }
-
-  private void proposePackedOption(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    Property p = extractPropertyFrom(context);
-    if (p == null) return;
-    Modifier modifier = p.getModifier();
-    if (!REPEATED.equals(modifier) || !properties.isPrimitive(p)) return;
-    proposeAndAccept(PACKED_EQUAL_TRUE, context, acceptor);
   }
 
   private void proposeAndAccept(CompoundElement proposalText, ContentAssistContext context,

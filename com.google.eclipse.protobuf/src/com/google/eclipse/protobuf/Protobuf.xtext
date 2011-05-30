@@ -56,10 +56,9 @@ Group:
 
 Property:
   modifier=Modifier type=AbstractTypeReference name=ID '=' index=INT 
-  (('[' 'default' '=' default=ValueRef ']') 
-    | ('[' 'packed' '=' packed=BooleanRef ']') 
-    | ('[' 'deprecated' '=' deprecated=BooleanRef ']')
-    | ('[' 'default' '=' default=ValueRef ',' 'deprecated' '=' deprecated=BooleanRef ']') )? ';';
+  ('[' 
+    ('default' '=' default=ValueRef)? (fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)*)?
+  ']')? ';';
 
 FieldOption:
   name=ID '=' value=ValueRef;

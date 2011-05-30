@@ -20,7 +20,7 @@ public enum CommonKeyword {
   // implementation anyway.
 
   BOOL("bool"), TRUE("true"), FALSE("false"), BYTES("bytes"), OPENING_BRACKET("["), CLOSING_BRACKET("]"),
-    DEFAULT("default"), EQUAL("="), PACKED("packed"), SEMICOLON(";"), STRING("string"), SYNTAX("syntax");
+    DEFAULT("default"), EQUAL("="), SEMICOLON(";"), STRING("string"), SYNTAX("syntax");
 
   private final String value;
 

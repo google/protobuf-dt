@@ -8,9 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.commands;
 
-import static com.google.eclipse.protobuf.protobuf.Modifier.REPEATED;
 import static com.google.eclipse.protobuf.ui.grammar.CommonKeyword.SEMICOLON;
-import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.PACKED_EQUAL_TRUE_IN_BRACKETS;
 
 import java.util.regex.Pattern;
 
@@ -95,24 +93,9 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
 
   private String contentToInsert(String line, Property property) {
     boolean hasIndexAlready = PROPERTY_WITH_INDEX.matcher(line).matches();
-    if (hasIndexAlready) {
-      // we can still insert '[packed = true]' if necessary
-      if (shouldInsertPackedOption(property)) {
-        String content = PACKED_EQUAL_TRUE_IN_BRACKETS + semicolon;
-        return addSpaceAtBeginning(line, content);
-      }
-      return semicolon;
-    }
+    if (hasIndexAlready) return semicolon;
     int index = properties.calculateTagNumberOf(property);
-    if (shouldInsertPackedOption(property)) {
-      String format = "= %d " + PACKED_EQUAL_TRUE_IN_BRACKETS + "%s";
-      return indexAndSemicolonToInsert(format, line, index);
-    }
     return defaultIndexAndSemicolonToInsert(line, index);
-  }
-
-  private boolean shouldInsertPackedOption(Property property) {
-    return REPEATED.equals(property.getModifier()) && properties.isPrimitive(property);
   }
 
   private String defaultIndexAndSemicolonToInsert(String line, int index) {

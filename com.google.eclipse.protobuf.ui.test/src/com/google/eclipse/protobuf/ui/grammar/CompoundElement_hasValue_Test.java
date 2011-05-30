@@ -27,8 +27,6 @@ public class CompoundElement_hasValue_Test {
     assertThat(EMPTY_STRING.hasValue("\"\""), equalTo(true));
     assertThat(DEFAULT_EQUAL_STRING.hasValue("default = \"\""), equalTo(true));
     assertThat(DEFAULT_EQUAL_STRING_IN_BRACKETS.hasValue("[default = \"\"]"), equalTo(true));
-    assertThat(PACKED_EQUAL_TRUE.hasValue("packed = true"), equalTo(true));
-    assertThat(PACKED_EQUAL_TRUE_IN_BRACKETS.hasValue("[packed = true]"), equalTo(true));
   }
 
   @Test public void should_return_false_if_value_is_not_equal_to_String() {
