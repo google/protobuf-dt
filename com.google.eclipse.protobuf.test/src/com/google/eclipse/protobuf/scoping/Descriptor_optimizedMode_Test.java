@@ -18,22 +18,22 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.Enum;
 
 /**
- * Tests for <code>{@link Globals#optimizedMode()}</code>.
+ * Tests for <code>{@link Descriptor#optimizedMode()}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Globals_optimizedMode_Test {
+public class Descriptor_optimizedMode_Test {
 
   @Rule public XtextRule xtext = new XtextRule();
   
-  private Globals globals;
+  private Descriptor descriptor;
   
   @Before public void setUp() {
-    globals = xtext.getInstanceOf(Globals.class);
+    descriptor = xtext.getInstanceOf(Descriptor.class);
   }
   
   @Test public void should_return_enum_OptimizeMode() {
-    Enum optimizedMode = globals.optimizedMode();
+    Enum optimizedMode = descriptor.optimizedMode();
     assertThat(optimizedMode.getName(), equalTo("OptimizeMode"));
     assertThat(optimizedMode, hasLiterals("SPEED", "CODE_SIZE", "LITE_RUNTIME"));
   }

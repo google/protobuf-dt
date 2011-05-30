@@ -25,7 +25,7 @@ import org.eclipse.xtext.ui.editor.contentassist.*;
 import com.google.common.collect.ImmutableList;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.eclipse.protobuf.scoping.Globals;
+import com.google.eclipse.protobuf.scoping.*;
 import com.google.eclipse.protobuf.ui.grammar.*;
 import com.google.eclipse.protobuf.ui.grammar.CompoundElement;
 import com.google.eclipse.protobuf.ui.labeling.Images;
@@ -43,7 +43,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   private static final String SPACE = " ";
 
   @Inject private ProtobufElementFinder finder;
-  @Inject private Globals globals;
+  @Inject private DescriptorProvider descriptorProvider;
   @Inject private PluginImageHelper imageHelper;
   @Inject private Images imageRegistry;
   @Inject private Literals literals;
@@ -76,7 +76,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   }
 
   private void proposeCommonFileOptions(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    for (Property fileOption : globals.fileOptions()) {
+    for (Property fileOption : descriptorProvider.get().fileOptions()) {
       String displayString = fileOption.getName();
       String proposalText = displayString + SPACE + EQUAL + SPACE;
       boolean isStringOption = properties.isString(fileOption);
@@ -95,10 +95,11 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Override public void completeOption_Value(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     Option option = (Option) model;
-    Property fileOption = globals.lookupFileOption(option.getName());
+    Descriptor descriptor = descriptorProvider.get();
+    Property fileOption = descriptor.lookupFileOption(option.getName());
     if (fileOption == null) return;
-    if (globals.isOptimizeForOption(option)) {
-      proposeAndAccept(globals.optimizedMode(), context, acceptor);
+    if (descriptor.isOptimizeForOption(option)) {
+      proposeAndAccept(descriptor.optimizedMode(), context, acceptor);
       return;
     }
     if (properties.isString(fileOption)) {
@@ -219,7 +220,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     EObject model = context.getCurrentModel();
     if (model instanceof Property) return properties.isBool((Property) model);
     if (model instanceof Option) {
-      Property fileOption = globals.lookupFileOption(((Option) model).getName());
+      Property fileOption = descriptorProvider.get().lookupFileOption(((Option) model).getName());
       return fileOption != null && properties.isBool(fileOption);
     }
     return false;

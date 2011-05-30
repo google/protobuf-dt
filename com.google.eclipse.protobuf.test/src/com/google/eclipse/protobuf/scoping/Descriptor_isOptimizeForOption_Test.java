@@ -19,18 +19,18 @@ import com.google.eclipse.protobuf.protobuf.Option;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 
 /**
- * Tests for <code>{@link Globals#isOptimizeForOption(Option)}</code>.
+ * Tests for <code>{@link Descriptor#isOptimizeForOption(Option)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Globals_isOptimizeForOption_Test {
+public class Descriptor_isOptimizeForOption_Test {
 
   @Rule public XtextRule xtext = new XtextRule();
   
-  private Globals globals;
+  private Descriptor descriptor;
   
   @Before public void setUp() {
-    globals = xtext.getInstanceOf(Globals.class);
+    descriptor = xtext.getInstanceOf(Descriptor.class);
   }
   
   @Test public void should_return_true_if_option_is_OptimizeForOption() {
@@ -39,7 +39,7 @@ public class Globals_isOptimizeForOption_Test {
          .append("option optimize_for = CODE_SIZE;             "); 
     Protobuf root = xtext.parse(proto);
     Option option = findOption("optimize_for", root);
-    assertThat(globals.isOptimizeForOption(option), equalTo(true));
+    assertThat(descriptor.isOptimizeForOption(option), equalTo(true));
   }
 
   @Test public void should_return_false_if_option_is_not_OptimizeForOption() {
@@ -48,10 +48,10 @@ public class Globals_isOptimizeForOption_Test {
          .append("option optimize_for = CODE_SIZE;             "); 
     Protobuf root = xtext.parse(proto);
     Option option = findOption("java_generate_equals_and_hash", root);
-    assertThat(globals.isOptimizeForOption(option), equalTo(false));
+    assertThat(descriptor.isOptimizeForOption(option), equalTo(false));
   }
 
   @Test public void should_return_false_if_option_is_null() {
-    assertThat(globals.isOptimizeForOption(null), equalTo(false));
+    assertThat(descriptor.isOptimizeForOption(null), equalTo(false));
   }
 }

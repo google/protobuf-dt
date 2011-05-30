@@ -11,7 +11,7 @@ import static java.util.Collections.singletonMap;
 import static org.eclipse.core.runtime.IStatus.ERROR;
 import static org.eclipse.emf.common.util.URI.createURI;
 import static org.eclipse.emf.ecore.resource.ContentHandler.UNSPECIFIED_CONTENT_TYPE;
-import static org.eclipse.emf.ecore.util.EcoreUtil.resolveAll;
+import static org.eclipse.xtext.EcoreUtil2.resolveLazyCrossReferences;
 import static org.eclipse.xtext.resource.XtextResource.OPTION_ENCODING;
 import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
 import static org.eclipse.xtext.validation.CheckMode.FAST_ONLY;
@@ -26,19 +26,15 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.ide.FileStoreEditorInput;
-import org.eclipse.xtext.linking.lazy.LazyLinkingResource;
 import org.eclipse.xtext.resource.XtextResource;
-import org.eclipse.xtext.ui.editor.model.XtextDocument;
-import org.eclipse.xtext.ui.editor.model.XtextDocumentProvider;
+import org.eclipse.xtext.ui.editor.model.*;
 import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionProvider;
-import org.eclipse.xtext.ui.editor.validation.AnnotationIssueProcessor;
-import org.eclipse.xtext.ui.editor.validation.ValidationJob;
+import org.eclipse.xtext.ui.editor.validation.*;
 import org.eclipse.xtext.ui.resource.IResourceSetProvider;
 import org.eclipse.xtext.util.StringInputStream;
 import org.eclipse.xtext.validation.IResourceValidator;
 
-import com.google.eclipse.protobuf.ui.util.Closeables;
-import com.google.eclipse.protobuf.ui.util.Resources;
+import com.google.eclipse.protobuf.ui.util.*;
 import com.google.inject.Inject;
 
 /**
@@ -149,11 +145,7 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-    if (resource instanceof LazyLinkingResource) {
-      ((LazyLinkingResource) resource).resolveLazyCrossReferences(NullImpl);
-      return resource;
-    }
-    resolveAll(resource);
+    resolveLazyCrossReferences(resource, NullImpl);
     return resource;
   }
 }

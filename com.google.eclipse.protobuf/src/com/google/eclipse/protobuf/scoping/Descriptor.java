@@ -10,28 +10,26 @@ package com.google.eclipse.protobuf.scoping;
 
 import static java.util.Collections.unmodifiableCollection;
 import static org.eclipse.emf.common.util.URI.createURI;
-import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
+import static org.eclipse.xtext.EcoreUtil2.*;
+import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
 
 import java.io.*;
 import java.util.*;
 
-import org.eclipse.xtext.parser.IParseResult;
-import org.eclipse.xtext.parser.IParser;
+import org.eclipse.xtext.parser.*;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.util.StringInputStream;
 
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 /**
- * Protobuf elements accessible to any .proto file.
+ * Contains the elements from descriptor.proto (provided with protobuf's library.)
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
-public class Globals {
+public class Descriptor {
 
   private Protobuf root;
 
@@ -39,15 +37,16 @@ public class Globals {
   private Enum optimizedMode;
 
   /**
-   * Creates a new </code>{@link Globals}</code>.
+   * Creates a new </code>{@link Descriptor}</code>.
    * @param parser the grammar parser.
    */
-  @Inject public Globals(IParser parser) {
+  @Inject public Descriptor(IParser parser) {
     try {
-      XtextResource resource = new XtextResource(createURI("globals.proto"));
+      XtextResource resource = new XtextResource(createURI("descriptor.proto"));
       IParseResult result = parser.parse(new InputStreamReader(globalScopeContents(), "UTF-8"));
       root = (Protobuf) result.getRootASTElement();
       resource.getContents().add(root);
+      resolveLazyCrossReferences(resource, NullImpl);
       initContents();
     } catch (IOException e) {
       throw new IllegalStateException("Unable to parse global scope", e);
@@ -55,10 +54,10 @@ public class Globals {
   }
 
   private static InputStream globalScopeContents() {
-    return new StringInputStream(globalProto());
+    return new StringInputStream(descriptorContents());
   }
 
-  private static String globalProto() {
+  private static String descriptorContents() {
     StringBuilder proto = new StringBuilder();
     proto.append("message FileOptions {")
          .append("  optional string java_package = 1;")
@@ -74,7 +73,17 @@ public class Globals {
          .append("  optional bool cc_generic_services = 16 [default=false];")
          .append("  optional bool java_generic_services = 17 [default=false];")
          .append("  optional bool py_generic_services = 18 [default=false];")
-         .append("  repeated UninterpretedOption uninterpreted_option = 999;")
+         .append("  extensions 1000 to max;")
+         .append("}")
+         .append("message FieldOptions {")
+         .append("  optional CType ctype = 1 [default = STRING];")
+         .append("  enum CType {")
+         .append("    STRING = 0;")
+         .append("    CORD = 1;")
+         .append("    STRING_PIECE = 2;")
+         .append("  }")
+         .append("  optional bool packed = 2;")
+         .append("  optional bool deprecated = 3 [default=false];")
          .append("  extensions 1000 to max;")
          .append("}");
     return proto.toString();
@@ -93,7 +102,7 @@ public class Globals {
       }
     }
   }
-  
+
   private boolean isOptimizeModeEnum(MessageElement e) {
     if (!(e instanceof Enum)) return false;
     Enum anEnum = (Enum) e;
@@ -111,7 +120,7 @@ public class Globals {
   }
 
   /**
-   * Returns all the file-level options available. These are the options defined in 
+   * Returns all the file-level options available. These are the options defined in
    * {@code google/protobuf/descriptor.proto} (more details can be found
    * <a href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
    * @return all the file-level options available.
@@ -121,8 +130,8 @@ public class Globals {
   }
 
   /**
-   * Returns the {@code enum} "OptimizeMode" (defined in {@code google/protobuf/descriptor.proto}. More details can be 
-   * found <a href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.) 
+   * Returns the {@code enum} "OptimizeMode" (defined in {@code google/protobuf/descriptor.proto}. More details can be
+   * found <a href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
    * @return the {@code enum} "OptimizeMode."
    */
   public Enum optimizedMode() {
@@ -130,9 +139,9 @@ public class Globals {
   }
 
   /**
-   * Indicates whether the given option is the "OptimizeMode" one (defined in {@code google/protobuf/descriptor.proto}. 
-   * More details can be found 
-   * <a href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.) 
+   * Indicates whether the given option is the "OptimizeMode" one (defined in {@code google/protobuf/descriptor.proto}.
+   * More details can be found
+   * <a href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
    * @param option the given option.
    * @return {@code true} if the given option is the "OptimizeMode" one, {@code false} otherwise.
    */

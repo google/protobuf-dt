@@ -20,23 +20,23 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.Property;
 
 /**
- * Tests for <code>{@link Globals#fileOptions()}</code>.
+ * Tests for <code>{@link Descriptor#fileOptions()}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Globals_fileOptions_Test {
+public class Descriptor_fileOptions_Test {
 
   @Rule public XtextRule xtext = new XtextRule();
-  
-  private Globals globals;
-  
+
+  private Descriptor descriptor;
+
   @Before public void setUp() {
-    globals = xtext.getInstanceOf(Globals.class);
+    descriptor = xtext.getInstanceOf(Descriptor.class);
   }
-  
+
   @Test public void should_return_all_file_options() {
-    Map<String, Property> fileOptions = mapByName(globals.fileOptions());
-    assertThat(fileOptions.get("java_package"), hasType("string"));   
+    Map<String, Property> fileOptions = mapByName(descriptor.fileOptions());
+    assertThat(fileOptions.get("java_package"), hasType("string"));
     assertThat(fileOptions.get("java_outer_classname"), hasType("string"));
     assertThat(fileOptions.get("java_multiple_files"), hasType("bool"));
     assertThat(fileOptions.get("java_generate_equals_and_hash"), hasType("bool"));

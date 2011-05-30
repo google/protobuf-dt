@@ -14,14 +14,10 @@ import static org.eclipse.xtext.resource.EObjectDescription.create;
 
 import java.util.*;
 
-import org.eclipse.emf.common.util.TreeIterator;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.xtext.naming.IQualifiedNameProvider;
-import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.emf.common.util.*;
+import org.eclipse.emf.ecore.*;
+import org.eclipse.emf.ecore.resource.*;
+import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.impl.*;
@@ -43,7 +39,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   private static final boolean DO_NOT_IGNORE_CASE = false;
 
   @Inject private ProtobufElementFinder finder;
-  @Inject private Globals globals;
+  @Inject private DescriptorProvider descriptorProvider;
   @Inject private IQualifiedNameProvider nameProvider;
   @Inject private ImportUriResolver uriResolver;
   @Inject private AlternativeQualifiedNamesProvider alternativeNamesProvider;
@@ -126,8 +122,9 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
       Enum enumType = finder.enumTypeOf((Property) container);
       if (enumType != null) return scopeForLiterals(enumType);
     }
-    if (container instanceof Option && globals.isOptimizeForOption((Option) container)) {
-      Enum optimizedMode = globals.optimizedMode();
+    Descriptor descriptor = descriptorProvider.get();
+    if (container instanceof Option && descriptor.isOptimizeForOption((Option) container)) {
+      Enum optimizedMode = descriptor.optimizedMode();
       return scopeForLiterals(optimizedMode);
     }
     return null;

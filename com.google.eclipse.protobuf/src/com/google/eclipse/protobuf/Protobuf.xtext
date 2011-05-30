@@ -32,7 +32,7 @@ QualifiedName:
   ID ('.' ID)*;
 
 Option:
-  (('option' name=ID '=' value=ValueRef ';') | ('option' '('name=ID')' '=' value=ValueRef ';') );
+  'option' name=ID '=' value=ValueRef ';';
 
 ProtobufElement:
   Type | ExtendMessage | Service;
@@ -60,6 +60,9 @@ Property:
     | ('[' 'packed' '=' packed=BooleanRef ']') 
     | ('[' 'deprecated' '=' deprecated=BooleanRef ']')
     | ('[' 'default' '=' default=ValueRef ',' 'deprecated' '=' deprecated=BooleanRef ']') )? ';';
+
+FieldOption:
+  name=ID '=' value=ValueRef;
 
 enum Modifier:
   required

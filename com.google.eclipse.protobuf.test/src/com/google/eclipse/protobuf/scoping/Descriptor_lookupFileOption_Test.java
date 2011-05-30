@@ -18,26 +18,26 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.Property;
 
 /**
- * Tests for <code>{@link Globals#lookupFileOption(String)}</code>.
+ * Tests for <code>{@link Descriptor#lookupFileOption(String)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Globals_lookupFileOption_Test {
+public class Descriptor_lookupFileOption_Test {
 
   @Rule public XtextRule xtext = new XtextRule();
   
-  private Globals globals;
+  private Descriptor descriptor;
   
   @Before public void setUp() {
-    globals = xtext.getInstanceOf(Globals.class);
+    descriptor = xtext.getInstanceOf(Descriptor.class);
   }
 
   @Test public void should_look_up_file_option() {
-    Property option = globals.lookupFileOption("java_multiple_files");
+    Property option = descriptor.lookupFileOption("java_multiple_files");
     assertThat(option.getName(), equalTo("java_multiple_files"));
   }
   
   @Test public void should_return_null_if_option_not_found() {
-    assertThat(globals.lookupFileOption("hello"), nullValue());
+    assertThat(descriptor.lookupFileOption("hello"), nullValue());
   }
 }
