@@ -50,15 +50,18 @@ MessageElement:
   Type | Property | Group | ExtendMessage | Option;
 
 Group:
-  modifier=Modifier 'group' name=ID '=' index=INT ('[' 'deprecated' '=' deprecated=BooleanRef ']')? '{'
+  modifier=Modifier 'group' name=ID '=' index=INT 
+  ('[' (fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)*) ']')? '{'
   elements+=Property*
   '}'(';')?;
 
 Property:
   modifier=Modifier type=AbstractTypeReference name=ID '=' index=INT 
-  ('[' 
-    ('default' '=' default=ValueRef)? (fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)*)?
-  ']')? ';';
+  (
+    ('[' 'default' '=' default=ValueRef ']') |
+    ('[' 'default' '=' default=ValueRef (',' fieldOptions+=FieldOption)* ']') |
+    ('[' fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)* ']')
+  )? ';';
 
 FieldOption:
   name=ID '=' value=ValueRef;

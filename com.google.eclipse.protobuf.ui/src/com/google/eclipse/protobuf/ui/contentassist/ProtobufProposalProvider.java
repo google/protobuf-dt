@@ -249,7 +249,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (!OPTIONAL.equals(modifier)) return;
     CompoundElement display = DEFAULT_EQUAL;
     int cursorPosition = display.charCount();
-    if (isStringProperty((Property) context.getCurrentModel())) {
+    Property property = extractPropertyFrom(context);
+    if (isStringProperty(property)) {
       display = DEFAULT_EQUAL_STRING;
       cursorPosition++;
     }
