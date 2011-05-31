@@ -143,7 +143,7 @@ Service:
 
 Rpc: 
   'rpc' name=ID  '(' argType=MessageReference ')' 'returns' '(' returnType=MessageReference ')' 
-  (('{' options+=Option* '}') | ';')
+  (('{' options+=Option* '}')(';')? | ';')
 ;
 
 MessageReference:
