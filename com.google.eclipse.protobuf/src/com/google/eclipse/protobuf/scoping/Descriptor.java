@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static com.google.eclipse.protobuf.scoping.OptionType.*;
 import static java.util.Collections.unmodifiableCollection;
 import static org.eclipse.emf.common.util.URI.createURI;
 import static org.eclipse.xtext.EcoreUtil2.*;
@@ -16,7 +17,8 @@ import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
 import java.io.*;
 import java.util.*;
 
-import org.eclipse.xtext.parser.*;
+import org.eclipse.xtext.parser.IParseResult;
+import org.eclipse.xtext.parser.IParser;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.util.StringInputStream;
 
@@ -33,14 +35,17 @@ public class Descriptor {
 
   private Protobuf root;
 
-  private final Map<String, Property> fileOptions = new LinkedHashMap<String, Property>();
+  private final Map<OptionType, Map<String, Property>> options = new HashMap<OptionType, Map<String, Property>>();
+   
   private Enum optimizedMode;
+  private Enum cType;
 
   /**
    * Creates a new </code>{@link Descriptor}</code>.
    * @param parser the grammar parser.
    */
   @Inject public Descriptor(IParser parser) {
+    addOptionTypes();
     try {
       XtextResource resource = new XtextResource(createURI("descriptor.proto"));
       IParseResult result = parser.parse(new InputStreamReader(globalScopeContents(), "UTF-8"));
@@ -53,6 +58,11 @@ public class Descriptor {
     }
   }
 
+  private void addOptionTypes() {
+    for (OptionType type : OptionType.values())
+      options.put(type, new LinkedHashMap<String, Property>());
+  }
+  
   private static InputStream globalScopeContents() {
     return new StringInputStream(descriptorContents());
   }
@@ -90,35 +100,64 @@ public class Descriptor {
   }
 
   private void initContents() {
-    Message m = fileOptionsMessage();
-    for (MessageElement e : m.getElements()) {
+    for (Message m : getAllContentsOfType(root, Message.class)) {
+      if (isFileOptionsMessage(m)) initFileOptions(m);
+      else if (isFieldOptionsMessage(m)) initFieldOptions(m);
+    }
+  }
+  
+  private boolean isFileOptionsMessage(Message m) {
+    return "FileOptions".equals(m.getName());
+  }
+
+  private boolean isFieldOptionsMessage(Message m) {
+    return "FieldOptions".equals(m.getName());
+  }
+
+  private void initFileOptions(Message fileOptionsMessage) {
+    for (MessageElement e : fileOptionsMessage.getElements()) {
       if (e instanceof Property) {
         addFileOption((Property) e);
         continue;
       }
-      if (isOptimizeModeEnum(e)) {
+      if (isEnumWithName(e, "OptimizeMode")) {
         optimizedMode = (Enum) e;
         continue;
       }
     }
   }
+  
+  private void addFileOption(Property p) {
+    addOption(FILE, p);
+  }
 
-  private boolean isOptimizeModeEnum(MessageElement e) {
+  private void initFieldOptions(Message fieldOptionsMessage) {
+    for (MessageElement e : fieldOptionsMessage.getElements()) {
+      if (e instanceof Property) {
+        addFieldOption((Property) e);
+        continue;
+      }
+      if (isEnumWithName(e, "CType")) {
+        cType = (Enum) e;
+        continue;
+      }
+    }
+  }
+  
+  private void addFieldOption(Property p) {
+    addOption(FIELD, p);
+  }
+  
+  private void addOption(OptionType type, Property p) {
+    options.get(type).put(p.getName(), p);
+  }
+  
+  private boolean isEnumWithName(MessageElement e, String name) {
     if (!(e instanceof Enum)) return false;
     Enum anEnum = (Enum) e;
-    return "OptimizeMode".equals(anEnum.getName());
+    return name.equals(anEnum.getName());
   }
-
-  private Message fileOptionsMessage() {
-    for (Message m : getAllContentsOfType(root, Message.class))
-      if ("FileOptions".equals(m.getName())) return m;
-    throw new IllegalStateException("Unable to find message 'FileOptions'");
-  }
-
-  private void addFileOption(Property p) {
-    fileOptions.put(p.getName(), p);
-  }
-
+  
   /**
    * Returns all the file-level options available. These are the options defined in
    * {@code google/protobuf/descriptor.proto} (more details can be found
@@ -126,7 +165,7 @@ public class Descriptor {
    * @return all the file-level options available.
    */
   public Collection<Property> fileOptions() {
-    return unmodifiableCollection(fileOptions.values());
+    return optionsOfType(FILE);
   }
 
   /**
@@ -139,11 +178,11 @@ public class Descriptor {
   }
 
   /**
-   * Indicates whether the given option is the "OptimizeMode" one (defined in {@code google/protobuf/descriptor.proto}.
+   * Indicates whether the given option is the "optimize_for" one (defined in {@code google/protobuf/descriptor.proto}.
    * More details can be found
    * <a href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
    * @param option the given option.
-   * @return {@code true} if the given option is the "OptimizeMode" one, {@code false} otherwise.
+   * @return {@code true} if the given option is the "optimize_for" one, {@code false} otherwise.
    */
   public boolean isOptimizeForOption(Option option) {
     if (option == null) return false;
@@ -158,6 +197,56 @@ public class Descriptor {
    * @return the option whose name matches the given one or {@code null} if a matching option is not found.
    */
   public Property lookupFileOption(String name) {
-    return fileOptions.get(name);
+    return lookupOption(FILE, name);
+  }
+
+  /**
+   * Returns all the field-level options available. These are the options defined in
+   * {@code google/protobuf/descriptor.proto} (more details can be found
+   * <a href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
+   * @return all the field-level options available.
+   */
+  public Collection<Property> fieldOptions() {
+    return optionsOfType(FIELD);
+  }
+
+  private Collection<Property> optionsOfType(OptionType type) {
+    return unmodifiableCollection(options.get(type).values());
+  }
+  
+  /**
+   * Looks up a field-level option per name. Field-level options are defined in {@code google/protobuf/descriptor.proto}
+   * (more details can be found <a
+   * href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
+   * @param name the name of the option to look for.
+   * @return the option whose name matches the given one or {@code null} if a matching option is not found.
+   */
+  public Property lookupFieldOption(String name) {
+    return lookupOption(FIELD, name);
+  }
+  
+  private Property lookupOption(OptionType type, String name) {
+    return options.get(type).get(name);
+  }
+
+  /**
+   * Indicates whether the given option is the "ctype" one (defined in {@code google/protobuf/descriptor.proto}.
+   * More details can be found
+   * <a href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
+   * @param option the given option.
+   * @return {@code true} if the given option is the "ctype" one, {@code false} otherwise.
+   */
+  public boolean isCTypeOption(FieldOption option) {
+    if (option == null) return false;
+    return "ctype".equals(option.getName());
+  }
+  
+  /**
+   * Returns the {@code enum} "CType" (defined in {@code google/protobuf/descriptor.proto}. More details can be
+   * found <a href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
+   * @return the {@code enum} "CType."
+   */
+  public Enum cType() {
+    return cType;
   }
 }

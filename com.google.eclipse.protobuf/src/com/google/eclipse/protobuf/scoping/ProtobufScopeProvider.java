@@ -14,10 +14,14 @@ import static org.eclipse.xtext.resource.EObjectDescription.create;
 
 import java.util.*;
 
-import org.eclipse.emf.common.util.*;
-import org.eclipse.emf.ecore.*;
-import org.eclipse.emf.ecore.resource.*;
-import org.eclipse.xtext.naming.*;
+import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.xtext.naming.IQualifiedNameProvider;
+import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.impl.*;
@@ -126,6 +130,10 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     if (container instanceof Option && descriptor.isOptimizeForOption((Option) container)) {
       Enum optimizedMode = descriptor.optimizedMode();
       return scopeForLiterals(optimizedMode);
+    }
+    if (container instanceof FieldOption && descriptor.isCTypeOption((FieldOption) container)) {
+      Enum cType = descriptor.cType();
+      return scopeForLiterals(cType);
     }
     return null;
   }

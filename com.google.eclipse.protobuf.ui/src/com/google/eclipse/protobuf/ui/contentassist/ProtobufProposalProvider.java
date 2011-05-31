@@ -13,6 +13,10 @@ import static com.google.eclipse.protobuf.protobuf.ScalarType.STRING;
 import static com.google.eclipse.protobuf.ui.grammar.CommonKeyword.*;
 import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.*;
 import static java.lang.String.valueOf;
+import static java.util.Collections.emptyList;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -25,8 +29,9 @@ import org.eclipse.xtext.ui.editor.contentassist.*;
 import com.google.common.collect.ImmutableList;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.eclipse.protobuf.scoping.*;
-import com.google.eclipse.protobuf.ui.grammar.*;
+import com.google.eclipse.protobuf.scoping.Descriptor;
+import com.google.eclipse.protobuf.scoping.DescriptorProvider;
+import com.google.eclipse.protobuf.ui.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.ui.grammar.CompoundElement;
 import com.google.eclipse.protobuf.ui.labeling.Images;
 import com.google.eclipse.protobuf.ui.util.*;
@@ -112,21 +117,6 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     }
   }
 
-  private void proposeBooleanValues(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    CommonKeyword[] keywords = { FALSE, TRUE };
-    proposeAndAccept(keywords, context, acceptor);
-  }
-
-  private void proposeAndAccept(CommonKeyword[] keywords, ContentAssistContext context,
-      ICompletionProposalAcceptor acceptor) {
-    for (CommonKeyword keyword : keywords) proposeAndAccept(keyword, context, acceptor);
-  }
-
-  private void proposeAndAccept(CommonKeyword keyword, ContentAssistContext context,
-      ICompletionProposalAcceptor acceptor) {
-    proposeAndAccept(keyword.toString(), context, acceptor);
-  }
-
   @Override public void complete_ID(EObject model, RuleCall ruleCall, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {}
 
@@ -138,7 +128,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       proposeEmptyString(context, acceptor);
       return;
     }
-    if (model instanceof Option || model instanceof Syntax) return;
+    if (model instanceof Option || model instanceof FieldOption || model instanceof Syntax) return;
     for (AbstractElement element : context.getFirstSetGrammarElements()) {
       if (!(element instanceof Assignment)) continue;
       Assignment assignment = (Assignment) element;
@@ -192,7 +182,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (TRUE.hasValue(keyword) || FALSE.hasValue(keyword)) {
       if (!isBoolProposalValid(context)) return true;
     }
-    return false;
+    // remove keyword proposals when current node is "]". At this position we only accept "default" or field options.
+    return context.getCurrentNode().getText().equals(CLOSING_BRACKET.toString());
   }
 
   private void proposeEqualProto2(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
@@ -201,15 +192,6 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   private boolean isKeyword(EObject object, CommonKeyword keyword) {
     return object instanceof Keyword && keyword.hasValue(((Keyword)object).getValue());
-  }
-
-  private boolean isLastWordFromCaretPositionEqualTo(String word, ContentAssistContext context) {
-    StyledText styledText = context.getViewer().getTextWidget();
-    int valueLength = word.length();
-    int start = styledText.getCaretOffset() - valueLength;
-    if (start < 0) return false;
-    String previousWord = styledText.getTextRange(start, valueLength);
-    return word.equals(previousWord);
   }
 
   private boolean isBoolProposalValid(ContentAssistContext context) {
@@ -301,19 +283,6 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     proposeAndAccept(enumType, context, acceptor);
   }
 
-  private void proposeAndAccept(Enum enumType, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    Image image = imageHelper.getImage(imageRegistry.imageFor(Literal.class));
-    for (Literal literal : enumType.getLiterals())
-      proposeAndAccept(literal.getName(), image, context, acceptor);
-  }
-
-  private void proposeAndAccept(String proposalText, Image image, ContentAssistContext context,
-      ICompletionProposalAcceptor acceptor) {
-    String s = addSpaceAtBeginning(proposalText, context);
-    ICompletionProposal proposal = createCompletionProposal(s, proposalText, image, context);
-    acceptor.accept(proposal);
-  }
-
   @Override public void completeProperty_Index(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     int index = properties.calculateTagNumberOf((Property) model);
@@ -344,22 +313,96 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   }
 
   private void proposeAndAccept(String proposalText, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    String s = addSpaceAtBeginning(proposalText, context);
-    acceptor.accept(createCompletionProposal(s, context));
-  }
-
-  private String addSpaceAtBeginning(String proposal, ContentAssistContext context) {
-    if (!isLastWordFromCaretPositionEqualTo(SPACE, context)) return SPACE + proposal;
-    return proposal;
+    acceptor.accept(createCompletionProposal(proposalText, context));
   }
 
   @Override protected ICompletionProposal createCompletionProposal(String proposalText, ContentAssistContext context) {
-    String s = addSpaceAtBeginning(proposalText, context);
-    return createCompletionProposal(s, null, defaultImage(), getPriorityHelper().getDefaultPriority(),
+    return createCompletionProposal(proposalText, null, defaultImage(), getPriorityHelper().getDefaultPriority(),
         context.getPrefix(), context);
   }
 
   private Image defaultImage() {
     return imageHelper.getImage(imageRegistry.defaultImage());
+  }
+  
+  @Override public void complete_FieldOption(EObject model, RuleCall ruleCall, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+    System.out.println("complete_FieldOption");
+  }
+  
+  @Override public void completeFieldOption_Name(EObject model, Assignment assignment, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+    Property property = extractPropertyFrom(context);
+    proposeCommonFieldOptions(property, context, acceptor);
+  }
+
+  private void proposeCommonFieldOptions(Property property, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+    boolean isPrimitive = properties.isPrimitive(property);
+    List<String> options = existingFieldOptionNames(property);
+    for (Property fieldOption : descriptorProvider.get().fieldOptions()) {
+      String optionName = fieldOption.getName();
+      if (options.contains(optionName) || ("packed".equals(optionName) && !isPrimitive)) continue;
+      String proposalText = optionName + SPACE + EQUAL + SPACE;
+      boolean isBooleanOption = properties.isBool(fieldOption);
+      if (isBooleanOption) proposalText = proposalText + TRUE;
+      ICompletionProposal proposal = createCompletionProposal(proposalText, context);
+      acceptor.accept(proposal);
+    }
+  }
+  
+  private List<String> existingFieldOptionNames(Property property) {
+    List<FieldOption> options = property.getFieldOptions();
+    if (options.isEmpty()) return emptyList();
+    List<String> optionNames = new ArrayList<String>();
+    for (FieldOption option : options) optionNames.add(option.getName());
+    return optionNames;
+  }
+
+  @Override public void completeFieldOption_Value(EObject model, Assignment assignment, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+    FieldOption option = (FieldOption) model;
+    Descriptor descriptor = descriptorProvider.get();
+    Property fieldOption = descriptor.lookupFieldOption(option.getName());
+    if (fieldOption == null) return;
+    if (properties.isBool(fieldOption)) {
+      proposeBooleanValues(context, acceptor);
+      return;
+    }
+    if (descriptor.isCTypeOption(option)) {
+      proposeAndAccept(descriptor.cType(), context, acceptor);
+      return;
+    }
+  }
+
+  private void proposeBooleanValues(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    CommonKeyword[] keywords = { FALSE, TRUE };
+    proposeAndAccept(keywords, context, acceptor);
+  }
+
+  private void proposeAndAccept(CommonKeyword[] keywords, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+    for (CommonKeyword keyword : keywords) proposeAndAccept(keyword.toString(), context, acceptor);
+  }
+
+  private void proposeAndAccept(Enum enumType, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    Image image = imageHelper.getImage(imageRegistry.imageFor(Literal.class));
+    for (Literal literal : enumType.getLiterals())
+      proposeAndAccept(literal.getName(), image, context, acceptor);
+  }
+
+  private void proposeAndAccept(String proposalText, Image image, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+    ICompletionProposal proposal = createCompletionProposal(proposalText, proposalText, image, context);
+    acceptor.accept(proposal);
+  }
+
+  private boolean isLastWordFromCaretPositionEqualTo(String word, ContentAssistContext context) {
+    StyledText styledText = context.getViewer().getTextWidget();
+    int valueLength = word.length();
+    int start = styledText.getCaretOffset() - valueLength;
+    if (start < 0) return false;
+    String previousWord = styledText.getTextRange(start, valueLength);
+    return word.equals(previousWord);
   }
 }
