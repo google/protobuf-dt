@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.contentassist;
 
-import static com.google.eclipse.protobuf.protobuf.Modifier.OPTIONAL;
+import static com.google.eclipse.protobuf.protobuf.Modifier.*;
 import static com.google.eclipse.protobuf.protobuf.ScalarType.STRING;
 import static com.google.eclipse.protobuf.ui.grammar.CommonKeyword.*;
 import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.*;
@@ -338,11 +338,10 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   private void proposeCommonFieldOptions(Property property, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    boolean isPrimitive = properties.isPrimitive(property);
     List<String> options = existingFieldOptionNames(property);
     for (Property fieldOption : descriptorProvider.get().fieldOptions()) {
       String optionName = fieldOption.getName();
-      if (options.contains(optionName) || ("packed".equals(optionName) && !isPrimitive)) continue;
+      if (options.contains(optionName) || ("packed".equals(optionName) && !canBePacked(property))) continue;
       String proposalText = optionName + SPACE + EQUAL + SPACE;
       boolean isBooleanOption = properties.isBool(fieldOption);
       if (isBooleanOption) proposalText = proposalText + TRUE;
@@ -359,6 +358,10 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     return optionNames;
   }
 
+  private boolean canBePacked(Property property) {
+    return properties.isPrimitive(property) && REPEATED.equals(property.getModifier());
+  }
+  
   @Override public void completeFieldOption_Value(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     FieldOption option = (FieldOption) model;
