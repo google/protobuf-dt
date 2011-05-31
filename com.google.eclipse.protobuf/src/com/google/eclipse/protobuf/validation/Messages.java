@@ -20,6 +20,7 @@ public class Messages extends NLS {
   public static String expectedSyntaxIdentifier;
   public static String fieldNumberAlreadyUsed;
   public static String fieldNumbersMustBePositive;
+  public static String importNotFound;
   public static String missingFieldNumber;
   public static String unrecognizedSyntaxIdentifier;
 

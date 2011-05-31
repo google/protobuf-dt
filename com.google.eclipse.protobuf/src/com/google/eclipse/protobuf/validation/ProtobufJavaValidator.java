@@ -11,7 +11,9 @@ package com.google.eclipse.protobuf.validation;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
 import static com.google.eclipse.protobuf.validation.Messages.*;
 import static java.lang.String.format;
+import static org.eclipse.xtext.util.Strings.isEmpty;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.validation.Check;
@@ -25,6 +27,23 @@ import com.google.inject.Inject;
 public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
 
   @Inject private IQualifiedNameProvider qualifiedNameProvider;
+
+  @Check public void checkImportIsResolved(Import anImport) {
+    String importUri = anImport.getImportURI();
+    if (!isEmpty(importUri)) {
+      URI uri = URI.createURI(importUri);
+      if (!isEmpty(uri.scheme())) return;
+    }
+    String message = format(importNotFound, importUri);
+    error(message, IMPORT__IMPORT_URI);
+  }
+
+  @Check public void checkSyntaxIsProto2(Syntax syntax) {
+    String name = syntax.getName();
+    if ("proto2".equals(name)) return;
+    String msg = (name == null) ? expectedSyntaxIdentifier : format(unrecognizedSyntaxIdentifier, name);
+    error(msg, SYNTAX__NAME);
+  }
 
   @Check public void checkTagNumberIsDuplicated(Property property) {
     if (isNameNull(property)) return; // we already show an error if name is null, no need to go further.
@@ -45,10 +64,6 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
     }
   }
 
-  /**
-   * Creates an error if the tag number of the given property is less than zero.
-   * @param property the given property.
-   */
   @Check public void checkTagNumberIsGreaterThanZero(Property property) {
     if (isNameNull(property)) return; // we already show an error if name is null, no need to go further.
     int index = property.getIndex();
@@ -59,12 +74,5 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
 
   private boolean isNameNull(Property property) {
     return property.getName() == null;
-  }
-
-  @Check public void checkSyntaxIsProto2(Syntax syntax) {
-    String name = syntax.getName();
-    if ("proto2".equals(name)) return;
-    String msg = (name == null) ? expectedSyntaxIdentifier : format(unrecognizedSyntaxIdentifier, name);
-    error(msg, SYNTAX__NAME);
   }
 }
