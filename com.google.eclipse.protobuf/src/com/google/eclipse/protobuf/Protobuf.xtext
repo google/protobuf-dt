@@ -56,7 +56,7 @@ Group:
   '}'(';')?;
 
 Property:
-  modifier=Modifier type=AbstractTypeReference name=ID '=' index=INT 
+  modifier=Modifier type=AbstractTypeReference name=(ID | 'message') '=' index=INT 
   (
     ('[' 'default' '=' default=ValueRef ']') |
     ('[' 'default' '=' default=ValueRef (',' fieldOptions+=FieldOption)* ']') |
