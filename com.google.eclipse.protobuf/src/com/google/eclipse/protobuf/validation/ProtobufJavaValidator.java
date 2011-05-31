@@ -45,7 +45,7 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
     error(msg, SYNTAX__NAME);
   }
 
-  @Check public void checkTagNumberIsDuplicated(Property property) {
+  @Check public void checkTagNumberIsUnique(Property property) {
     if (isNameNull(property)) return; // we already show an error if name is null, no need to go further.
     int index = property.getIndex();
     EObject container = property.eContainer();
