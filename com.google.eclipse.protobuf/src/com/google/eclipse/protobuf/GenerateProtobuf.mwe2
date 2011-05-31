@@ -93,8 +93,8 @@ Workflow {
 			// quickfix API 
 			fragment = quickfix.QuickfixProviderFragment {}
 
-            // rename refactoring
-            fragment = refactoring.RefactorElementNameFragment {}
+      // rename refactoring
+      fragment = refactoring.RefactorElementNameFragment {}
 
 			// content assist API  
 			fragment = contentAssist.JavaBasedContentAssistFragment {}

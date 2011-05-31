@@ -134,7 +134,7 @@ Literal:
 ExtendMessage:
   'extend' message=MessageReference '{'
   elements+=MessageElement*
-  '}';
+  '}'(';')?;
 
 Service:
  'service' name=ID '{'
