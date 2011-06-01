@@ -3,7 +3,7 @@
       id="com.google.eclipse.protobuf"
       label="Development Environment for Protocol Buffers"
       version="1.0.0.qualifier"
-      provider-name="Google">
+      provider-name="Google, Inc.">
 
    <description url="https://code.google.com/p/protobuf-dt/">
       An Eclipse-based Development Environment for Protocol Buffers
@@ -32,7 +32,7 @@ Google, Inc. - initial API and implementation
    </license>
 
    <url>
-      <update label="protobuf-dt" url="http://code.google.com/svn/trunk/update-site"/>
+      <update label="protobuf-dt" url="http://protobuf-dt.googlecode.com/svn/trunk/update-site"/>
    </url>
 
    <requires>
