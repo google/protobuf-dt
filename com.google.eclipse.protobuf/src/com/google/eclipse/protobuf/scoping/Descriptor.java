@@ -85,6 +85,11 @@ public class Descriptor {
          .append("  optional bool py_generic_services = 18 [default=false];")
          .append("  extensions 1000 to max;")
          .append("}")
+         .append("message MessageOptions {")
+         .append("  optional bool message_set_wire_format = 1 [default=false];")
+         .append("  optional bool no_standard_descriptor_accessor = 2 [default=false];")
+         .append("  extensions 1000 to max;")
+         .append("}")
          .append("message FieldOptions {")
          .append("  optional CType ctype = 1 [default = STRING];")
          .append("  enum CType {")
@@ -102,12 +107,17 @@ public class Descriptor {
   private void initContents() {
     for (Message m : getAllContentsOfType(root, Message.class)) {
       if (isFileOptionsMessage(m)) initFileOptions(m);
+      else if (isMessageOptionsMessage(m)) initMessageOptions(m);
       else if (isFieldOptionsMessage(m)) initFieldOptions(m);
     }
   }
   
   private boolean isFileOptionsMessage(Message m) {
     return "FileOptions".equals(m.getName());
+  }
+
+  private boolean isMessageOptionsMessage(Message m) {
+    return "MessageOptions".equals(m.getName());
   }
 
   private boolean isFieldOptionsMessage(Message m) {
@@ -129,6 +139,19 @@ public class Descriptor {
   
   private void addFileOption(Property p) {
     addOption(FILE, p);
+  }
+
+  private void initMessageOptions(Message messageOptionsMessage) {
+    for (MessageElement e : messageOptionsMessage.getElements()) {
+      if (e instanceof Property) {
+        addMessageOption((Property) e);
+        continue;
+      }
+    }
+  }
+  
+  private void addMessageOption(Property p) {
+    addOption(MESSAGE, p);
   }
 
   private void initFieldOptions(Message fieldOptionsMessage) {
@@ -198,6 +221,27 @@ public class Descriptor {
    */
   public Property lookupFileOption(String name) {
     return lookupOption(FILE, name);
+  }
+
+  /**
+   * Returns all the message-level options available. These are the options defined in
+   * {@code google/protobuf/descriptor.proto} (more details can be found
+   * <a href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
+   * @return all the message-level options available.
+   */
+  public Collection<Property> messageOptions() {
+    return optionsOfType(MESSAGE);
+  }
+
+  /**
+   * Looks up a message-level option per name. Message-level options are defined in 
+   * {@code google/protobuf/descriptor.proto} (more details can be found <a
+   * href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
+   * @param name the name of the option to look for.
+   * @return the option whose name matches the given one or {@code null} if a matching option is not found.
+   */
+  public Property lookupMessageOption(String name) {
+    return lookupOption(MESSAGE, name);
   }
 
   /**

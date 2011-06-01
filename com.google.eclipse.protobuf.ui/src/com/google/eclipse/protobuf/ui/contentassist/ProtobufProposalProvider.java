@@ -75,10 +75,12 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeOption_Name(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    EObject container = model.eContainer();
-    if (container instanceof Protobuf) {
+    if (model instanceof Option) {
       proposeCommonFileOptions(context, acceptor);
       return;
+    }
+    if (model instanceof Message) {
+      proposeCommonMessageOptions(context, acceptor);
     }
   }
 
@@ -99,11 +101,24 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     }
   }
 
+  private void proposeCommonMessageOptions(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    for (Property messageOption : descriptorProvider.get().messageOptions()) {
+      String displayString = messageOption.getName();
+      String proposalText = displayString + SPACE + EQUAL + SPACE;
+      boolean isBooleanOption = properties.isBool(messageOption);
+      if (isBooleanOption)
+        proposalText = proposalText + TRUE;
+      ICompletionProposal proposal = createCompletionProposal(proposalText, displayString, context);
+      acceptor.accept(proposal);
+    }
+  }
+
   @Override public void completeOption_Value(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     Option option = (Option) model;
     Descriptor descriptor = descriptorProvider.get();
     Property fileOption = descriptor.lookupFileOption(option.getName());
+    if (fileOption == null) fileOption = descriptor.lookupMessageOption(option.getName());
     if (fileOption == null) return;
     if (descriptor.isOptimizeForOption(option)) {
       proposeAndAccept(descriptor.optimizedMode(), context, acceptor);
