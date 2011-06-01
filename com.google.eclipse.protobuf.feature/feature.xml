@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="com.google.eclipse.protobuf"
-      label="Development Environment for Protocol Buffers"
+      label="Protocol Buffer Editor"
       version="1.0.0.qualifier"
       provider-name="Google, Inc.">
 
