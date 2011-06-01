@@ -257,11 +257,15 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   }
 
   private Property extractPropertyFrom(ContentAssistContext context) {
+    return extractElementFromContext(context, Property.class);
+  }
+  
+  private <T> T extractElementFromContext(ContentAssistContext context, Class<T> type) {
     EObject model = context.getCurrentModel();
     // this is most likely a bug in Xtext:
-    if (!(model instanceof Property)) model = context.getPreviousModel();
-    if (!(model instanceof Property)) return null;
-    return (Property) model;
+    if (!type.isInstance(model)) model = context.getPreviousModel();
+    if (!type.isInstance(model)) return null;
+    return type.cast(model);
   }
 
   private boolean isStringProperty(Property p) {
@@ -334,16 +338,19 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeFieldOption_Name(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    Property property = extractPropertyFrom(context);
-    proposeCommonFieldOptions(property, context, acceptor);
+    Field field = extractFieldFrom(context);
+    proposeCommonFieldOptions(field, context, acceptor);
   }
 
-  private void proposeCommonFieldOptions(Property property, ContentAssistContext context,
-      ICompletionProposalAcceptor acceptor) {
-    List<String> options = existingFieldOptionNames(property);
+  private Field extractFieldFrom(ContentAssistContext context) {
+    return extractElementFromContext(context, Field.class);
+  }
+  
+  private void proposeCommonFieldOptions(Field field, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    List<String> options = existingFieldOptionNames(field);
     for (Property fieldOption : descriptorProvider.get().fieldOptions()) {
       String optionName = fieldOption.getName();
-      if (options.contains(optionName) || ("packed".equals(optionName) && !canBePacked(property))) continue;
+      if (options.contains(optionName) || ("packed".equals(optionName) && !canBePacked(field))) continue;
       String proposalText = optionName + SPACE + EQUAL + SPACE;
       boolean isBooleanOption = properties.isBool(fieldOption);
       if (isBooleanOption) proposalText = proposalText + TRUE;
@@ -352,15 +359,17 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     }
   }
 
-  private List<String> existingFieldOptionNames(Property property) {
-    List<FieldOption> options = property.getFieldOptions();
+  private List<String> existingFieldOptionNames(Field field) {
+    List<FieldOption> options = field.getFieldOptions();
     if (options.isEmpty()) return emptyList();
     List<String> optionNames = new ArrayList<String>();
     for (FieldOption option : options) optionNames.add(option.getName());
     return optionNames;
   }
 
-  private boolean canBePacked(Property property) {
+  private boolean canBePacked(Field field) {
+    if (!(field instanceof Property)) return false;
+    Property property = (Property) field;
     return properties.isPrimitive(property) && REPEATED.equals(property.getModifier());
   }
 
