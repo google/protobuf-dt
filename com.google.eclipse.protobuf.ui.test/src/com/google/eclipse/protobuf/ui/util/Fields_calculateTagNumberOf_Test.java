@@ -19,18 +19,18 @@ import com.google.eclipse.protobuf.protobuf.Property;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 
 /**
- * Tests for <code>{@link Properties#calculateTagNumberOf(Property)}</code>.
+ * Tests for <code>{@link Fields#calculateTagNumberOf(Property)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Properties_calculateTagNumberOf_Test {
+public class Fields_calculateTagNumberOf_Test {
 
   @Rule public XtextRule xtext = new XtextRule();
 
-  private Properties properties;
+  private Fields fields;
 
   @Before public void setUp() {
-    properties = xtext.getInstanceOf(Properties.class);
+    fields = xtext.getInstanceOf(Fields.class);
   }
 
   @Test public void should_return_one_for_first_and_only_property() {
@@ -40,7 +40,7 @@ public class Properties_calculateTagNumberOf_Test {
          .append("}                          ");
     Protobuf root = xtext.parse(proto);
     Property name = findProperty("name", root);
-    int index = properties.calculateTagNumberOf(name);
+    int index = fields.calculateTagNumberOf(name);
     assertThat(index, equalTo(1));
   }
 
@@ -52,7 +52,7 @@ public class Properties_calculateTagNumberOf_Test {
          .append("}                          ");
     Protobuf root = xtext.parse(proto);
     Property id = findProperty("id", root);
-    int index = properties.calculateTagNumberOf(id);
+    int index = fields.calculateTagNumberOf(id);
     assertThat(index, equalTo(7));
   }
 }

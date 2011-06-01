@@ -20,8 +20,10 @@ import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
 import org.eclipse.xtext.ui.editor.contentassist.antlr.ParserBasedContentAssistContextFactory;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.ui.util.*;
+import com.google.eclipse.protobuf.protobuf.Literal;
+import com.google.eclipse.protobuf.protobuf.Property;
+import com.google.eclipse.protobuf.ui.util.Fields;
+import com.google.eclipse.protobuf.ui.util.Literals;
 import com.google.inject.Inject;
 
 /**
@@ -39,8 +41,8 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
       Pattern.compile("[\\s]+(.*)[\\s]+(.*)[\\s]+(.*)[\\s]+=[\\s]+[\\d]+(.*)");
 
   @Inject private ParserBasedContentAssistContextFactory contextFactory;
+  @Inject private Fields fields;
   @Inject private Literals literals;
-  @Inject private Properties properties;
 
   private final String semicolon = SEMICOLON.toString();
 
@@ -94,7 +96,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
   private String contentToInsert(String line, Property property) {
     boolean hasIndexAlready = PROPERTY_WITH_INDEX.matcher(line).matches();
     if (hasIndexAlready) return semicolon;
-    int index = properties.calculateTagNumberOf(property);
+    int index = fields.calculateTagNumberOf(property);
     return defaultIndexAndSemicolonToInsert(line, index);
   }
 

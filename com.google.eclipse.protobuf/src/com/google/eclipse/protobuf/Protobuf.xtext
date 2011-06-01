@@ -47,7 +47,10 @@ Message:
   '}'(';')?;
 
 MessageElement:
-  Type | Property | Group | ExtendMessage | Option;
+  Type | Field | ExtendMessage | Option;
+
+Field:
+  Property | Group;
 
 Group:
   modifier=Modifier 'group' name=ID '=' index=INT 

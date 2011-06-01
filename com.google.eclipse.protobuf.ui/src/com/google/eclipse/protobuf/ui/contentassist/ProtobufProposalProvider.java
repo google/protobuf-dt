@@ -50,7 +50,9 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Inject private ProtobufElementFinder finder;
   @Inject private DescriptorProvider descriptorProvider;
   @Inject private PluginImageHelper imageHelper;
-  @Inject private Images imageRegistry;
+
+  @Inject private Fields fields;
+  @Inject private Images images;
   @Inject private Literals literals;
   @Inject private Properties properties;
   @Inject private Strings strings;
@@ -68,7 +70,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Override public void complete_Syntax(EObject model, RuleCall ruleCall, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     String proposal = SYNTAX + SPACE + EQUAL_PROTO2_IN_QUOTES;
-    proposeAndAccept(proposal, imageHelper.getImage(imageRegistry.imageFor(Syntax.class)), context, acceptor);
+    proposeAndAccept(proposal, imageHelper.getImage(images.imageFor(Syntax.class)), context, acceptor);
   }
 
   @Override public void completeOption_Name(EObject model, Assignment assignment, ContentAssistContext context,
@@ -285,7 +287,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeProperty_Index(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    int index = properties.calculateTagNumberOf((Property) model);
+    int index = fields.calculateTagNumberOf((Property) model);
     proposeIndex(index, context, acceptor);
   }
 
@@ -322,14 +324,14 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   }
 
   private Image defaultImage() {
-    return imageHelper.getImage(imageRegistry.defaultImage());
+    return imageHelper.getImage(images.defaultImage());
   }
-  
+
   @Override public void complete_FieldOption(EObject model, RuleCall ruleCall, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     System.out.println("complete_FieldOption");
   }
-  
+
   @Override public void completeFieldOption_Name(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     Property property = extractPropertyFrom(context);
@@ -349,7 +351,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       acceptor.accept(proposal);
     }
   }
-  
+
   private List<String> existingFieldOptionNames(Property property) {
     List<FieldOption> options = property.getFieldOptions();
     if (options.isEmpty()) return emptyList();
@@ -361,7 +363,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   private boolean canBePacked(Property property) {
     return properties.isPrimitive(property) && REPEATED.equals(property.getModifier());
   }
-  
+
   @Override public void completeFieldOption_Value(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     FieldOption option = (FieldOption) model;
@@ -389,7 +391,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   }
 
   private void proposeAndAccept(Enum enumType, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    Image image = imageHelper.getImage(imageRegistry.imageFor(Literal.class));
+    Image image = imageHelper.getImage(images.imageFor(Literal.class));
     for (Literal literal : enumType.getLiterals())
       proposeAndAccept(literal.getName(), image, context, acceptor);
   }

@@ -15,7 +15,8 @@ import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.naming.*;
+import org.eclipse.xtext.naming.IQualifiedNameProvider;
+import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.validation.Check;
 
 import com.google.eclipse.protobuf.protobuf.*;
@@ -45,34 +46,34 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
     error(msg, SYNTAX__NAME);
   }
 
-  @Check public void checkTagNumberIsUnique(Property property) {
-    if (isNameNull(property)) return; // we already show an error if name is null, no need to go further.
-    int index = property.getIndex();
-    EObject container = property.eContainer();
+  @Check public void checkTagNumberIsUnique(Field field) {
+    if (isNameNull(field)) return; // we already show an error if name is null, no need to go further.
+    int index = field.getIndex();
+    EObject container = field.eContainer();
     if (container instanceof Message) {
       Message message = (Message) container;
       for (MessageElement element : message.getElements()) {
-        if (!(element instanceof Property)) continue;
-        Property p = (Property) element;
-        if (p == property) break;
-        if (p.getIndex() != index) continue;
+        if (!(element instanceof Field)) continue;
+        Field other = (Field) element;
+        if (other == field) break;
+        if (other.getIndex() != index) continue;
         QualifiedName messageName = qualifiedNameProvider.getFullyQualifiedName(message);
-        String msg = format(fieldNumberAlreadyUsed, index, messageName.toString(), p.getName());
-        error(msg, PROPERTY__INDEX);
+        String msg = format(fieldNumberAlreadyUsed, index, messageName.toString(), other.getName());
+        error(msg, FIELD__INDEX);
         break;
       }
     }
   }
 
-  @Check public void checkTagNumberIsGreaterThanZero(Property property) {
-    if (isNameNull(property)) return; // we already show an error if name is null, no need to go further.
-    int index = property.getIndex();
+  @Check public void checkTagNumberIsGreaterThanZero(Field field) {
+    if (isNameNull(field)) return; // we already show an error if name is null, no need to go further.
+    int index = field.getIndex();
     if (index > 0) return;
     String msg = (index == 0) ? fieldNumbersMustBePositive : expectedFieldNumber;
-    error(msg, PROPERTY__INDEX);
+    error(msg, FIELD__INDEX);
   }
 
-  private boolean isNameNull(Property property) {
-    return property.getName() == null;
+  private boolean isNameNull(Field field) {
+    return field.getName() == null;
   }
 }

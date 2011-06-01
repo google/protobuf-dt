@@ -9,10 +9,6 @@
 package com.google.eclipse.protobuf.ui.util;
 
 import static com.google.eclipse.protobuf.ui.grammar.CommonKeyword.*;
-import static java.lang.Math.max;
-import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
-
-import java.util.List;
 
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.ui.grammar.CommonKeyword;
@@ -75,33 +71,5 @@ public class Properties {
       return type == null ? null : type.getName();
     }
     return r.toString();
-  }
-
-  /**
-   * Calculates the tag number value for the given property. The calculated tag number value is the maximum of all the
-   * tag number values of the given property's siblings, plus one. The minimum tag number value is 1.
-   * <p>
-   * For example, in the following message:
-   *
-   * <pre>
-   * message Person {
-   *   required string name = 1;
-   *   optional string email = 2;
-   *   optional PhoneNumber phone =
-   * </pre>
-   *
-   * The calculated tag number value for the property {@code PhoneNumber} will be 3.
-   * </p>
-   * @param p the given property.
-   * @return the calculated value for the tag number of the given property.
-   */
-  public int calculateTagNumberOf(Property p) {
-    int index = 0;
-    List<Property> allProperties = getAllContentsOfType(p.eContainer(), Property.class);
-    for (Property c : allProperties) {
-      if (c == p) continue;
-      index = max(index, c.getIndex());
-    }
-    return ++index;
   }
 }

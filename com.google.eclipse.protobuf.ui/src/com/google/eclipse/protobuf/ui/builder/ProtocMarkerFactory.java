@@ -33,7 +33,7 @@ class ProtocMarkerFactory {
     file.deleteMarkers(PROTOC, true, DEPTH_INFINITE);
     markers = file.findMarkers(FAST_VALIDATION, true, DEPTH_INFINITE);
   }
-  
+
   void createErrorIfNecessary(String message, int lineNumber) throws CoreException {
     if (containsMarker(message, lineNumber)) return;
     IMarker marker = file.createMarker(PROTOC);
@@ -41,11 +41,13 @@ class ProtocMarkerFactory {
     marker.setAttribute(MESSAGE, message);
     marker.setAttribute(LINE_NUMBER, lineNumber);
   }
-  
+
   private boolean containsMarker(String description, int lineNumber) throws CoreException {
-    for (IMarker marker : markers)
-      if (marker.getAttribute(MESSAGE).equals(description) && marker.getAttribute(LINE_NUMBER).equals(lineNumber))
+    for (IMarker marker : markers) {
+      String markerMessage = (String) marker.getAttribute(MESSAGE);
+      if (markerMessage.equalsIgnoreCase(description) && marker.getAttribute(LINE_NUMBER).equals(lineNumber))
         return true;
+    }
     return false;
   }
 }
