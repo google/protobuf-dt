@@ -15,19 +15,19 @@ import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.xtext.ui.LanguageSpecific;
-import org.eclipse.xtext.ui.editor.IURIEditorOpener;
-import org.eclipse.xtext.ui.editor.IXtextEditorCallback;
+import org.eclipse.xtext.ui.editor.*;
 import org.eclipse.xtext.ui.editor.model.XtextDocumentProvider;
 import org.eclipse.xtext.ui.editor.outline.actions.IOutlineContribution;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
+import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculator;
 
 import com.google.eclipse.protobuf.scoping.IFileUriResolver;
 import com.google.eclipse.protobuf.ui.builder.AutoAddNatureEditorCallback;
 import com.google.eclipse.protobuf.ui.editor.ProtobufUriEditorOpener;
 import com.google.eclipse.protobuf.ui.editor.hyperlinking.ProtobufHyperlinkDetector;
 import com.google.eclipse.protobuf.ui.editor.model.ProtobufDocumentProvider;
-import com.google.eclipse.protobuf.ui.outline.LinkWithEditor;
-import com.google.eclipse.protobuf.ui.outline.ProtobufOutlinePage;
+import com.google.eclipse.protobuf.ui.editor.syntaxcoloring.ProtobufSemanticHighlightingCalculator;
+import com.google.eclipse.protobuf.ui.outline.*;
 import com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferenceStoreInitializer;
 import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferenceStoreInitializer;
 import com.google.eclipse.protobuf.ui.scoping.FileUriResolver;
@@ -91,5 +91,9 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
     binder.bind(IURIEditorOpener.class)
           .annotatedWith(LanguageSpecific.class)
           .to(ProtobufUriEditorOpener.class);
+  }
+
+  public void configureSemanticHighlightingCalculator(Binder binder) {
+    binder.bind(ISemanticHighlightingCalculator.class).to(ProtobufSemanticHighlightingCalculator.class);
   }
 }

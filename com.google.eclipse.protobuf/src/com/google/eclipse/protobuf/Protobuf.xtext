@@ -29,10 +29,10 @@ Import:
   'import' importURI=STRING ';';
 
 QualifiedName:
-  ID ('.' ID)*;
+  Name ('.' Name)*;
 
 Option:
-  'option' name=ID '=' value=ValueRef ';';
+  'option' name=Name '=' value=ValueRef ';';
 
 ProtobufElement:
   Type | ExtendMessage | Service;
@@ -41,7 +41,7 @@ Type:
   Message | Enum;
 
 Message:
-  'message' name=ID '{'
+  'message' name=Name '{'
   elements+=MessageElement*
   ('extensions' extensionsFrom=INT 'to' (extensionsTo=INT | 'max') ';')?
   '}'(';')?;
@@ -53,13 +53,13 @@ Field:
   Property | Group;
 
 Group:
-  modifier=Modifier 'group' name=ID '=' index=INT 
+  modifier=Modifier 'group' name=Name '=' index=INT 
   ('[' (fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)*) ']')? '{'
   elements+=Property*
   '}'(';')?;
 
 Property:
-  modifier=Modifier type=AbstractTypeReference name=(ID | 'message') '=' index=INT 
+  modifier=Modifier type=AbstractTypeReference name=Name '=' index=INT 
   (
     ('[' 'default' '=' default=ValueRef ']') |
     ('[' 'default' '=' default=ValueRef (',' fieldOptions+=FieldOption)* ']') |
@@ -67,7 +67,7 @@ Property:
   )? ';';
 
 FieldOption:
-  name=ID '=' value=ValueRef;
+  name=Name '=' value=ValueRef;
 
 enum Modifier:
   required
@@ -127,12 +127,12 @@ StringRef:
   string=STRING;
 
 Enum:
-  'enum' name=ID '{'
+  'enum' name=Name '{'
   literals+=Literal*
   '}' ';'?;
 
 Literal:
-  name=ID '=' index=INT ';';
+  name=Name '=' index=INT ';';
 
 ExtendMessage:
   'extend' message=MessageReference '{'
@@ -140,14 +140,18 @@ ExtendMessage:
   '}'(';')?;
 
 Service:
- 'service' name=ID '{'
+ 'service' name=Name '{'
    rpcs+=Rpc*
  '}';
 
 Rpc: 
-  'rpc' name=ID  '(' argType=MessageReference ')' 'returns' '(' returnType=MessageReference ')' 
+  'rpc' name=Name  '(' argType=MessageReference ')' 'returns' '(' returnType=MessageReference ')' 
   (('{' options+=Option* '}')(';')? | ';')
 ;
+
+Name:
+  ID | 'package' | 'import' | 'option' | 'extend' | 'message' | 'optional' | 'required' | 'repeated' | 'group' | 'enum'
+  | 'service' | 'rpc' | 'returns' | 'true' | 'false' | 'default' | 'extensions' | 'to' | 'max';
 
 MessageReference:
   type=[Message | QualifiedName];
