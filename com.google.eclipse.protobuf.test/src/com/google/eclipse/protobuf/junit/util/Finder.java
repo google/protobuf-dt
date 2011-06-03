@@ -33,7 +33,7 @@ public final class Finder {
   }
 
   public static Option findOption(String name, Protobuf root) {
-    for (Option option : root.getOptions())
+    for (Option option : getAllContentsOfType(root, Option.class))
       if (name.equals(option.getName())) return option;
     return null;
   }

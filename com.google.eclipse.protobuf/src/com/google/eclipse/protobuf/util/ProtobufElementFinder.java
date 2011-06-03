@@ -8,6 +8,10 @@
  */
 package com.google.eclipse.protobuf.util;
 
+import static java.util.Collections.unmodifiableList;
+
+import java.util.*;
+
 import org.eclipse.emf.ecore.EObject;
 
 import com.google.eclipse.protobuf.protobuf.*;
@@ -56,17 +60,34 @@ public class ProtobufElementFinder {
    * package.
    */
   public Package packageOf(EObject o) {
-    return rootOf(o).getPackage();
+    Protobuf root = rootOf(o);
+    for (ProtobufElement e : root.getElements()) {
+      if (e instanceof Package) return (Package) e;
+    }
+    return null;
   }
 
   /**
-   * Returns the root element of the proto file containing the given object.
-   * @param o the given object.
-   * @return the root element of the proto file containing the given object.
+   * Returns the root element of the proto file containing the given element.
+   * @param o the given element.
+   * @return the root element of the proto file containing the given element.
    */
   public Protobuf rootOf(EObject o) {
     EObject current = o;
     while (!(current instanceof Protobuf)) current = current.eContainer();
     return (Protobuf) current;
+  }
+
+  /**
+   * Returns all the import definitions in the given proto.
+   * @param root the given proto.
+   * @return all the import definitions in the given proto.
+   */
+  public List<Import> importsIn(Protobuf root) {
+    List<Import> imports = new ArrayList<Import>();
+    for (ProtobufElement e : root.getElements()) {
+      if (e instanceof Import) imports.add((Import) e);
+    }
+    return unmodifiableList(imports);
   }
 }

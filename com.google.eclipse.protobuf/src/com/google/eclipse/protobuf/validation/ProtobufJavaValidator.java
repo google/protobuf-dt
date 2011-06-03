@@ -15,11 +15,11 @@ import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.naming.IQualifiedNameProvider;
-import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.validation.Check;
 
 import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.inject.Inject;
 
 /**
@@ -71,6 +71,18 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
     if (index > 0) return;
     String msg = (index == 0) ? fieldNumbersMustBePositive : expectedFieldNumber;
     error(msg, FIELD__INDEX);
+  }
+
+  @Check public void checkOnlyOnePackageDefinition(Package aPackage) {
+    boolean firstFound = false;
+    Protobuf root = (Protobuf) aPackage.eContainer();
+    for (ProtobufElement e : root.getElements()) {
+      if (e == aPackage) {
+        if (firstFound) error(multiplePackages, PACKAGE__NAME);
+        return;
+      }
+      if (e instanceof Package && !firstFound) firstFound = true;
+    }
   }
 
   private boolean isNameNull(Field field) {

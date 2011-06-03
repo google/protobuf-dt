@@ -16,11 +16,13 @@ generate protobuf "http://www.google.com/eclipse/protobuf/Protobuf"
 
 Protobuf:
   (syntax=Syntax)?	
-  ((package=Package)? & (imports+=Import)* & (options+=Option)*)
   (elements+=ProtobufElement)*;
 
 Syntax:
   'syntax' '=' name=STRING ';';  
+
+ProtobufElement:
+  Package | Import | Option | Type | ExtendMessage | Service;
   
 Package:
   'package' name=QualifiedName ';';
@@ -33,9 +35,6 @@ QualifiedName:
 
 Option:
   'option' name=Name '=' value=ValueRef ';';
-
-ProtobufElement:
-  Type | ExtendMessage | Service;
 
 Type:
   Message | Enum;

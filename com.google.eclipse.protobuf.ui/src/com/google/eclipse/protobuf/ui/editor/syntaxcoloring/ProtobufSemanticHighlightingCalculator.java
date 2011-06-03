@@ -39,25 +39,15 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
   }
 
   private void highlightAllNames(Protobuf protobuf, IHighlightedPositionAcceptor acceptor, String highlightId) {
-    highlightPackageName(protobuf, acceptor, highlightId);
-    highlightFileOptionNames(protobuf, acceptor, highlightId);
     highlightElementNames(protobuf, acceptor, highlightId);
-  }
-
-  private void highlightPackageName(Protobuf protobuf, IHighlightedPositionAcceptor acceptor, String highlightId) {
-    Package aPackage = protobuf.getPackage();
-    if (aPackage == null) return;
-    highlightName(aPackage, acceptor, highlightId);
-  }
-
-  private void highlightFileOptionNames(Protobuf protobuf, IHighlightedPositionAcceptor acceptor, String highlightId) {
-    for (Option option : protobuf.getOptions()) {
-      highlightName(option, acceptor, highlightId);
-    }
   }
 
   private void highlightElementNames(Protobuf protobuf, IHighlightedPositionAcceptor acceptor, String highlightId) {
     for (ProtobufElement element : protobuf.getElements()) {
+      if (element instanceof Package || element instanceof Option) {
+        highlightName(element, acceptor, highlightId);
+        continue;
+      }
       if (element instanceof Type) {
         highlightName(element, acceptor, highlightId);
         if (element instanceof Message) highlightElementNames((Message) element, acceptor, highlightId);
