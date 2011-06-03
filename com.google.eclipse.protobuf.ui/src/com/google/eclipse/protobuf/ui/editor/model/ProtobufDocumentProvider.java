@@ -1,6 +1,9 @@
 /*
- * Copyright (c) 2011 Google Inc. All rights reserved. This program and the accompanying materials are made available
- * under the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
+ * Copyright (c) 2011 Google Inc.
+ *
+ * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License v1.0 which accompanies this distribution, and is available at
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.ui.editor.model;
@@ -14,7 +17,6 @@ import static org.eclipse.emf.ecore.resource.ContentHandler.UNSPECIFIED_CONTENT_
 import static org.eclipse.xtext.EcoreUtil2.resolveLazyCrossReferences;
 import static org.eclipse.xtext.resource.XtextResource.OPTION_ENCODING;
 import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
-import static org.eclipse.xtext.validation.CheckMode.FAST_ONLY;
 
 import java.io.*;
 import java.net.URI;
@@ -28,11 +30,8 @@ import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.model.*;
-import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionProvider;
-import org.eclipse.xtext.ui.editor.validation.*;
 import org.eclipse.xtext.ui.resource.IResourceSetProvider;
 import org.eclipse.xtext.util.StringInputStream;
-import org.eclipse.xtext.validation.IResourceValidator;
 
 import com.google.eclipse.protobuf.ui.util.*;
 import com.google.inject.Inject;
@@ -45,9 +44,7 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
   private static final String ENCODING = "UTF-8";
 
   @Inject private Closeables closeables;
-  @Inject private IssueResolutionProvider issueResolutionProvider;
   @Inject private IResourceSetProvider resourceSetProvider;
-  @Inject private IResourceValidator resourceValidator;
   @Inject private Resources resources;
 
   @Override protected ElementInfo createElementInfo(Object element) throws CoreException {
@@ -74,15 +71,9 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
     info.fStatus = status;
     info.fEncoding = ENCODING;
     cacheEncodingState(input);
-    XtextDocument xtextDocument = (XtextDocument) document;
-    AnnotationIssueProcessor annotationIssueProcessor = new AnnotationIssueProcessor(xtextDocument, model,
-        issueResolutionProvider);
-    ValidationJob job = new ValidationJob(resourceValidator, xtextDocument, annotationIssueProcessor, FAST_ONLY);
-    xtextDocument.setValidationJob(job);
     return info;
   }
 
-  /** {@inheritDoc} */
   @Override protected IDocument createDocument(Object element) throws CoreException {
     if (element instanceof FileStoreEditorInput) return createDocument((FileStoreEditorInput) element);
     return super.createDocument(element);
