@@ -48,10 +48,11 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   IScope scope_TypeReference_type(TypeReference typeRef, EReference reference) {
     Protobuf root = finder.rootOf(typeRef);
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
-    EObject message = typeRef.eContainer().eContainer();
-    descriptions.addAll(typesIn(message));
-    descriptions.addAll(typesIn(message.eContainer()));
-    descriptions.addAll(typesIn(root));
+    EObject current = typeRef.eContainer().eContainer(); // get message of the property containing the TypeReference
+    while (current != null) {
+      descriptions.addAll(typesIn(current));
+      current = current.eContainer();
+    }
     descriptions.addAll(importedTypes(root, Type.class));
     return createScope(descriptions);
   }
@@ -69,7 +70,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     return createScope(descriptions);
   }
 
-  private Collection<IEObjectDescription> messagesIn(EObject root) {
+  private Collection<IEObjectDescription> messagesIn(Protobuf root) {
     return children(root, Message.class);
   }
 
@@ -81,13 +82,15 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     for (EObject element : root.eContents()) {
       if (!targetType.isInstance(element)) continue;
-      T type = targetType.cast(element);
-      List<QualifiedName> names = alternativeNamesProvider.alternativeFullyQualifiedNames(type);
+      List<QualifiedName> names = alternativeNamesProvider.alternativeFullyQualifiedNames(element);
       int nameCount = names.size();
-      for (int i = level; i < nameCount; i++) descriptions.add(create(names.get(i), type));
-      descriptions.add(create(nameProvider.getFullyQualifiedName(type), type));
-      if (!(element instanceof Message)) continue;
-      descriptions.addAll(children(element, targetType, level + 1));
+      for (int i = level; i < nameCount; i++) {
+        descriptions.add(create(names.get(i), element));
+      }
+      descriptions.add(create(nameProvider.getFullyQualifiedName(element), element));
+      if (element instanceof Message) {
+        descriptions.addAll(children(element, targetType, level + 1));
+      }
     }
     return descriptions;
   }
