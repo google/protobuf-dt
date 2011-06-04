@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static java.util.Collections.emptyList;
 import static org.eclipse.emf.common.util.URI.createURI;
 import static org.eclipse.emf.ecore.util.EcoreUtil.getAllContents;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
@@ -16,14 +17,15 @@ import java.util.*;
 
 import org.eclipse.emf.common.util.*;
 import org.eclipse.emf.ecore.*;
-import org.eclipse.emf.ecore.resource.*;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.xtext.naming.*;
-import org.eclipse.xtext.resource.IEObjectDescription;
+import org.eclipse.xtext.resource.*;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.impl.*;
 
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.eclipse.protobuf.util.ProtobufElementFinder;
 import com.google.inject.Inject;
 
@@ -43,6 +45,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   @Inject private IQualifiedNameProvider nameProvider;
   @Inject private ImportUriResolver uriResolver;
   @Inject private LocalNamesProvider localNamesProvider;
+  @Inject private PackageResolver packageResolver;
 
   @SuppressWarnings("unused")
   IScope scope_TypeReference_type(TypeReference typeRef, EReference reference) {
@@ -82,7 +85,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     for (EObject element : root.eContents()) {
       if (!targetType.isInstance(element)) continue;
-      List<QualifiedName> names = localNamesProvider.localNames(element);
+      List<QualifiedName> names = localNamesProvider.namesOf(element);
       int nameCount = names.size();
       for (int i = level; i < nameCount; i++) {
         descriptions.add(create(names.get(i), element));
@@ -97,17 +100,34 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   }
 
   private <T extends Type> Collection<IEObjectDescription> importedTypes(Protobuf root, Class<T> targetType) {
-    ResourceSet resourceSet = root.eResource().getResourceSet();
+    List<Import> imports = finder.importsIn(root);
+    if (imports.isEmpty()) return emptyList();
+    Package importRootPackage = finder.packageOf(root);
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
-    for (Import anImport : finder.importsIn(root)) {
-      URI importUri = createURI(uriResolver.apply(anImport));
-      Resource imported = resourceSet.getResource(importUri, true);
-      descriptions.addAll(innerTypes(imported, targetType));
+    for (Import anImport : imports) {
+      XtextResource imported = importedResource(anImport);
+      EObject importedRoot = imported.getParseResult().getRootASTElement();
+      if (arePackagesRelated(importRootPackage, importedRoot)) {
+        descriptions.addAll(typesIn(importedRoot));
+        continue;
+      }
+      descriptions.addAll(children(imported, targetType));
     }
     return descriptions;
   }
 
-  private <T extends Type> Collection<IEObjectDescription> innerTypes(Resource resource, Class<T> targetType) {
+  private XtextResource importedResource(Import anImport) {
+    ResourceSet resourceSet = finder.rootOf(anImport).eResource().getResourceSet();
+    URI importUri = createURI(uriResolver.apply(anImport));
+    return (XtextResource) resourceSet.getResource(importUri, true);
+  }
+
+  private boolean arePackagesRelated(Package aPackage, EObject root) {
+    Package p = finder.packageOf(root);
+    return packageResolver.areRelated(aPackage, p);
+  }
+
+  private <T extends Type> Collection<IEObjectDescription> children(XtextResource resource, Class<T> targetType) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     TreeIterator<Object> contents = getAllContents(resource, true);
     while (contents.hasNext()) {

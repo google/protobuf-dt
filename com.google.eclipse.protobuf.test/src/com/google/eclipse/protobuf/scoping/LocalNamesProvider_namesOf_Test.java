@@ -23,11 +23,11 @@ import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 
 /**
- * Tests for <code>{@link LocalNamesProvider#localNames(EObject)}</code>.
+ * Tests for <code>{@link LocalNamesProvider#namesOf(EObject)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class LocalNamesProvider_localNames_Test {
+public class LocalNamesProvider_namesOf_Test {
 
   @Rule public XtextRule xtext = new XtextRule();
 
@@ -53,7 +53,7 @@ public class LocalNamesProvider_localNames_Test {
     proto.append("}                                                ");
     Protobuf root = xtext.parse(proto);
     Enum phoneType = findEnum("PhoneType", root);
-    List<QualifiedName> names = namesProvider.localNames(phoneType);
+    List<QualifiedName> names = namesProvider.namesOf(phoneType);
     assertThat(names.get(0).toString(), equalTo("PhoneType"));
     assertThat(names.get(1).toString(), equalTo("PhoneNumber.PhoneType"));
     assertThat(names.get(2).toString(), equalTo("Person.PhoneNumber.PhoneType"));

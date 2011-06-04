@@ -57,50 +57,53 @@ import com.google.inject.*;
  */
 class LocalNamesProvider {
 
-  @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
   @Inject private final IResourceScopeCache cache = IResourceScopeCache.NullImpl.INSTANCE;
+  @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
 
   @Inject private ProtobufElementFinder finder;
 
   private final Function<EObject, String> resolver = newResolver(String.class, "name");
 
-  List<QualifiedName> localNames(final EObject obj) {
+  List<QualifiedName> namesOf(final EObject obj) {
     Pair<EObject, String> key = pair(obj, "fqns");
     return cache.get(key, obj.eResource(), new Provider<List<QualifiedName>>() {
       public List<QualifiedName> get() {
-        List<QualifiedName> names = new ArrayList<QualifiedName>();
+        List<QualifiedName> allNames = new ArrayList<QualifiedName>();
         EObject current = obj;
         String name = resolver.apply(current);
-        if (isEmpty(name)) return names;
+        if (isEmpty(name)) return emptyList();
         QualifiedName qualifiedName = converter.toQualifiedName(name);
-        names.add(qualifiedName);
+        allNames.add(qualifiedName);
         while (current.eContainer() != null) {
           current = current.eContainer();
           String containerName = resolver.apply(current);
           if (isEmpty(containerName)) continue;
           qualifiedName = converter.toQualifiedName(containerName).append(qualifiedName);
-          names.add(qualifiedName);
+          allNames.add(qualifiedName);
         }
-        names.addAll(addPackageSegments(qualifiedName));
-        return unmodifiableList(names);
-      }
-
-      private List<QualifiedName> addPackageSegments(QualifiedName qualifiedName) {
-        Package p = finder.packageOf(obj);
-        if (p == null) return emptyList();
-        String packageName = p.getName();
-        if (isEmpty(packageName)) return emptyList();
-        QualifiedName name = qualifiedName;
-        List<String> segments = converter.toQualifiedName(packageName).getSegments();
-        int segmentCount = segments.size();
-        if (segmentCount == 1) return emptyList();
-        List<QualifiedName> names = new ArrayList<QualifiedName>();
-        for (int i = segmentCount - 1; i > 0; i--) {
-          name = QualifiedName.create(segments.get(i)).append(name);
-          names.add(name);
-        }
-        return unmodifiableList(names);
+        allNames.addAll(addPackageNameSegments(qualifiedName, finder.packageOf(obj)));
+        return unmodifiableList(allNames);
       }
     });
+  }
+
+  private List<QualifiedName> addPackageNameSegments(QualifiedName qualifiedName, Package p) {
+    QualifiedName name = qualifiedName;
+    List<String> segments = fqnSegments(p);
+    int segmentCount = segments.size();
+    if (segmentCount <= 1) return emptyList();
+    List<QualifiedName> allNames = new ArrayList<QualifiedName>();
+    for (int i = segmentCount - 1; i > 0; i--) {
+      name = QualifiedName.create(segments.get(i)).append(name);
+      allNames.add(name);
+    }
+    return unmodifiableList(allNames);
+  }
+
+  private List<String> fqnSegments(Package p) {
+    if (p == null) return emptyList();
+    String packageName = p.getName();
+    if (isEmpty(packageName)) return emptyList();
+    return converter.toQualifiedName(packageName).getSegments();
   }
 }

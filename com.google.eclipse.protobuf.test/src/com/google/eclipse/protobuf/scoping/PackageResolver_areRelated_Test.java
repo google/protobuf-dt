@@ -29,16 +29,51 @@ public class PackageResolver_areRelated_Test {
     resolver = new PackageResolver();
   }
 
+  private String baseName;
+  private String[] subpackageNames;
   private Package p1;
   private Package p2;
 
   @Before public void setUp() {
-    p1 = new PackageStub("may.the.force.be.with.you");
+    baseName = "may.the.force.be.with.you";
+    subpackageNames = new String[] {
+        "may.the.force.be.with",
+        "may.the.force.be.",
+        "may.the.force.",
+        "may.the",
+        "may"
+    };
+    p1 = new PackageStub(baseName);
     p2 = new PackageStub();
   }
 
   @Test public void should_return_true_if_packages_are_equal() {
     p2.setName(p1.getName());
     assertThat(resolver.areRelated(p1, p2), equalTo(true));
+  }
+
+  @Test public void should_return_true_second_is_subPackage_of_first() {
+    for (String name : subpackageNames) {
+      p2.setName(name);
+      assertThat(resolver.areRelated(p1, p2), equalTo(true));
+    }
+  }
+
+  @Test public void should_return_true_first_is_subPackage_of_second() {
+    p2.setName(baseName);
+    for (String name : subpackageNames) {
+      p1.setName(name);
+      assertThat(resolver.areRelated(p1, p2), equalTo(true));
+    }
+  }
+
+  @Test public void should_return_false_if_second_starts_with_few_segments_of_first_but_is_not_subpackage() {
+    p2.setName("may.the.ring");
+    assertThat(resolver.areRelated(p1, p2), equalTo(false));
+  }
+
+  @Test public void should_return_false_if_names_are_completely_different() {
+    p2.setName("peace.dog");
+    assertThat(resolver.areRelated(p1, p2), equalTo(false));
   }
 }
