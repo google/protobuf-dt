@@ -42,7 +42,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   @Inject private DescriptorProvider descriptorProvider;
   @Inject private IQualifiedNameProvider nameProvider;
   @Inject private ImportUriResolver uriResolver;
-  @Inject private AlternativeQualifiedNamesProvider alternativeNamesProvider;
+  @Inject private LocalNamesProvider localNamesProvider;
 
   @SuppressWarnings("unused")
   IScope scope_TypeReference_type(TypeReference typeRef, EReference reference) {
@@ -82,7 +82,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     for (EObject element : root.eContents()) {
       if (!targetType.isInstance(element)) continue;
-      List<QualifiedName> names = alternativeNamesProvider.alternativeFullyQualifiedNames(element);
+      List<QualifiedName> names = localNamesProvider.localNames(element);
       int nameCount = names.size();
       for (int i = level; i < nameCount; i++) {
         descriptions.add(create(names.get(i), element));

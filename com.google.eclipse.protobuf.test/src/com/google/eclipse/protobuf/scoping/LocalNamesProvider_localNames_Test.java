@@ -23,23 +23,23 @@ import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 
 /**
- * Tests for <code>{@link AlternativeQualifiedNamesProvider#alternativeFullyQualifiedNames(EObject)}</code>.
+ * Tests for <code>{@link LocalNamesProvider#localNames(EObject)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class AlternativeQualifiedNamesProvider_alternativeFullyQualifiedNames_Test {
+public class LocalNamesProvider_localNames_Test {
 
   @Rule public XtextRule xtext = new XtextRule();
 
-  private AlternativeQualifiedNamesProvider namesProvider;
+  private LocalNamesProvider namesProvider;
 
   @Before public void setUp() {
-    namesProvider = xtext.getInstanceOf(AlternativeQualifiedNamesProvider.class);
+    namesProvider = xtext.getInstanceOf(LocalNamesProvider.class);
   }
 
-  @Test public void should_return_all_possible_qualified_names() {
+  @Test public void should_return_all_possible_local_names() {
     StringBuilder proto = new StringBuilder();
-    proto.append("package alternative.names;                       ");
+    proto.append("package test.alternative.names;                  ");
     proto.append("                                                 ");
     proto.append("message Person {                                 ");
     proto.append("  message PhoneNumber {                          ");
@@ -53,9 +53,11 @@ public class AlternativeQualifiedNamesProvider_alternativeFullyQualifiedNames_Te
     proto.append("}                                                ");
     Protobuf root = xtext.parse(proto);
     Enum phoneType = findEnum("PhoneType", root);
-    List<QualifiedName> names = namesProvider.alternativeFullyQualifiedNames(phoneType);
+    List<QualifiedName> names = namesProvider.localNames(phoneType);
     assertThat(names.get(0).toString(), equalTo("PhoneType"));
     assertThat(names.get(1).toString(), equalTo("PhoneNumber.PhoneType"));
     assertThat(names.get(2).toString(), equalTo("Person.PhoneNumber.PhoneType"));
+    assertThat(names.get(3).toString(), equalTo("names.Person.PhoneNumber.PhoneType"));
+    assertThat(names.get(4).toString(), equalTo("alternative.names.Person.PhoneNumber.PhoneType"));
   }
 }

@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.*;
 import static org.eclipse.xtext.util.SimpleAttributeResolver.newResolver;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 import static org.eclipse.xtext.util.Tuples.pair;
@@ -20,6 +20,8 @@ import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.util.*;
 
 import com.google.common.base.Function;
+import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.eclipse.protobuf.util.ProtobufElementFinder;
 import com.google.inject.*;
 
 /**
@@ -51,17 +53,16 @@ import com.google.inject.*;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-class AlternativeQualifiedNamesProvider {
-
-  // TODO: in example above, it looks like protoc considers names.Person.PhoneType as valid. In short, qualified
-  // names can use segments of the package as well.
+class LocalNamesProvider {
 
   @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
   @Inject private final IResourceScopeCache cache = IResourceScopeCache.NullImpl.INSTANCE;
 
+  @Inject private ProtobufElementFinder finder;
+
   private final Function<EObject, String> resolver = newResolver(String.class, "name");
 
-  List<QualifiedName> alternativeFullyQualifiedNames(final EObject obj) {
+  List<QualifiedName> localNames(final EObject obj) {
     Pair<EObject, String> key = pair(obj, "fqns");
     return cache.get(key, obj.eResource(), new Provider<List<QualifiedName>>() {
       public List<QualifiedName> get() {
@@ -77,6 +78,24 @@ class AlternativeQualifiedNamesProvider {
           if (isEmpty(containerName)) continue;
           qualifiedName = converter.toQualifiedName(containerName).append(qualifiedName);
           names.add(qualifiedName);
+        }
+        names.addAll(addPackageSegments(qualifiedName));
+        return unmodifiableList(names);
+      }
+
+      private List<QualifiedName> addPackageSegments(QualifiedName qualifiedName) {
+        Package p = finder.packageOf(obj);
+        if (p == null) return emptyList();
+        String packageName = p.getName();
+        if (isEmpty(packageName)) return emptyList();
+        QualifiedName name = qualifiedName;
+        List<String> segments = converter.toQualifiedName(packageName).getSegments();
+        int segmentCount = segments.size();
+        if (segmentCount == 1) return emptyList();
+        List<QualifiedName> names = new ArrayList<QualifiedName>();
+        for (int i = segmentCount - 1; i > 0; i--) {
+          name = QualifiedName.create(segments.get(i)).append(name);
+          names.add(name);
         }
         return unmodifiableList(names);
       }
