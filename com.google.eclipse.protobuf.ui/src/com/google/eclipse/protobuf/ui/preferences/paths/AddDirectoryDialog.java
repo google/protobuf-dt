@@ -8,17 +8,18 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.paths;
 
-import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.*;
 import static com.google.eclipse.protobuf.ui.preferences.paths.DirectorySelectionDialogs.*;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.*;
 import static org.eclipse.jface.dialogs.IDialogConstants.OK_ID;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
+import com.google.eclipse.protobuf.ui.preferences.InputDialog;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
-
-import com.google.eclipse.protobuf.ui.preferences.InputDialog;
 
 /**
  * Dialog where users can select a path (in the workspace or file system) to be included in resolution of imports.
@@ -54,6 +55,7 @@ public class AddDirectoryDialog extends InputDialog {
     label.setText(includeDirectoryPrompt);
 
     txtPath = new Text(cmpDialogArea, SWT.BORDER);
+    txtPath.setBackground(getColor(SWT.COLOR_WIDGET_BACKGROUND));
     txtPath.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
     txtPath.setEditable(false);
 
@@ -131,6 +133,10 @@ public class AddDirectoryDialog extends InputDialog {
     return txtPath.getText().trim();
   }
 
+  private static Color getColor(int systemColorID) {
+    return Display.getCurrent().getSystemColor(systemColorID);
+  }
+  
   /**
    * Returns the path selected by the user.
    * @return the path selected by the user.
