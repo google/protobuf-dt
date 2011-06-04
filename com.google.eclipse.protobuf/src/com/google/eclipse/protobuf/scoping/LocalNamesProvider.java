@@ -29,7 +29,7 @@ import com.google.inject.*;
  * <p>
  * For example, given the following proto element:
  * <pre>
- * package alternative.names;
+ * package test.alternative.names;
  *
  * message Person {
  *   optional string name = 1;
@@ -45,6 +45,8 @@ import com.google.inject.*;
  * <ul>
  * <li>{@code PhoneType}</li>
  * <li>{@code Person.PhoneType}</li>
+ * <li>{@code names.Person.PhoneType}</li>
+ * <li>{@code test.names.Person.PhoneType}</li>
  * </ul>
  * </p>
  * <p>

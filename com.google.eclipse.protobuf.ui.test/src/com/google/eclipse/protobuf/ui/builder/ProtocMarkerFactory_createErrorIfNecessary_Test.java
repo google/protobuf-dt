@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.builder;
 
-import static com.google.eclipse.protobuf.junit.stubs.MarkerStub.error;
+import static com.google.eclipse.protobuf.junit.stubs.resources.MarkerStub.error;
 import static org.eclipse.xtext.ui.MarkerTypes.FAST_VALIDATION;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
@@ -19,8 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.eclipse.protobuf.junit.stubs.FileStub;
-import com.google.eclipse.protobuf.junit.stubs.MarkerStub;
+import com.google.eclipse.protobuf.junit.stubs.resources.*;
 
 /**
  * Tests for <code>{@link ProtocMarkerFactory#createErrorIfNecessary(String, int)}</code>.

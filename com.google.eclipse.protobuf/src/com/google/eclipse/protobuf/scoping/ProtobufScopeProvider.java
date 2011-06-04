@@ -88,6 +88,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
         descriptions.add(create(names.get(i), element));
       }
       descriptions.add(create(nameProvider.getFullyQualifiedName(element), element));
+      // TODO investigate if groups can have messages, and if so, add those messages to the scope.
       if (element instanceof Message) {
         descriptions.addAll(children(element, targetType, level + 1));
       }

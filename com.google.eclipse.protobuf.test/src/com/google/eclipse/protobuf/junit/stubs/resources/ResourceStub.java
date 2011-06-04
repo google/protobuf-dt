@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.junit.stubs;
+package com.google.eclipse.protobuf.junit.stubs.resources;
 
 import static org.eclipse.emf.common.util.URI.createURI;
 
