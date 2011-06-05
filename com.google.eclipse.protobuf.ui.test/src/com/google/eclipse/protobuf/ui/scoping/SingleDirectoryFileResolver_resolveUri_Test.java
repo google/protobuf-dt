@@ -14,6 +14,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.common.util.URI;
 import org.junit.*;
 
@@ -21,7 +22,7 @@ import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
 import com.google.eclipse.protobuf.ui.util.Resources;
 
 /**
- * Tests for <code>{@link SingleDirectoryFileResolver#resolveUri(String, URI, PathsPreferences)}</code>.
+ * Tests for <code>{@link SingleDirectoryFileResolver#resolveUri(String, URI, IProject, PathsPreferences)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
@@ -45,19 +46,19 @@ public class SingleDirectoryFileResolver_resolveUri_Test {
 
   @Test public void should_resolve_import_URI_if_missing_scheme() {
     when(resources.fileExists(any(URI.class))).thenReturn(true);
-    String resolved = resolver.resolveUri("folder1/address.proto", resourceUri, preferences);
+    String resolved = resolver.resolveUri("folder1/address.proto", resourceUri, null, preferences);
     assertThat(resolved, equalTo("platform:/resource/src/proto/folder1/address.proto"));
   }
 
   @Test public void should_resolve_import_URI_even_if_overlapping_folders_with_resource_URI() {
     when(resources.fileExists(any(URI.class))).thenReturn(true);
-    String resolved = resolver.resolveUri("src/proto/folder1/address.proto", resourceUri, preferences);
+    String resolved = resolver.resolveUri("src/proto/folder1/address.proto", resourceUri, null, preferences);
     assertThat(resolved, equalTo("platform:/resource/src/proto/folder1/address.proto"));
   }
 
   @Test public void should_resolve_import_URI_even_if_overlapping_one_folder_only_with_resource_URI() {
     when(resources.fileExists(any(URI.class))).thenReturn(true);
-    String resolved = resolver.resolveUri("src/proto/read-only/address.proto", resourceUri, preferences);
+    String resolved = resolver.resolveUri("src/proto/read-only/address.proto", resourceUri, null, preferences);
     assertThat(resolved, equalTo("platform:/resource/src/proto/read-only/address.proto"));
   }
 }

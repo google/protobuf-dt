@@ -15,21 +15,18 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static org.eclipse.xtext.util.Strings.*;
 
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.xtext.ui.PluginImageHelper;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
-import com.google.eclipse.protobuf.ui.preferences.DataChangedListener;
-import com.google.eclipse.protobuf.ui.preferences.PreferenceAndPropertyPage;
+import com.google.eclipse.protobuf.ui.preferences.*;
 import com.google.inject.Inject;
 
 /**
@@ -72,7 +69,7 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
     btnMultipleFolders.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
     btnMultipleFolders.setText(filesInMultipleDirectories);
 
-    directoryPathsEditor = new DirectoryPathsEditor(grpResolutionOfImported, imageHelper);
+    directoryPathsEditor = new DirectoryPathsEditor(grpResolutionOfImported, project(), imageHelper);
     directoryPathsEditor.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
     new Label(contents, SWT.NONE);
 

@@ -15,15 +15,14 @@ import static org.eclipse.core.runtime.Status.OK_STATUS;
 import static org.eclipse.jface.window.Window.OK;
 import static org.eclipse.ui.views.navigator.ResourceComparator.NAME;
 
+import java.net.URI;
+
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.DirectoryDialog;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
-import org.eclipse.ui.dialogs.ISelectionStatusValidator;
-import org.eclipse.ui.model.WorkbenchContentProvider;
-import org.eclipse.ui.model.WorkbenchLabelProvider;
+import org.eclipse.swt.widgets.*;
+import org.eclipse.ui.dialogs.*;
+import org.eclipse.ui.model.*;
 import org.eclipse.ui.views.navigator.ResourceComparator;
 
 /**
@@ -39,14 +38,14 @@ class DirectorySelectionDialogs {
 
   static String showWorkspaceDirectoryDialog(Shell shell, String initialPath, IProject project) {
     String currentPathText = initialPath.replaceAll("\"", "");
-    IPath path = new Path(currentPathText);
+    URI uri = URI.create(currentPathText);
     ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(shell, new WorkbenchLabelProvider(),
         new WorkbenchContentProvider());
     dialog.setInput(project == null ? workspaceRoot() : project);
     dialog.setComparator(new ResourceComparator(NAME));
     IResource container = null;
-    if (path.isAbsolute()) {
-      IContainer containers[] = workspaceRoot().findContainersForLocation(path);
+    if (uri.isAbsolute()) {
+      IContainer containers[] = workspaceRoot().findContainersForLocationURI(uri);
       if (containers != null && containers.length > 0) container = containers[0];
     }
     dialog.setInitialSelection(container);

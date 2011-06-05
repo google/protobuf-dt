@@ -13,13 +13,14 @@ import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.*;
 import static org.eclipse.jface.dialogs.IDialogConstants.OK_ID;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import com.google.eclipse.protobuf.ui.preferences.InputDialog;
-
+import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
+
+import com.google.eclipse.protobuf.ui.preferences.InputDialog;
 
 /**
  * Dialog where users can select a path (in the workspace or file system) to be included in resolution of imports.
@@ -38,8 +39,9 @@ public class AddDirectoryDialog extends InputDialog {
   /**
    * Creates a new </code>{@link AddDirectoryDialog}</code>.
    * @param parent a shell which will be the parent of the new instance.
+   * @param project the project whose properties the user is modifying.
    */
-  public AddDirectoryDialog(Shell parent) {
+  public AddDirectoryDialog(Shell parent, IProject project) {
     super(parent, includeDirectoryTitle);
   }
 
@@ -136,7 +138,7 @@ public class AddDirectoryDialog extends InputDialog {
   private static Color getColor(int systemColorID) {
     return Display.getCurrent().getSystemColor(systemColorID);
   }
-  
+
   /**
    * Returns the path selected by the user.
    * @return the path selected by the user.

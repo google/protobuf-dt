@@ -8,11 +8,9 @@
  */
 package com.google.eclipse.protobuf.ui.util;
 
-import org.eclipse.core.filesystem.EFS;
-import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.filesystem.*;
 import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.*;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.*;
@@ -31,7 +29,7 @@ import com.google.inject.Singleton;
 public class Resources {
 
   public static final String URI_SCHEME_FOR_FILES = "file";
-  
+
   /**
    * Returns the project that contains the resource at the given URI.
    * @param resourceUri the given URI.
@@ -49,8 +47,8 @@ public class Resources {
       IViewPart part = reference.getView(false);
       if (!(part instanceof ResourceNavigator)) continue;
       ResourceNavigator navigator = (ResourceNavigator) part;
-      StructuredSelection sel = (StructuredSelection) navigator.getTreeViewer().getSelection();
-      IResource resource = (IResource) sel.getFirstElement();
+      StructuredSelection selection = (StructuredSelection) navigator.getTreeViewer().getSelection();
+      IResource resource = (IResource) selection.getFirstElement();
       return resource.getProject();
     }
     return null;
@@ -90,7 +88,7 @@ public class Resources {
     IEditorInput editorInput = new FileStoreEditorInput(fileStore);
     return openFile(editorInput/*"org.eclipse.ui.DefaultTextEditor"*/);
   }
-  
+
   private IEditorPart openFile(IEditorInput editorInput) throws PartInitException {
     IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
     return page.openEditor(editorInput, "com.google.eclipse.protobuf.Protobuf");
@@ -99,7 +97,7 @@ public class Resources {
   /**
    * Returns a handle to a workspace file identified by the given URI.
    * @param uri the given URI.
-   * @return a handle to a workspace file identified by the given URI or {@code null} if the URI does not belong to a 
+   * @return a handle to a workspace file identified by the given URI or {@code null} if the URI does not belong to a
    * workspace file.
    */
   public IFile file(URI uri) {

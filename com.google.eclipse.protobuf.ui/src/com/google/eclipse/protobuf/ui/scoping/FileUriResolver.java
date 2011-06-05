@@ -15,8 +15,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import com.google.eclipse.protobuf.scoping.IFileUriResolver;
-import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
-import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferencesProvider;
+import com.google.eclipse.protobuf.ui.preferences.paths.*;
 import com.google.eclipse.protobuf.ui.util.Resources;
 import com.google.inject.Inject;
 
@@ -27,7 +26,7 @@ import com.google.inject.Inject;
  */
 public class FileUriResolver implements IFileUriResolver {
 
-  @Inject private PathsPreferencesProvider preferenceReader;
+  @Inject private PathsPreferencesProvider preferenceProvider;
   @Inject private FileResolverStrategies resolvers;
   @Inject private Resources resources;
 
@@ -60,8 +59,9 @@ public class FileUriResolver implements IFileUriResolver {
   private String resolveUri(String importUri, URI resourceUri) {
     IProject project = resources.project(resourceUri);
     if (project == null) project = resources.activeProject();
-    PathsPreferences preferences = preferenceReader.getPreferences(project);
-    return resolver(preferences).resolveUri(importUri, resourceUri, preferences);
+    if (project == null) throw new IllegalStateException("Unable to find current project");
+    PathsPreferences preferences = preferenceProvider.getPreferences(project);
+    return resolver(preferences).resolveUri(importUri, resourceUri, project, preferences);
   }
 
   private FileResolverStrategy resolver(PathsPreferences preferences) {

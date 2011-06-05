@@ -199,5 +199,14 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
     setErrorMessage(errorMessage);
     setValid(false);
   }
+
+  /**
+   * Returns the project whose properties are being changed.
+   * @return the project whose properties are being changed, or {@code null} if this page is updating workspace-level
+   * preferences.
+   */
+  protected final IProject project() {
+    return project;
+  }
 }
 

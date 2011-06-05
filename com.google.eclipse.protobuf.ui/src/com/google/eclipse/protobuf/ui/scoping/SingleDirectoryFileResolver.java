@@ -13,6 +13,7 @@ import static org.eclipse.xtext.util.Tuples.pair;
 
 import java.util.*;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.util.Pair;
 
@@ -30,7 +31,7 @@ class SingleDirectoryFileResolver implements FileResolverStrategy {
     this.resources = resources;
   }
 
-  public String resolveUri(String importUri, URI declaringResourceUri, PathsPreferences preferences) {
+  public String resolveUri(String importUri, URI declaringResourceUri, IProject project, PathsPreferences preferences) {
     List<String> resourceUriSegments = removeFirstAndLast(declaringResourceUri.segmentsList());
     Pair<String, List<String>> importUriPair = pair(importUri, createURI(importUri).segmentsList());
     return resolveUri(importUriPair, resourceUriSegments);

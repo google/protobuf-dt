@@ -11,6 +11,7 @@ package com.google.eclipse.protobuf.ui.scoping;
 import java.util.List;
 
 import org.eclipse.core.filesystem.*;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
@@ -33,7 +34,7 @@ class MultipleDirectoriesFileResolver implements FileResolverStrategy {
   }
 
   /** {@inheritDoc} */
-  public String resolveUri(String importUri, URI declaringResourceUri, PathsPreferences preferences) {
+  public String resolveUri(String importUri, URI declaringResourceUri, IProject project, PathsPreferences preferences) {
     List<DirectoryPath> directoryPaths = preferences.directoryPaths();
     for (DirectoryPath directoryPath : directoryPaths) {
       String resolved = resolveUri(importUri, directoryPath);
