@@ -65,18 +65,25 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
       }
       if (element instanceof Field) {
         highlightName(element, acceptor, highlightId);
-        highLightFieldOptionNames((Field) element, acceptor, highlightId);
+        highlightFieldOptionNames((Field) element, acceptor, highlightId);
       }
       if (element instanceof Group) {
-        for (Property property : ((Group) element).getElements()) {
-          highlightName(property, acceptor, highlightId);
-          highLightFieldOptionNames(property, acceptor, highlightId);
-        }
+        highlightElementNames((Group) element, acceptor, highlightId);
       }
     }
   }
 
-  private void highLightFieldOptionNames(Field field, IHighlightedPositionAcceptor acceptor, String highlightId) {
+  private void highlightElementNames(Group group, IHighlightedPositionAcceptor acceptor, String highlightId) {
+    for (GroupElement e : group.getElements()) {
+      if (e instanceof Property) {
+        Field field = (Field) e;
+        highlightName(field, acceptor, highlightId);
+        highlightFieldOptionNames(field, acceptor, highlightId);
+      }
+    }
+  }
+
+  private void highlightFieldOptionNames(Field field, IHighlightedPositionAcceptor acceptor, String highlightId) {
     for (FieldOption option : field.getFieldOptions()) {
       highlightName(option, acceptor, highlightId);
     }

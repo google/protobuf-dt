@@ -54,8 +54,12 @@ Field:
 Group:
   modifier=Modifier 'group' name=Name '=' index=INT 
   ('[' (fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)*) ']')? '{'
-  elements+=Property*
+  elements+=GroupElement*
   '}'(';')?;
+
+GroupElement:
+  Field | Option | Enum
+;
 
 Property:
   modifier=Modifier type=AbstractTypeReference name=Name '=' index=INT 

@@ -17,7 +17,7 @@ import java.util.*;
 
 import org.eclipse.emf.common.util.*;
 import org.eclipse.emf.ecore.*;
-import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.*;
 import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.resource.*;
 import org.eclipse.xtext.scoping.IScope;
@@ -105,9 +105,9 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     Package importRootPackage = finder.packageOf(root);
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     for (Import anImport : imports) {
-      XtextResource imported = importedResource(anImport);
-      EObject importedRoot = imported.getParseResult().getRootASTElement();
-      if (arePackagesRelated(importRootPackage, importedRoot)) {
+      Resource imported = importedResource(anImport);
+      EObject importedRoot = rootElementOf(imported);
+      if (importedRoot != null && arePackagesRelated(importRootPackage, importedRoot)) {
         descriptions.addAll(typesIn(importedRoot));
         continue;
       }
@@ -116,18 +116,33 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     return descriptions;
   }
 
-  private XtextResource importedResource(Import anImport) {
+  private Resource importedResource(Import anImport) {
     ResourceSet resourceSet = finder.rootOf(anImport).eResource().getResourceSet();
     URI importUri = createURI(uriResolver.apply(anImport));
-    return (XtextResource) resourceSet.getResource(importUri, true);
+    try {
+      return resourceSet.getResource(importUri, true);
+    } catch (Throwable t) {
+      t.printStackTrace();
+      return null;
+    }
   }
 
+  private /* Protobuf */ EObject rootElementOf(Resource resource) {
+    if (resource instanceof XtextResource) return ((XtextResource) resource).getParseResult().getRootASTElement();
+    TreeIterator<Object> contents = getAllContents(resource, true);
+    if (contents.hasNext()) {
+      Object next = contents.next();
+      if (next instanceof EObject) return (EObject) next;
+    }
+    return null;
+  }
+  
   private boolean arePackagesRelated(Package aPackage, EObject root) {
     Package p = finder.packageOf(root);
     return packageResolver.areRelated(aPackage, p);
   }
 
-  private <T extends Type> Collection<IEObjectDescription> children(XtextResource resource, Class<T> targetType) {
+  private <T extends Type> Collection<IEObjectDescription> children(Resource resource, Class<T> targetType) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     TreeIterator<Object> contents = getAllContents(resource, true);
     while (contents.hasNext()) {
