@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.outline;
 
+import static com.google.eclipse.protobuf.ui.outline.Messages.*;
+
 import java.util.*;
 
 import org.eclipse.emf.ecore.EObject;
@@ -40,20 +42,19 @@ public class ProtobufOutlineTreeProvider extends DefaultOutlineTreeProvider {
   }
 
   protected void _createChildren(DocumentRootNode parentNode, Protobuf protobuf) {
-//    Package aPackage = protobuf.getPackage();
-//    if (aPackage != null) {
-//      createNode(parentNode, aPackage);
-//    }
-//    if (!protobuf.getImports().isEmpty()) {
-//      createEStructuralFeatureNode(parentNode, protobuf, PROTOBUF__IMPORTS,
-//          labelProvider.getImage("imports"), importDeclarations, false);
-//    }
-//    if (!protobuf.getOptions().isEmpty()) {
-//      createEStructuralFeatureNode(parentNode, protobuf, PROTOBUF__OPTIONS,
-//          labelProvider.getImage("options"), optionDeclarations, false);
-//    }
-    for (ProtobufElement e : protobuf.getElements()) {
+    OutlineViewModel model = new OutlineViewModel(protobuf);
+    for (EObject aPackage : model.packages()) createNode(parentNode, aPackage);
+    addGroup(parentNode, model.imports(), "imports", importDeclarations);
+    addGroup(parentNode, model.options(), "options", optionDeclarations);
+    for (EObject e : model.remainingElements()) {
       createNode(parentNode, e);
+    }
+  }
+
+  private void addGroup(DocumentRootNode parent, List<? extends EObject> group, String imageKey, String text) {
+    if (!group.isEmpty()) {
+      SimpleOutlineNode groupNode = new SimpleOutlineNode(parent, labelProvider.getImage(imageKey), text, false);
+      for (EObject o : group) createNode(groupNode, o);
     }
   }
 
