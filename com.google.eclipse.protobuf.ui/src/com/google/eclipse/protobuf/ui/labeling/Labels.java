@@ -9,8 +9,13 @@
 package com.google.eclipse.protobuf.ui.labeling;
 
 import static org.eclipse.jface.viewers.StyledString.DECORATIONS_STYLER;
+import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.findNodesForFeature;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
 
 import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.xtext.nodemodel.INode;
+
+import java.util.List;
 
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.ui.util.Properties;
@@ -56,7 +61,10 @@ public class Labels {
   }
 
   private Object labelFor(Import i) {
-    return i.getImportURI();
+    List<INode> nodes = findNodesForFeature(i, IMPORT__IMPORT_URI);
+    if (nodes.size() != 1) return i.getImportURI();
+    INode node = nodes.get(0);
+    return node.getText();
   }
 
   private Object labelFor(Literal l) {
@@ -68,7 +76,9 @@ public class Labels {
 
   private Object labelFor(Property p) {
     StyledString text = new StyledString(p.getName());
-    String indexAndType = String.format(" [%d] : %s", p.getIndex(), properties.typeNameOf(p));
+    String typeName = properties.typeNameOf(p);
+    if (typeName == null) typeName = "<unable to resolve type reference>";
+    String indexAndType = String.format(" [%d] : %s", p.getIndex(), typeName);
     text.append(indexAndType, DECORATIONS_STYLER);
     return text;
   }

@@ -149,8 +149,10 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
   }
 
   private String directoryNames() {
+    List<DirectoryPath> paths = directoryPathsEditor.directoryPaths();
+    if (paths.isEmpty()) return "";
     List<String> pathsAsText = new ArrayList<String>();
-    for (DirectoryPath path : directoryPathsEditor.directoryPaths()) {
+    for (DirectoryPath path : paths) {
       pathsAsText.add(path.toString());
     }
     return concat(COMMA_DELIMITER, pathsAsText);

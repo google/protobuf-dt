@@ -8,6 +8,9 @@
  */
 package com.google.eclipse.protobuf.ui.outline;
 
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.xtext.ui.editor.outline.IOutlineNode;
 import org.eclipse.xtext.ui.editor.outline.impl.AbstractOutlineNode;
@@ -17,7 +20,14 @@ import org.eclipse.xtext.ui.editor.outline.impl.AbstractOutlineNode;
  */
 class SimpleOutlineNode extends AbstractOutlineNode {
 
-  SimpleOutlineNode(IOutlineNode parent, Image image, Object text, boolean isLeaf) {
+  private final URI ownerUri;
+  
+  SimpleOutlineNode(IOutlineNode parent, EObject owner, Image image, Object text, boolean isLeaf) {
     super(parent, image, text, isLeaf);
+    ownerUri = EcoreUtil.getURI(owner);
+  }
+
+  @Override protected URI getEObjectURI() {
+    return ownerUri;
   }
 }

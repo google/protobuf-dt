@@ -13,6 +13,7 @@ import static org.eclipse.xtext.ui.editor.syntaxcoloring.DefaultHighlightingConf
 
 import java.util.List;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.*;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.resource.XtextResource;
@@ -27,8 +28,10 @@ import com.google.eclipse.protobuf.protobuf.Package;
 public class ProtobufSemanticHighlightingCalculator implements ISemanticHighlightingCalculator {
 
   public void provideHighlightingFor(XtextResource resource, IHighlightedPositionAcceptor acceptor) {
-    if (resource.getContents().isEmpty()) return;
-    Protobuf protobuf = (Protobuf) resource.getContents().get(0);
+    if (resource == null) return;
+    EList<EObject> contents = resource.getContents();
+    if (contents == null || contents.isEmpty()) return;
+    Protobuf protobuf = (Protobuf) contents.get(0);
     highlightAllNames(protobuf, acceptor, DEFAULT_ID);
   }
 

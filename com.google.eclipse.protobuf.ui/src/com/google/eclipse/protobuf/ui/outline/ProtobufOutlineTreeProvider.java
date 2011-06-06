@@ -41,20 +41,22 @@ public class ProtobufOutlineTreeProvider extends DefaultOutlineTreeProvider {
     return true;
   }
 
-  protected void _createChildren(DocumentRootNode parentNode, Protobuf protobuf) {
+  protected void _createChildren(DocumentRootNode parent, Protobuf protobuf) {
     OutlineViewModel model = new OutlineViewModel(protobuf);
-    for (EObject aPackage : model.packages()) createNode(parentNode, aPackage);
-    addGroup(parentNode, model.imports(), "imports", importDeclarations);
-    addGroup(parentNode, model.options(), "options", optionDeclarations);
+    for (EObject aPackage : model.packages()) createNode(parent, aPackage);
+    addGroup(parent, protobuf, model.imports(), "imports", importDeclarations);
+    addGroup(parent, protobuf, model.options(), "options", optionDeclarations);
     for (EObject e : model.remainingElements()) {
-      createNode(parentNode, e);
+      createNode(parent, e);
     }
   }
 
-  private void addGroup(DocumentRootNode parent, List<? extends EObject> group, String imageKey, String text) {
-    if (!group.isEmpty()) {
-      SimpleOutlineNode groupNode = new SimpleOutlineNode(parent, labelProvider.getImage(imageKey), text, false);
-      for (EObject o : group) createNode(groupNode, o);
+  private void addGroup(DocumentRootNode parent, Protobuf protobuf, List<? extends EObject> group, String imageKey,
+      String text) {
+    if (group.isEmpty()) return;
+    SimpleOutlineNode groupNode = new SimpleOutlineNode(parent, protobuf, labelProvider.getImage(imageKey), text, false);
+    for (EObject o : group) {
+      createNode(groupNode, o);
     }
   }
 
