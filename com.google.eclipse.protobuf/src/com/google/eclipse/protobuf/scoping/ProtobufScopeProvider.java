@@ -122,7 +122,6 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     try {
       return resourceSet.getResource(importUri, true);
     } catch (Throwable t) {
-      t.printStackTrace();
       return null;
     }
   }
@@ -161,15 +160,15 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
       Enum enumType = finder.enumTypeOf((Property) container);
       if (enumType != null) return scopeForLiterals(enumType);
     }
+    Enum enumType = enumTypeOfOption(container);
+    if (enumType != null) return scopeForLiterals(enumType);
+    return null;
+  }
+
+  private Enum enumTypeOfOption(EObject mayBeOption) {
     Descriptor descriptor = descriptorProvider.get();
-    if (container instanceof Option && descriptor.isOptimizeForOption((Option) container)) {
-      Enum optimizedMode = descriptor.optimizedMode();
-      return scopeForLiterals(optimizedMode);
-    }
-    if (container instanceof FieldOption && descriptor.isCTypeOption((FieldOption) container)) {
-      Enum cType = descriptor.cType();
-      return scopeForLiterals(cType);
-    }
+    if (mayBeOption instanceof Option) return descriptor.enumTypeOf((Option) mayBeOption);
+    if (mayBeOption instanceof FieldOption) return descriptor.enumTypeOf((FieldOption) mayBeOption);
     return null;
   }
 

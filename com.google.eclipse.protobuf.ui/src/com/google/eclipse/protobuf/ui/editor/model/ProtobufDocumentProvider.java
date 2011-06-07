@@ -10,6 +10,7 @@ package com.google.eclipse.protobuf.ui.editor.model;
 
 import static com.google.eclipse.protobuf.ui.ProtobufUiModule.PLUGIN_ID;
 import static com.google.eclipse.protobuf.ui.util.Resources.URI_SCHEME_FOR_FILES;
+import static com.google.eclipse.protobuf.util.Closeables.close;
 import static java.util.Collections.singletonMap;
 import static org.eclipse.core.runtime.IStatus.ERROR;
 import static org.eclipse.emf.common.util.URI.createURI;
@@ -43,7 +44,6 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
 
   private static final String ENCODING = "UTF-8";
 
-  @Inject private Closeables closeables;
   @Inject private IResourceSetProvider resourceSetProvider;
   @Inject private Resources resources;
 
@@ -120,7 +120,7 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
       }
       return contents.toString();
     } finally {
-      if (!closeables.close(reader)) closeables.close(inputStream);
+      if (!close(reader)) close(inputStream);
     }
   }
 

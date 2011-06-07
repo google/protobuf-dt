@@ -8,9 +8,9 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import org.eclipse.xtext.parser.IParser;
-
 import com.google.inject.*;
+
+import org.eclipse.xtext.parser.IParser;
 
 /**
  * Provider of a singleton instance of <code>{@link Descriptor}</code>.
