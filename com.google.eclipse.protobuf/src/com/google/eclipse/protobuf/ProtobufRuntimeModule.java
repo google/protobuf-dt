@@ -8,12 +8,13 @@
  */
 package com.google.eclipse.protobuf;
 
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.parser.antlr.ISyntaxErrorMessageProvider;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 
 import com.google.eclipse.protobuf.naming.ProtobufQualifiedNameProvider;
-import com.google.eclipse.protobuf.scoping.ProtobufImportUriResolver;
+import com.google.eclipse.protobuf.scoping.*;
 import com.google.eclipse.protobuf.validation.ProtobufSyntaxErrorMessageProvider;
 import com.google.inject.Binder;
 
@@ -33,5 +34,9 @@ public class ProtobufRuntimeModule extends com.google.eclipse.protobuf.AbstractP
 
   public void configureSyntaxErrorMessageProvider(Binder binder) {
     binder.bind(ISyntaxErrorMessageProvider.class).to(ProtobufSyntaxErrorMessageProvider.class);
+  }
+  
+  public void configureExtensionRegistry(Binder binder) {
+    binder.bind(IExtensionRegistry.class).toProvider(ExtensionRegistryProvider.class);
   }
 }
