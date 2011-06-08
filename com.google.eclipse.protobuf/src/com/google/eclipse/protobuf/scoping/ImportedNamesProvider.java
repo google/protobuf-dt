@@ -25,37 +25,11 @@ import org.eclipse.xtext.util.*;
 import java.util.*;
 
 /**
- * Provides alternative qualified names for protobuf elements.
- * <p>
- * For example, given the following proto element:
- * <pre>
- * package test.alternative.names;
- *
- * message Person {
- *   optional string name = 1;
- *
- *   enum PhoneType {
- *     HOME = 0;
- *     WORK = 1;
- *   }
- * }
- * </pre>
- * The default qualified name for {@code PhoneType} is {@code alternative.names.Person.PhoneType}. The problem is that
- * protoc also recognizes the following as qualified names:
- * <ul>
- * <li>{@code PhoneType}</li>
- * <li>{@code Person.PhoneType}</li>
- * <li>{@code names.Person.PhoneType}</li>
- * <li>{@code test.names.Person.PhoneType}</li>
- * </ul>
- * </p>
- * <p>
- * This class provides the non-default qualified names recognized by protoc.
- * </p>
+ * Provides alternative qualified names for imported protobuf elements.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-class LocalNamesProvider {
+class ImportedNamesProvider {
 
   @Inject private final IResourceScopeCache cache = IResourceScopeCache.NullImpl.INSTANCE;
   @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
@@ -65,7 +39,7 @@ class LocalNamesProvider {
   private final Function<EObject, String> resolver = newResolver(String.class, "name");
 
   List<QualifiedName> namesOf(final EObject obj) {
-    Pair<EObject, String> key = pair(obj, "localFqns");
+    Pair<EObject, String> key = pair(obj, "importedFqns");
     return cache.get(key, obj.eResource(), new Provider<List<QualifiedName>>() {
       public List<QualifiedName> get() {
         List<QualifiedName> allNames = new ArrayList<QualifiedName>();
@@ -74,13 +48,6 @@ class LocalNamesProvider {
         if (isEmpty(name)) return emptyList();
         QualifiedName qualifiedName = converter.toQualifiedName(name);
         allNames.add(qualifiedName);
-        while (current.eContainer() != null) {
-          current = current.eContainer();
-          String containerName = resolver.apply(current);
-          if (isEmpty(containerName)) continue;
-          qualifiedName = converter.toQualifiedName(containerName).append(qualifiedName);
-          allNames.add(qualifiedName);
-        }
         allNames.addAll(addPackageNameSegments(qualifiedName, finder.packageOf(obj), converter));
         return unmodifiableList(allNames);
       }

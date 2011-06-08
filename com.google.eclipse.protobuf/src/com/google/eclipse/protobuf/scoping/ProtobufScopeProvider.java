@@ -45,6 +45,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   @Inject private IQualifiedNameProvider nameProvider;
   @Inject private ImportUriResolver uriResolver;
   @Inject private LocalNamesProvider localNamesProvider;
+  @Inject private ImportedNamesProvider importedNamesProvider;
   @Inject private PackageResolver packageResolver;
 
   @SuppressWarnings("unused")
@@ -149,6 +150,9 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
       if (!targetType.isInstance(next)) continue;
       T type = targetType.cast(next);
       descriptions.add(create(nameProvider.getFullyQualifiedName(type), type));
+      for (QualifiedName name : importedNamesProvider.namesOf(type)) {
+        descriptions.add(create(name, type));
+      }
     }
     return descriptions;
   }
