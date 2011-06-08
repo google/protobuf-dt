@@ -28,7 +28,7 @@ public class Descriptor_fileOptions_Test {
 
   @Rule public XtextRule xtext = new XtextRule();
 
-  private IProtoDescriptor descriptor;
+  private ProtoDescriptor descriptor;
 
   @Before public void setUp() {
     descriptor = xtext.getInstanceOf(ProtoDescriptor.class);

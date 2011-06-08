@@ -12,7 +12,6 @@ import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.PROP
 import static com.google.eclipse.protobuf.scoping.OptionType.*;
 import static com.google.eclipse.protobuf.util.Closeables.close;
 import static java.util.Collections.unmodifiableCollection;
-import static org.eclipse.emf.common.util.URI.createURI;
 import static org.eclipse.xtext.EcoreUtil2.*;
 import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
 import static org.eclipse.xtext.util.Strings.isEmpty;
@@ -26,8 +25,7 @@ import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.parser.*;
 import org.eclipse.xtext.resource.XtextResource;
 
-import java.io.*;
-import java.net.URL;
+import java.io.InputStreamReader;
 import java.util.*;
 
 /**
@@ -35,9 +33,8 @@ import java.util.*;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ProtoDescriptor implements IProtoDescriptor {
+public class ProtoDescriptor {
 
-  private static final String DESCRIPTOR_URI = "platform:/plugin/com.google.eclipse.protobuf/descriptor.proto";
   private static final Map<String, OptionType> OPTION_DEFINITION_BY_NAME = new HashMap<String, OptionType>();
   
   static {
@@ -54,13 +51,13 @@ public class ProtoDescriptor implements IProtoDescriptor {
 
   private final ModelNodes nodes;
 
-  @Inject public ProtoDescriptor(IParser parser, ModelNodes nodes) {
+  @Inject public ProtoDescriptor(IParser parser, IProtoDescriptorSource source, ModelNodes nodes) {
     this.nodes = nodes;
     addOptionTypes();
     InputStreamReader reader = null;
     try {
-      XtextResource resource = new XtextResource(createURI(DESCRIPTOR_URI));
-      reader = new InputStreamReader(globalScopeContents(), "UTF-8");
+      XtextResource resource = new XtextResource(source.uri());
+      reader = new InputStreamReader(source.contents(), "UTF-8");
       IParseResult result = parser.parse(reader);
       root = (Protobuf) result.getRootASTElement();
       resource.getContents().add(root);
@@ -77,11 +74,6 @@ public class ProtoDescriptor implements IProtoDescriptor {
   private void addOptionTypes() {
     for (OptionType type : OptionType.values())
       optionsByType.put(type, new LinkedHashMap<String, Property>());
-  }
-
-  private static InputStream globalScopeContents() throws IOException {
-    URL url = new URL(DESCRIPTOR_URI);
-    return url.openConnection().getInputStream();
   }
 
   private void initContents() {
@@ -114,17 +106,28 @@ public class ProtoDescriptor implements IProtoDescriptor {
     return "uninterpreted_option".equals(property.getName());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Returns all the file-level options available. These are the options defined in
+   * {@code google/protobuf/descriptor.proto} (more details can be found
+   * <a href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
+   * @return all the file-level options available.
+   */
   public Collection<Property> fileOptions() {
     return optionsOfType(FILE);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Looks up an option per name, as defined in {@code google/protobuf/descriptor.proto}
+   * (more details can be found <a
+   * href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
+   * @param name the name of the option to look for.
+   * @return the option whose name matches the given one or {@code null} if a matching option is not found.
+   */
   public Property lookupOption(String name) {
     return lookupOption(name, FILE, MESSAGE, METHOD);
   }
   
-  public Property lookupOption(String name, OptionType...types) {
+  private Property lookupOption(String name, OptionType...types) {
     for (OptionType type : types) {
       Property p = lookupOption(name, type);
       if (p != null) return p;
@@ -132,7 +135,13 @@ public class ProtoDescriptor implements IProtoDescriptor {
     return null;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Looks up a field-level option per name. Field-level options are defined in {@code google/protobuf/descriptor.proto}
+   * (more details can be found <a
+   * href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
+   * @param name the name of the option to look for.
+   * @return the option whose name matches the given one or {@code null} if a matching option is not found.
+   */
   public Property lookupFieldOption(String name) {
     return lookupOption(name, FIELD);
   }
@@ -141,12 +150,22 @@ public class ProtoDescriptor implements IProtoDescriptor {
     return optionsByType.get(type).get(name);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Returns all the message-level options available. These are the options defined in
+   * {@code google/protobuf/descriptor.proto} (more details can be found
+   * <a href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
+   * @return all the message-level options available.
+   */
   public Collection<Property> messageOptions() {
     return optionsOfType(MESSAGE);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Returns all the field-level options available. These are the options defined in
+   * {@code google/protobuf/descriptor.proto} (more details can be found
+   * <a href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
+   * @return all the field-level options available.
+   */
   public Collection<Property> fieldOptions() {
     return optionsOfType(FIELD);
   }
@@ -155,13 +174,25 @@ public class ProtoDescriptor implements IProtoDescriptor {
     return unmodifiableCollection(optionsByType.get(type).values());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Returns the enum type of the given option, only if the given option is defined in
+   * {@code google/protobuf/descriptor.proto} and its type is enum (more details can be found <a
+   * href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
+   * @param option the given option.
+   * @return the enum type of the given option or {@code null} if the type of the given option is not enum.
+   */
   public Enum enumTypeOf(Option option) {
     String name = option.getName();
     return enumTypeOf(lookupOption(name));
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Returns the enum type of the given option, only if the given option is defined in
+   * {@code google/protobuf/descriptor.proto} and its type is enum (more details can be found <a
+   * href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
+   * @param option the given option.
+   * @return the enum type of the given option or {@code null} if the type of the given option is not enum.
+   */
   public Enum enumTypeOf(FieldOption option) {
     String name = option.getName();
     return enumTypeOf(lookupFieldOption(name));

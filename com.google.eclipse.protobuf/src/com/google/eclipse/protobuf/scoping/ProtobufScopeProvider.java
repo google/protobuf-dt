@@ -170,7 +170,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   }
 
   private Enum enumTypeOfOption(EObject mayBeOption) {
-    IProtoDescriptor descriptor = descriptorProvider.get();
+    ProtoDescriptor descriptor = descriptorProvider.get();
     if (mayBeOption instanceof Option) return descriptor.enumTypeOf((Option) mayBeOption);
     if (mayBeOption instanceof FieldOption) return descriptor.enumTypeOf((FieldOption) mayBeOption);
     return null;

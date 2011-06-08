@@ -19,15 +19,16 @@ import org.eclipse.xtext.parser.IParser;
  * @author Alex Ruiz
  */
 @Singleton
-public class ProtoDescriptorProvider implements Provider<IProtoDescriptor> {
+public class ProtoDescriptorProvider implements Provider<ProtoDescriptor> {
 
   @Inject private IParser parser;
+  @Inject private IProtoDescriptorSource source;
   @Inject private ModelNodes nodes;
 
-  private IProtoDescriptor descriptor;
+  private ProtoDescriptor descriptor;
 
-  public synchronized IProtoDescriptor get() {
-    if (descriptor == null) descriptor = new ProtoDescriptor(parser, nodes);
+  public synchronized ProtoDescriptor get() {
+    if (descriptor == null) descriptor = new ProtoDescriptor(parser, source, nodes);
     return descriptor;
   }
 }

@@ -106,7 +106,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Override public void completeOption_Value(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     Option option = (Option) model;
-    IProtoDescriptor descriptor = descriptorProvider.get();
+    ProtoDescriptor descriptor = descriptorProvider.get();
     Enum enumType = descriptor.enumTypeOf(option);
     if (enumType != null) {
       proposeAndAccept(enumType, context, acceptor);
@@ -399,7 +399,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Override public void completeFieldOption_Value(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     FieldOption option = (FieldOption) model;
-    IProtoDescriptor descriptor = descriptorProvider.get();
+    ProtoDescriptor descriptor = descriptorProvider.get();
     Enum enumType = descriptor.enumTypeOf(option);
     if (enumType != null) {
       proposeAndAccept(enumType, context, acceptor);
