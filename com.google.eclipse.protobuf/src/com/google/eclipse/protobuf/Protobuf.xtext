@@ -154,7 +154,9 @@ Rpc:
 
 Name:
   ID | 'package' | 'import' | 'option' | 'extend' | 'message' | 'optional' | 'required' | 'repeated' | 'group' | 'enum'
-  | 'service' | 'rpc' | 'returns' | 'true' | 'false' | 'default' | 'extensions' | 'to' | 'max';
+  | 'service' | 'rpc' | 'returns' | 'true' | 'false' | 'default' | 'extensions' | 'to' | 'max' | 'double' | 'float'
+  | 'int32' | 'int64' | 'uint32' | 'uint64' | 'sint32' | 'sint64' | 'fixed32' | 'fixed64' | 'sfixed32' | 'sfixed64' |
+  'bool' | 'string' | 'bytes';
 
 MessageReference:
   type=[Message | QualifiedName];
