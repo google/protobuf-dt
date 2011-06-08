@@ -41,7 +41,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   private static final boolean DO_NOT_IGNORE_CASE = false;
 
   @Inject private ProtobufElementFinder finder;
-  @Inject private DescriptorProvider descriptorProvider;
+  @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private IQualifiedNameProvider nameProvider;
   @Inject private ImportUriResolver uriResolver;
   @Inject private LocalNamesProvider localNamesProvider;
@@ -166,7 +166,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   }
 
   private Enum enumTypeOfOption(EObject mayBeOption) {
-    Descriptor descriptor = descriptorProvider.get();
+    IProtoDescriptor descriptor = descriptorProvider.get();
     if (mayBeOption instanceof Option) return descriptor.enumTypeOf((Option) mayBeOption);
     if (mayBeOption instanceof FieldOption) return descriptor.enumTypeOf((FieldOption) mayBeOption);
     return null;

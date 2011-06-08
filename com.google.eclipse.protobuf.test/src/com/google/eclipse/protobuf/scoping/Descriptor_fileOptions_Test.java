@@ -20,7 +20,7 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.Property;
 
 /**
- * Tests for <code>{@link Descriptor#fileOptions()}</code>.
+ * Tests for <code>{@link ProtoDescriptor#fileOptions()}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
@@ -28,10 +28,10 @@ public class Descriptor_fileOptions_Test {
 
   @Rule public XtextRule xtext = new XtextRule();
 
-  private Descriptor descriptor;
+  private IProtoDescriptor descriptor;
 
   @Before public void setUp() {
-    descriptor = xtext.getInstanceOf(Descriptor.class);
+    descriptor = xtext.getInstanceOf(ProtoDescriptor.class);
   }
 
   @Test public void should_return_all_file_options() {

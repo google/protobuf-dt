@@ -29,8 +29,7 @@ import org.eclipse.xtext.ui.editor.contentassist.*;
 import com.google.common.collect.ImmutableList;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.eclipse.protobuf.scoping.Descriptor;
-import com.google.eclipse.protobuf.scoping.DescriptorProvider;
+import com.google.eclipse.protobuf.scoping.*;
 import com.google.eclipse.protobuf.ui.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.ui.grammar.CompoundElement;
 import com.google.eclipse.protobuf.ui.labeling.Images;
@@ -48,7 +47,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   private static final String SPACE = " ";
 
   @Inject private ProtobufElementFinder finder;
-  @Inject private DescriptorProvider descriptorProvider;
+  @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private PluginImageHelper imageHelper;
 
   @Inject private Fields fields;
@@ -126,7 +125,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Override public void completeOption_Value(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     Option option = (Option) model;
-    Descriptor descriptor = descriptorProvider.get();
+    IProtoDescriptor descriptor = descriptorProvider.get();
     Enum enumType = descriptor.enumTypeOf(option);
     if (enumType != null) {
       proposeAndAccept(enumType, context, acceptor);
@@ -405,7 +404,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Override public void completeFieldOption_Value(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     FieldOption option = (FieldOption) model;
-    Descriptor descriptor = descriptorProvider.get();
+    IProtoDescriptor descriptor = descriptorProvider.get();
     Enum enumType = descriptor.enumTypeOf(option);
     if (enumType != null) {
       proposeAndAccept(enumType, context, acceptor);

@@ -13,19 +13,19 @@ import com.google.inject.*;
 import org.eclipse.xtext.parser.IParser;
 
 /**
- * Provider of a singleton instance of <code>{@link Descriptor}</code>.
+ * Provider of a singleton instance of <code>{@link ProtoDescriptor}</code>.
  *
  * @author Alex Ruiz
  */
 @Singleton
-public class DescriptorProvider implements Provider<Descriptor> {
+public class ProtoDescriptorProvider implements Provider<IProtoDescriptor> {
 
   @Inject private IParser parser;
 
-  private Descriptor descriptor;
+  private IProtoDescriptor descriptor;
 
-  public synchronized Descriptor get() {
-    if (descriptor == null) descriptor = new Descriptor(parser);
+  public synchronized IProtoDescriptor get() {
+    if (descriptor == null) descriptor = new ProtoDescriptor(parser);
     return descriptor;
   }
 }

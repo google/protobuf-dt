@@ -31,7 +31,7 @@ import java.util.*;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Descriptor {
+public class ProtoDescriptor implements IProtoDescriptor {
 
   private static final String DESCRIPTOR_URI = "platform:/plugin/com.google.eclipse.protobuf/descriptor.proto";
 
@@ -41,7 +41,7 @@ public class Descriptor {
   private Enum optimizedMode;
   private Enum cType;
 
-  @Inject public Descriptor(IParser parser) {
+  @Inject public ProtoDescriptor(IParser parser) {
     addOptionTypes();
     InputStreamReader reader = null;
     try {
@@ -151,45 +151,24 @@ public class Descriptor {
     return name.equals(anEnum.getName());
   }
   
-  /**
-   * Returns all the file-level options available. These are the options defined in
-   * {@code google/protobuf/descriptor.proto} (more details can be found
-   * <a href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
-   * @return all the file-level options available.
-   */
+  /** {@inheritDoc} */
   public Collection<Property> fileOptions() {
     return optionsOfType(FILE);
   }
 
-  /**
-   * Looks up an option per name, as defined in {@code google/protobuf/descriptor.proto}
-   * (more details can be found <a
-   * href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
-   * @param name the name of the option to look for.
-   * @return the option whose name matches the given one or {@code null} if a matching option is not found.
-   */
+  /** {@inheritDoc} */
   public Property lookupOption(String name) {
     Property p = lookupOption(FILE, name);
     if (p == null) lookupOption(MESSAGE, name);
     return p;
   }
 
-  /**
-   * Returns all the message-level options available. These are the options defined in
-   * {@code google/protobuf/descriptor.proto} (more details can be found
-   * <a href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
-   * @return all the message-level options available.
-   */
+  /** {@inheritDoc} */
   public Collection<Property> messageOptions() {
     return optionsOfType(MESSAGE);
   }
 
-  /**
-   * Returns all the field-level options available. These are the options defined in
-   * {@code google/protobuf/descriptor.proto} (more details can be found
-   * <a href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
-   * @return all the field-level options available.
-   */
+  /** {@inheritDoc} */
   public Collection<Property> fieldOptions() {
     return optionsOfType(FIELD);
   }
@@ -198,13 +177,7 @@ public class Descriptor {
     return unmodifiableCollection(options.get(type).values());
   }
   
-  /**
-   * Looks up a field-level option per name. Field-level options are defined in {@code google/protobuf/descriptor.proto}
-   * (more details can be found <a
-   * href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
-   * @param name the name of the option to look for.
-   * @return the option whose name matches the given one or {@code null} if a matching option is not found.
-   */
+  /** {@inheritDoc} */
   public Property lookupFieldOption(String name) {
     return lookupOption(FIELD, name);
   }
@@ -213,13 +186,7 @@ public class Descriptor {
     return options.get(type).get(name);
   }
 
-  /**
-   * Returns the enum type of the given option, only if the given option is defined in 
-   * {@code google/protobuf/descriptor.proto} and its type an enum (more details can be found <a
-   * href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
-   * @param option the given option.
-   * @return the enum type of the given option or {@code null} if the type of the given option is not enum.
-   */
+  /** {@inheritDoc} */
   public Enum enumTypeOf(Option option) {
     if (isOptimizeForOption(option)) return optimizedMode;
     return null;
@@ -230,13 +197,7 @@ public class Descriptor {
     return "optimize_for".equals(option.getName());
   }
 
-  /**
-   * Returns the enum type of the given option, only if the given option is defined in 
-   * {@code google/protobuf/descriptor.proto} and its type an enum (more details can be found <a
-   * href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
-   * @param option the given option.
-   * @return the enum type of the given option or {@code null} if the type of the given option is not enum.
-   */
+  /** {@inheritDoc} */
   public Enum enumTypeOf(FieldOption option) {
     if (isCTypeOption(option)) return cType;
     return null;
