@@ -38,7 +38,7 @@ public class Fields {
    *
    * The calculated tag number value for the field {@code PhoneNumber} will be 3.
    * </p>
-   * @param p the given field.
+   * @param f the given field.
    * @return the calculated value for the tag number of the given field.
    */
   public int calculateTagNumberOf(Field f) {

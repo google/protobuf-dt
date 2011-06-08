@@ -10,14 +10,11 @@ package com.google.eclipse.protobuf.ui.util;
 
 import static java.lang.Character.toLowerCase;
 
-import com.google.inject.Singleton;
-
 /**
  * Utility methods related to {@code String}.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
 public class Strings {
 
   /** Pattern to split CSVs. */
@@ -28,11 +25,13 @@ public class Strings {
    * @param s the original {@code String}
    * @return a {@code String} with the same content as the given one, but with the first character in lower case.
    */
-  public String firstCharToLowerCase(String s) {
+  public static String firstCharToLowerCase(String s) {
     if (s == null) return null;
     if (s.length() == 0) return s;
     char[] chars = s.toCharArray();
     chars[0] = toLowerCase(chars[0]);
     return new String(chars);
   }
+  
+  private Strings() {}
 }

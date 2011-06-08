@@ -8,10 +8,12 @@
  */
 package com.google.eclipse.protobuf.ui.editor.syntaxcoloring;
 
-import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.findNodesForFeature;
 import static org.eclipse.xtext.ui.editor.syntaxcoloring.DefaultHighlightingConfiguration.DEFAULT_ID;
 
-import java.util.List;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.eclipse.protobuf.util.ModelNodes;
+import com.google.inject.Inject;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.*;
@@ -19,14 +21,13 @@ import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.*;
 
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.protobuf.Package;
-
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufSemanticHighlightingCalculator implements ISemanticHighlightingCalculator {
 
+  @Inject private ModelNodes nodes;
+  
   public void provideHighlightingFor(XtextResource resource, IHighlightedPositionAcceptor acceptor) {
     if (resource == null) return;
     EList<EObject> contents = resource.getContents();
@@ -104,13 +105,8 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
 
   private void highlightFirstFeature(EObject semantic, EStructuralFeature feature, String highlightId,
       IHighlightedPositionAcceptor acceptor) {
-    INode node = firstFeatureNode(semantic, feature);
+    INode node = nodes.firstNodeForFeature(semantic, feature);
     if (node == null || node.getText() == null) return;
     acceptor.addPosition(node.getOffset(), node.getText().length(), highlightId);
-  }
-
-  public INode firstFeatureNode(EObject semantic, EStructuralFeature feature) {
-    List<INode> nodes = findNodesForFeature(semantic, feature);
-    return (nodes.size() == 1) ? nodes.get(0) : null;
   }
 }

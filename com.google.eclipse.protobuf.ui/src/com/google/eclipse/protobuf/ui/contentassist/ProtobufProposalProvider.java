@@ -12,6 +12,7 @@ import static com.google.eclipse.protobuf.protobuf.Modifier.*;
 import static com.google.eclipse.protobuf.protobuf.ScalarType.STRING;
 import static com.google.eclipse.protobuf.ui.grammar.CommonKeyword.*;
 import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.*;
+import static com.google.eclipse.protobuf.ui.util.Strings.firstCharToLowerCase;
 import static java.lang.String.valueOf;
 import static java.util.Collections.emptyList;
 
@@ -54,7 +55,6 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Inject private Images images;
   @Inject private Literals literals;
   @Inject private Properties properties;
-  @Inject private Strings strings;
 
   /** {@inheritDoc} */
   @Override public void completeProtobuf_Syntax(EObject model, Assignment assignment, ContentAssistContext context,
@@ -310,7 +310,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeProperty_Name(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    String typeName = strings.firstCharToLowerCase(properties.typeNameOf((Property) model));
+    String typeName = firstCharToLowerCase(properties.typeNameOf((Property) model));
     int index = 1;
     String name = typeName + index;
     for (EObject o : model.eContainer().eContents()) {

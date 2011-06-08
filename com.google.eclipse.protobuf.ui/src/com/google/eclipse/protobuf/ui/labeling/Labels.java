@@ -8,19 +8,16 @@
  */
 package com.google.eclipse.protobuf.ui.labeling;
 
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
 import static org.eclipse.jface.viewers.StyledString.DECORATIONS_STYLER;
-import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.findNodesForFeature;
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
-
-import org.eclipse.jface.viewers.StyledString;
-import org.eclipse.xtext.nodemodel.INode;
-
-import java.util.List;
 
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.ui.util.Properties;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import com.google.eclipse.protobuf.util.ModelNodes;
+import com.google.inject.*;
+
+import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.xtext.nodemodel.INode;
 
 /**
  * Registry of commonly used text in the 'Protocol Buffer' editor.
@@ -30,6 +27,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class Labels {
 
+  @Inject private ModelNodes nodes;
   @Inject private Properties properties;
 
   public Object labelFor(Object o) {
@@ -61,9 +59,8 @@ public class Labels {
   }
 
   private Object labelFor(Import i) {
-    List<INode> nodes = findNodesForFeature(i, IMPORT__IMPORT_URI);
-    if (nodes.size() != 1) return i.getImportURI();
-    INode node = nodes.get(0);
+    INode node = nodes.firstNodeForFeature(i, IMPORT__IMPORT_URI);
+    if (node == null) return i.getImportURI();
     return node.getText();
   }
 
@@ -77,7 +74,7 @@ public class Labels {
   private Object labelFor(Property p) {
     StyledString text = new StyledString(p.getName());
     String typeName = properties.typeNameOf(p);
-    if (typeName == null) typeName = "<unable to resolve type reference>";
+    if (typeName == null) typeName = "<unresolved reference>"; // TODO move to properties file
     String indexAndType = String.format(" [%d] : %s", p.getIndex(), typeName);
     text.append(indexAndType, DECORATIONS_STYLER);
     return text;

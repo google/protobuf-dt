@@ -22,21 +22,15 @@ import org.junit.Test;
  */
 public class Strings_firstCharToLowerCase_Test {
 
-  private static Strings strings;
-  
-  @BeforeClass public static void setUpOnce() {
-    strings = new Strings();
-  }
-  
   @Test public void should_return_null() {
-    assertThat(strings.firstCharToLowerCase(null), nullValue());
+    assertThat(Strings.firstCharToLowerCase(null), nullValue());
   }
 
   @Test public void should_return_empty_String() {
-    assertThat(strings.firstCharToLowerCase(""), equalTo(""));
+    assertThat(Strings.firstCharToLowerCase(""), equalTo(""));
   }
   
   @Test public void should_return_String_with_first_char_lower_case() {
-    assertThat(strings.firstCharToLowerCase("HElLo"), equalTo("hElLo"));
+    assertThat(Strings.firstCharToLowerCase("HElLo"), equalTo("hElLo"));
   }
 }
