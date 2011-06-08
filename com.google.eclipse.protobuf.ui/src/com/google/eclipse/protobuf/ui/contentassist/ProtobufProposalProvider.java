@@ -383,7 +383,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     String proposalText = displayString + SPACE + EQUAL + SPACE;
     boolean isStringOption = properties.isString(option);
     if (isStringOption) {
-      proposalText = proposalText + EMPTY_STRING + SEMICOLON;
+      proposalText = proposalText + EMPTY_STRING;
     } else if (properties.isBool(option)) {
       proposalText = proposalText + TRUE;
     }
