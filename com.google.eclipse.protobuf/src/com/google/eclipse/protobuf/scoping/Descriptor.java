@@ -131,13 +131,18 @@ public class Descriptor {
       }
     }
   }
-  
+
   private void addFieldOption(Property p) {
     addOption(FIELD, p);
   }
   
   private void addOption(OptionType type, Property p) {
+    if (shouldIgnore(p)) return;
     options.get(type).put(p.getName(), p);
+  }
+  
+  private boolean shouldIgnore(Property property) {
+    return "uninterpreted_option".equals(property.getName());
   }
   
   private boolean isEnumWithName(MessageElement e, String name) {
