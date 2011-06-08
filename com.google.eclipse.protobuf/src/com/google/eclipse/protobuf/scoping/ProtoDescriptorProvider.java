@@ -34,11 +34,17 @@ public class ProtoDescriptorProvider implements Provider<ProtoDescriptor> {
 
   private ProtoDescriptor descriptor;
 
-  public synchronized ProtoDescriptor get() {
-    IProtoDescriptorSource actualSource = sourceFromPlugin();
-    if (actualSource == null) actualSource = source;
-    if (descriptor == null) descriptor = new ProtoDescriptor(parser, actualSource, nodes);
-    return descriptor;
+  private final Object lock = new Object();
+
+  public ProtoDescriptor get() {
+    synchronized (lock) {
+      if (descriptor == null) {
+        IProtoDescriptorSource actualSource = sourceFromPlugin();
+        if (actualSource == null) actualSource = source;
+        descriptor = new ProtoDescriptor(parser, actualSource, nodes);
+      }
+      return descriptor;
+    }
   }
   
   private IProtoDescriptorSource sourceFromPlugin() {
