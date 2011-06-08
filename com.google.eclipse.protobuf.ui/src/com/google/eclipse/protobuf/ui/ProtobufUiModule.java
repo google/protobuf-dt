@@ -18,7 +18,7 @@ import org.eclipse.xtext.ui.LanguageSpecific;
 import org.eclipse.xtext.ui.editor.*;
 import org.eclipse.xtext.ui.editor.model.XtextDocumentProvider;
 import org.eclipse.xtext.ui.editor.outline.actions.IOutlineContribution;
-import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
+import org.eclipse.xtext.ui.editor.preferences.*;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculator;
 
 import com.google.eclipse.protobuf.scoping.IFileUriResolver;
@@ -28,6 +28,7 @@ import com.google.eclipse.protobuf.ui.editor.hyperlinking.ProtobufHyperlinkDetec
 import com.google.eclipse.protobuf.ui.editor.model.ProtobufDocumentProvider;
 import com.google.eclipse.protobuf.ui.editor.syntaxcoloring.ProtobufSemanticHighlightingCalculator;
 import com.google.eclipse.protobuf.ui.outline.*;
+import com.google.eclipse.protobuf.ui.preferences.PreferenceStoreAccess;
 import com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferenceStoreInitializer;
 import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferenceStoreInitializer;
 import com.google.eclipse.protobuf.ui.scoping.FileUriResolver;
@@ -95,5 +96,9 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
 
   public void configureSemanticHighlightingCalculator(Binder binder) {
     binder.bind(ISemanticHighlightingCalculator.class).to(ProtobufSemanticHighlightingCalculator.class);
+  }
+  
+  public void configurePreferenceStoreAccess(Binder binder) {
+    binder.bind(IPreferenceStoreAccess.class).to(PreferenceStoreAccess.class);
   }
 }

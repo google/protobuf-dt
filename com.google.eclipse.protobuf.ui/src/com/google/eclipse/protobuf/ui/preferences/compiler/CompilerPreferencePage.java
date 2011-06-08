@@ -14,21 +14,17 @@ import static com.google.eclipse.protobuf.ui.swt.EventListeners.addSelectionList
 import static java.util.Arrays.asList;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import java.io.File;
+import com.google.eclipse.protobuf.ui.preferences.*;
+import com.google.inject.Inject;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.xtext.ui.PluginImageHelper;
-import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
-import com.google.eclipse.protobuf.ui.preferences.DataChangedListener;
-import com.google.eclipse.protobuf.ui.preferences.PreferenceAndPropertyPage;
-import com.google.inject.Inject;
+import java.io.File;
 
 /**
  * Preference page for protobuf compiler.
@@ -57,10 +53,6 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
 
   @Inject private PluginImageHelper imageHelper;
   @Inject private CodeGenerationPreferencesProvider codeGenerationPreferencesProvider;
-
-  @Inject public CompilerPreferencePage(IPreferenceStoreAccess preferenceStoreAccess) {
-    super(preferenceStoreAccess);
-  }
 
   /** {@inheritDoc} */
   @Override protected Control createContents(Composite parent) {
@@ -142,7 +134,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
   }
 
   private void updateFromPreferenceStore() {
-    IPreferenceStore store = doGetPreferenceStore();
+    IPreferenceStore store = getPreferenceStore();
     boolean compileProtoFiles = store.getBoolean(COMPILE_PROTO_FILES);
     btnCompileProtoFiles.setSelection(compileProtoFiles);
     btnUseProtocInSystemPath.setSelection(store.getBoolean(USE_PROTOC_IN_SYSTEM_PATH));
@@ -226,8 +218,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
   }
 
   /** {@inheritDoc} */
-  @Override protected void performDefaults() {
-    IPreferenceStore store = doGetPreferenceStore();
+  @Override protected void performDefaults(IPreferenceStore store) {
     boolean compileProtoFiles = store.getDefaultBoolean(COMPILE_PROTO_FILES);
     btnCompileProtoFiles.setSelection(compileProtoFiles);
     btnUseProtocInSystemPath.setSelection(store.getDefaultBoolean(USE_PROTOC_IN_SYSTEM_PATH));
@@ -302,8 +293,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
   }
 
   /** {@inheritDoc} */
-  @Override protected void savePreferences() {
-    IPreferenceStore store = getPreferenceStore();
+  @Override protected void savePreferences(IPreferenceStore store) {
     if (isPropertyPage()) store.setValue(ENABLE_PROJECT_SETTINGS, areProjectSettingsActive());
     store.setValue(COMPILE_PROTO_FILES, btnCompileProtoFiles.getSelection());
     store.setValue(USE_PROTOC_IN_SYSTEM_PATH, btnUseProtocInSystemPath.getSelection());

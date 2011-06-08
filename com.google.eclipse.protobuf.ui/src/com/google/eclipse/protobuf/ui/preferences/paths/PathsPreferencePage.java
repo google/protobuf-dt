@@ -15,8 +15,8 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static org.eclipse.xtext.util.Strings.*;
 
-import java.util.*;
-import java.util.List;
+import com.google.eclipse.protobuf.ui.preferences.*;
+import com.google.inject.Inject;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
@@ -24,10 +24,9 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.xtext.ui.PluginImageHelper;
-import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
-import com.google.eclipse.protobuf.ui.preferences.*;
-import com.google.inject.Inject;
+import java.util.*;
+import java.util.List;
 
 /**
  * Preference page for import paths.
@@ -45,10 +44,6 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
   private DirectoryPathsEditor directoryPathsEditor;
 
   @Inject private PluginImageHelper imageHelper;
-
-  @Inject public PathsPreferencePage(IPreferenceStoreAccess preferenceStoreAccess) {
-    super(preferenceStoreAccess);
-  }
 
   /** {@inheritDoc} */
   @Override protected Control createContents(Composite parent) {
@@ -80,7 +75,7 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
   }
 
   private void updateFromPreferenceStore() {
-    IPreferenceStore store = doGetPreferenceStore();
+    IPreferenceStore store = getPreferenceStore();
     btnOneFolderOnly.setSelection(store.getBoolean(FILES_IN_ONE_DIRECTORY_ONLY));
     btnMultipleFolders.setSelection(store.getBoolean(FILES_IN_MULTIPLE_DIRECTORIES));
     setDirectoryPaths(store.getString(DIRECTORY_PATHS));
@@ -115,8 +110,7 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
     enableProjectOptions(active);
   }
 
-  @Override protected void performDefaults() {
-    IPreferenceStore store = doGetPreferenceStore();
+  @Override protected void performDefaults(IPreferenceStore store) {
     btnOneFolderOnly.setSelection(store.getDefaultBoolean(FILES_IN_ONE_DIRECTORY_ONLY));
     btnMultipleFolders.setSelection(store.getDefaultBoolean(FILES_IN_MULTIPLE_DIRECTORIES));
     setDirectoryPaths(store.getDefaultString(DIRECTORY_PATHS));
@@ -141,8 +135,7 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
   }
 
   /** {@inheritDoc} */
-  @Override protected void savePreferences() {
-    IPreferenceStore store = getPreferenceStore();
+  @Override protected void savePreferences(IPreferenceStore store) {
     store.setValue(FILES_IN_ONE_DIRECTORY_ONLY, btnOneFolderOnly.getSelection());
     store.setValue(FILES_IN_MULTIPLE_DIRECTORIES, btnMultipleFolders.getSelection());
     store.setValue(DIRECTORY_PATHS, directoryNames());

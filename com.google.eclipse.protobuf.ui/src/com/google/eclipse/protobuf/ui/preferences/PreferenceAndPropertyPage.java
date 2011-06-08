@@ -38,11 +38,7 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
   private IProject project;
   private Map<String, Object> dataMap;
 
-  private final IPreferenceStoreAccess preferenceStoreAccess;
-
-  @Inject public PreferenceAndPropertyPage(IPreferenceStoreAccess preferenceStoreAccess) {
-    this.preferenceStoreAccess = preferenceStoreAccess;
-  }
+  @Inject private IPreferenceStoreAccess preferenceStoreAccess;
 
   /**
    * Creates the <code>{@link Composite}</code> to be used as the base container in implementations of
@@ -174,14 +170,26 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
   public void init(IWorkbench workbench) {}
 
   @Override public final boolean performOk() {
-    savePreferences();
+    savePreferences(getPreferenceStore());
     return true;
   }
 
   /**
    * Saves the current settings.
+   * @param store the preference store used by this page.
    */
-  protected abstract void savePreferences();
+  protected abstract void savePreferences(IPreferenceStore store);
+
+  @Override protected final void performDefaults() {
+    performDefaults(getPreferenceStore());
+    super.performDefaults();
+  }
+
+  /**
+   * Performs special processing when this page's "Defaults" button has been pressed.
+   * @param store the preference store used by this page.
+   */
+  protected abstract void performDefaults(IPreferenceStore store);
 
   /**
    * Marks this page as "valid."
