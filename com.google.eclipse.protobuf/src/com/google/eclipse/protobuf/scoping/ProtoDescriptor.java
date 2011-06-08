@@ -44,6 +44,7 @@ public class ProtoDescriptor implements IProtoDescriptor {
     OPTION_DEFINITION_BY_NAME.put("FileOptions", FILE);
     OPTION_DEFINITION_BY_NAME.put("MessageOptions", MESSAGE);
     OPTION_DEFINITION_BY_NAME.put("FieldOptions", FIELD);
+    OPTION_DEFINITION_BY_NAME.put("MethodOptions", METHOD);
   }
   
   private final Map<OptionType, Map<String, Property>> optionsByType = new HashMap<OptionType, Map<String, Property>>();
@@ -120,7 +121,7 @@ public class ProtoDescriptor implements IProtoDescriptor {
 
   /** {@inheritDoc} */
   public Property lookupOption(String name) {
-    return lookupOption(name, FILE, MESSAGE);
+    return lookupOption(name, FILE, MESSAGE, METHOD);
   }
   
   public Property lookupOption(String name, OptionType...types) {

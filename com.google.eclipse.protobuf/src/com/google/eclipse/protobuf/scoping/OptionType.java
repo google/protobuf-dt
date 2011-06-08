@@ -9,5 +9,5 @@
 package com.google.eclipse.protobuf.scoping;
 
 enum OptionType {
-  FILE, MESSAGE, FIELD;
+  FILE, MESSAGE, FIELD, METHOD;
 }
