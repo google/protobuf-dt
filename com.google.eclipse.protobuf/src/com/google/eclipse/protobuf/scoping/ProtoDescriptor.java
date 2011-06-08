@@ -15,16 +15,16 @@ import static org.eclipse.emf.common.util.URI.createURI;
 import static org.eclipse.xtext.EcoreUtil2.*;
 import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
 
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.inject.Inject;
+import java.io.*;
+import java.net.URL;
+import java.util.*;
 
 import org.eclipse.xtext.parser.*;
 import org.eclipse.xtext.resource.XtextResource;
 
-import java.io.*;
-import java.net.URL;
-import java.util.*;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.inject.Inject;
 
 /**
  * Contains the elements from descriptor.proto (provided with protobuf's library.)
@@ -36,10 +36,9 @@ public class ProtoDescriptor implements IProtoDescriptor {
   private static final String DESCRIPTOR_URI = "platform:/plugin/com.google.eclipse.protobuf/descriptor.proto";
 
   private final Map<OptionType, Map<String, Property>> options = new HashMap<OptionType, Map<String, Property>>();
-   
+  private final Map<String, Enum> enums = new HashMap<String, Enum>();
+
   private Protobuf root;
-  private Enum optimizedMode;
-  private Enum cType;
 
   @Inject public ProtoDescriptor(IParser parser) {
     addOptionTypes();
@@ -52,8 +51,9 @@ public class ProtoDescriptor implements IProtoDescriptor {
       resource.getContents().add(root);
       resolveLazyCrossReferences(resource, NullImpl);
       initContents();
-    } catch (IOException e) {
-      throw new IllegalStateException("Unable to parse descriptor.proto", e);
+    } catch (Throwable t) {
+      t.printStackTrace();
+      throw new IllegalStateException("Unable to parse descriptor.proto", t);
     } finally {
       close(reader);
     }
@@ -63,7 +63,7 @@ public class ProtoDescriptor implements IProtoDescriptor {
     for (OptionType type : OptionType.values())
       options.put(type, new LinkedHashMap<String, Property>());
   }
-  
+
   private static InputStream globalScopeContents() throws IOException {
     URL url = new URL(DESCRIPTOR_URI);
     return url.openConnection().getInputStream();
@@ -76,7 +76,7 @@ public class ProtoDescriptor implements IProtoDescriptor {
       else if (isFieldOptionsMessage(m)) initFieldOptions(m);
     }
   }
-  
+
   private boolean isFileOptionsMessage(Message m) {
     return "FileOptions".equals(m.getName());
   }
@@ -96,12 +96,12 @@ public class ProtoDescriptor implements IProtoDescriptor {
         continue;
       }
       if (isEnumWithName(e, "OptimizeMode")) {
-        optimizedMode = (Enum) e;
+        enums.put("optimize_for", (Enum) e);
         continue;
       }
     }
   }
-  
+
   private void addFileOption(Property p) {
     addOption(FILE, p);
   }
@@ -114,7 +114,7 @@ public class ProtoDescriptor implements IProtoDescriptor {
       }
     }
   }
-  
+
   private void addMessageOption(Property p) {
     addOption(MESSAGE, p);
   }
@@ -126,7 +126,7 @@ public class ProtoDescriptor implements IProtoDescriptor {
         continue;
       }
       if (isEnumWithName(e, "CType")) {
-        cType = (Enum) e;
+        enums.put("ctype", (Enum) e);
         continue;
       }
     }
@@ -135,22 +135,22 @@ public class ProtoDescriptor implements IProtoDescriptor {
   private void addFieldOption(Property p) {
     addOption(FIELD, p);
   }
-  
+
   private void addOption(OptionType type, Property p) {
     if (shouldIgnore(p)) return;
     options.get(type).put(p.getName(), p);
   }
-  
+
   private boolean shouldIgnore(Property property) {
     return "uninterpreted_option".equals(property.getName());
   }
-  
+
   private boolean isEnumWithName(MessageElement e, String name) {
     if (!(e instanceof Enum)) return false;
     Enum anEnum = (Enum) e;
     return name.equals(anEnum.getName());
   }
-  
+
   /** {@inheritDoc} */
   public Collection<Property> fileOptions() {
     return optionsOfType(FILE);
@@ -176,35 +176,23 @@ public class ProtoDescriptor implements IProtoDescriptor {
   private Collection<Property> optionsOfType(OptionType type) {
     return unmodifiableCollection(options.get(type).values());
   }
-  
+
   /** {@inheritDoc} */
   public Property lookupFieldOption(String name) {
     return lookupOption(FIELD, name);
   }
-  
+
   private Property lookupOption(OptionType type, String name) {
     return options.get(type).get(name);
   }
 
   /** {@inheritDoc} */
   public Enum enumTypeOf(Option option) {
-    if (isOptimizeForOption(option)) return optimizedMode;
-    return null;
-  }
-
-  private boolean isOptimizeForOption(Option option) {
-    if (option == null) return false;
-    return "optimize_for".equals(option.getName());
+    return enums.get(option.getName());
   }
 
   /** {@inheritDoc} */
   public Enum enumTypeOf(FieldOption option) {
-    if (isCTypeOption(option)) return cType;
-    return null;
-  }
-
-  private boolean isCTypeOption(FieldOption option) {
-    if (option == null) return false;
-    return "ctype".equals(option.getName());
+    return enums.get(option.getName());
   }
 }

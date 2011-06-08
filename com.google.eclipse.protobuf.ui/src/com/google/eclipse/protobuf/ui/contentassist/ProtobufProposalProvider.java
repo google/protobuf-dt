@@ -15,8 +15,7 @@ import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.*;
 import static java.lang.String.valueOf;
 import static java.util.Collections.emptyList;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -30,10 +29,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.scoping.*;
-import com.google.eclipse.protobuf.ui.grammar.CommonKeyword;
+import com.google.eclipse.protobuf.ui.grammar.*;
 import com.google.eclipse.protobuf.ui.grammar.CompoundElement;
 import com.google.eclipse.protobuf.ui.labeling.Images;
 import com.google.eclipse.protobuf.ui.util.*;
+import com.google.eclipse.protobuf.ui.util.Properties;
 import com.google.eclipse.protobuf.util.ProtobufElementFinder;
 import com.google.inject.Inject;
 
@@ -92,34 +92,15 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     }
     return false;
   }
-  
+
   private void proposeCommonFileOptions(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    for (Property fileOption : descriptorProvider.get().fileOptions()) {
-      String displayString = fileOption.getName();
-      String proposalText = displayString + SPACE + EQUAL + SPACE;
-      boolean isStringOption = properties.isString(fileOption);
-      if (isStringOption)
-        proposalText = proposalText + EMPTY_STRING + SEMICOLON;
-      ICompletionProposal proposal = createCompletionProposal(proposalText, displayString, context);
-      if (isStringOption && proposal instanceof ConfigurableCompletionProposal) {
-        // set cursor between the proposal's quotes
-        ConfigurableCompletionProposal configurable = (ConfigurableCompletionProposal) proposal;
-        configurable.setCursorPosition(proposalText.length() - 2);
-      }
-      acceptor.accept(proposal);
-    }
+    for (Property option : descriptorProvider.get().fileOptions())
+      proposeOption(option, context, acceptor);
   }
 
   private void proposeCommonMessageOptions(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    for (Property messageOption : descriptorProvider.get().messageOptions()) {
-      String displayString = messageOption.getName();
-      String proposalText = displayString + SPACE + EQUAL + SPACE;
-      boolean isBooleanOption = properties.isBool(messageOption);
-      if (isBooleanOption)
-        proposalText = proposalText + TRUE;
-      ICompletionProposal proposal = createCompletionProposal(proposalText, displayString, context);
-      acceptor.accept(proposal);
-    }
+    for (Property option : descriptorProvider.get().messageOptions())
+      proposeOption(option, context, acceptor);
   }
 
   @Override public void completeOption_Value(EObject model, Assignment assignment, ContentAssistContext context,
@@ -287,7 +268,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   private Property extractPropertyFrom(ContentAssistContext context) {
     return extractElementFromContext(context, Property.class);
   }
-  
+
   private <T> T extractElementFromContext(ContentAssistContext context, Class<T> type) {
     EObject model = context.getCurrentModel();
     // this is most likely a bug in Xtext:
@@ -373,17 +354,13 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   private Field extractFieldFrom(ContentAssistContext context) {
     return extractElementFromContext(context, Field.class);
   }
-  
+
   private void proposeCommonFieldOptions(Field field, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     List<String> options = existingFieldOptionNames(field);
-    for (Property fieldOption : descriptorProvider.get().fieldOptions()) {
-      String optionName = fieldOption.getName();
+    for (Property option : descriptorProvider.get().fieldOptions()) {
+      String optionName = option.getName();
       if (options.contains(optionName) || ("packed".equals(optionName) && !canBePacked(field))) continue;
-      String proposalText = optionName + SPACE + EQUAL + SPACE;
-      boolean isBooleanOption = properties.isBool(fieldOption);
-      if (isBooleanOption) proposalText = proposalText + TRUE;
-      ICompletionProposal proposal = createCompletionProposal(proposalText, context);
-      acceptor.accept(proposal);
+      proposeOption(option, context, acceptor);
     }
   }
 
@@ -399,6 +376,24 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (!(field instanceof Property)) return false;
     Property property = (Property) field;
     return properties.isPrimitive(property) && REPEATED.equals(property.getModifier());
+  }
+
+  private void proposeOption(Property option, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    String displayString = option.getName();
+    String proposalText = displayString + SPACE + EQUAL + SPACE;
+    boolean isStringOption = properties.isString(option);
+    if (isStringOption) {
+      proposalText = proposalText + EMPTY_STRING + SEMICOLON;
+    } else if (properties.isBool(option)) {
+      proposalText = proposalText + TRUE;
+    }
+    ICompletionProposal proposal = createCompletionProposal(proposalText, displayString, context);
+    if (isStringOption && proposal instanceof ConfigurableCompletionProposal) {
+      // set cursor between the proposal's quotes
+      ConfigurableCompletionProposal configurable = (ConfigurableCompletionProposal) proposal;
+      configurable.setCursorPosition(proposalText.length() - 2);
+    }
+    acceptor.accept(proposal);
   }
 
   @Override public void completeFieldOption_Value(EObject model, Assignment assignment, ContentAssistContext context,

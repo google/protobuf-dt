@@ -8,14 +8,14 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import java.util.Collection;
+
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 
-import java.util.Collection;
-
 /**
  * Contains the elements from descriptor.proto (provided with protobuf's library.)
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public interface IProtoDescriptor {
@@ -63,8 +63,8 @@ public interface IProtoDescriptor {
   public abstract Property lookupFieldOption(String name);
 
   /**
-   * Returns the enum type of the given option, only if the given option is defined in 
-   * {@code google/protobuf/descriptor.proto} and its type an enum (more details can be found <a
+   * Returns the enum type of the given option, only if the given option is defined in
+   * {@code google/protobuf/descriptor.proto} and its type is enum (more details can be found <a
    * href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
    * @param option the given option.
    * @return the enum type of the given option or {@code null} if the type of the given option is not enum.
@@ -72,8 +72,8 @@ public interface IProtoDescriptor {
   public abstract Enum enumTypeOf(Option option);
 
   /**
-   * Returns the enum type of the given option, only if the given option is defined in 
-   * {@code google/protobuf/descriptor.proto} and its type an enum (more details can be found <a
+   * Returns the enum type of the given option, only if the given option is defined in
+   * {@code google/protobuf/descriptor.proto} and its type is enum (more details can be found <a
    * href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
    * @param option the given option.
    * @return the enum type of the given option or {@code null} if the type of the given option is not enum.
