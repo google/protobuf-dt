@@ -15,7 +15,7 @@ final class PreferenceNames {
 
   static final String FILES_IN_ONE_DIRECTORY_ONLY = "paths.filesInOneDirectoryOnly";
   static final String FILES_IN_MULTIPLE_DIRECTORIES = "paths.filesInMultipleDirectories";
-  static final String DIRECTORY_PATHS = "paths.directoryPaths";
+  static final String IMPORT_ROOTS = "paths.directoryPaths";
 
   private PreferenceNames() {}
 }

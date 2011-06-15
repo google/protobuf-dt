@@ -32,20 +32,21 @@ import java.net.URI;
  */
 class DirectorySelectionDialogs {
 
-  static String showWorkspaceDirectoryDialog(Shell shell, String initialPath) {
-    return showWorkspaceDirectoryDialog(shell, initialPath, null);
+  static IPath showWorkspaceDirectorySelectionDialog(Shell shell, String initialPath) {
+    return showWorkspaceDirectorySelectionDialog(shell, initialPath, null);
   }
 
-  static String showWorkspaceDirectoryDialog(Shell shell, String initialPath, IProject project) {
+  static IPath showWorkspaceDirectorySelectionDialog(Shell shell, String initialPath, IProject project) {
     String currentPathText = initialPath.replaceAll("\"", "");
     URI uri = URI.create(currentPathText);
     ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(shell, new WorkbenchLabelProvider(),
         new WorkbenchContentProvider());
-    dialog.setInput(project == null ? workspaceRoot() : project);
+    IWorkspaceRoot workspaceRoot = workspaceRoot();
+    dialog.setInput(project == null ? workspaceRoot : project);
     dialog.setComparator(new ResourceComparator(NAME));
     IResource container = null;
     if (uri.isAbsolute()) {
-      IContainer containers[] = workspaceRoot().findContainersForLocationURI(uri);
+      IContainer containers[] = workspaceRoot.findContainersForLocationURI(uri);
       if (containers != null && containers.length > 0) container = containers[0];
     }
     dialog.setInitialSelection(container);
@@ -60,11 +61,10 @@ class DirectorySelectionDialogs {
     dialog.setMessage(selectWorkspaceDirectory);
     if (dialog.open() != OK) return null;
     IResource resource = (IResource) dialog.getFirstResult();
-    if (resource == null) return null;
-    return resource.getFullPath().toString();
+    return (resource == null) ? null : resource.getFullPath();
   }
 
-  static String showFileSystemFolderDialog(Shell shell, String filterPath) {
+  static String showFileSystemDirectorySelectionDialog(Shell shell, String filterPath) {
     DirectoryDialog dialog = new DirectoryDialog(shell, SWT.OPEN | SWT.APPLICATION_MODAL);
     if (filterPath != null && filterPath.trim().length() != 0) dialog.setFilterPath(filterPath);
     dialog.setMessage(selectFileSystemDirectory);

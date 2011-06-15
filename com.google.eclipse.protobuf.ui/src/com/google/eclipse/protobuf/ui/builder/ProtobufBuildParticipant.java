@@ -64,7 +64,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
   private List<String> importRoots(IProject project) {
     List<String> paths = new ArrayList<String>();
     PathsPreferences preferences = pathsPreferencesProvider.getPreferences(project);
-    List<DirectoryPath> directoryPaths = preferences.directoryPaths();
+    List<DirectoryPath> directoryPaths = preferences.importRoots();
     for (DirectoryPath path : directoryPaths) {
       String location = locationOfDirectory(path, project);
       if (location != null) paths.add(location);

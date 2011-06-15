@@ -10,17 +10,19 @@ package com.google.eclipse.protobuf.ui.preferences.paths;
 
 import static com.google.eclipse.protobuf.ui.preferences.paths.DirectorySelectionDialogs.*;
 import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.*;
+import static com.google.eclipse.protobuf.ui.util.ProjectVariable.useProjectVariable;
 import static org.eclipse.jface.dialogs.IDialogConstants.OK_ID;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
+import com.google.eclipse.protobuf.ui.preferences.InputDialog;
+
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
-
-import com.google.eclipse.protobuf.ui.preferences.InputDialog;
 
 /**
  * Dialog where users can select a path (in the workspace or file system) to be included in resolution of imports.
@@ -28,6 +30,8 @@ import com.google.eclipse.protobuf.ui.preferences.InputDialog;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class AddDirectoryDialog extends InputDialog {
+
+  private final IProject project;
 
   private DirectoryPath selectedPath;
 
@@ -43,6 +47,7 @@ public class AddDirectoryDialog extends InputDialog {
    */
   public AddDirectoryDialog(Shell parent, IProject project) {
     super(parent, addDirectoryPath);
+    this.project = project;
   }
 
   /** {@inheritDoc} */
@@ -94,16 +99,17 @@ public class AddDirectoryDialog extends InputDialog {
   private void addEventListeners() {
     btnWorkspace.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
-        String path = showWorkspaceDirectoryDialog(getShell(), enteredPathText());
+        IPath path = showWorkspaceDirectorySelectionDialog(getShell(), enteredPathText());
         if (path != null) {
-          txtPath.setText(path.trim());
+          path = useProjectVariable(path, project);
+          txtPath.setText(path.toString().trim());
           btnIsWorkspacePath.setSelection(true);
         }
       }
     });
     btnFileSystem.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
-        String path = showFileSystemFolderDialog(getShell(), enteredPathText());
+        String path = showFileSystemDirectorySelectionDialog(getShell(), enteredPathText());
         if (path != null) {
           txtPath.setText(path.trim());
           btnIsWorkspacePath.setSelection(false);

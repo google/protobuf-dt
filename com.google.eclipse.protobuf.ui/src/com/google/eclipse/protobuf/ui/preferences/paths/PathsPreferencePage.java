@@ -78,7 +78,7 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
     IPreferenceStore store = getPreferenceStore();
     btnOneFolderOnly.setSelection(store.getBoolean(FILES_IN_ONE_DIRECTORY_ONLY));
     btnMultipleFolders.setSelection(store.getBoolean(FILES_IN_MULTIPLE_DIRECTORIES));
-    setDirectoryPaths(store.getString(DIRECTORY_PATHS));
+    setDirectoryPaths(store.getString(IMPORT_ROOTS));
     enableProjectOptions(true);
   }
 
@@ -113,7 +113,7 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
   @Override protected void performDefaults(IPreferenceStore store) {
     btnOneFolderOnly.setSelection(store.getDefaultBoolean(FILES_IN_ONE_DIRECTORY_ONLY));
     btnMultipleFolders.setSelection(store.getDefaultBoolean(FILES_IN_MULTIPLE_DIRECTORIES));
-    setDirectoryPaths(store.getDefaultString(DIRECTORY_PATHS));
+    setDirectoryPaths(store.getDefaultString(IMPORT_ROOTS));
     enableProjectOptions(true);
     super.performDefaults();
   }
@@ -138,7 +138,7 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
   @Override protected void savePreferences(IPreferenceStore store) {
     store.setValue(FILES_IN_ONE_DIRECTORY_ONLY, btnOneFolderOnly.getSelection());
     store.setValue(FILES_IN_MULTIPLE_DIRECTORIES, btnMultipleFolders.getSelection());
-    store.setValue(DIRECTORY_PATHS, directoryNames());
+    store.setValue(IMPORT_ROOTS, directoryNames());
   }
 
   private String directoryNames() {

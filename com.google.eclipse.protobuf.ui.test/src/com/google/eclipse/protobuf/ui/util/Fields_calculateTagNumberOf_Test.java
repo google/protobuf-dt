@@ -15,11 +15,10 @@ import static org.junit.Assert.assertThat;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.Property;
-import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link Fields#calculateTagNumberOf(Property)}</code>.
+ * Tests for <code>{@link Fields#calculateTagNumberOf(Field)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */

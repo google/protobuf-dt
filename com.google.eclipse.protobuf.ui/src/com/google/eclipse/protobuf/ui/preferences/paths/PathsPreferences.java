@@ -9,7 +9,7 @@
 package com.google.eclipse.protobuf.ui.preferences.paths;
 
 import static com.google.eclipse.protobuf.ui.preferences.paths.PathResolutionType.SINGLE_DIRECTORY;
-import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.DIRECTORY_PATHS;
+import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.IMPORT_ROOTS;
 import static com.google.eclipse.protobuf.ui.util.Strings.CSV_PATTERN;
 import static java.util.Collections.*;
 
@@ -27,27 +27,27 @@ import org.eclipse.jface.preference.IPreferenceStore;
 public class PathsPreferences {
 
   private final PathResolutionType pathResolutionType;
-  private final List<DirectoryPath> directoryPaths;
+  private final List<DirectoryPath> importRoots;
 
   PathsPreferences(IPreferenceStore store) {
     pathResolutionType = PathResolutionType.readFrom(store);
-    directoryPaths = directoryPaths(pathResolutionType, store);
+    importRoots = importRoots(pathResolutionType, store);
   }
 
-  private static List<DirectoryPath> directoryPaths(PathResolutionType types, IPreferenceStore store) {
+  private static List<DirectoryPath> importRoots(PathResolutionType types, IPreferenceStore store) {
     if (types.equals(SINGLE_DIRECTORY)) return emptyList();
-    List<DirectoryPath> paths = new ArrayList<DirectoryPath>();
-    for (String directoryPath : store.getString(DIRECTORY_PATHS).split(CSV_PATTERN)) {
-      paths.add(DirectoryPath.parse(directoryPath));
+    List<DirectoryPath> roots = new ArrayList<DirectoryPath>();
+    for (String root : store.getString(IMPORT_ROOTS).split(CSV_PATTERN)) {
+      roots.add(DirectoryPath.parse(root));
     }
-    return unmodifiableList(paths);
+    return unmodifiableList(roots);
   }
 
   public PathResolutionType pathResolutionType() {
     return pathResolutionType;
   }
 
-  public List<DirectoryPath> directoryPaths() {
-    return directoryPaths;
+  public List<DirectoryPath> importRoots() {
+    return importRoots;
   }
 }
