@@ -49,13 +49,13 @@
 
    <element name="source">
       <complexType>
-         <attribute name="class" type="string">
+         <attribute name="path" type="string" use="required">
             <annotation>
                <documentation>
                   Provides the contents of a descriptor.proto file.
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":com.google.eclipse.protobuf.scoping.IProtoDescriptorSource"/>
+                  <meta.attribute kind="resource"/>
                </appInfo>
             </annotation>
          </attribute>

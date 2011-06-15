@@ -21,11 +21,13 @@ import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.util.ModelNodes;
 import com.google.inject.Inject;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.parser.*;
 import org.eclipse.xtext.resource.XtextResource;
 
-import java.io.InputStreamReader;
+import java.io.*;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -51,13 +53,13 @@ public class ProtoDescriptor {
 
   private final ModelNodes nodes;
 
-  @Inject public ProtoDescriptor(IParser parser, IProtoDescriptorSource source, ModelNodes nodes) {
+  @Inject public ProtoDescriptor(IParser parser, URI descriptorLocation, ModelNodes nodes) {
     this.nodes = nodes;
     addOptionTypes();
     InputStreamReader reader = null;
     try {
-      XtextResource resource = new XtextResource(source.uri());
-      reader = new InputStreamReader(source.contents(), "UTF-8");
+      XtextResource resource = new XtextResource(descriptorLocation);
+      reader = new InputStreamReader(contents(descriptorLocation), "UTF-8");
       IParseResult result = parser.parse(reader);
       root = (Protobuf) result.getRootASTElement();
       resource.getContents().add(root);
@@ -69,6 +71,17 @@ public class ProtoDescriptor {
     } finally {
       close(reader);
     }
+  }
+
+  /**
+   * Returns the contents of the descriptor file at the given location.
+   * @param descriptorLocation the location of the descriptor file.
+   * @return the contents of the descriptor file.
+   * @throws IOException if something goes wrong.
+   */
+  protected InputStream contents(URI descriptorLocation) throws IOException {
+    URL url = new URL(descriptorLocation.toString());
+    return url.openConnection().getInputStream();
   }
 
   private void addOptionTypes() {
