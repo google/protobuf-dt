@@ -9,13 +9,11 @@
 package com.google.eclipse.protobuf.ui.preferences.paths;
 
 import static com.google.eclipse.protobuf.ui.ProtobufUiModule.PLUGIN_ID;
-import static com.google.eclipse.protobuf.ui.swt.Messages.*;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.*;
 import static org.eclipse.core.runtime.IStatus.ERROR;
 import static org.eclipse.core.runtime.Status.OK_STATUS;
 import static org.eclipse.jface.window.Window.OK;
 import static org.eclipse.ui.views.navigator.ResourceComparator.NAME;
-
-import java.net.URI;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
@@ -24,6 +22,8 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.dialogs.*;
 import org.eclipse.ui.model.*;
 import org.eclipse.ui.views.navigator.ResourceComparator;
+
+import java.net.URI;
 
 /**
  * Launchers for dialogs where users can select a directory (either in a workspace or the file system.)
@@ -56,8 +56,8 @@ class DirectorySelectionDialogs {
         return OK_STATUS;
       }
     });
-    dialog.setTitle(browseWorkspaceFolderTitle);
-    dialog.setMessage(browseWorkspaceFolderPrompt);
+    dialog.setTitle(directorySelection);
+    dialog.setMessage(selectWorkspaceDirectory);
     if (dialog.open() != OK) return null;
     IResource resource = (IResource) dialog.getFirstResult();
     if (resource == null) return null;
@@ -67,7 +67,7 @@ class DirectorySelectionDialogs {
   static String showFileSystemFolderDialog(Shell shell, String filterPath) {
     DirectoryDialog dialog = new DirectoryDialog(shell, SWT.OPEN | SWT.APPLICATION_MODAL);
     if (filterPath != null && filterPath.trim().length() != 0) dialog.setFilterPath(filterPath);
-    dialog.setMessage(browseFileSystemFolderPrompt);
+    dialog.setMessage(selectFileSystemDirectory);
     return dialog.open();
   }
 

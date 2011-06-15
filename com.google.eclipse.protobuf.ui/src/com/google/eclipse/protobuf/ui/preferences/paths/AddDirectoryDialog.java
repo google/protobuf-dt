@@ -42,7 +42,7 @@ public class AddDirectoryDialog extends InputDialog {
    * @param project the project whose properties the user is modifying.
    */
   public AddDirectoryDialog(Shell parent, IProject project) {
-    super(parent, includeDirectoryTitle);
+    super(parent, addDirectoryPath);
   }
 
   /** {@inheritDoc} */
@@ -54,7 +54,7 @@ public class AddDirectoryDialog extends InputDialog {
 
     Label label = new Label(cmpDialogArea, SWT.NONE);
     label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-    label.setText(includeDirectoryPrompt);
+    label.setText(directory);
 
     txtPath = new Text(cmpDialogArea, SWT.BORDER);
     txtPath.setBackground(getColor(SWT.COLOR_WIDGET_BACKGROUND));
