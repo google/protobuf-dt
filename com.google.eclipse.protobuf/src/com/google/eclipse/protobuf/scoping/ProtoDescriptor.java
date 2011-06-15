@@ -11,6 +11,7 @@ package com.google.eclipse.protobuf.scoping;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.PROPERTY__TYPE;
 import static com.google.eclipse.protobuf.scoping.OptionType.*;
 import static com.google.eclipse.protobuf.util.Closeables.close;
+import static com.google.eclipse.protobuf.util.Encodings.UTF_8;
 import static java.util.Collections.unmodifiableCollection;
 import static org.eclipse.xtext.EcoreUtil2.*;
 import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
@@ -18,7 +19,7 @@ import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.eclipse.protobuf.util.ModelNodes;
+import com.google.eclipse.protobuf.util.*;
 import com.google.inject.Inject;
 
 import org.eclipse.emf.common.util.URI;
@@ -59,7 +60,7 @@ public class ProtoDescriptor {
     InputStreamReader reader = null;
     try {
       XtextResource resource = new XtextResource(descriptorLocation);
-      reader = new InputStreamReader(contents(descriptorLocation), "UTF-8");
+      reader = new InputStreamReader(contents(descriptorLocation), UTF_8);
       IParseResult result = parser.parse(reader);
       root = (Protobuf) result.getRootASTElement();
       resource.getContents().add(root);

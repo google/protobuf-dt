@@ -11,6 +11,7 @@ package com.google.eclipse.protobuf.ui.editor.model;
 import static com.google.eclipse.protobuf.ui.ProtobufUiModule.PLUGIN_ID;
 import static com.google.eclipse.protobuf.ui.util.Resources.URI_SCHEME_FOR_FILES;
 import static com.google.eclipse.protobuf.util.Closeables.close;
+import static com.google.eclipse.protobuf.util.Encodings.UTF_8;
 import static java.util.Collections.singletonMap;
 import static org.eclipse.core.runtime.IStatus.ERROR;
 import static org.eclipse.emf.common.util.URI.createURI;
@@ -42,8 +43,6 @@ import com.google.inject.Inject;
  */
 public class ProtobufDocumentProvider extends XtextDocumentProvider {
 
-  private static final String ENCODING = "UTF-8";
-
   @Inject private IResourceSetProvider resourceSetProvider;
   @Inject private Resources resources;
 
@@ -69,7 +68,7 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
     FileInfo info = new FileInfo(document, model, null);
     info.fModificationStamp = fileInfo.getLastModified();
     info.fStatus = status;
-    info.fEncoding = ENCODING;
+    info.fEncoding = UTF_8;
     cacheEncodingState(input);
     return info;
   }
@@ -125,14 +124,14 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
   }
 
   private Reader readerFor(InputStream inputStream) throws IOException {
-    return new InputStreamReader(inputStream, ENCODING);
+    return new InputStreamReader(inputStream, UTF_8);
   }
 
   private XtextResource createResource(String uri, InputStream input) {
     ResourceSet resourceSet = resourceSetProvider.get(resources.activeProject());
     XtextResource resource = (XtextResource) resourceSet.createResource(createURI(uri), UNSPECIFIED_CONTENT_TYPE);
     try {
-      resource.load(input, singletonMap(OPTION_ENCODING, ENCODING));
+      resource.load(input, singletonMap(OPTION_ENCODING, UTF_8));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
