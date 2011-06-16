@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.commands;
 
-import static com.google.eclipse.protobuf.ui.grammar.CommonKeyword.SEMICOLON;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.SEMICOLON;
 
 import java.util.regex.Pattern;
 

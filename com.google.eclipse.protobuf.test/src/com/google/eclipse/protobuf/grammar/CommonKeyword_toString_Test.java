@@ -6,9 +6,9 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.grammar;
+package com.google.eclipse.protobuf.grammar;
 
-import static com.google.eclipse.protobuf.ui.grammar.CommonKeyword.BOOL;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.BOOL;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 

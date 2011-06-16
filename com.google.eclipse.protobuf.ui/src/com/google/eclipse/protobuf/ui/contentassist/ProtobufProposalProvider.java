@@ -8,15 +8,15 @@
  */
 package com.google.eclipse.protobuf.ui.contentassist;
 
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.*;
 import static com.google.eclipse.protobuf.protobuf.Modifier.*;
-import static com.google.eclipse.protobuf.protobuf.ScalarType.STRING;
-import static com.google.eclipse.protobuf.ui.grammar.CommonKeyword.*;
 import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.*;
 import static com.google.eclipse.protobuf.ui.util.Strings.firstCharToLowerCase;
 import static java.lang.String.valueOf;
 import static java.util.Collections.emptyList;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -27,14 +27,16 @@ import org.eclipse.xtext.ui.PluginImageHelper;
 import org.eclipse.xtext.ui.editor.contentassist.*;
 
 import com.google.common.collect.ImmutableList;
+import com.google.eclipse.protobuf.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.eclipse.protobuf.scoping.*;
-import com.google.eclipse.protobuf.ui.grammar.*;
+import com.google.eclipse.protobuf.scoping.ProtoDescriptor;
+import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider;
 import com.google.eclipse.protobuf.ui.grammar.CompoundElement;
 import com.google.eclipse.protobuf.ui.labeling.Images;
-import com.google.eclipse.protobuf.ui.util.*;
-import com.google.eclipse.protobuf.ui.util.Properties;
+import com.google.eclipse.protobuf.ui.util.Fields;
+import com.google.eclipse.protobuf.ui.util.Literals;
+import com.google.eclipse.protobuf.util.Properties;
 import com.google.eclipse.protobuf.util.ProtobufElementFinder;
 import com.google.inject.Inject;
 
@@ -131,7 +133,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ICompletionProposalAcceptor acceptor) {
     if (model instanceof Property && isProposalForDefaultValue(context)) {
       Property p = (Property) model;
-      if (!isStringProperty(p)) return;
+      if (!properties.isString(p)) return;
       proposeEmptyString(context, acceptor);
       return;
     }
@@ -223,7 +225,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (OPTIONAL.equals(modifier)) {
       CompoundElement display = DEFAULT_EQUAL_IN_BRACKETS;
       int cursorPosition = display.indexOf(CLOSING_BRACKET);
-      if (isStringProperty(p)) {
+      if (properties.isString(p)) {
         display = DEFAULT_EQUAL_STRING_IN_BRACKETS;
         cursorPosition++;
       }
@@ -243,7 +245,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     CompoundElement display = DEFAULT_EQUAL;
     int cursorPosition = display.charCount();
     Property property = extractPropertyFrom(context);
-    if (isStringProperty(property)) {
+    if (properties.isString(property)) {
       display = DEFAULT_EQUAL_STRING;
       cursorPosition++;
     }
@@ -275,10 +277,6 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (!type.isInstance(model)) model = context.getPreviousModel();
     if (!type.isInstance(model)) return null;
     return type.cast(model);
-  }
-
-  private boolean isStringProperty(Property p) {
-    return STRING.equals(finder.scalarTypeOf(p));
   }
 
   private ICompletionProposal createCompletionProposal(CompoundElement proposal, ContentAssistContext context) {
@@ -398,6 +396,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeFieldOption_Value(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
+    if (!(model instanceof FieldOption)) return;
     FieldOption option = (FieldOption) model;
     ProtoDescriptor descriptor = descriptorProvider.get();
     Enum enumType = descriptor.enumTypeOf(option);

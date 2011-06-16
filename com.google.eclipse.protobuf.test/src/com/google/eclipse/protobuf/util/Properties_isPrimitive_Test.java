@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.util;
+package com.google.eclipse.protobuf.util;
 
 import static com.google.eclipse.protobuf.junit.util.Finder.allProperties;
 import static org.hamcrest.core.IsEqual.equalTo;

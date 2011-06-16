@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.util;
+package com.google.eclipse.protobuf.util;
 
 import static com.google.eclipse.protobuf.junit.util.Finder.findProperty;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -19,11 +19,11 @@ import com.google.eclipse.protobuf.protobuf.Property;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 
 /**
- * Tests for <code>{@link Properties#isString(Property)}</code>.
+ * Tests for <code>{@link Properties#typeNameOf(Property)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Properties_isString_Test {
+public class Properties_typeNameOf_Test {
 
   @Rule public XtextRule xtext = new XtextRule();
 
@@ -33,23 +33,29 @@ public class Properties_isString_Test {
     properties = xtext.getInstanceOf(Properties.class);
   }
 
-  @Test public void should_return_true_if_property_is_string() {
+  @Test public void should_return_name_of_scalar() {
     StringBuilder proto = new StringBuilder();
     proto.append("message Person {           ")
          .append("  optional string name = 1;")
          .append("}                          ");
     Protobuf root = xtext.parse(proto);
     Property name = findProperty("name", root);
-    assertThat(properties.isString(name), equalTo(true));
+    assertThat(properties.typeNameOf(name), equalTo("string"));
   }
 
-  @Test public void should_return_false_if_property_is_not_string() {
+  @Test public void should_return_name_of_type() {
     StringBuilder proto = new StringBuilder();
-    proto.append("message Person {           ")
-         .append("  optional bool active = 1;")
-         .append("}                          ");
+    proto.append("message Person {                  ")
+         .append("  optional string name = 1;       ")
+         .append("  optional PhoneNumber number = 2;")
+         .append("                                  ")
+         .append("  message PhoneNumber {           ")
+         .append("    optional string value = 1;    ")
+         .append("  }                               ")
+         .append("}                                 ");
     Protobuf root = xtext.parse(proto);
-    Property active = findProperty("active", root);
-    assertThat(properties.isString(active), equalTo(false));
+    Property number = findProperty("number", root);
+    assertThat(properties.typeNameOf(number), equalTo("PhoneNumber"));
   }
+
 }

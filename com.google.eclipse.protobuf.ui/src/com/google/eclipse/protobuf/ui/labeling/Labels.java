@@ -12,8 +12,8 @@ import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPO
 import static org.eclipse.jface.viewers.StyledString.DECORATIONS_STYLER;
 
 import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.ui.util.Properties;
 import com.google.eclipse.protobuf.util.ModelNodes;
+import com.google.eclipse.protobuf.util.Properties;
 import com.google.inject.*;
 
 import org.eclipse.jface.viewers.StyledString;

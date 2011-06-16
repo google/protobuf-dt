@@ -8,7 +8,9 @@
  */
 package com.google.eclipse.protobuf.ui.grammar;
 
-import static com.google.eclipse.protobuf.ui.grammar.CommonKeyword.*;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.*;
+
+import com.google.eclipse.protobuf.grammar.CommonKeyword;
 
 /**
  * Element composed of one or more keywords.

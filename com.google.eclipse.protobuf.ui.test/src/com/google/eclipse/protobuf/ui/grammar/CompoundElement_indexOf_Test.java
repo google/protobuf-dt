@@ -8,12 +8,14 @@
  */
 package com.google.eclipse.protobuf.ui.grammar;
 
-import static com.google.eclipse.protobuf.ui.grammar.CommonKeyword.*;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.*;
 import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.DEFAULT_EQUAL;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
+
+import com.google.eclipse.protobuf.grammar.CommonKeyword;
 
 /**
  * Tests for <code>{@link CompoundElement#indexOf(CommonKeyword)}</code>.

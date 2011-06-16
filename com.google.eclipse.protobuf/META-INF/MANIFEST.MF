@@ -21,6 +21,7 @@ Import-Package: org.apache.log4j,
  org.apache.commons.logging
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: com.google.eclipse.protobuf,
+ com.google.eclipse.protobuf.grammar,
  com.google.eclipse.protobuf.parseTreeConstruction,
  com.google.eclipse.protobuf.parser.antlr,
  com.google.eclipse.protobuf.parser.antlr.internal,

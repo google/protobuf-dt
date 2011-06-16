@@ -6,12 +6,12 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.util;
+package com.google.eclipse.protobuf.util;
 
-import static com.google.eclipse.protobuf.ui.grammar.CommonKeyword.*;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.*;
 
+import com.google.eclipse.protobuf.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.ui.grammar.CommonKeyword;
 import com.google.inject.Singleton;
 
 /**
