@@ -15,8 +15,7 @@ import static com.google.eclipse.protobuf.ui.util.Strings.firstCharToLowerCase;
 import static java.lang.String.valueOf;
 import static java.util.Collections.emptyList;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -30,14 +29,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.eclipse.protobuf.scoping.ProtoDescriptor;
-import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider;
+import com.google.eclipse.protobuf.scoping.*;
 import com.google.eclipse.protobuf.ui.grammar.CompoundElement;
 import com.google.eclipse.protobuf.ui.labeling.Images;
-import com.google.eclipse.protobuf.ui.util.Fields;
-import com.google.eclipse.protobuf.ui.util.Literals;
+import com.google.eclipse.protobuf.ui.util.*;
+import com.google.eclipse.protobuf.util.*;
 import com.google.eclipse.protobuf.util.Properties;
-import com.google.eclipse.protobuf.util.ProtobufElementFinder;
 import com.google.inject.Inject;
 
 /**
@@ -133,9 +130,14 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ICompletionProposalAcceptor acceptor) {
     if (model instanceof Property && isProposalForDefaultValue(context)) {
       Property p = (Property) model;
-      if (!properties.isString(p)) return;
-      proposeEmptyString(context, acceptor);
-      return;
+      if (properties.isString(p)) {
+        proposeEmptyString(context, acceptor);
+        return;
+      }
+      if (properties.isBool(p)) {
+        proposeBooleanValues(context, acceptor);
+        return;
+      }
     }
     if (model instanceof Option || model instanceof FieldOption || model instanceof Syntax) return;
     for (AbstractElement element : context.getFirstSetGrammarElements()) {
