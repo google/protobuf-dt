@@ -42,11 +42,13 @@ Type:
 Message:
   'message' name=Name '{'
   elements+=MessageElement*
-  ('extensions' extensionsFrom=INT 'to' (extensionsTo=INT | 'max') ';')?
   '}'(';')?;
 
 MessageElement:
-  Type | Field | ExtendMessage | Option;
+  Extensions | Type | Field | ExtendMessage | Option;
+
+Extensions:
+  'extensions' extensionsFrom=INT 'to' (extensionsTo=INT | 'max') ';';
 
 Field:
   Property | Group;
@@ -107,6 +109,7 @@ ValueRef:
   LiteralRef
   | BooleanRef
   | IntRef
+  | LongRef
   | FloatRef
   | DoubleRef
   | StringRef
@@ -124,6 +127,10 @@ enum BOOL:
 
 IntRef:
   int=INT;
+  
+LongRef:
+  long=LONG;
+
 
 FloatRef:
   float=FLOAT;
@@ -170,6 +177,7 @@ MessageReference:
   type=[Message | QualifiedName];
 
 terminal INT returns ecore::EInt: ('-')? ('0'..'9')+;  
+terminal LONG returns ecore::ELong: ('-')? ('0'..'9')+;  
 terminal FLOAT returns ecore::EFloat: ('-')? ('0'..'9')* ('.' ('0'..'9')+)?;
 terminal DOUBLE returns ecore::EDouble: ('-')? ('0'..'9')* ('.' ('0'..'9')+)?;
   

@@ -32,3 +32,4 @@ Export-Package: com.google.eclipse.protobuf,
  com.google.eclipse.protobuf.services,
  com.google.eclipse.protobuf.util,
  com.google.eclipse.protobuf.validation
+
