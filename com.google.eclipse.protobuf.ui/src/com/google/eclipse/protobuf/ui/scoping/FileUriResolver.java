@@ -61,7 +61,7 @@ public class FileUriResolver implements IFileUriResolver {
     if (project == null) project = resources.activeProject();
     if (project == null) throw new IllegalStateException("Unable to find current project");
     PathsPreferences preferences = preferenceProvider.getPreferences(project);
-    return resolver(preferences).resolveUri(importUri, resourceUri, project, preferences);
+    return resolver(preferences).resolveUri(importUri, resourceUri, preferences);
   }
 
   private FileResolverStrategy resolver(PathsPreferences preferences) {

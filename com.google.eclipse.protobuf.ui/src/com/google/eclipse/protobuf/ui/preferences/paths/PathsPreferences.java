@@ -13,10 +13,10 @@ import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.I
 import static com.google.eclipse.protobuf.ui.util.Strings.CSV_PATTERN;
 import static java.util.Collections.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;
+
+import java.util.*;
 
 /**
  * Paths preferences, retrieved from an <code>{@link IPreferenceStore}</code>. To create a new instance invoke
@@ -29,16 +29,16 @@ public class PathsPreferences {
   private final PathResolutionType pathResolutionType;
   private final List<DirectoryPath> importRoots;
 
-  PathsPreferences(IPreferenceStore store) {
+  PathsPreferences(IPreferenceStore store, IProject project) {
     pathResolutionType = PathResolutionType.readFrom(store);
-    importRoots = importRoots(pathResolutionType, store);
+    importRoots = importRoots(pathResolutionType, store, project);
   }
 
-  private static List<DirectoryPath> importRoots(PathResolutionType types, IPreferenceStore store) {
+  private static List<DirectoryPath> importRoots(PathResolutionType types, IPreferenceStore store, IProject project) {
     if (types.equals(SINGLE_DIRECTORY)) return emptyList();
     List<DirectoryPath> roots = new ArrayList<DirectoryPath>();
     for (String root : store.getString(IMPORT_ROOTS).split(CSV_PATTERN)) {
-      roots.add(DirectoryPath.parse(root));
+      roots.add(DirectoryPath.parse(root, project));
     }
     return unmodifiableList(roots);
   }

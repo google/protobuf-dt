@@ -6,11 +6,13 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.util;
+package com.google.eclipse.protobuf.ui.preferences.paths;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
+
+import com.google.eclipse.protobuf.ui.preferences.paths.ProjectVariable;
 
 import org.eclipse.core.resources.IProject;
 import org.junit.*;

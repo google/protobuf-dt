@@ -8,7 +8,9 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.paths;
 
-import static com.google.eclipse.protobuf.ui.util.ProjectVariable.containsProjectVariable;
+import static com.google.eclipse.protobuf.ui.preferences.paths.ProjectVariable.useProjectName;
+
+import org.eclipse.core.resources.IProject;
 
 import java.util.regex.*;
 
@@ -23,9 +25,16 @@ public class DirectoryPath {
   private final boolean isWorkspacePath;
 
   static DirectoryPath parse(String path) {
+    return parse(path, null);
+  }
+
+  static DirectoryPath parse(String path, IProject project) {
     Matcher matcher = WORKSPACE_PATH_PATTERN.matcher(path);
-    if (matcher.matches()) return new DirectoryPath(matcher.group(1), true);
-    if (containsProjectVariable(path)) return new DirectoryPath(path, true);
+    if (matcher.matches()) {
+      String actualPath = matcher.group(1);
+      if (project != null) actualPath = useProjectName(actualPath, project);
+      return new DirectoryPath(actualPath, true);
+    }
     return new DirectoryPath(path, false);
   }
   
@@ -36,7 +45,7 @@ public class DirectoryPath {
   
   /** {@inheritDoc} */
   @Override public String toString() {
-    if (!isWorkspacePath || containsProjectVariable(value)) return value;
+    if (!isWorkspacePath) return value;
     return "${workspace_loc:" + value + "}";
   }
 

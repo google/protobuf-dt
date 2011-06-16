@@ -10,7 +10,7 @@ package com.google.eclipse.protobuf.ui.preferences.paths;
 
 import static com.google.eclipse.protobuf.ui.preferences.paths.DirectorySelectionDialogs.*;
 import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.*;
-import static com.google.eclipse.protobuf.ui.util.ProjectVariable.useProjectVariable;
+import static com.google.eclipse.protobuf.ui.preferences.paths.ProjectVariable.useProjectVariable;
 import static org.eclipse.jface.dialogs.IDialogConstants.OK_ID;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 

@@ -25,6 +25,6 @@ public class PathsPreferencesProvider {
   
   public PathsPreferences getPreferences(IProject project) {
     IPreferenceStore store = storeAccess.getWritablePreferenceStore(project);
-    return new PathsPreferences(store);
+    return new PathsPreferences(store, project);
   }
 }
