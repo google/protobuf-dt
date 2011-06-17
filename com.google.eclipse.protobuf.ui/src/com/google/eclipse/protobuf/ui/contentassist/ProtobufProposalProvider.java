@@ -55,7 +55,6 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Inject private Literals literals;
   @Inject private Properties properties;
 
-  /** {@inheritDoc} */
   @Override public void completeProtobuf_Syntax(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
   }
@@ -338,11 +337,6 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   private Image defaultImage() {
     return imageHelper.getImage(images.defaultImage());
-  }
-
-  @Override public void complete_FieldOption(EObject model, RuleCall ruleCall, ContentAssistContext context,
-      ICompletionProposalAcceptor acceptor) {
-    System.out.println("complete_FieldOption");
   }
 
   @Override public void completeFieldOption_Name(EObject model, Assignment assignment, ContentAssistContext context,

@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static com.google.eclipse.protobuf.scoping.QualifiedNames.addLeadingDot;
 import static java.util.Collections.emptyList;
 import static org.eclipse.emf.common.util.URI.createURI;
 import static org.eclipse.emf.ecore.util.EcoreUtil.getAllContents;
@@ -91,7 +92,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
       for (int i = level; i < nameCount; i++) {
         descriptions.add(create(names.get(i), element));
       }
-      descriptions.add(create(nameProvider.getFullyQualifiedName(element), element));
+      descriptions.addAll(fullyQualifiedNamesOf(element));
       // TODO investigate if groups can have messages, and if so, add those messages to the scope.
       if (element instanceof Message) {
         descriptions.addAll(children(element, targetType, level + 1));
@@ -136,7 +137,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     }
     return null;
   }
-  
+
   private boolean arePackagesRelated(Package aPackage, EObject root) {
     Package p = finder.packageOf(root);
     return packageResolver.areRelated(aPackage, p);
@@ -149,11 +150,19 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
       Object next = contents.next();
       if (!targetType.isInstance(next)) continue;
       T type = targetType.cast(next);
-      descriptions.add(create(nameProvider.getFullyQualifiedName(type), type));
+      descriptions.addAll(fullyQualifiedNamesOf(type));
       for (QualifiedName name : importedNamesProvider.namesOf(type)) {
         descriptions.add(create(name, type));
       }
     }
+    return descriptions;
+  }
+
+  private Collection<IEObjectDescription> fullyQualifiedNamesOf(EObject obj) {
+    List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
+    QualifiedName fqn = nameProvider.getFullyQualifiedName(obj);
+    descriptions.add(create(fqn, obj));
+    descriptions.add(create(addLeadingDot(fqn), obj));
     return descriptions;
   }
 

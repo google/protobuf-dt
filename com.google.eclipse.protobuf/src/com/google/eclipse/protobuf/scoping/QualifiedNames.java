@@ -11,27 +11,34 @@ package com.google.eclipse.protobuf.scoping;
 import static java.util.Collections.*;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import com.google.eclipse.protobuf.protobuf.Package;
+import java.util.*;
 
 import org.eclipse.xtext.naming.*;
 
-import java.util.*;
+import com.google.eclipse.protobuf.protobuf.Package;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 final class QualifiedNames {
 
-  static List<QualifiedName> addPackageNameSegments(QualifiedName qualifiedName, Package p,
-      IQualifiedNameConverter converter) {
-    QualifiedName name = qualifiedName;
+  static QualifiedName addLeadingDot(QualifiedName name) {
+    if (name.getFirstSegment().equals("")) return name;
+    List<String> segments = new ArrayList<String>();
+    segments.addAll(name.getSegments());
+    segments.add(0, "");
+    return QualifiedName.create(segments.toArray(new String[segments.size()]));
+  }
+
+  static List<QualifiedName> addPackageNameSegments(QualifiedName name, Package p, IQualifiedNameConverter converter) {
+    QualifiedName current = name;
     List<String> segments = fqnSegments(p, converter);
     int segmentCount = segments.size();
     if (segmentCount <= 1) return emptyList();
     List<QualifiedName> allNames = new ArrayList<QualifiedName>();
     for (int i = segmentCount - 1; i > 0; i--) {
-      name = QualifiedName.create(segments.get(i)).append(name);
-      allNames.add(name);
+      current = QualifiedName.create(segments.get(i)).append(current);
+      allNames.add(current);
     }
     return unmodifiableList(allNames);
   }
@@ -42,6 +49,6 @@ final class QualifiedNames {
     if (isEmpty(packageName)) return emptyList();
     return converter.toQualifiedName(packageName).getSegments();
   }
-  
+
   private QualifiedNames() {}
 }
