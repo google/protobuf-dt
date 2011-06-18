@@ -12,6 +12,7 @@ import static com.google.inject.name.Names.named;
 import static org.eclipse.ui.PlatformUI.isWorkbenchRunning;
 
 import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
+import org.eclipse.ui.*;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.xtext.ui.LanguageSpecific;
@@ -27,12 +28,14 @@ import com.google.eclipse.protobuf.ui.editor.ProtobufUriEditorOpener;
 import com.google.eclipse.protobuf.ui.editor.hyperlinking.ProtobufHyperlinkDetector;
 import com.google.eclipse.protobuf.ui.editor.model.ProtobufDocumentProvider;
 import com.google.eclipse.protobuf.ui.editor.syntaxcoloring.ProtobufSemanticHighlightingCalculator;
+import com.google.eclipse.protobuf.ui.internal.ProtobufActivator;
 import com.google.eclipse.protobuf.ui.outline.*;
 import com.google.eclipse.protobuf.ui.preferences.PreferenceStoreAccess;
 import com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferenceStoreInitializer;
 import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferenceStoreInitializer;
 import com.google.eclipse.protobuf.ui.scoping.FileUriResolver;
-import com.google.inject.Binder;
+import com.google.eclipse.protobuf.ui.validation.ValidateOnActivation;
+import com.google.inject.*;
 
 /**
  * Use this class to register components to be used within the IDE.
@@ -42,9 +45,15 @@ import com.google.inject.Binder;
 public class ProtobufUiModule extends AbstractProtobufUiModule {
 
   public static final String PLUGIN_ID = "com.google.eclipse.protobuf.ui";
-
+  
   public ProtobufUiModule(AbstractUIPlugin plugin) {
     super(plugin);
+    setValidationTrigger(PlatformUI.getWorkbench().getActiveWorkbenchWindow(), plugin);
+  }
+
+  private void setValidationTrigger(IWorkbenchWindow w, AbstractUIPlugin plugin) {
+    if (w == null || !(plugin instanceof ProtobufActivator)) return;
+    w.getPartService().addPartListener(new ValidateOnActivation());
   }
 
   @Override public Class<? extends IContentOutlinePage> bindIContentOutlinePage() {
