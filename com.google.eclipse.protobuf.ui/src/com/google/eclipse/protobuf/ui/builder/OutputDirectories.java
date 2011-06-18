@@ -13,7 +13,7 @@ import java.util.*;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 
-import com.google.eclipse.protobuf.ui.preferences.compiler.*;
+import com.google.eclipse.protobuf.ui.preferences.pages.compiler.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

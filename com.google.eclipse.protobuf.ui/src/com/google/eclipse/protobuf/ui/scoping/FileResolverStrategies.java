@@ -8,12 +8,12 @@
  */
 package com.google.eclipse.protobuf.ui.scoping;
 
-import static com.google.eclipse.protobuf.ui.preferences.paths.PathResolutionType.*;
+import static com.google.eclipse.protobuf.ui.preferences.pages.paths.PathResolutionType.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.eclipse.protobuf.ui.preferences.paths.PathResolutionType;
+import com.google.eclipse.protobuf.ui.preferences.pages.paths.PathResolutionType;
 import com.google.eclipse.protobuf.ui.util.Resources;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

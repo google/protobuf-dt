@@ -12,7 +12,7 @@ import java.util.*;
 
 import org.eclipse.core.resources.*;
 
-import com.google.eclipse.protobuf.ui.preferences.compiler.SupportedLanguage;
+import com.google.eclipse.protobuf.ui.preferences.pages.compiler.SupportedLanguage;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

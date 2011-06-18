@@ -31,8 +31,8 @@ import com.google.eclipse.protobuf.ui.editor.syntaxcoloring.ProtobufSemanticHigh
 import com.google.eclipse.protobuf.ui.internal.ProtobufActivator;
 import com.google.eclipse.protobuf.ui.outline.*;
 import com.google.eclipse.protobuf.ui.preferences.PreferenceStoreAccess;
-import com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferenceStoreInitializer;
-import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferenceStoreInitializer;
+import com.google.eclipse.protobuf.ui.preferences.pages.compiler.CompilerPreferenceStoreInitializer;
+import com.google.eclipse.protobuf.ui.preferences.pages.paths.PathsPreferenceStoreInitializer;
 import com.google.eclipse.protobuf.ui.scoping.FileUriResolver;
 import com.google.eclipse.protobuf.ui.validation.ValidateOnActivation;
 import com.google.inject.*;

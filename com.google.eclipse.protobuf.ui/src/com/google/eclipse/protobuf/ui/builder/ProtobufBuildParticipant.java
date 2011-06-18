@@ -9,7 +9,7 @@
 package com.google.eclipse.protobuf.ui.builder;
 
 import static com.google.eclipse.protobuf.ui.builder.OutputDirectories.findOrCreateOutputDirectories;
-import static com.google.eclipse.protobuf.ui.preferences.compiler.PostCompilationRefreshTarget.PROJECT;
+import static com.google.eclipse.protobuf.ui.preferences.pages.compiler.PostCompilationRefreshTarget.PROJECT;
 import static java.util.Collections.unmodifiableList;
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
 
@@ -25,8 +25,8 @@ import org.eclipse.xtext.builder.IXtextBuilderParticipant;
 import org.eclipse.xtext.resource.*;
 import org.eclipse.xtext.resource.IResourceDescription.Delta;
 
-import com.google.eclipse.protobuf.ui.preferences.compiler.*;
-import com.google.eclipse.protobuf.ui.preferences.paths.*;
+import com.google.eclipse.protobuf.ui.preferences.pages.compiler.*;
+import com.google.eclipse.protobuf.ui.preferences.pages.paths.*;
 import com.google.inject.Inject;
 
 /**
