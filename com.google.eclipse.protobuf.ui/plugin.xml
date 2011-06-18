@@ -48,7 +48,7 @@
   </extension>
   <extension point="org.eclipse.ui.preferencePages">
     <page
-      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.RootPreferencePage"
+      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.general.GeneralSettingsPreferencePage"
       id="com.google.eclipse.protobuf.Protobuf" name="%page.name">
       <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
     </page>
@@ -161,7 +161,7 @@
   </extension>
   <extension point="org.eclipse.ui.propertyPages">
     <page
-      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.RootPreferencePage"
+      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.general.GeneralSettingsPreferencePage"
       id="com.google.eclipse.protobuf.Protobuf"
       name="%page.name" selectionFilter="single">
     </page>
