@@ -40,12 +40,12 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
 
   @Inject private ProtocOutputParser outputParser;
   @Inject private ProtocCommandFactory commandFactory;
-  @Inject private CompilerPreferencesProvider compilerPreferencesProvider;
+  @Inject private CompilerPreferencesFactory compilerPreferencesFactory;
   @Inject private PathsPreferencesFactory pathsPreferencesFactory;
 
   public void build(IBuildContext context, IProgressMonitor monitor) throws CoreException {
     IProject project = context.getBuiltProject();
-    CompilerPreferences preferences = compilerPreferencesProvider.getPreferences(project);
+    CompilerPreferences preferences = compilerPreferencesFactory.preferences(project);
     if (!preferences.shouldCompileProtoFiles()) return;
     List<Delta> deltas = context.getDeltas();
     if (deltas.isEmpty()) return;

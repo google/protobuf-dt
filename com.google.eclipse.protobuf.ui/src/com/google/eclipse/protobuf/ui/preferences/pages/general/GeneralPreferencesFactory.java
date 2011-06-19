@@ -6,7 +6,9 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.preferences.pages.paths;
+package com.google.eclipse.protobuf.ui.preferences.pages.general;
+
+import static com.google.eclipse.protobuf.ui.preferences.pages.general.EnableProjectSettingsPreference.enableProjectSettings;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -15,16 +17,18 @@ import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 import com.google.inject.Inject;
 
 /**
- * Factory of <code>{@link PathsPreferences}</code>.
+ * Factory of <code>{@link GeneralPreferences}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class PathsPreferencesFactory {
+public class GeneralPreferencesFactory {
 
   @Inject private IPreferenceStoreAccess storeAccess;
 
-  public PathsPreferences preferences(IProject project) {
+  public GeneralPreferences preferences(IProject project) {
     IPreferenceStore store = storeAccess.getWritablePreferenceStore(project);
-    return new PathsPreferences(new RawPreferences(store), project);
+    boolean useProjectPreferences = enableProjectSettings(store).value();
+    if (!useProjectPreferences) store = storeAccess.getWritablePreferenceStore();
+    return new GeneralPreferences(new RawPreferences(store));
   }
 }

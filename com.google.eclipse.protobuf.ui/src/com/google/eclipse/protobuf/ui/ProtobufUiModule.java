@@ -32,10 +32,11 @@ import com.google.eclipse.protobuf.ui.internal.ProtobufActivator;
 import com.google.eclipse.protobuf.ui.outline.*;
 import com.google.eclipse.protobuf.ui.preferences.PreferenceStoreAccess;
 import com.google.eclipse.protobuf.ui.preferences.pages.compiler.CompilerPreferenceStoreInitializer;
+import com.google.eclipse.protobuf.ui.preferences.pages.general.GeneralPreferenceStoreInitializer;
 import com.google.eclipse.protobuf.ui.preferences.pages.paths.PathsPreferenceStoreInitializer;
 import com.google.eclipse.protobuf.ui.scoping.FileUriResolver;
 import com.google.eclipse.protobuf.ui.validation.ValidateOnActivation;
-import com.google.inject.*;
+import com.google.inject.Binder;
 
 /**
  * Use this class to register components to be used within the IDE.
@@ -45,7 +46,7 @@ import com.google.inject.*;
 public class ProtobufUiModule extends AbstractProtobufUiModule {
 
   public static final String PLUGIN_ID = "com.google.eclipse.protobuf.ui";
-  
+
   public ProtobufUiModule(AbstractUIPlugin plugin) {
     super(plugin);
     setValidationTrigger(PlatformUI.getWorkbench().getActiveWorkbenchWindow(), plugin);
@@ -73,6 +74,10 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
     binder.bind(IOutlineContribution.class)
           .annotatedWith(IOutlineContribution.LinkWithEditor.class)
           .to(LinkWithEditor.class);
+  }
+
+  public void configureGeneralSettingsPreferencesInitializer(Binder binder) {
+    configurePreferenceInitializer(binder, "generalPreferences", GeneralPreferenceStoreInitializer.class);
   }
 
   public void configureCompilerPreferencesInitializer(Binder binder) {
@@ -106,7 +111,7 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
   public void configureSemanticHighlightingCalculator(Binder binder) {
     binder.bind(ISemanticHighlightingCalculator.class).to(ProtobufSemanticHighlightingCalculator.class);
   }
-  
+
   public void configurePreferenceStoreAccess(Binder binder) {
     binder.bind(IPreferenceStoreAccess.class).to(PreferenceStoreAccess.class);
   }

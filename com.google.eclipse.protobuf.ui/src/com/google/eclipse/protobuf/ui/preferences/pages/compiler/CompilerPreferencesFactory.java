@@ -17,15 +17,15 @@ import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 import com.google.inject.Inject;
 
 /**
- * Reads compiler preferences.
+ * Factory of <code>{@link CompilerPreferences}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class CompilerPreferencesProvider {
+public class CompilerPreferencesFactory {
 
   @Inject private IPreferenceStoreAccess storeAccess;
 
-  public CompilerPreferences getPreferences(IProject project) {
+  public CompilerPreferences preferences(IProject project) {
     IPreferenceStore store = storeAccess.getWritablePreferenceStore(project);
     boolean useProjectPreferences = enableProjectSettings(store).value();
     if (!useProjectPreferences) store = storeAccess.getWritablePreferenceStore();
