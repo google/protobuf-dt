@@ -8,11 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages.compiler;
 
-import static com.google.eclipse.protobuf.ui.preferences.pages.compiler.PreferenceNames.*;
-
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
-import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
+import org.eclipse.xtext.ui.editor.preferences.*;
 
 /**
  * Initializes default values for the "Compiler" preferences.
@@ -26,16 +23,16 @@ public class CompilerPreferenceStoreInitializer implements IPreferenceStoreIniti
   /** {@inheritDoc} */
   public void initialize(IPreferenceStoreAccess access) {
     IPreferenceStore store = access.getWritablePreferenceStore();
-    store.setDefault(ENABLE_PROJECT_SETTINGS, false);
-    store.setDefault(USE_PROTOC_IN_SYSTEM_PATH, true);
-    store.setDefault(GENERATE_JAVA_CODE, false);
-    store.setDefault(GENERATE_CPP_CODE, false);
-    store.setDefault(GENERATE_PYTHON_CODE, false);
-    store.setDefault(JAVA_OUTPUT_DIRECTORY, DEFAULT_OUTPUT_DIRECTORY);
-    store.setDefault(CPP_OUTPUT_DIRECTORY, DEFAULT_OUTPUT_DIRECTORY);
-    store.setDefault(PYTHON_OUTPUT_DIRECTORY, DEFAULT_OUTPUT_DIRECTORY);
-    store.setDefault(REFRESH_RESOURCES, true);
-    store.setDefault(REFRESH_OUTPUT_DIRECTORY, true);
+    RawPreferences preferences = new RawPreferences(store);
+    preferences.enableProjectSettings().defaultValue(false);
+    preferences.useProtocInSystemPath().defaultValue(true);
+    preferences.javaCodeGenerationEnabled().defaultValue(false);
+    preferences.cppCodeGenerationEnabled().defaultValue(false);
+    preferences.pythonCodeGenerationEnabled().defaultValue(false);
+    preferences.javaOutputDirectory().defaultValue(DEFAULT_OUTPUT_DIRECTORY);
+    preferences.cppOutputDirectory().defaultValue(DEFAULT_OUTPUT_DIRECTORY);
+    preferences.pythonOutputDirectory().defaultValue(DEFAULT_OUTPUT_DIRECTORY);
+    preferences.refreshResources().defaultValue(true);
+    preferences.refreshOutputDirectory().defaultValue(true);
   }
-
 }

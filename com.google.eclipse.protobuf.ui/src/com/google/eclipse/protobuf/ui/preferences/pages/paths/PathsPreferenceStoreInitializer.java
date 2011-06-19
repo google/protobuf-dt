@@ -8,11 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages.paths;
 
-import static com.google.eclipse.protobuf.ui.preferences.pages.paths.PreferenceNames.*;
-
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
-import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
+import org.eclipse.xtext.ui.editor.preferences.*;
 
 /**
  * Initializes default values for the "Paths" preferences.
@@ -24,9 +21,9 @@ public class PathsPreferenceStoreInitializer implements IPreferenceStoreInitiali
   /** {@inheritDoc} */
   public void initialize(IPreferenceStoreAccess access) {
     IPreferenceStore store = access.getWritablePreferenceStore();
-    store.setDefault(FILES_IN_ONE_DIRECTORY_ONLY, true);
-    store.setDefault(FILES_IN_MULTIPLE_DIRECTORIES, false);
-    store.setDefault(IMPORT_ROOTS, "");
+    RawPreferences preferences = new RawPreferences(store);
+    preferences.filesInOneDirectoryOnly().defaultValue(true);
+    preferences.filesInMultipleDirectories().defaultValue(false);
+    preferences.directoryPaths().defaultValue("");
   }
-
 }

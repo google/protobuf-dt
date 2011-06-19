@@ -30,7 +30,7 @@ import com.google.eclipse.protobuf.ui.preferences.InputDialog;
  */
 public class EditCodeGenerationDialog extends InputDialog {
 
-  private final CodeGeneration option;
+  private final CodeGenerationSetting option;
 
   private Text txtOutputDirectory;
   private Button btnEnabled;
@@ -41,7 +41,7 @@ public class EditCodeGenerationDialog extends InputDialog {
    * @param parent a shell which will be the parent of the new instance.
    * @param option the code generation option to edit.
    */
-  public EditCodeGenerationDialog(Shell parent, CodeGeneration option) {
+  public EditCodeGenerationDialog(Shell parent, CodeGenerationSetting option) {
     super(parent, editCodeGenerationOptionTitle + option.language().name());
     this.option = option;
   }

@@ -37,7 +37,7 @@ public class CodeGenerationEditor extends Composite {
   private final TableViewer tblVwrCodeGenerationOptions;
   private final Button btnEdit;
 
-  private final List<CodeGeneration> options = new ArrayList<CodeGeneration>();
+  private final List<CodeGenerationSetting> settings = new ArrayList<CodeGenerationSetting>();
 
   private DataChangedListener dataChangedListener;
 
@@ -62,7 +62,7 @@ public class CodeGenerationEditor extends Composite {
       }
 
       @Override public Image getImage(Object element) {
-        boolean optionEnabled = ((CodeGeneration)element).isEnabled();
+        boolean optionEnabled = ((CodeGenerationSetting)element).isEnabled();
         return imageHelper.getImage(optionEnabled ? "checked.gif" : "unchecked.gif"); //$NON-NLS-1$ //$NON-NLS-2$
       }
     });
@@ -74,7 +74,7 @@ public class CodeGenerationEditor extends Composite {
     tblclmnLanguage.setText(language);
     tblclmnVwrLanguage.setLabelProvider(new ColumnLabelProvider() {
       @Override public String getText(Object element) {
-        return ((CodeGeneration)element).language().name();
+        return ((CodeGenerationSetting)element).language().name();
       }
     });
 
@@ -85,7 +85,7 @@ public class CodeGenerationEditor extends Composite {
     tblclmnOutputDirectory.setText(outputDirectory);
     tblclmnVwrOutputDirectory.setLabelProvider(new ColumnLabelProvider() {
       @Override public String getText(Object element) {
-        return ((CodeGeneration)element).outputDirectory();
+        return ((CodeGenerationSetting)element).outputDirectory();
       }
     });
 
@@ -108,7 +108,7 @@ public class CodeGenerationEditor extends Composite {
     btnEdit.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
         int selectionIndex = tblCodeGenerationOptions.getSelectionIndex();
-        CodeGeneration option = options.get(selectionIndex);
+        CodeGenerationSetting option = settings.get(selectionIndex);
         EditCodeGenerationDialog dialog = new EditCodeGenerationDialog(getShell(), option);
         if (dialog.open() == OK) {
           tblVwrCodeGenerationOptions.refresh();
@@ -118,19 +118,19 @@ public class CodeGenerationEditor extends Composite {
     });
   }
 
-  public List<CodeGeneration> codeGenerationOptions() {
-    return unmodifiableList(options);
+  public List<CodeGenerationSetting> codeGenerationOptions() {
+    return unmodifiableList(settings);
   }
 
-  public void codeGenerationOptions(List<CodeGeneration> newOptions) {
-    options.clear();
-    options.addAll(newOptions);
+  public void codeGenerationSettings(List<CodeGenerationSetting> newSettings) {
+    settings.clear();
+    settings.addAll(newSettings);
     updateTable();
   }
 
   private void updateTable() {
-    tblVwrCodeGenerationOptions.setInput(options);
-    if (!options.isEmpty()) tblCodeGenerationOptions.setSelection(0);
+    tblVwrCodeGenerationOptions.setInput(settings);
+    if (!settings.isEmpty()) tblCodeGenerationOptions.setSelection(0);
   }
 
   /** {@inheritDoc} */

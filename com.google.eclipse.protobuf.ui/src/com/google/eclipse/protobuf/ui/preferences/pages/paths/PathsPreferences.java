@@ -8,19 +8,18 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages.paths;
 
-import static com.google.eclipse.protobuf.ui.preferences.pages.paths.PathResolutionType.SINGLE_DIRECTORY;
-import static com.google.eclipse.protobuf.ui.preferences.pages.paths.PreferenceNames.IMPORT_ROOTS;
+import static com.google.eclipse.protobuf.ui.preferences.pages.paths.PathResolutionType.*;
 import static com.google.eclipse.protobuf.ui.util.Strings.CSV_PATTERN;
 import static java.util.Collections.*;
+
+import java.util.*;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import java.util.*;
-
 /**
  * Paths preferences, retrieved from an <code>{@link IPreferenceStore}</code>. To create a new instance invoke
- * <code>{@link PathsPreferencesProvider#getPreferences(org.eclipse.core.resources.IProject)}</code>
+ * <code>{@link PathsPreferencesFactory#preferences(IProject)}</code>
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
@@ -29,15 +28,16 @@ public class PathsPreferences {
   private final PathResolutionType pathResolutionType;
   private final List<DirectoryPath> importRoots;
 
-  PathsPreferences(IPreferenceStore store, IProject project) {
-    pathResolutionType = PathResolutionType.readFrom(store);
-    importRoots = importRoots(pathResolutionType, store, project);
+  PathsPreferences(RawPreferences preferences, IProject project) {
+    boolean filesInOneDirectoryOnly = preferences.filesInOneDirectoryOnly().value();
+    pathResolutionType = filesInOneDirectoryOnly ? SINGLE_DIRECTORY : MULTIPLE_DIRECTORIES;
+    importRoots = importRoots(preferences, project);
   }
 
-  private static List<DirectoryPath> importRoots(PathResolutionType resolutionType, IPreferenceStore store, IProject project) {
-    if (resolutionType.equals(SINGLE_DIRECTORY)) return emptyList();
+  private List<DirectoryPath> importRoots(RawPreferences preferences, IProject project) {
+    if (pathResolutionType.equals(SINGLE_DIRECTORY)) return emptyList();
     List<DirectoryPath> roots = new ArrayList<DirectoryPath>();
-    for (String root : store.getString(IMPORT_ROOTS).split(CSV_PATTERN)) {
+    for (String root : preferences.directoryPaths().value().split(CSV_PATTERN)) {
       roots.add(DirectoryPath.parse(root, project));
     }
     return unmodifiableList(roots);

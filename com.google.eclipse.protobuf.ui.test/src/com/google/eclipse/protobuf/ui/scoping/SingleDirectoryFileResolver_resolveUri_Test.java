@@ -17,7 +17,7 @@ import static org.mockito.Mockito.*;
 import org.eclipse.emf.common.util.URI;
 import org.junit.*;
 
-import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
+import com.google.eclipse.protobuf.ui.preferences.pages.paths.PathsPreferences;
 import com.google.eclipse.protobuf.ui.util.Resources;
 
 /**

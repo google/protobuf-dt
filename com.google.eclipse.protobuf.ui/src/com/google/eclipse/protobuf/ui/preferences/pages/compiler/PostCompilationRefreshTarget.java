@@ -8,10 +8,6 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages.compiler;
 
-import static com.google.eclipse.protobuf.ui.preferences.pages.compiler.PreferenceNames.REFRESH_PROJECT;
-
-import org.eclipse.jface.preference.IPreferenceStore;
-
 /**
  * The type of resource to refresh after calling protoc.
  *
@@ -21,8 +17,4 @@ public enum PostCompilationRefreshTarget {
 
   PROJECT, OUTPUT_DIRECTORIES;
 
-  static PostCompilationRefreshTarget readFrom(IPreferenceStore store) {
-    if (store.getBoolean(REFRESH_PROJECT)) return PROJECT;
-    return OUTPUT_DIRECTORIES;
-  }
 }

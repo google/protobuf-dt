@@ -24,17 +24,17 @@ class OutputDirectories {
 
   private final Map<SupportedLanguage, IFolder> outputDirectories = new HashMap<SupportedLanguage, IFolder>();
 
-  static OutputDirectories findOrCreateOutputDirectories(IProject project, List<CodeGeneration> preferences)
+  static OutputDirectories findOrCreateOutputDirectories(IProject project, CodeGenerationSettings preferences)
       throws CoreException {
     Map<SupportedLanguage, IFolder> outputDirectories = new HashMap<SupportedLanguage, IFolder>();
-    for (CodeGeneration preference : preferences) {
+    for (CodeGenerationSetting preference : preferences.allSettings()) {
       if (!preference.isEnabled()) continue;
       outputDirectories.put(preference.language(), findOrCreateOutputDirectory(project, preference));
     }
     return new OutputDirectories(outputDirectories);
   }
 
-  private static IFolder findOrCreateOutputDirectory(IProject project, CodeGeneration preference)
+  private static IFolder findOrCreateOutputDirectory(IProject project, CodeGenerationSetting preference)
       throws CoreException {
     return findOrCreateOutputDirectory(project, preference.outputDirectory());
   }

@@ -6,12 +6,14 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.preferences.paths;
+package com.google.eclipse.protobuf.ui.preferences.pages.paths;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
+
+import com.google.eclipse.protobuf.ui.preferences.pages.paths.DirectoryPath;
 
 /**
  * Tests for <code>{@link DirectoryPath#toString()}</code>

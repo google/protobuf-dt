@@ -15,16 +15,17 @@ import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 import com.google.inject.Inject;
 
 /**
- * Reads "paths" preferences.
- * 
+ * Factory of <code>{@link PathsPreferences}</code>.
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class PathsPreferencesProvider {
+
+public class PathsPreferencesFactory {
 
   @Inject private IPreferenceStoreAccess storeAccess;
-  
-  public PathsPreferences getPreferences(IProject project) {
+
+  public PathsPreferences preferences(IProject project) {
     IPreferenceStore store = storeAccess.getWritablePreferenceStore(project);
-    return new PathsPreferences(store, project);
+    return new PathsPreferences(new RawPreferences(store), project);
   }
 }

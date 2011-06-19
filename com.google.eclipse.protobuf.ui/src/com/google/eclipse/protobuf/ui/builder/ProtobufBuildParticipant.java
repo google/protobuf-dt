@@ -41,7 +41,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
   @Inject private ProtocOutputParser outputParser;
   @Inject private ProtocCommandFactory commandFactory;
   @Inject private CompilerPreferencesProvider compilerPreferencesProvider;
-  @Inject private PathsPreferencesProvider pathsPreferencesProvider;
+  @Inject private PathsPreferencesFactory pathsPreferencesFactory;
 
   public void build(IBuildContext context, IProgressMonitor monitor) throws CoreException {
     IProject project = context.getBuiltProject();
@@ -49,7 +49,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
     if (!preferences.shouldCompileProtoFiles()) return;
     List<Delta> deltas = context.getDeltas();
     if (deltas.isEmpty()) return;
-    OutputDirectories outputDirectories = findOrCreateOutputDirectories(project, preferences.codeGenerationOptions());
+    OutputDirectories outputDirectories = findOrCreateOutputDirectories(project, preferences.codeGenerationSettings());
     List<String> importRoots = importRoots(project);
     for (Delta d : deltas) {
       IResourceDescription newResource = d.getNew();
@@ -63,7 +63,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
 
   private List<String> importRoots(IProject project) {
     List<String> paths = new ArrayList<String>();
-    PathsPreferences preferences = pathsPreferencesProvider.getPreferences(project);
+    PathsPreferences preferences = pathsPreferencesFactory.preferences(project);
     List<DirectoryPath> directoryPaths = preferences.importRoots();
     for (DirectoryPath path : directoryPaths) {
       String location = locationOfDirectory(path, project);

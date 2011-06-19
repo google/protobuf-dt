@@ -26,7 +26,7 @@ import com.google.inject.Inject;
  */
 public class FileUriResolver implements IFileUriResolver {
 
-  @Inject private PathsPreferencesProvider preferenceProvider;
+  @Inject private PathsPreferencesFactory preferencesFactory;
   @Inject private FileResolverStrategies resolvers;
   @Inject private Resources resources;
 
@@ -60,7 +60,7 @@ public class FileUriResolver implements IFileUriResolver {
     IProject project = resources.project(resourceUri);
     if (project == null) project = resources.activeProject();
     if (project == null) throw new IllegalStateException("Unable to find current project");
-    PathsPreferences preferences = preferenceProvider.getPreferences(project);
+    PathsPreferences preferences = preferencesFactory.preferences(project);
     return resolver(preferences).resolveUri(importUri, resourceUri, preferences);
   }
 

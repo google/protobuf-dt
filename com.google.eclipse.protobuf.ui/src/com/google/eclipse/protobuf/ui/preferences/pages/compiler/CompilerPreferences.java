@@ -8,10 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages.compiler;
 
-import static com.google.eclipse.protobuf.ui.preferences.pages.compiler.PreferenceNames.*;
-import static java.util.Collections.unmodifiableList;
-
-import java.util.List;
+import static com.google.eclipse.protobuf.ui.preferences.pages.compiler.PostCompilationRefreshTarget.*;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 
@@ -24,17 +21,24 @@ public class CompilerPreferences {
 
   private final boolean compileProtoFiles;
   private final String protocPath;
-  private final List<CodeGeneration> codeGenerationOptions;
+  private final CodeGenerationSettings codeGenerationSettings;
   private final boolean refreshResources;
   private final PostCompilationRefreshTarget refreshTarget;
 
-  CompilerPreferences(IPreferenceStore store, List<CodeGeneration> codeGenerationOptions) {
-    compileProtoFiles = store.getBoolean(COMPILE_PROTO_FILES);
-    boolean useProtocInSystemPath = store.getBoolean(USE_PROTOC_IN_SYSTEM_PATH);
-    protocPath = (useProtocInSystemPath) ? "protoc" : store.getString(PROTOC_FILE_PATH);
-    this.codeGenerationOptions = unmodifiableList(codeGenerationOptions);
-    refreshResources = store.getBoolean(REFRESH_RESOURCES);
-    refreshTarget = PostCompilationRefreshTarget.readFrom(store);
+  CompilerPreferences(RawPreferences preferences) {
+    compileProtoFiles = preferences.compileProtoFiles().value();
+    boolean useProtocInSystemPath = preferences.useProtocInSystemPath().value();
+    protocPath = (useProtocInSystemPath) ? "protoc" : preferences.protocPath().value();
+    codeGenerationSettings = new CodeGenerationSettings();
+    codeGenerationSettings.java().enabled(preferences.javaCodeGenerationEnabled().value());
+    codeGenerationSettings.java().outputDirectory(preferences.javaOutputDirectory().value());
+    codeGenerationSettings.cpp().enabled(preferences.cppCodeGenerationEnabled().value());
+    codeGenerationSettings.cpp().outputDirectory(preferences.cppOutputDirectory().value());
+    codeGenerationSettings.python().enabled(preferences.pythonCodeGenerationEnabled().value());
+    codeGenerationSettings.python().outputDirectory(preferences.pythonOutputDirectory().value());
+    refreshResources = preferences.refreshResources().value();
+    boolean refreshProject = preferences.refreshProject().value();
+    refreshTarget = refreshProject ? PROJECT : OUTPUT_DIRECTORIES;
   }
 
   public boolean shouldCompileProtoFiles() {
@@ -45,8 +49,8 @@ public class CompilerPreferences {
     return protocPath;
   }
 
-  public List<CodeGeneration> codeGenerationOptions() {
-    return codeGenerationOptions;
+  public CodeGenerationSettings codeGenerationSettings() {
+    return codeGenerationSettings;
   }
 
   public boolean shouldRefreshResources() {

@@ -9,35 +9,26 @@
 package com.google.eclipse.protobuf.ui.preferences.binding;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.swt.widgets.Control;
 
 /**
- * Binds a value from a <code>{@link IPreferenceStore}</code> to the selection of a
- * <code>{@link Control}</code>.
+ * Binds a value from a <code>{@link IPreferenceStore}</code> to an object.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public interface Binding {
 
   /**
-   * Reads a preference from the given <code>{@link IPreferenceStore}</code> and applies it to this binding's
-   * <code>{@link Control}</code>.
-   * @param store the preference store.
+   * Reads a preference value and applies it to this binding's target object.
    */
-  void read(IPreferenceStore store);
+  void applyPreferenceValueToTarget();
 
   /**
-   * Reads a default value preference from the given <code>{@link IPreferenceStore}</code> and applies it to the this
-   * binding's <code>{@link Control}</code>.
-   * @param store the preference store.
+   * Reads a default value preference and applies it to the this binding's target object.
    */
-  void readDefault(IPreferenceStore store);
+  void applyDefaultPreferenceValueToTarget();
 
   /**
-   * Applies the value of this binding's <code>{@link Control}</code> to a preference in the given
-   * <code>{@link IPreferenceStore}</code>.
-   * @param store the preference store.
+   * Applies the value of this binding's target object to a preference.
    */
-  void save(IPreferenceStore store);
-
+  void savePreferenceValue();
 }
