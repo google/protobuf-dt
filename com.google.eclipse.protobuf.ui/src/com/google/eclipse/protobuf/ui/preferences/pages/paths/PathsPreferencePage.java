@@ -138,16 +138,12 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
     directoryPathsEditor.directoryPaths(unmodifiableList(paths));
   }
 
-  @Override protected void onPageCreation() {
-    defaultsPerformed();
-  }
-
   /** {@inheritDoc} */
   @Override protected void onProjectSettingsActivation(boolean active) {
     enableProjectOptions(active);
   }
 
-  @Override protected void defaultsPerformed() {
+  @Override protected void updateContents() {
     enableProjectOptions(true);
   }
 

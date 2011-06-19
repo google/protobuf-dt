@@ -49,7 +49,7 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
     doCreateContents(contents);
     setupBinding(preferenceBinder);
     preferenceBinder.applyValues();
-    onPageCreation();
+    updateContents();
     return contents;
   }
 
@@ -123,9 +123,6 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
    */
   protected abstract void setupBinding(PreferenceBinder preferenceBinder);
 
-  /** Method invoked after the page has been created. By default this method does nothing. */
-  protected void onPageCreation() {}
-
   /**
    * Returns the id of this preference page.
    * @return the id of this preference page.
@@ -160,7 +157,7 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
   /**
    * Indicates whether this page is a "Project Properties" page or not.
    * @return {@code true} if this page is a "Project Properties" page, or {@code false} if this page is a
-   * "Worspace Settings" page.
+   * "Workspace Settings" page.
    */
   protected final boolean isPropertyPage() {
     return project != null;
@@ -213,12 +210,12 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
 
   @Override protected final void performDefaults() {
     preferenceBinder.applyDefaults();
-    defaultsPerformed();
+    updateContents();
     super.performDefaults();
   }
 
-  /** Method invoked after this page's defaults have been processed. By default this method does nothing. */
-  protected void defaultsPerformed() {}
+  /** Refreshes this page with the stored/default preference values. */
+  protected void updateContents() {}
 
   /** Marks this page as "valid." */
   protected final void pageIsNowValid() {

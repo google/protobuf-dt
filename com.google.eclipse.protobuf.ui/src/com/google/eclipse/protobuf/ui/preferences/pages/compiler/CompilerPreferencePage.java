@@ -150,6 +150,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
         FileDialog dialog = new FileDialog(getShell(), SWT.OPEN | SWT.SHEET);
         String file = dialog.open();
         if (file != null) txtProtocFilePath.setText(file);
+        checkState();
       }
     });
     btnRefreshResources.addSelectionListener(new SelectionAdapter() {
@@ -195,6 +196,9 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
 
   @Override protected void setupBinding(PreferenceBinder preferenceBinder) {
     RawPreferences preferences = new RawPreferences(getPreferenceStore());
+    if (isPropertyPage()) {
+      preferenceBinder.add(bindSelectionOf(btnEnableProjectSettings).to(preferences.enableProjectSettings()));
+    }
     preferenceBinder.addAll(
         bindSelectionOf(btnCompileProtoFiles).to(preferences.compileProtoFiles()),
         bindSelectionOf(btnUseProtocInSystemPath).to(preferences.useProtocInSystemPath()),
@@ -210,20 +214,13 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
         bindCodeGeneration(codeGenerationSettings.python())
           .to(preferences.pythonCodeGenerationEnabled(), preferences.pythonOutputDirectory())
       );
-    if (isPropertyPage()) {
-      preferenceBinder.add(bindSelectionOf(btnEnableProjectSettings).to(preferences.enableProjectSettings()));
-    }
   }
 
-  @Override protected void onPageCreation() {
-    defaultsPerformed();
-  }
-
-  @Override protected void defaultsPerformed() {
+  @Override protected void updateContents() {
     boolean compileProtoFiles = btnCompileProtoFiles.getSelection();
     boolean shouldEnableCompilerOptions = compileProtoFiles;
     if (isPropertyPage()) {
-      boolean useProjectSettings = btnEnableProjectSettings.isEnabled();
+      boolean useProjectSettings = areProjectSettingsActive();
       activateProjectSettings(useProjectSettings);
       enableProjectSpecificOptions(useProjectSettings);
       shouldEnableCompilerOptions = shouldEnableCompilerOptions && useProjectSettings;
