@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
- * 
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.ui.validation;
@@ -12,9 +12,9 @@ package com.google.eclipse.protobuf.ui.validation;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
-import com.google.eclipse.protobuf.protobuf.Import;
-import com.google.eclipse.protobuf.util.ModelNodes;
+import java.util.List;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.ui.*;
 import org.eclipse.ui.part.FileEditorInput;
@@ -25,31 +25,46 @@ import org.eclipse.xtext.ui.editor.XtextEditor;
 import org.eclipse.xtext.ui.editor.model.*;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
-import java.util.List;
+import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.ui.internal.ProtobufActivator;
+import com.google.eclipse.protobuf.ui.preferences.pages.general.*;
+import com.google.eclipse.protobuf.util.ModelNodes;
+import com.google.inject.Injector;
 
 /**
  * Validates a .proto file when it is opened or activated.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ValidateOnActivation implements IPartListener2 {
 
+  private static final String LANGUAGE_NAME = "com.google.eclipse.protobuf.Protobuf";
+
   private final ModelNodes nodes = new ModelNodes();
-  
+
   public void partActivated(IWorkbenchPartReference partRef) {
     final XtextEditor editor = protoEditorFrom(partRef);
     if (editor == null) return;
+    if (!shouldValidateEditor(editor.getResource().getProject())) return;
     validate(editor);
   }
-  
+
+  private boolean shouldValidateEditor(IProject project) {
+    Injector injector = ProtobufActivator.getInstance().getInjector(LANGUAGE_NAME);
+    GeneralPreferencesFactory factory = injector.getInstance(GeneralPreferencesFactory.class);
+    if (factory == null) return false;
+    GeneralPreferences preferences = factory.preferences(project);
+    return preferences.validateFilesOnActivation();
+  }
+
   private XtextEditor protoEditorFrom(IWorkbenchPartReference partRef) {
     XtextEditor editor = xtextEditorFrom(partRef);
     if (editor == null) return null;
-    if (!"com.google.eclipse.protobuf.Protobuf".equals(editor.getLanguageName())) return null;
+    if (!LANGUAGE_NAME.equals(editor.getLanguageName())) return null;
     if (!(editor.getEditorInput() instanceof FileEditorInput)) return null;
     return editor;
   }
-  
+
   private XtextEditor xtextEditorFrom(IWorkbenchPartReference partRef) {
     IWorkbenchPage page = partRef.getPage();
     if (page == null) return null;
@@ -81,7 +96,7 @@ public class ValidateOnActivation implements IPartListener2 {
     if (uri == null) return;
     anImport.setImportURI(uri);
   }
-  
+
   private String uriAsEnteredInEditor(Import anImport) {
     INode node = nodes.firstNodeForFeature(anImport, IMPORT__IMPORT_URI);
     if (node == null) return null;

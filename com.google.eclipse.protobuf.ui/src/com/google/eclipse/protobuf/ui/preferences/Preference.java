@@ -32,6 +32,14 @@ public abstract class Preference<T> {
   }
 
   /**
+   * Returns the name of this preference.
+   * @return the name of this preference.
+   */
+  public final String name() {
+    return name;
+  }
+
+  /**
    * Returns the value of this preference.
    * @return the value of this preference.
    */

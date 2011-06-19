@@ -49,7 +49,7 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
   @Override protected final Control createContents(Composite parent) {
     Composite contents = contentParent(parent);
     doCreateContents(contents);
-    setupBtnEnabledProjectSettingsBinding();
+    if (isPropertyPage()) setupBtnEnabledProjectSettingsBinding();
     setupBinding(preferenceBinder);
     preferenceBinder.applyValues();
     updateContents();
