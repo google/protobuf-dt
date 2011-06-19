@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages;
 
+import static com.google.eclipse.protobuf.ui.preferences.binding.BindingToButtonSelection.bindSelectionOf;
 import static com.google.eclipse.protobuf.ui.preferences.pages.Messages.*;
 import static org.eclipse.ui.dialogs.PreferencesUtil.createPreferenceDialogOn;
 
@@ -23,6 +24,7 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.*;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
+import com.google.eclipse.protobuf.ui.preferences.BooleanPreference;
 import com.google.eclipse.protobuf.ui.preferences.binding.PreferenceBinder;
 import com.google.inject.Inject;
 
@@ -33,7 +35,7 @@ import com.google.inject.Inject;
  */
 public abstract class PreferenceAndPropertyPage extends PreferencePage implements IWorkbenchPreferencePage, IWorkbenchPropertyPage {
 
-  protected Button btnEnableProjectSettings;
+  private Button btnEnableProjectSettings;
 
   private Link lnkEnableWorkspaceSettings;
 
@@ -47,6 +49,7 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
   @Override protected final Control createContents(Composite parent) {
     Composite contents = contentParent(parent);
     doCreateContents(contents);
+    setupBtnEnabledProjectSettingsBinding();
     setupBinding(preferenceBinder);
     preferenceBinder.applyValues();
     updateContents();
@@ -117,6 +120,21 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
    */
   protected abstract void doCreateContents(Composite parent);
 
+  private void setupBtnEnabledProjectSettingsBinding() {
+    BooleanPreference preference = enableProjectSettingsPreference(getPreferenceStore());
+    if (preference == null) return;
+    preferenceBinder.add(bindSelectionOf(btnEnableProjectSettings).to(preference));
+  }
+
+  /**
+   * Returns the preference that indicates whether this page is a "Project Properties" or a "Workspace Preferences"
+   * page.
+   * @param store the store where the preference value is stored.
+   * @return the preference that indicates whether this page is a "Project Properties" or a "Workspace Preferences"
+   * page.
+   */
+  protected abstract BooleanPreference enableProjectSettingsPreference(IPreferenceStore store);
+
   /**
    * Sets up data binding.
    * @param preferenceBinder the preference binder;
@@ -155,9 +173,9 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
   }
 
   /**
-   * Indicates whether this page is a "Project Properties" page or not.
+   * Indicates whether this page is a "Project Properties" or a "Workspace Preferences" page.
    * @return {@code true} if this page is a "Project Properties" page, or {@code false} if this page is a
-   * "Workspace Settings" page.
+   * "Workspace Preferences" page.
    */
   protected final boolean isPropertyPage() {
     return project != null;
@@ -201,12 +219,8 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
 
   @Override public final boolean performOk() {
     preferenceBinder.saveValues();
-    okPerformed();
     return true;
   }
-
-  /** Method invoked after this page's defaults have been saved. By default this method does nothing. */
-  protected void okPerformed() {}
 
   @Override protected final void performDefaults() {
     preferenceBinder.applyDefaults();

@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages.compiler;
 
+import static com.google.eclipse.protobuf.ui.preferences.pages.compiler.EnableProjectSettingsPreference.enableProjectSettings;
+
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.xtext.ui.editor.preferences.*;
 
@@ -23,8 +25,8 @@ public class CompilerPreferenceStoreInitializer implements IPreferenceStoreIniti
   /** {@inheritDoc} */
   public void initialize(IPreferenceStoreAccess access) {
     IPreferenceStore store = access.getWritablePreferenceStore();
+    enableProjectSettings(store).defaultValue(false);
     RawPreferences preferences = new RawPreferences(store);
-    preferences.enableProjectSettings().defaultValue(false);
     preferences.useProtocInSystemPath().defaultValue(true);
     preferences.javaCodeGenerationEnabled().defaultValue(false);
     preferences.cppCodeGenerationEnabled().defaultValue(false);

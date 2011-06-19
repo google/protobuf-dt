@@ -18,6 +18,7 @@ import static org.eclipse.xtext.util.Strings.*;
 import java.util.*;
 import java.util.List;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.*;
@@ -95,6 +96,10 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
       return;
     }
     pageIsNowValid();
+  }
+
+  @Override protected BooleanPreference enableProjectSettingsPreference(IPreferenceStore store) {
+    return null; // this page is always a "Project Properties" page
   }
 
   @Override protected void setupBinding(PreferenceBinder preferenceBinder) {

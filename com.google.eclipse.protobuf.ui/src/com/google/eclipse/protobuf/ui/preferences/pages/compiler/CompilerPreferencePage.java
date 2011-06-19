@@ -11,6 +11,7 @@ package com.google.eclipse.protobuf.ui.preferences.pages.compiler;
 import static com.google.eclipse.protobuf.ui.preferences.binding.BindingToButtonSelection.bindSelectionOf;
 import static com.google.eclipse.protobuf.ui.preferences.binding.BindingToTextValue.bindTextOf;
 import static com.google.eclipse.protobuf.ui.preferences.pages.compiler.BindingToCodeGeneration.bindCodeGeneration;
+import static com.google.eclipse.protobuf.ui.preferences.pages.compiler.EnableProjectSettingsPreference.enableProjectSettings;
 import static com.google.eclipse.protobuf.ui.preferences.pages.compiler.Messages.*;
 import static com.google.eclipse.protobuf.ui.swt.EventListeners.addSelectionListener;
 import static java.util.Arrays.asList;
@@ -18,13 +19,14 @@ import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import java.io.File;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.xtext.ui.PluginImageHelper;
 
-import com.google.eclipse.protobuf.ui.preferences.DataChangedListener;
+import com.google.eclipse.protobuf.ui.preferences.*;
 import com.google.eclipse.protobuf.ui.preferences.binding.PreferenceBinder;
 import com.google.eclipse.protobuf.ui.preferences.pages.PreferenceAndPropertyPage;
 import com.google.inject.Inject;
@@ -194,11 +196,12 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     pageIsNowValid();
   }
 
+  @Override protected BooleanPreference enableProjectSettingsPreference(IPreferenceStore store) {
+    return enableProjectSettings(store);
+  }
+
   @Override protected void setupBinding(PreferenceBinder preferenceBinder) {
     RawPreferences preferences = new RawPreferences(getPreferenceStore());
-    if (isPropertyPage()) {
-      preferenceBinder.add(bindSelectionOf(btnEnableProjectSettings).to(preferences.enableProjectSettings()));
-    }
     preferenceBinder.addAll(
         bindSelectionOf(btnCompileProtoFiles).to(preferences.compileProtoFiles()),
         bindSelectionOf(btnUseProtocInSystemPath).to(preferences.useProtocInSystemPath()),

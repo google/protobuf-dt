@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages.compiler;
 
+import static com.google.eclipse.protobuf.ui.preferences.pages.compiler.EnableProjectSettingsPreference.enableProjectSettings;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
@@ -25,8 +27,7 @@ public class CompilerPreferencesProvider {
 
   public CompilerPreferences getPreferences(IProject project) {
     IPreferenceStore store = storeAccess.getWritablePreferenceStore(project);
-    RawPreferences preferences = new RawPreferences(store);
-    boolean useProjectPreferences = preferences.enableProjectSettings().value();
+    boolean useProjectPreferences = enableProjectSettings(store).value();
     if (!useProjectPreferences) store = storeAccess.getWritablePreferenceStore();
     return new CompilerPreferences(new RawPreferences(store));
   }

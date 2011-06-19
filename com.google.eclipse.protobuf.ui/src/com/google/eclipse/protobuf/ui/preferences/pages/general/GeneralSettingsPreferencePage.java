@@ -8,10 +8,12 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages.general;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
+import com.google.eclipse.protobuf.ui.preferences.BooleanPreference;
 import com.google.eclipse.protobuf.ui.preferences.binding.PreferenceBinder;
 import com.google.eclipse.protobuf.ui.preferences.pages.PreferenceAndPropertyPage;
 
@@ -32,6 +34,11 @@ public class GeneralSettingsPreferencePage extends PreferenceAndPropertyPage {
 
     Button btnValidateOnActivation = new Button(grpValidation, SWT.CHECK);
     btnValidateOnActivation.setText("Validate files when activated");
+  }
+
+  /** {@inheritDoc} */
+  @Override protected BooleanPreference enableProjectSettingsPreference(IPreferenceStore store) {
+    return null;
   }
 
   /** {@inheritDoc} */

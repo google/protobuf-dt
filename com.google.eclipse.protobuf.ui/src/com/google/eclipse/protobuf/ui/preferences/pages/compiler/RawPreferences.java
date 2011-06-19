@@ -17,7 +17,6 @@ import com.google.eclipse.protobuf.ui.preferences.*;
  */
 class RawPreferences {
 
-  private final BooleanPreference enableProjectSettings;
   private final BooleanPreference compileProtoFiles;
   private final BooleanPreference useProtocInSystemPath;
   private final BooleanPreference useProtocInCustomPath;
@@ -33,7 +32,6 @@ class RawPreferences {
   private final BooleanPreference refreshOutputDirectory;
 
   RawPreferences(IPreferenceStore store) {
-    enableProjectSettings = new BooleanPreference("compiler.enableProjectSettings", store);
     compileProtoFiles = new BooleanPreference("compiler.compileProtoFiles", store);
     useProtocInSystemPath = new BooleanPreference("compiler.useProtocInSystemPath", store);
     useProtocInCustomPath = new BooleanPreference("compiler.useProtocInCustomPath", store);
@@ -47,10 +45,6 @@ class RawPreferences {
     refreshResources = new BooleanPreference("compiler.refreshResources", store);
     refreshProject = new BooleanPreference("compiler.refreshProject", store);
     refreshOutputDirectory = new BooleanPreference("compiler.refreshOutputDirectory", store);
-  }
-
-  BooleanPreference enableProjectSettings() {
-    return enableProjectSettings;
   }
 
   BooleanPreference compileProtoFiles() {
