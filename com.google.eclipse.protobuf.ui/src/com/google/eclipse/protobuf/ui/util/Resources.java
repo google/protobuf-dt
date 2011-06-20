@@ -106,6 +106,23 @@ public class Resources {
     return (path != null) ? root.getFile(path) : null;
   }
 
+  /**
+   * Returns the project owning the file displayed in the given editor.
+   * @param editor the given editor.
+   * @return the project owning the file displayed in the given editor.
+   */
+  public IProject project(IEditorPart editor) {
+    IResource resource = resourceFrom(editor);
+    return (resource == null) ? null : resource.getProject();
+  }
+
+  private IResource resourceFrom(IEditorPart editor) {
+    if (editor == null) return null;
+    Object adapter = editor.getEditorInput().getAdapter(IResource.class);
+    return (adapter == null) ? null : (IResource) adapter;
+  }
+
+
   private IPath pathOf(URI uri) {
     String platformUri = uri.toPlatformString(true);
     return (platformUri != null) ? new Path(platformUri) : null;

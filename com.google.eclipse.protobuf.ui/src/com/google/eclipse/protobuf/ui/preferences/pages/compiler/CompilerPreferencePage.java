@@ -169,7 +169,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
 
   private void checkState() {
     boolean atLeastOneEnabled = false;
-    for (CodeGenerationSetting option : codeGenerationEditor.codeGenerationOptions()) {
+    for (CodeGenerationSetting option : codeGenerationSettings.allSettings()) {
       if (option.isEnabled()) {
         atLeastOneEnabled = true;
         break;
@@ -229,7 +229,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
       shouldEnableCompilerOptions = shouldEnableCompilerOptions && useProjectSettings;
     }
     enableCompilerOptions(shouldEnableCompilerOptions);
-    codeGenerationEditor.codeGenerationSettings(codeGenerationSettings.allSettings());
+    codeGenerationEditor.codeGenerationSettings(codeGenerationSettings);
   }
 
   /** {@inheritDoc} */

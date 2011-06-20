@@ -219,8 +219,12 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
 
   @Override public final boolean performOk() {
     preferenceBinder.saveValues();
+    okPerformed();
     return true;
   }
+
+  /** Method invoked after this page's values have been saved. By default this method does nothing. */
+  protected void okPerformed() {}
 
   @Override protected final void performDefaults() {
     preferenceBinder.applyDefaults();

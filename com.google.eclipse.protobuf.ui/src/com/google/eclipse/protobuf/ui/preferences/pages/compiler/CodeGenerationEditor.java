@@ -9,7 +9,6 @@
 package com.google.eclipse.protobuf.ui.preferences.pages.compiler;
 
 import static com.google.eclipse.protobuf.ui.preferences.pages.compiler.Messages.*;
-import static java.util.Collections.unmodifiableList;
 import static org.eclipse.jface.window.Window.OK;
 
 import java.util.*;
@@ -118,13 +117,9 @@ public class CodeGenerationEditor extends Composite {
     });
   }
 
-  public List<CodeGenerationSetting> codeGenerationOptions() {
-    return unmodifiableList(settings);
-  }
-
-  public void codeGenerationSettings(List<CodeGenerationSetting> newSettings) {
+  public void codeGenerationSettings(CodeGenerationSettings newSettings) {
     settings.clear();
-    settings.addAll(newSettings);
+    settings.addAll(newSettings.allSettings());
     updateTable();
   }
 

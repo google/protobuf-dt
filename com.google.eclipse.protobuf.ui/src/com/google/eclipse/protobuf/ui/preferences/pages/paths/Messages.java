@@ -31,9 +31,11 @@ public class Messages extends NLS {
   public static String importedFilesPathResolution;
   public static String isWorkspacePathCheck;
   public static String pathResolution;
+  public static String rebuildProjectNow;
   public static String remove;
   public static String selectFileSystemDirectory;
   public static String selectWorkspaceDirectory;
+  public static String settingsChanged;
   public static String up;
 
   static {
