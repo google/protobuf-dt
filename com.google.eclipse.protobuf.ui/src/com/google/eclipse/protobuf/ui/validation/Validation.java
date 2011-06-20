@@ -63,6 +63,7 @@ final class Validation {
     document.readOnly(new IUnitOfWork<Void, XtextResource>() {
       public java.lang.Void exec(XtextResource resource) throws Exception {
         EObject root = resource.getParseResult().getRootASTElement();
+        if (root == null) return null;
         resetImports(root);
         resource.getLinker().linkModel(root, new ListBasedDiagnosticConsumer());
         ((XtextDocument) document).checkAndUpdateAnnotations();

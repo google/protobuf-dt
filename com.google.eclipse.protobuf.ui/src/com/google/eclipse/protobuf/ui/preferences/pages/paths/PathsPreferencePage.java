@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages.paths;
 
+import static com.google.eclipse.protobuf.ui.ProtobufUiModule.PLUGIN_ID;
 import static com.google.eclipse.protobuf.ui.preferences.EventListeners.addSelectionListener;
 import static com.google.eclipse.protobuf.ui.preferences.binding.BindingToButtonSelection.bindSelectionOf;
 import static com.google.eclipse.protobuf.ui.preferences.pages.paths.Messages.*;
@@ -18,8 +19,11 @@ import static org.eclipse.core.runtime.Status.OK_STATUS;
 import static org.eclipse.core.runtime.jobs.Job.BUILD;
 import static org.eclipse.xtext.util.Strings.*;
 
-import java.util.*;
-import java.util.List;
+import com.google.eclipse.protobuf.ui.preferences.*;
+import com.google.eclipse.protobuf.ui.preferences.binding.*;
+import com.google.eclipse.protobuf.ui.preferences.pages.PreferenceAndPropertyPage;
+import com.google.eclipse.protobuf.ui.validation.ValidationTrigger;
+import com.google.inject.Inject;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.*;
@@ -31,11 +35,8 @@ import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.xtext.ui.PluginImageHelper;
 
-import com.google.eclipse.protobuf.ui.preferences.*;
-import com.google.eclipse.protobuf.ui.preferences.binding.*;
-import com.google.eclipse.protobuf.ui.preferences.pages.PreferenceAndPropertyPage;
-import com.google.eclipse.protobuf.ui.validation.ValidationTrigger;
-import com.google.inject.Inject;
+import java.util.*;
+import java.util.List;
 
 /**
  * Preference page for import paths.
@@ -199,7 +200,7 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
           project().build(FULL_BUILD, monitor);
         } catch (CoreException e) {
           logger.error(e.getMessage(), e);
-          return new Status(ERROR, "unknown", ERROR, e.getMessage(), e); //$NON-NLS-1$
+          return new Status(ERROR, PLUGIN_ID, ERROR, e.getMessage(), e); //$NON-NLS-1$
         }
         return OK_STATUS;
       }
