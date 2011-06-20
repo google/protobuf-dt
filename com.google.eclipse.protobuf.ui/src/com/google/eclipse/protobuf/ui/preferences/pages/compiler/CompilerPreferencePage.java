@@ -8,12 +8,12 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages.compiler;
 
+import static com.google.eclipse.protobuf.ui.preferences.EventListeners.addSelectionListener;
 import static com.google.eclipse.protobuf.ui.preferences.binding.BindingToButtonSelection.bindSelectionOf;
 import static com.google.eclipse.protobuf.ui.preferences.binding.BindingToTextValue.bindTextOf;
 import static com.google.eclipse.protobuf.ui.preferences.pages.compiler.BindingToCodeGeneration.bindCodeGeneration;
 import static com.google.eclipse.protobuf.ui.preferences.pages.compiler.EnableProjectSettingsPreference.enableProjectSettings;
 import static com.google.eclipse.protobuf.ui.preferences.pages.compiler.Messages.*;
-import static com.google.eclipse.protobuf.ui.swt.EventListeners.addSelectionListener;
 import static java.util.Arrays.asList;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 

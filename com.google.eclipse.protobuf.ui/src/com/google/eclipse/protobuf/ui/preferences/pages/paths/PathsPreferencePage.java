@@ -8,9 +8,9 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages.paths;
 
+import static com.google.eclipse.protobuf.ui.preferences.EventListeners.addSelectionListener;
 import static com.google.eclipse.protobuf.ui.preferences.binding.BindingToButtonSelection.bindSelectionOf;
 import static com.google.eclipse.protobuf.ui.preferences.pages.paths.Messages.*;
-import static com.google.eclipse.protobuf.ui.swt.EventListeners.addSelectionListener;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static org.eclipse.core.resources.IncrementalProjectBuilder.FULL_BUILD;
