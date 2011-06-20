@@ -9,21 +9,20 @@
 package com.google.eclipse.protobuf.ui.commands;
 
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.SEMICOLON;
-
-import java.util.regex.Pattern;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.XtextEditor;
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
 import org.eclipse.xtext.ui.editor.contentassist.antlr.ParserBasedContentAssistContextFactory;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
-import com.google.eclipse.protobuf.protobuf.Literal;
-import com.google.eclipse.protobuf.protobuf.Property;
-import com.google.eclipse.protobuf.ui.util.Fields;
-import com.google.eclipse.protobuf.ui.util.Literals;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.ui.util.*;
+import com.google.eclipse.protobuf.util.ModelNodes;
 import com.google.inject.Inject;
 
 /**
@@ -35,14 +34,10 @@ import com.google.inject.Inject;
  */
 public class SmartSemicolonHandler extends SmartInsertHandler {
 
-  private static final Pattern LITERAL_WITH_INDEX = Pattern.compile("[\\s]+(.*)[\\s]+=[\\s]+[\\d]+(.*)");
-
-  private static final Pattern PROPERTY_WITH_INDEX =
-      Pattern.compile("[\\s]+(.*)[\\s]+(.*)[\\s]+(.*)[\\s]+=[\\s]+[\\d]+(.*)");
-
   @Inject private ParserBasedContentAssistContextFactory contextFactory;
   @Inject private Fields fields;
   @Inject private Literals literals;
+  @Inject private ModelNodes nodes;
 
   private final String semicolon = SEMICOLON.toString();
 
@@ -87,15 +82,15 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
   }
 
   private String contentToInsert(String line, Literal literal) {
-    boolean hasIndexAlready = LITERAL_WITH_INDEX.matcher(line).matches();
-    if (hasIndexAlready) return semicolon;
+    INode indexNode = nodes.firstNodeForFeature(literal, LITERAL__INDEX);
+    if (indexNode != null) return semicolon;
     int index = literals.calculateIndexOf(literal);
     return defaultIndexAndSemicolonToInsert(line, index);
   }
 
   private String contentToInsert(String line, Property property) {
-    boolean hasIndexAlready = PROPERTY_WITH_INDEX.matcher(line).matches();
-    if (hasIndexAlready) return semicolon;
+    INode indexNode = nodes.firstNodeForFeature(property, FIELD__INDEX);
+    if (indexNode != null) return semicolon;
     int index = fields.calculateTagNumberOf(property);
     return defaultIndexAndSemicolonToInsert(line, index);
   }
@@ -105,11 +100,6 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
   }
 
   private String indexAndSemicolonToInsert(String format, String line, int index) {
-    String content = String.format(format, index, semicolon);
-    return addSpaceAtBeginning(line, content);
-  }
-
-  private String addSpaceAtBeginning(String line, String contentToInsert) {
-    return (line.endsWith(" ")) ? contentToInsert : " " + contentToInsert;
+    return String.format(format, index, semicolon);
   }
 }
