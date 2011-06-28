@@ -2,7 +2,7 @@
 <feature
       id="com.google.eclipse.protobuf"
       label="Protocol Buffer Editor"
-      version="1.0.2.qualifier"
+      version="1.0.0.qualifier"
       provider-name="Google, Inc.">
 
    <description url="https://code.google.com/p/protobuf-dt/">
