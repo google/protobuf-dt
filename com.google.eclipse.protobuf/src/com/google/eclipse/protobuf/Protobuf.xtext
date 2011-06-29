@@ -107,10 +107,7 @@ TypeReference:
 ValueRef:
   LiteralRef
   | BooleanRef
-  | IntRef
-  | LongRef
-  | FloatRef
-  | DoubleRef
+  | NumberRef
   | StringRef
   | Nan;
 
@@ -124,12 +121,14 @@ enum BOOL:
   true
   | false;
 
+NumberRef:
+  IntRef | LongRef | FloatRef | DoubleRef;
+
 IntRef:
   int=INT;
   
 LongRef:
   long=LONG;
-
 
 FloatRef:
   float=FLOAT;
