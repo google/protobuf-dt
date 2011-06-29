@@ -25,6 +25,8 @@ import com.google.eclipse.protobuf.ui.preferences.pages.PreferenceAndPropertyPag
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class GeneralPreferencePage extends PreferenceAndPropertyPage {
+  public GeneralPreferencePage() {
+  }
 
   private static final String PREFERENCE_PAGE_ID = "com.google.eclipse.protobuf.Protobuf";
 
@@ -34,7 +36,7 @@ public class GeneralPreferencePage extends PreferenceAndPropertyPage {
   @Override protected void doCreateContents(Composite parent) {
     grpValidation = new Group(parent, SWT.NONE);
     grpValidation.setLayout(new GridLayout(1, false));
-    grpValidation.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+    grpValidation.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
     grpValidation.setText(contentValidation);
 
     btnValidateOnActivation = new Button(grpValidation, SWT.CHECK);
