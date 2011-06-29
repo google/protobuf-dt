@@ -178,6 +178,11 @@
       class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.pages.general.GeneralPreferencePage"
       id="com.google.eclipse.protobuf.Protobuf"
       name="%page.name" selectionFilter="single">
+       <enabledWhen>
+          <adapt
+                type="org.eclipse.core.resources.IProject">
+          </adapt>
+       </enabledWhen>
     </page>
     <page
           category="com.google.eclipse.protobuf.Protobuf"
@@ -185,6 +190,11 @@
           id="com.google.eclipse.protobuf.ui.properties.compiler.PropertyPage"
           name="%page.name.2"
           selectionFilter="single">
+       <enabledWhen>
+          <adapt
+                type="org.eclipse.core.resources.IProject">
+          </adapt>
+       </enabledWhen>
     </page>
     <page
           category="com.google.eclipse.protobuf.Protobuf"
@@ -192,6 +202,11 @@
           id="com.google.eclipse.protobuf.ui.properties.paths.PropertyPage"
           name="%page.name.3"
           selectionFilter="single">
+       <enabledWhen>
+          <adapt
+                type="org.eclipse.core.resources.IProject">
+          </adapt>
+       </enabledWhen>
     </page>
   </extension>
   <extension point="org.eclipse.xtext.builder.participant">
