@@ -9,9 +9,11 @@
  */
 package com.google.eclipse.protobuf.ui.editor.syntaxcoloring;
 
-import static org.eclipse.xtext.ui.editor.syntaxcoloring.DefaultHighlightingConfiguration.*;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.HighlightingConfiguration.*;
 
 import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.eclipse.protobuf.util.ModelNodes;
 import com.google.inject.Inject;
@@ -21,8 +23,6 @@ import org.eclipse.emf.ecore.*;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.*;
-
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -36,78 +36,177 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
     EList<EObject> contents = resource.getContents();
     if (contents == null || contents.isEmpty()) return;
     Protobuf protobuf = (Protobuf) contents.get(0);
-    highlightAllFeatures(protobuf, acceptor, DEFAULT_ID);
+    highlight(protobuf, acceptor);
   }
 
-  private void highlightAllFeatures(Protobuf protobuf, IHighlightedPositionAcceptor acceptor, String highlightId) {
-    highlightElementFeatures(protobuf, acceptor, highlightId);
-  }
-
-  private void highlightElementFeatures(Protobuf protobuf, IHighlightedPositionAcceptor acceptor, String highlightId) {
+  private void highlight(Protobuf protobuf, IHighlightedPositionAcceptor acceptor) {
     for (ProtobufElement element : protobuf.getElements()) {
-      if (element instanceof Package || element instanceof Option) {
-        highlightName(element, acceptor, highlightId);
+      if (element instanceof Package) {
+        highlightName(element, acceptor, DEFAULT_ID);
+        continue;
+      }
+      if (element instanceof Option) {
+        highlight((Option) element, acceptor);
         continue;
       }
       if (element instanceof Type) {
-        highlightName(element, acceptor, highlightId);
-        if (element instanceof Message) highlightElementFeatures((Message) element, acceptor, highlightId);
+        highlight((Type) element, acceptor); 
+        continue;
+      }
+      if (element instanceof ExtendMessage) {
+        highlight((ExtendMessage) element, acceptor);
         continue;
       }
       if (element instanceof Service) {
-        highlightName(element, acceptor, highlightId);
-        highlightRpcFeatures((Service) element, acceptor, highlightId);
+        highlight((Service) element, acceptor);
       }
     }
   }
 
-  private void highlightElementFeatures(Message message, IHighlightedPositionAcceptor acceptor, String highlightId) {
+  private void highlight(ExtendMessage extend, IHighlightedPositionAcceptor acceptor) {
+    for (MessageElement element : extend.getElements()) {
+      highlight(element, acceptor);
+    }
+  }
+
+  private void highlight(Type type, IHighlightedPositionAcceptor acceptor) {
+    if (type instanceof Message) {
+      highlight((Message) type, acceptor);
+      return;
+    }
+    if (type instanceof Enum) { 
+      highlight((Enum) type, acceptor);
+    }
+  }
+  
+  private void highlight(Message message, IHighlightedPositionAcceptor acceptor) {
+    highlightName(message, acceptor, MESSAGE_DEFINITION_ID);
     for (MessageElement element : message.getElements()) {
-      if (element instanceof Option) {
-        highlightName(element, acceptor, highlightId);
-        continue;
-      }
-      if (element instanceof Field) {
-        highlightName(element, acceptor, highlightId);
-        highlightFieldOptionFeatures((Field) element, acceptor, highlightId);
-      }
-      if (element instanceof Property) {
-        highlightElementFeatures((Property) element, acceptor);
-      }
-      if (element instanceof Group) {
-        highlightElementFeatures((Group) element, acceptor, highlightId);
-      }
+      highlight(element, acceptor);
     }
   }
 
-  private void highlightElementFeatures(Property property, IHighlightedPositionAcceptor acceptor) {
-    ValueRef defaultValue = property.getDefault();
-    if (!(defaultValue instanceof NumberRef)) return;
-    highlightFirstFeature(property, PROPERTY__DEFAULT, acceptor, NUMBER_ID);
+  private void highlight(MessageElement element, IHighlightedPositionAcceptor acceptor) {
+    if (element instanceof Option) {
+      highlight((Option) element, acceptor);
+      return;
+    }
+    if (element instanceof Field) {
+      highlight((Field) element, acceptor);
+      return;
+    }
+    if (element instanceof Type) {
+      highlight((Type) element, acceptor);
+      return;
+    }
+    if (element instanceof ExtendMessage) {
+      highlight((ExtendMessage) element, acceptor);
+    }
   }
 
-  private void highlightElementFeatures(Group group, IHighlightedPositionAcceptor acceptor, String highlightId) {
+  private void highlight(Field field, IHighlightedPositionAcceptor acceptor) {
+    highlightName(field, acceptor, DEFAULT_ID);
+    highlightFirstFeature(field, FIELD__INDEX, acceptor, MESSAGE_FIELD_INDEX_ID);
+    highlightOptions(field, acceptor, DEFAULT_ID);
+    if (field instanceof Group) {
+      highlight((Group) field, acceptor);
+      return;
+    }
+    if (field instanceof Property) {
+      highlight((Property) field, acceptor);
+    }
+  }
+
+  private void highlight(Group group, IHighlightedPositionAcceptor acceptor) {
     for (GroupElement e : group.getElements()) {
-      if (e instanceof Property) {
-        Field field = (Field) e;
-        highlightName(field, acceptor, highlightId);
-        highlightFieldOptionFeatures(field, acceptor, highlightId);
-      }
+      if (!(e instanceof Field)) continue; 
+      highlight((Field) e, acceptor);
+    }
+  }
+  
+  private void highlight(Property property, IHighlightedPositionAcceptor acceptor) {
+    highlightPropertyType(property, acceptor);
+    ValueRef ref = property.getDefault();
+    if (ref instanceof LiteralRef) {
+      highlightFirstFeature(property, PROPERTY__DEFAULT, acceptor, ENUM_LITERAL_ID);
+      return;
+    }
+    if (ref instanceof NumberRef) {
+      highlightFirstFeature(property, PROPERTY__DEFAULT, acceptor, NUMBER_ID);
     }
   }
 
-  private void highlightFieldOptionFeatures(Field field, IHighlightedPositionAcceptor acceptor, String highlightId) {
+  private void highlightPropertyType(Property property, IHighlightedPositionAcceptor acceptor) {
+    AbstractTypeReference ref = property.getType();
+    if (!(ref instanceof TypeReference)) return;
+    Type type = ((TypeReference) ref).getType();
+    if (type instanceof Message) {
+      highlightFirstFeature(property, PROPERTY__TYPE, acceptor, MESSAGE_ID);
+      return;
+    }
+    if (type instanceof Enum) {
+      highlightFirstFeature(property, PROPERTY__TYPE, acceptor, ENUM_ID);
+      return;
+    }
+  }
+
+  private void highlightOptions(Field field, IHighlightedPositionAcceptor acceptor, String highlightId) {
     for (FieldOption option : field.getFieldOptions()) {
       highlightName(option, acceptor, highlightId);
+      ValueRef ref = option.getValue();
+      if (ref instanceof LiteralRef) {
+        highlightFirstFeature(option, FIELD_OPTION__VALUE, acceptor, ENUM_LITERAL_ID);
+        return;
+      }
+      if (ref instanceof NumberRef) {
+        highlightFirstFeature(option, FIELD_OPTION__VALUE, acceptor, NUMBER_ID);
+      }
     }
   }
 
-  private void highlightRpcFeatures(Service service, IHighlightedPositionAcceptor acceptor, String highlightId) {
-    for (Rpc rpc : service.getRpcs()) {
-      highlightName(rpc, acceptor, highlightId);
-      for (Option option : rpc.getOptions()) {
-        highlightName(option, acceptor, highlightId);
+  private void highlight(Enum anEnum, IHighlightedPositionAcceptor acceptor) {
+    highlightName(anEnum, acceptor, ENUM_DEFINITION_ID);
+    for (EnumElement element : anEnum.getElements()) {
+      if (element instanceof Literal) {
+        highLight((Literal) element, acceptor);
+        continue;
       }
+      if (element instanceof Option) {
+        highlight((Option) element, acceptor);
+      }
+    }
+  }
+
+  private void highLight(Literal literal, IHighlightedPositionAcceptor acceptor) {
+    highlightName(literal, acceptor, ENUM_LITERAL_DEFINITION);
+    highlightFirstFeature(literal, LITERAL__INDEX, acceptor, ENUM_LITERAL_INDEX_ID);
+  }
+
+  private void highlight(Service service, IHighlightedPositionAcceptor acceptor) {
+    highlightName(service, acceptor, SERVICE_DEFINITION_ID);
+    for (Rpc rpc : service.getRpcs()) {
+      highlight(rpc, acceptor);
+    }
+  }
+
+  private void highlight(Rpc rpc, IHighlightedPositionAcceptor acceptor) {
+    highlightName(rpc, acceptor, RPC_DEFINITION_ID);
+    highlightFirstFeature(rpc, RPC__ARG_TYPE, acceptor, RPC_ARGUMENT_ID);
+    highlightFirstFeature(rpc, RPC__RETURN_TYPE, acceptor, RPC_RETURN_TYPE_ID);
+    for (Option option : rpc.getOptions()) {
+      highlight(option, acceptor);
+    }
+  }
+
+  private void highlight(Option option, IHighlightedPositionAcceptor acceptor) {
+    highlightName(option, acceptor, DEFAULT_ID);
+    ValueRef ref = option.getValue();
+    if (ref instanceof LiteralRef) {
+      highlightFirstFeature(option, OPTION__VALUE, acceptor, ENUM_LITERAL_ID);
+      return;
+    }
+    if (ref instanceof NumberRef) {
+      highlightFirstFeature(option, OPTION__VALUE, acceptor, NUMBER_ID);
     }
   }
 
@@ -119,6 +218,10 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
       IHighlightedPositionAcceptor acceptor, String highlightId) {
     INode node = nodes.firstNodeForFeature(semantic, feature);
     if (node == null || node.getText() == null) return;
-    acceptor.addPosition(node.getOffset(), node.getText().trim().length(), highlightId);
+    try {
+      acceptor.addPosition(node.getOffset(), node.getText().trim().length(), highlightId);
+    } catch (Throwable t) {
+      t.printStackTrace();
+    }
   }
 }

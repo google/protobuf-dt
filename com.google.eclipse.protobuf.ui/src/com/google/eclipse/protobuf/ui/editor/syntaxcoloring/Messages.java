@@ -17,10 +17,22 @@ public class Messages extends NLS {
 
   public static String comments;
   public static String defaults;
+  public static String enumDefinitions;
+  public static String enumLiteralDefinitions;
+  public static String enumLiteralIndices;
+  public static String enumLiterals;
+  public static String enums;
   public static String invalidSymbols;
   public static String keywords;
+  public static String messageDefinitions;
+  public static String messageFieldIndices;
+  public static String messages;
   public static String numbers;
   public static String punctuationCharacters;
+  public static String rpcArguments;
+  public static String rpcDefinitions;
+  public static String rpcReturnTypes;
+  public static String serviceDefinitions;
   public static String strings;
   
   static {
