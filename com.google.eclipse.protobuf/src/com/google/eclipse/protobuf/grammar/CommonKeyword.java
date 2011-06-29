@@ -19,8 +19,9 @@ public enum CommonKeyword {
   // looking for. The code was too complicated and if the grammar changed for some reason, we had to change our
   // implementation anyway.
 
-  BOOL("bool"), TRUE("true"), FALSE("false"), BYTES("bytes"), OPENING_BRACKET("["), CLOSING_BRACKET("]"),
-    DEFAULT("default"), EQUAL("="), SEMICOLON(";"), STRING("string"), SYNTAX("syntax");
+  BOOL("bool"), TRUE("true"), FALSE("false"), BYTES("bytes"), OPENING_BRACKET("["), CLOSING_BRACKET("]"), 
+    DEFAULT("default"), EQUAL("="), SEMICOLON(";"), STRING("string"), SYNTAX("syntax"), NAN("nan"), FLOAT("float"), 
+    DOUBLE("double");
 
   private final String value;
 

@@ -1,9 +1,10 @@
 /*
  * Copyright (c) 2011 Google Inc.
- *
- * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License v1.0 which accompanies this distribution, and is available at
- *
+ * 
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
+ * 
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.ui.contentassist;
@@ -14,18 +15,8 @@ import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.*;
 import static com.google.eclipse.protobuf.ui.util.Strings.firstCharToLowerCase;
 import static java.lang.String.valueOf;
 import static java.util.Collections.emptyList;
+import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
-import java.util.*;
-
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.jface.text.contentassist.ICompletionProposal;
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.xtext.*;
-import org.eclipse.xtext.ui.PluginImageHelper;
-import org.eclipse.xtext.ui.editor.contentassist.*;
-
-import com.google.common.collect.ImmutableList;
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
@@ -37,10 +28,22 @@ import com.google.eclipse.protobuf.util.*;
 import com.google.eclipse.protobuf.util.Properties;
 import com.google.inject.Inject;
 
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.xtext.*;
+import org.eclipse.xtext.ui.PluginImageHelper;
+import org.eclipse.xtext.ui.editor.contentassist.*;
+
+import java.util.*;
+
 /**
  * @author alruiz@google.com (Alex Ruiz)
- *
- * @see <a href="http://www.eclipse.org/Xtext/documentation/latest/xtext.html#contentAssist">Xtext Content Assist</a>
+ * 
+ * @see <a
+ *      href="http://www.eclipse.org/Xtext/documentation/latest/xtext.html#contentAssist">Xtext
+ *      Content Assist</a>
  */
 public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
@@ -56,8 +59,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Inject private Properties properties;
 
   @Override public void completeProtobuf_Syntax(EObject model, Assignment assignment, ContentAssistContext context,
-      ICompletionProposalAcceptor acceptor) {
-  }
+      ICompletionProposalAcceptor acceptor) {}
 
   @Override public void completeSyntax_Name(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
@@ -88,16 +90,28 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       proposeCommonMessageOptions(context, acceptor);
       return true;
     }
+    if (model instanceof Enum) {
+      proposeCommonEnumOptions(context, acceptor);
+      return true;
+    }
     return false;
   }
 
   private void proposeCommonFileOptions(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    for (Property option : descriptorProvider.get().fileOptions())
-      proposeOption(option, context, acceptor);
+    proposeOptions(descriptorProvider.get().fileOptions(), context, acceptor);
   }
 
   private void proposeCommonMessageOptions(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    for (Property option : descriptorProvider.get().messageOptions())
+    proposeOptions(descriptorProvider.get().messageOptions(), context, acceptor);
+  }
+
+  private void proposeCommonEnumOptions(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    proposeOptions(descriptorProvider.get().enumOptions(), context, acceptor);
+  }
+  
+  private void proposeOptions(Collection<Property> options, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+    for (Property option : options)
       proposeOption(option, context, acceptor);
   }
 
@@ -126,44 +140,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ICompletionProposalAcceptor acceptor) {}
 
   @Override public void complete_STRING(EObject model, RuleCall ruleCall, ContentAssistContext context,
-      ICompletionProposalAcceptor acceptor) {
-    if (model instanceof Property && isProposalForDefaultValue(context)) {
-      Property p = (Property) model;
-      if (properties.isString(p)) {
-        proposeEmptyString(context, acceptor);
-        return;
-      }
-      if (properties.isBool(p)) {
-        proposeBooleanValues(context, acceptor);
-        return;
-      }
-    }
-    if (model instanceof Option || model instanceof FieldOption || model instanceof Syntax) return;
-    for (AbstractElement element : context.getFirstSetGrammarElements()) {
-      if (!(element instanceof Assignment)) continue;
-      Assignment assignment = (Assignment) element;
-      if (EQUAL.hasValue(assignment.getOperator()) && assignment.getFeature().equals("name")) return;
-    }
-    super.complete_STRING(model, ruleCall, context, acceptor);
-  }
-
-  private void proposeEmptyString(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    createAndAccept(EMPTY_STRING, 1, context, acceptor);
-  }
-
-  private boolean isProposalForDefaultValue(ContentAssistContext context) {
-    return isProposalForAssignment(DEFAULT, context);
-  }
-
-  private boolean isProposalForAssignment(CommonKeyword feature, ContentAssistContext context) {
-    ImmutableList<AbstractElement> grammarElements = context.getFirstSetGrammarElements();
-    for (AbstractElement e : grammarElements) {
-      if (!(e instanceof Assignment)) continue;
-      Assignment a = (Assignment) e;
-      if (feature.hasValue(a.getFeature()) && EQUAL.hasValue(a.getOperator())) return true;
-    }
-    return false;
-  }
+      ICompletionProposalAcceptor acceptor) {}
 
   @Override public void completeKeyword(Keyword keyword, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
@@ -183,16 +160,26 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       EObject grammarElement = context.getLastCompleteNode().getGrammarElement();
       if (isKeyword(grammarElement, SYNTAX)) {
         proposeEqualProto2(context, acceptor);
-        return true;
       }
+      return true;
     }
     if (OPENING_BRACKET.hasValue(keyword)) {
       return proposeOpenBracket(context, acceptor);
     }
     if (TRUE.hasValue(keyword) || FALSE.hasValue(keyword)) {
-      if (!isBoolProposalValid(context)) return true;
+      if (isBoolProposalValid(context)) {
+        proposeBooleanValues(context, acceptor);
+      }
+      return true;
     }
-    // remove keyword proposals when current node is "]". At this position we only accept "default" or field options.
+    if (NAN.hasValue(keyword)) {
+      if (isNanProposalValid(context)) {
+        proposeAndAccept(keyword.toString(), context, acceptor);
+      }
+      return true;
+    }
+    // remove keyword proposals when current node is "]". At this position we
+    // only accept "default" or field options.
     return context.getCurrentNode().getText().equals(CLOSING_BRACKET.toString());
   }
 
@@ -201,7 +188,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   }
 
   private boolean isKeyword(EObject object, CommonKeyword keyword) {
-    return object instanceof Keyword && keyword.hasValue(((Keyword)object).getValue());
+    return object instanceof Keyword && keyword.hasValue(((Keyword) object).getValue());
   }
 
   private boolean isBoolProposalValid(ContentAssistContext context) {
@@ -214,6 +201,20 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (model instanceof FieldOption) {
       Property fileOption = descriptorProvider.get().lookupOption(((FieldOption) model).getName());
       return fileOption != null && properties.isBool(fileOption);
+    }
+    return false;
+  }
+
+  private boolean isNanProposalValid(ContentAssistContext context) {
+    EObject model = context.getCurrentModel();
+    if (model instanceof Property) return properties.mayBeNan((Property) model);
+    if (model instanceof Option) {
+      Property fileOption = descriptorProvider.get().lookupOption(((Option) model).getName());
+      return fileOption != null && properties.mayBeNan(fileOption);
+    }
+    if (model instanceof FieldOption) {
+      Property fileOption = descriptorProvider.get().lookupOption(((FieldOption) model).getName());
+      return fileOption != null && properties.mayBeNan(fileOption);
     }
     return false;
   }
@@ -292,9 +293,19 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeProperty_Default(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    Enum enumType = finder.enumTypeOf((Property) model);
-    if (enumType == null) return;
-    proposeAndAccept(enumType, context, acceptor);
+    Property property = (Property) model;
+    if (properties.isString(property)) {
+      proposeEmptyString(context, acceptor);
+      return;
+    }
+    Enum enumType = finder.enumTypeOf(property);
+    if (enumType != null) {
+      proposeAndAccept(enumType, context, acceptor);
+    }
+  }
+
+  private void proposeEmptyString(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    createAndAccept(EMPTY_STRING, 1, context, acceptor);
   }
 
   @Override public void completeProperty_Index(EObject model, Assignment assignment, ContentAssistContext context,
@@ -341,8 +352,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeFieldOption_Name(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    Field field = extractFieldFrom(context);
-    proposeCommonFieldOptions(field, context, acceptor);
+     Field field = extractFieldFrom(context);
+     proposeCommonFieldOptions(field, context, acceptor);
   }
 
   private Field extractFieldFrom(ContentAssistContext context) {
@@ -362,7 +373,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     List<FieldOption> options = field.getFieldOptions();
     if (options.isEmpty()) return emptyList();
     List<String> optionNames = new ArrayList<String>();
-    for (FieldOption option : options) optionNames.add(option.getName());
+    for (FieldOption option : options)
+      optionNames.add(option.getName());
     return optionNames;
   }
 
@@ -385,7 +397,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (isStringOption && proposal instanceof ConfigurableCompletionProposal) {
       // set cursor between the proposal's quotes
       ConfigurableCompletionProposal configurable = (ConfigurableCompletionProposal) proposal;
-      configurable.setCursorPosition(proposalText.length() - 2);
+      configurable.setCursorPosition(proposalText.length() - 1);
     }
     acceptor.accept(proposal);
   }
@@ -409,18 +421,19 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   }
 
   private void proposeBooleanValues(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    CommonKeyword[] keywords = { FALSE, TRUE };
+    CommonKeyword[] keywords = {FALSE, TRUE};
     proposeAndAccept(keywords, context, acceptor);
   }
 
   private void proposeAndAccept(CommonKeyword[] keywords, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    for (CommonKeyword keyword : keywords) proposeAndAccept(keyword.toString(), context, acceptor);
+    for (CommonKeyword keyword : keywords)
+      proposeAndAccept(keyword.toString(), context, acceptor);
   }
 
   private void proposeAndAccept(Enum enumType, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     Image image = imageHelper.getImage(images.imageFor(Literal.class));
-    for (Literal literal : enumType.getLiterals())
+    for (Literal literal : getAllContentsOfType(enumType, Literal.class))
       proposeAndAccept(literal.getName(), image, context, acceptor);
   }
 

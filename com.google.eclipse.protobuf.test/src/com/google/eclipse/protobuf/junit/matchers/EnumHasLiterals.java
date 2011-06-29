@@ -8,13 +8,15 @@
  */
 package com.google.eclipse.protobuf.junit.matchers;
 
+import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
+
 import java.util.*;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
+import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.eclipse.protobuf.protobuf.Literal;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -42,7 +44,9 @@ public class EnumHasLiterals extends BaseMatcher<Enum> {
 
   private List<String> literalNames(Enum anEnum) {
     List<String> names = new ArrayList<String>();
-    for (Literal literal : anEnum.getLiterals()) names.add(literal.getName());
+    for (Literal literal : getAllContentsOfType(anEnum, Literal.class)) {
+      names.add(literal.getName());
+    }
     return names;
   }
   

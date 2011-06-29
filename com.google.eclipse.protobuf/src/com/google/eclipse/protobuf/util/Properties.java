@@ -44,6 +44,11 @@ public class Properties {
   public boolean isBool(Property p) {
     return isScalarType(p, BOOL);
   }
+  
+  public boolean mayBeNan(Property p) {
+    String typeName = typeNameOf(p);
+    return FLOAT.hasValue(typeName) || DOUBLE.hasValue(typeName);
+  }
 
   /**
    * Indicates whether the given property is of type {@code string}.

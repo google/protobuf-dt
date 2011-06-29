@@ -12,6 +12,7 @@ import static com.google.eclipse.protobuf.scoping.QualifiedNames.addLeadingDot;
 import static java.util.Collections.emptyList;
 import static org.eclipse.emf.common.util.URI.createURI;
 import static org.eclipse.emf.ecore.util.EcoreUtil.getAllContents;
+import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
 import java.util.*;
@@ -170,11 +171,11 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   IScope scope_LiteralRef_literal(LiteralRef literalRef, EReference reference) {
     EObject container = literalRef.eContainer();
     if (container instanceof Property) {
-      Enum enumType = finder.enumTypeOf((Property) container);
-      if (enumType != null) return scopeForLiterals(enumType);
+      Enum anEnum = finder.enumTypeOf((Property) container);
+      if (anEnum != null) return scopeForLiterals(anEnum);
     }
-    Enum enumType = enumTypeOfOption(container);
-    if (enumType != null) return scopeForLiterals(enumType);
+    Enum anEnum = enumTypeOfOption(container);
+    if (anEnum != null) return scopeForLiterals(anEnum);
     return null;
   }
 
@@ -185,14 +186,14 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     return null;
   }
 
-  private static IScope scopeForLiterals(Enum enumType) {
-    Collection<IEObjectDescription> descriptions = describeLiterals(enumType);
+  private static IScope scopeForLiterals(Enum anEnum) {
+    Collection<IEObjectDescription> descriptions = describeLiterals(anEnum);
     return createScope(descriptions);
   }
 
-  private static Collection<IEObjectDescription> describeLiterals(Enum enumType) {
+  private static Collection<IEObjectDescription> describeLiterals(Enum anEnum) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
-    for (Literal literal : enumType.getLiterals())
+    for (Literal literal : getAllContentsOfType(anEnum, Literal.class))
       descriptions.add(create(literal.getName(), literal));
     return descriptions;
   }
@@ -200,4 +201,6 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   private static IScope createScope(Iterable<IEObjectDescription> descriptions) {
     return new SimpleScope(descriptions, DO_NOT_IGNORE_CASE);
   }
+  
+  
 }

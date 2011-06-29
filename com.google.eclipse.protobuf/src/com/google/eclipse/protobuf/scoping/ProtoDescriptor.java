@@ -44,6 +44,7 @@ public class ProtoDescriptor {
     OPTION_DEFINITION_BY_NAME.put("FileOptions", FILE);
     OPTION_DEFINITION_BY_NAME.put("MessageOptions", MESSAGE);
     OPTION_DEFINITION_BY_NAME.put("FieldOptions", FIELD);
+    OPTION_DEFINITION_BY_NAME.put("EnumOptions", ENUM);
     OPTION_DEFINITION_BY_NAME.put("MethodOptions", METHOD);
   }
   
@@ -138,7 +139,7 @@ public class ProtoDescriptor {
    * @return the option whose name matches the given one or {@code null} if a matching option is not found.
    */
   public Property lookupOption(String name) {
-    return lookupOption(name, FILE, MESSAGE, METHOD);
+    return lookupOption(name, FILE, MESSAGE, ENUM, METHOD);
   }
   
   private Property lookupOption(String name, OptionType...types) {
@@ -182,6 +183,16 @@ public class ProtoDescriptor {
    */
   public Collection<Property> fieldOptions() {
     return optionsOfType(FIELD);
+  }
+
+  /**
+   * Returns all the enum-level options available. These are the options defined in
+   * {@code google/protobuf/descriptor.proto} (more details can be found
+   * <a href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
+   * @return all the enum-level options available.
+   */
+  public Collection<Property> enumOptions() {
+    return optionsOfType(ENUM);
   }
 
   private Collection<Property> optionsOfType(OptionType type) {
