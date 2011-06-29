@@ -11,23 +11,12 @@ package com.google.eclipse.protobuf.ui;
 import static com.google.inject.name.Names.named;
 import static org.eclipse.ui.PlatformUI.isWorkbenchRunning;
 
-import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
-import org.eclipse.ui.*;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
-import org.eclipse.xtext.ui.LanguageSpecific;
-import org.eclipse.xtext.ui.editor.*;
-import org.eclipse.xtext.ui.editor.model.XtextDocumentProvider;
-import org.eclipse.xtext.ui.editor.outline.actions.IOutlineContribution;
-import org.eclipse.xtext.ui.editor.preferences.*;
-import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculator;
-
 import com.google.eclipse.protobuf.scoping.IFileUriResolver;
 import com.google.eclipse.protobuf.ui.builder.AutoAddNatureEditorCallback;
 import com.google.eclipse.protobuf.ui.editor.ProtobufUriEditorOpener;
 import com.google.eclipse.protobuf.ui.editor.hyperlinking.ProtobufHyperlinkDetector;
 import com.google.eclipse.protobuf.ui.editor.model.ProtobufDocumentProvider;
-import com.google.eclipse.protobuf.ui.editor.syntaxcoloring.ProtobufSemanticHighlightingCalculator;
+import com.google.eclipse.protobuf.ui.editor.syntaxcoloring.*;
 import com.google.eclipse.protobuf.ui.internal.ProtobufActivator;
 import com.google.eclipse.protobuf.ui.outline.*;
 import com.google.eclipse.protobuf.ui.preferences.PreferenceStoreAccess;
@@ -37,6 +26,17 @@ import com.google.eclipse.protobuf.ui.preferences.pages.paths.PathsPreferenceSto
 import com.google.eclipse.protobuf.ui.scoping.FileUriResolver;
 import com.google.eclipse.protobuf.ui.validation.ValidateOnActivation;
 import com.google.inject.Binder;
+
+import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
+import org.eclipse.ui.*;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.eclipse.xtext.ui.LanguageSpecific;
+import org.eclipse.xtext.ui.editor.*;
+import org.eclipse.xtext.ui.editor.model.XtextDocumentProvider;
+import org.eclipse.xtext.ui.editor.outline.actions.IOutlineContribution;
+import org.eclipse.xtext.ui.editor.preferences.*;
+import org.eclipse.xtext.ui.editor.syntaxcoloring.*;
 
 /**
  * Use this class to register components to be used within the IDE.
@@ -114,5 +114,9 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
 
   public void configurePreferenceStoreAccess(Binder binder) {
     binder.bind(IPreferenceStoreAccess.class).to(PreferenceStoreAccess.class);
+  }
+
+  public void configureHighlightingConfiguration(Binder binder) {
+    binder.bind(IHighlightingConfiguration.class).to(HighlightingConfiguration.class);
   }
 }
