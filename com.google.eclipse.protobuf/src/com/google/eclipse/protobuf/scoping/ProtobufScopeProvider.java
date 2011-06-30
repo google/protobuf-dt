@@ -28,7 +28,7 @@ import org.eclipse.xtext.scoping.impl.*;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.eclipse.protobuf.util.ProtobufElementFinder;
+import com.google.eclipse.protobuf.util.*;
 import com.google.inject.Inject;
 
 /**
@@ -42,6 +42,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
 
   private static final boolean DO_NOT_IGNORE_CASE = false;
 
+  @Inject private FieldOptions fieldOptions;
   @Inject private ProtobufElementFinder finder;
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private IQualifiedNameProvider nameProvider;
@@ -182,7 +183,14 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   private Enum enumTypeOfOption(EObject mayBeOption) {
     ProtoDescriptor descriptor = descriptorProvider.get();
     if (mayBeOption instanceof Option) return descriptor.enumTypeOf((Option) mayBeOption);
-    if (mayBeOption instanceof FieldOption) return descriptor.enumTypeOf((FieldOption) mayBeOption);
+    if (mayBeOption instanceof FieldOption) {
+      FieldOption option = (FieldOption) mayBeOption;
+      if (fieldOptions.isDefaultValueOption(option)) {
+        Property property = (Property) option.eContainer();
+        return finder.enumTypeOf(property);
+      }
+      return descriptor.enumTypeOf(option);
+    }
     return null;
   }
 
@@ -201,6 +209,6 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   private static IScope createScope(Iterable<IEObjectDescription> descriptions) {
     return new SimpleScope(descriptions, DO_NOT_IGNORE_CASE);
   }
-  
-  
+
+
 }

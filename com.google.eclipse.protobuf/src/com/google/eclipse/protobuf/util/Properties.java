@@ -9,6 +9,7 @@
 package com.google.eclipse.protobuf.util;
 
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.*;
+import static com.google.eclipse.protobuf.protobuf.Modifier.OPTIONAL;
 
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.protobuf.*;
@@ -21,6 +22,15 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class Properties {
+
+  /**
+   * Indicates whether the modifier of the given property is <code>{@link Modifier#OPTIONAL}</code>.
+   * @param property the given property.
+   * @return {@code true} if the modifier of the given property is "optional," {@code false} otherwise.
+   */
+  public boolean isOptional(Property property) {
+    return OPTIONAL.equals(property.getModifier());
+  }
 
   /**
    * Indicates whether the type of the given property is primitive. Primitive types include: {@code double},
@@ -44,7 +54,7 @@ public class Properties {
   public boolean isBool(Property p) {
     return isScalarType(p, BOOL);
   }
-  
+
   public boolean mayBeNan(Property p) {
     String typeName = typeNameOf(p);
     return FLOAT.hasValue(typeName) || DOUBLE.hasValue(typeName);

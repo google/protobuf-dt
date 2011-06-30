@@ -8,7 +8,6 @@
  */
 package com.google.eclipse.protobuf.validation;
 
-import static com.google.eclipse.protobuf.protobuf.Modifier.OPTIONAL;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
 import static com.google.eclipse.protobuf.validation.Messages.*;
 import static java.lang.String.format;
@@ -16,13 +15,12 @@ import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.naming.IQualifiedNameProvider;
-import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.validation.Check;
 
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.eclipse.protobuf.util.Properties;
+import com.google.eclipse.protobuf.util.*;
 import com.google.inject.Inject;
 
 /**
@@ -30,19 +28,21 @@ import com.google.inject.Inject;
  */
 public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
 
+  @Inject private FieldOptions fieldOptions;
   @Inject private IQualifiedNameProvider qualifiedNameProvider;
   @Inject private Properties properties;
 
-  @Check public void checkDefaultValueType(Property property) {
-    ValueRef defaultValue = property.getDefault();
-    if (!OPTIONAL.equals(property.getModifier()) || defaultValue == null) return;
+  @Check public void checkDefaultValueType(FieldOption option) {
+    if (!fieldOptions.isDefaultValueOption(option)) return;
+    Property property = (Property) option.eContainer();
+    ValueRef defaultValue = option.getValue();
     if (properties.isString(property)) {
       if (defaultValue instanceof StringRef) return;
-      error(expectedString, PROPERTY__DEFAULT);
+      error(expectedString, FIELD_OPTION__VALUE);
     }
     if (properties.isBool(property)) {
       if (defaultValue instanceof BooleanRef) return;
-      error(expectedTrueOrFalse, PROPERTY__DEFAULT);
+      error(expectedTrueOrFalse, FIELD_OPTION__VALUE);
     }
   }
 

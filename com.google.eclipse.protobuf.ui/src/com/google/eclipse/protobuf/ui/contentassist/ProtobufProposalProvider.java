@@ -1,10 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
- * 
+ *
+ * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License v1.0 which accompanies this distribution, and is available at
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.ui.contentassist;
@@ -17,6 +16,16 @@ import static java.lang.String.valueOf;
 import static java.util.Collections.emptyList;
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
+import java.util.*;
+
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.xtext.*;
+import org.eclipse.xtext.ui.PluginImageHelper;
+import org.eclipse.xtext.ui.editor.contentassist.*;
+
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
@@ -28,22 +37,10 @@ import com.google.eclipse.protobuf.util.*;
 import com.google.eclipse.protobuf.util.Properties;
 import com.google.inject.Inject;
 
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.jface.text.contentassist.ICompletionProposal;
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.xtext.*;
-import org.eclipse.xtext.ui.PluginImageHelper;
-import org.eclipse.xtext.ui.editor.contentassist.*;
-
-import java.util.*;
-
 /**
  * @author alruiz@google.com (Alex Ruiz)
- * 
- * @see <a
- *      href="http://www.eclipse.org/Xtext/documentation/latest/xtext.html#contentAssist">Xtext
- *      Content Assist</a>
+ *
+ * @see <a href="http://www.eclipse.org/Xtext/documentation/latest/xtext.html#contentAssist">Xtext Content Assist</a>
  */
 public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
@@ -53,6 +50,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private PluginImageHelper imageHelper;
 
+  @Inject private FieldOptions fieldOptions;
   @Inject private Fields fields;
   @Inject private Images images;
   @Inject private Literals literals;
@@ -108,7 +106,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   private void proposeCommonEnumOptions(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     proposeOptions(descriptorProvider.get().enumOptions(), context, acceptor);
   }
-  
+
   private void proposeOptions(Collection<Property> options, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     for (Property option : options)
@@ -152,10 +150,6 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   private boolean completeKeyword(String keyword, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     if (isLastWordFromCaretPositionEqualTo(keyword, context)) return true;
-    if (DEFAULT.hasValue(keyword)) {
-      proposeDefaultValue(context, acceptor);
-      return true;
-    }
     if (EQUAL.hasValue(keyword)) {
       EObject grammarElement = context.getLastCompleteNode().getGrammarElement();
       if (isKeyword(grammarElement, SYNTAX)) {
@@ -163,9 +157,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       }
       return true;
     }
-    if (OPENING_BRACKET.hasValue(keyword)) {
-      return proposeOpenBracket(context, acceptor);
-    }
+    if (OPENING_BRACKET.hasValue(keyword)) { return proposeOpenBracket(context, acceptor); }
     if (TRUE.hasValue(keyword) || FALSE.hasValue(keyword)) {
       if (isBoolProposalValid(context)) {
         proposeBooleanValues(context, acceptor);
@@ -241,19 +233,6 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     proposeAndAccept(proposalText.toString(), context, acceptor);
   }
 
-  private void proposeDefaultValue(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    Modifier modifier = extractModifierFromModel(context);
-    if (!OPTIONAL.equals(modifier)) return;
-    CompoundElement display = DEFAULT_EQUAL;
-    int cursorPosition = display.charCount();
-    Property property = extractPropertyFrom(context);
-    if (properties.isString(property)) {
-      display = DEFAULT_EQUAL_STRING;
-      cursorPosition++;
-    }
-    createAndAccept(display, cursorPosition, context, acceptor);
-  }
-
   private void createAndAccept(CompoundElement display, int cursorPosition, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     ICompletionProposal proposal = createCompletionProposal(display, context);
@@ -262,15 +241,6 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       configurable.setCursorPosition(cursorPosition);
     }
     acceptor.accept(proposal);
-  }
-
-  private Modifier extractModifierFromModel(ContentAssistContext context) {
-    Property p = extractPropertyFrom(context);
-    return (p == null) ? null : p.getModifier();
-  }
-
-  private Property extractPropertyFrom(ContentAssistContext context) {
-    return extractElementFromContext(context, Property.class);
   }
 
   private <T> T extractElementFromContext(ContentAssistContext context, Class<T> type) {
@@ -289,19 +259,6 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ICompletionProposalAcceptor acceptor) {
     int index = literals.calculateIndexOf((Literal) model);
     proposeIndex(index, context, acceptor);
-  }
-
-  @Override public void completeProperty_Default(EObject model, Assignment assignment, ContentAssistContext context,
-      ICompletionProposalAcceptor acceptor) {
-    Property property = (Property) model;
-    if (properties.isString(property)) {
-      proposeEmptyString(context, acceptor);
-      return;
-    }
-    Enum enumType = finder.enumTypeOf(property);
-    if (enumType != null) {
-      proposeAndAccept(enumType, context, acceptor);
-    }
   }
 
   private void proposeEmptyString(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
@@ -352,8 +309,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeFieldOption_Name(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-     Field field = extractFieldFrom(context);
-     proposeCommonFieldOptions(field, context, acceptor);
+    Field field = extractFieldFrom(context);
+    proposeCommonFieldOptions(field, context, acceptor);
   }
 
   private Field extractFieldFrom(ContentAssistContext context) {
@@ -362,6 +319,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   private void proposeCommonFieldOptions(Field field, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     List<String> options = existingFieldOptionNames(field);
+    proposeDefaultKeyword(field, options, context, acceptor);
     for (Property option : descriptorProvider.get().fieldOptions()) {
       String optionName = option.getName();
       if (options.contains(optionName) || ("packed".equals(optionName) && !canBePacked(field))) continue;
@@ -376,6 +334,20 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     for (FieldOption option : options)
       optionNames.add(option.getName());
     return optionNames;
+  }
+
+  private void proposeDefaultKeyword(Field field, List<String> existingFieldOptionNames, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+    if (!(field instanceof Property)) return;
+    Property property = (Property) field;
+    if (!properties.isOptional(property) || existingFieldOptionNames.contains(DEFAULT.toString())) return;
+    CompoundElement display = DEFAULT_EQUAL;
+    int cursorPosition = display.charCount();
+    if (properties.isString(property)) {
+      display = DEFAULT_EQUAL_STRING;
+      cursorPosition++;
+    }
+    createAndAccept(display, cursorPosition, context, acceptor);
   }
 
   private boolean canBePacked(Field field) {
@@ -406,6 +378,10 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ICompletionProposalAcceptor acceptor) {
     if (!(model instanceof FieldOption)) return;
     FieldOption option = (FieldOption) model;
+    if (fieldOptions.isDefaultValueOption(option)) {
+      proposeDefaultValue(option, context, acceptor);
+      return;
+    }
     ProtoDescriptor descriptor = descriptorProvider.get();
     Enum enumType = descriptor.enumTypeOf(option);
     if (enumType != null) {
@@ -420,8 +396,26 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     }
   }
 
+  private void proposeDefaultValue(FieldOption option, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+    Property property = (Property) option.eContainer();
+    if (!properties.isOptional(property)) return;
+    if (properties.isBool(property)) {
+      proposeBooleanValues(context, acceptor);
+      return;
+    }
+    if (properties.isString(property)) {
+      proposeEmptyString(context, acceptor);
+      return;
+    }
+    Enum enumType = finder.enumTypeOf(property);
+    if (enumType != null) {
+      proposeAndAccept(enumType, context, acceptor);
+    }
+  }
+
   private void proposeBooleanValues(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    CommonKeyword[] keywords = {FALSE, TRUE};
+    CommonKeyword[] keywords = { FALSE, TRUE };
     proposeAndAccept(keywords, context, acceptor);
   }
 

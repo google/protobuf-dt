@@ -65,10 +65,7 @@ GroupElement:
 
 Property:
   modifier=Modifier type=AbstractTypeReference name=Name '=' index=INT 
-  (
-    ('[' 'default' '=' default=ValueRef ((',' fieldOptions+=FieldOption)*)? ']') |
-    ('[' fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)* ']')
-  )? ';';
+  ('[' fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)* ']')? ';';
 
 FieldOption:
   name=Name '=' value=ValueRef;
