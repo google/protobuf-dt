@@ -9,10 +9,12 @@
 package com.google.eclipse.protobuf;
 
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.xtext.conversion.IValueConverterService;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.parser.antlr.ISyntaxErrorMessageProvider;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 
+import com.google.eclipse.protobuf.conversion.ProtobufTerminalConverters;
 import com.google.eclipse.protobuf.naming.ProtobufQualifiedNameProvider;
 import com.google.eclipse.protobuf.scoping.*;
 import com.google.eclipse.protobuf.validation.ProtobufSyntaxErrorMessageProvider;
@@ -38,5 +40,9 @@ public class ProtobufRuntimeModule extends com.google.eclipse.protobuf.AbstractP
   
   public void configureExtensionRegistry(Binder binder) {
     binder.bind(IExtensionRegistry.class).toProvider(ExtensionRegistryProvider.class);
+  }
+  
+  @Override public Class<? extends IValueConverterService> bindIValueConverterService() {
+    return ProtobufTerminalConverters.class;
   }
 }

@@ -136,8 +136,13 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
 
   private void highlight(Group group, IHighlightedPositionAcceptor acceptor) {
     for (GroupElement e : group.getElements()) {
-      if (!(e instanceof Field)) continue;
-      highlight((Field) e, acceptor);
+      if (e instanceof Field) {
+        highlight((Field) e, acceptor);
+        continue;
+      }
+      if (e instanceof Enum) {
+        highlight((Enum) e, acceptor);
+      }
     }
   }
 

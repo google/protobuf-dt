@@ -54,7 +54,7 @@ Field:
   Property | Group;
 
 Group:
-  modifier=Modifier 'group' name=Name '=' index=INT 
+  modifier=Modifier 'group' name=Name '=' index=(INT | HEX) 
   ('[' (fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)*) ']')? '{'
   elements+=GroupElement*
   '}'(';')?;
@@ -64,7 +64,7 @@ GroupElement:
 ;
 
 Property:
-  modifier=Modifier type=AbstractTypeReference name=Name '=' index=INT 
+  modifier=Modifier type=AbstractTypeReference name=Name '=' index=(INT | HEX) 
   ('[' fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)* ']')? ';';
 
 FieldOption:
@@ -119,7 +119,10 @@ enum BOOL:
   | false;
 
 NumberRef:
-  IntRef | LongRef | FloatRef | DoubleRef;
+  HexRef | IntRef | LongRef | FloatRef | DoubleRef;
+
+HexRef:
+  hex=HEX;
 
 IntRef:
   int=INT;
@@ -148,7 +151,7 @@ EnumElement:
   Option | Literal;
 
 Literal:
-  name=Name '=' index=INT ';';
+  name=Name '=' index=(INT | HEX) ';';
 
 ExtendMessage:
   'extend' message=MessageReference '{'
@@ -174,6 +177,7 @@ Name:
 MessageReference:
   type=[Message | QualifiedName];
 
+terminal HEX returns ecore::EInt: '0x'('0'..'9'|'a'..'f'|'A'..'F')+;
 terminal INT returns ecore::EInt: ('-')? ('0'..'9')+;  
 terminal LONG returns ecore::ELong: ('-')? ('0'..'9')+;  
 terminal FLOAT returns ecore::EFloat: ('-')? ('0'..'9')* ('.' ('0'..'9')+)?;
