@@ -49,15 +49,15 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
   }
 
   @Check public void checkImportIsResolved(Import anImport) {
-    boolean isImported = doCheckImportIsResolved(anImport);
-    if (isImported) return;
+    boolean isResolved = isResolved(anImport);
+    if (isResolved) return;
     uriResolver.apply(anImport);
-    isImported = doCheckImportIsResolved(anImport);
-    if (isImported) return;
+    isResolved = isResolved(anImport);
+    if (isResolved) return;
     error(format(importNotFound, anImport.getImportURI()), IMPORT__IMPORT_URI);
   }
 
-  private boolean doCheckImportIsResolved(Import anImport) {
+  private boolean isResolved(Import anImport) {
     String importUri = anImport.getImportURI();
     if (!isEmpty(importUri)) {
       URI uri = URI.createURI(importUri);
