@@ -48,7 +48,13 @@ MessageElement:
   Extensions | Type | Field | ExtendMessage | Option;
 
 Extensions:
-  'extensions' extensionsFrom=INT 'to' (extensionsTo=INT | 'max') ';';
+  'extensions' ranges+=Range (',' ranges+=Range)* ';';
+
+Range:
+  from=INT ('to' to=RangeMax)?;
+
+RangeMax:
+  INT | 'max';
 
 Field:
   Property | Group;
