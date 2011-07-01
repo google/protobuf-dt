@@ -16,6 +16,7 @@ import static org.eclipse.xtext.util.Strings.isEmpty;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.*;
+import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 import org.eclipse.xtext.validation.Check;
 
 import com.google.eclipse.protobuf.protobuf.*;
@@ -29,6 +30,7 @@ import com.google.inject.Inject;
 public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
 
   @Inject private FieldOptions fieldOptions;
+  @Inject private ImportUriResolver uriResolver;
   @Inject private IQualifiedNameProvider qualifiedNameProvider;
   @Inject private Properties properties;
 
@@ -47,13 +49,21 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
   }
 
   @Check public void checkImportIsResolved(Import anImport) {
+    boolean isImported = doCheckImportIsResolved(anImport);
+    if (isImported) return;
+    uriResolver.apply(anImport);
+    isImported = doCheckImportIsResolved(anImport);
+    if (isImported) return;
+    error(format(importNotFound, anImport.getImportURI()), IMPORT__IMPORT_URI);
+  }
+
+  private boolean doCheckImportIsResolved(Import anImport) {
     String importUri = anImport.getImportURI();
     if (!isEmpty(importUri)) {
       URI uri = URI.createURI(importUri);
-      if (!isEmpty(uri.scheme())) return;
+      if (!isEmpty(uri.scheme())) return true;
     }
-    String message = format(importNotFound, importUri);
-    error(message, IMPORT__IMPORT_URI);
+    return false;
   }
 
   @Check public void checkSyntaxIsProto2(Syntax syntax) {
