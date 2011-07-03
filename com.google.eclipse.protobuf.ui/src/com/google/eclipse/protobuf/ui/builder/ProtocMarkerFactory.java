@@ -12,8 +12,7 @@ import static org.eclipse.core.resources.IMarker.*;
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
 import static org.eclipse.xtext.ui.MarkerTypes.FAST_VALIDATION;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 
 /**
@@ -34,8 +33,9 @@ class ProtocMarkerFactory {
     markers = file.findMarkers(FAST_VALIDATION, true, DEPTH_INFINITE);
   }
 
-  void createErrorIfNecessary(String message, int lineNumber) throws CoreException {
-    if (containsMarker(message, lineNumber)) return;
+  void createErrorIfNecessary(String fileName, String message, int lineNumber) throws CoreException {
+    String location = file.getLocation().toOSString();
+    if (!location.endsWith(fileName) || containsMarker(message, lineNumber)) return;
     IMarker marker = file.createMarker(PROTOC);
     marker.setAttribute(SEVERITY, SEVERITY_ERROR);
     marker.setAttribute(MESSAGE, message);

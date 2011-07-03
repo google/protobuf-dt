@@ -15,14 +15,13 @@ import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
-import org.junit.Before;
-import org.junit.Test;
+import org.eclipse.core.runtime.*;
+import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.stubs.resources.*;
 
 /**
- * Tests for <code>{@link ProtocMarkerFactory#createErrorIfNecessary(String, int)}</code>.
+ * Tests for <code>{@link ProtocMarkerFactory#createErrorIfNecessary(String, String, int)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
@@ -33,26 +32,33 @@ public class ProtocMarkerFactory_createErrorIfNecessary_Test {
   private FileStub file;
   private MarkerStub fastValidationMarker;
   private ProtocMarkerFactory markerFactory;
-  
+
   @Before public void setUp() throws CoreException {
     file = new FileStub();
+    file.setLocation(new Path("home/alex/protos/test1.proto"));
     file.createMarker(PROTOC);
     fastValidationMarker = error(FAST_VALIDATION, "Expected field name.", 68);
     file.addMarker(fastValidationMarker);
     markerFactory = new ProtocMarkerFactory(file);
   }
-  
-  @Test public void should_create_marker_if_a_similar_one_does_not_exist() throws CoreException {
+
+  @Test public void should_create_marker_if_file_paths_match_and_a_similar_marker_does_not_exist() throws CoreException {
     String message = "File not found.";
     int lineNumber = 8;
-    markerFactory.createErrorIfNecessary(message, lineNumber);
-    List<MarkerStub> markers = file.markers(PROTOC);
+    markerFactory.createErrorIfNecessary("test1.proto", message, lineNumber);
+    List<MarkerStub> markers = file.markersOfType(PROTOC);
     assertThat(markers.size(), equalTo(1));
     assertThat(markers.get(0), equalTo(error(PROTOC, message, lineNumber)));
   }
-  
+
+  @Test public void should_not_create_marker_if_given_path_does_not_match_path_in_file() throws CoreException {
+    markerFactory.createErrorIfNecessary("test2.proto", "File not found.", 8);
+    assertThat(file.markerCount(PROTOC), equalTo(0));
+  }
+
   @Test public void should_not_create_marker_if_a_similar_one_exists() throws CoreException {
-    markerFactory.createErrorIfNecessary(fastValidationMarker.message(), fastValidationMarker.lineNumber());
+    markerFactory.createErrorIfNecessary("test1.proto", fastValidationMarker.message(),
+        fastValidationMarker.lineNumber());
     assertThat(file.markerCount(PROTOC), equalTo(0));
   }
 }

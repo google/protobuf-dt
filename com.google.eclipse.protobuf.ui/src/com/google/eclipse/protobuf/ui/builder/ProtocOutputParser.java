@@ -10,8 +10,7 @@ package com.google.eclipse.protobuf.ui.builder;
 
 import static java.lang.Integer.parseInt;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.*;
 
 import org.eclipse.core.runtime.CoreException;
 
@@ -37,8 +36,9 @@ class ProtocOutputParser {
   void parseAndAddMarkerIfNecessary(String line, ProtocMarkerFactory markerFactory) throws CoreException {
     Matcher errorMatcher = ERROR_PATTERN.matcher(line);
     if (!errorMatcher.matches()) return;
+    String fileName = errorMatcher.group(1);
     int lineNumber = parseInt(errorMatcher.group(2));
     String message = errorMatcher.group(4);
-    markerFactory.createErrorIfNecessary(message, lineNumber);
+    markerFactory.createErrorIfNecessary(fileName, message, lineNumber);
   }
 }

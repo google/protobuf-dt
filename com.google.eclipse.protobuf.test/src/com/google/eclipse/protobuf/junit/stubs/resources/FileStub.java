@@ -10,8 +10,7 @@ package com.google.eclipse.protobuf.junit.stubs.resources;
 
 import static java.util.Collections.*;
 
-import java.io.InputStream;
-import java.io.Reader;
+import java.io.*;
 import java.net.URI;
 import java.util.*;
 
@@ -26,6 +25,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 public class FileStub implements IFile {
 
   private final Map<String, List<MarkerStub>> markersByType = new HashMap<String, List<MarkerStub>>();
+  private IPath location;
 
   /** {@inheritDoc} */
   public void accept(IResourceProxyVisitor visitor, int memberFlags) {
@@ -225,7 +225,11 @@ public class FileStub implements IFile {
 
   /** {@inheritDoc} */
   public IPath getLocation() {
-    throw new UnsupportedOperationException();
+    return location;
+  }
+
+  public void setLocation(IPath location) {
+    this.location = location;
   }
 
   /** {@inheritDoc} */
@@ -516,8 +520,8 @@ public class FileStub implements IFile {
     List<MarkerStub> markers = markersByType.get(type);
     return (markers == null) ? 0 : markers.size();
   }
-  
-  public List<MarkerStub> markers(String type) {
+
+  public List<MarkerStub> markersOfType(String type) {
     List<MarkerStub> markers = markersByType.get(type);
     if (markers == null) return emptyList();
     return unmodifiableList(markers);
