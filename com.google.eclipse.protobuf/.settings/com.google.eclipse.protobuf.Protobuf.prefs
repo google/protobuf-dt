@@ -1,0 +1,5 @@
+#Wed Jul 06 13:30:25 PDT 2011
+eclipse.preferences.version=1
+paths.directoryPaths=${workspace_loc\:/${project}}
+paths.filesInMultipleDirectories=true
+paths.filesInOneDirectoryOnly=false

@@ -2,7 +2,7 @@
 <?eclipse version="3.0"?>
 
 <plugin>
-   <extension-point id="descriptorSource" name="Source of descriptor.proto" schema="schema/descriptor-source.exsd"/>
+   <extension-point id="descriptorSource" name="descriptor-source" schema="schema/descriptor-source.exsd"/>
 
   <extension point="org.eclipse.emf.ecore.generated_package">
     <package 
