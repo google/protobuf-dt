@@ -10,8 +10,7 @@ package com.google.eclipse.protobuf.ui.documentation;
 
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
@@ -22,14 +21,14 @@ import com.google.inject.Inject;
 /**
  * Provides single-line and multi-line comments as documentation of a protobuf element.
  *
- * @author Alex Ruiz
+ * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufDocumentationProvider implements IEObjectDocumentationProvider {
 
   private final List<IEObjectDocumentationProvider> delegates = new ArrayList<IEObjectDocumentationProvider>();
 
   @Inject
-  public ProtobufDocumentationProvider(SingleLineDocumentationProvider p1, MultiLineCommentDocumentationProvider p2) {
+  public ProtobufDocumentationProvider(SingleLineCommentDocumentationProvider p1, MultiLineCommentDocumentationProvider p2) {
     delegates.add(p1);
     delegates.add(p2);
   }

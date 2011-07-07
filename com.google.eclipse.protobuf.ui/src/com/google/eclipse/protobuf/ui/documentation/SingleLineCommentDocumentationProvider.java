@@ -22,9 +22,9 @@ import com.google.inject.Inject;
 /**
  * Provides single line comments of a protobuf element as its documentation when hovered.
  *
- * @author Alex Ruiz
+ * @author alruiz@google.com (Alex Ruiz)
  */
-public class SingleLineDocumentationProvider implements IEObjectDocumentationProvider {
+public class SingleLineCommentDocumentationProvider implements IEObjectDocumentationProvider {
 
   private static final String COMMENT_START = "//\\s*"; // "//" plus any whitespace
   private static final String WINDOWS_NEW_LINE = "\\r\\n";
