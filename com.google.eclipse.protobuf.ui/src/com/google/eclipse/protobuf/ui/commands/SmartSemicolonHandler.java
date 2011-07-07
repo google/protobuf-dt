@@ -49,57 +49,60 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
     int offsetAtLine = styledText.getOffsetAtLine(lineAtOffset);
     String line = styledText.getLine(lineAtOffset);
     if (line.endsWith(semicolon)) {
-      behaveLikeRegularEditing(originalCaretOffset, styledText);
+      behaveLikeRegularEditing(styledText, originalCaretOffset);
       return;
     }
     int endOfLineOffset = offsetAtLine + line.length();
     styledText.setCaretOffset(endOfLineOffset);
-    String contentToInsert = contentToInsert(line, editor, originalCaretOffset);
-    styledText.insert(contentToInsert);
-    styledText.setCaretOffset(endOfLineOffset + contentToInsert.length());
+    String content = contentToInsert(editor, originalCaretOffset);
+    insert(styledText, content, endOfLineOffset);
   }
 
-  private void behaveLikeRegularEditing(int caretOffset, StyledText styledText) {
-    styledText.insert(semicolon);
-    styledText.setCaretOffset(caretOffset + semicolon.length());
+  private void behaveLikeRegularEditing(StyledText styledText, int caretOffset) {
+    insert(styledText, semicolon, caretOffset);
   }
 
-  private String contentToInsert(final String line, final XtextEditor editor, final int offset) {
-    return editor.getDocument().readOnly(new IUnitOfWork<String, XtextResource>() {
+  private void insert(StyledText styledText, String content, int caretOffset) {
+    styledText.insert(content);
+    styledText.setCaretOffset(caretOffset + content.length());
+  }
+
+  private String contentToInsert(final XtextEditor editor, final int offset) {
+    return editor.getDocument().modify(new IUnitOfWork<String, XtextResource>() {
       public String exec(XtextResource state) {
         ContentAssistContext[] context = contextFactory.create(editor.getInternalSourceViewer(), offset, state);
         if (context == null || context.length == 0) return semicolon;
         for (ContentAssistContext c : context) {
           EObject model = c.getCurrentModel();
           if (model instanceof Literal)
-            return contentToInsert(line, (Literal) model);
+            return contentToInsert((Literal) model);
           if (model instanceof Property)
-            return contentToInsert(line, (Property) model);
+            return contentToInsert((Property) model);
         }
         return semicolon;
       }
     });
   }
 
-  private String contentToInsert(String line, Literal literal) {
+  private String contentToInsert(Literal literal) {
     INode indexNode = nodes.firstNodeForFeature(literal, LITERAL__INDEX);
     if (indexNode != null) return semicolon;
     int index = literals.calculateIndexOf(literal);
-    return defaultIndexAndSemicolonToInsert(line, index);
+    return defaultIndexAndSemicolonToInsert(index);
   }
 
-  private String contentToInsert(String line, Property property) {
+  private String contentToInsert(Property property) {
     INode indexNode = nodes.firstNodeForFeature(property, FIELD__INDEX);
     if (indexNode != null) return semicolon;
     int index = fields.calculateTagNumberOf(property);
-    return defaultIndexAndSemicolonToInsert(line, index);
+    return defaultIndexAndSemicolonToInsert(index);
   }
 
-  private String defaultIndexAndSemicolonToInsert(String line, int index) {
-    return indexAndSemicolonToInsert("= %d%s", line, index);
+  private String defaultIndexAndSemicolonToInsert(int index) {
+    return indexAndSemicolonToInsert("= %d%s", index);
   }
 
-  private String indexAndSemicolonToInsert(String format, String line, int index) {
+  private String indexAndSemicolonToInsert(String format, int index) {
     return String.format(format, index, semicolon);
   }
 }

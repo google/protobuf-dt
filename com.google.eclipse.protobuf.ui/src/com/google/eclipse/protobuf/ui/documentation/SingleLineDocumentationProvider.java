@@ -16,8 +16,7 @@ import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
 import org.eclipse.xtext.nodemodel.*;
 
 import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.scoping.ProtoDescriptor;
-import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider;
+import com.google.eclipse.protobuf.scoping.*;
 import com.google.inject.Inject;
 
 /**
@@ -26,6 +25,10 @@ import com.google.inject.Inject;
  * @author Alex Ruiz
  */
 public class SingleLineDocumentationProvider implements IEObjectDocumentationProvider {
+
+  private static final String COMMENT_START = "//\\s*"; // "//" plus any whitespace
+  private static final String WINDOWS_NEW_LINE = "\\r\\n";
+  private static final String UNIX_NEW_LINE = "\\n";
 
   @Inject private ProtoDescriptorProvider descriptorProvider;
 
@@ -72,6 +75,8 @@ public class SingleLineDocumentationProvider implements IEObjectDocumentationPro
   }
 
   private String cleanUp(String comment) {
-    return comment.replaceFirst("//\\s*", "").replaceAll("\\r\\n", " ").replaceAll("\\n", " ");
+    return comment.replaceFirst(COMMENT_START, "")
+                  .replaceAll(WINDOWS_NEW_LINE, " ")
+                  .replaceAll(UNIX_NEW_LINE, " ");
   }
 }
