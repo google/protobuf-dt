@@ -217,9 +217,9 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
   private void highlightFirstFeature(EObject semantic, EStructuralFeature feature,
       IHighlightedPositionAcceptor acceptor, String highlightId) {
     INode node = nodes.firstNodeForFeature(semantic, feature);
-    if (node == null || node.getText() == null) return;
+    if (node == null) return;
     try {
-      acceptor.addPosition(node.getOffset(), node.getText().trim().length(), highlightId);
+      acceptor.addPosition(node.getOffset(), node.getLength(), highlightId);
     } catch (Throwable t) {
       t.printStackTrace();
     }
