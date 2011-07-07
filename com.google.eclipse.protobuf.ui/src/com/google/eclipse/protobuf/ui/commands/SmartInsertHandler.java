@@ -10,8 +10,7 @@ package com.google.eclipse.protobuf.ui.commands;
 
 import static org.eclipse.xtext.ui.editor.utils.EditorUtils.getActiveXtextEditor;
 
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.*;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.xtext.ui.editor.XtextEditor;
@@ -26,15 +25,15 @@ public abstract class SmartInsertHandler extends AbstractHandler {
   /** {@inheritDoc} */
   public final Object execute(ExecutionEvent event) {
     XtextEditor activeEditor = getActiveXtextEditor();
-    if (activeEditor != null) insertContent(activeEditor);
+    if (activeEditor != null) insertContent(activeEditor, styledTextFrom(activeEditor));
     return null;
   }
 
-  protected abstract void insertContent(XtextEditor editor);
-
-  protected static StyledText styledTextFrom(XtextEditor editor) {
+  private StyledText styledTextFrom(XtextEditor editor) {
     Object adapter = editor.getAdapter(Control.class);
     if (adapter instanceof StyledText) return (StyledText) adapter;
     return null;
   }
+
+  protected abstract void insertContent(XtextEditor editor, StyledText styledText);
 }

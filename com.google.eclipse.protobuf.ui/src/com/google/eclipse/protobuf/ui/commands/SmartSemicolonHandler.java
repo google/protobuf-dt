@@ -42,8 +42,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
   private final String semicolon = SEMICOLON.toString();
 
   /** {@inheritDoc} */
-  @Override protected void insertContent(XtextEditor editor) {
-    StyledText styledText = styledTextFrom(editor);
+  @Override protected void insertContent(XtextEditor editor, StyledText styledText) {
     int originalCaretOffset = styledText.getCaretOffset();
     int lineAtOffset = styledText.getLineAtOffset(originalCaretOffset);
     int offsetAtLine = styledText.getOffsetAtLine(lineAtOffset);
