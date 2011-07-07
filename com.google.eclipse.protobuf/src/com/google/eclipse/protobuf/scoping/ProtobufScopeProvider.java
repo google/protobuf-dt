@@ -182,9 +182,11 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
 
   private Enum enumTypeOfOption(EObject mayBeOption) {
     ProtoDescriptor descriptor = descriptorProvider.get();
-    if (mayBeOption instanceof Option) return descriptor.enumTypeOf((Option) mayBeOption);
-    if (mayBeOption instanceof FieldOption) {
-      FieldOption option = (FieldOption) mayBeOption;
+    if (mayBeOption instanceof BuiltInOption) {
+      return descriptor.enumTypeOf((BuiltInOption) mayBeOption);
+    }
+    if (mayBeOption instanceof BuiltInFieldOption) {
+      BuiltInFieldOption option = (BuiltInFieldOption) mayBeOption;
       if (fieldOptions.isDefaultValueOption(option)) {
         Property property = (Property) option.eContainer();
         return finder.enumTypeOf(property);

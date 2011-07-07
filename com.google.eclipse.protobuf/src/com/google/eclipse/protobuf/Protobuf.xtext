@@ -34,7 +34,13 @@ QualifiedName:
   '.'? Name ('.' Name)*;
 
 Option:
+  BuiltInOption | CustomOption;
+  
+BuiltInOption:  
   'option' name=Name '=' value=ValueRef ';';
+
+CustomOption:  
+  'option' '(' name=QualifiedName ')' '=' value=ValueRef ';';
 
 Type:
   Message | Enum;
@@ -74,7 +80,13 @@ Property:
   ('[' fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)* ']')? ';';
 
 FieldOption:
+  BuiltInFieldOption | CustomFieldOption;
+    
+BuiltInFieldOption:  
   name=Name '=' value=ValueRef;
+
+CustomFieldOption:  
+  '(' name=QualifiedName ')' '=' value=ValueRef;
 
 enum Modifier:
   required

@@ -206,7 +206,7 @@ public class ProtoDescriptor {
    * @param option the given option.
    * @return the enum type of the given option or {@code null} if the type of the given option is not enum.
    */
-  public Enum enumTypeOf(Option option) {
+  public Enum enumTypeOf(BuiltInOption option) {
     String name = option.getName();
     return enumTypeOf(lookupOption(name));
   }
@@ -218,7 +218,7 @@ public class ProtoDescriptor {
    * @param option the given option.
    * @return the enum type of the given option or {@code null} if the type of the given option is not enum.
    */
-  public Enum enumTypeOf(FieldOption option) {
+  public Enum enumTypeOf(BuiltInFieldOption option) {
     String name = option.getName();
     return enumTypeOf(lookupFieldOption(name));
   }
