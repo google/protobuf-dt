@@ -70,7 +70,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     proposeAndAccept(proposal, imageHelper.getImage(images.imageFor(Syntax.class)), context, acceptor);
   }
 
-  @Override public void completeOption_Name(EObject model, Assignment assignment, ContentAssistContext context,
+  @Override public void completeBuiltInOption_Name(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     if (proposeOptions(model, context, acceptor)) return;
     if (model instanceof Option) {
@@ -113,9 +113,10 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       proposeOption(option, context, acceptor);
   }
 
-  @Override public void completeOption_Value(EObject model, Assignment assignment, ContentAssistContext context,
+  @Override public void completeBuiltInOption_Value(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    Option option = (Option) model;
+    if (!(model instanceof BuiltInOption)) return;
+    BuiltInOption option = (BuiltInOption) model;
     ProtoDescriptor descriptor = descriptorProvider.get();
     Enum enumType = descriptor.enumTypeOf(option);
     if (enumType != null) {
@@ -307,8 +308,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     return imageHelper.getImage(images.defaultImage());
   }
 
-  @Override public void completeFieldOption_Name(EObject model, Assignment assignment, ContentAssistContext context,
-      ICompletionProposalAcceptor acceptor) {
+  @Override public void completeBuiltInFieldOption_Name(EObject model, Assignment assignment,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     Field field = extractFieldFrom(context);
     proposeCommonFieldOptions(field, context, acceptor);
   }
@@ -374,10 +375,10 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     acceptor.accept(proposal);
   }
 
-  @Override public void completeFieldOption_Value(EObject model, Assignment assignment, ContentAssistContext context,
-      ICompletionProposalAcceptor acceptor) {
-    if (!(model instanceof FieldOption)) return;
-    FieldOption option = (FieldOption) model;
+  @Override public void completeBuiltInFieldOption_Value(EObject model, Assignment assignment,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    if (!(model instanceof BuiltInFieldOption)) return;
+    BuiltInFieldOption option = (BuiltInFieldOption) model;
     if (fieldOptions.isDefaultValueOption(option)) {
       proposeDefaultValue(option, context, acceptor);
       return;
