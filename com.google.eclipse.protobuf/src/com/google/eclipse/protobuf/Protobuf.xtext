@@ -179,7 +179,7 @@ ExtendMessage:
 Service:
  'service' name=Name '{'
    rpcs+=Rpc*
- '}';
+ '}'(';')?;
 
 Rpc: 
   'rpc' name=Name  '(' argType=MessageReference ')' 'returns' '(' returnType=MessageReference ')' 
