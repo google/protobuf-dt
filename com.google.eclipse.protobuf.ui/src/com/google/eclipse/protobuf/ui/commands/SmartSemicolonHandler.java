@@ -19,6 +19,7 @@ import org.eclipse.xtext.ui.editor.XtextEditor;
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
 import org.eclipse.xtext.ui.editor.contentassist.antlr.ParserBasedContentAssistContextFactory;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
+import org.eclipse.xtext.validation.IConcreteSyntaxValidator.InvalidConcreteSyntaxException;
 
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.ui.util.*;
@@ -51,9 +52,10 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
       behaveLikeRegularEditing(styledText, originalCaretOffset);
       return;
     }
+    String content = contentToInsert(editor, originalCaretOffset);
+    if (content == null) return;
     int endOfLineOffset = offsetAtLine + line.length();
     styledText.setCaretOffset(endOfLineOffset);
-    String content = contentToInsert(editor, originalCaretOffset);
     insert(styledText, content, endOfLineOffset);
   }
 
@@ -67,41 +69,39 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
   }
 
   private String contentToInsert(final XtextEditor editor, final int offset) {
-    return editor.getDocument().modify(new IUnitOfWork<String, XtextResource>() {
-      public String exec(XtextResource state) {
-        ContentAssistContext[] context = contextFactory.create(editor.getInternalSourceViewer(), offset, state);
-        if (context == null || context.length == 0) return semicolon;
-        for (ContentAssistContext c : context) {
-          EObject model = c.getCurrentModel();
-          if (model instanceof Literal)
-            return contentToInsert((Literal) model);
-          if (model instanceof Property)
-            return contentToInsert((Property) model);
+    try {
+      return editor.getDocument().modify(new IUnitOfWork<String, XtextResource>() {
+        public String exec(XtextResource state) {
+          ContentAssistContext[] context = contextFactory.create(editor.getInternalSourceViewer(), offset, state);
+          if (context == null || context.length == 0) return semicolon;
+          for (ContentAssistContext c : context) {
+            EObject model = c.getCurrentModel();
+            if (model instanceof Literal)
+              return contentToInsert((Literal) model);
+            if (model instanceof Property)
+              return contentToInsert((Property) model);
+          }
+          return semicolon;
         }
-        return semicolon;
-      }
-    });
+      });
+    } catch (InvalidConcreteSyntaxException e) {
+      return null;
+    }
   }
 
   private String contentToInsert(Literal literal) {
     INode indexNode = nodes.firstNodeForFeature(literal, LITERAL__INDEX);
     if (indexNode != null) return semicolon;
     int index = literals.calculateIndexOf(literal);
-    return defaultIndexAndSemicolonToInsert(index);
+    literal.setIndex(index);
+    return null;
   }
 
   private String contentToInsert(Property property) {
     INode indexNode = nodes.firstNodeForFeature(property, FIELD__INDEX);
     if (indexNode != null) return semicolon;
     int index = fields.calculateTagNumberOf(property);
-    return defaultIndexAndSemicolonToInsert(index);
-  }
-
-  private String defaultIndexAndSemicolonToInsert(int index) {
-    return indexAndSemicolonToInsert("= %d%s", index);
-  }
-
-  private String indexAndSemicolonToInsert(String format, int index) {
-    return String.format(format, index, semicolon);
+    property.setIndex(index);
+    return null;
   }
 }

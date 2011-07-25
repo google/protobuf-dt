@@ -12,6 +12,7 @@ import static com.google.eclipse.protobuf.grammar.CommonKeyword.*;
 import static com.google.eclipse.protobuf.protobuf.Modifier.*;
 import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.*;
 import static com.google.eclipse.protobuf.ui.util.Strings.firstCharToLowerCase;
+import static com.google.eclipse.protobuf.util.CommonWords.space;
 import static java.lang.String.valueOf;
 import static java.util.Collections.emptyList;
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
@@ -44,8 +45,6 @@ import com.google.inject.Inject;
  */
 public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
-  private static final String SPACE = " ";
-
   @Inject private ProtobufElementFinder finder;
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private PluginImageHelper imageHelper;
@@ -66,7 +65,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void complete_Syntax(EObject model, RuleCall ruleCall, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    String proposal = SYNTAX + SPACE + EQUAL_PROTO2_IN_QUOTES;
+    String proposal = SYNTAX + space() + EQUAL_PROTO2_IN_QUOTES;
     proposeAndAccept(proposal, imageHelper.getImage(images.imageFor(Syntax.class)), context, acceptor);
   }
 
@@ -359,7 +358,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   private void proposeOption(Property option, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     String displayString = option.getName();
-    String proposalText = displayString + SPACE + EQUAL + SPACE;
+    String proposalText = displayString + space() + EQUAL + space();
     boolean isStringOption = properties.isString(option);
     if (isStringOption) {
       proposalText = proposalText + EMPTY_STRING;

@@ -8,11 +8,14 @@
  */
 package com.google.eclipse.protobuf.ui.builder;
 
+import static com.google.eclipse.protobuf.util.CommonWords.space;
+
 import java.util.*;
 
 import org.eclipse.core.resources.*;
 
 import com.google.eclipse.protobuf.ui.preferences.pages.compiler.SupportedLanguage;
+import com.google.eclipse.protobuf.util.CommonWords;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -29,14 +32,14 @@ class ProtocCommandFactory {
   String protocCommand(IFile protoFile, String protocPath, List<String> importRoots,
       OutputDirectories outputDirectories) {
     StringBuilder command = new StringBuilder();
-    command.append(protocPath).append(" ");
+    command.append(protocPath).append(space());
     for (String importRoot : importRoots) {
-      command.append("-I=").append(importRoot).append(" ");
+      command.append("-I=").append(importRoot).append(space());
     }
     for (SupportedLanguage language : SupportedLanguage.values()) {
       IFolder outputDirectory = outputDirectories.outputDirectoryFor(language);
       if (outputDirectory == null) continue;
-      command.append(langOutFlag(language)).append(outputDirectory.getLocation().toOSString()).append(" ");
+      command.append(langOutFlag(language)).append(outputDirectory.getLocation().toOSString()).append(space());
     }
     command.append(protoFile.getLocation().toOSString());
     return command.toString();

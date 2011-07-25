@@ -9,8 +9,10 @@
 package com.google.eclipse.protobuf.ui.grammar;
 
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.*;
+import static com.google.eclipse.protobuf.util.CommonWords.space;
 
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
+import com.google.eclipse.protobuf.util.CommonWords;
 
 /**
  * Element composed of one or more keywords.
@@ -27,8 +29,6 @@ public enum CompoundElement {
   DEFAULT_EQUAL_STRING_IN_BRACKETS(inBrackets(DEFAULT_EQUAL_STRING)),
   PROTO2_IN_QUOTES(join(QUOTE, "proto2", QUOTE, SEMICOLON)),
   EQUAL_PROTO2_IN_QUOTES(joinWithWhitespace(EQUAL, PROTO2_IN_QUOTES));
-
-  private static final String SPACE = " ";
 
   private final String value;
 
@@ -47,7 +47,7 @@ public enum CompoundElement {
     for (int i = 0; i < count; i++) {
       String s = objects[i].toString();
       buffer.append(s);
-      if (i < count - 1 && !s.endsWith(SPACE)) buffer.append(SPACE);
+      if (i < count - 1 && !s.endsWith(space())) buffer.append(space());
     }
     return buffer.toString();
   }

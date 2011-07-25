@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.documentation;
 
+import static com.google.eclipse.protobuf.util.CommonWords.space;
 import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.getNode;
 
 import org.eclipse.emf.ecore.EObject;
@@ -17,6 +18,7 @@ import org.eclipse.xtext.nodemodel.*;
 
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.scoping.*;
+import com.google.eclipse.protobuf.util.CommonWords;
 import com.google.inject.Inject;
 
 /**
@@ -76,7 +78,7 @@ public class SingleLineCommentDocumentationProvider implements IEObjectDocumenta
 
   private String cleanUp(String comment) {
     return comment.replaceFirst(COMMENT_START, "")
-                  .replaceAll(WINDOWS_NEW_LINE, " ")
-                  .replaceAll(UNIX_NEW_LINE, " ");
+                  .replaceAll(WINDOWS_NEW_LINE, space())
+                  .replaceAll(UNIX_NEW_LINE, space());
   }
 }
