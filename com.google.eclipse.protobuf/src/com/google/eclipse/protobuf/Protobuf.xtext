@@ -28,7 +28,13 @@ Package:
   'package' name=QualifiedName ';';
 
 Import: 
+  RegularImport | PublicImport;
+
+RegularImport:
   'import' importURI=STRING ';';
+
+PublicImport:
+  'import' 'public' importURI=STRING ';';
 
 QualifiedName:
   '.'? Name ('.' Name)*;
