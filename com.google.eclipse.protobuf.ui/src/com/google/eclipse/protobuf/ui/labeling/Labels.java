@@ -87,7 +87,7 @@ public class Labels {
     return text;
   }
 
-  private String messageName(MessageReference r) {
+  private String messageName(MessageRef r) {
     return r.getType().getName();
   }
 }

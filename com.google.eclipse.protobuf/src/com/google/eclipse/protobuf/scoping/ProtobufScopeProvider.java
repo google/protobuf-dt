@@ -69,7 +69,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   }
 
   @SuppressWarnings("unused")
-  IScope scope_MessageReference_type(MessageReference msgRef, EReference reference) {
+  IScope scope_MessageReference_type(MessageRef msgRef, EReference reference) {
     Protobuf root = finder.rootOf(msgRef);
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     descriptions.addAll(messagesIn(root));
