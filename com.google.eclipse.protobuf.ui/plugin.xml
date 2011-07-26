@@ -52,7 +52,7 @@
       id="com.google.eclipse.protobuf.Protobuf" name="%page.name">
       <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
     </page>
-    <page category="com.google.eclipse.protobuf.Protobuf"
+    <page category="com.google.eclipse.protobuf.ui.preferences.pages.editor"
       class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:org.eclipse.xtext.ui.editor.syntaxcoloring.SyntaxColoringPreferencePage"
       id="com.google.eclipse.protobuf.Protobuf.coloring" name="%page.name.0">
       <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
@@ -65,6 +65,12 @@
     <page category="com.google.eclipse.protobuf.Protobuf"
       class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.pages.compiler.CompilerPreferencePage"
       id="com.google.eclipse.protobuf.ui.preferences.pages.compiler.CompilerPreferencePage" name="%page.name.2">
+      <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
+    </page>
+    <page category="com.google.eclipse.protobuf.Protobuf"
+      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.pages.editor.EditorPreferencePage"
+      id="com.google.eclipse.protobuf.ui.preferences.pages.editor"
+      name="%page.name.4">
       <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
     </page>
   </extension>
