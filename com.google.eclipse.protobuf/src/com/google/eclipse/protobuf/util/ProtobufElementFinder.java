@@ -33,9 +33,9 @@ public class ProtobufElementFinder {
    * @return the enum type of the given property or {@code null} if the type of the given property is not enum.
    */
   public Enum enumTypeOf(Property p) {
-    AbstractTypeReference aTypeRef = (p).getType();
-    if (aTypeRef instanceof TypeReference) {
-      Type type = ((TypeReference) aTypeRef).getType();
+    AbstractTypeRef aTypeRef = (p).getType();
+    if (aTypeRef instanceof TypeRef) {
+      Type type = ((TypeRef) aTypeRef).getType();
       if (type instanceof Enum) return (Enum) type;
     }
     return null;
@@ -47,9 +47,9 @@ public class ProtobufElementFinder {
    * @return the scalar type of the given property or {@code null} if the type of the given property is not a scalar.
    */
   public ScalarType scalarTypeOf(Property p) {
-    AbstractTypeReference aTypeRef = (p).getType();
-    if (aTypeRef instanceof ScalarTypeReference)
-      return ((ScalarTypeReference) aTypeRef).getScalar();
+    AbstractTypeRef aTypeRef = (p).getType();
+    if (aTypeRef instanceof ScalarTypeRef)
+      return ((ScalarTypeRef) aTypeRef).getScalar();
     return null;
   }
 
@@ -87,6 +87,19 @@ public class ProtobufElementFinder {
     List<Import> imports = new ArrayList<Import>();
     for (ProtobufElement e : root.getElements()) {
       if (e instanceof Import) imports.add((Import) e);
+    }
+    return unmodifiableList(imports);
+  }
+
+  /**
+   * Returns all the public import definitions in the given proto.
+   * @param root the given proto.
+   * @return all the public import definitions in the given proto.
+   */
+  public List<Import> publicImportsIn(Protobuf root) {
+    List<Import> imports = new ArrayList<Import>();
+    for (ProtobufElement e : root.getElements()) {
+      if (e instanceof PublicImport) imports.add((Import) e);
     }
     return unmodifiableList(imports);
   }

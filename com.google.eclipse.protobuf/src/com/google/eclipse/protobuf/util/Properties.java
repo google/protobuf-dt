@@ -40,9 +40,9 @@ public class Properties {
    * @return {@code true} if the type of the given property is primitive, {@code false} otherwise.
    */
   public boolean isPrimitive(Property p) {
-    AbstractTypeReference r = p.getType();
-    if (!(r instanceof ScalarTypeReference)) return false;
-    String typeName = ((ScalarTypeReference) r).getScalar().getName();
+    AbstractTypeRef r = p.getType();
+    if (!(r instanceof ScalarTypeRef)) return false;
+    String typeName = ((ScalarTypeRef) r).getScalar().getName();
     return !STRING.hasValue(typeName) && !BYTES.hasValue(typeName);
   }
 
@@ -79,10 +79,10 @@ public class Properties {
    * @return the name of the type of the given {@code Property}.
    */
   public String typeNameOf(Property p) {
-    AbstractTypeReference r = p.getType();
-    if (r instanceof ScalarTypeReference) return ((ScalarTypeReference) r).getScalar().getName();
-    if (r instanceof TypeReference) {
-      Type type = ((TypeReference) r).getType();
+    AbstractTypeRef r = p.getType();
+    if (r instanceof ScalarTypeRef) return ((ScalarTypeRef) r).getScalar().getName();
+    if (r instanceof TypeRef) {
+      Type type = ((TypeRef) r).getType();
       return type == null ? null : type.getName();
     }
     return r.toString();

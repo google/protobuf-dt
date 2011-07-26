@@ -36,10 +36,10 @@ public class PropertyHasType extends BaseMatcher<Property> {
   }
   
   private String typeNameOf(Property property) {
-    AbstractTypeReference r = property.getType();
-    if (r instanceof ScalarTypeReference) return ((ScalarTypeReference) r).getScalar().getName();
-    if (r instanceof TypeReference) {
-      Type type = ((TypeReference) r).getType();
+    AbstractTypeRef r = property.getType();
+    if (r instanceof ScalarTypeRef) return ((ScalarTypeRef) r).getScalar().getName();
+    if (r instanceof TypeRef) {
+      Type type = ((TypeRef) r).getType();
       return type == null ? null : type.getName();
     }
     return r.toString();

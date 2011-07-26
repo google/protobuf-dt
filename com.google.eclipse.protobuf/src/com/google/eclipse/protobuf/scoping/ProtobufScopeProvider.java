@@ -52,7 +52,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   @Inject private PackageResolver packageResolver;
 
   @SuppressWarnings("unused")
-  IScope scope_TypeReference_type(TypeReference typeRef, EReference reference) {
+  IScope scope_TypeRef_type(TypeRef typeRef, EReference reference) {
     Protobuf root = finder.rootOf(typeRef);
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     EObject current = typeRef.eContainer().eContainer(); // get message of the property containing the TypeReference
@@ -69,7 +69,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   }
 
   @SuppressWarnings("unused")
-  IScope scope_MessageReference_type(MessageRef msgRef, EReference reference) {
+  IScope scope_MessageRef_type(MessageRef msgRef, EReference reference) {
     Protobuf root = finder.rootOf(msgRef);
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     descriptions.addAll(messagesIn(root));
@@ -106,21 +106,32 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   private <T extends Type> Collection<IEObjectDescription> importedTypes(Protobuf root, Class<T> targetType) {
     List<Import> imports = finder.importsIn(root);
     if (imports.isEmpty()) return emptyList();
-    Package importRootPackage = finder.packageOf(root);
+    return importedTypes(imports, finder.packageOf(root), targetType);
+  }
+
+  private <T extends Type> Collection<IEObjectDescription> importedTypes(List<Import> imports, Package aPackage,
+      Class<T> targetType) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     for (Import anImport : imports) {
-      Resource imported = importedResource(anImport);
-      EObject importedRoot = rootElementOf(imported);
-      if (importedRoot != null && arePackagesRelated(importRootPackage, importedRoot)) {
+      Resource importedResource = importedResourceFrom(anImport);
+      Protobuf importedRoot = rootElementOf(importedResource);
+      descriptions.addAll(publicImportedTypes(importedRoot, targetType));
+      if (importedRoot != null && arePackagesRelated(aPackage, importedRoot)) {
         descriptions.addAll(typesIn(importedRoot));
         continue;
       }
-      descriptions.addAll(children(imported, targetType));
+      descriptions.addAll(children(importedResource, targetType));
     }
     return descriptions;
   }
 
-  private Resource importedResource(Import anImport) {
+  private <T extends Type> Collection<IEObjectDescription> publicImportedTypes(Protobuf root, Class<T> targetType) {
+    List<Import> imports = finder.publicImportsIn(root);
+    if (imports.isEmpty()) return emptyList();
+    return importedTypes(imports, finder.packageOf(root), targetType);
+  }
+
+  private Resource importedResourceFrom(Import anImport) {
     ResourceSet resourceSet = finder.rootOf(anImport).eResource().getResourceSet();
     URI importUri = createURI(uriResolver.apply(anImport));
     try {
@@ -130,12 +141,15 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     }
   }
 
-  private /* Protobuf */ EObject rootElementOf(Resource resource) {
-    if (resource instanceof XtextResource) return ((XtextResource) resource).getParseResult().getRootASTElement();
+  private Protobuf rootElementOf(Resource resource) {
+    if (resource instanceof XtextResource) {
+      EObject root = ((XtextResource) resource).getParseResult().getRootASTElement();
+      return (Protobuf) root;
+    }
     TreeIterator<Object> contents = getAllContents(resource, true);
     if (contents.hasNext()) {
       Object next = contents.next();
-      if (next instanceof EObject) return (EObject) next;
+      if (next instanceof Protobuf) return (Protobuf) next;
     }
     return null;
   }
@@ -211,6 +225,4 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   private static IScope createScope(Iterable<IEObjectDescription> descriptions) {
     return new SimpleScope(descriptions, DO_NOT_IGNORE_CASE);
   }
-
-
 }

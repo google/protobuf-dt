@@ -8,26 +8,25 @@
  * 
  * Author: alruiz@google.com (Alex Ruiz)
  */
-
 grammar com.google.eclipse.protobuf.Protobuf with org.eclipse.xtext.common.Terminals
 
 import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 generate protobuf "http://www.google.com/eclipse/protobuf/Protobuf"
 
 Protobuf:
-  (syntax=Syntax)?  
+  (syntax=Syntax)?
   (elements+=ProtobufElement)*;
 
 Syntax:
-  'syntax' '=' name=STRING ';';  
+  'syntax' '=' name=STRING ';';
 
 ProtobufElement:
   Package | Import | Option | Type | ExtendMessage | Service;
-  
+
 Package:
   'package' name=QualifiedName ';';
 
-Import: 
+Import:
   RegularImport | PublicImport;
 
 RegularImport:
@@ -41,11 +40,11 @@ QualifiedName:
 
 Option:
   BuiltInOption | CustomOption;
-  
-BuiltInOption:  
+
+BuiltInOption:
   'option' name=Name '=' value=ValueRef ';';
 
-CustomOption:  
+CustomOption:
   'option' '(' name=QualifiedName ')' '=' value=ValueRef ';';
 
 Type:
@@ -54,7 +53,7 @@ Type:
 Message:
   'message' name=Name '{'
   elements+=MessageElement*
-  '}'(';')?;
+  '}' (';')?;
 
 MessageElement:
   Extensions | Type | Field | ExtendMessage | Option;
@@ -72,26 +71,25 @@ Field:
   Property | Group;
 
 Group:
-  modifier=Modifier 'group' name=Name '=' index=(INT | HEX) 
+  modifier=Modifier 'group' name=Name '=' index=(INT | HEX)
   ('[' (fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)*) ']')? '{'
   elements+=GroupElement*
-  '}'(';')?;
+  '}' (';')?;
 
 GroupElement:
-  Field | Option | Enum
-;
+  Field | Option | Enum;
 
 Property:
-  modifier=Modifier type=AbstractTypeReference name=Name '=' index=(INT | HEX) 
+  modifier=Modifier type=AbstractTypeRef name=Name '=' index=(INT | HEX)
   ('[' fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)* ']')? ';';
 
 FieldOption:
   BuiltInFieldOption | CustomFieldOption;
-    
-BuiltInFieldOption:  
+
+BuiltInFieldOption:
   name=Name '=' value=ValueRef;
 
-CustomFieldOption:  
+CustomFieldOption:
   '(' name=QualifiedName ')' '=' value=ValueRef;
 
 enum Modifier:
@@ -99,38 +97,21 @@ enum Modifier:
   | optional
   | repeated;
 
-AbstractTypeReference:
-  ScalarTypeReference | TypeReference;
+AbstractTypeRef:
+  ScalarTypeRef | TypeRef;
 
-ScalarTypeReference:
+ScalarTypeRef:
   scalar=ScalarType;
 
 enum ScalarType:
-  double
-  | float
-  | int32
-  | int64
-  | uint32
-  | uint64
-  | sint32
-  | sint64
-  | fixed32
-  | fixed64
-  | sfixed32
-  | sfixed64
-  | bool
-  | string
-  | bytes;
+  double | float | int32 | int64 | uint32 | uint64 | sint32 | sint64 | fixed32 | fixed64 | sfixed32 | sfixed64 | bool |
+  string | bytes;
 
-TypeReference:
-  type=[Type | QualifiedName];
+TypeRef:
+  type=[Type|QualifiedName];
 
 ValueRef:
-  LiteralRef
-  | BooleanRef
-  | NumberRef
-  | StringRef
-  | Nan;
+  LiteralRef | BooleanRef | NumberRef | StringRef | Nan;
 
 LiteralRef:
   literal=[Literal];
@@ -151,12 +132,14 @@ HexRef:
 IntRef:
   int=INT;
 
-terminal INT returns ecore::EInt: SIGNED_INT;  
-  
+terminal INT returns ecore::EInt:
+  SIGNED_INT;
+
 LongRef:
   long=LONG;
 
-terminal LONG returns ecore::ELong: SIGNED_INT;  
+terminal LONG returns ecore::ELong:
+  SIGNED_INT;
 
 terminal SIGNED_INT:
   ('-')? (NUMBER)+;
@@ -164,25 +147,26 @@ terminal SIGNED_INT:
 FloatRef:
   float=FLOAT;
 
-terminal FLOAT returns ecore::EFloat: DECIMAL;
+terminal FLOAT returns ecore::EFloat:
+  DECIMAL;
 
 DoubleRef:
   double=DOUBLE;
 
-terminal DOUBLE returns ecore::EDouble: DECIMAL;
+terminal DOUBLE returns ecore::EDouble:
+  DECIMAL;
 
 terminal DECIMAL:
-  ('-')? (NUMBER)* ('.' (NUMBER)+)?
-;
+  ('-')? (NUMBER)* ('.' (NUMBER)+)?;
 
 StringRef:
   string=STRING;
 
-terminal STRING: 
+terminal STRING:
   SL_STRING (SL_STRING)*;
 
 terminal SL_STRING:
-      '"' ( '\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|'"') )* '"' (WS)*;
+  '"' ('\\' ('b' | 't' | 'n' | 'f' | 'r' | 'u' | '"' | "'" | '\\') | !('\\' | '"'))* '"' (WS)*;
 
 Nan:
   number='nan';
@@ -198,7 +182,8 @@ EnumElement:
 Literal:
   name=Name '=' index=(INT | HEX) ';';
 
-terminal HEX returns ecore::EInt: '0x'(NUMBER|'a'..'f'|'A'..'F')+;
+terminal HEX returns ecore::EInt:
+  '0x' (NUMBER | 'a'..'f' | 'A'..'F')+;
 
 terminal NUMBER:
   '0'..'9';
@@ -206,17 +191,16 @@ terminal NUMBER:
 ExtendMessage:
   'extend' message=MessageRef '{'
   elements+=MessageElement*
-  '}'(';')?;
+  '}' (';')?;
 
 Service:
- 'service' name=Name '{'
-   rpcs+=Rpc*
- '}'(';')?;
+  'service' name=Name '{'
+  rpcs+=Rpc*
+  '}' (';')?;
 
-Rpc: 
-  'rpc' name=Name  '(' argType=MessageRef ')' 'returns' '(' returnType=MessageRef ')' 
-  (('{' options+=Option* '}')(';')? | ';')
-;
+Rpc:
+  'rpc' name=Name '(' argType=MessageRef ')' 'returns' '(' returnType=MessageRef ')'
+  (('{' options+=Option* '}') (';')? | ';');
 
 Name:
   ID | 'package' | 'import' | 'public' | 'option' | 'extend' | 'message' | 'optional' | 'required' | 'repeated' |
@@ -225,5 +209,5 @@ Name:
   'sfixed32' | 'sfixed64' | 'bool' | 'string' | 'bytes';
 
 MessageRef:
-  type=[Message | QualifiedName];
+  type=[Message|QualifiedName];
   

@@ -151,9 +151,9 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
   }
 
   private void highlightPropertyType(Property property, IHighlightedPositionAcceptor acceptor) {
-    AbstractTypeReference ref = property.getType();
-    if (!(ref instanceof TypeReference)) return;
-    Type type = ((TypeReference) ref).getType();
+    AbstractTypeRef ref = property.getType();
+    if (!(ref instanceof TypeRef)) return;
+    Type type = ((TypeRef) ref).getType();
     if (type instanceof Message) {
       highlightFirstFeature(property, PROPERTY__TYPE, acceptor, MESSAGE_ID);
       return;
