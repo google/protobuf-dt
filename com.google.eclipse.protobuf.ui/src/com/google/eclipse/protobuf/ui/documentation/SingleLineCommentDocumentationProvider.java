@@ -11,15 +11,14 @@ package com.google.eclipse.protobuf.ui.documentation;
 import static com.google.eclipse.protobuf.util.CommonWords.space;
 import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.getNode;
 
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.TerminalRule;
-import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
-import org.eclipse.xtext.nodemodel.*;
-
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.scoping.*;
-import com.google.eclipse.protobuf.util.CommonWords;
+import com.google.eclipse.protobuf.util.ModelNodes;
 import com.google.inject.Inject;
+
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
+import org.eclipse.xtext.nodemodel.*;
 
 /**
  * Provides single line comments of a protobuf element as its documentation when hovered.
@@ -33,8 +32,7 @@ public class SingleLineCommentDocumentationProvider implements IEObjectDocumenta
   private static final String UNIX_NEW_LINE = "\\n";
 
   @Inject private ProtoDescriptorProvider descriptorProvider;
-
-  private static final String RULE_NAME = "SL_COMMENT";
+  @Inject private ModelNodes nodes;
 
   public String getDocumentation(EObject o) {
     String comment = findComment(o);
@@ -48,7 +46,7 @@ public class SingleLineCommentDocumentationProvider implements IEObjectDocumenta
     StringBuilder commentBuilder = new StringBuilder();
     for (INode currentNode : node.getAsTreeIterable()) {
       if (currentNode instanceof ILeafNode && !((ILeafNode) currentNode).isHidden()) break;
-      if (currentNode instanceof ILeafNode && isSingleLineCommentTerminalRule(currentNode.getGrammarElement())) {
+      if (currentNode instanceof ILeafNode && nodes.wasCreatedBySingleLineComment(currentNode)) {
         String comment = ((ILeafNode) currentNode).getText();
         commentBuilder.append(cleanUp(comment));
       }
@@ -68,12 +66,6 @@ public class SingleLineCommentDocumentationProvider implements IEObjectDocumenta
       return p != null ? p : o;
     }
     return o;
-  }
-
-  private boolean isSingleLineCommentTerminalRule(EObject o) {
-    if (!(o instanceof TerminalRule)) return false;
-    TerminalRule rule = (TerminalRule) o;
-    return RULE_NAME.equalsIgnoreCase(rule.getName());
   }
 
   private String cleanUp(String comment) {

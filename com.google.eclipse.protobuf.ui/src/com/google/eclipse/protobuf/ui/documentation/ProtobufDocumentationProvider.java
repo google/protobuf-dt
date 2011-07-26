@@ -33,7 +33,6 @@ public class ProtobufDocumentationProvider implements IEObjectDocumentationProvi
     delegates.add(p2);
   }
 
-
   /** {@inheritDoc} */
   public String getDocumentation(EObject o) {
     for (IEObjectDocumentationProvider p: delegates) {

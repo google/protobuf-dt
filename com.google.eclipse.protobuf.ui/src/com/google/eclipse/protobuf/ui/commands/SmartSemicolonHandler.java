@@ -11,8 +11,14 @@ package com.google.eclipse.protobuf.ui.commands;
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.SEMICOLON;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
 
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.ui.util.*;
+import com.google.eclipse.protobuf.util.*;
+import com.google.inject.Inject;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.xtext.*;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.XtextEditor;
@@ -20,11 +26,6 @@ import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
 import org.eclipse.xtext.ui.editor.contentassist.antlr.ParserBasedContentAssistContextFactory;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 import org.eclipse.xtext.validation.IConcreteSyntaxValidator.InvalidConcreteSyntaxException;
-
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.ui.util.*;
-import com.google.eclipse.protobuf.util.ModelNodes;
-import com.google.inject.Inject;
 
 /**
  * Inserts a semicolon at the end of a line, regardless of the current position of the caret in the editor. If the
@@ -44,64 +45,97 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
 
   /** {@inheritDoc} */
   @Override protected void insertContent(XtextEditor editor, StyledText styledText) {
-    int originalCaretOffset = styledText.getCaretOffset();
-    int lineAtOffset = styledText.getLineAtOffset(originalCaretOffset);
+    int offset = styledText.getCaretOffset();
+    int lineAtOffset = styledText.getLineAtOffset(offset);
     int offsetAtLine = styledText.getOffsetAtLine(lineAtOffset);
     String line = styledText.getLine(lineAtOffset);
-    if (line.endsWith(semicolon)) {
-      behaveLikeRegularEditing(styledText, originalCaretOffset);
-      return;
+    ContentToInsert newContent = newContent(editor, styledText, line);
+    if (newContent.equals(ContentToInsert.NONE)) return;
+    if (newContent.location.equals(Location.END)) {
+      offset = offsetAtLine + line.length();
+      styledText.setCaretOffset(offset);
     }
-    String content = contentToInsert(editor, originalCaretOffset);
-    if (content == null) return;
-    int endOfLineOffset = offsetAtLine + line.length();
-    styledText.setCaretOffset(endOfLineOffset);
-    insert(styledText, content, endOfLineOffset);
+    styledText.insert(newContent.value);
+    styledText.setCaretOffset(offset + newContent.value.length());
   }
-
-  private void behaveLikeRegularEditing(StyledText styledText, int caretOffset) {
-    insert(styledText, semicolon, caretOffset);
-  }
-
-  private void insert(StyledText styledText, String content, int caretOffset) {
-    styledText.insert(content);
-    styledText.setCaretOffset(caretOffset + content.length());
-  }
-
-  private String contentToInsert(final XtextEditor editor, final int offset) {
+  
+  private ContentToInsert newContent(final XtextEditor editor, final StyledText styledText, final String line) {
     try {
-      return editor.getDocument().modify(new IUnitOfWork<String, XtextResource>() {
-        public String exec(XtextResource state) {
+      return editor.getDocument().modify(new IUnitOfWork<ContentToInsert, XtextResource>() {
+        public ContentToInsert exec(XtextResource state) {
+          int offset = styledText.getCaretOffset();
           ContentAssistContext[] context = contextFactory.create(editor.getInternalSourceViewer(), offset, state);
-          if (context == null || context.length == 0) return semicolon;
           for (ContentAssistContext c : context) {
+            INode currentNode = c.getCurrentNode();
+            if (nodes.wasCreatedByAnyComment(currentNode) || wasCreatedByString(currentNode)) break;
             EObject model = c.getCurrentModel();
-            if (model instanceof Literal)
-              return contentToInsert((Literal) model);
-            if (model instanceof Property)
-              return contentToInsert((Property) model);
+            if (model instanceof FieldOption) {
+              FieldOption option = (FieldOption) model;
+              model = option.eContainer();
+            }
+            if (line.endsWith(semicolon)) break;
+            if (model instanceof Literal) {
+              Literal literal = (Literal) model;
+              ContentToInsert content = newContent(literal);
+              if (content.equals(ContentToInsert.NONE)) {
+                int index = literals.calculateIndexOf(literal);
+                literal.setIndex(index);
+              }
+              return content;
+            }
+            if (model instanceof Property) {
+              Property property = (Property) model;
+              ContentToInsert content = newContent(property);
+              if (content.equals(ContentToInsert.NONE)) {
+                int index = fields.calculateTagNumberOf(property);
+                property.setIndex(index);
+              }
+              return content;
+            }
           }
-          return semicolon;
+          return new ContentToInsert(semicolon, Location.CURRENT);
         }
       });
-    } catch (InvalidConcreteSyntaxException e) {
-      return null;
+    } catch (InvalidConcreteSyntaxException e) {}
+    return ContentToInsert.NONE;
+  }
+
+  private boolean wasCreatedByString(INode node) {
+    EObject grammarElement = node.getGrammarElement();
+    if (!(grammarElement instanceof RuleCall)) return false;
+    AbstractRule rule = ((RuleCall) grammarElement).getRule();
+    if (!(rule instanceof TerminalRule)) return false;
+    TerminalRule terminalRule = (TerminalRule) rule;
+    return "STRING".equals(terminalRule.getName());
+  }
+
+  private ContentToInsert newContent(Literal literal) {
+    INode indexNode = nodes.firstNodeForFeature(literal, LITERAL__INDEX);
+    return newContent(indexNode);
+  }
+  
+  private ContentToInsert newContent(Property property) {
+    INode indexNode = nodes.firstNodeForFeature(property, FIELD__INDEX);
+    return newContent(indexNode);
+  }
+
+  private ContentToInsert newContent(INode indexNode) {
+    return (indexNode != null) ? new ContentToInsert(semicolon, Location.END) : ContentToInsert.NONE;
+  }
+  
+  private static class ContentToInsert {
+    final String value;
+    final Location location;
+
+    static final ContentToInsert NONE = new ContentToInsert("", Location.NONE);
+    
+    ContentToInsert(String value, Location location) {
+      this.value = value;
+      this.location = location;
     }
   }
-
-  private String contentToInsert(Literal literal) {
-    INode indexNode = nodes.firstNodeForFeature(literal, LITERAL__INDEX);
-    if (indexNode != null) return semicolon;
-    int index = literals.calculateIndexOf(literal);
-    literal.setIndex(index);
-    return null;
-  }
-
-  private String contentToInsert(Property property) {
-    INode indexNode = nodes.firstNodeForFeature(property, FIELD__INDEX);
-    if (indexNode != null) return semicolon;
-    int index = fields.calculateTagNumberOf(property);
-    property.setIndex(index);
-    return null;
+  
+  private static enum Location {
+    NONE, CURRENT, END;
   }
 }
