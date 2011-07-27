@@ -30,7 +30,7 @@ public class ProtobufOutlinePage extends OutlinePage {
   @Override protected List<IOutlineNode> getInitiallyExpandedNodes() {
     IOutlineNode rootNode = getTreeProvider().createRoot(getXtextDocument());
     List<IOutlineNode> nodes = newArrayList(rootNode);
-    addChildrenToExpand(singletonList(rootNode), nodes, 3);
+    addChildrenToExpand(singletonList(rootNode), nodes, 0);
     return nodes;
   }
 
@@ -47,7 +47,7 @@ public class ProtobufOutlinePage extends OutlinePage {
     if (parent instanceof DocumentRootNode) {
       return filter(parent.getChildren(), new Predicate<IOutlineNode>() {
         public boolean apply(IOutlineNode node) {
-          return !(node instanceof EStructuralFeatureNode);
+          return !(node instanceof SimpleOutlineNode);
         }
       });
     }
