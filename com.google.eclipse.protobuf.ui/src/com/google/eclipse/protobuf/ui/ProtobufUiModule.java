@@ -40,6 +40,7 @@ import com.google.eclipse.protobuf.ui.outline.LinkWithEditor;
 import com.google.eclipse.protobuf.ui.outline.ProtobufOutlinePage;
 import com.google.eclipse.protobuf.ui.preferences.PreferenceStoreAccess;
 import com.google.eclipse.protobuf.ui.preferences.pages.compiler.CompilerPreferenceStoreInitializer;
+import com.google.eclipse.protobuf.ui.preferences.pages.editor.save.SaveActionsPreferenceStoreInitializer;
 import com.google.eclipse.protobuf.ui.preferences.pages.general.GeneralPreferenceStoreInitializer;
 import com.google.eclipse.protobuf.ui.preferences.pages.paths.PathsPreferenceStoreInitializer;
 import com.google.eclipse.protobuf.ui.scoping.FileUriResolver;
@@ -94,6 +95,10 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
 
   public void configurePathsPreferencesInitializer(Binder binder) {
     configurePreferenceInitializer(binder, "pathsPreferences", PathsPreferenceStoreInitializer.class);
+  }
+
+  public void configureSaveActionsPreferencesInitializer(Binder binder) {
+    configurePreferenceInitializer(binder, "saveActionsPreferences", SaveActionsPreferenceStoreInitializer.class);
   }
 
   private void configurePreferenceInitializer(Binder binder, String name,

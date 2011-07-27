@@ -10,12 +10,11 @@ package com.google.eclipse.protobuf.ui.builder;
 
 import static com.google.eclipse.protobuf.util.CommonWords.space;
 
-import java.util.*;
+import com.google.eclipse.protobuf.ui.preferences.pages.compiler.SupportedLanguage;
 
 import org.eclipse.core.resources.*;
 
-import com.google.eclipse.protobuf.ui.preferences.pages.compiler.SupportedLanguage;
-import com.google.eclipse.protobuf.util.CommonWords;
+import java.util.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

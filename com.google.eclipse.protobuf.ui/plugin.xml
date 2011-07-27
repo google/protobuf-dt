@@ -69,8 +69,12 @@
     </page>
     <page category="com.google.eclipse.protobuf.Protobuf"
       class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.pages.editor.EditorPreferencePage"
-      id="com.google.eclipse.protobuf.ui.preferences.pages.editor"
-      name="%page.name.4">
+      id="com.google.eclipse.protobuf.ui.preferences.pages.editor" name="%page.name.4">
+      <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
+    </page>
+    <page category="com.google.eclipse.protobuf.ui.preferences.pages.editor"
+      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.pages.editor.save.SaveActionsPreferencePage"
+      id="com.google.eclipse.protobuf.ui.preferences.pages.editor" name="%page.name.5">
       <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
     </page>
   </extension>

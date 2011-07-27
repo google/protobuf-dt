@@ -18,8 +18,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
- * Paths preferences, retrieved from an <code>{@link IPreferenceStore}</code>. To create a new instance invoke
- * <code>{@link PathsPreferencesFactory#preferences(IProject)}</code>
+ * Paths preferences, retrieved from an <code>{@link IPreferenceStore}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */

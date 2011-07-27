@@ -122,7 +122,6 @@ public class Resources {
     return (adapter == null) ? null : (IResource) adapter;
   }
 
-
   private IPath pathOf(URI uri) {
     String platformUri = uri.toPlatformString(true);
     return (platformUri != null) ? new Path(platformUri) : null;

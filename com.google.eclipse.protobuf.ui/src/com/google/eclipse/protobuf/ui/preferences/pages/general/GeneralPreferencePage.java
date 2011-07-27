@@ -25,8 +25,6 @@ import com.google.eclipse.protobuf.ui.preferences.pages.PreferenceAndPropertyPag
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class GeneralPreferencePage extends PreferenceAndPropertyPage {
-  public GeneralPreferencePage() {
-  }
 
   private static final String PREFERENCE_PAGE_ID = "com.google.eclipse.protobuf.Protobuf";
 

@@ -1,9 +1,10 @@
 /*
  * Copyright (c) 2011 Google Inc.
- *
- * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License v1.0 which accompanies this distribution, and is available at
- *
+ * 
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
+ * 
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.ui.editor.model;
@@ -16,27 +17,30 @@ import static java.util.Collections.singletonMap;
 import static org.eclipse.core.runtime.IStatus.ERROR;
 import static org.eclipse.emf.common.util.URI.createURI;
 import static org.eclipse.emf.ecore.resource.ContentHandler.UNSPECIFIED_CONTENT_TYPE;
+import static org.eclipse.text.undo.DocumentUndoManagerRegistry.getDocumentUndoManager;
 import static org.eclipse.xtext.EcoreUtil2.resolveLazyCrossReferences;
 import static org.eclipse.xtext.resource.XtextResource.OPTION_ENCODING;
 import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
 
-import java.io.*;
-import java.net.URI;
+import com.google.eclipse.protobuf.ui.util.Resources;
+import com.google.inject.Inject;
 
 import org.eclipse.core.filesystem.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.source.IAnnotationModel;
-import org.eclipse.ui.IURIEditorInput;
+import org.eclipse.text.edits.TextEdit;
+import org.eclipse.text.undo.IDocumentUndoManager;
+import org.eclipse.ui.*;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.model.*;
 import org.eclipse.xtext.ui.resource.IResourceSetProvider;
 import org.eclipse.xtext.util.StringInputStream;
 
-import com.google.eclipse.protobuf.ui.util.*;
-import com.google.inject.Inject;
+import java.io.*;
+import java.net.URI;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -45,6 +49,7 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
 
   @Inject private IResourceSetProvider resourceSetProvider;
   @Inject private Resources resources;
+  @Inject private SaveActions saveActions;
 
   @Override protected ElementInfo createElementInfo(Object element) throws CoreException {
     if (element instanceof FileStoreEditorInput) return createElementInfo((FileStoreEditorInput) element);
@@ -137,5 +142,30 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
     }
     resolveLazyCrossReferences(resource, NullImpl);
     return resource;
+  }
+
+  @Override protected void doSaveDocument(IProgressMonitor monitor, Object element, IDocument document,
+      boolean overwrite) throws CoreException {
+    if (element instanceof IFileEditorInput) performSaveActions(document);
+    super.doSaveDocument(monitor, element, document, overwrite);
+  }
+
+  private void performSaveActions(IDocument document) throws CoreException {
+    TextEdit edit = saveActions.createSaveAction(document, new IRegion[] { allOf(document) });
+    if (edit == null) return;
+    try {
+      IDocumentUndoManager manager = getDocumentUndoManager(document);
+      manager.beginCompoundChange();
+      edit.apply(document);
+      manager.endCompoundChange();
+    } catch (Exception e) {
+      String message = e.getMessage();
+      if (message == null) message = e.getClass().getSimpleName();
+      throw new CoreException(new Status(ERROR, PLUGIN_ID, message, e));
+    }
+  }
+
+  private Region allOf(IDocument document) {
+    return new Region(0, document.getLength());
   }
 }

@@ -12,7 +12,6 @@ import static com.google.eclipse.protobuf.grammar.CommonKeyword.*;
 import static com.google.eclipse.protobuf.util.CommonWords.space;
 
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
-import com.google.eclipse.protobuf.util.CommonWords;
 
 /**
  * Element composed of one or more keywords.
