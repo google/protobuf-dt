@@ -60,6 +60,16 @@ public class DirectoryPathsEditor extends Composite {
     tblDirectoryPaths = tblVwrDirectoryPaths.getTable();
     tblDirectoryPaths.setLinesVisible(true);
     tblDirectoryPaths.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+    
+    TableViewerColumn tblclmnVwrPath = new TableViewerColumn(tblVwrDirectoryPaths, SWT.NONE);
+    TableColumn tblclmnPath = tblclmnVwrPath.getColumn();
+    tblclmnPath.setWidth(200);
+    tblclmnPath.setResizable(true);
+    tblclmnVwrPath.setLabelProvider(new ColumnLabelProvider() {
+      @Override public String getText(Object element) {
+        return ((DirectoryPath) element).toString();
+      }
+    });
 
     Composite composite = new Composite(this, SWT.NONE);
     composite.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
