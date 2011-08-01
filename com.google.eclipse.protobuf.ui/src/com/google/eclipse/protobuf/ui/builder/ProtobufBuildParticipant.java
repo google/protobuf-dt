@@ -8,16 +8,17 @@
  */
 package com.google.eclipse.protobuf.ui.builder;
 
+import static com.google.eclipse.protobuf.ui.ProtobufUiModule.PLUGIN_ID;
 import static com.google.eclipse.protobuf.ui.builder.OutputDirectories.findOrCreateOutputDirectories;
 import static com.google.eclipse.protobuf.ui.preferences.pages.compiler.PostCompilationRefreshTarget.PROJECT;
 import static com.google.eclipse.protobuf.ui.preferences.pages.paths.PathResolutionType.MULTIPLE_DIRECTORIES;
 import static java.util.Collections.*;
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
+import static org.eclipse.core.runtime.IStatus.ERROR;
 
 import java.io.*;
 import java.util.*;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.filesystem.*;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
@@ -36,8 +37,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
-
-  private static Logger logger = Logger.getLogger(ProtobufBuildParticipant.class);
 
   @Inject private ProtocOutputParser outputParser;
   @Inject private ProtocCommandFactory commandFactory;
@@ -98,12 +97,12 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
   private static String filePathIfIsProtoFile(IResourceDescription r) {
     if (r == null) return null;
     URI uri = r.getURI();
-    if (!uri.fileExtension().equals("proto")) return null;
+    if (!uri.fileExtension().equals("proto")) return null; //$NON-NLS-1$
     if (uri.scheme() == null) return uri.toFileString();
     StringBuilder b = new StringBuilder();
     int segmentCount = uri.segmentCount();
     for (int i = 1; i < segmentCount; i++)
-      b.append("/").append(uri.segment(i));
+      b.append("/").append(uri.segment(i)); //$NON-NLS-1$
     return b.length() == 0 ? null : b.toString();
   }
 
@@ -118,20 +117,19 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
   }
 
   private void generateSingleProto(IFile source, String protocPath, List<String> importRoots,
-      OutputDirectories outputDirectories) {
+      OutputDirectories outputDirectories) throws CoreException {
     String command = commandFactory.protocCommand(source, protocPath, importRoots, outputDirectories);
     System.out.println(command);
     try {
       Process process = Runtime.getRuntime().exec(command);
       processStream(process.getErrorStream(), source);
       process.destroy();
-    } catch (Exception ex) {
-      // TODO show error message
-      ex.printStackTrace();
+    } catch (Throwable e) {
+      throw processExecutionError(command, e);
     }
   }
 
-  private void processStream(InputStream stream, IFile source) {
+  private void processStream(InputStream stream, IFile source) throws Throwable {
     InputStreamReader reader = null;
     try {
       reader = new InputStreamReader(stream);
@@ -140,10 +138,8 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
       ProtocMarkerFactory markerFactory = new ProtocMarkerFactory(source);
       while ((line = bufferedReader.readLine()) != null) {
         outputParser.parseAndAddMarkerIfNecessary(line, markerFactory);
-        System.out.println("[protoc] " + line);
+        System.out.println("[protoc] " + line); //$NON-NLS-1$
       }
-    } catch (Exception e) {
-      logger.fatal("Execution of protoc on [" + source.getName() + "] failed", e);
     } finally {
       close(reader);
     }
@@ -167,5 +163,9 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
 
   private static void refresh(IResource target, IProgressMonitor monitor) throws CoreException {
     target.refreshLocal(DEPTH_INFINITE, monitor);
+  }
+
+  private static CoreException processExecutionError(String command, Throwable e) {
+    return new CoreException(new Status(ERROR, PLUGIN_ID, e.getMessage()));
   }
 }

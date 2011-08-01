@@ -62,7 +62,7 @@ final class Validation {
     if (!(document instanceof XtextDocument)) return;
     document.readOnly(new IUnitOfWork<Void, XtextResource>() {
       public java.lang.Void exec(XtextResource resource) throws Exception {
-        EObject root = resource.getParseResult().getRootASTElement();
+        EObject root = rootOf(resource);
         if (root == null) return null;
         resetImports(root);
         resource.getLinker().linkModel(root, new ListBasedDiagnosticConsumer());
@@ -70,6 +70,11 @@ final class Validation {
         return null;
       }
     });
+  }
+  
+  private static EObject rootOf(XtextResource resource) {
+    if (resource == null) return null;
+    return resource.getParseResult().getRootASTElement();
   }
 
   private static void resetImports(EObject root) {
