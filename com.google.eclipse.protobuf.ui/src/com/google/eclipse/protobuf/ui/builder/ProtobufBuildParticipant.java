@@ -10,7 +10,8 @@ package com.google.eclipse.protobuf.ui.builder;
 
 import static com.google.eclipse.protobuf.ui.builder.OutputDirectories.findOrCreateOutputDirectories;
 import static com.google.eclipse.protobuf.ui.preferences.pages.compiler.PostCompilationRefreshTarget.PROJECT;
-import static java.util.Collections.unmodifiableList;
+import static com.google.eclipse.protobuf.ui.preferences.pages.paths.PathResolutionType.MULTIPLE_DIRECTORIES;
+import static java.util.Collections.*;
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
 
 import java.io.*;
@@ -56,6 +57,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
       String path = filePathIfIsProtoFile(newResource);
       if (path == null) continue;
       IFile source = project.getWorkspace().getRoot().getFile(new Path(path));
+      if (importRoots.isEmpty()) importRoots = singleImportRoot(source);
       generateSingleProto(source, preferences.protocPath(), importRoots, outputDirectories);
     }
     if (preferences.shouldRefreshResources()) refresh(project, outputDirectories, preferences.refreshTarget(), monitor);
@@ -64,12 +66,15 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
   private List<String> importRoots(IProject project) {
     List<String> paths = new ArrayList<String>();
     PathsPreferences preferences = pathsPreferencesFactory.preferences(project);
-    List<DirectoryPath> directoryPaths = preferences.importRoots();
-    for (DirectoryPath path : directoryPaths) {
-      String location = locationOfDirectory(path, project);
-      if (location != null) paths.add(location);
+    if (MULTIPLE_DIRECTORIES.equals(preferences.pathResolutionType())) {
+      List<DirectoryPath> directoryPaths = preferences.importRoots();
+      for (DirectoryPath path : directoryPaths) {
+        String location = locationOfDirectory(path, project);
+        if (location != null) paths.add(location);
+      }
+      return unmodifiableList(paths);
     }
-    return unmodifiableList(paths);
+    return emptyList();
   }
 
   private String locationOfDirectory(DirectoryPath path, IProject project) {
@@ -100,6 +105,16 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
     for (int i = 1; i < segmentCount; i++)
       b.append("/").append(uri.segment(i));
     return b.length() == 0 ? null : b.toString();
+  }
+
+  private List<String> singleImportRoot(IFile source) {
+    IProject project = source.getProject();
+    File projectFile = project.getLocation().toFile();
+    File current = source.getLocation().toFile();
+    while (!current.getParentFile().equals(projectFile)) {
+      current = current.getParentFile();
+    }
+    return singletonList(current.toString());
   }
 
   private void generateSingleProto(IFile source, String protocPath, List<String> importRoots,
