@@ -1,38 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="com.google.eclipse.protobuf"
-      label="Protocol Buffer Editor"
+      label="%featureName"
       version="1.0.0.qualifier"
-      provider-name="Google, Inc.">
+      provider-name="%providerName">
 
    <description url="https://code.google.com/p/protobuf-dt/">
-      Google&apos;s Eclipse-based Development Environment for Protocol Buffers
+      %description
    </description>
 
    <copyright>
-      Copyright (c) 2011 Google, Inc.
-
-All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at 
-
-http://www.eclipse.org/legal/epl-v10.html
-
-Contributors:
-Google, Inc. - initial API and implementation
+      %description
    </copyright>
 
-   <license url="epl-v10.html">
-      Copyright (c) 2011 Google, Inc.
-      
-All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
-
-http://www.eclipse.org/legal/epl-v10.html
-
-Contributors: 
-Google, Inc. - initial API and implementation
+   <license url="%licenseURL">
+      %license
    </license>
 
    <url>
-      <update label="protobuf-dt" url="http://protobuf-dt.googlecode.com/git/update-site"/>
+      <update label="%updateSiteName" url="http://protobuf-dt.googlecode.com/git/update-site"/>
    </url>
 
    <requires>
@@ -51,9 +37,9 @@ Google, Inc. - initial API and implementation
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.xtext.builder"/>
       <import plugin="com.ibm.icu"/>
-      <import plugin="org.eclipse.emf.databinding"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.filesystem" version="1.3.100" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.emf.databinding"/>
    </requires>
 
    <plugin

@@ -3,5 +3,8 @@
    <description name="protobuf-dt" url="http://protobuf-dt.googlecode.com/svn/trunk/update-site">
       Update site for protobuf-dt, an Eclipse-based Development Environment for Protocol Buffers.
    </description>
-   <feature url="features/com.google.eclipse.protobuf_1.0.0.qualifier.jar" id="com.google.eclipse.protobuf" version="1.0.0.qualifier"/>
+   <feature url="features/com.google.eclipse.protobuf_1.0.0.201108021004.jar" id="com.google.eclipse.protobuf" version="1.0.0.201108021004">
+      <category name="google"/>
+   </feature>
+   <category-def name="google" label="Google"/>
 </site>
