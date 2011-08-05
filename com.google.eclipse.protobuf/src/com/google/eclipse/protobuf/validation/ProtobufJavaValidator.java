@@ -15,7 +15,8 @@ import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.naming.*;
+import org.eclipse.xtext.naming.IQualifiedNameProvider;
+import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 import org.eclipse.xtext.validation.Check;
 
@@ -32,6 +33,7 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
   @Inject private FieldOptions fieldOptions;
   @Inject private ImportUriResolver uriResolver;
   @Inject private IQualifiedNameProvider qualifiedNameProvider;
+  @Inject private Imports imports;
   @Inject private Properties properties;
 
   @Check public void checkDefaultValueType(FieldOption option) {
@@ -58,6 +60,8 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
   }
 
   private boolean isResolved(Import anImport) {
+    // global proto file, always available
+    if (imports.isImportingProtoDescriptor(anImport)) return true;
     String importUri = anImport.getImportURI();
     if (!isEmpty(importUri)) {
       URI uri = URI.createURI(importUri);

@@ -17,11 +17,16 @@ import static org.eclipse.xtext.resource.EObjectDescription.create;
 
 import java.util.*;
 
-import org.eclipse.emf.common.util.*;
-import org.eclipse.emf.ecore.*;
-import org.eclipse.emf.ecore.resource.*;
-import org.eclipse.xtext.naming.*;
-import org.eclipse.xtext.resource.*;
+import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.xtext.naming.IQualifiedNameProvider;
+import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.resource.IEObjectDescription;
+import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.impl.*;
 
@@ -50,6 +55,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   @Inject private LocalNamesProvider localNamesProvider;
   @Inject private ImportedNamesProvider importedNamesProvider;
   @Inject private PackageResolver packageResolver;
+  @Inject private Imports imports;
 
   @SuppressWarnings("unused")
   IScope scope_TypeRef_type(TypeRef typeRef, EReference reference) {
@@ -104,15 +110,19 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   }
 
   private <T extends Type> Collection<IEObjectDescription> importedTypes(Protobuf root, Class<T> targetType) {
-    List<Import> imports = finder.importsIn(root);
-    if (imports.isEmpty()) return emptyList();
-    return importedTypes(imports, finder.packageOf(root), targetType);
+    List<Import> allImports = finder.importsIn(root);
+    if (allImports.isEmpty()) return emptyList();
+    return importedTypes(allImports, finder.packageOf(root), targetType);
   }
 
-  private <T extends Type> Collection<IEObjectDescription> importedTypes(List<Import> imports, Package aPackage,
+  private <T extends Type> Collection<IEObjectDescription> importedTypes(List<Import> allImports, Package aPackage,
       Class<T> targetType) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
-    for (Import anImport : imports) {
+    for (Import anImport : allImports) {
+      if (imports.isImportingProtoDescriptor(anImport)) {
+        descriptions.addAll(allBuiltInTypes(targetType));
+        continue;
+      }
       Resource importedResource = importedResourceFrom(anImport);
       Protobuf importedRoot = rootElementOf(importedResource);
       descriptions.addAll(publicImportedTypes(importedRoot, targetType));
@@ -125,10 +135,24 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     return descriptions;
   }
 
+  private <T extends Type> Collection<IEObjectDescription> allBuiltInTypes(Class<T> targetType) {
+    List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
+    ProtoDescriptor descriptor = descriptorProvider.get();
+    for (Type t : descriptor.allTypes()) {
+      if (!targetType.isInstance(t)) continue;
+      T type = targetType.cast(t);
+      descriptions.addAll(fullyQualifiedNamesOf(type));
+      for (QualifiedName name : importedNamesProvider.namesOf(type)) {
+        descriptions.add(create(name, type));
+      }
+    }
+    return descriptions;
+  }
+
   private <T extends Type> Collection<IEObjectDescription> publicImportedTypes(Protobuf root, Class<T> targetType) {
-    List<Import> imports = finder.publicImportsIn(root);
-    if (imports.isEmpty()) return emptyList();
-    return importedTypes(imports, finder.packageOf(root), targetType);
+    List<Import> allImports = finder.publicImportsIn(root);
+    if (allImports.isEmpty()) return emptyList();
+    return importedTypes(allImports, finder.packageOf(root), targetType);
   }
 
   private Resource importedResourceFrom(Import anImport) {

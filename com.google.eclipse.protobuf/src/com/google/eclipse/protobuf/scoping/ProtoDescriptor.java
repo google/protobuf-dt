@@ -12,24 +12,25 @@ import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.PROP
 import static com.google.eclipse.protobuf.scoping.OptionType.*;
 import static com.google.eclipse.protobuf.util.Closeables.close;
 import static com.google.eclipse.protobuf.util.Encodings.UTF_8;
-import static java.util.Collections.unmodifiableCollection;
+import static java.util.Collections.*;
 import static org.eclipse.xtext.EcoreUtil2.*;
 import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.eclipse.protobuf.util.*;
-import com.google.inject.Inject;
-
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.xtext.nodemodel.INode;
-import org.eclipse.xtext.parser.*;
-import org.eclipse.xtext.resource.XtextResource;
-
 import java.io.*;
 import java.net.URL;
 import java.util.*;
+
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.xtext.nodemodel.INode;
+import org.eclipse.xtext.parser.IParseResult;
+import org.eclipse.xtext.parser.IParser;
+import org.eclipse.xtext.resource.XtextResource;
+
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.eclipse.protobuf.util.ModelNodes;
+import com.google.inject.Inject;
 
 /**
  * Contains the elements from descriptor.proto (provided with protobuf's library.)
@@ -38,8 +39,11 @@ import java.util.*;
  */
 public class ProtoDescriptor {
 
+  /** Path of proto.descriptor to use in imports. */
+  public static final String PATH = "google/protobuf/descriptor.proto";
+
   private static final Map<String, OptionType> OPTION_DEFINITION_BY_NAME = new HashMap<String, OptionType>();
-  
+
   static {
     OPTION_DEFINITION_BY_NAME.put("FileOptions", FILE);
     OPTION_DEFINITION_BY_NAME.put("MessageOptions", MESSAGE);
@@ -47,7 +51,8 @@ public class ProtoDescriptor {
     OPTION_DEFINITION_BY_NAME.put("EnumOptions", ENUM);
     OPTION_DEFINITION_BY_NAME.put("MethodOptions", METHOD);
   }
-  
+
+  private final List<Type> allTypes = new ArrayList<Type>();
   private final Map<OptionType, Map<String, Property>> optionsByType = new HashMap<OptionType, Map<String, Property>>();
   private final Map<String, Enum> enumsByName = new HashMap<String, Enum>();
 
@@ -92,7 +97,10 @@ public class ProtoDescriptor {
   }
 
   private void initContents() {
-    for (Message m : getAllContentsOfType(root, Message.class)) {
+    allTypes.addAll(getAllContentsOfType(root, Type.class));
+    for (Type t : allTypes) {
+      if (!(t instanceof Message)) continue;
+      Message m = (Message) t;
       OptionType type = OPTION_DEFINITION_BY_NAME.get(m.getName());
       if (type == null) continue;
       initOptions(m, type);
@@ -141,7 +149,7 @@ public class ProtoDescriptor {
   public Property lookupOption(String name) {
     return lookupOption(name, FILE, MESSAGE, ENUM, METHOD);
   }
-  
+
   private Property lookupOption(String name, OptionType...types) {
     for (OptionType type : types) {
       Property p = lookupOption(name, type);
@@ -229,5 +237,13 @@ public class ProtoDescriptor {
     if (node == null) return null;
     String typeName = node.getText();
     return (isEmpty(typeName)) ? null : enumsByName.get(typeName.trim());
+  }
+
+  /**
+   * Returns all types in descriptor.proto.
+   * @return all types in descriptor.proto.
+   */
+  public List<Type> allTypes() {
+    return unmodifiableList(allTypes);
   }
 }

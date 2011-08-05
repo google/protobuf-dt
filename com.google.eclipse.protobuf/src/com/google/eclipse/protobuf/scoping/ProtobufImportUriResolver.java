@@ -44,7 +44,6 @@ public class ProtobufImportUriResolver extends ImportUriResolver {
       // anImport.setImportURI(originalUri);
       return applied;
     }
-    if (from instanceof Import) resolveImportUri((Import) from);
     return super.apply(from);
   }
 

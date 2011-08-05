@@ -23,6 +23,7 @@ import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
 import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.ui.util.Resources;
+import com.google.eclipse.protobuf.util.Imports;
 import com.google.inject.Inject;
 
 /**
@@ -38,6 +39,7 @@ public class ProtobufHyperlinkDetector extends DefaultHyperlinkDetector {
   private static final char QUOTE = '\"';
 
   @Inject private EObjectAtOffsetHelper eObjectAtOffsetHelper;
+  @Inject private Imports imports;
   @Inject private Resources resources;
 
   @Override public IHyperlink[] detectHyperlinks(ITextViewer textViewer, final IRegion region,
@@ -57,13 +59,15 @@ public class ProtobufHyperlinkDetector extends DefaultHyperlinkDetector {
       public IHyperlink[] exec(XtextResource resource) {
         EObject resolved = eObjectAtOffsetHelper.resolveElementAt(resource, region.getOffset());
         if (!(resolved instanceof Import)) return NO_HYPERLINKS;
+        Import anImport = (Import) resolved;
+        if (imports.isImportingProtoDescriptor(anImport)) return NO_HYPERLINKS;
         IRegion importUriRegion;
         try {
           importUriRegion = importUriRegion(document, region.getOffset());
         } catch (BadLocationException e) {
           return NO_HYPERLINKS;
         }
-        String importUri = ((Import) resolved).getImportURI();
+        String importUri = anImport.getImportURI();
         IHyperlink hyperlink = new ImportHyperlink(createURI(importUri), importUriRegion, resources);
         return new IHyperlink[] { hyperlink };
       }
