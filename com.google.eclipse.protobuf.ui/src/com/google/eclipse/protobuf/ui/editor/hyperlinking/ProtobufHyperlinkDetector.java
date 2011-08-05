@@ -60,7 +60,11 @@ public class ProtobufHyperlinkDetector extends DefaultHyperlinkDetector {
         EObject resolved = eObjectAtOffsetHelper.resolveElementAt(resource, region.getOffset());
         if (!(resolved instanceof Import)) return NO_HYPERLINKS;
         Import anImport = (Import) resolved;
-        if (imports.isImportingProtoDescriptor(anImport)) return NO_HYPERLINKS;
+        if (imports.isImportingProtoDescriptor(anImport)) {
+          // TODO add support for opening descriptor.proto from plug-in
+          // Look into NonExistingFileEditorInput
+          return NO_HYPERLINKS;
+        }
         IRegion importUriRegion;
         try {
           importUriRegion = importUriRegion(document, region.getOffset());
