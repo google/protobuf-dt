@@ -42,23 +42,23 @@ public class ProtobufFormatter extends AbstractDeclarativeFormatter {
     c.setLinewrap(1).after(g.getEnumRule());
     c.setLinewrap(1).after(g.getEnumElementRule());
     c.setLinewrap(1).after(g.getRpcRule());
-    for (Keyword equal : g.findKeywords(EQUAL.toString())) {
-      c.setSpace(space()).around(equal);
+    for (Keyword k : g.findKeywords(EQUAL.toString())) {
+      c.setSpace(space()).around(k);
     }
-    for (Keyword semicolon : g.findKeywords(SEMICOLON.toString())) {
-      c.setNoSpace().before(semicolon);
+    for (Keyword k : g.findKeywords(SEMICOLON.toString())) {
+      c.setNoSpace().before(k);
     }
-    for (Keyword openingBrace : g.findKeywords("{")) {
-      c.setLinewrap(1).after(openingBrace);
+    for (Keyword k : g.findKeywords("{")) {
+      c.setLinewrap(1).after(k);
     }
-    for (Keyword closingBrace : g.findKeywords("}")) {
-      c.setLinewrap(2).after(closingBrace);
+    for (Keyword k : g.findKeywords("}")) {
+      c.setLinewrap(2).after(k);
     }
-    for (Keyword openingBracket : g.findKeywords(OPENING_BRACKET.toString())) {
-      c.setNoSpace().after(openingBracket);
+    for (Keyword k : g.findKeywords(OPENING_BRACKET.toString())) {
+      c.setNoSpace().after(k);
     }
-    for (Keyword closingBracket : g.findKeywords(CLOSING_BRACKET.toString())) {
-      c.setNoSpace().before(closingBracket);
+    for (Keyword k : g.findKeywords(CLOSING_BRACKET.toString())) {
+      c.setNoSpace().before(k);
     }
     indentMessageElements(c, g);
     indentExtendMessageElements(c, g);
