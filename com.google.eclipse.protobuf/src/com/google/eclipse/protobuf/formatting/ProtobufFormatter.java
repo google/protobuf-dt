@@ -41,6 +41,7 @@ public class ProtobufFormatter extends AbstractDeclarativeFormatter {
     c.setLinewrap(1).after(g.getPropertyRule());
     c.setLinewrap(1).after(g.getEnumRule());
     c.setLinewrap(1).after(g.getEnumElementRule());
+    c.setLinewrap(1).after(g.getRpcRule());
     for (Keyword equal : g.findKeywords(EQUAL.toString())) {
       c.setSpace(space()).around(equal);
     }
