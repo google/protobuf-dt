@@ -16,13 +16,7 @@ import org.eclipse.xtext.Keyword;
 import org.eclipse.xtext.formatting.impl.AbstractDeclarativeFormatter;
 import org.eclipse.xtext.formatting.impl.FormattingConfig;
 
-import com.google.eclipse.protobuf.services.*;
-import com.google.eclipse.protobuf.services.ProtobufGrammarAccess.EnumElements;
-import com.google.eclipse.protobuf.services.ProtobufGrammarAccess.ExtendMessageElements;
-import com.google.eclipse.protobuf.services.ProtobufGrammarAccess.GroupElements;
-import com.google.eclipse.protobuf.services.ProtobufGrammarAccess.MessageElements;
-import com.google.eclipse.protobuf.services.ProtobufGrammarAccess.RpcElements;
-import com.google.eclipse.protobuf.services.ProtobufGrammarAccess.ServiceElements;
+import com.google.eclipse.protobuf.services.ProtobufGrammarAccess;
 
 /**
  * This class provides custom formatting.
@@ -49,9 +43,11 @@ public class ProtobufFormatter extends AbstractDeclarativeFormatter {
       c.setNoSpace().before(k);
     }
     for (Keyword k : g.findKeywords("{")) {
+      c.setIndentationIncrement().after(k);
       c.setLinewrap(1).after(k);
     }
     for (Keyword k : g.findKeywords("}")) {
+      c.setIndentationDecrement().before(k);
       c.setLinewrap(2).after(k);
     }
     for (Keyword k : g.findKeywords(OPENING_BRACKET.toString())) {
@@ -60,47 +56,5 @@ public class ProtobufFormatter extends AbstractDeclarativeFormatter {
     for (Keyword k : g.findKeywords(CLOSING_BRACKET.toString())) {
       c.setNoSpace().before(k);
     }
-    indentMessageElements(c, g);
-    indentExtendMessageElements(c, g);
-    indentGroupElements(c, g);
-    indentEnumElements(c, g);
-    indentServiceElements(c, g);
-    indentRpcElements(c, g);
-  }
-
-  private void indentMessageElements(FormattingConfig c, ProtobufGrammarAccess g) {
-    MessageElements e = g.getMessageAccess();
-    c.setIndentationIncrement().after(e.getLeftCurlyBracketKeyword_2());
-    c.setIndentationDecrement().before(e.getRightCurlyBracketKeyword_4());
-  }
-
-  private void indentExtendMessageElements(FormattingConfig c, ProtobufGrammarAccess g) {
-    ExtendMessageElements e = g.getExtendMessageAccess();
-    c.setIndentationIncrement().after(e.getLeftCurlyBracketKeyword_2());
-    c.setIndentationDecrement().before(e.getRightCurlyBracketKeyword_4());
-  }
-
-  private void indentGroupElements(FormattingConfig c, ProtobufGrammarAccess g) {
-    GroupElements e = g.getGroupAccess();
-    c.setIndentationIncrement().after(e.getLeftCurlyBracketKeyword_6());
-    c.setIndentationDecrement().before(e.getRightCurlyBracketKeyword_8());
-  }
-
-  private void indentEnumElements(FormattingConfig c, ProtobufGrammarAccess g) {
-    EnumElements e = g.getEnumAccess();
-    c.setIndentationIncrement().after(e.getLeftCurlyBracketKeyword_2());
-    c.setIndentationDecrement().before(e.getRightCurlyBracketKeyword_4());
-  }
-
-  private void indentServiceElements(FormattingConfig c, ProtobufGrammarAccess g) {
-    ServiceElements e = g.getServiceAccess();
-    c.setIndentationIncrement().after(e.getLeftCurlyBracketKeyword_2());
-    c.setIndentationDecrement().before(e.getRightCurlyBracketKeyword_4());
-  }
-
-  private void indentRpcElements(FormattingConfig c, ProtobufGrammarAccess g) {
-    RpcElements e = g.getRpcAccess();
-    c.setIndentationIncrement().after(e.getLeftCurlyBracketKeyword_9_0_0_0());
-    c.setIndentationDecrement().before(e.getRightCurlyBracketKeyword_9_0_0_2());
   }
 }
