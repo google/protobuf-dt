@@ -30,6 +30,7 @@ public class ProtobufFormatter extends AbstractDeclarativeFormatter {
     c.setLinewrap(0, 1, 2).before(g.getSL_COMMENTRule());
     c.setLinewrap(1).after(g.getPackageRule());
     c.setLinewrap(1).after(g.getBuiltInOptionRule());
+    c.setLinewrap(1).after(g.getCustomOptionRule());
     c.setLinewrap(1).after(g.getImportRule());
     c.setLinewrap(1).after(g.getFieldRule());
     c.setLinewrap(1).after(g.getPropertyRule());
