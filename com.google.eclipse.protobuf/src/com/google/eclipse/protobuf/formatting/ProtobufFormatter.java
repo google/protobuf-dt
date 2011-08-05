@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
- * 
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.formatting;
@@ -12,19 +12,21 @@ package com.google.eclipse.protobuf.formatting;
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.*;
 import static com.google.eclipse.protobuf.util.CommonWords.space;
 
+import org.eclipse.xtext.Keyword;
+import org.eclipse.xtext.formatting.impl.AbstractDeclarativeFormatter;
+import org.eclipse.xtext.formatting.impl.FormattingConfig;
+
 import com.google.eclipse.protobuf.services.*;
 import com.google.eclipse.protobuf.services.ProtobufGrammarAccess.EnumElements;
 import com.google.eclipse.protobuf.services.ProtobufGrammarAccess.ExtendMessageElements;
+import com.google.eclipse.protobuf.services.ProtobufGrammarAccess.GroupElements;
 import com.google.eclipse.protobuf.services.ProtobufGrammarAccess.MessageElements;
 import com.google.eclipse.protobuf.services.ProtobufGrammarAccess.RpcElements;
 import com.google.eclipse.protobuf.services.ProtobufGrammarAccess.ServiceElements;
 
-import org.eclipse.xtext.Keyword;
-import org.eclipse.xtext.formatting.impl.*;
-
 /**
  * This class provides custom formatting.
- * 
+ *
  * @see <a href="http://www.eclipse.org/Xtext/documentation/2_0_0/105-formatting.php">Xtext Formatting</a>
  */
 public class ProtobufFormatter extends AbstractDeclarativeFormatter {
@@ -32,7 +34,13 @@ public class ProtobufFormatter extends AbstractDeclarativeFormatter {
   @Override protected void configureFormatting(FormattingConfig c) {
     ProtobufGrammarAccess g = (ProtobufGrammarAccess) getGrammarAccess();
     c.setLinewrap(0, 1, 2).before(g.getSL_COMMENTRule());
+    c.setLinewrap(1).after(g.getPackageRule());
+    c.setLinewrap(1).after(g.getBuiltInOptionRule());
+    c.setLinewrap(1).after(g.getImportRule());
+    c.setLinewrap(1).after(g.getFieldRule());
     c.setLinewrap(1).after(g.getPropertyRule());
+    c.setLinewrap(1).after(g.getEnumRule());
+    c.setLinewrap(1).after(g.getEnumElementRule());
     for (Keyword equal : g.findKeywords(EQUAL.toString())) {
       c.setSpace(space()).around(equal);
     }
@@ -53,6 +61,7 @@ public class ProtobufFormatter extends AbstractDeclarativeFormatter {
     }
     indentMessageElements(c, g);
     indentExtendMessageElements(c, g);
+    indentGroupElements(c, g);
     indentEnumElements(c, g);
     indentServiceElements(c, g);
     indentRpcElements(c, g);
@@ -63,13 +72,19 @@ public class ProtobufFormatter extends AbstractDeclarativeFormatter {
     c.setIndentationIncrement().after(e.getLeftCurlyBracketKeyword_2());
     c.setIndentationDecrement().before(e.getRightCurlyBracketKeyword_4());
   }
-  
+
   private void indentExtendMessageElements(FormattingConfig c, ProtobufGrammarAccess g) {
     ExtendMessageElements e = g.getExtendMessageAccess();
     c.setIndentationIncrement().after(e.getLeftCurlyBracketKeyword_2());
     c.setIndentationDecrement().before(e.getRightCurlyBracketKeyword_4());
   }
-  
+
+  private void indentGroupElements(FormattingConfig c, ProtobufGrammarAccess g) {
+    GroupElements e = g.getGroupAccess();
+    c.setIndentationIncrement().after(e.getLeftCurlyBracketKeyword_6());
+    c.setIndentationDecrement().before(e.getRightCurlyBracketKeyword_8());
+  }
+
   private void indentEnumElements(FormattingConfig c, ProtobufGrammarAccess g) {
     EnumElements e = g.getEnumAccess();
     c.setIndentationIncrement().after(e.getLeftCurlyBracketKeyword_2());
