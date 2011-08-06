@@ -119,7 +119,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
       Class<T> targetType) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     for (Import anImport : allImports) {
-      if (imports.isImportingProtoDescriptor(anImport)) {
+      if (imports.hasUnresolvedDescriptorUri(anImport)) {
         descriptions.addAll(allBuiltInTypes(targetType));
         continue;
       }

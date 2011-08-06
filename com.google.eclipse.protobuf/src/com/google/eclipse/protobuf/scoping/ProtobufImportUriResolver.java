@@ -38,11 +38,8 @@ public class ProtobufImportUriResolver extends ImportUriResolver {
   @Override public String apply(EObject from) {
     if (from instanceof Import) {
       Import anImport = (Import) from;
-      // String originalUri = anImport.getImportURI();
       anImport.setImportURI(resolveImportUri(anImport));
-      String applied = super.apply(from);
-      // anImport.setImportURI(originalUri);
-      return applied;
+      return super.apply(from);
     }
     return super.apply(from);
   }

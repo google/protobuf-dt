@@ -15,8 +15,11 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import com.google.eclipse.protobuf.scoping.IFileUriResolver;
-import com.google.eclipse.protobuf.ui.preferences.pages.paths.*;
+import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider;
+import com.google.eclipse.protobuf.ui.preferences.pages.paths.PathsPreferences;
+import com.google.eclipse.protobuf.ui.preferences.pages.paths.PathsPreferencesFactory;
 import com.google.eclipse.protobuf.ui.util.Resources;
+import com.google.eclipse.protobuf.util.Imports;
 import com.google.inject.Inject;
 
 /**
@@ -28,6 +31,8 @@ public class FileUriResolver implements IFileUriResolver {
 
   @Inject private PathsPreferencesFactory preferencesFactory;
   @Inject private FileResolverStrategies resolvers;
+  @Inject private Imports imports;
+  @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private Resources resources;
 
   /*
@@ -57,6 +62,9 @@ public class FileUriResolver implements IFileUriResolver {
   }
 
   private String resolveUri(String importUri, URI resourceUri) {
+    if (imports.isUnresolvedDescriptorUri(importUri)) {
+      return descriptorProvider.descriptorLocation().toString();
+    }
     IProject project = resources.project(resourceUri);
     if (project == null) project = resources.activeProject();
     if (project == null) throw new IllegalStateException("Unable to find current project");

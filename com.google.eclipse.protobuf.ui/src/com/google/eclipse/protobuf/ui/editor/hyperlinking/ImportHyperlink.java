@@ -8,8 +8,6 @@
  */
 package com.google.eclipse.protobuf.ui.editor.hyperlinking;
 
-import static com.google.eclipse.protobuf.ui.util.Resources.URI_SCHEME_FOR_FILES;
-
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.text.IRegion;
@@ -26,7 +24,7 @@ import com.google.eclipse.protobuf.ui.util.Resources;
 class ImportHyperlink implements IHyperlink {
 
   private static Logger logger = Logger.getLogger(ImportHyperlink.class);
-  
+
   private final URI importUri;
   private final IRegion region;
   private final Resources resources;
@@ -38,10 +36,16 @@ class ImportHyperlink implements IHyperlink {
   }
 
   public void open() {
-    String scheme = importUri.scheme();
     try {
-      if ("platform".equals(scheme)) resources.openProtoFileInPlatform(importUri);
-      if (URI_SCHEME_FOR_FILES.equals(scheme)) resources.openProtoFileInFileSystem(importUri);
+      if (importUri.isPlatformResource()) {
+        resources.openProtoFileInWorkspace(importUri);
+        return;
+      }
+      if (importUri.isPlatformPlugin()) {
+        resources.openProtoFileInPlugin(importUri);
+        return;
+      }
+      if (importUri.isFile()) resources.openProtoFileInFileSystem(importUri);
     } catch (PartInitException e) {
       logger.error("Unable to open " + importUri.toString(), e);
     }

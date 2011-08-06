@@ -8,7 +8,6 @@
  */
 package com.google.eclipse.protobuf.ui.editor;
 
-import static com.google.eclipse.protobuf.ui.util.Resources.URI_SCHEME_FOR_FILES;
 import static org.eclipse.xtext.ui.editor.utils.EditorUtils.getXtextEditor;
 
 import org.apache.log4j.Logger;
@@ -29,19 +28,26 @@ public class ProtobufUriEditorOpener extends LanguageSpecificURIEditorOpener {
   private static Logger logger = Logger.getLogger(ProtobufUriEditorOpener.class);
 
   @Inject private Resources resources;
-  
+
   /** {@inheritDoc} */
   @Override public IEditorPart open(URI uri, EReference crossReference, int indexInList, boolean select) {
-    if (URI_SCHEME_FOR_FILES.equals(uri.scheme())) {
-      try {
-        IEditorPart editor = resources.openProtoFileInFileSystem(uri.trimFragment());
+    try {
+      IEditorPart editor = editorFor(uri);
+      if (editor != null) {
         selectAndReveal(editor, uri, crossReference, indexInList, select);
         return getXtextEditor(editor);
-      } catch (PartInitException e) {
-        logger.error("Unable to open " + uri.toString(), e);
       }
+    } catch (PartInitException e) {
+      logger.error("Unable to open " + uri.toString(), e);
     }
     return super.open(uri, crossReference, indexInList, select);
   }
 
+  private IEditorPart editorFor(URI uri) throws PartInitException {
+    if (uri.isFile())
+      return resources.openProtoFileInFileSystem(uri.trimFragment());
+    if (uri.isPlatformPlugin())
+      return resources.openProtoFileInPlugin(uri);
+    return null;
+  }
 }

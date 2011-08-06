@@ -60,8 +60,6 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
   }
 
   private boolean isResolved(Import anImport) {
-    // global proto file, always available
-    if (imports.isImportingProtoDescriptor(anImport)) return true;
     String importUri = anImport.getImportURI();
     if (!isEmpty(importUri)) {
       URI uri = URI.createURI(importUri);

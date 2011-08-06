@@ -39,9 +39,6 @@ import com.google.inject.Inject;
  */
 public class ProtoDescriptor {
 
-  /** Path of proto.descriptor to use in imports. */
-  public static final String PATH = "google/protobuf/descriptor.proto";
-
   private static final Map<String, OptionType> OPTION_DEFINITION_BY_NAME = new HashMap<String, OptionType>();
 
   static {

@@ -10,12 +10,13 @@ package com.google.eclipse.protobuf.scoping;
 
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import com.google.eclipse.protobuf.util.ModelNodes;
-import com.google.inject.*;
-
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.parser.IParser;
+
+import com.google.eclipse.protobuf.util.ModelNodes;
+import com.google.inject.*;
 
 /**
  * Provider of a singleton instance of <code>{@link ProtoDescriptor}</code>.
@@ -32,6 +33,7 @@ public class ProtoDescriptorProvider implements Provider<ProtoDescriptor> {
   @Inject private IExtensionRegistry registry;
 
   private ProtoDescriptor descriptor;
+  private URI descriptorLocation;
 
   private final Object lock = new Object();
 
@@ -40,17 +42,27 @@ public class ProtoDescriptorProvider implements Provider<ProtoDescriptor> {
       if (descriptor == null) {
         descriptor = new ProtoDescriptor(parser, descriptorLocation(), nodes);
       }
-      return descriptor;
     }
+    return descriptor;
   }
-  
-  private URI descriptorLocation() {
+
+  public URI descriptorLocation() {
+    synchronized (lock) {
+      if (descriptorLocation == null) descriptorLocation = findDescriptorLocation();
+    }
+    return descriptorLocation;
+  }
+
+  private URI findDescriptorLocation() {
+    String uri = null;
     IConfigurationElement[] config = registry.getConfigurationElementsFor(EXTENSION_ID);
     for (IConfigurationElement e : config) {
       String path = e.getAttribute("path");
       if (isEmpty(path)) continue;
-      return URI.createURI("platform:/plugin/" + e.getContributor().getName() + "/" + path);
+      uri = "platform:/plugin/" + e.getContributor().getName() + "/" + path;
+      break;
     }
-    return URI.createURI("platform:/plugin/com.google.eclipse.protobuf/descriptor.proto");
+    if (uri == null) uri = "platform:/plugin/com.google.eclipse.protobuf/descriptor.proto";
+    return URI.createURI(uri);
   }
 }
