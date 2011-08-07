@@ -33,7 +33,8 @@ import org.eclipse.xtext.scoping.impl.*;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.eclipse.protobuf.util.*;
+import com.google.eclipse.protobuf.util.FieldOptions;
+import com.google.eclipse.protobuf.util.ProtobufElementFinder;
 import com.google.inject.Inject;
 
 /**
@@ -55,7 +56,6 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   @Inject private LocalNamesProvider localNamesProvider;
   @Inject private ImportedNamesProvider importedNamesProvider;
   @Inject private PackageResolver packageResolver;
-  @Inject private Imports imports;
 
   @SuppressWarnings("unused")
   IScope scope_TypeRef_type(TypeRef typeRef, EReference reference) {
@@ -119,7 +119,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
       Class<T> targetType) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     for (Import anImport : allImports) {
-      if (imports.hasUnresolvedDescriptorUri(anImport)) {
+      if (isImportingDescriptor(anImport)) {
         descriptions.addAll(allBuiltInTypes(targetType));
         continue;
       }
@@ -133,6 +133,10 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
       descriptions.addAll(children(importedResource, targetType));
     }
     return descriptions;
+  }
+
+  private boolean isImportingDescriptor(Import anImport) {
+    return descriptorProvider.descriptorLocation().toString().equals(anImport.getImportURI());
   }
 
   private <T extends Type> Collection<IEObjectDescription> allBuiltInTypes(Class<T> targetType) {

@@ -17,11 +17,10 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.*;
 import org.eclipse.ui.ide.FileStoreEditorInput;
-import org.eclipse.ui.internal.editors.text.EditorsPlugin;
-import org.eclipse.ui.internal.editors.text.NonExistingFileEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.navigator.ResourceNavigator;
 
+import com.google.eclipse.protobuf.ui.editor.UriEditorInput;
 import com.google.inject.Singleton;
 
 /**
@@ -93,18 +92,9 @@ public class Resources {
     return openFile(editorInput/*"org.eclipse.ui.DefaultTextEditor"*/);
   }
 
-  @SuppressWarnings("restriction")
   public IEditorPart openProtoFileInPlugin(URI uri) throws PartInitException {
-    IFileStore fileStore = queryFileStore();
-    IEditorInput editorInput = new NonExistingFileEditorInput(fileStore, "descriptor.proto");
+    IEditorInput editorInput = new UriEditorInput(uri, "descriptor.proto");
     return openFile(editorInput);
-  }
-
-  @SuppressWarnings("restriction")
-  private IFileStore queryFileStore() {
-    IPath stateLocation = EditorsPlugin.getDefault().getStateLocation();
-    IPath path = stateLocation.append("/_" + new Object().hashCode()); //$NON-NLS-1$
-    return EFS.getLocalFileSystem().getStore(path);
   }
 
   private IEditorPart openFile(IEditorInput editorInput) throws PartInitException {

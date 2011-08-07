@@ -23,7 +23,6 @@ import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
 import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.ui.util.Resources;
-import com.google.eclipse.protobuf.util.Imports;
 import com.google.inject.Inject;
 
 /**
@@ -39,7 +38,6 @@ public class ProtobufHyperlinkDetector extends DefaultHyperlinkDetector {
   private static final char QUOTE = '\"';
 
   @Inject private EObjectAtOffsetHelper eObjectAtOffsetHelper;
-  @Inject private Imports imports;
   @Inject private Resources resources;
 
   @Override public IHyperlink[] detectHyperlinks(ITextViewer textViewer, final IRegion region,

@@ -56,13 +56,14 @@ public class ProtoDescriptor {
   private Protobuf root;
 
   private final ModelNodes nodes;
+  private final XtextResource resource;
 
   @Inject public ProtoDescriptor(IParser parser, URI descriptorLocation, ModelNodes nodes) {
     this.nodes = nodes;
     addOptionTypes();
     InputStreamReader reader = null;
     try {
-      XtextResource resource = new XtextResource(descriptorLocation);
+      resource = new XtextResource(descriptorLocation);
       reader = new InputStreamReader(contents(descriptorLocation), UTF_8);
       IParseResult result = parser.parse(reader);
       root = (Protobuf) result.getRootASTElement();
@@ -242,5 +243,9 @@ public class ProtoDescriptor {
    */
   public List<Type> allTypes() {
     return unmodifiableList(allTypes);
+  }
+
+  public XtextResource resource() {
+    return resource;
   }
 }
