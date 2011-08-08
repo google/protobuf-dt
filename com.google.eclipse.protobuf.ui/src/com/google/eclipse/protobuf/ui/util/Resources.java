@@ -93,7 +93,7 @@ public class Resources {
   }
 
   public IEditorPart openProtoFileInPlugin(URI uri) throws PartInitException {
-    IEditorInput editorInput = new UriEditorInput(uri, "descriptor.proto");
+    IEditorInput editorInput = new UriEditorInput(uri);
     return openFile(editorInput);
   }
 

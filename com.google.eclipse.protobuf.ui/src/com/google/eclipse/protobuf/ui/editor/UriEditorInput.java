@@ -22,9 +22,9 @@ public class UriEditorInput implements IEditorInput {
   private final URI fileUri;
   private final String name;
 
-  public UriEditorInput(URI fileUri, String name) {
+  public UriEditorInput(URI fileUri) {
     this.fileUri = fileUri.trimFragment();
-    this.name = name;
+    name = this.fileUri.segment(this.fileUri.segmentCount() - 1);
   }
 
   @SuppressWarnings("rawtypes")

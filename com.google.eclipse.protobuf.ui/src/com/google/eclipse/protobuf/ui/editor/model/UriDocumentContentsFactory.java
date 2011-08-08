@@ -20,11 +20,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.model.XtextDocument;
 
-import com.google.eclipse.protobuf.scoping.ProtoDescriptor;
-import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider;
 import com.google.eclipse.protobuf.ui.editor.UriEditorInput;
+import com.google.eclipse.protobuf.ui.resource.XtextResourceFactory;
 import com.google.inject.Inject;
 
 /**
@@ -32,20 +32,17 @@ import com.google.inject.Inject;
  */
 class UriDocumentContentsFactory implements DocumentContentsFactory {
 
-  @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private ContentReader contentReader;
+  @Inject private XtextResourceFactory resourceFactory;
 
   public void createContents(XtextDocument document, Object element) throws CoreException {
     UriEditorInput input = supportedEditorInputType().cast(element);
-    URI uri = input.getFileUri().trimFragment();
-    if (!descriptorProvider.descriptorLocation().equals(uri)) {
-      throw new UnsupportedOperationException("File to open is not descriptor.proto");
-    }
-    ProtoDescriptor descriptor = descriptorProvider.get();
+    URI uri = input.getFileUri();
     try {
       String contents = contentsOf(uri);
       document.set(contents);
-      document.setInput(descriptor.resource());
+      XtextResource resource = resourceFactory.createResource(uri, contents);
+      document.setInput(resource);
     } catch (Throwable t) {
       String message = t.getMessage();
       if (message == null) message = "";
