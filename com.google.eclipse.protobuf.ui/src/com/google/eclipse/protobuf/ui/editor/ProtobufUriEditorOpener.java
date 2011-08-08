@@ -17,7 +17,6 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.xtext.ui.editor.LanguageSpecificURIEditorOpener;
 
-import com.google.eclipse.protobuf.ui.util.Resources;
 import com.google.inject.Inject;
 
 /**
@@ -27,12 +26,12 @@ public class ProtobufUriEditorOpener extends LanguageSpecificURIEditorOpener {
 
   private static Logger logger = Logger.getLogger(ProtobufUriEditorOpener.class);
 
-  @Inject private Resources resources;
+  @Inject private FileOpener fileOpener;
 
   /** {@inheritDoc} */
   @Override public IEditorPart open(URI uri, EReference crossReference, int indexInList, boolean select) {
     try {
-      IEditorPart editor = editorFor(uri);
+      IEditorPart editor = editorFor(uri.trimFragment());
       if (editor != null) {
         selectAndReveal(editor, uri, crossReference, indexInList, select);
         return getXtextEditor(editor);
@@ -45,9 +44,9 @@ public class ProtobufUriEditorOpener extends LanguageSpecificURIEditorOpener {
 
   private IEditorPart editorFor(URI uri) throws PartInitException {
     if (uri.isFile())
-      return resources.openProtoFileInFileSystem(uri.trimFragment());
+      return fileOpener.openProtoFileInFileSystem(uri);
     if (uri.isPlatformPlugin())
-      return resources.openProtoFileInPlugin(uri);
+      return fileOpener.openProtoFileInPlugin(uri);
     return null;
   }
 }

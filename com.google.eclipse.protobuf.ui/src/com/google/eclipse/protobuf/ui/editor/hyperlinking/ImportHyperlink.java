@@ -14,7 +14,7 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.ui.PartInitException;
 
-import com.google.eclipse.protobuf.ui.util.Resources;
+import com.google.eclipse.protobuf.ui.editor.FileOpener;
 
 /**
  * A hyperlink for imported .proto files.
@@ -27,25 +27,25 @@ class ImportHyperlink implements IHyperlink {
 
   private final URI importUri;
   private final IRegion region;
-  private final Resources resources;
+  private final FileOpener fileOpener;
 
-  ImportHyperlink(URI importUri, IRegion region, Resources resources) {
+  ImportHyperlink(URI importUri, IRegion region, FileOpener fileOpener) {
     this.importUri = importUri;
     this.region = region;
-    this.resources = resources;
+    this.fileOpener = fileOpener;
   }
 
   public void open() {
     try {
       if (importUri.isPlatformResource()) {
-        resources.openProtoFileInWorkspace(importUri);
+        fileOpener.openProtoFileInWorkspace(importUri);
         return;
       }
       if (importUri.isPlatformPlugin()) {
-        resources.openProtoFileInPlugin(importUri);
+        fileOpener.openProtoFileInPlugin(importUri);
         return;
       }
-      if (importUri.isFile()) resources.openProtoFileInFileSystem(importUri);
+      if (importUri.isFile()) fileOpener.openProtoFileInFileSystem(importUri);
     } catch (PartInitException e) {
       logger.error("Unable to open " + importUri.toString(), e);
     }

@@ -8,19 +8,14 @@
  */
 package com.google.eclipse.protobuf.ui.util;
 
-import org.eclipse.core.filesystem.EFS;
-import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.*;
-import org.eclipse.ui.ide.FileStoreEditorInput;
-import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.navigator.ResourceNavigator;
 
-import com.google.eclipse.protobuf.ui.editor.UriEditorInput;
 import com.google.inject.Singleton;
 
 /**
@@ -65,41 +60,6 @@ public class Resources {
   public boolean fileExists(URI fileUri) {
     IFile file = file(fileUri);
     return (file != null) ? file.exists() : false;
-  }
-
-  /**
-   * Opens the .proto file identified by the given URI that exists in the workspace.
-   * @param uri the URI of the file to open.
-   * @return an open and active editor, or {@code null} if an external editor was opened.
-   * @throws PartInitException if the editor cannot be opened or initialized.
-   */
-  public IEditorPart openProtoFileInWorkspace(URI uri) throws PartInitException {
-    IFile file = file(uri);
-    IEditorInput editorInput = new FileEditorInput(file);
-    return openFile(editorInput);
-  }
-
-  /**
-   * Opens the .proto file identified by the given URI that does not exist in the workspace, therefore is
-   * opened from the file system.
-   * @param uri the URI of the file to open.
-   * @return an open and active editor, or {@code null} if an external editor was opened.
-   * @throws PartInitException if the editor cannot be created or initialized.
-   */
-  public IEditorPart openProtoFileInFileSystem(URI uri) throws PartInitException {
-    IFileStore fileStore = EFS.getLocalFileSystem().getStore(new Path(uri.toFileString()));
-    IEditorInput editorInput = new FileStoreEditorInput(fileStore);
-    return openFile(editorInput/*"org.eclipse.ui.DefaultTextEditor"*/);
-  }
-
-  public IEditorPart openProtoFileInPlugin(URI uri) throws PartInitException {
-    IEditorInput editorInput = new UriEditorInput(uri);
-    return openFile(editorInput);
-  }
-
-  private IEditorPart openFile(IEditorInput editorInput) throws PartInitException {
-    IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-    return page.openEditor(editorInput, "com.google.eclipse.protobuf.Protobuf");
   }
 
   /**

@@ -22,7 +22,7 @@ import org.eclipse.xtext.ui.editor.model.IXtextDocument;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
 import com.google.eclipse.protobuf.protobuf.Import;
-import com.google.eclipse.protobuf.ui.util.Resources;
+import com.google.eclipse.protobuf.ui.editor.FileOpener;
 import com.google.inject.Inject;
 
 /**
@@ -38,7 +38,7 @@ public class ProtobufHyperlinkDetector extends DefaultHyperlinkDetector {
   private static final char QUOTE = '\"';
 
   @Inject private EObjectAtOffsetHelper eObjectAtOffsetHelper;
-  @Inject private Resources resources;
+  @Inject private FileOpener fileOpener;
 
   @Override public IHyperlink[] detectHyperlinks(ITextViewer textViewer, final IRegion region,
       final boolean canShowMultipleHyperlinks) {
@@ -65,7 +65,7 @@ public class ProtobufHyperlinkDetector extends DefaultHyperlinkDetector {
           return NO_HYPERLINKS;
         }
         String importUri = anImport.getImportURI();
-        IHyperlink hyperlink = new ImportHyperlink(createURI(importUri), importUriRegion, resources);
+        IHyperlink hyperlink = new ImportHyperlink(createURI(importUri), importUriRegion, fileOpener);
         return new IHyperlink[] { hyperlink };
       }
     });
