@@ -125,10 +125,12 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
       }
       Resource importedResource = importedResourceFrom(anImport);
       Protobuf importedRoot = rootElementOf(importedResource);
-      descriptions.addAll(publicImportedTypes(importedRoot, targetType));
-      if (importedRoot != null && arePackagesRelated(aPackage, importedRoot)) {
-        descriptions.addAll(typesIn(importedRoot));
-        continue;
+      if (importedRoot != null) {
+        descriptions.addAll(publicImportedTypes(importedRoot, targetType));
+        if (arePackagesRelated(aPackage, importedRoot)) {
+          descriptions.addAll(typesIn(importedRoot));
+          continue;
+        }
       }
       descriptions.addAll(children(importedResource, targetType));
     }
@@ -136,7 +138,8 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   }
 
   private boolean isImportingDescriptor(Import anImport) {
-    return descriptorProvider.descriptorLocation().toString().equals(anImport.getImportURI());
+    String descriptorLocation = descriptorProvider.descriptorLocation().toString();
+    return descriptorLocation.equals(anImport.getImportURI());
   }
 
   private <T extends Type> Collection<IEObjectDescription> allBuiltInTypes(Class<T> targetType) {
