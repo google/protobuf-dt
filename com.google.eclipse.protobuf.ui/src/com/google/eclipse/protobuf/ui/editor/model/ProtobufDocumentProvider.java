@@ -9,9 +9,8 @@
  */
 package com.google.eclipse.protobuf.ui.editor.model;
 
-import static com.google.eclipse.protobuf.ui.ProtobufUiModule.PLUGIN_ID;
+import static com.google.eclipse.protobuf.ui.exception.CoreExceptions.error;
 import static com.google.eclipse.protobuf.util.Encodings.UTF_8;
-import static org.eclipse.core.runtime.IStatus.ERROR;
 import static org.eclipse.text.undo.DocumentUndoManagerRegistry.getDocumentUndoManager;
 
 import org.eclipse.core.runtime.*;
@@ -84,10 +83,8 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
       manager.beginCompoundChange();
       edit.apply(document);
       manager.endCompoundChange();
-    } catch (Exception e) {
-      String message = e.getMessage();
-      if (message == null) message = e.getClass().getSimpleName();
-      throw new CoreException(new Status(ERROR, PLUGIN_ID, message, e));
+    } catch (Throwable t) {
+      throw error(t);
     }
   }
 

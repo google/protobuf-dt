@@ -8,14 +8,12 @@
  */
 package com.google.eclipse.protobuf.ui.editor.model;
 
-import static com.google.eclipse.protobuf.ui.ProtobufUiModule.PLUGIN_ID;
+import static com.google.eclipse.protobuf.ui.exception.CoreExceptions.error;
 import static com.google.eclipse.protobuf.util.Closeables.close;
-import static org.eclipse.core.runtime.IStatus.ERROR;
 
 import java.io.*;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.xtext.resource.XtextResource;
@@ -42,9 +40,7 @@ class FileStoreDocumentContentsFactory implements DocumentContentsFactory {
       XtextResource resource = resourceFactory.createResource(file.toURI().toString(), contents);
       document.setInput(resource);
     } catch (Throwable t) {
-      String message = t.getMessage();
-      if (message == null) message = "";
-      throw new CoreException(new Status(ERROR, PLUGIN_ID, message, t));
+      throw error(t);
     }
   }
 

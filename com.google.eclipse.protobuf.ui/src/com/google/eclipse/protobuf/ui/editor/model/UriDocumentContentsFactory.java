@@ -8,16 +8,14 @@
  */
 package com.google.eclipse.protobuf.ui.editor.model;
 
-import static com.google.eclipse.protobuf.ui.ProtobufUiModule.PLUGIN_ID;
+import static com.google.eclipse.protobuf.ui.exception.CoreExceptions.error;
 import static com.google.eclipse.protobuf.util.Closeables.close;
-import static org.eclipse.core.runtime.IStatus.ERROR;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.xtext.resource.XtextResource;
@@ -44,10 +42,7 @@ class UriDocumentContentsFactory implements DocumentContentsFactory {
       XtextResource resource = resourceFactory.createResource(uri, contents);
       document.setInput(resource);
     } catch (Throwable t) {
-      String message = t.getMessage();
-      if (message == null) message = "";
-      // TODO remove duplication
-      throw new CoreException(new Status(ERROR, PLUGIN_ID, message, t));
+      throw error(t);
     }
   }
 

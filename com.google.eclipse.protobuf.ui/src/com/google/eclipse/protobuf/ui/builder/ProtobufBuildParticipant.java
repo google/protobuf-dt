@@ -8,23 +8,23 @@
  */
 package com.google.eclipse.protobuf.ui.builder;
 
-import static com.google.eclipse.protobuf.ui.ProtobufUiModule.PLUGIN_ID;
 import static com.google.eclipse.protobuf.ui.builder.OutputDirectories.findOrCreateOutputDirectories;
+import static com.google.eclipse.protobuf.ui.exception.CoreExceptions.error;
 import static com.google.eclipse.protobuf.ui.preferences.pages.compiler.PostCompilationRefreshTarget.PROJECT;
 import static com.google.eclipse.protobuf.ui.preferences.pages.paths.PathResolutionType.MULTIPLE_DIRECTORIES;
 import static java.util.Collections.*;
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
-import static org.eclipse.core.runtime.IStatus.ERROR;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.filesystem.*;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.builder.IXtextBuilderParticipant;
-import org.eclipse.xtext.resource.*;
+import org.eclipse.xtext.resource.IResourceDescription;
 import org.eclipse.xtext.resource.IResourceDescription.Delta;
 
 import com.google.eclipse.protobuf.ui.preferences.pages.compiler.*;
@@ -125,7 +125,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
       processStream(process.getErrorStream(), source);
       process.destroy();
     } catch (Throwable e) {
-      throw processExecutionError(command, e);
+      throw error(e);
     }
   }
 
@@ -163,9 +163,5 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
 
   private static void refresh(IResource target, IProgressMonitor monitor) throws CoreException {
     target.refreshLocal(DEPTH_INFINITE, monitor);
-  }
-
-  private static CoreException processExecutionError(String command, Throwable e) {
-    return new CoreException(new Status(ERROR, PLUGIN_ID, e.getMessage()));
   }
 }
