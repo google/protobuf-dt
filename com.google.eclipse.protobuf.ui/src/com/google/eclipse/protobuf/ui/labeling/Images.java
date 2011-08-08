@@ -42,6 +42,7 @@ public class Images {
   static {
     IMAGES_BY_TYPE.put(Enum.class, "enum.gif");
     IMAGES_BY_TYPE.put(ExtendMessage.class, "extend.gif");
+    IMAGES_BY_TYPE.put(Extensions.class, "extensions.gif");
     IMAGES_BY_TYPE.put(Group.class, "group.gif");
     IMAGES_BY_TYPE.put(Import.class, "import.gif");
     IMAGES_BY_TYPE.put(Literal.class, "literal.gif");

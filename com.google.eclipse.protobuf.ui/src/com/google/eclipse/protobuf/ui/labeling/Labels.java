@@ -1,9 +1,10 @@
 /*
  * Copyright (c) 2011 Google Inc.
- *
- * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License v1.0 which accompanies this distribution, and is available at
- *
+ * 
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
+ * 
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.ui.labeling;
@@ -16,16 +17,16 @@ import com.google.eclipse.protobuf.util.ModelNodes;
 import com.google.eclipse.protobuf.util.Properties;
 import com.google.inject.*;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.xtext.nodemodel.INode;
 
 /**
  * Registry of commonly used text in the 'Protocol Buffer' editor.
- *
+ * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
-public class Labels {
+@Singleton public class Labels {
 
   @Inject private ModelNodes nodes;
   @Inject private Properties properties;
@@ -34,6 +35,10 @@ public class Labels {
     if (o instanceof ExtendMessage) {
       ExtendMessage extend = (ExtendMessage) o;
       return labelFor(extend);
+    }
+    if (o instanceof Extensions) {
+      Extensions extensions = (Extensions) o;
+      return labelFor(extensions);
     }
     if (o instanceof Import) {
       Import i = (Import) o;
@@ -58,6 +63,22 @@ public class Labels {
     return messageName(extend.getMessage());
   }
 
+  private Object labelFor(Extensions extensions) {
+    StringBuilder builder = new StringBuilder();
+    EList<Range> ranges = extensions.getRanges();
+    int rangeCount = ranges.size();
+    for (int i = 0; i < rangeCount; i++) {
+      if (i > 0) builder.append(", ");
+      Range range = ranges.get(i);
+      builder.append(range.getFrom());
+      String to = range.getTo();
+      if (to != null) {
+        builder.append(" > ").append(to);
+      }
+    }
+    return builder.toString();
+  }
+
   private Object labelFor(Import i) {
     INode node = nodes.firstNodeForFeature(i, IMPORT__IMPORT_URI);
     if (node == null) return i.getImportURI();
@@ -74,7 +95,9 @@ public class Labels {
   private Object labelFor(Property p) {
     StyledString text = new StyledString(p.getName());
     String typeName = properties.typeNameOf(p);
-    if (typeName == null) typeName = "<unresolved reference>"; // TODO move to properties file
+    if (typeName == null) typeName = "<unresolved reference>"; // TODO move to
+                                                               // properties
+                                                               // file
     String indexAndType = String.format(" [%d] : %s", p.getIndex(), typeName);
     text.append(indexAndType, DECORATIONS_STYLER);
     return text;
