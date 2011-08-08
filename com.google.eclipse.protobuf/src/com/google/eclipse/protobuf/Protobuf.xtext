@@ -83,15 +83,6 @@ Property:
   modifier=Modifier type=AbstractTypeRef name=Name '=' index=(INT | HEX)
   ('[' fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)* ']')? ';';
 
-FieldOption:
-  BuiltInFieldOption | CustomFieldOption;
-
-BuiltInFieldOption:
-  name=Name '=' value=ValueRef;
-
-CustomFieldOption:
-  '(' name=QualifiedName ')' '=' value=ValueRef;
-
 enum Modifier:
   required
   | optional
@@ -180,7 +171,17 @@ EnumElement:
   Option | Literal;
 
 Literal:
-  name=Name '=' index=(INT | HEX) ';';
+  name=Name '=' index=(INT | HEX) 
+  ('[' fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)* ']')? ';';
+
+FieldOption:
+  BuiltInFieldOption | CustomFieldOption;
+
+BuiltInFieldOption:
+  name=Name '=' value=ValueRef;
+
+CustomFieldOption:
+  '(' name=QualifiedName ')' '=' value=ValueRef;
 
 terminal HEX returns ecore::EInt:
   '0x' (NUMBER | 'a'..'f' | 'A'..'F')+;
