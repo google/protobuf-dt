@@ -24,6 +24,7 @@ import com.google.eclipse.protobuf.protobuf.Property;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
+@Ignore("This test requires to be executed as a 'JUnit plug-in test'. I haven't found a way to register PlatformURLHandler with the JVM")
 public class Descriptor_fileOptions_Test {
 
   @Rule public XtextRule xtext = new XtextRule();
