@@ -102,7 +102,20 @@ TypeRef:
   type=[Type|QualifiedName];
 
 ValueRef:
-  LiteralRef | BooleanRef | NumberRef | StringRef | Nan;
+  MessageNotation | SimpleRef;
+
+// { foo: 1, bar: 2 }
+MessageNotation:
+  '{' 
+  fields+=FieldNotation (',' fields+=FieldNotation)*    
+  '}' 
+;
+
+FieldNotation:
+  name=Name ':' value=SimpleRef;
+
+SimpleRef:
+	LiteralRef | BooleanRef | NumberRef | StringRef | Nan;
 
 LiteralRef:
   literal=[Literal];
