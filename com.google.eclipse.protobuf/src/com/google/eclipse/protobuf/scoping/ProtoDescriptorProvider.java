@@ -54,15 +54,19 @@ public class ProtoDescriptorProvider implements Provider<ProtoDescriptor> {
   }
 
   private URI findDescriptorLocation() {
-    String uri = null;
     IConfigurationElement[] config = registry.getConfigurationElementsFor(EXTENSION_ID);
+    if (config == null) return defaultDescriptor();
     for (IConfigurationElement e : config) {
       String path = e.getAttribute("path");
       if (isEmpty(path)) continue;
-      uri = "platform:/plugin/" + e.getContributor().getName() + "/" + path;
-      break;
+      StringBuilder uri = new StringBuilder();
+      uri.append("platform:/plugin/").append(e.getContributor().getName()).append("/").append(path);
+      return URI.createURI(uri.toString());
     }
-    if (uri == null) uri = "platform:/plugin/com.google.eclipse.protobuf/descriptor.proto";
-    return URI.createURI(uri);
+    return defaultDescriptor();
+  }
+  
+  private static URI defaultDescriptor() {
+    return URI.createURI("platform:/plugin/com.google.eclipse.protobuf/descriptor.proto");
   }
 }

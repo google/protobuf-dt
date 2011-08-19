@@ -28,12 +28,6 @@ public class DirectoryPath_parse_Test {
     assertThat(path.isWorkspacePath(), equalTo(true));
   }
 
-  @Test public void should_parse_project_path() {
-    DirectoryPath path = DirectoryPath.parse("/${project}/src}");
-    assertThat(path.value(), equalTo("/${project}/src}"));
-    assertThat(path.isWorkspacePath(), equalTo(true));
-  }
-
   @Test public void should_parse_file_system_path() {
     DirectoryPath path = DirectoryPath.parse("/test/src");
     assertThat(path.value(), equalTo("/test/src"));

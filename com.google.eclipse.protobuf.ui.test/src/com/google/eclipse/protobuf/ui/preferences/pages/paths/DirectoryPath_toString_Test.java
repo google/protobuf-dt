@@ -29,7 +29,7 @@ public class DirectoryPath_toString_Test {
 
   @Test public void should_specify_is_project_path() {
     DirectoryPath path = new DirectoryPath("/${project}/src", true);
-    assertThat(path.toString(), equalTo("/${project}/src"));
+    assertThat(path.toString(), equalTo("${workspace_loc:/${project}/src}"));
   }
 
   @Test public void should_return_plain_value_if_it_is_not_workspace_path() {

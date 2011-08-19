@@ -25,7 +25,6 @@ import com.google.inject.Binder;
  */
 public class ProtobufRuntimeModule extends com.google.eclipse.protobuf.AbstractProtobufRuntimeModule {
 
-  /** {@inheritDoc} */
   @Override public Class<? extends IQualifiedNameProvider> bindIQualifiedNameProvider() {
     return ProtobufQualifiedNameProvider.class;
   }

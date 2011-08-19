@@ -21,7 +21,6 @@ import org.eclipse.xtext.util.StringInputStream;
 import org.junit.rules.MethodRule;
 import org.junit.runners.model.*;
 
-import com.google.eclipse.protobuf.ProtobufStandaloneSetup;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.inject.Injector;
 
@@ -90,7 +89,7 @@ public class XtextRule implements MethodRule {
     }
 
     private void setUpInjector() {
-      injector = new ProtobufStandaloneSetup().createInjectorAndDoEMFRegistration();
+      injector = new TestingStandaloneSetup().createInjectorAndDoEMFRegistration();
     }
   }
 }

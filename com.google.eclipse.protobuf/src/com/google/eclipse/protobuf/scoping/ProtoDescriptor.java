@@ -30,7 +30,6 @@ import org.eclipse.xtext.resource.XtextResource;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.util.ModelNodes;
-import com.google.inject.Inject;
 
 /**
  * Contains the elements from descriptor.proto (provided with protobuf's library.)
@@ -58,7 +57,7 @@ public class ProtoDescriptor {
   private final ModelNodes nodes;
   private final XtextResource resource;
 
-  @Inject public ProtoDescriptor(IParser parser, URI descriptorLocation, ModelNodes nodes) {
+  public ProtoDescriptor(IParser parser, URI descriptorLocation, ModelNodes nodes) {
     this.nodes = nodes;
     addOptionTypes();
     InputStreamReader reader = null;
@@ -71,7 +70,6 @@ public class ProtoDescriptor {
       resolveLazyCrossReferences(resource, NullImpl);
       initContents();
     } catch (Throwable t) {
-      t.printStackTrace();
       throw new IllegalStateException("Unable to parse descriptor.proto", t);
     } finally {
       close(reader);

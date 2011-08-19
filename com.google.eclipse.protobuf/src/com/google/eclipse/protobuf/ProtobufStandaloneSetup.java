@@ -11,7 +11,7 @@ package com.google.eclipse.protobuf;
 /**
  * Initialization support for running Xtext languages without Equinox extension registry.
  */
-public class ProtobufStandaloneSetup extends ProtobufStandaloneSetupGenerated{
+public class ProtobufStandaloneSetup extends ProtobufStandaloneSetupGenerated {
 
 	public static void doSetup() {
 		new ProtobufStandaloneSetup().createInjectorAndDoEMFRegistration();

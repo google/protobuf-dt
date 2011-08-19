@@ -31,7 +31,7 @@ public class Descriptor_fileOptions_Test {
   private ProtoDescriptor descriptor;
 
   @Before public void setUp() {
-    descriptor = xtext.getInstanceOf(ProtoDescriptor.class);
+    descriptor = xtext.getInstanceOf(ProtoDescriptorProvider.class).get();
   }
 
   @Test public void should_return_all_file_options() {
