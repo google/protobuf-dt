@@ -8,10 +8,10 @@
  */
 package com.google.eclipse.protobuf.conversion;
 
-import com.google.inject.Inject;
-
 import org.eclipse.xtext.common.services.DefaultTerminalConverters;
 import org.eclipse.xtext.conversion.*;
+
+import com.google.inject.Inject;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -19,9 +19,15 @@ import org.eclipse.xtext.conversion.*;
 public class ProtobufTerminalConverters extends DefaultTerminalConverters {
 
   @Inject private HEXValueConverter hexValueConverter;
-  
+  @Inject private STRINGValueConverter stringValueConverter;
+
   @ValueConverter(rule = "HEX")
   public IValueConverter<Integer> HEX() {
     return hexValueConverter;
+  }
+
+  @ValueConverter(rule = "STRING")
+  public IValueConverter<String> STRING() {
+    return stringValueConverter;
   }
 }

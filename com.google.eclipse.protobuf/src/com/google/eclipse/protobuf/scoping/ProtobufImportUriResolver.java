@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static com.google.eclipse.protobuf.util.Strings.removeLineBreaksFrom;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 
@@ -39,12 +41,12 @@ public class ProtobufImportUriResolver extends ImportUriResolver {
     if (from instanceof Import) {
       Import anImport = (Import) from;
       anImport.setImportURI(resolveImportUri(anImport));
-      return super.apply(from);
     }
     return super.apply(from);
   }
 
   private String resolveImportUri(Import anImport) {
-    return delegate.resolveUri(anImport.getImportURI(), anImport.eResource());
+    String importURI = removeLineBreaksFrom(anImport.getImportURI());
+    return delegate.resolveUri(importURI, anImport.eResource());
   }
 }

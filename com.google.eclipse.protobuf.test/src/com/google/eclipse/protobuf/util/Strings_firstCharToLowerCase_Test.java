@@ -6,13 +6,15 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.util;
+package com.google.eclipse.protobuf.util;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
+
+import com.google.eclipse.protobuf.util.Strings;
 
 /**
  * Tests for <code>{@link Strings#firstCharToLowerCase(String)}</code>

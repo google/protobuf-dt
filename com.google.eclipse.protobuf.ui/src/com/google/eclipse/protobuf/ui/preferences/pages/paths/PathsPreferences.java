@@ -9,7 +9,7 @@
 package com.google.eclipse.protobuf.ui.preferences.pages.paths;
 
 import static com.google.eclipse.protobuf.ui.preferences.pages.paths.PathResolutionType.*;
-import static com.google.eclipse.protobuf.ui.util.Strings.CSV_PATTERN;
+import static com.google.eclipse.protobuf.util.Strings.CSV_PATTERN;
 import static java.util.Collections.*;
 
 import java.util.*;

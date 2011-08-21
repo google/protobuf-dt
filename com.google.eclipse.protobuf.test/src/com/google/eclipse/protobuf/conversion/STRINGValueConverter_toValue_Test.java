@@ -24,42 +24,45 @@ import org.junit.runners.Parameterized.Parameters;
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 
 /**
- * Tests for <code>{@link HEXValueConverter#toValue(String, INode)}</code>.
+ * Tests for <code>{@link STRINGValueConverter#toValue(String, INode)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
 @RunWith(Parameterized.class)
-public class HEXValueConverter_toValue_Test {
+public class STRINGValueConverter_toValue_Test {
 
   @Rule public XtextRule xtext = new XtextRule();
 
   private final String input;
-  private final Integer expected;
+  private final String expected;
 
   @Parameters
   public static Collection<Object[]> parameters() {
     return asList(new Object[][] {
-      { "0x1", 1 },
-      { "0xA", 10 },
-      { "0xFF", 255 }
+      { null, null },
+      { "\"Hello World!\"", "Hello World!" },
+      { "\"Hello\"\n\" World!\"", "Hello World!" },
+      { "\"Hello\"\r\" World!\"", "Hello World!" },
+      { "\"Hello\"\n\n\" World!\"", "Hello World!" },
+      { "\"Hello\"\n\r\" World!\"", "Hello World!" }
     });
   }
 
-  public HEXValueConverter_toValue_Test(String input, Integer expected) {
+  public STRINGValueConverter_toValue_Test(String input, String expected) {
     this.input = input;
     this.expected = expected;
   }
 
-  private HEXValueConverter converter;
+  private STRINGValueConverter converter;
   private INode node;
 
   @Before public void setUp() {
     node = mock(INode.class);
-    converter = xtext.injector().getInstance(HEXValueConverter.class);
+    converter = xtext.injector().getInstance(STRINGValueConverter.class);
   }
 
-  @Test public void should_parse_hexadecimal_number() {
-    Integer value = converter.toValue(input, node);
+  @Test public void should_parse_multi_line_string() {
+    String value = converter.toValue(input, node);
     assertThat(value, equalTo(expected));
   }
 }

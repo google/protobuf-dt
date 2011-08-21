@@ -22,7 +22,7 @@ import org.eclipse.xtext.nodemodel.INode;
 public class HEXValueConverter extends AbstractLexerBasedConverter<Integer> {
 
   /**
-   * Creates am {@code int} from the given input, if the given input represents an hexadecimal number.
+   * Creates an {@code int} from the given input, if the given input represents an hexadecimal number.
    * @param string the given input.
    * @param node the parsed node including hidden parts.
    * @return the new integer.

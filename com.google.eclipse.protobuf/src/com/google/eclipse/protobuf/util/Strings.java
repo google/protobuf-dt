@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.util;
+package com.google.eclipse.protobuf.util;
 
 import static java.lang.Character.toLowerCase;
 
@@ -32,6 +32,16 @@ public class Strings {
     chars[0] = toLowerCase(chars[0]);
     return new String(chars);
   }
-  
+
+  /**
+   * Removes any line breaks from the given {@code String}.
+   * @param s the given {@code String}.
+   * @return the given {@code String} with all line breaks removed.
+   */
+  public static String removeLineBreaksFrom(String s) {
+    if (s == null) return s;
+    return s.replaceAll("\"[\t\r\n]+\"|'[\t\r\n]+'", "");
+  }
+
   private Strings() {}
 }
