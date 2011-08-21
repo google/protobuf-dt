@@ -33,15 +33,5 @@ public class Strings {
     return new String(chars);
   }
 
-  /**
-   * Removes any line breaks from the given {@code String}.
-   * @param s the given {@code String}.
-   * @return the given {@code String} with all line breaks removed.
-   */
-  public static String removeLineBreaksFrom(String s) {
-    if (s == null) return s;
-    return s.replaceAll("\"[\t\r\n]+\"|'[\t\r\n]+'", "");
-  }
-
   private Strings() {}
 }

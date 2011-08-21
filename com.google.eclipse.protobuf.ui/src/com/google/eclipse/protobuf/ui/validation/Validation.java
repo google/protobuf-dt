@@ -23,6 +23,7 @@ import org.eclipse.xtext.ui.editor.XtextEditor;
 import org.eclipse.xtext.ui.editor.model.*;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
+import com.google.eclipse.protobuf.conversion.STRINGValueConverter;
 import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.ui.internal.ProtobufActivator;
 import com.google.eclipse.protobuf.util.ModelNodes;
@@ -93,7 +94,8 @@ final class Validation {
     if (node == null) return null;
     String text = node.getText();
     if (text == null) return null;
-    return text.substring(1, text.length() - 1);
+    STRINGValueConverter converter = injector().getInstance(STRINGValueConverter.class);
+    return converter.toValue(text, node);
   }
 
   private static ModelNodes nodes() {

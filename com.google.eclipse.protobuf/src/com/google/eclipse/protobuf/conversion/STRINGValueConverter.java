@@ -8,7 +8,6 @@
  */
 package com.google.eclipse.protobuf.conversion;
 
-import static com.google.eclipse.protobuf.util.Strings.removeLineBreaksFrom;
 import static org.eclipse.xtext.util.Strings.*;
 
 import org.eclipse.xtext.conversion.ValueConverterException;
@@ -43,6 +42,11 @@ public class STRINGValueConverter extends AbstractLexerBasedConverter<String> {
     } catch (IllegalArgumentException e) {
       throw parsingError(string, node, e);
     }
+  }
+
+  private static String removeLineBreaksFrom(String s) {
+    if (s == null) return s;
+    return s.replaceAll("\"[\t\r\n]+\"|'[\t\r\n]+'", "");
   }
 
   private ValueConverterException parsingError(String string, INode node, Exception cause) {
