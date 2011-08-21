@@ -10,9 +10,10 @@ package com.google.eclipse.protobuf.conversion;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
+import java.util.Collection;
 
 import org.eclipse.xtext.nodemodel.INode;
 import org.junit.*;
@@ -20,11 +21,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.*;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.util.*;
+import com.google.eclipse.protobuf.junit.core.XtextRule;
 
 /**
  * Tests for <code>{@link HEXValueConverter#toValue(String, INode)}</code>.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 @RunWith(Parameterized.class)
@@ -34,7 +35,7 @@ public class HEXValueConverter_toValue_Test {
 
   private final String hexadecimal;
   private final Integer expected;
-  
+
   @Parameters
   public static Collection<Object[]> parameters() {
     return asList(new Object[][] {
@@ -43,22 +44,22 @@ public class HEXValueConverter_toValue_Test {
       { "0xFF", 255 }
     });
   }
-  
+
   public HEXValueConverter_toValue_Test(String hexadecimal, Integer expected) {
     this.hexadecimal = hexadecimal;
     this.expected = expected;
   }
-  
+
   private HEXValueConverter converter;
   private INode node;
-  
+
   @Before public void setUp() {
     node = mock(INode.class);
     converter = xtext.injector().getInstance(HEXValueConverter.class);
   }
-  
+
   @Test public void should_parse_hexadecimal_number() {
     Integer value = converter.toValue(hexadecimal, node);
-    Assert.assertThat(value, equalTo(expected));
+    assertThat(value, equalTo(expected));
   }
 }
