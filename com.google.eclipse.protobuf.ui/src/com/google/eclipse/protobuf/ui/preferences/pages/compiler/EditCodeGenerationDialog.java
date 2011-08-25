@@ -9,6 +9,7 @@
 package com.google.eclipse.protobuf.ui.preferences.pages.compiler;
 
 import static com.google.eclipse.protobuf.ui.preferences.pages.compiler.Messages.*;
+import static com.google.eclipse.protobuf.ui.util.Paths.segmentsOf;
 import static org.eclipse.core.resources.IResource.FOLDER;
 import static org.eclipse.jface.dialogs.IDialogConstants.OK_ID;
 import static org.eclipse.swt.layout.GridData.*;
@@ -109,8 +110,12 @@ public class EditCodeGenerationDialog extends InputDialog {
 
   private String validateDirectoryName(String directoryName) {
     IWorkspace workspace = ResourcesPlugin.getWorkspace();
-    IStatus isValid = workspace.validateName(directoryName, FOLDER);
-    return (isValid.getCode() == OK) ? null : isValid.getMessage();
+    for (String segment : segmentsOf(directoryName)) {
+      IStatus isValid = workspace.validateName(segment, FOLDER);
+      if (isValid.getCode() == OK) continue;
+      return isValid.getMessage();
+    }
+    return null;
   }
 
   private void pageIsNowInvalid(String errorMessage) {
