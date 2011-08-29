@@ -37,6 +37,8 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class CompilerPreferencePage extends PreferenceAndPropertyPage {
+  public CompilerPreferencePage() {
+  }
 
   private static final String PREFERENCE_PAGE_ID = CompilerPreferencePage.class.getName();
 
@@ -59,6 +61,9 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
   @Inject private PluginImageHelper imageHelper;
 
   private final CodeGenerationSettings codeGenerationSettings = new CodeGenerationSettings();
+  private Group grpDescriptorLocation;
+  private Text txtDescriptorFilePath;
+  private Button btnDescriptorPathBrowse;
 
   @Override protected void doCreateContents(Composite parent) {
     btnCompileProtoFiles = new Button(parent, SWT.CHECK);
@@ -77,15 +82,15 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
 
     grpCompilerLocation = new Group(cmpMain, SWT.NONE);
     grpCompilerLocation.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-    grpCompilerLocation.setLayout(new GridLayout(4, false));
+    grpCompilerLocation.setLayout(new GridLayout(2, false));
     grpCompilerLocation.setText(protocLocation);
 
     btnUseProtocInSystemPath = new Button(grpCompilerLocation, SWT.RADIO);
-    btnUseProtocInSystemPath.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 4, 1));
+    btnUseProtocInSystemPath.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
     btnUseProtocInSystemPath.setText(protocInSystemPath);
 
     btnUseProtocInCustomPath = new Button(grpCompilerLocation, SWT.RADIO);
-    btnUseProtocInCustomPath.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 4, 1));
+    btnUseProtocInCustomPath.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
     btnUseProtocInCustomPath.setText(protocInCustomPath);
 
     txtProtocFilePath = new Text(grpCompilerLocation, SWT.BORDER);
@@ -94,9 +99,19 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
 
     btnProtocPathBrowse = new Button(grpCompilerLocation, SWT.NONE);
     btnProtocPathBrowse.setText(browseCustomPath);
-    new Label(grpCompilerLocation, SWT.NONE);
-    new Label(grpCompilerLocation, SWT.NONE);
-
+    
+    grpDescriptorLocation = new Group(cmpMain, SWT.NONE);
+    grpDescriptorLocation.setText(descriptorLocation);
+    grpDescriptorLocation.setLayout(new GridLayout(2, false));
+    grpDescriptorLocation.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+    
+    txtDescriptorFilePath = new Text(grpDescriptorLocation, SWT.BORDER);
+    txtDescriptorFilePath.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+    txtDescriptorFilePath.setEditable(false);
+    
+    btnDescriptorPathBrowse = new Button(grpDescriptorLocation, SWT.NONE);
+    btnDescriptorPathBrowse.setText(browseCustomPath);
+    
     grpCodeGeneration = new Group(cmpMain, SWT.NONE);
     grpCodeGeneration.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
     grpCodeGeneration.setText(codeGeneration);
@@ -155,6 +170,15 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
         checkState();
       }
     });
+    btnDescriptorPathBrowse.addSelectionListener(new SelectionAdapter() {
+      @Override public void widgetSelected(SelectionEvent e) {
+        FileDialog dialog = new FileDialog(getShell(), SWT.OPEN | SWT.SHEET);
+        dialog.setFilterExtensions(new String[] { "*.proto" });
+        String file = dialog.open();
+        if (file != null) txtDescriptorFilePath.setText(file);
+        checkState();
+      }
+    });
     btnRefreshResources.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
         refreshResourcesOptionsEnabled(btnRefreshResources.getSelection());
@@ -168,32 +192,39 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
   }
 
   private void checkState() {
-    boolean atLeastOneEnabled = false;
+    boolean atLeastOneLanguageEnabled = false;
     for (CodeGenerationSetting option : codeGenerationSettings.allSettings()) {
       if (option.isEnabled()) {
-        atLeastOneEnabled = true;
+        atLeastOneLanguageEnabled = true;
         break;
       }
     }
-    if (!atLeastOneEnabled) {
+    if (!atLeastOneLanguageEnabled) {
       pageIsNowInvalid(errorNoLanguageEnabled);
       return;
     }
-    if (!customPathOptionSelectedAndEnabled()) {
-      pageIsNowValid();
-      return;
+    if (customPathOptionSelectedAndEnabled()) {
+      String protocPath = txtProtocFilePath.getText();
+      if (isEmpty(protocPath)) {
+        pageIsNowInvalid(errorNoSelection);
+        return;
+      }
+      if (!isFileWithName(protocPath, "protoc")) {
+        pageIsNowInvalid(errorInvalidProtoc);
+        return;
+      }
     }
-    String protocPath = txtProtocFilePath.getText();
-    if (isEmpty(protocPath)) {
-      pageIsNowInvalid(errorNoSelection);
-      return;
-    }
-    File file = new File(protocPath);
-    if (!file.isFile() || !"protoc".equals(file.getName())) { //$NON-NLS-1$
-      pageIsNowInvalid(errorInvalidProtoc);
+    String descriptorPath = txtDescriptorFilePath.getText();
+    if (!isEmpty(descriptorPath) && !isFileWithName(descriptorPath, "descriptor.proto")) {
+      pageIsNowInvalid(errorInvalidDescriptor);
       return;
     }
     pageIsNowValid();
+  }
+  
+  private boolean isFileWithName(String filePath, String expectedFileName) {
+    File file = new File(filePath);
+    return file.isFile() && expectedFileName.equals(file.getName());
   }
 
   @Override protected BooleanPreference enableProjectSettingsPreference(IPreferenceStore store) {
@@ -207,6 +238,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
         bindSelectionOf(btnUseProtocInSystemPath).to(preferences.useProtocInSystemPath()),
         bindSelectionOf(btnUseProtocInCustomPath).to(preferences.useProtocInCustomPath()),
         bindTextOf(txtProtocFilePath).to(preferences.protocPath()),
+        bindTextOf(txtDescriptorFilePath).to(preferences.descriptorPath()),
         bindSelectionOf(btnRefreshResources).to(preferences.refreshResources()),
         bindSelectionOf(btnRefreshProject).to(preferences.refreshProject()),
         bindSelectionOf(btnRefreshOutputDirectory).to(preferences.refreshOutputDirectory()),
@@ -245,6 +277,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
   private void enableCompilerOptions(boolean isEnabled) {
     tabFolder.setEnabled(isEnabled);
     enableCompilerPathOptions(isEnabled);
+    enableDescriptorPathOptions(isEnabled);
     enableOutputOptions(isEnabled);
     enableRefreshOptions(isEnabled);
   }
@@ -255,10 +288,16 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     btnUseProtocInCustomPath.setEnabled(isEnabled);
     enableCompilerCustomPathOptions(customPathOptionSelectedAndEnabled());
   }
-
+  
   private void enableCompilerCustomPathOptions(boolean isEnabled) {
     txtProtocFilePath.setEnabled(isEnabled);
     btnProtocPathBrowse.setEnabled(isEnabled);
+  }
+  
+  private void enableDescriptorPathOptions(boolean isEnabled) {
+    grpDescriptorLocation.setEnabled(isEnabled);
+    txtDescriptorFilePath.setEnabled(isEnabled);
+    btnDescriptorPathBrowse.setEnabled(isEnabled);
   }
 
   private boolean customPathOptionSelectedAndEnabled() {

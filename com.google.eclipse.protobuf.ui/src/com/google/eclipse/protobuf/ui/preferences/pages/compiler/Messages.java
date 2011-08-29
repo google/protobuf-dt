@@ -18,11 +18,13 @@ public class Messages extends NLS {
   public static String browseCustomPath;
   public static String codeGeneration;
   public static String compileOnSave;
+  public static String descriptorLocation;
   public static String editSelected;
   public static String editCodeGenerationOptionTitle;
   public static String enabled;
   public static String errorEnterDirectoryName;
   public static String errorInvalidProtoc;
+  public static String errorInvalidDescriptor;
   public static String errorNoLanguageEnabled;
   public static String errorNoOutputFolderName;
   public static String errorNoSelection;

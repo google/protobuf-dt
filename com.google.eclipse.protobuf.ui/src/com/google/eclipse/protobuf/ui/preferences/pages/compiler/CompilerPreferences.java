@@ -21,6 +21,7 @@ public class CompilerPreferences {
 
   private final boolean compileProtoFiles;
   private final String protocPath;
+  private final String descriptorPath;
   private final CodeGenerationSettings codeGenerationSettings;
   private final boolean refreshResources;
   private final PostCompilationRefreshTarget refreshTarget;
@@ -29,6 +30,7 @@ public class CompilerPreferences {
     compileProtoFiles = preferences.compileProtoFiles().value();
     boolean useProtocInSystemPath = preferences.useProtocInSystemPath().value();
     protocPath = (useProtocInSystemPath) ? "protoc" : preferences.protocPath().value();
+    descriptorPath = preferences.descriptorPath().value();
     codeGenerationSettings = new CodeGenerationSettings();
     codeGenerationSettings.java().enabled(preferences.javaCodeGenerationEnabled().value());
     codeGenerationSettings.java().outputDirectory(preferences.javaOutputDirectory().value());
@@ -48,6 +50,10 @@ public class CompilerPreferences {
   public String protocPath() {
     return protocPath;
   }
+  
+  public String descriptorPath() {
+    return descriptorPath;
+  }
 
   public CodeGenerationSettings codeGenerationSettings() {
     return codeGenerationSettings;
@@ -60,6 +66,4 @@ public class CompilerPreferences {
   public PostCompilationRefreshTarget refreshTarget() {
     return refreshTarget;
   }
-
-
 }

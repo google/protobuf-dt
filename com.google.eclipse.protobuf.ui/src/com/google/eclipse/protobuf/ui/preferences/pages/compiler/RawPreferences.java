@@ -21,6 +21,7 @@ class RawPreferences {
   private final BooleanPreference useProtocInSystemPath;
   private final BooleanPreference useProtocInCustomPath;
   private final StringPreference protocPath;
+  private final StringPreference descriptorPath;
   private final BooleanPreference javaCodeGenerationEnabled;
   private final BooleanPreference cppCodeGenerationEnabled;
   private final BooleanPreference pythonCodeGenerationEnabled;
@@ -36,6 +37,7 @@ class RawPreferences {
     useProtocInSystemPath = new BooleanPreference("compiler.useProtocInSystemPath", store);
     useProtocInCustomPath = new BooleanPreference("compiler.useProtocInCustomPath", store);
     protocPath = new StringPreference("compiler.protocFilePath", store);
+    descriptorPath = new StringPreference("compiler.descriptorFilePath", store);
     javaCodeGenerationEnabled = new BooleanPreference("compiler.javaCodeGenerationEnabled", store);
     cppCodeGenerationEnabled = new BooleanPreference("compiler.cppCodeGenerationEnabled", store);
     pythonCodeGenerationEnabled = new BooleanPreference("compiler.pythonCodeGenerationEnabled", store);
@@ -61,6 +63,10 @@ class RawPreferences {
 
   StringPreference protocPath() {
     return protocPath;
+  }
+  
+  StringPreference descriptorPath() {
+    return descriptorPath;
   }
 
   BooleanPreference javaCodeGenerationEnabled() {
