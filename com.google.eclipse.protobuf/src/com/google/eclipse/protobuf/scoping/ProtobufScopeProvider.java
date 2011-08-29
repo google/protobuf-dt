@@ -149,9 +149,6 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
       if (!targetType.isInstance(t)) continue;
       T type = targetType.cast(t);
       descriptions.addAll(fullyQualifiedNamesOf(type));
-      for (QualifiedName name : importedNamesProvider.namesOf(type)) {
-        descriptions.add(create(name, type));
-      }
     }
     return descriptions;
   }
