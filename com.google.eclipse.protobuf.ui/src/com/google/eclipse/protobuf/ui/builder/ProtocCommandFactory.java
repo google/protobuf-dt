@@ -10,11 +10,13 @@ package com.google.eclipse.protobuf.ui.builder;
 
 import static com.google.eclipse.protobuf.util.CommonWords.space;
 
-import com.google.eclipse.protobuf.ui.preferences.pages.compiler.SupportedLanguage;
-
-import org.eclipse.core.resources.*;
-
 import java.util.*;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.xtext.util.Strings;
+
+import com.google.eclipse.protobuf.ui.preferences.pages.compiler.SupportedLanguage;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -28,12 +30,15 @@ class ProtocCommandFactory {
       LANG_OUT_FLAG.put(lang, "--" + lang.code() + "_out=");
   }
 
-  String protocCommand(IFile protoFile, String protocPath, List<String> importRoots,
+  String protocCommand(IFile protoFile, String protocPath, List<String> importRoots, String descriptorPath,
       OutputDirectories outputDirectories) {
     StringBuilder command = new StringBuilder();
     command.append(protocPath).append(space());
     for (String importRoot : importRoots) {
       command.append("-I=").append(importRoot).append(space());
+    }
+    if (!Strings.isEmpty(descriptorPath)) {
+      command.append("--proto_path=").append(descriptorPath).append(space());
     }
     for (SupportedLanguage language : SupportedLanguage.values()) {
       IFolder outputDirectory = outputDirectories.outputDirectoryFor(language);

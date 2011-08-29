@@ -19,7 +19,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.filesystem.*;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.emf.common.util.URI;
@@ -42,6 +41,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
   @Inject private ProtocCommandFactory commandFactory;
   @Inject private CompilerPreferencesFactory compilerPreferencesFactory;
   @Inject private PathsPreferencesFactory pathsPreferencesFactory;
+  @Inject private ProtoDescriptorPathFinder protoDescriptorPathFinder;
 
   public void build(IBuildContext context, IProgressMonitor monitor) throws CoreException {
     IProject project = context.getBuiltProject();
@@ -50,16 +50,19 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
     List<Delta> deltas = context.getDeltas();
     if (deltas.isEmpty()) return;
     OutputDirectories outputDirectories = findOrCreateOutputDirectories(project, preferences.codeGenerationSettings());
+    String descriptorPath = descriptorPath(preferences);
     List<String> importRoots = importRoots(project);
     for (Delta d : deltas) {
-      IResourceDescription newResource = d.getNew();
-      String path = filePathIfIsProtoFile(newResource);
-      if (path == null) continue;
-      IFile source = project.getWorkspace().getRoot().getFile(new Path(path));
+      IFile source = protoFile(d.getNew(), project);
+      if (source == null) continue;
       if (importRoots.isEmpty()) importRoots = singleImportRoot(source);
-      generateSingleProto(source, preferences.protocPath(), importRoots, outputDirectories);
+      generateSingleProto(source, preferences.protocPath(), importRoots, descriptorPath, outputDirectories);
     }
     if (preferences.shouldRefreshResources()) refresh(project, outputDirectories, preferences.refreshTarget(), monitor);
+  }
+
+  private String descriptorPath(CompilerPreferences preferences) {
+    return protoDescriptorPathFinder.findRootOf(preferences.descriptorPath());
   }
 
   private List<String> importRoots(IProject project) {
@@ -68,7 +71,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
     if (MULTIPLE_DIRECTORIES.equals(preferences.pathResolutionType())) {
       List<DirectoryPath> directoryPaths = preferences.importRoots();
       for (DirectoryPath path : directoryPaths) {
-        String location = locationOfDirectory(path, project);
+        String location = path.location(project);
         if (location != null) paths.add(location);
       }
       return unmodifiableList(paths);
@@ -76,22 +79,9 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
     return emptyList();
   }
 
-  private String locationOfDirectory(DirectoryPath path, IProject project) {
-    if (path.isWorkspacePath()) return locationOfWorkspaceDirectory(path, project);
-    return locationOfFileSystemDirectory(path);
-  }
-
-  private String locationOfWorkspaceDirectory(DirectoryPath path, IProject project) {
-    IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-    IFolder folder = root.getFolder(new Path(path.value()));
-    return folder.getLocation().toOSString();
-  }
-
-  private String locationOfFileSystemDirectory(DirectoryPath path) {
-    IFileSystem fileSystem = EFS.getLocalFileSystem();
-    IFileInfo fileInfo = fileSystem.getStore(new Path(path.value())).fetchInfo();
-    if (!fileInfo.isDirectory()) return null;
-    return path.value();
+  private static IFile protoFile(IResourceDescription r, IProject project) {
+    String path = filePathIfIsProtoFile(r);
+    return (path == null) ? null : project.getWorkspace().getRoot().getFile(new Path(path));
   }
 
   private static String filePathIfIsProtoFile(IResourceDescription r) {
@@ -116,9 +106,9 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
     return singletonList(current.toString());
   }
 
-  private void generateSingleProto(IFile source, String protocPath, List<String> importRoots,
+  private void generateSingleProto(IFile source, String protocPath, List<String> importRoots, String descriptorPath,
       OutputDirectories outputDirectories) throws CoreException {
-    String command = commandFactory.protocCommand(source, protocPath, importRoots, outputDirectories);
+    String command = commandFactory.protocCommand(source, protocPath, importRoots, descriptorPath, outputDirectories);
     System.out.println(command);
     try {
       Process process = Runtime.getRuntime().exec(command);

@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.util;
 
+import static com.google.eclipse.protobuf.scoping.ProtoDescriptor.DESCRIPTOR_IMPORT_URI;
+
 import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.inject.Singleton;
 
@@ -38,6 +40,6 @@ public class Imports {
    * @return {@code true} if the given import URI is equal to the path of descriptor.proto, {@code false} otherwise.
    */
   public boolean isUnresolvedDescriptorUri(String uri) {
-    return "google/protobuf/descriptor.proto".equals(uri);
+    return DESCRIPTOR_IMPORT_URI.equals(uri);
   }
 }

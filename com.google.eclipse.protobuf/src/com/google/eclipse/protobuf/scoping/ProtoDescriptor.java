@@ -38,6 +38,11 @@ import com.google.eclipse.protobuf.util.ModelNodes;
  */
 public class ProtoDescriptor {
 
+  /**
+   * The URI to use when importing descriptor.proto.
+   */
+  public static String DESCRIPTOR_IMPORT_URI = "google/protobuf/descriptor.proto";
+
   private static final Map<String, OptionType> OPTION_DEFINITION_BY_NAME = new HashMap<String, OptionType>();
 
   static {
