@@ -35,6 +35,10 @@ public class ProtoDescriptorPathFinder_findRootOf_Test {
     assertThat(finder.findRootOf(null), nullValue());
   }
 
+  @Test public void should_return_null_if_path_is_empty() {
+    assertThat(finder.findRootOf(""), nullValue());
+  }
+
   @Test public void should_throw_error_if_path_does_not_contain_descriptor_FQN() {
     thrown.expect(IllegalArgumentException.class);
     thrown.expectMessage("Path '/usr/local/include' does not contain '/google/protobuf/descriptor.proto'");

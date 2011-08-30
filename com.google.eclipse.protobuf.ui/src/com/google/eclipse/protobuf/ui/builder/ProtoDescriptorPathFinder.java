@@ -9,6 +9,7 @@
 package com.google.eclipse.protobuf.ui.builder;
 
 import static com.google.eclipse.protobuf.scoping.ProtoDescriptor.DESCRIPTOR_IMPORT_URI;
+import static org.eclipse.xtext.util.Strings.isEmpty;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -18,7 +19,7 @@ class ProtoDescriptorPathFinder {
   private static final String DESCRIPTOR_FQN = "/" + DESCRIPTOR_IMPORT_URI;
 
   public String findRootOf(String descriptorFilePath) {
-    if (descriptorFilePath == null) return null;
+    if (isEmpty(descriptorFilePath)) return null;
     int indexOfDescriptorFqn = descriptorFilePath.indexOf(DESCRIPTOR_FQN);
     if (indexOfDescriptorFqn == -1) {
       String format = "Path '%s' does not contain '%s'";
