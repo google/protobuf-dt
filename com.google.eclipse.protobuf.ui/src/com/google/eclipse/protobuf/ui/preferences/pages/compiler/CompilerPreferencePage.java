@@ -37,8 +37,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class CompilerPreferencePage extends PreferenceAndPropertyPage {
-  public CompilerPreferencePage() {
-  }
 
   private static final String PREFERENCE_PAGE_ID = CompilerPreferencePage.class.getName();
 
@@ -209,22 +207,27 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
         pageIsNowInvalid(errorNoSelection);
         return;
       }
-      if (!isFileWithName(protocPath, "protoc")) {
+      if (!isFileWithNames(protocPath, "protoc", "protoc.exe")) {
         pageIsNowInvalid(errorInvalidProtoc);
         return;
       }
     }
     String descriptorPath = txtDescriptorFilePath.getText();
-    if (!isEmpty(descriptorPath) && !isFileWithName(descriptorPath, "descriptor.proto")) {
+    if (!isEmpty(descriptorPath) && !isFileWithNames(descriptorPath, "descriptor.proto")) {
       pageIsNowInvalid(errorInvalidDescriptor);
       return;
     }
     pageIsNowValid();
   }
   
-  private boolean isFileWithName(String filePath, String expectedFileName) {
+  private boolean isFileWithNames(String filePath, String... expectedFileNames) {
     File file = new File(filePath);
-    return file.isFile() && expectedFileName.equals(file.getName());
+    if (!file.isFile()) return false;
+    String fileName = file.getName();
+    for (String name : expectedFileNames) {
+      if (name.equals(fileName)) return true;
+    }
+    return false;
   }
 
   @Override protected BooleanPreference enableProjectSettingsPreference(IPreferenceStore store) {
