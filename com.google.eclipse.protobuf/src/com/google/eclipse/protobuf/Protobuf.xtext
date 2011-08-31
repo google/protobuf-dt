@@ -143,7 +143,7 @@ FloatRef:
   float=FLOAT;
 
 terminal FLOAT returns ecore::EFloat:
-  ('-')? (NUMBER)* ('.' (NUMBER)+)?;
+  ('-')? (NUMBER)* ('.' (NUMBER)+)? (('e'|'E')('-')? (NUMBER)+)?;
 
 StringRef:
   string=STRING;

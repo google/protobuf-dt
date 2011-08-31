@@ -39,6 +39,9 @@ public class FLOATValueConverter_toValue_Test {
   @Parameters
   public static Collection<Object[]> parameters() {
     return asList(new Object[][] {
+      { "52e3", 52e3F },
+      { "52E3", 52e3F },
+      { "6e-3", 0.006F },
       { "6.8", 6.8F },
       { "-3.1", -3.1F },
       { ".3", 0.3F }
