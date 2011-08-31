@@ -8,21 +8,24 @@
  */
 package com.google.eclipse.protobuf.junit.core;
 
+import static com.google.eclipse.protobuf.junit.util.SystemProperties.lineSeparator;
 import static org.eclipse.emf.common.util.URI.createURI;
 import static org.eclipse.emf.ecore.util.EcoreUtil.resolveAll;
 import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
 
-import java.io.*;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.inject.Injector;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.linking.lazy.LazyLinkingResource;
+import org.eclipse.xtext.nodemodel.INode;
+import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.resource.*;
 import org.eclipse.xtext.util.StringInputStream;
 import org.junit.rules.MethodRule;
 import org.junit.runners.model.*;
 
-import com.google.eclipse.protobuf.protobuf.Protobuf;
-import com.google.inject.Injector;
+import java.io.*;
 
 /**
  * Rule that performs configuration of a standalone Xtext environment.
@@ -47,7 +50,14 @@ public class XtextRule implements MethodRule {
 
   public Protobuf parse(String text) {
     XtextResource resource = resourceFrom(new StringInputStream(text));
-    return (Protobuf) resource.getParseResult().getRootASTElement();
+    IParseResult parseResult = resource.getParseResult();
+    if (!parseResult.hasSyntaxErrors()) return (Protobuf) parseResult.getRootASTElement();
+    Iterable<INode> syntaxErrors = parseResult.getSyntaxErrors();
+    StringBuilder builder = new StringBuilder();
+    builder.append("Syntax errors:");
+    for (INode error : parseResult.getSyntaxErrors()) 
+      builder.append(lineSeparator()).append("- ").append(error.getSyntaxErrorMessage());
+    throw new IllegalStateException(builder.toString());
   }
 
   private XtextResource resourceFrom(InputStream input) {

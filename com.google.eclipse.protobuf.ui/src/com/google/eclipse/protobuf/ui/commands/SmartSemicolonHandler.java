@@ -66,8 +66,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
           int offset = styledText.getCaretOffset();
           ContentAssistContext[] context = contextFactory.create(editor.getInternalSourceViewer(), offset, state);
           for (ContentAssistContext c : context) {
-            INode currentNode = c.getCurrentNode();
-            if (nodes.wasCreatedByAnyComment(currentNode) || wasCreatedByString(currentNode)) break;
+            if (isCommentOrString(c.getCurrentNode())) break;
             EObject model = c.getCurrentModel();
             if (model instanceof FieldOption) {
               FieldOption option = (FieldOption) model;
@@ -98,6 +97,10 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
       });
     } catch (InvalidConcreteSyntaxException e) {}
     return ContentToInsert.NONE;
+  }
+
+  private boolean isCommentOrString(INode currentNode) {
+    return nodes.wasCreatedByAnyComment(currentNode) || wasCreatedByString(currentNode);
   }
 
   private boolean wasCreatedByString(INode node) {

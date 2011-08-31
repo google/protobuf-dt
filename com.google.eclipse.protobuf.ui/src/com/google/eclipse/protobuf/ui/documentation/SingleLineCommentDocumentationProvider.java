@@ -51,7 +51,7 @@ public class SingleLineCommentDocumentationProvider implements IEObjectDocumenta
         commentBuilder.append(cleanUp(comment));
       }
     }
-    return commentBuilder.toString();
+    return commentBuilder.toString().trim();
   }
 
   private EObject findRealTarget(EObject o) {
