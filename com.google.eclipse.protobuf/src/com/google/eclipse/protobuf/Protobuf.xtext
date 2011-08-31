@@ -128,7 +128,7 @@ enum BOOL:
   | false;
 
 NumberRef:
-  HexRef | IntRef | LongRef | FloatRef | DoubleRef;
+  HexRef | IntRef | FloatRef;
 
 HexRef:
   hex=HEX;
@@ -137,30 +137,12 @@ IntRef:
   int=INT;
 
 terminal INT returns ecore::EInt:
-  SIGNED_INT;
-
-LongRef:
-  long=LONG;
-
-terminal LONG returns ecore::ELong:
-  SIGNED_INT;
-
-terminal SIGNED_INT:
   ('-')? (NUMBER)+;
 
 FloatRef:
   float=FLOAT;
 
 terminal FLOAT returns ecore::EFloat:
-  DECIMAL;
-
-DoubleRef:
-  double=DOUBLE;
-
-terminal DOUBLE returns ecore::EDouble:
-  DECIMAL;
-
-terminal DECIMAL:
   ('-')? (NUMBER)* ('.' (NUMBER)+)?;
 
 StringRef:

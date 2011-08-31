@@ -18,16 +18,28 @@ import com.google.inject.Inject;
  */
 public class ProtobufTerminalConverters extends DefaultTerminalConverters {
 
+  @Inject private FLOATValueConverter floatValueConverter;
   @Inject private HEXValueConverter hexValueConverter;
+  @Inject private INTValueConverter intValueConverter;
   @Inject private STRINGValueConverter stringValueConverter;
-
+  
+  @ValueConverter(rule = "FLOAT")
+  public IValueConverter<Float> FLOAT() {
+    return floatValueConverter;
+  }
+  
   @ValueConverter(rule = "HEX")
   public IValueConverter<Integer> HEX() {
     return hexValueConverter;
   }
+  
+  @ValueConverter(rule = "INT")
+  @Override public IValueConverter<Integer> INT() {
+    return intValueConverter;
+  }
 
   @ValueConverter(rule = "STRING")
-  public IValueConverter<String> STRING() {
+  @Override public IValueConverter<String> STRING() {
     return stringValueConverter;
   }
 }
