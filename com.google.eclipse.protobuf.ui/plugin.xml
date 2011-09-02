@@ -74,7 +74,12 @@
     </page>
     <page category="com.google.eclipse.protobuf.ui.preferences.pages.editor"
       class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.pages.editor.save.SaveActionsPreferencePage"
-      id="com.google.eclipse.protobuf.ui.preferences.pages.editor" name="%page.name.5">
+      id="com.google.eclipse.protobuf.ui.preferences.pages.editor.save.SaveActionsPreferencePage" name="%page.name.5">
+      <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
+    </page>
+    <page category="com.google.eclipse.protobuf.ui.preferences.pages.editor"
+      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.pages.editor.tagpatterns.TagPatternsPreferencePage"
+      id="com.google.eclipse.protobuf.ui.preferences.pages.editor.tagpatterns.TagPatternsPreferencePage" name="%page.name.6">
       <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
     </page>
   </extension>
@@ -194,28 +199,22 @@
           </adapt>
        </enabledWhen>
     </page>
-    <page
-          category="com.google.eclipse.protobuf.Protobuf"
+    <page category="com.google.eclipse.protobuf.Protobuf"
           class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.pages.compiler.CompilerPreferencePage"
           id="com.google.eclipse.protobuf.ui.properties.compiler.PropertyPage"
           name="%page.name.2"
           selectionFilter="single">
        <enabledWhen>
-          <adapt
-                type="org.eclipse.core.resources.IProject">
-          </adapt>
+          <adapt type="org.eclipse.core.resources.IProject" />
        </enabledWhen>
     </page>
-    <page
-          category="com.google.eclipse.protobuf.Protobuf"
+    <page category="com.google.eclipse.protobuf.Protobuf"
           class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.pages.paths.PathsPreferencePage"
           id="com.google.eclipse.protobuf.ui.properties.paths.PropertyPage"
           name="%page.name.3"
           selectionFilter="single">
        <enabledWhen>
-          <adapt
-                type="org.eclipse.core.resources.IProject">
-          </adapt>
+          <adapt type="org.eclipse.core.resources.IProject" />
        </enabledWhen>
     </page>
   </extension>

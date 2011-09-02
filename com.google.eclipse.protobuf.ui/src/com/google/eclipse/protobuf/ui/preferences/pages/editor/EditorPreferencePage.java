@@ -30,8 +30,8 @@ public class EditorPreferencePage extends PreferencePage implements IWorkbenchPr
     contents.setLayout(new GridLayout(1, false));
 
     Link link = new Link(contents, SWT.NONE);
-    GridData gridData= new GridData(SWT.FILL, SWT.BEGINNING, true, false);
-    gridData.widthHint= 150; // only expand further if anyone else requires it
+    GridData gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
+    gridData.widthHint = 150; // only expand further if anyone else requires it
     link.setLayoutData(gridData);
     link.setText(header);
     link.addListener(SWT.Selection, new Listener() {

@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.*;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 
 /**
  * "Save Actions" preference page.
@@ -27,8 +28,6 @@ import org.eclipse.swt.SWT;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class SaveActionsPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
-  public SaveActionsPreferencePage() {
-  }
 
   @Inject private IPreferenceStoreAccess preferenceStoreAccess;
 
@@ -43,6 +42,7 @@ public class SaveActionsPreferencePage extends PreferencePage implements IWorkbe
     Composite contents = new Composite(parent, NONE);
     contents.setLayout(new GridLayout(1, false));
     btnRemoveTrailingwhitespace = new Button(contents, SWT.CHECK);
+    btnRemoveTrailingwhitespace.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
     btnRemoveTrailingwhitespace.setText("Remove trailing &whitespace");
     setUpBinding();
     preferenceBinder.applyValues();

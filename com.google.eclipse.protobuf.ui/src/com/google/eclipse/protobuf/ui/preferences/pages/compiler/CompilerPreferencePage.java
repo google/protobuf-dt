@@ -267,7 +267,6 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     codeGenerationEditor.codeGenerationSettings(codeGenerationSettings);
   }
 
-  /** {@inheritDoc} */
   @Override protected void onProjectSettingsActivation(boolean active) {
     enableProjectSpecificOptions(active);
     enableCompilerOptions(isEnabledAndSelected(btnCompileProtoFiles));
@@ -327,7 +326,6 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     btnRefreshOutputDirectory.setEnabled(isEnabled);
   }
 
-  /** {@inheritDoc} */
   @Override protected String preferencePageId() {
     return PREFERENCE_PAGE_ID;
   }

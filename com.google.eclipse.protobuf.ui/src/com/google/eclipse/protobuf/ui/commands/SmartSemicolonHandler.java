@@ -9,6 +9,7 @@
 package com.google.eclipse.protobuf.ui.commands;
 
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.SEMICOLON;
+import static com.google.eclipse.protobuf.junit.util.SystemProperties.lineSeparator;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
 
 import com.google.eclipse.protobuf.protobuf.*;
@@ -17,6 +18,7 @@ import com.google.eclipse.protobuf.util.*;
 import com.google.inject.Inject;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.xtext.*;
 import org.eclipse.xtext.nodemodel.INode;
@@ -24,8 +26,11 @@ import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.XtextEditor;
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
 import org.eclipse.xtext.ui.editor.contentassist.antlr.ParserBasedContentAssistContextFactory;
+import org.eclipse.xtext.ui.editor.model.IXtextDocument;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 import org.eclipse.xtext.validation.IConcreteSyntaxValidator.InvalidConcreteSyntaxException;
+
+import java.util.regex.Pattern;
 
 /**
  * Inserts a semicolon at the end of a line, regardless of the current position of the caret in the editor. If the
@@ -36,10 +41,11 @@ import org.eclipse.xtext.validation.IConcreteSyntaxValidator.InvalidConcreteSynt
  */
 public class SmartSemicolonHandler extends SmartInsertHandler {
 
-  @Inject private ParserBasedContentAssistContextFactory contextFactory;
+  @Inject private CommentNodesFinder commentNodesFinder;
   @Inject private Fields fields;
   @Inject private Literals literals;
   @Inject private ModelNodes nodes;
+  @Inject private ParserBasedContentAssistContextFactory contextFactory;
 
   private final String semicolon = SEMICOLON.toString();
 
@@ -61,7 +67,8 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
   
   private ContentToInsert newContent(final XtextEditor editor, final StyledText styledText, final String line) {
     try {
-      return editor.getDocument().modify(new IUnitOfWork<ContentToInsert, XtextResource>() {
+      final IXtextDocument document = editor.getDocument();
+      return document.modify(new IUnitOfWork<ContentToInsert, XtextResource>() {
         public ContentToInsert exec(XtextResource state) {
           int offset = styledText.getCaretOffset();
           ContentAssistContext[] context = contextFactory.create(editor.getInternalSourceViewer(), offset, state);
@@ -79,6 +86,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
               if (content.equals(ContentToInsert.NONE)) {
                 int index = literals.calculateIndexOf(literal);
                 literal.setIndex(index);
+                updateIndexInCommentOfParent(literal, index, document);
               }
               return content;
             }
@@ -88,6 +96,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
               if (content.equals(ContentToInsert.NONE)) {
                 int index = fields.calculateTagNumberOf(property);
                 property.setIndex(index);
+                updateIndexInCommentOfParent(property, index, document);
               }
               return content;
             }
@@ -98,7 +107,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
     } catch (InvalidConcreteSyntaxException e) {}
     return ContentToInsert.NONE;
   }
-
+  
   private boolean isCommentOrString(INode currentNode) {
     return nodes.wasCreatedByAnyComment(currentNode) || wasCreatedByString(currentNode);
   }
@@ -124,6 +133,21 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
 
   private ContentToInsert newContent(INode indexNode) {
     return (indexNode != null) ? new ContentToInsert(semicolon, Location.END) : ContentToInsert.NONE;
+  }
+  
+  private void updateIndexInCommentOfParent(EObject o, int index, IXtextDocument document) {
+//    EObject parent = o.eContainer();
+//    if (parent == null) return;
+//    INode node = commentNodesFinder.matchingCommentNode(parent, Pattern.compile("// Next Id: [0-9]"));
+//    if (node == null) {
+//      System.out.println("No matching node");
+//      return;
+//    }
+//    try {
+//      document.replace(node.getOffset(), node.getText().length(), "// Next Id: " + (index + 1) + lineSeparator());
+//    } catch (BadLocationException e) {
+//      e.printStackTrace();
+//    }
   }
   
   private static class ContentToInsert {
