@@ -15,6 +15,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 import com.google.eclipse.protobuf.protobuf.Property;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 
@@ -34,7 +35,7 @@ public class Properties_isPrimitive_Test {
   }
 
   @Test public void should_return_true_if_property_is_primitive() {
-    StringBuilder proto = new StringBuilder();
+    MultiLineTextBuilder proto = new MultiLineTextBuilder();
     proto.append("message Primitives {             ")
          .append("  optional float float_1 = 1;    ")
          .append("  optional int32 int32_1 = 2;    ")
@@ -53,7 +54,7 @@ public class Properties_isPrimitive_Test {
   }
 
   @Test public void should_return_false_if_property_is_not_primitive() {
-    StringBuilder proto = new StringBuilder();
+    MultiLineTextBuilder proto = new MultiLineTextBuilder();
     proto.append("message Types {                  ")
          .append("  optional string string_1 = 1;  ")
          .append("  optional bytes bytes_1 = 2;    ")
@@ -61,7 +62,7 @@ public class Properties_isPrimitive_Test {
          .append("}                                ")
          .append("                                 ")
          .append("message Person {                 ")
-         .append("  optional string name = 1       ")
+         .append("  optional string name = 1;      ")
          .append("}                                ");
     Protobuf root = xtext.parse(proto);
     for (Property p : allProperties(root))

@@ -16,6 +16,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 import com.google.eclipse.protobuf.protobuf.Property;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 
@@ -35,7 +36,7 @@ public class ProtobufElementFinder_rootOf_Test {
   }
 
   @Test public void should_return_root_of_proto() {
-    StringBuilder proto = new StringBuilder();
+    MultiLineTextBuilder proto = new MultiLineTextBuilder();
     proto.append("message Person {           ")
          .append("  optional string name = 1;")
          .append("}                          ");

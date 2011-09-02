@@ -14,6 +14,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 import com.google.eclipse.protobuf.protobuf.*;
 
 import org.eclipse.emf.ecore.*;
@@ -36,7 +37,7 @@ public class ModelNodes_firstNodeForFeature_Test {
   }
   
   @Test public void should_return_first_node_for_feature() {
-    StringBuilder proto = new StringBuilder();
+    MultiLineTextBuilder proto = new MultiLineTextBuilder();
     proto.append("message Person {           ")
          .append("  optional bool active = 1;")
          .append("}                          ");

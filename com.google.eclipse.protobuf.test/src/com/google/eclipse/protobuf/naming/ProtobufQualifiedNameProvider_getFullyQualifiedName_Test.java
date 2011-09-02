@@ -17,6 +17,7 @@ import org.eclipse.xtext.naming.QualifiedName;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
@@ -35,7 +36,7 @@ public class ProtobufQualifiedNameProvider_getFullyQualifiedName_Test {
   }
   
   @Test public void should_include_existing_package_name_as_part_of_message_FQN() {
-    StringBuilder proto = new StringBuilder();
+    MultiLineTextBuilder proto = new MultiLineTextBuilder();
     proto.append("package fqn.test;          ")
          .append("                           ")
          .append("message Person {           ")
@@ -48,7 +49,7 @@ public class ProtobufQualifiedNameProvider_getFullyQualifiedName_Test {
   }
 
   @Test public void should_include_existing_package_name_as_part_of_property_FQN() {
-    StringBuilder proto = new StringBuilder();
+    MultiLineTextBuilder proto = new MultiLineTextBuilder();
     proto.append("package fqn.test;          ")
          .append("                           ")
          .append("message Person {           ")
@@ -61,7 +62,7 @@ public class ProtobufQualifiedNameProvider_getFullyQualifiedName_Test {
   }
 
   @Test public void should_not_include_package_name_as_part_of_message_FQN_if_package_is_not_specified() {
-    StringBuilder proto = new StringBuilder();
+    MultiLineTextBuilder proto = new MultiLineTextBuilder();
     proto.append("message Person {           ")
          .append("  optional string name = 1;")
          .append("}                          ");
@@ -72,7 +73,7 @@ public class ProtobufQualifiedNameProvider_getFullyQualifiedName_Test {
   }
 
   @Test public void should_not_include_package_name_as_part_of_property_FQN_if_package_is_not_specified() {
-    StringBuilder proto = new StringBuilder();
+    MultiLineTextBuilder proto = new MultiLineTextBuilder();
     proto.append("message Person {           ")
          .append("  optional string name = 1;")
          .append("}                          ");

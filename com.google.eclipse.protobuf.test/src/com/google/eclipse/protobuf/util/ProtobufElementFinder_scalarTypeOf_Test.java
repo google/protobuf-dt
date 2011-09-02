@@ -16,6 +16,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
@@ -34,7 +35,7 @@ public class ProtobufElementFinder_scalarTypeOf_Test {
   }
 
   @Test public void should_return_scalar_if_property_type_is_scalar() {
-    StringBuilder proto = new StringBuilder();
+    MultiLineTextBuilder proto = new MultiLineTextBuilder();
     proto.append("message Person {        ")
          .append("  optional int32 id = 1;")
          .append("}                       ");
@@ -45,7 +46,7 @@ public class ProtobufElementFinder_scalarTypeOf_Test {
   }
 
   @Test public void should_return_null_if_property_type_is_not_scalar() {
-    StringBuilder proto = new StringBuilder();
+    MultiLineTextBuilder proto = new MultiLineTextBuilder();
     proto.append("enum PhoneType {              ")
          .append("  MOBILE = 0;                 ")
          .append("  HOME = 1;                   ")

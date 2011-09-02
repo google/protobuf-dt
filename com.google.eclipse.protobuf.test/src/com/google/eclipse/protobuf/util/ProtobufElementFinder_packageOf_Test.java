@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
 
@@ -36,7 +37,7 @@ public class ProtobufElementFinder_packageOf_Test {
   }
 
   @Test public void should_return_package_if_proto_has_one() {
-    StringBuilder proto = new StringBuilder();
+    MultiLineTextBuilder proto = new MultiLineTextBuilder();
     proto.append("package person.test;    ")
          .append("                        ")
          .append("message Person {        ")
@@ -49,7 +50,7 @@ public class ProtobufElementFinder_packageOf_Test {
   }
 
   @Test public void should_return_null_if_proto_does_not_have_package() {
-    StringBuilder proto = new StringBuilder();
+    MultiLineTextBuilder proto = new MultiLineTextBuilder();
     proto.append("message Person {        ")
          .append("  optional int32 id = 1;")
          .append("}                       ");

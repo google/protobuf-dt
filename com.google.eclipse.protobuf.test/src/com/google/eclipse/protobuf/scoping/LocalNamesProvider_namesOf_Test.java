@@ -16,11 +16,14 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.QualifiedName;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
 
 /**
  * Tests for <code>{@link LocalNamesProvider#namesOf(EObject)}</code>.
@@ -38,7 +41,7 @@ public class LocalNamesProvider_namesOf_Test {
   }
 
   @Test public void should_return_all_possible_local_names() {
-    StringBuilder proto = new StringBuilder();
+    MultiLineTextBuilder proto = new MultiLineTextBuilder();
     proto.append("package test.alternative.names;                  ");
     proto.append("                                                 ");
     proto.append("message Person {                                 ");

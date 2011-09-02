@@ -16,6 +16,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 
@@ -35,7 +36,7 @@ public class ProtobufElementFinder_enumTypeOf_Test {
   }
 
   @Test public void should_return_enum_if_property_type_is_enum() {
-    StringBuilder proto = new StringBuilder();
+    MultiLineTextBuilder proto = new MultiLineTextBuilder();
     proto.append("enum PhoneType {              ")
          .append("  MOBILE = 0;                 ")
          .append("  HOME = 1;                   ")
@@ -52,7 +53,7 @@ public class ProtobufElementFinder_enumTypeOf_Test {
   }
 
   @Test public void should_return_null_if_property_type_is_not_enum() {
-    StringBuilder proto = new StringBuilder();
+    MultiLineTextBuilder proto = new MultiLineTextBuilder();
     proto.append("message Person {           ")
          .append("  optional string name = 1;")
          .append("}                          ");

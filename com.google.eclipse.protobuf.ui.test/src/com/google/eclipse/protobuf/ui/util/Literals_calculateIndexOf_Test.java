@@ -15,6 +15,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 import com.google.eclipse.protobuf.protobuf.Literal;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 
@@ -34,7 +35,7 @@ public class Literals_calculateIndexOf_Test {
   }
 
   @Test public void should_return_zero_for_first_and_only_literal() {
-    StringBuilder proto = new StringBuilder();
+    MultiLineTextBuilder proto = new MultiLineTextBuilder();
     proto.append("enum PhoneType {")
          .append("  MOBILE = 1;   ")
          .append("}               ");
@@ -45,7 +46,7 @@ public class Literals_calculateIndexOf_Test {
   }
 
   @Test public void should_return_max_index_value_plus_one_for_new_literal() {
-    StringBuilder proto = new StringBuilder();
+    MultiLineTextBuilder proto = new MultiLineTextBuilder();
     proto.append("enum PhoneType {")
          .append("  MOBILE = 1;   ")
          .append("  HOME = 5;     ")

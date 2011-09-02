@@ -16,6 +16,7 @@ import java.util.List;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
@@ -34,9 +35,9 @@ public class ProtobufElementFinder_importsIn_Test {
   }
 
   @Test public void should_return_all_imports() {
-    StringBuilder proto = new StringBuilder();
-    proto.append("import \"luke.proto\"")
-         .append("import \"leia.proto\"");
+    MultiLineTextBuilder proto = new MultiLineTextBuilder();
+    proto.append("import \"luke.proto\";")
+         .append("import \"leia.proto\";");
     Protobuf root = xtext.parse(proto);
     List<Import> allImports = finder.importsIn(root);
     assertThat(allImports.size(), equalTo(2));
@@ -45,7 +46,7 @@ public class ProtobufElementFinder_importsIn_Test {
   }
 
   @Test public void should_return_empty_if_no_imports_found() {
-    StringBuilder proto = new StringBuilder();
+    MultiLineTextBuilder proto = new MultiLineTextBuilder();
     proto.append("enum PhoneType {")
          .append("  MOBILE = 0;   ")
          .append("  HOME = 1;     ")

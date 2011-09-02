@@ -9,12 +9,12 @@
 package com.google.eclipse.protobuf.ui.commands;
 
 import static com.google.eclipse.protobuf.junit.util.Finder.findProperty;
-import static com.google.eclipse.protobuf.junit.util.SystemProperties.lineSeparator;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 import com.google.eclipse.protobuf.protobuf.*;
 
 import org.eclipse.emf.ecore.EObject;
@@ -39,11 +39,11 @@ public class CommentNodesFinder_matchingCommentNode_Test {
   }
   
   @Test public void should_return_matching_single_line_comment_of_element() {
-    StringBuilder proto = new StringBuilder();
-    proto.append("message Person {           ").append(lineSeparator())
-         .append("  // Indicates whether the person is active or not.").append(lineSeparator())
-         .append("  optional bool active = 1;").append(lineSeparator())
-         .append("}                          ");
+    MultiLineTextBuilder proto = new MultiLineTextBuilder();
+    proto.append("message Person {                                   ")
+         .append("  // Indicates whether the person is active or not.")
+         .append("  optional bool active = 1;                        ")
+         .append("}                                                  ");
     Protobuf root = xtext.parse(proto);
     Property active = findProperty("active", root);
     INode node = finder.matchingCommentNode(active, Pattern.compile(".*"));
@@ -51,13 +51,13 @@ public class CommentNodesFinder_matchingCommentNode_Test {
   }
 
   @Test public void should_return_matching_multi_line_comment_of_element() {
-    StringBuilder proto = new StringBuilder();
-    proto.append("message Person {           ").append(lineSeparator())
-         .append("  /*").append(lineSeparator())
-         .append("   * Indicates whether the person is active or not.").append(lineSeparator())
-         .append("   */").append(lineSeparator())
-         .append("  optional bool active = 1;").append(lineSeparator())
-         .append("}                          ");
+    MultiLineTextBuilder proto = new MultiLineTextBuilder();
+    proto.append("message Person {                                   ")
+         .append("  /*                                               ")
+         .append("   * Indicates whether the person is active or not.")
+         .append("   */                                              ")
+         .append("  optional bool active = 1;                        ")
+         .append("}                                                  ");
     Protobuf root = xtext.parse(proto);
     Property active = findProperty("active", root);
     INode node = finder.matchingCommentNode(active, Pattern.compile(".*"));

@@ -13,6 +13,7 @@ import static org.eclipse.emf.common.util.URI.createURI;
 import static org.eclipse.emf.ecore.util.EcoreUtil.resolveAll;
 import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
 
+import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.inject.Injector;
 
@@ -44,7 +45,7 @@ public class XtextRule implements MethodRule {
     return injector;
   }
 
-  public Protobuf parse(StringBuilder text) {
+  public Protobuf parse(MultiLineTextBuilder text) {
     return parse(text.toString());
   }
 
@@ -52,7 +53,6 @@ public class XtextRule implements MethodRule {
     XtextResource resource = resourceFrom(new StringInputStream(text));
     IParseResult parseResult = resource.getParseResult();
     if (!parseResult.hasSyntaxErrors()) return (Protobuf) parseResult.getRootASTElement();
-    Iterable<INode> syntaxErrors = parseResult.getSyntaxErrors();
     StringBuilder builder = new StringBuilder();
     builder.append("Syntax errors:");
     for (INode error : parseResult.getSyntaxErrors()) 

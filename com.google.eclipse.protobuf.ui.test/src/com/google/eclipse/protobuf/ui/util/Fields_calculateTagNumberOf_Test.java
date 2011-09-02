@@ -15,6 +15,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
@@ -33,7 +34,7 @@ public class Fields_calculateTagNumberOf_Test {
   }
 
   @Test public void should_return_one_for_first_and_only_property() {
-    StringBuilder proto = new StringBuilder();
+    MultiLineTextBuilder proto = new MultiLineTextBuilder();
     proto.append("message Person {           ")
          .append("  required string name = 2;")
          .append("}                          ");
@@ -44,7 +45,7 @@ public class Fields_calculateTagNumberOf_Test {
   }
 
   @Test public void should_return_max_tag_number_value_plus_one_for_new_property() {
-    StringBuilder proto = new StringBuilder();
+    MultiLineTextBuilder proto = new MultiLineTextBuilder();
     proto.append("message Person {           ")
          .append("  required string name = 6;")
          .append("  required int32 id = 8;   ")

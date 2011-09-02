@@ -15,6 +15,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 import com.google.eclipse.protobuf.protobuf.Property;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 
@@ -34,7 +35,7 @@ public class Properties_typeNameOf_Test {
   }
 
   @Test public void should_return_name_of_scalar() {
-    StringBuilder proto = new StringBuilder();
+    MultiLineTextBuilder proto = new MultiLineTextBuilder();
     proto.append("message Person {           ")
          .append("  optional string name = 1;")
          .append("}                          ");
@@ -44,7 +45,7 @@ public class Properties_typeNameOf_Test {
   }
 
   @Test public void should_return_name_of_type() {
-    StringBuilder proto = new StringBuilder();
+    MultiLineTextBuilder proto = new MultiLineTextBuilder();
     proto.append("message Person {                  ")
          .append("  optional string name = 1;       ")
          .append("  optional PhoneNumber number = 2;")
