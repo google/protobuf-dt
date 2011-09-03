@@ -9,16 +9,20 @@
 package com.google.eclipse.protobuf.ui.commands;
 
 import static com.google.eclipse.protobuf.junit.util.SystemProperties.lineSeparator;
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.getNode;
 import static org.eclipse.xtext.util.Strings.isEmpty;
+import static org.eclipse.xtext.util.Tuples.pair;
 
-import com.google.eclipse.protobuf.util.ModelNodes;
-import com.google.inject.*;
+import java.util.*;
+import java.util.regex.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.nodemodel.*;
+import org.eclipse.xtext.util.*;
 
-import java.util.regex.*;
+import com.google.eclipse.protobuf.util.ModelNodes;
+import com.google.inject.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -26,9 +30,12 @@ import java.util.regex.*;
 @Singleton
 class CommentNodesFinder {
 
-  @Inject private ModelNodes nodes;
+  private static final String MATCH_ANYTHING = ".*";
 
-  INode matchingCommentNode(EObject target, Pattern...patternsToMatch) {
+  @Inject private ModelNodes nodes;
+  @Inject private final IResourceScopeCache cache = IResourceScopeCache.NullImpl.INSTANCE;
+
+  Pair<INode, Matcher> matchingCommentNode(EObject target, String...patternsToMatch) {
     ICompositeNode node = getNode(target);
     for (INode currentNode : node.getAsTreeIterable()) {
       if (currentNode instanceof ILeafNode && !((ILeafNode) currentNode).isHidden()) break;
@@ -37,13 +44,26 @@ class CommentNodesFinder {
         if (isEmpty(rawComment)) continue;
         String[] comment = rawComment.split(lineSeparator());
         for (String line : comment) {
-          for (Pattern pattern : patternsToMatch) {
+          for (Pattern pattern : compile(patternsToMatch, target)) {
             Matcher matcher = pattern.matcher(line);
-            if (matcher.matches()) return currentNode;
+            if (matcher.matches()) return pair(currentNode, matcher);
           }
         }
       }
     }
     return null;
+  }
+
+  private List<Pattern> compile(String[] patterns, EObject target) {
+    List<Pattern> compiled = new ArrayList<Pattern>();
+    for (final String s : patterns) {
+      Pattern p = cache.get(s, target.eResource(), new Provider<Pattern>() {
+        public Pattern get() {
+          return Pattern.compile(MATCH_ANYTHING + s + MATCH_ANYTHING, CASE_INSENSITIVE);
+        }
+      });
+      compiled.add(p);
+    }
+    return compiled;
   }
 }

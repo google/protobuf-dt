@@ -8,15 +8,12 @@
  */
 package com.google.eclipse.protobuf.ui.commands;
 
-import static com.google.eclipse.protobuf.grammar.CommonKeyword.SEMICOLON;
-import static com.google.eclipse.protobuf.junit.util.SystemProperties.lineSeparator;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
+import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.ui.util.*;
-import com.google.eclipse.protobuf.util.*;
-import com.google.inject.Inject;
+import java.util.regex.Matcher;
 
+import org.apache.log4j.Logger;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.swt.custom.StyledText;
@@ -27,10 +24,14 @@ import org.eclipse.xtext.ui.editor.XtextEditor;
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
 import org.eclipse.xtext.ui.editor.contentassist.antlr.ParserBasedContentAssistContextFactory;
 import org.eclipse.xtext.ui.editor.model.IXtextDocument;
+import org.eclipse.xtext.util.Pair;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
-import org.eclipse.xtext.validation.IConcreteSyntaxValidator.InvalidConcreteSyntaxException;
 
-import java.util.regex.Pattern;
+import com.google.eclipse.protobuf.grammar.CommonKeyword;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.ui.util.*;
+import com.google.eclipse.protobuf.util.ModelNodes;
+import com.google.inject.Inject;
 
 /**
  * Inserts a semicolon at the end of a line, regardless of the current position of the caret in the editor. If the
@@ -41,13 +42,17 @@ import java.util.regex.Pattern;
  */
 public class SmartSemicolonHandler extends SmartInsertHandler {
 
+  private static Logger logger = Logger.getLogger(SmartSemicolonHandler.class);
+
   @Inject private CommentNodesFinder commentNodesFinder;
   @Inject private Fields fields;
   @Inject private Literals literals;
   @Inject private ModelNodes nodes;
   @Inject private ParserBasedContentAssistContextFactory contextFactory;
 
-  private final String semicolon = SEMICOLON.toString();
+  private static final String SEMICOLON = CommonKeyword.SEMICOLON.toString();
+
+  private static final ContentToInsert INSERT_SEMICOLON_AT_CURRENT_LOCATION = new ContentToInsert(SEMICOLON, Location.CURRENT);
 
   /** {@inheritDoc} */
   @Override protected void insertContent(XtextEditor editor, StyledText styledText) {
@@ -64,22 +69,23 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
     styledText.insert(newContent.value);
     styledText.setCaretOffset(offset + newContent.value.length());
   }
-  
+
   private ContentToInsert newContent(final XtextEditor editor, final StyledText styledText, final String line) {
+    if (line.endsWith(SEMICOLON)) return INSERT_SEMICOLON_AT_CURRENT_LOCATION;
+    final IXtextDocument document = editor.getDocument();
+    ContentToInsert contentToInsert = ContentToInsert.NONE;
     try {
-      final IXtextDocument document = editor.getDocument();
-      return document.modify(new IUnitOfWork<ContentToInsert, XtextResource>() {
+      contentToInsert = document.modify(new IUnitOfWork<ContentToInsert, XtextResource>() {
         public ContentToInsert exec(XtextResource state) {
           int offset = styledText.getCaretOffset();
           ContentAssistContext[] context = contextFactory.create(editor.getInternalSourceViewer(), offset, state);
           for (ContentAssistContext c : context) {
-            if (isCommentOrString(c.getCurrentNode())) break;
+            if (isCommentOrString(c.getCurrentNode())) continue;
             EObject model = c.getCurrentModel();
             if (model instanceof FieldOption) {
               FieldOption option = (FieldOption) model;
               model = option.eContainer();
             }
-            if (line.endsWith(semicolon)) break;
             if (model instanceof Literal) {
               Literal literal = (Literal) model;
               ContentToInsert content = newContent(literal);
@@ -101,13 +107,16 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
               return content;
             }
           }
-          return new ContentToInsert(semicolon, Location.CURRENT);
+          return INSERT_SEMICOLON_AT_CURRENT_LOCATION;
         }
       });
-    } catch (InvalidConcreteSyntaxException e) {}
-    return ContentToInsert.NONE;
+    } catch (Throwable e) {
+      logger.error("Unable to generate tag number", e);
+      return INSERT_SEMICOLON_AT_CURRENT_LOCATION;
+    }
+    return contentToInsert;
   }
-  
+
   private boolean isCommentOrString(INode currentNode) {
     return nodes.wasCreatedByAnyComment(currentNode) || wasCreatedByString(currentNode);
   }
@@ -125,43 +134,45 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
     INode indexNode = nodes.firstNodeForFeature(literal, LITERAL__INDEX);
     return newContent(indexNode);
   }
-  
+
   private ContentToInsert newContent(Property property) {
     INode indexNode = nodes.firstNodeForFeature(property, FIELD__INDEX);
     return newContent(indexNode);
   }
 
   private ContentToInsert newContent(INode indexNode) {
-    return (indexNode != null) ? new ContentToInsert(semicolon, Location.END) : ContentToInsert.NONE;
+    boolean hasIndex = indexNode != null && !isEmpty(indexNode.getText());
+    return hasIndex ? new ContentToInsert(SEMICOLON, Location.END) : ContentToInsert.NONE;
   }
-  
+
   private void updateIndexInCommentOfParent(EObject o, int index, IXtextDocument document) {
-//    EObject parent = o.eContainer();
-//    if (parent == null) return;
-//    INode node = commentNodesFinder.matchingCommentNode(parent, Pattern.compile("// Next Id: [0-9]"));
-//    if (node == null) {
-//      System.out.println("No matching node");
-//      return;
-//    }
-//    try {
-//      document.replace(node.getOffset(), node.getText().length(), "// Next Id: " + (index + 1) + lineSeparator());
-//    } catch (BadLocationException e) {
-//      e.printStackTrace();
-//    }
+    EObject parent = o.eContainer();
+    if (parent == null) return;
+    String pattern = "Next[\\s]+Id:[\\s]+([\\d])+";
+    Pair<INode, Matcher> match = commentNodesFinder.matchingCommentNode(parent, pattern);
+    if (match == null) return;
+    String originalText = match.getSecond().group();
+    String replacement = originalText.replaceAll("[\\d]+", String.valueOf(index + 1));
+    INode node = match.getFirst();
+    try {
+      document.replace(node.getOffset() + node.getText().indexOf(originalText), originalText.length(), replacement);
+    } catch (BadLocationException e) {
+      logger.error("Unable to update comment tracking next tag number", e);
+    }
   }
-  
+
   private static class ContentToInsert {
     final String value;
     final Location location;
 
     static final ContentToInsert NONE = new ContentToInsert("", Location.NONE);
-    
+
     ContentToInsert(String value, Location location) {
       this.value = value;
       this.location = location;
     }
   }
-  
+
   private static enum Location {
     NONE, CURRENT, END;
   }
