@@ -24,11 +24,13 @@ import org.eclipse.xtext.ui.editor.XtextEditor;
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
 import org.eclipse.xtext.ui.editor.contentassist.antlr.ParserBasedContentAssistContextFactory;
 import org.eclipse.xtext.ui.editor.model.IXtextDocument;
+import org.eclipse.xtext.ui.editor.syntaxcoloring.HighlightingReconciler;
 import org.eclipse.xtext.util.Pair;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.ui.util.*;
 import com.google.eclipse.protobuf.util.ModelNodes;
 import com.google.inject.Inject;
@@ -46,6 +48,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
 
   @Inject private CommentNodesFinder commentNodesFinder;
   @Inject private Fields fields;
+  @Inject private HighlightingReconciler highlightingReconciler;
   @Inject private Literals literals;
   @Inject private ModelNodes nodes;
   @Inject private ParserBasedContentAssistContextFactory contextFactory;
@@ -60,8 +63,18 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
     int lineAtOffset = styledText.getLineAtOffset(offset);
     int offsetAtLine = styledText.getOffsetAtLine(lineAtOffset);
     String line = styledText.getLine(lineAtOffset);
-    ContentToInsert newContent = newContent(editor, styledText, line);
-    if (newContent.equals(ContentToInsert.NONE)) return;
+    ContentToInsert newContent = ContentToInsert.RETRY;
+    int retryCount = 2;
+    for (int i = 0; i < retryCount; i++) {
+      if (newContent.equals(ContentToInsert.RETRY)) {
+        newContent = newContent(editor, styledText, line);
+      }
+      if (newContent.equals(ContentToInsert.NONE)) return;
+      if (newContent.equals(ContentToInsert.INSERT_TAG_NUMBER)) {
+        refreshHighlighting(editor);
+        return;
+      }
+    }
     if (newContent.location.equals(Location.END)) {
       offset = offsetAtLine + line.length();
       styledText.setCaretOffset(offset);
@@ -82,6 +95,10 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
           for (ContentAssistContext c : context) {
             if (isCommentOrString(c.getCurrentNode())) continue;
             EObject model = c.getCurrentModel();
+            if (model instanceof Message || model instanceof Enum || model instanceof Protobuf) {
+              // need to retry, parsing may not be finished yet.
+              return ContentToInsert.RETRY;
+            }
             if (model instanceof FieldOption) {
               FieldOption option = (FieldOption) model;
               model = option.eContainer();
@@ -89,7 +106,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
             if (model instanceof Literal) {
               Literal literal = (Literal) model;
               ContentToInsert content = newContent(literal);
-              if (content.equals(ContentToInsert.NONE)) {
+              if (content.equals(ContentToInsert.INSERT_TAG_NUMBER)) {
                 int index = literals.calculateIndexOf(literal);
                 literal.setIndex(index);
                 updateIndexInCommentOfParent(literal, index, document);
@@ -99,7 +116,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
             if (model instanceof Property) {
               Property property = (Property) model;
               ContentToInsert content = newContent(property);
-              if (content.equals(ContentToInsert.NONE)) {
+              if (content.equals(ContentToInsert.INSERT_TAG_NUMBER)) {
                 int index = fields.calculateTagNumberOf(property);
                 property.setIndex(index);
                 updateIndexInCommentOfParent(property, index, document);
@@ -142,34 +159,54 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
 
   private ContentToInsert newContent(INode indexNode) {
     boolean hasIndex = indexNode != null && !isEmpty(indexNode.getText());
-    return hasIndex ? new ContentToInsert(SEMICOLON, Location.END) : ContentToInsert.NONE;
+    return hasIndex ? new ContentToInsert(SEMICOLON, Location.END) : ContentToInsert.INSERT_TAG_NUMBER;
   }
 
   private void updateIndexInCommentOfParent(EObject o, int index, IXtextDocument document) {
     EObject parent = o.eContainer();
     if (parent == null) return;
-    String pattern = "Next[\\s]+Id:[\\s]+([\\d])+";
+    String pattern = "Next[\\s]+Id:[\\s]+[\\d]+";
     Pair<INode, Matcher> match = commentNodesFinder.matchingCommentNode(parent, pattern);
     if (match == null) return;
     String originalText = match.getSecond().group();
-    String replacement = originalText.replaceAll("[\\d]+", String.valueOf(index + 1));
+    String replacement = originalText.replaceFirst("[\\d]+", String.valueOf(index + 1));
     INode node = match.getFirst();
+    int offset = node.getTotalOffset() + node.getText().indexOf(originalText);
     try {
-      document.replace(node.getOffset() + node.getText().indexOf(originalText), originalText.length(), replacement);
+      document.replace(offset, originalText.length(), replacement);
     } catch (BadLocationException e) {
       logger.error("Unable to update comment tracking next tag number", e);
     }
+  }
+
+  private void refreshHighlighting(XtextEditor editor) {
+    editor.getDocument().readOnly(new IUnitOfWork.Void<XtextResource>() {
+      @Override public void process(XtextResource state) throws Exception {
+        highlightingReconciler.modelChanged(state);
+      }
+    });
   }
 
   private static class ContentToInsert {
     final String value;
     final Location location;
 
-    static final ContentToInsert NONE = new ContentToInsert("", Location.NONE);
+    static final ContentToInsert NONE = new ContentToInsert();
+    static final ContentToInsert INSERT_TAG_NUMBER = new ContentToInsert();
+    static final ContentToInsert RETRY = new ContentToInsert();
+
+    ContentToInsert() {
+      this("", Location.NONE);
+    }
 
     ContentToInsert(String value, Location location) {
       this.value = value;
       this.location = location;
+    }
+
+    /** {@inheritDoc} */
+    @Override public String toString() {
+      return String.format("ContentToInsert [value=%s, location=%s]", value, location);
     }
   }
 
