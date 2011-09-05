@@ -61,18 +61,17 @@ final class Validation {
   private static void validate(XtextEditor editor) {
     final IXtextDocument document = editor.getDocument();
     if (!(document instanceof XtextDocument)) return;
-    document.readOnly(new IUnitOfWork<Void, XtextResource>() {
-      public java.lang.Void exec(XtextResource resource) throws Exception {
+    document.readOnly(new IUnitOfWork.Void<XtextResource>() {
+      @Override public void process(XtextResource resource) {
         EObject root = rootOf(resource);
-        if (root == null) return null;
+        if (root == null) return;
         resetImports(root);
         resource.getLinker().linkModel(root, new ListBasedDiagnosticConsumer());
         ((XtextDocument) document).checkAndUpdateAnnotations();
-        return null;
       }
     });
   }
-  
+
   private static EObject rootOf(XtextResource resource) {
     if (resource == null) return null;
     return resource.getParseResult().getRootASTElement();

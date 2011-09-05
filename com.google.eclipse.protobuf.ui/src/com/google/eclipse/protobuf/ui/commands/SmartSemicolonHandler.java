@@ -11,7 +11,7 @@ package com.google.eclipse.protobuf.ui.commands;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import java.util.regex.Matcher;
+import java.util.regex.*;
 
 import org.apache.log4j.Logger;
 import org.eclipse.emf.ecore.EObject;
@@ -44,6 +44,8 @@ import com.google.inject.Inject;
  */
 public class SmartSemicolonHandler extends SmartInsertHandler {
 
+  private static final Pattern NUMBERS_PATTERN = Pattern.compile("[\\d]+");
+
   private static Logger logger = Logger.getLogger(SmartSemicolonHandler.class);
 
   @Inject private CommentNodesFinder commentNodesFinder;
@@ -66,9 +68,8 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
     ContentToInsert newContent = ContentToInsert.RETRY;
     int retryCount = 2;
     for (int i = 0; i < retryCount; i++) {
-      if (newContent.equals(ContentToInsert.RETRY)) {
-        newContent = newContent(editor, styledText, line);
-      }
+      if (!newContent.equals(ContentToInsert.RETRY)) break;
+      newContent = newContent(editor, styledText, line);
       if (newContent.equals(ContentToInsert.NONE)) return;
       if (newContent.equals(ContentToInsert.INSERT_TAG_NUMBER)) {
         refreshHighlighting(editor);
@@ -89,9 +90,9 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
     ContentToInsert contentToInsert = ContentToInsert.NONE;
     try {
       contentToInsert = document.modify(new IUnitOfWork<ContentToInsert, XtextResource>() {
-        public ContentToInsert exec(XtextResource state) {
+        public ContentToInsert exec(XtextResource resource) {
           int offset = styledText.getCaretOffset();
-          ContentAssistContext[] context = contextFactory.create(editor.getInternalSourceViewer(), offset, state);
+          ContentAssistContext[] context = contextFactory.create(editor.getInternalSourceViewer(), offset, resource);
           for (ContentAssistContext c : context) {
             if (isCommentOrString(c.getCurrentNode())) continue;
             EObject model = c.getCurrentModel();
@@ -168,12 +169,12 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
     String pattern = "Next[\\s]+Id:[\\s]+[\\d]+";
     Pair<INode, Matcher> match = commentNodesFinder.matchingCommentNode(parent, pattern);
     if (match == null) return;
-    String originalText = match.getSecond().group();
-    String replacement = originalText.replaceFirst("[\\d]+", String.valueOf(index + 1));
+    String original = match.getSecond().group();
+    String replacement = NUMBERS_PATTERN.matcher(original).replaceFirst(String.valueOf(index + 1));
     INode node = match.getFirst();
-    int offset = node.getTotalOffset() + node.getText().indexOf(originalText);
+    int offset = node.getTotalOffset() + node.getText().indexOf(original);
     try {
-      document.replace(offset, originalText.length(), replacement);
+      document.replace(offset, original.length(), replacement);
     } catch (BadLocationException e) {
       logger.error("Unable to update comment tracking next tag number", e);
     }
@@ -181,8 +182,8 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
 
   private void refreshHighlighting(XtextEditor editor) {
     editor.getDocument().readOnly(new IUnitOfWork.Void<XtextResource>() {
-      @Override public void process(XtextResource state) throws Exception {
-        highlightingReconciler.modelChanged(state);
+      @Override public void process(XtextResource resource) {
+        highlightingReconciler.modelChanged(resource);
       }
     });
   }

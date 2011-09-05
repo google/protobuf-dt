@@ -46,7 +46,7 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
 
   private final PreferenceBinder preferenceBinder = new PreferenceBinder();
 
-  @Override protected final Control createContents(Composite parent) {
+  @Override protected Control createContents(Composite parent) {
     Composite contents = contentParent(parent);
     doCreateContents(contents);
     if (isPropertyPage()) setupBindingOfBtnEnabledProjectSettings();

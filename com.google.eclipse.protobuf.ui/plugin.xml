@@ -78,8 +78,8 @@
       <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
     </page>
     <page category="com.google.eclipse.protobuf.ui.preferences.pages.editor"
-      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.pages.editor.tagpatterns.TagPatternsPreferencePage"
-      id="com.google.eclipse.protobuf.ui.preferences.pages.editor.tagpatterns.TagPatternsPreferencePage" name="%page.name.6">
+      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag.NumericTagPreferencePage"
+      id="com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag.NumericTagPreferencePage" name="%page.name.6">
       <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
     </page>
   </extension>
