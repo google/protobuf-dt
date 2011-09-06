@@ -11,20 +11,20 @@ package com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import com.google.eclipse.protobuf.ui.preferences.StringPreference;
+import com.google.eclipse.protobuf.ui.preferences.StringListPreference;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 class RawPreferences {
 
-  private final StringPreference patterns;
+  private final StringListPreference patterns;
 
   RawPreferences(IPreferenceStore store) {
-    patterns = new StringPreference("numericTag.patterns", store);
+    patterns = new StringListPreference("numericTag.patterns", "\\t", store);
   }
 
-  StringPreference patterns() {
+  StringListPreference patterns() {
     return patterns;
   }
 }

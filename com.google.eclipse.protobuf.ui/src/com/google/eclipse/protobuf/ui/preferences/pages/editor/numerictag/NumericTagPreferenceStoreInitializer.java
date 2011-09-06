@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag;
 
+import static java.util.Collections.singletonList;
+
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.xtext.ui.editor.preferences.*;
 
@@ -22,6 +24,6 @@ public class NumericTagPreferenceStoreInitializer implements IPreferenceStoreIni
   public void initialize(IPreferenceStoreAccess access) {
     IPreferenceStore store = access.getWritablePreferenceStore();
     RawPreferences preferences = new RawPreferences(store);
-    preferences.patterns().defaultValue("Next[\\s]+Id:[\\s]+[\\d]+");
+    preferences.patterns().defaultValue(singletonList("Next[\\s]+Id:[\\s]+[\\d]+"));
   }
 }

@@ -8,9 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag;
 
+import static com.google.eclipse.protobuf.ui.preferences.binding.BindingToListItems.bindItemsOf;
 import static com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag.Messages.*;
-import static java.util.Arrays.asList;
-import static org.eclipse.xtext.util.Strings.*;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ListViewer;
@@ -20,7 +19,7 @@ import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
 import com.google.eclipse.protobuf.ui.preferences.*;
-import com.google.eclipse.protobuf.ui.preferences.binding.*;
+import com.google.eclipse.protobuf.ui.preferences.binding.PreferenceBinder;
 import com.google.eclipse.protobuf.ui.preferences.pages.PreferenceAndPropertyPage;
 
 /**
@@ -30,7 +29,6 @@ import com.google.eclipse.protobuf.ui.preferences.pages.PreferenceAndPropertyPag
  */
 public class NumericTagPreferencePage extends PreferenceAndPropertyPage {
 
-  private static final String PATTERN_DELIMITER = "//t"; //$NON-NLS-1$
   private static final String PREFERENCE_PAGE_ID = NumericTagPreferencePage.class.getName();
 
   private List lstPaths;
@@ -102,30 +100,8 @@ public class NumericTagPreferencePage extends PreferenceAndPropertyPage {
 
   @Override protected void setupBinding(PreferenceBinder preferenceBinder) {
     RawPreferences preferences = new RawPreferences(getPreferenceStore());
-    final StringPreference patterns = preferences.patterns();
-    preferenceBinder.add(new Binding() {
-      public void applyPreferenceValueToTarget() {
-        setPatterns(patterns.value());
-      }
-
-      public void applyDefaultPreferenceValueToTarget() {
-        setPatterns(patterns.defaultValue());
-      }
-
-      public void savePreferenceValue() {
-        patterns.value(patterns());
-      }
-    });
-  }
-
-  private void setPatterns(String value) {
-    lstPaths.removeAll();
-    for (String pattern : split(value, PATTERN_DELIMITER))
-      lstPaths.add(pattern);
-  }
-
-  private String patterns() {
-    return concat(PATTERN_DELIMITER, asList(lstPaths.getItems()));
+    StringListPreference patterns = preferences.patterns();
+    preferenceBinder.add(bindItemsOf(lstPaths).to(patterns));
   }
 
   @Override protected void onProjectSettingsActivation(boolean projectSettingsActive) {}

@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Text;
 import com.google.eclipse.protobuf.ui.preferences.StringPreference;
 
 /**
- * Binds a {@code boolean} value from a <code>{@link IPreferenceStore}</code> to the value of a
+ * Binds a {@code String} value from a <code>{@link IPreferenceStore}</code> to the value of a
  * <code>{@link Text}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
