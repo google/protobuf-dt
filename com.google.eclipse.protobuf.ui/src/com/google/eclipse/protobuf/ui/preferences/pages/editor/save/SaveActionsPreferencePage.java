@@ -10,6 +10,7 @@
 package com.google.eclipse.protobuf.ui.preferences.pages.editor.save;
 
 import static com.google.eclipse.protobuf.ui.preferences.binding.BindingToButtonSelection.bindSelectionOf;
+import static com.google.eclipse.protobuf.ui.preferences.pages.editor.save.Messages.removeTrailingWhitespace;
 
 import org.eclipse.jface.preference.*;
 import org.eclipse.swt.SWT;
@@ -42,7 +43,7 @@ public class SaveActionsPreferencePage extends PreferencePage implements IWorkbe
     contents.setLayout(new GridLayout(1, false));
     btnRemoveTrailingwhitespace = new Button(contents, SWT.CHECK);
     btnRemoveTrailingwhitespace.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false, 1, 1));
-    btnRemoveTrailingwhitespace.setText(Messages.removeTrailingWhitespace);
+    btnRemoveTrailingwhitespace.setText(removeTrailingWhitespace);
     setUpBinding();
     preferenceBinder.applyValues();
     return contents;
