@@ -31,6 +31,7 @@ import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag.*;
 import com.google.eclipse.protobuf.ui.util.*;
 import com.google.eclipse.protobuf.util.ModelNodes;
 import com.google.inject.Inject;
@@ -53,6 +54,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
   @Inject private HighlightingReconciler highlightingReconciler;
   @Inject private Literals literals;
   @Inject private ModelNodes nodes;
+  @Inject private NumericTagPreferencesFactory preferencesFactory;
   @Inject private ParserBasedContentAssistContextFactory contextFactory;
 
   private static final String SEMICOLON = CommonKeyword.SEMICOLON.toString();
@@ -166,17 +168,20 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
   private void updateIndexInCommentOfParent(EObject o, int index, IXtextDocument document) {
     EObject parent = o.eContainer();
     if (parent == null) return;
-    String pattern = "Next[\\s]+Id:[\\s]+[\\d]+";
-    Pair<INode, Matcher> match = commentNodesFinder.matchingCommentNode(parent, pattern);
-    if (match == null) return;
-    String original = match.getSecond().group();
-    String replacement = NUMBERS_PATTERN.matcher(original).replaceFirst(String.valueOf(index + 1));
-    INode node = match.getFirst();
-    int offset = node.getTotalOffset() + node.getText().indexOf(original);
-    try {
-      document.replace(offset, original.length(), replacement);
-    } catch (BadLocationException e) {
-      logger.error("Unable to update comment tracking next tag number", e);
+    NumericTagPreferences preferences = preferencesFactory.preferences();
+    for (String pattern : preferences.patterns()) {
+      Pair<INode, Matcher> match = commentNodesFinder.matchingCommentNode(parent, pattern);
+      if (match == null) return;
+      String original = match.getSecond().group();
+      String replacement = NUMBERS_PATTERN.matcher(original).replaceFirst(String.valueOf(index + 1));
+      INode node = match.getFirst();
+      int offset = node.getTotalOffset() + node.getText().indexOf(original);
+      try {
+        document.replace(offset, original.length(), replacement);
+      } catch (BadLocationException e) {
+        String format = "Unable to update comment tracking next tag number using pattern '%s'";
+        logger.error(String.format(format, pattern), e);
+      }
     }
   }
 
