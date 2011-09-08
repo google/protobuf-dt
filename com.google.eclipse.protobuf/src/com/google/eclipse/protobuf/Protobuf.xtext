@@ -62,16 +62,16 @@ Extensions:
   'extensions' ranges+=Range (',' ranges+=Range)* ';';
 
 Range:
-  from=INT ('to' to=RangeMax)?;
+  from=LONG ('to' to=RangeMax)?;
 
 RangeMax:
-  INT | 'max';
+  LONG | 'max';
 
 Field:
   Property | Group;
 
 Group:
-  modifier=Modifier 'group' name=Name '=' index=(INT | HEX)
+  modifier=Modifier 'group' name=Name '=' index=(LONG | HEX)
   ('[' (fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)*) ']')? '{'
   elements+=GroupElement*
   '}' (';')?;
@@ -80,7 +80,7 @@ GroupElement:
   Field | Option | Enum;
 
 Property:
-  modifier=Modifier type=AbstractTypeRef name=Name '=' index=(INT | HEX)
+  modifier=Modifier type=AbstractTypeRef name=Name '=' index=(LONG | HEX)
   ('[' fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)* ']')? ';';
 
 enum Modifier:
@@ -128,15 +128,15 @@ enum BOOL:
   | false;
 
 NumberRef:
-  HexRef | IntRef | FloatRef;
+  HexRef | LongRef | FloatRef;
 
 HexRef:
   hex=HEX;
 
-IntRef:
-  int=INT;
+LongRef:
+  long=LONG;
 
-terminal INT returns ecore::EInt:
+terminal LONG returns ecore::ELong:
   ('-')? (NUMBER)+;
 
 FloatRef:
@@ -166,7 +166,7 @@ EnumElement:
   Option | Literal;
 
 Literal:
-  name=Name '=' index=(INT | HEX) 
+  name=Name '=' index=(LONG | HEX) 
   ('[' fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)* ']')? ';';
 
 FieldOption:
@@ -178,7 +178,7 @@ BuiltInFieldOption:
 CustomFieldOption:
   '(' name=QualifiedName ')' '=' value=ValueRef;
 
-terminal HEX returns ecore::EInt:
+terminal HEX returns ecore::ELong:
   '0x' (NUMBER | 'a'..'f' | 'A'..'F')+;
 
 terminal NUMBER:

@@ -77,7 +77,7 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
 
   @Check public void checkTagNumberIsUnique(Field field) {
     if (isNameNull(field)) return; // we already show an error if name is null, no need to go further.
-    int index = field.getIndex();
+    long index = field.getIndex();
     EObject container = field.eContainer();
     if (container instanceof Message) {
       Message message = (Message) container;
@@ -96,7 +96,7 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
 
   @Check public void checkTagNumberIsGreaterThanZero(Field field) {
     if (isNameNull(field)) return; // we already show an error if name is null, no need to go further.
-    int index = field.getIndex();
+    long index = field.getIndex();
     if (index > 0) return;
     String msg = (index == 0) ? fieldNumbersMustBePositive : expectedFieldNumber;
     error(msg, FIELD__INDEX);

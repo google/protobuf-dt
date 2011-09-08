@@ -41,8 +41,8 @@ public class Literals_calculateIndexOf_Test {
          .append("}               ");
     Protobuf root = xtext.parse(proto);
     Literal mobile = findLiteral("MOBILE", root);
-    int index = literals.calculateIndexOf(mobile);
-    assertThat(index, equalTo(0));
+    long index = literals.calculateIndexOf(mobile);
+    assertThat(index, equalTo(0L));
   }
 
   @Test public void should_return_max_index_value_plus_one_for_new_literal() {
@@ -54,7 +54,7 @@ public class Literals_calculateIndexOf_Test {
          .append("}               ");
     Protobuf root = xtext.parse(proto);
     Literal work = findLiteral("WORK", root);
-    int index = literals.calculateIndexOf(work);
-    assertThat(index, equalTo(6));
+    long index = literals.calculateIndexOf(work);
+    assertThat(index, equalTo(6L));
   }
 }

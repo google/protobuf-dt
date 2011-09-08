@@ -15,11 +15,11 @@ import org.eclipse.xtext.conversion.impl.AbstractLexerBasedConverter;
 import org.eclipse.xtext.nodemodel.INode;
 
 /**
- * Converts hexadecimal numbers to {@code int}s.
+ * Converts hexadecimal numbers to {@code long}s.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class HEXValueConverter extends AbstractLexerBasedConverter<Integer> {
+public class HEXValueConverter extends AbstractLexerBasedConverter<Long> {
 
   /**
    * Creates an {@code int} from the given input, if the given input represents an hexadecimal number.
@@ -29,14 +29,14 @@ public class HEXValueConverter extends AbstractLexerBasedConverter<Integer> {
    * @throws ValueConverterException if the given input is {@code null}, empty or does not represent an hexadecimal
    * number.
    */
-  public Integer toValue(String string, INode node) throws ValueConverterException {
-    if (isEmpty(string)) throw new ValueConverterException("Couldn't convert empty string to int.", node, null);
+  public Long toValue(String string, INode node) throws ValueConverterException {
+    if (isEmpty(string)) throw new ValueConverterException("Couldn't convert empty string to long.", node, null);
     int length = string.length();
     if (length < 3) throw parsingError(string, node);
     if (!string.substring(0, 2).equalsIgnoreCase("0x")) throw parsingError(string, node);
     String val = string.substring(2, length);
     try {
-      return Integer.parseInt(val, 16);
+      return Long.parseLong(val, 16);
     } catch (NumberFormatException e) {
       throw parsingError(string, node, e);
     }
@@ -47,6 +47,6 @@ public class HEXValueConverter extends AbstractLexerBasedConverter<Integer> {
   }
 
   private ValueConverterException parsingError(String string, INode node, Exception cause) {
-    return new ValueConverterException("Couldn't convert '" + string + "' to int.", node, cause);
+    return new ValueConverterException("Couldn't convert '" + string + "' to long.", node, cause);
   }
 }

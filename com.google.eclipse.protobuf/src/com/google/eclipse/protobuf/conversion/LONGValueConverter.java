@@ -15,11 +15,11 @@ import org.eclipse.xtext.conversion.impl.AbstractLexerBasedConverter;
 import org.eclipse.xtext.nodemodel.INode;
 
 /**
- * Converts integer numbers to {@code int}s.
+ * Converts integer numbers to {@code long}s.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class INTValueConverter extends AbstractLexerBasedConverter<Integer> {
+public class LONGValueConverter extends AbstractLexerBasedConverter<Long> {
 
   /**
    * Creates an {@code int} from the given input, if the given input represents an integer number.
@@ -28,16 +28,16 @@ public class INTValueConverter extends AbstractLexerBasedConverter<Integer> {
    * @return the new {@code int}.
    * @throws ValueConverterException if the given input is {@code null}, empty or does not represent an integer number.
    */
-  public Integer toValue(String string, INode node) throws ValueConverterException {
-    if (isEmpty(string)) throw new ValueConverterException("Couldn't convert empty string to int.", node, null);
+  public Long toValue(String string, INode node) throws ValueConverterException {
+    if (isEmpty(string)) throw new ValueConverterException("Couldn't convert empty string to long.", node, null);
     try {
-      return Integer.parseInt(string, 10);
+      return Long.parseLong(string, 10);
     } catch (NumberFormatException e) {
       throw parsingError(string, node, e);
     }
   }
 
   private ValueConverterException parsingError(String string, INode node, Exception cause) {
-    return new ValueConverterException("Couldn't convert '" + string + "' to int.", node, cause);
+    return new ValueConverterException("Couldn't convert '" + string + "' to long.", node, cause);
   }
 }

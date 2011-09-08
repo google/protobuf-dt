@@ -20,7 +20,7 @@ public class ProtobufTerminalConverters extends DefaultTerminalConverters {
 
   @Inject private FLOATValueConverter floatValueConverter;
   @Inject private HEXValueConverter hexValueConverter;
-  @Inject private INTValueConverter intValueConverter;
+  @Inject private LONGValueConverter longValueConverter;
   @Inject private STRINGValueConverter stringValueConverter;
   
   @ValueConverter(rule = "FLOAT")
@@ -29,13 +29,13 @@ public class ProtobufTerminalConverters extends DefaultTerminalConverters {
   }
   
   @ValueConverter(rule = "HEX")
-  public IValueConverter<Integer> HEX() {
+  public IValueConverter<Long> HEX() {
     return hexValueConverter;
   }
   
-  @ValueConverter(rule = "INT")
-  @Override public IValueConverter<Integer> INT() {
-    return intValueConverter;
+  @ValueConverter(rule = "LONG")
+  public IValueConverter<Long> LONG() {
+    return longValueConverter;
   }
 
   @ValueConverter(rule = "STRING")

@@ -110,7 +110,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
               Literal literal = (Literal) model;
               ContentToInsert content = newContent(literal);
               if (content.equals(ContentToInsert.INSERT_TAG_NUMBER)) {
-                int index = literals.calculateIndexOf(literal);
+                long index = literals.calculateIndexOf(literal);
                 literal.setIndex(index);
                 updateIndexInCommentOfParent(literal, index, document);
               }
@@ -120,7 +120,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
               Property property = (Property) model;
               ContentToInsert content = newContent(property);
               if (content.equals(ContentToInsert.INSERT_TAG_NUMBER)) {
-                int index = fields.calculateTagNumberOf(property);
+                long index = fields.calculateTagNumberOf(property);
                 property.setIndex(index);
                 updateIndexInCommentOfParent(property, index, document);
               }
@@ -165,7 +165,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
     return hasIndex ? new ContentToInsert(SEMICOLON, Location.END) : ContentToInsert.INSERT_TAG_NUMBER;
   }
 
-  private void updateIndexInCommentOfParent(EObject o, int index, IXtextDocument document) {
+  private void updateIndexInCommentOfParent(EObject o, long index, IXtextDocument document) {
     EObject parent = o.eContainer();
     if (parent == null) return;
     NumericTagPreferences preferences = preferencesFactory.preferences();

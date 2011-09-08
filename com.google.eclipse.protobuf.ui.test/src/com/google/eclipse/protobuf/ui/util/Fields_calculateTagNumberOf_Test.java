@@ -40,8 +40,8 @@ public class Fields_calculateTagNumberOf_Test {
          .append("}                          ");
     Protobuf root = xtext.parse(proto);
     Property name = findProperty("name", root);
-    int index = fields.calculateTagNumberOf(name);
-    assertThat(index, equalTo(1));
+    long index = fields.calculateTagNumberOf(name);
+    assertThat(index, equalTo(1L));
   }
 
   @Test public void should_return_max_tag_number_value_plus_one_for_new_property() {
@@ -52,7 +52,7 @@ public class Fields_calculateTagNumberOf_Test {
          .append("}                          ");
     Protobuf root = xtext.parse(proto);
     Property id = findProperty("id", root);
-    int index = fields.calculateTagNumberOf(id);
-    assertThat(index, equalTo(7));
+    long index = fields.calculateTagNumberOf(id);
+    assertThat(index, equalTo(7L));
   }
 }

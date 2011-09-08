@@ -34,18 +34,18 @@ public class HEXValueConverter_toValue_Test {
   @Rule public XtextRule xtext = new XtextRule();
 
   private final String input;
-  private final Integer expected;
+  private final Long expected;
 
   @Parameters
   public static Collection<Object[]> parameters() {
     return asList(new Object[][] {
-      { "0x1", 1 },
-      { "0xA", 10 },
-      { "0xFF", 255 }
+      { "0x1", 1L },
+      { "0xA", 10L },
+      { "0xFF", 255L }
     });
   }
 
-  public HEXValueConverter_toValue_Test(String input, Integer expected) {
+  public HEXValueConverter_toValue_Test(String input, Long expected) {
     this.input = input;
     this.expected = expected;
   }
@@ -59,7 +59,7 @@ public class HEXValueConverter_toValue_Test {
   }
 
   @Test public void should_parse_hexadecimal_number() {
-    Integer value = converter.toValue(input, node);
+    Long value = converter.toValue(input, node);
     assertThat(value, equalTo(expected));
   }
 }

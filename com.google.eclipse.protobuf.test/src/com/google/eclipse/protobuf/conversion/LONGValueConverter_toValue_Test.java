@@ -25,32 +25,32 @@ import org.junit.rules.ExpectedException;
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 
 /**
- * Tests for <code>{@link INTValueConverter#toString()}</code>.
+ * Tests for <code>{@link LONGValueConverter#toString()}</code>.
  * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class INTValueConverter_toValue_Test {
+public class LONGValueConverter_toValue_Test {
 
   @Rule public XtextRule xtext = new XtextRule();
   @Rule public ExpectedException thrown = none();
 
-  private INTValueConverter converter;
+  private LONGValueConverter converter;
   private INode node;
 
   @Before public void setUp() {
     node = mock(INode.class);
-    converter = xtext.injector().getInstance(INTValueConverter.class);
+    converter = xtext.injector().getInstance(LONGValueConverter.class);
   }
   
   @Test public void should_throw_error_if_input_is_null() {
     thrown.expect(ValueConverterException.class);
-    thrown.expectMessage("Couldn't convert empty string to int.");
+    thrown.expectMessage("Couldn't convert empty string to long.");
     converter.toValue(null, node);
   }
 
   @Test public void should_throw_error_if_input_is_empty() {
     thrown.expect(ValueConverterException.class);
-    thrown.expectMessage("Couldn't convert empty string to int.");
+    thrown.expectMessage("Couldn't convert empty string to long.");
     converter.toValue("", node);
   }
 
@@ -59,16 +59,16 @@ public class INTValueConverter_toValue_Test {
       converter.toValue("abc", node);
       fail("Expecting a " + ValueConverterException.class.getName());
     } catch (ValueConverterException e) {
-      assertThat(e.getMessage(), equalTo("Couldn't convert 'abc' to int."));
+      assertThat(e.getMessage(), equalTo("Couldn't convert 'abc' to long."));
       assertThat(e.getCause(), instanceOf(NumberFormatException.class));
     }
   }
 
-  @Test public void should_parse_integer() {
-    assertThat(converter.toValue("68", node), equalTo(68));
+  @Test public void should_parse_long() {
+    assertThat(converter.toValue("68", node), equalTo(68L));
   }
 
-  @Test public void should_parse_negative_integer() {
-    assertThat(converter.toValue("-2", node), equalTo(-2));
+  @Test public void should_parse_negative_long() {
+    assertThat(converter.toValue("-2", node), equalTo(-2L));
   }
 }

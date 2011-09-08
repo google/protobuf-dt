@@ -42,8 +42,8 @@ public class Literals {
    * @param l the given literal.
    * @return the calculated index value.
    */
-  public int calculateIndexOf(Literal l) {
-    int index = -1;
+  public long calculateIndexOf(Literal l) {
+    long index = -1;
     List<Literal> allLiterals = getAllContentsOfType(l.eContainer(), Literal.class);
     for (Literal c : allLiterals) {
       if (c == l) continue;

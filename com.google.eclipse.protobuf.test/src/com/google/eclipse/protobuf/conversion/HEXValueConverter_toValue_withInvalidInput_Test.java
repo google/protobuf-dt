@@ -41,25 +41,25 @@ public class HEXValueConverter_toValue_withInvalidInput_Test {
 
   @Test public void should_throw_error_if_input_is_null() {
     thrown.expect(ValueConverterException.class);
-    thrown.expectMessage("Couldn't convert empty string to int.");
+    thrown.expectMessage("Couldn't convert empty string to long.");
     converter.toValue(null, node);
   }
 
   @Test public void should_throw_error_if_input_is_empty() {
     thrown.expect(ValueConverterException.class);
-    thrown.expectMessage("Couldn't convert empty string to int.");
+    thrown.expectMessage("Couldn't convert empty string to long.");
     converter.toValue("", node);
   }
 
   @Test public void should_throw_error_if_input_has_less_than_three_characters() {
     thrown.expect(ValueConverterException.class);
-    thrown.expectMessage("Couldn't convert '0x' to int.");
+    thrown.expectMessage("Couldn't convert '0x' to long.");
     converter.toValue("0x", node);
   }
 
   @Test public void should_throw_error_if_input_does_not_start_with_0x() {
     thrown.expect(ValueConverterException.class);
-    thrown.expectMessage("Couldn't convert '65' to int.");
+    thrown.expectMessage("Couldn't convert '65' to long.");
     converter.toValue("65", node);
   }
 
@@ -68,7 +68,7 @@ public class HEXValueConverter_toValue_withInvalidInput_Test {
       converter.toValue("0xZ", node);
       fail("Expecting a " + ValueConverterException.class.getName());
     } catch (ValueConverterException e) {
-      assertThat(e.getMessage(), equalTo("Couldn't convert '0xZ' to int."));
+      assertThat(e.getMessage(), equalTo("Couldn't convert '0xZ' to long."));
       assertThat(e.getCause(), instanceOf(NumberFormatException.class));
     }
   }

@@ -257,7 +257,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeLiteral_Index(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    int index = literals.calculateIndexOf((Literal) model);
+    long index = literals.calculateIndexOf((Literal) model);
     proposeIndex(index, context, acceptor);
   }
 
@@ -267,11 +267,11 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeProperty_Index(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    int index = fields.calculateTagNumberOf((Property) model);
+    long index = fields.calculateTagNumberOf((Property) model);
     proposeIndex(index, context, acceptor);
   }
 
-  private void proposeIndex(int index, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+  private void proposeIndex(long index, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     proposeAndAccept(valueOf(index), context, acceptor);
   }
 

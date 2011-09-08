@@ -41,8 +41,8 @@ public class Fields {
    * @param f the given field.
    * @return the calculated value for the tag number of the given field.
    */
-  public int calculateTagNumberOf(Field f) {
-    int index = 0;
+  public long calculateTagNumberOf(Field f) {
+    long index = 0;
     for (EObject o : f.eContainer().eContents()) {
       if (o == f || !(o instanceof Field)) continue;
       index = max(index, ((Field) o).getIndex());
