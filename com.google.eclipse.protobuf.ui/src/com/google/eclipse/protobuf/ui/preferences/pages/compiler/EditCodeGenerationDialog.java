@@ -68,9 +68,9 @@ public class EditCodeGenerationDialog extends InputDialog {
     txtOutputDirectory.setText(option.outputDirectory());
 
     txtError = new Text(cmpDialogArea, SWT.READ_ONLY | SWT.WRAP);
-    GridData gd_lblError = new GridData(GRAB_HORIZONTAL | HORIZONTAL_ALIGN_FILL);
-    gd_lblError.horizontalSpan = 2;
-    txtError.setLayoutData(gd_lblError);
+    GridData gridData = new GridData(GRAB_HORIZONTAL | HORIZONTAL_ALIGN_FILL);
+    gridData.horizontalSpan = 2;
+    txtError.setLayoutData(gridData);
     txtError.setBackground(txtError.getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
 
     addEventListeners();

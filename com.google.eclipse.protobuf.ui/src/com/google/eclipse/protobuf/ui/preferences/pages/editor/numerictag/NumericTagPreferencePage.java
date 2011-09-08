@@ -9,7 +9,13 @@
 package com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag;
 
 import static com.google.eclipse.protobuf.ui.preferences.binding.BindingToListItems.bindItemsOf;
+import static com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag.AddOrEditPatternDialog.*;
 import static com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag.Messages.*;
+import static org.eclipse.jface.window.Window.OK;
+
+import com.google.eclipse.protobuf.ui.preferences.*;
+import com.google.eclipse.protobuf.ui.preferences.binding.PreferenceBinder;
+import com.google.eclipse.protobuf.ui.preferences.pages.PreferenceAndPropertyPage;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ListViewer;
@@ -17,10 +23,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
-
-import com.google.eclipse.protobuf.ui.preferences.*;
-import com.google.eclipse.protobuf.ui.preferences.binding.PreferenceBinder;
-import com.google.eclipse.protobuf.ui.preferences.pages.PreferenceAndPropertyPage;
 
 /**
  * Preference page where users can specify the patterns to use to match comments where "the next id" is being tracked.
@@ -75,6 +77,23 @@ public class NumericTagPreferencePage extends PreferenceAndPropertyPage {
     lstPaths.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
         enableButtonsDependingOnListSelection();
+      }
+    });
+    btnAdd.addSelectionListener(new SelectionAdapter() {
+      @Override public void widgetSelected(SelectionEvent e) {
+        AddOrEditPatternDialog dialog = addPattern(getShell());
+        if (dialog.open() == OK) {
+          lstPaths.add(dialog.pattern());
+        }
+      }
+    });
+    btnEdit.addSelectionListener(new SelectionAdapter() {
+      @Override public void widgetSelected(SelectionEvent e) {
+        int selectionIndex = lstPaths.getSelectionIndex();
+        AddOrEditPatternDialog dialog = editPattern(lstPaths.getItem(selectionIndex), getShell());
+        if (dialog.open() == OK) {
+          lstPaths.setItem(selectionIndex, dialog.pattern());
+        }
       }
     });
     btnRemove.addSelectionListener(new SelectionAdapter() {
