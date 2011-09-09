@@ -31,19 +31,11 @@ public class HEXValueConverter extends AbstractLexerBasedConverter<Long> {
    */
   public Long toValue(String string, INode node) throws ValueConverterException {
     if (isEmpty(string)) throw new ValueConverterException("Couldn't convert empty string to long.", node, null);
-    int length = string.length();
-    if (length < 3) throw parsingError(string, node);
-    if (!string.substring(0, 2).equalsIgnoreCase("0x")) throw parsingError(string, node);
-    String val = string.substring(2, length);
     try {
-      return Long.parseLong(val, 16);
+      return Long.decode(string);
     } catch (NumberFormatException e) {
       throw parsingError(string, node, e);
     }
-  }
-
-  private ValueConverterException parsingError(String string, INode node) {
-    return parsingError(string, node, null);
   }
 
   private ValueConverterException parsingError(String string, INode node, Exception cause) {

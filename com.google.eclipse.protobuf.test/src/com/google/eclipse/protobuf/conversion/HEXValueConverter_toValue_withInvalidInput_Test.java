@@ -57,12 +57,6 @@ public class HEXValueConverter_toValue_withInvalidInput_Test {
     converter.toValue("0x", node);
   }
 
-  @Test public void should_throw_error_if_input_does_not_start_with_0x() {
-    thrown.expect(ValueConverterException.class);
-    thrown.expectMessage("Couldn't convert '65' to long.");
-    converter.toValue("65", node);
-  }
-
   @Test public void should_throw_error_if_conversion_throws_NumberFormatException() {
     try {
       converter.toValue("0xZ", node);

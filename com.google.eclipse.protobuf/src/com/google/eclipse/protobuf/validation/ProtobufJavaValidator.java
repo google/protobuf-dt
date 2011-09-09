@@ -22,8 +22,7 @@ import org.eclipse.xtext.validation.Check;
 
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.eclipse.protobuf.util.FieldOptions;
-import com.google.eclipse.protobuf.util.Properties;
+import com.google.eclipse.protobuf.util.*;
 import com.google.inject.Inject;
 
 /**
@@ -35,7 +34,11 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
   @Inject private ImportUriResolver uriResolver;
   @Inject private IQualifiedNameProvider qualifiedNameProvider;
   @Inject private Properties properties;
+  @Inject private ModelNodes nodes;
 
+  @Check public void checkComment(EObject o) {
+  }
+  
   @Check public void checkDefaultValueType(FieldOption option) {
     if (!fieldOptions.isDefaultValueOption(option)) return;
     Property property = (Property) option.eContainer();
