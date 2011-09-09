@@ -34,10 +34,6 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
   @Inject private ImportUriResolver uriResolver;
   @Inject private IQualifiedNameProvider qualifiedNameProvider;
   @Inject private Properties properties;
-  @Inject private ModelNodes nodes;
-
-  @Check public void checkComment(EObject o) {
-  }
   
   @Check public void checkDefaultValueType(FieldOption option) {
     if (!fieldOptions.isDefaultValueOption(option)) return;

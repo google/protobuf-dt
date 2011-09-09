@@ -8,8 +8,6 @@
  */
 package com.google.eclipse.protobuf.junit.stubs.protobuf;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.eclipse.emf.common.notify.*;
 import org.eclipse.emf.common.util.*;
 import org.eclipse.emf.ecore.*;
@@ -101,7 +99,7 @@ public class PackageStub implements Package {
   }
 
   /** {@inheritDoc} */
-  public Object eInvoke(EOperation operation, EList<?> arguments) throws InvocationTargetException {
+  public Object eInvoke(EOperation operation, EList<?> arguments) {
     throw new UnsupportedOperationException();
   }
 
