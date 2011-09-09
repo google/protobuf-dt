@@ -24,7 +24,6 @@ import org.eclipse.xtext.ui.editor.XtextEditor;
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
 import org.eclipse.xtext.ui.editor.contentassist.antlr.ParserBasedContentAssistContextFactory;
 import org.eclipse.xtext.ui.editor.model.IXtextDocument;
-import org.eclipse.xtext.ui.editor.syntaxcoloring.HighlightingReconciler;
 import org.eclipse.xtext.util.Pair;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
@@ -51,7 +50,6 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
 
   @Inject private CommentNodesFinder commentNodesFinder;
   @Inject private Fields fields;
-  @Inject private HighlightingReconciler highlightingReconciler;
   @Inject private Literals literals;
   @Inject private ModelNodes nodes;
   @Inject private NumericTagPreferencesFactory preferencesFactory;
@@ -185,10 +183,10 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
     }
   }
 
-  private void refreshHighlighting(XtextEditor editor) {
+  private void refreshHighlighting(final XtextEditor editor) {
     editor.getDocument().readOnly(new IUnitOfWork.Void<XtextResource>() {
       @Override public void process(XtextResource resource) {
-        highlightingReconciler.modelChanged(resource);
+        editor.getInternalSourceViewer().invalidateTextPresentation();
       }
     });
   }
