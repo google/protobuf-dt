@@ -7,10 +7,12 @@
  * 
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.util;
+package com.google.eclipse.protobuf.ui.util.editor;
 
 import static com.google.eclipse.protobuf.ui.ProtobufUiModule.PLUGIN_ID;
+import static com.google.eclipse.protobuf.ui.util.editor.Messages.*;
 import static org.eclipse.compare.rangedifferencer.RangeDifferencer.findDifferences;
+import static org.eclipse.core.filebuffers.FileBuffers.createTextFileBufferManager;
 import static org.eclipse.core.runtime.IStatus.ERROR;
 import static org.eclipse.core.runtime.Status.OK_STATUS;
 import static org.eclipse.core.runtime.SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK;
@@ -44,21 +46,19 @@ public class Editors {
       SafeRunner.run(new ISafeRunnable() {
         public void handleException(Throwable exception) {
           logger.error(exception.getMessage(), exception);
-          String msg = "An error occurred while calculating the changed regions. See error log for details.";
-          errorStatus[0] = new Status(ERROR, PLUGIN_ID, 0, msg, exception);
+          errorStatus[0] = new Status(ERROR, PLUGIN_ID, 0, errorCalculatingChangedRegions, exception);
           result[0] = null;
         }
 
         public void run() throws Exception {
-          monitor.beginTask("Calculating changed regions", 20);
+          monitor.beginTask(calculatingChangedRegions, 20);
           IFileStore fileStore = buffer.getFileStore();
-          ITextFileBufferManager fileBufferManager = FileBuffers.createTextFileBufferManager();
+          ITextFileBufferManager fileBufferManager = createTextFileBufferManager();
           fileBufferManager.connectFileStore(fileStore, getSubProgressMonitor(monitor, 15));
           try {
-            IDocument currentDocument = buffer.getDocument();
-            IDocument oldDocument =
-                ((ITextFileBuffer) fileBufferManager.getFileStoreFileBuffer(fileStore)).getDocument();
-            result[0] = getChangedLineRegions(oldDocument, currentDocument);
+            IDocument current = buffer.getDocument();
+            IDocument old = ((ITextFileBuffer) fileBufferManager.getFileStoreFileBuffer(fileStore)).getDocument();
+            result[0] = getChangedLineRegions(old, current);
           } finally {
             fileBufferManager.disconnectFileStore(fileStore, getSubProgressMonitor(monitor, 5));
             monitor.done();
@@ -66,31 +66,30 @@ public class Editors {
         }
 
         /*
-         * Returns regions of all lines which differ comparing {@code oldDocument}s content with 
-         * {@code currentDocument}s content. Successive lines are merged into one region.
+         * Returns regions of all lines which differ comparing {@code old}s content with {@code current}s content. 
+         * Successive lines are merged into one region.
          */
-        private IRegion[] getChangedLineRegions(IDocument oldDocument, IDocument currentDocument) {
-          RangeDifference[] differences = 
-              findDifferences(new LineComparator(oldDocument), new LineComparator(currentDocument));
+        private IRegion[] getChangedLineRegions(IDocument old, IDocument current) {
+          RangeDifference[] differences = differencesBetween(old, current);
           List<IRegion> regions = new ArrayList<IRegion>();
-          final int numberOfLines = currentDocument.getNumberOfLines();
-          for (RangeDifference current : differences) {
-            if (current.kind() == RangeDifference.CHANGE) {
-              int startLine = Math.min(current.rightStart(), numberOfLines - 1);
-              int endLine = current.rightEnd() - 1;
+          int numberOfLines = current.getNumberOfLines();
+          for (RangeDifference difference : differences) {
+            if (difference.kind() == RangeDifference.CHANGE) {
+              int startLine = Math.min(difference.rightStart(), numberOfLines - 1);
+              int endLine = difference.rightEnd() - 1;
               IRegion startLineRegion;
               try {
-                startLineRegion = currentDocument.getLineInformation(startLine);
+                startLineRegion = current.getLineInformation(startLine);
                 if (startLine >= endLine) {
                   // startLine > endLine indicates a deletion of one or more lines.
                   // Deletions are ignored except at the end of the document.
                   if (startLine == endLine
-                      || startLineRegion.getOffset() + startLineRegion.getLength() == currentDocument.getLength()) {
+                      || startLineRegion.getOffset() + startLineRegion.getLength() == current.getLength()) {
                     regions.add(startLineRegion);
                   }
                   continue;
                 } 
-                IRegion endLineRegion = currentDocument.getLineInformation(endLine);
+                IRegion endLineRegion = current.getLineInformation(endLine);
                 int startOffset = startLineRegion.getOffset();
                 int endOffset = endLineRegion.getOffset() + endLineRegion.getLength();
                 regions.add(new Region(startOffset, endOffset - startOffset));
@@ -100,6 +99,10 @@ public class Editors {
             }
           }
           return regions.toArray(new IRegion[regions.size()]);
+        }
+
+        private RangeDifference[] differencesBetween(IDocument old, IDocument current) {
+          return findDifferences(new LineComparator(old), new LineComparator(current));
         }
       });
     } finally {
