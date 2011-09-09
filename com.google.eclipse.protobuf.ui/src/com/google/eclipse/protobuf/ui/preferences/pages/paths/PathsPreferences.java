@@ -9,7 +9,6 @@
 package com.google.eclipse.protobuf.ui.preferences.pages.paths;
 
 import static com.google.eclipse.protobuf.ui.preferences.pages.paths.PathResolutionType.*;
-import static com.google.eclipse.protobuf.util.Strings.CSV_PATTERN;
 import static java.util.Collections.*;
 
 import java.util.*;
@@ -27,6 +26,8 @@ public class PathsPreferences {
   private final PathResolutionType pathResolutionType;
   private final List<DirectoryPath> importRoots;
 
+  private static final String CSV_PATTERN = "[\\s]*,[\\s]*";
+  
   PathsPreferences(RawPreferences preferences, IProject project) {
     boolean filesInOneDirectoryOnly = preferences.filesInOneDirectoryOnly().value();
     pathResolutionType = filesInOneDirectoryOnly ? SINGLE_DIRECTORY : MULTIPLE_DIRECTORIES;
