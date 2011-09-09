@@ -14,6 +14,8 @@ import org.eclipse.xtext.conversion.ValueConverterException;
 import org.eclipse.xtext.conversion.impl.AbstractLexerBasedConverter;
 import org.eclipse.xtext.nodemodel.INode;
 
+import java.util.regex.Pattern;
+
 /**
  * Converts multi-line strings to {@code String}s.
  *
@@ -21,6 +23,8 @@ import org.eclipse.xtext.nodemodel.INode;
  */
 public class STRINGValueConverter extends AbstractLexerBasedConverter<String> {
 
+  private static final Pattern LINE_BREAK = Pattern.compile("\"[\t\r\n]+\"|'[\t\r\n]+'");
+  
   @Override
   protected String toEscapedString(String value) {
     if (value == null) return null;
@@ -38,15 +42,15 @@ public class STRINGValueConverter extends AbstractLexerBasedConverter<String> {
     if (string == null) return null;
     try {
       String clean = removeLineBreaksFrom(string);
-      return convertFromJavaString(clean.substring(1, clean.length() - 1), true);
+      return convertToJavaString(clean.substring(1, clean.length() - 1), true);
     } catch (IllegalArgumentException e) {
       throw parsingError(string, node, e);
     }
   }
 
   private static String removeLineBreaksFrom(String s) {
-    if (s == null) return s;
-    return s.replaceAll("\"[\t\r\n]+\"|'[\t\r\n]+'", "");
+    if (isEmpty(s)) return s;
+    return LINE_BREAK.matcher(s).replaceAll("");
   }
 
   private ValueConverterException parsingError(String string, INode node, Exception cause) {

@@ -152,8 +152,11 @@ terminal STRING:
   SL_STRING (SL_STRING)*;
 
 terminal SL_STRING:
-  '"' ('\\' ('b' | 't' | 'n' | 'f' | 'r' | 'u' | '"' | "'" | '\\') | !('\\' | '"'))* '"' (WS)*;
+  '"' ('\\' ('b' | 't' | 'n' | 'f' | 'r' | 'u' | '"' | "'" | '\\' | UNICODE_OCTAL) | !('\\' | '"'))* '"' (WS)*;
 
+terminal UNICODE_OCTAL:
+  ('0'..'3')('0'..'7')('0'..'7');
+  
 Nan:
   number='nan';
 
