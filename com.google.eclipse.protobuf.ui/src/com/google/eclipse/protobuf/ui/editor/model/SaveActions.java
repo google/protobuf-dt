@@ -13,12 +13,16 @@ import static java.lang.Character.isWhitespace;
 import static org.eclipse.jface.text.IDocumentExtension3.DEFAULT_PARTITIONING;
 import static org.eclipse.jface.text.TextUtilities.getPartition;
 
-import com.google.eclipse.protobuf.ui.preferences.pages.editor.save.*;
-import com.google.inject.*;
-
 import org.apache.log4j.Logger;
-import org.eclipse.jface.text.*;
-import org.eclipse.text.edits.*;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.ITypedRegion;
+import org.eclipse.text.edits.DeleteEdit;
+import org.eclipse.text.edits.MultiTextEdit;
+import org.eclipse.text.edits.TextEdit;
+
+import com.google.inject.Singleton;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -26,13 +30,9 @@ import org.eclipse.text.edits.*;
 @Singleton
 class SaveActions {
 
-  @Inject private SaveActionsPreferencesFactory preferencesFactory;
-  
   private static Logger logger = Logger.getLogger(SaveActions.class);
   
   TextEdit createSaveAction(IDocument document, IRegion[] changedRegions) {
-    SaveActionsPreferences preferences = preferencesFactory.preferences();
-    if (!preferences.shouldRemoveTrailingSpace()) return null;
     TextEdit rootEdit = null;
     try {
       for (IRegion region : changedRegions) {
@@ -52,7 +52,7 @@ class SaveActions {
         }
       }
     } catch (BadLocationException e) {
-      logger.warn("Unable to create save actions", e);
+      logger.error("Unable to create save actions", e);
     }
     return rootEdit;
   }

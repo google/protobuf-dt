@@ -19,12 +19,24 @@ import org.eclipse.jface.preference.IPreferenceStore;
 class RawPreferences {
 
   private final BooleanPreference removeTrailingWhitespace;
+  private final BooleanPreference inAllLines;
+  private final BooleanPreference inEditedLines;
 
   RawPreferences(IPreferenceStore store) {
     removeTrailingWhitespace = new BooleanPreference("saveActions.removeTrailingWhitespace", store);
+    inAllLines = new BooleanPreference("saveActions.inAllLines", store);
+    inEditedLines = new BooleanPreference("saveActions.inEditedLines", store);
   }
 
   BooleanPreference removeTrailingWhitespace() {
     return removeTrailingWhitespace;
+  }
+  
+  BooleanPreference inAllLines() {
+    return inAllLines;
+  }
+
+  BooleanPreference inEditedLines() {
+    return inEditedLines;
   }
 }

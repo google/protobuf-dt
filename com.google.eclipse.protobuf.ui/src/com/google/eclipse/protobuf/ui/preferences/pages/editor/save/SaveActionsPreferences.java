@@ -17,13 +17,22 @@ import org.eclipse.jface.preference.IPreferenceStore;
  */
 public class SaveActionsPreferences {
 
-  private final boolean removeTrailingSpace;
+  private final RemoveTrailingSpace removeTrailingSpace;
   
   SaveActionsPreferences(RawPreferences preferences) {
-    removeTrailingSpace = preferences.removeTrailingWhitespace().value();
+    removeTrailingSpace = RemoveTrailingSpace.valueFrom(preferences);
   }
   
-  public boolean shouldRemoveTrailingSpace() {
+  public RemoveTrailingSpace removeTrailingSpace() {
     return removeTrailingSpace;
+  }
+  
+  public static enum RemoveTrailingSpace {
+    NONE, IN_EDITED_LINES, IN_ALL_LINES;
+    
+    static RemoveTrailingSpace valueFrom(RawPreferences preferences) {
+      if (!preferences.removeTrailingWhitespace().value()) return NONE;
+      return preferences.inEditedLines().value() ? IN_EDITED_LINES : IN_ALL_LINES;
+    }
   }
 }

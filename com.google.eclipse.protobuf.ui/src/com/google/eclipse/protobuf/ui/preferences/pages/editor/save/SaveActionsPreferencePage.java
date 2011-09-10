@@ -35,6 +35,10 @@ public class SaveActionsPreferencePage extends PreferencePage implements IWorkbe
 
   private Button btnRemoveTrailingwhitespace;
 
+  private Button btnInEditedLines;
+
+  private Button btnInAllLines;
+
   /** {@inheritDoc} */
   public void init(IWorkbench workbench) {}
 
@@ -44,7 +48,19 @@ public class SaveActionsPreferencePage extends PreferencePage implements IWorkbe
     btnRemoveTrailingwhitespace = new Button(contents, SWT.CHECK);
     btnRemoveTrailingwhitespace.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false, 1, 1));
     btnRemoveTrailingwhitespace.setText(removeTrailingWhitespace);
+    
+    Composite composite = new Composite(contents, SWT.NONE);
+    composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+    composite.setLayout(new GridLayout(1, false));
+    
+    btnInEditedLines = new Button(composite, SWT.RADIO);
+    btnInEditedLines.setText("In edited lines");
+    
+    btnInAllLines = new Button(composite, SWT.RADIO);
+    btnInAllLines.setText("In all lines");
+    
     setUpBinding();
+    
     preferenceBinder.applyValues();
     return contents;
   }
@@ -52,7 +68,9 @@ public class SaveActionsPreferencePage extends PreferencePage implements IWorkbe
   private void setUpBinding() {
     RawPreferences preferences = new RawPreferences(getPreferenceStore());
     preferenceBinder.addAll(
-        bindSelectionOf(btnRemoveTrailingwhitespace).to(preferences.removeTrailingWhitespace())
+        bindSelectionOf(btnRemoveTrailingwhitespace).to(preferences.removeTrailingWhitespace()),
+        bindSelectionOf(btnInAllLines).to(preferences.inAllLines()),
+        bindSelectionOf(btnInEditedLines).to(preferences.inEditedLines())
     );
   }
 

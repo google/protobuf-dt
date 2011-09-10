@@ -38,7 +38,8 @@ public class Editors {
 
   private static Logger logger = Logger.getLogger(Editors.class);
   
-  public static IRegion[] calculateChangedLineRegions(final ITextFileBuffer buffer, final IProgressMonitor monitor)
+  public IRegion[] calculateChangedLineRegions(final ITextFileBuffer buffer,
+      final IDocument current, final IProgressMonitor monitor)
       throws CoreException {
     final IRegion[][] result = new IRegion[1][];
     final IStatus[] errorStatus = new IStatus[] { OK_STATUS };
@@ -56,9 +57,8 @@ public class Editors {
           ITextFileBufferManager fileBufferManager = createTextFileBufferManager();
           fileBufferManager.connectFileStore(fileStore, getSubProgressMonitor(monitor, 15));
           try {
-            IDocument current = buffer.getDocument();
             IDocument old = ((ITextFileBuffer) fileBufferManager.getFileStoreFileBuffer(fileStore)).getDocument();
-            result[0] = getChangedLineRegions(old, current);
+            result[0] = getChangedLineRegions(old);
           } finally {
             fileBufferManager.disconnectFileStore(fileStore, getSubProgressMonitor(monitor, 5));
             monitor.done();
@@ -69,8 +69,8 @@ public class Editors {
          * Returns regions of all lines which differ comparing {@code old}s content with {@code current}s content. 
          * Successive lines are merged into one region.
          */
-        private IRegion[] getChangedLineRegions(IDocument old, IDocument current) {
-          RangeDifference[] differences = differencesBetween(old, current);
+        private IRegion[] getChangedLineRegions(IDocument old) {
+          RangeDifference[] differences = differencesWith(old);
           List<IRegion> regions = new ArrayList<IRegion>();
           int numberOfLines = current.getNumberOfLines();
           for (RangeDifference difference : differences) {
@@ -101,7 +101,7 @@ public class Editors {
           return regions.toArray(new IRegion[regions.size()]);
         }
 
-        private RangeDifference[] differencesBetween(IDocument old, IDocument current) {
+        private RangeDifference[] differencesWith(IDocument old) {
           return findDifferences(new LineComparator(old), new LineComparator(current));
         }
       });

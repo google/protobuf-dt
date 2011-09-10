@@ -22,6 +22,8 @@ public class SaveActionsPreferenceStoreInitializer implements IPreferenceStoreIn
   public void initialize(IPreferenceStoreAccess access) {
     IPreferenceStore store = access.getWritablePreferenceStore();
     RawPreferences preferences = new RawPreferences(store);
-    preferences.removeTrailingWhitespace().defaultValue(false);
+    preferences.removeTrailingWhitespace().defaultValue(true);
+    preferences.inAllLines().defaultValue(false);
+    preferences.inEditedLines().defaultValue(true);
   }
 }
