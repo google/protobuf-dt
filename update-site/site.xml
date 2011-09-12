@@ -6,5 +6,8 @@
    <feature url="features/com.google.eclipse.protobuf_1.0.0.201108021004.jar" id="com.google.eclipse.protobuf" version="1.0.0.201108021004">
       <category name="google"/>
    </feature>
+   <feature url="features/com.google.eclipse.protobuf_1.0.1.201109121337.jar" id="com.google.eclipse.protobuf" version="1.0.1.201109121337">
+      <category name="google"/>
+   </feature>
    <category-def name="google" label="Google"/>
 </site>
