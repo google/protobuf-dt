@@ -17,6 +17,7 @@ import static org.eclipse.core.runtime.IStatus.ERROR;
 import static org.eclipse.core.runtime.Status.OK_STATUS;
 import static org.eclipse.core.runtime.SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK;
 
+import com.google.eclipse.protobuf.ui.util.SimpleReference;
 import com.google.inject.Singleton;
 
 import org.apache.log4j.Logger;
@@ -41,24 +42,25 @@ public class Editors {
   public IRegion[] calculateChangedLineRegions(final ITextFileBuffer buffer,
       final IDocument current, final IProgressMonitor monitor)
       throws CoreException {
-    final IRegion[][] result = new IRegion[1][];
-    final IStatus[] errorStatus = new IStatus[] { OK_STATUS };
+    final SimpleReference<IRegion[]> result = new SimpleReference<IRegion[]>();
+    final SimpleReference<IStatus> errorStatus = new SimpleReference<IStatus>(OK_STATUS);
     try {
       SafeRunner.run(new ISafeRunnable() {
         public void handleException(Throwable exception) {
           logger.error(exception.getMessage(), exception);
-          errorStatus[0] = new Status(ERROR, PLUGIN_ID, 0, errorCalculatingChangedRegions, exception);
-          result[0] = null;
+          errorStatus.set(new Status(ERROR, PLUGIN_ID, 0, errorCalculatingChangedRegions, exception));
+          result.set(null);
         }
 
         public void run() throws Exception {
           monitor.beginTask(calculatingChangedRegions, 20);
           IFileStore fileStore = buffer.getFileStore();
+          System.out.println("file store" + fileStore.getClass());
           ITextFileBufferManager fileBufferManager = createTextFileBufferManager();
           fileBufferManager.connectFileStore(fileStore, getSubProgressMonitor(monitor, 15));
           try {
             IDocument old = ((ITextFileBuffer) fileBufferManager.getFileStoreFileBuffer(fileStore)).getDocument();
-            result[0] = getChangedLineRegions(old);
+            result.set(getChangedLineRegions(old));
           } finally {
             fileBufferManager.disconnectFileStore(fileStore, getSubProgressMonitor(monitor, 5));
             monitor.done();
@@ -106,9 +108,10 @@ public class Editors {
         }
       });
     } finally {
-      if (!errorStatus[0].isOK()) throw new CoreException(errorStatus[0]);
+      IStatus status = errorStatus.get();
+      if (!status.isOK()) throw new CoreException(status);
     }
-    return result[0];
+    return result.get();
   }
   
   private static IProgressMonitor getSubProgressMonitor(IProgressMonitor monitor, int ticks) {

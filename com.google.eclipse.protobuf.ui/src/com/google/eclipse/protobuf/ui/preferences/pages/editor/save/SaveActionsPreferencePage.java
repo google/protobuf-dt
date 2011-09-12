@@ -14,6 +14,8 @@ import static com.google.eclipse.protobuf.ui.preferences.pages.editor.save.Messa
 
 import org.eclipse.jface.preference.*;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.*;
@@ -60,8 +62,9 @@ public class SaveActionsPreferencePage extends PreferencePage implements IWorkbe
     btnInAllLines.setText("In all lines");
     
     setUpBinding();
-    
     preferenceBinder.applyValues();
+    updateContents();
+    addEventListeners();
     return contents;
   }
 
@@ -72,6 +75,20 @@ public class SaveActionsPreferencePage extends PreferencePage implements IWorkbe
         bindSelectionOf(btnInAllLines).to(preferences.inAllLines()),
         bindSelectionOf(btnInEditedLines).to(preferences.inEditedLines())
     );
+  }
+  
+  private void addEventListeners() {
+    btnRemoveTrailingwhitespace.addSelectionListener(new SelectionAdapter() {
+      @Override public void widgetSelected(SelectionEvent e) {
+        updateContents();
+      }
+    });
+  }
+  
+  private void updateContents() {
+    boolean enabled = btnRemoveTrailingwhitespace.getSelection();
+    btnInEditedLines.setEnabled(enabled);
+    btnInAllLines.setEnabled(enabled);
   }
 
   @Override protected final IPreferenceStore doGetPreferenceStore() {
