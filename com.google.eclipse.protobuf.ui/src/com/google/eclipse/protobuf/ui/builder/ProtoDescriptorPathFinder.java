@@ -12,19 +12,30 @@ import static java.io.File.separator;
 import static java.util.Arrays.asList;
 import static org.eclipse.xtext.util.Strings.*;
 
+import com.google.inject.Singleton;
+
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
+@Singleton
 class ProtoDescriptorPathFinder {
 
-  private static final String DESCRIPTOR_FQN = concat(separator, asList("", "google", "protobuf", "descriptor.proto"));
-
-  public String findRootOf(String descriptorFilePath) {
+  private final String descriptorFqn;
+  
+  ProtoDescriptorPathFinder() {
+    this(separator);
+  }
+  
+  ProtoDescriptorPathFinder(String fileSeparator) {
+    descriptorFqn = concat(separator, asList("", "google", "protobuf", "descriptor.proto"));
+  }
+    
+  String findRootOf(String descriptorFilePath) {
     if (isEmpty(descriptorFilePath)) return null;
-    int indexOfDescriptorFqn = descriptorFilePath.indexOf(DESCRIPTOR_FQN);
+    int indexOfDescriptorFqn = descriptorFilePath.indexOf(descriptorFqn);
     if (indexOfDescriptorFqn == -1) {
       String format = "Path '%s' does not contain '%s'";
-      throw new IllegalArgumentException(String.format(format, descriptorFilePath, DESCRIPTOR_FQN));
+      throw new IllegalArgumentException(String.format(format, descriptorFilePath, descriptorFqn));
     }
     return descriptorFilePath.substring(0, indexOfDescriptorFqn);
   }
