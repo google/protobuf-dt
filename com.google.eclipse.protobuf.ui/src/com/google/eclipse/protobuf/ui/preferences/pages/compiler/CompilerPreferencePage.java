@@ -207,27 +207,25 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
         pageIsNowInvalid(errorNoSelection);
         return;
       }
-      if (!isFileWithNames(protocPath, "protoc", "protoc.exe")) {
+      File protoc = new File(protocPath);
+      if (!protoc.isFile()) {
         pageIsNowInvalid(errorInvalidProtoc);
         return;
       }
     }
     String descriptorPath = txtDescriptorFilePath.getText();
-    if (!isEmpty(descriptorPath) && !isFileWithNames(descriptorPath, "descriptor.proto")) {
+    if (!isEmpty(descriptorPath) && !isFileWithName(descriptorPath, "descriptor.proto")) {
       pageIsNowInvalid(errorInvalidDescriptor);
       return;
     }
     pageIsNowValid();
   }
   
-  private boolean isFileWithNames(String filePath, String... expectedFileNames) {
+  private boolean isFileWithName(String filePath, String expectedFileName) {
     File file = new File(filePath);
     if (!file.isFile()) return false;
     String fileName = file.getName();
-    for (String name : expectedFileNames) {
-      if (name.equals(fileName)) return true;
-    }
-    return false;
+    return expectedFileName.equals(fileName);
   }
 
   @Override protected BooleanPreference enableProjectSettingsPreference(IPreferenceStore store) {
