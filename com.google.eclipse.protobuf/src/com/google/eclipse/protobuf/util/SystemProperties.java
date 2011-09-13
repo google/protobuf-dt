@@ -6,9 +6,11 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.junit.util;
+package com.google.eclipse.protobuf.util;
 
 /**
+ * System properties.
+ * 
  * @author alruiz@google.com (Alex Ruiz)
  */
 public final class SystemProperties {

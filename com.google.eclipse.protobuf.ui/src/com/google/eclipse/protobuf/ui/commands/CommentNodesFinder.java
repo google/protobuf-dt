@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.commands;
 
-import static com.google.eclipse.protobuf.junit.util.SystemProperties.lineSeparator;
+import static com.google.eclipse.protobuf.util.SystemProperties.lineSeparator;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.getNode;
 import static org.eclipse.xtext.util.Strings.isEmpty;

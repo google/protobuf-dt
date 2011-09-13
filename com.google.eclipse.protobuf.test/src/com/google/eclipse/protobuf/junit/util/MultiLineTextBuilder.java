@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.junit.util;
 
-import static com.google.eclipse.protobuf.junit.util.SystemProperties.lineSeparator;
+import static com.google.eclipse.protobuf.util.SystemProperties.lineSeparator;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

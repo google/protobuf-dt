@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.junit.core;
 
-import static com.google.eclipse.protobuf.junit.util.SystemProperties.lineSeparator;
+import static com.google.eclipse.protobuf.util.SystemProperties.lineSeparator;
 import static org.eclipse.emf.common.util.URI.createURI;
 import static org.eclipse.emf.ecore.util.EcoreUtil.resolveAll;
 import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
