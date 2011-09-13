@@ -37,7 +37,7 @@ import com.google.inject.Inject;
  */
 public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
 
-  @Inject private ProtocOutputParser outputParser;
+  @Inject private LineSpecificErrorParser outputParser;
   @Inject private ProtocCommandFactory commandFactory;
   @Inject private CompilerPreferencesFactory compilerPreferencesFactory;
   @Inject private PathsPreferencesFactory pathsPreferencesFactory;

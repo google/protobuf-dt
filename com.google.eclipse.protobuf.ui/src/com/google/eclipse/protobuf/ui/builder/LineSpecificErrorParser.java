@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.CoreException;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-class ProtocOutputParser {
+class LineSpecificErrorParser {
 
   /*
    * (.*):(\\d+):(\\d+):\\s*(.*)
@@ -33,7 +33,7 @@ class ProtocOutputParser {
    */
   private static final Pattern ERROR_PATTERN = Pattern.compile("(.*):(\\d+):(\\d+):\\s*(.*)");
 
-  void parseAndAddMarkerIfNecessary(String line, ProtocMarkerFactory markerFactory) throws CoreException {
+  public void parseAndAddMarkerIfNecessary(String line, ProtocMarkerFactory markerFactory) throws CoreException {
     Matcher errorMatcher = ERROR_PATTERN.matcher(line);
     if (!errorMatcher.matches()) return;
     String fileName = errorMatcher.group(1);

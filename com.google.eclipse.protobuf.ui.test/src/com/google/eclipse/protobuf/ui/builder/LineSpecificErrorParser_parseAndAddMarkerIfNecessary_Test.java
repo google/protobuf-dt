@@ -14,18 +14,18 @@ import org.eclipse.core.runtime.CoreException;
 import org.junit.*;
 
 /**
- * Tests for <code>{@link ProtocOutputParser#parseAndAddMarkerIfNecessary(String, ProtocMarkerFactory)}</code>.
+ * Tests for <code>{@link LineSpecificErrorParser#parseAndAddMarkerIfNecessary(String, ProtocMarkerFactory)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ProtocOutputParser_parseAndAddMarkerIfNecessary_Test {
+public class LineSpecificErrorParser_parseAndAddMarkerIfNecessary_Test {
 
   private ProtocMarkerFactory markerFactory;
-  private ProtocOutputParser outputParser;
+  private LineSpecificErrorParser outputParser;
 
   @Before public void setUp() {
     markerFactory = mock(ProtocMarkerFactory.class);
-    outputParser = new ProtocOutputParser();
+    outputParser = new LineSpecificErrorParser();
   }
 
   @Test public void should_not_create_IMarker_if_line_does_not_match_error_pattern() throws CoreException {
