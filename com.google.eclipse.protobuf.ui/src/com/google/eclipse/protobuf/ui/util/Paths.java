@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.util;
 
-import java.io.File;
+import static java.io.File.separator;
 
 /**
  * Utility methods related to paths.
@@ -25,7 +25,7 @@ public final class Paths {
    */
   public static String[] segmentsOf(String path) {
     if (path == null) throw new NullPointerException("The given path should not be null");
-    return path.split(File.separator);
+    return path.split(separator);
   }
   
   private Paths() {}

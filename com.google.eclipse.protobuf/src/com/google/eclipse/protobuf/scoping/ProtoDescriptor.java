@@ -10,7 +10,7 @@ package com.google.eclipse.protobuf.scoping;
 
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.PROPERTY__TYPE;
 import static com.google.eclipse.protobuf.scoping.OptionType.*;
-import static com.google.eclipse.protobuf.util.Closeables.close;
+import static com.google.eclipse.protobuf.util.Closeables.closeQuietly;
 import static com.google.eclipse.protobuf.util.Encodings.UTF_8;
 import static java.util.Collections.*;
 import static org.eclipse.xtext.EcoreUtil2.*;
@@ -77,7 +77,7 @@ public class ProtoDescriptor {
     } catch (Throwable t) {
       throw new IllegalStateException("Unable to parse descriptor.proto", t);
     } finally {
-      close(reader);
+      closeQuietly(reader);
     }
   }
 

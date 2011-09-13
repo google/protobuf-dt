@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.builder;
 
+import static java.io.File.separator;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
@@ -41,11 +42,21 @@ public class ProtoDescriptorPathFinder_findRootOf_Test {
 
   @Test public void should_throw_error_if_path_does_not_contain_descriptor_FQN() {
     thrown.expect(IllegalArgumentException.class);
+    if (separator.equals("\\")) {
+      thrown.expectMessage("Path '\\usr\\local\\include' does not contain '\\google\\protobuf\\descriptor.proto'");
+      finder.findRootOf("\\usr\\local\\include");
+      return;
+    }
     thrown.expectMessage("Path '/usr/local/include' does not contain '/google/protobuf/descriptor.proto'");
     finder.findRootOf("/usr/local/include");
   }
 
   @Test public void should_find_import_root_of_descriptor() {
+    if (separator.equals("\\")) {
+      String filePath = "\\usr\\local\\include\\google\\protobuf\\descriptor.proto";
+      assertThat(finder.findRootOf(filePath), equalTo("\\usr\\local\\include"));
+      return;
+    }
     String filePath = "/usr/local/include/google/protobuf/descriptor.proto";
     assertThat(finder.findRootOf(filePath), equalTo("/usr/local/include"));
   }

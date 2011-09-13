@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.editor.model;
 
-import static com.google.eclipse.protobuf.util.Closeables.close;
+import static com.google.eclipse.protobuf.util.Closeables.closeQuietly;
 import static com.google.eclipse.protobuf.util.Encodings.UTF_8;
 
 import java.io.*;
@@ -36,7 +36,7 @@ class ContentReader {
       }
       return contents.toString();
     } finally {
-      close(reader);
+      closeQuietly(reader);
     }
   }
 

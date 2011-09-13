@@ -18,11 +18,11 @@ import java.io.*;
 public class Closeables {
   
   /**
-   * Invokes {@code close()} on the given <code>{@link Cloneable}</code>, ignoring any thrown exceptions.
+   * Invokes {@code close()} on the given <code>{@link Closeable}</code>, ignoring any thrown exceptions.
    * @param c the given {@code Closeable}.
    * @return {@code false} if the given {@code Closeable} was {@code null}; {@code true} otherwise.
    */
-  public static boolean close(Closeable c) {
+  public static boolean closeQuietly(Closeable c) {
     if (c == null) return false;
     try {
       c.close();

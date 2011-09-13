@@ -9,7 +9,7 @@
 package com.google.eclipse.protobuf.ui.editor.model;
 
 import static com.google.eclipse.protobuf.ui.exception.CoreExceptions.error;
-import static com.google.eclipse.protobuf.util.Closeables.close;
+import static com.google.eclipse.protobuf.util.Closeables.closeQuietly;
 
 import java.io.*;
 
@@ -50,7 +50,7 @@ class FileStoreDocumentContentsFactory implements DocumentContentsFactory {
       inputStream = new FileInputStream(file);
       return contentReader.contentsOf(inputStream);
     } finally {
-      close(inputStream);
+      closeQuietly(inputStream);
     }
   }
 

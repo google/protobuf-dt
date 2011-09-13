@@ -8,15 +8,16 @@
  */
 package com.google.eclipse.protobuf.ui.builder;
 
-import static com.google.eclipse.protobuf.scoping.ProtoDescriptor.DESCRIPTOR_IMPORT_URI;
-import static org.eclipse.xtext.util.Strings.isEmpty;
+import static java.io.File.separator;
+import static java.util.Arrays.asList;
+import static org.eclipse.xtext.util.Strings.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 class ProtoDescriptorPathFinder {
 
-  private static final String DESCRIPTOR_FQN = "/" + DESCRIPTOR_IMPORT_URI;
+  private static final String DESCRIPTOR_FQN = concat(separator, asList("", "google", "protobuf", "descriptor.proto"));
 
   public String findRootOf(String descriptorFilePath) {
     if (isEmpty(descriptorFilePath)) return null;
