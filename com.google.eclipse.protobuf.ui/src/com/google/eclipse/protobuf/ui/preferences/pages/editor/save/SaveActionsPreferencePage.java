@@ -103,5 +103,6 @@ public class SaveActionsPreferencePage extends PreferencePage implements IWorkbe
   @Override protected final void performDefaults() {
     preferenceBinder.applyDefaults();
     super.performDefaults();
+    updateContents();
   }
 }

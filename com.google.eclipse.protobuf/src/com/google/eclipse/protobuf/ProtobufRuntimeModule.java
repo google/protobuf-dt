@@ -25,23 +25,23 @@ import com.google.inject.Binder;
  */
 public class ProtobufRuntimeModule extends com.google.eclipse.protobuf.AbstractProtobufRuntimeModule {
 
+  public Class<? extends ImportUriResolver> bindImportUriResolver() {
+    return ProtobufImportUriResolver.class;
+  }
+
   @Override public Class<? extends IQualifiedNameProvider> bindIQualifiedNameProvider() {
     return ProtobufQualifiedNameProvider.class;
   }
 
-  public void configureImportUriResolver(Binder binder) {
-    binder.bind(ImportUriResolver.class).to(ProtobufImportUriResolver.class);
-  }
-
-  public void configureSyntaxErrorMessageProvider(Binder binder) {
-    binder.bind(ISyntaxErrorMessageProvider.class).to(ProtobufSyntaxErrorMessageProvider.class);
-  }
-  
-  public void configureExtensionRegistry(Binder binder) {
-    binder.bind(IExtensionRegistry.class).toProvider(ExtensionRegistryProvider.class);
+  public Class<? extends ISyntaxErrorMessageProvider> bindISyntaxErrorMessageProvider() {
+    return ProtobufSyntaxErrorMessageProvider.class;
   }
   
   @Override public Class<? extends IValueConverterService> bindIValueConverterService() {
     return ProtobufTerminalConverters.class;
+  }
+  
+  public void configureExtensionRegistry(Binder binder) {
+    binder.bind(IExtensionRegistry.class).toProvider(ExtensionRegistryProvider.class);
   }
 }

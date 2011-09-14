@@ -89,15 +89,15 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
     return AutoAddNatureEditorCallback.class;
   }
   
-  public Class<? extends IEObjectDocumentationProvider> bindObjectDocumentationProvider() {
+  public Class<? extends IEObjectDocumentationProvider> bindIEObjectDocumentationProvider() {
     return ProtobufDocumentationProvider.class;
   }
 
-  public Class<? extends IPreferenceStoreAccess> bindPreferenceStoreAccess() {
+  public Class<? extends IPreferenceStoreAccess> bindIPreferenceStoreAccess() {
     return PreferenceStoreAccess.class;
   }
 
-  public Class<? extends ISemanticHighlightingCalculator> bindSemanticHighlightingCalculator() {
+  public Class<? extends ISemanticHighlightingCalculator> bindISemanticHighlightingCalculator() {
     return ProtobufSemanticHighlightingCalculator.class;
   }
 
