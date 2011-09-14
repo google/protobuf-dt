@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
- * 
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.ui.util.editor;
@@ -17,28 +17,28 @@ import static org.eclipse.core.runtime.IStatus.ERROR;
 import static org.eclipse.core.runtime.Status.OK_STATUS;
 import static org.eclipse.core.runtime.SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK;
 
-import com.google.eclipse.protobuf.ui.util.SimpleReference;
-import com.google.inject.Singleton;
+import java.util.*;
 
 import org.apache.log4j.Logger;
-import org.eclipse.compare.rangedifferencer.*;
+import org.eclipse.compare.rangedifferencer.RangeDifference;
 import org.eclipse.core.filebuffers.*;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.text.*;
 
-import java.util.*;
+import com.google.eclipse.protobuf.ui.util.SimpleReference;
+import com.google.inject.Singleton;
 
 /**
  * Utility methods related to editors. Adapted from CDT's {@code org.eclipse.cdt.internal.ui.util.EditorUtility}.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton 
+@Singleton
 public class Editors {
 
   private static Logger logger = Logger.getLogger(Editors.class);
-  
+
   public IRegion[] calculateChangedLineRegions(final ITextFileBuffer buffer,
       final IDocument current, final IProgressMonitor monitor)
       throws CoreException {
@@ -55,7 +55,6 @@ public class Editors {
         public void run() throws Exception {
           monitor.beginTask(calculatingChangedRegions, 20);
           IFileStore fileStore = buffer.getFileStore();
-          System.out.println("file store" + fileStore.getClass());
           ITextFileBufferManager fileBufferManager = createTextFileBufferManager();
           fileBufferManager.connectFileStore(fileStore, getSubProgressMonitor(monitor, 15));
           try {
@@ -68,7 +67,7 @@ public class Editors {
         }
 
         /*
-         * Returns regions of all lines which differ comparing {@code old}s content with {@code current}s content. 
+         * Returns regions of all lines which differ comparing {@code old}s content with {@code current}s content.
          * Successive lines are merged into one region.
          */
         private IRegion[] getChangedLineRegions(IDocument old) {
@@ -90,7 +89,7 @@ public class Editors {
                     regions.add(startLineRegion);
                   }
                   continue;
-                } 
+                }
                 IRegion endLineRegion = current.getLineInformation(endLine);
                 int startOffset = startLineRegion.getOffset();
                 int endOffset = endLineRegion.getOffset() + endLineRegion.getLength();
@@ -113,7 +112,7 @@ public class Editors {
     }
     return result.get();
   }
-  
+
   private static IProgressMonitor getSubProgressMonitor(IProgressMonitor monitor, int ticks) {
     if (monitor != null) return new SubProgressMonitor(monitor, ticks, PREPEND_MAIN_LABEL_TO_SUBTASK);
     return new NullProgressMonitor();
