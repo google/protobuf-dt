@@ -16,9 +16,15 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 
   public static String add;
+  public static String addNewPattern;
   public static String edit;
+  public static String editPattern;
+  public static String match;
+  public static String noMatch;
   public static String pageDescription;
+  public static String pattern;
   public static String remove;
+  public static String testPattern;
 
   static {
     Class<Messages> clazz = Messages.class;

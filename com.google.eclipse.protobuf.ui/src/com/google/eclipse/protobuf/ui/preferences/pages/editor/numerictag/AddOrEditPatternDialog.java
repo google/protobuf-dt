@@ -8,12 +8,13 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag;
 
+import static com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag.Messages.*;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static org.eclipse.jface.dialogs.IDialogConstants.OK_ID;
 import static org.eclipse.swt.layout.GridData.*;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import com.google.eclipse.protobuf.ui.preferences.InputDialog;
+import java.util.regex.*;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -21,70 +22,74 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
 
-import java.util.regex.*;
+import com.google.eclipse.protobuf.ui.preferences.InputDialog;
 
 /**
  * Dialog where users can enter a new pattern or edit an existing one.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class AddOrEditPatternDialog extends InputDialog {
-  
+
   private Text txtPattern;
   private Text txtTest;
   private Text txtPatternError;
   private Text txtTestError;
 
   private String pattern;
-  
+
   public static AddOrEditPatternDialog editPattern(String pattern, Shell parent) {
-    AddOrEditPatternDialog dialog = new AddOrEditPatternDialog(parent, "Edit Pattern");
+    AddOrEditPatternDialog dialog = new AddOrEditPatternDialog(parent, editPattern);
     dialog.pattern = pattern;
     return dialog;
   }
-  
+
   public static AddOrEditPatternDialog addPattern(Shell parent) {
-    return new AddOrEditPatternDialog(parent, "Add New Pattern");
+    return new AddOrEditPatternDialog(parent, addNewPattern);
   }
-  
+
   public AddOrEditPatternDialog(Shell parent, String title) {
     super(parent, title);
   }
-  
+
   /** {@inheritDoc} */
   @Override protected Control createDialogArea(Composite parent) {
     Composite cmpDialogArea = (Composite) super.createDialogArea(parent);
-    
+
     Label lblPattern = new Label(cmpDialogArea, SWT.NONE);
-    lblPattern.setText("Pattern:");
-    
+    lblPattern.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+    lblPattern.setText(Messages.pattern);
+
     txtPattern = new Text(cmpDialogArea, SWT.BORDER);
     txtPattern.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
     if (!isEmpty(pattern)) {
       txtPattern.setText(pattern);
       txtPattern.selectAll();
     }
-    
+
     txtPatternError = new Text(cmpDialogArea, SWT.READ_ONLY | SWT.WRAP);
     txtPatternError.setLayoutData(new GridData(GRAB_HORIZONTAL | HORIZONTAL_ALIGN_FILL));
     Color readOnlyColor = txtPatternError.getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
     txtPatternError.setBackground(readOnlyColor);
-    
+
     Label lblSeparator = new Label(cmpDialogArea, SWT.SEPARATOR | SWT.HORIZONTAL);
     lblSeparator.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-    
+
     Label lblTest = new Label(cmpDialogArea, SWT.NONE);
-    lblTest.setText("Test: (optional)");
-    
+    lblTest.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+    lblTest.setText(testPattern);
+
     txtTest = new Text(cmpDialogArea, SWT.BORDER);
     txtTest.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-    
+
     txtTestError = new Text(cmpDialogArea, SWT.READ_ONLY | SWT.WRAP);
-    txtTestError.setLayoutData(new GridData(GRAB_HORIZONTAL | HORIZONTAL_ALIGN_FILL));
+    GridData gd_txtTestError = new GridData(GRAB_HORIZONTAL | HORIZONTAL_ALIGN_FILL);
+    gd_txtTestError.verticalAlignment = SWT.FILL;
+    txtTestError.setLayoutData(gd_txtTestError);
     txtTestError.setBackground(readOnlyColor);
-    
+
     addEventListeners();
-    
+
     applyDialogFont(cmpDialogArea);
     return cmpDialogArea;
   }
@@ -126,18 +131,18 @@ public class AddOrEditPatternDialog extends InputDialog {
     }
     Pattern p = Pattern.compile(regex, CASE_INSENSITIVE);
     Matcher matcher = p.matcher(testText);
-    String result = matcher.matches() ? "Match!" : "Does not match!";
+    String result = matcher.matches() ? match : noMatch;
     txtTestError.setText(result);
   }
 
   private String enteredPattern() {
     return txtPattern.getText().trim();
   }
-  
+
   public String pattern() {
     return pattern;
   }
-  
+
   /** {@inheritDoc} */
   @Override protected void createButtonsForButtonBar(Composite parent) {
     super.createButtonsForButtonBar(parent);
@@ -150,7 +155,7 @@ public class AddOrEditPatternDialog extends InputDialog {
   }
 
   private void clearTestErrorText() {
-    txtTestError.setText("");
+    txtTestError.setText(""); //$NON-NLS-1$
   }
 
   /** {@inheritDoc} */
