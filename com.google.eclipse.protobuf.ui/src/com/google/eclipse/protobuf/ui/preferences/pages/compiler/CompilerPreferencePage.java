@@ -14,6 +14,7 @@ import static com.google.eclipse.protobuf.ui.preferences.binding.BindingToTextVa
 import static com.google.eclipse.protobuf.ui.preferences.pages.compiler.BindingToCodeGeneration.bindCodeGeneration;
 import static com.google.eclipse.protobuf.ui.preferences.pages.compiler.EnableProjectSettingsPreference.enableProjectSettings;
 import static com.google.eclipse.protobuf.ui.preferences.pages.compiler.Messages.*;
+import static com.google.eclipse.protobuf.ui.swt.Colors.widgetBackground;
 import static java.util.Arrays.asList;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
@@ -92,24 +93,26 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     btnUseProtocInCustomPath.setText(protocInCustomPath);
 
     txtProtocFilePath = new Text(grpCompilerLocation, SWT.BORDER);
+    txtProtocFilePath.setBackground(widgetBackground());
     txtProtocFilePath.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
     txtProtocFilePath.setEditable(false);
 
     btnProtocPathBrowse = new Button(grpCompilerLocation, SWT.NONE);
     btnProtocPathBrowse.setText(browseCustomPath);
-    
+
     grpDescriptorLocation = new Group(cmpMain, SWT.NONE);
     grpDescriptorLocation.setText(descriptorLocation);
     grpDescriptorLocation.setLayout(new GridLayout(2, false));
     grpDescriptorLocation.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-    
+
     txtDescriptorFilePath = new Text(grpDescriptorLocation, SWT.BORDER);
+    txtDescriptorFilePath.setBackground(widgetBackground());
     txtDescriptorFilePath.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
     txtDescriptorFilePath.setEditable(false);
-    
+
     btnDescriptorPathBrowse = new Button(grpDescriptorLocation, SWT.NONE);
     btnDescriptorPathBrowse.setText(browseCustomPath);
-    
+
     grpCodeGeneration = new Group(cmpMain, SWT.NONE);
     grpCodeGeneration.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
     grpCodeGeneration.setText(codeGeneration);
@@ -220,7 +223,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     }
     pageIsNowValid();
   }
-  
+
   private boolean isFileWithName(String filePath, String expectedFileName) {
     File file = new File(filePath);
     if (!file.isFile()) return false;
@@ -288,12 +291,12 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     btnUseProtocInCustomPath.setEnabled(isEnabled);
     enableCompilerCustomPathOptions(customPathOptionSelectedAndEnabled());
   }
-  
+
   private void enableCompilerCustomPathOptions(boolean isEnabled) {
     txtProtocFilePath.setEnabled(isEnabled);
     btnProtocPathBrowse.setEnabled(isEnabled);
   }
-  
+
   private void enableDescriptorPathOptions(boolean isEnabled) {
     grpDescriptorLocation.setEnabled(isEnabled);
     txtDescriptorFilePath.setEnabled(isEnabled);

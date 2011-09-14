@@ -9,6 +9,7 @@
 package com.google.eclipse.protobuf.ui.preferences.pages.compiler;
 
 import static com.google.eclipse.protobuf.ui.preferences.pages.compiler.Messages.*;
+import static com.google.eclipse.protobuf.ui.swt.Colors.widgetBackground;
 import static com.google.eclipse.protobuf.ui.util.Paths.segmentsOf;
 import static org.eclipse.core.resources.IResource.FOLDER;
 import static org.eclipse.jface.dialogs.IDialogConstants.OK_ID;
@@ -71,7 +72,7 @@ public class EditCodeGenerationDialog extends InputDialog {
     GridData gridData = new GridData(GRAB_HORIZONTAL | HORIZONTAL_ALIGN_FILL);
     gridData.horizontalSpan = 2;
     txtError.setLayoutData(gridData);
-    txtError.setBackground(txtError.getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+    txtError.setBackground(widgetBackground());
 
     addEventListeners();
 

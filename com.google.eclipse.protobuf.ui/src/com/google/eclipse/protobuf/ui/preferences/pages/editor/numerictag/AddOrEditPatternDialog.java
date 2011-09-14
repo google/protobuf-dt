@@ -9,6 +9,7 @@
 package com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag;
 
 import static com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag.Messages.*;
+import static com.google.eclipse.protobuf.ui.swt.Colors.widgetBackground;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static org.eclipse.jface.dialogs.IDialogConstants.OK_ID;
 import static org.eclipse.swt.layout.GridData.*;
@@ -18,7 +19,6 @@ import java.util.regex.*;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
 
@@ -69,8 +69,7 @@ public class AddOrEditPatternDialog extends InputDialog {
 
     txtPatternError = new Text(cmpDialogArea, SWT.READ_ONLY | SWT.WRAP);
     txtPatternError.setLayoutData(new GridData(GRAB_HORIZONTAL | HORIZONTAL_ALIGN_FILL));
-    Color readOnlyColor = txtPatternError.getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
-    txtPatternError.setBackground(readOnlyColor);
+    txtPatternError.setBackground(widgetBackground());
 
     Label lblSeparator = new Label(cmpDialogArea, SWT.SEPARATOR | SWT.HORIZONTAL);
     lblSeparator.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -86,7 +85,7 @@ public class AddOrEditPatternDialog extends InputDialog {
     GridData gd_txtTestError = new GridData(GRAB_HORIZONTAL | HORIZONTAL_ALIGN_FILL);
     gd_txtTestError.verticalAlignment = SWT.FILL;
     txtTestError.setLayoutData(gd_txtTestError);
-    txtTestError.setBackground(readOnlyColor);
+    txtTestError.setBackground(widgetBackground());
 
     addEventListeners();
 
