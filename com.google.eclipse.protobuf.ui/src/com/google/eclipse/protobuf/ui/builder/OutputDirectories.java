@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.builder;
 
+import static java.io.File.separator;
+
 import java.util.*;
 
 import org.eclipse.core.resources.*;
@@ -40,8 +42,15 @@ class OutputDirectories {
   }
 
   private static IFolder findOrCreateOutputDirectory(IProject project, String outputFolderName) throws CoreException {
-    IFolder outputFolder = project.getFolder(outputFolderName);
-    if (!outputFolder.exists()) outputFolder.create(true, true, NO_MONITOR);
+    String[] segments = outputFolderName.split(separator);
+    IFolder outputFolder = null;
+    StringBuilder path = new StringBuilder();
+    for (String segment : segments) {
+      path.append(segment);
+      outputFolder = project.getFolder(path.toString());
+      if (!outputFolder.exists()) outputFolder.create(true, true, NO_MONITOR);
+      path.append(separator);
+    }
     return outputFolder;
   }
 
