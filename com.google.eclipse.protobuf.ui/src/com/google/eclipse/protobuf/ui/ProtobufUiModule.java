@@ -12,6 +12,7 @@ import static com.google.inject.name.Names.named;
 import static org.eclipse.ui.PlatformUI.isWorkbenchRunning;
 
 import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
+import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.ui.*;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -21,6 +22,7 @@ import org.eclipse.xtext.ui.editor.*;
 import org.eclipse.xtext.ui.editor.model.XtextDocumentProvider;
 import org.eclipse.xtext.ui.editor.outline.actions.IOutlineContribution;
 import org.eclipse.xtext.ui.editor.preferences.*;
+import org.eclipse.xtext.ui.editor.quickfix.XtextQuickAssistProcessor;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.*;
 
 import com.google.eclipse.protobuf.scoping.IFileUriResolver;
@@ -29,6 +31,7 @@ import com.google.eclipse.protobuf.ui.documentation.ProtobufDocumentationProvide
 import com.google.eclipse.protobuf.ui.editor.ProtobufUriEditorOpener;
 import com.google.eclipse.protobuf.ui.editor.hyperlinking.ProtobufHyperlinkDetector;
 import com.google.eclipse.protobuf.ui.editor.model.ProtobufDocumentProvider;
+import com.google.eclipse.protobuf.ui.editor.spelling.ProtobufReconciler;
 import com.google.eclipse.protobuf.ui.editor.syntaxcoloring.*;
 import com.google.eclipse.protobuf.ui.internal.ProtobufActivator;
 import com.google.eclipse.protobuf.ui.outline.*;
@@ -38,6 +41,7 @@ import com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag.Numeri
 import com.google.eclipse.protobuf.ui.preferences.pages.editor.save.SaveActionsPreferenceStoreInitializer;
 import com.google.eclipse.protobuf.ui.preferences.pages.general.GeneralPreferenceStoreInitializer;
 import com.google.eclipse.protobuf.ui.preferences.pages.paths.PathsPreferenceStoreInitializer;
+import com.google.eclipse.protobuf.ui.quickfix.ProtobufQuickAssistProcessor;
 import com.google.eclipse.protobuf.ui.scoping.FileUriResolver;
 import com.google.eclipse.protobuf.ui.validation.ValidateOnActivation;
 import com.google.inject.Binder;
@@ -61,56 +65,48 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
     w.getPartService().addPartListener(new ValidateOnActivation());
   }
 
+  public Class<? extends IFileUriResolver> bindFileUriResolver() {
+    return FileUriResolver.class;
+  }
+
+  public Class<? extends IHighlightingConfiguration> bindHighlightingConfiguration() {
+    return HighlightingConfiguration.class;
+  }
+
   @Override public Class<? extends IContentOutlinePage> bindIContentOutlinePage() {
     return ProtobufOutlinePage.class;
   }
-
+  
   @Override public Class<? extends IHyperlinkDetector> bindIHyperlinkDetector() {
     return ProtobufHyperlinkDetector.class;
   }
-
+  
+  @Override public Class<? extends IReconciler> bindIReconciler() {
+    return ProtobufReconciler.class;
+  }
+  
   @Override public Class<? extends IXtextEditorCallback> bindIXtextEditorCallback() {
     return AutoAddNatureEditorCallback.class;
   }
-
-  /** {@inheritDoc} */
-  @Override public void configureToggleLinkWithEditorOutlineContribution(Binder binder) {
-    binder.bind(IOutlineContribution.class)
-          .annotatedWith(IOutlineContribution.LinkWithEditor.class)
-          .to(LinkWithEditor.class);
+  
+  public Class<? extends IEObjectDocumentationProvider> bindObjectDocumentationProvider() {
+    return ProtobufDocumentationProvider.class;
   }
 
-  public void configureGeneralSettingsPreferencesInitializer(Binder binder) {
-    configurePreferenceInitializer(binder, "generalPreferences", GeneralPreferenceStoreInitializer.class);
+  public Class<? extends IPreferenceStoreAccess> bindPreferenceStoreAccess() {
+    return PreferenceStoreAccess.class;
   }
 
-  public void configureCompilerPreferencesInitializer(Binder binder) {
-    configurePreferenceInitializer(binder, "compilerPreferences", CompilerPreferenceStoreInitializer.class);
+  public Class<? extends ISemanticHighlightingCalculator> bindSemanticHighlightingCalculator() {
+    return ProtobufSemanticHighlightingCalculator.class;
   }
 
-  public void configurePathsPreferencesInitializer(Binder binder) {
-    configurePreferenceInitializer(binder, "pathsPreferences", PathsPreferenceStoreInitializer.class);
+  public Class<? extends XtextDocumentProvider> bindXtextDocumentProvider() {
+    return ProtobufDocumentProvider.class;
   }
 
-  public void configureNumericTagPreferencesInitializer(Binder binder) {
-    configurePreferenceInitializer(binder, "numericTagPreferences", NumericTagPreferenceStoreInitializer.class);
-  }
-
-  public void configureSaveActionsPreferencesInitializer(Binder binder) {
-    configurePreferenceInitializer(binder, "saveActionsPreferences", SaveActionsPreferenceStoreInitializer.class);
-  }
-
-  private void configurePreferenceInitializer(Binder binder, String name,
-      Class<? extends IPreferenceStoreInitializer> initializerType) {
-    binder.bind(IPreferenceStoreInitializer.class).annotatedWith(named(name)).to(initializerType);
-  }
-
-  public void configureFileUriResolver(Binder binder) {
-    binder.bind(IFileUriResolver.class).to(FileUriResolver.class);
-  }
-
-  public void configureDocumentProvider(Binder binder) {
-    binder.bind(XtextDocumentProvider.class).to(ProtobufDocumentProvider.class);
+  public Class<? extends XtextQuickAssistProcessor> bindXtextQuickAssistProcessor(){
+    return ProtobufQuickAssistProcessor.class;
   }
 
   @Override public void configureLanguageSpecificURIEditorOpener(Binder binder) {
@@ -120,19 +116,22 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
           .to(ProtobufUriEditorOpener.class);
   }
 
-  public void configureSemanticHighlightingCalculator(Binder binder) {
-    binder.bind(ISemanticHighlightingCalculator.class).to(ProtobufSemanticHighlightingCalculator.class);
+  public void configurePreferencesInitializers(Binder binder) {
+    configurePreferenceInitializer(binder, "compilerPreferences", CompilerPreferenceStoreInitializer.class);
+    configurePreferenceInitializer(binder, "generalPreferences", GeneralPreferenceStoreInitializer.class);
+    configurePreferenceInitializer(binder, "numericTagPreferences", NumericTagPreferenceStoreInitializer.class);
+    configurePreferenceInitializer(binder, "pathsPreferences", PathsPreferenceStoreInitializer.class);
+    configurePreferenceInitializer(binder, "saveActionsPreferences", SaveActionsPreferenceStoreInitializer.class);
   }
 
-  public void configurePreferenceStoreAccess(Binder binder) {
-    binder.bind(IPreferenceStoreAccess.class).to(PreferenceStoreAccess.class);
+  private void configurePreferenceInitializer(Binder binder, String name,
+      Class<? extends IPreferenceStoreInitializer> initializerType) {
+    binder.bind(IPreferenceStoreInitializer.class).annotatedWith(named(name)).to(initializerType);
   }
 
-  public void configureHighlightingConfiguration(Binder binder) {
-    binder.bind(IHighlightingConfiguration.class).to(HighlightingConfiguration.class);
-  }
-
-  public void configureEObjectDocumentationProvider(Binder binder) {
-    binder.bind(IEObjectDocumentationProvider.class).to(ProtobufDocumentationProvider.class);
+  @Override public void configureToggleLinkWithEditorOutlineContribution(Binder binder) {
+    binder.bind(IOutlineContribution.class)
+          .annotatedWith(IOutlineContribution.LinkWithEditor.class)
+          .to(LinkWithEditor.class);
   }
 }
