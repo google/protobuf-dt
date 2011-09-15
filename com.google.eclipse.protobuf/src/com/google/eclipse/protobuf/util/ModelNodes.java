@@ -13,7 +13,7 @@ import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.findNodesForFeatur
 import com.google.inject.Singleton;
 
 import org.eclipse.emf.ecore.*;
-import org.eclipse.xtext.TerminalRule;
+import org.eclipse.xtext.*;
 import org.eclipse.xtext.nodemodel.INode;
 
 import java.util.List;
@@ -40,6 +40,16 @@ public class ModelNodes {
     if (nodes.isEmpty()) return null;
     return nodes.get(0);
   }
+
+  /**
+   * Indicates whether the given node was created by a string, or a single- or multi-line comment.
+   * @param node the node to check.
+   * @return {@code true} if the given node was created by a string, or a single- or multi-line comment; {@code false} 
+   * otherwise.
+   */
+  public boolean isCommentOrString(INode node) {
+    return wasCreatedByAnyComment(node) || wasCreatedByString(node);
+  }
   
   /**
    * Indicates whether the given node was created by a single- or multi-line comment.
@@ -50,6 +60,16 @@ public class ModelNodes {
     return wasCreatedByComment(node, SINGLE_LINE_COMMENT_RULE_NAME, "ML_COMMENT");
   }
 
+  private boolean wasCreatedByString(INode node) {
+    EObject grammarElement = node.getGrammarElement();
+    if (!(grammarElement instanceof RuleCall)) return false;
+    AbstractRule rule = ((RuleCall) grammarElement).getRule();
+    if (!(rule instanceof TerminalRule)) return false;
+    TerminalRule terminalRule = (TerminalRule) rule;
+    return "STRING".equals(terminalRule.getName());
+  }
+
+  
   /**
    * Indicates whether the given node was created by a single-line comment.
    * @param node the node to check.

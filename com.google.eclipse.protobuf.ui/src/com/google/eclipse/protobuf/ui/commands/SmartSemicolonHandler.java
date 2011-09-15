@@ -17,7 +17,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.xtext.*;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.XtextEditor;
@@ -87,14 +86,13 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
   private ContentToInsert newContent(final XtextEditor editor, final StyledText styledText, final String line) {
     if (line.endsWith(SEMICOLON)) return INSERT_SEMICOLON_AT_CURRENT_LOCATION;
     final IXtextDocument document = editor.getDocument();
-    ContentToInsert contentToInsert = ContentToInsert.NONE;
     try {
-      contentToInsert = document.modify(new IUnitOfWork<ContentToInsert, XtextResource>() {
+      return document.modify(new IUnitOfWork<ContentToInsert, XtextResource>() {
         public ContentToInsert exec(XtextResource resource) {
           int offset = styledText.getCaretOffset();
           ContentAssistContext[] context = contextFactory.create(editor.getInternalSourceViewer(), offset, resource);
           for (ContentAssistContext c : context) {
-            if (isCommentOrString(c.getCurrentNode())) continue;
+            if (nodes.isCommentOrString(c.getCurrentNode())) continue;
             EObject model = c.getCurrentModel();
             if (model instanceof Message || model instanceof Enum || model instanceof Protobuf) {
               // need to retry, parsing may not be finished yet.
@@ -132,20 +130,6 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
       logger.error("Unable to generate tag number", e);
       return INSERT_SEMICOLON_AT_CURRENT_LOCATION;
     }
-    return contentToInsert;
-  }
-
-  private boolean isCommentOrString(INode currentNode) {
-    return nodes.wasCreatedByAnyComment(currentNode) || wasCreatedByString(currentNode);
-  }
-
-  private boolean wasCreatedByString(INode node) {
-    EObject grammarElement = node.getGrammarElement();
-    if (!(grammarElement instanceof RuleCall)) return false;
-    AbstractRule rule = ((RuleCall) grammarElement).getRule();
-    if (!(rule instanceof TerminalRule)) return false;
-    TerminalRule terminalRule = (TerminalRule) rule;
-    return "STRING".equals(terminalRule.getName());
   }
 
   private ContentToInsert newContent(Literal literal) {
