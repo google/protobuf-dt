@@ -41,7 +41,7 @@ class ProtobufSpelling extends SpellingReconcileStrategy {
     super.setDocument(document);
   }
 
-  public void reconcile(IRegion region) {
+  @Override public void reconcile(IRegion region) {
     super.reconcile(new Region(0, xtextDocument().getLength()));
     removeUnwantedAnnotations();
   }
