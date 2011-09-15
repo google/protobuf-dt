@@ -10,17 +10,17 @@ package com.google.eclipse.protobuf.util;
 
 import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.findNodesForFeature;
 
-import com.google.inject.Singleton;
+import java.util.List;
 
 import org.eclipse.emf.ecore.*;
 import org.eclipse.xtext.*;
 import org.eclipse.xtext.nodemodel.INode;
 
-import java.util.List;
+import com.google.inject.Singleton;
 
 /**
  * Utility methods related to <code>{@link INode}</code>s.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton
@@ -44,20 +44,20 @@ public class ModelNodes {
   /**
    * Indicates whether the given node was created by a string, or a single- or multi-line comment.
    * @param node the node to check.
-   * @return {@code true} if the given node was created by a string, or a single- or multi-line comment; {@code false} 
+   * @return {@code true} if the given node was created by a string, or a single- or multi-line comment; {@code false}
    * otherwise.
    */
   public boolean isCommentOrString(INode node) {
     return wasCreatedByAnyComment(node) || wasCreatedByString(node);
   }
-  
+
   /**
    * Indicates whether the given node was created by a single- or multi-line comment.
    * @param node the node to check.
    * @return {@code true} if the given node was created by a single- or multi-line comment; {@code false} otherwise.
    */
   public boolean wasCreatedByAnyComment(INode node) {
-    return wasCreatedByComment(node, SINGLE_LINE_COMMENT_RULE_NAME, "ML_COMMENT");
+    return wasCreatedByRule(node, SINGLE_LINE_COMMENT_RULE_NAME, "ML_COMMENT");
   }
 
   private boolean wasCreatedByString(INode node) {
@@ -69,22 +69,21 @@ public class ModelNodes {
     return "STRING".equals(terminalRule.getName());
   }
 
-  
   /**
    * Indicates whether the given node was created by a single-line comment.
    * @param node the node to check.
    * @return {@code true} if the given node was created by a single-line comment; {@code false} otherwise.
    */
   public boolean wasCreatedBySingleLineComment(INode node) {
-    return wasCreatedByComment(node, SINGLE_LINE_COMMENT_RULE_NAME);
+    return wasCreatedByRule(node, SINGLE_LINE_COMMENT_RULE_NAME);
   }
-  
-  private boolean wasCreatedByComment(INode node, String...commentRuleNames) {
+
+  private boolean wasCreatedByRule(INode node, String...ruleNames) {
     EObject o = node.getGrammarElement();
     if (!(o instanceof TerminalRule)) return false;
     TerminalRule rule = (TerminalRule) o;
     String actualName = rule.getName();
-    for (String name : commentRuleNames) {
+    for (String name : ruleNames) {
       if (name.equalsIgnoreCase(actualName)) return true;
     }
     return false;
