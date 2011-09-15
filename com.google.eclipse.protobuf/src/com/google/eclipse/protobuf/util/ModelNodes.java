@@ -47,7 +47,7 @@ public class ModelNodes {
    * @return {@code true} if the given node was created by a string, or a single- or multi-line comment; {@code false}
    * otherwise.
    */
-  public boolean isCommentOrString(INode node) {
+  public boolean wasCreatedByAnyCommentOrString(INode node) {
     return wasCreatedByAnyComment(node) || wasCreatedByString(node);
   }
 
@@ -60,7 +60,12 @@ public class ModelNodes {
     return wasCreatedByRule(node, SINGLE_LINE_COMMENT_RULE_NAME, "ML_COMMENT");
   }
 
-  private boolean wasCreatedByString(INode node) {
+  /**
+   * Indicates whether the given node was created by a string.
+   * @param node the node to check.
+   * @return {@code true} if the given node was created by a string; {@code false} otherwise.
+   */
+  public boolean wasCreatedByString(INode node) {
     EObject grammarElement = node.getGrammarElement();
     if (!(grammarElement instanceof RuleCall)) return false;
     AbstractRule rule = ((RuleCall) grammarElement).getRule();

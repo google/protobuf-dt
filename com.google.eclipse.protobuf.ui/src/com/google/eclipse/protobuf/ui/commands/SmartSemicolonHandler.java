@@ -92,7 +92,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
           int offset = styledText.getCaretOffset();
           ContentAssistContext[] context = contextFactory.create(editor.getInternalSourceViewer(), offset, resource);
           for (ContentAssistContext c : context) {
-            if (nodes.isCommentOrString(c.getCurrentNode())) continue;
+            if (nodes.wasCreatedByAnyCommentOrString(c.getCurrentNode())) continue;
             EObject model = c.getCurrentModel();
             if (model instanceof Message || model instanceof Enum || model instanceof Protobuf) {
               // need to retry, parsing may not be finished yet.

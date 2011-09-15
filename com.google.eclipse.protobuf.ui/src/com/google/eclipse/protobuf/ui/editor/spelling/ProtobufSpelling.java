@@ -8,11 +8,11 @@
  */
 package com.google.eclipse.protobuf.ui.editor.spelling;
 
-import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.findLeafNodeAtOffset;
-import static org.eclipse.xtext.util.Strings.isEmpty;
+import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.*;
 
 import java.util.Iterator;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.source.*;
 import org.eclipse.ui.texteditor.spelling.*;
@@ -22,6 +22,7 @@ import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.model.XtextDocument;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
+import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.util.ModelNodes;
 
 /**
@@ -83,8 +84,11 @@ class ProtobufSpelling extends SpellingReconcileStrategy {
 
   private boolean shouldSpellCheck(INode node) {
     if (node == null) return false;
-    String text = node.getText();
-    if (isEmpty(text) || isEmpty(text.trim())) return false;
-    return nodes.isCommentOrString(node);
+    if (nodes.wasCreatedByAnyComment(node)) return true;
+    if (nodes.wasCreatedByString(node)) {
+      EObject o = findActualSemanticObjectFor(node);
+      return !(o instanceof Import);
+    }
+    return false;
   }
 }
