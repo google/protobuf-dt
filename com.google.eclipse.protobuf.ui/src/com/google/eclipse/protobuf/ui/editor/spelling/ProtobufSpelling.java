@@ -17,7 +17,6 @@ import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.source.*;
 import org.eclipse.ui.texteditor.spelling.*;
 import org.eclipse.xtext.nodemodel.*;
-import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.model.XtextDocument;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
@@ -42,14 +41,16 @@ class ProtobufSpelling extends SpellingReconcileStrategy {
   }
 
   @Override public void reconcile(IRegion region) {
+    IAnnotationModel model = getAnnotationModel();
+    if (model == null) return;
     super.reconcile(new Region(0, xtextDocument().getLength()));
-    removeUnwantedAnnotations();
+    removeUnwantedAnnotations(model);
   }
 
-  private void removeUnwantedAnnotations() {
+  private void removeUnwantedAnnotations(final IAnnotationModel model) {
     xtextDocument().readOnly(new IUnitOfWork.Void<XtextResource>() {
       @Override public void process(XtextResource resource) throws Exception {
-        removeUnwantedAnnotations(resource.getParseResult());
+        removeUnwantedAnnotations(resource.getParseResult().getRootNode(), model);
       }
     });
   }
@@ -58,20 +59,13 @@ class ProtobufSpelling extends SpellingReconcileStrategy {
     return (XtextDocument) super.getDocument();
   }
 
-  private void removeUnwantedAnnotations(IParseResult parseResult) {
-    IAnnotationModel model = getAnnotationModel();
-    ICompositeNode rootNode = parseResult.getRootNode();
-    for (Annotation annotation : annotations()) {
+  @SuppressWarnings("unchecked") 
+  private void removeUnwantedAnnotations(INode rootNode, IAnnotationModel model) {
+    Iterator<Annotation> iterator = model.getAnnotationIterator();
+    while (iterator.hasNext()) {
+      Annotation annotation = iterator.next();
       if (shouldRemoveFromModel(annotation, model, rootNode)) model.removeAnnotation(annotation);
     }
-  }
-
-  private Iterable<Annotation> annotations() {
-    return new Iterable<Annotation>() {
-      @SuppressWarnings("unchecked") public Iterator<Annotation> iterator() {
-        return getAnnotationModel().getAnnotationIterator();
-      }
-    };
   }
 
   private boolean shouldRemoveFromModel(Annotation annotation, IAnnotationModel model, INode rootNode) {
