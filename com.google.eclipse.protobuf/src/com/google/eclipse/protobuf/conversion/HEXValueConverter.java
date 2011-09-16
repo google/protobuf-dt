@@ -14,6 +14,8 @@ import org.eclipse.xtext.conversion.ValueConverterException;
 import org.eclipse.xtext.conversion.impl.AbstractLexerBasedConverter;
 import org.eclipse.xtext.nodemodel.INode;
 
+import java.math.BigInteger;
+
 /**
  * Converts hexadecimal numbers to {@code long}s.
  *
@@ -31,11 +33,18 @@ public class HEXValueConverter extends AbstractLexerBasedConverter<Long> {
    */
   public Long toValue(String string, INode node) throws ValueConverterException {
     if (isEmpty(string)) throw new ValueConverterException("Couldn't convert empty string to long.", node, null);
+    if (!string.startsWith("0x") && !string.startsWith("0X")) throw parsingError(string, node);
+    String withoutZeroX = string.substring(2, string.length());
     try {
-      return Long.decode(string);
+      BigInteger value = new BigInteger(withoutZeroX, 16);
+      return value.longValue();
     } catch (NumberFormatException e) {
       throw parsingError(string, node, e);
     }
+  }
+
+  private ValueConverterException parsingError(String string, INode node) {
+    return parsingError(string, node, null);
   }
 
   private ValueConverterException parsingError(String string, INode node, Exception cause) {

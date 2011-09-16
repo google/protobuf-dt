@@ -41,7 +41,8 @@ public class HEXValueConverter_toValue_Test {
     return asList(new Object[][] {
       { "0x1", 1L },
       { "0xA", 10L },
-      { "0xFF", 255L }
+      { "0xFF", 255L },
+      { "0xffffffffffffffff", -1L }
     });
   }
 
