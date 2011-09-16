@@ -42,7 +42,7 @@ public class HEXValueConverter_toValue_Test {
       { "0x1", 1L },
       { "0xA", 10L },
       { "0xFF", 255L },
-      { "0xffffffffffffffff", -1L }
+      { "0xffffffffffffffff", -1L } // overflow
     });
   }
 
