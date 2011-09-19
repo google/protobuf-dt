@@ -17,24 +17,18 @@ import static org.eclipse.xtext.resource.EObjectDescription.create;
 
 import java.util.*;
 
-import org.eclipse.emf.common.util.TreeIterator;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.xtext.naming.IQualifiedNameProvider;
-import org.eclipse.xtext.naming.QualifiedName;
-import org.eclipse.xtext.resource.IEObjectDescription;
-import org.eclipse.xtext.resource.XtextResource;
+import org.eclipse.emf.common.util.*;
+import org.eclipse.emf.ecore.*;
+import org.eclipse.emf.ecore.resource.*;
+import org.eclipse.xtext.naming.*;
+import org.eclipse.xtext.resource.*;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.impl.*;
 
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.eclipse.protobuf.util.FieldOptions;
-import com.google.eclipse.protobuf.util.ProtobufElementFinder;
+import com.google.eclipse.protobuf.util.*;
 import com.google.inject.Inject;
 
 /**
@@ -48,14 +42,15 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
 
   private static final boolean DO_NOT_IGNORE_CASE = false;
 
+  @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private FieldOptions fieldOptions;
   @Inject private ProtobufElementFinder finder;
-  @Inject private ProtoDescriptorProvider descriptorProvider;
-  @Inject private IQualifiedNameProvider nameProvider;
-  @Inject private ImportUriResolver uriResolver;
-  @Inject private LocalNamesProvider localNamesProvider;
   @Inject private ImportedNamesProvider importedNamesProvider;
+  @Inject private LocalNamesProvider localNamesProvider;
+  @Inject private IQualifiedNameProvider nameProvider;
+  @Inject private Options options;
   @Inject private PackageResolver packageResolver;
+  @Inject private ImportUriResolver uriResolver;
 
   @SuppressWarnings("unused")
   IScope scope_TypeRef_type(TypeRef typeRef, EReference reference) {
@@ -75,8 +70,8 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   }
 
   @SuppressWarnings("unused")
-  IScope scope_MessageRef_type(MessageRef msgRef, EReference reference) {
-    Protobuf root = finder.rootOf(msgRef);
+  IScope scope_MessageRef_type(MessageRef messageRef, EReference reference) {
+    Protobuf root = finder.rootOf(messageRef);
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     descriptions.addAll(messagesIn(root));
     descriptions.addAll(importedTypes(root, Message.class));
@@ -225,7 +220,8 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   private Enum enumTypeOfOption(EObject mayBeOption) {
     ProtoDescriptor descriptor = descriptorProvider.get();
     if (mayBeOption instanceof BuiltInOption) {
-      return descriptor.enumTypeOf((BuiltInOption) mayBeOption);
+      Property property = options.propertyFrom((BuiltInOption) mayBeOption);
+      return descriptor.enumTypeOf(property);
     }
     if (mayBeOption instanceof BuiltInFieldOption) {
       BuiltInFieldOption option = (BuiltInFieldOption) mayBeOption;
@@ -247,6 +243,28 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     for (Literal literal : getAllContentsOfType(anEnum, Literal.class))
       descriptions.add(create(literal.getName(), literal));
+    return descriptions;
+  }
+
+  @SuppressWarnings("unused")
+  IScope scope_PropertyRef_property(PropertyRef propertyRef, EReference reference) {
+    EObject mayBeOption = propertyRef.eContainer();
+    if (mayBeOption instanceof BuiltInOption) {
+      ProtoDescriptor descriptor = descriptorProvider.get();
+      EObject optionContainer = mayBeOption.eContainer();
+      Collection<Property> propertyOptions = descriptor.availableOptionsFor(optionContainer);
+      if (!propertyOptions.isEmpty()) return createScope(describe(propertyOptions));
+    }
+    List<IEObjectDescription> descriptions = Collections.emptyList();
+    // return new SimpleScope(descriptions, DO_NOT_IGNORE_CASE);
+    return null;
+  }
+
+  private Collection<IEObjectDescription> describe(Collection<Property> properties) {
+    List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
+    for (Property p : properties) {
+      descriptions.add(create(p.getName(), p));
+    }
     return descriptions;
   }
 

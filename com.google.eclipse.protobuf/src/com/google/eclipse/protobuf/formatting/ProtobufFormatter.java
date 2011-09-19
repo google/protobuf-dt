@@ -13,8 +13,7 @@ import static com.google.eclipse.protobuf.grammar.CommonKeyword.*;
 import static com.google.eclipse.protobuf.util.CommonWords.space;
 
 import org.eclipse.xtext.Keyword;
-import org.eclipse.xtext.formatting.impl.AbstractDeclarativeFormatter;
-import org.eclipse.xtext.formatting.impl.FormattingConfig;
+import org.eclipse.xtext.formatting.impl.*;
 
 import com.google.eclipse.protobuf.services.ProtobufGrammarAccess;
 
@@ -43,11 +42,11 @@ public class ProtobufFormatter extends AbstractDeclarativeFormatter {
     for (Keyword k : g.findKeywords(SEMICOLON.toString())) {
       c.setNoSpace().before(k);
     }
-    for (Keyword k : g.findKeywords("{")) {
+    for (Keyword k : g.findKeywords(OPENING_CURLY_BRACKET.toString())) {
       c.setIndentationIncrement().after(k);
       c.setLinewrap(1).after(k);
     }
-    for (Keyword k : g.findKeywords("}")) {
+    for (Keyword k : g.findKeywords(CLOSING_CURLY_BRACKET.toString())) {
       c.setIndentationDecrement().before(k);
       c.setLinewrap(2).after(k);
     }

@@ -34,8 +34,15 @@ public final class Finder {
 
   public static Option findOption(String name, Protobuf root) {
     for (Option option : getAllContentsOfType(root, Option.class))
-      if (name.equals(option.getName())) return option;
+      if (name.equals(nameOf(option))) return option;
     return null;
+  }
+
+  private static String nameOf(Option option) {
+    PropertyRef ref = option.getProperty();
+    if (ref == null) return null;
+    Property property = ref.getProperty();
+    return (property == null) ? null : property.getName();
   }
 
   public static Property findProperty(String name, Protobuf root) {

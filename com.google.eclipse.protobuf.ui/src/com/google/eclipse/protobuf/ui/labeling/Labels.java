@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
- * 
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.ui.labeling;
@@ -12,26 +12,30 @@ package com.google.eclipse.protobuf.ui.labeling;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
 import static org.eclipse.jface.viewers.StyledString.DECORATIONS_STYLER;
 
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.util.ModelNodes;
-import com.google.eclipse.protobuf.util.Properties;
-import com.google.inject.*;
-
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.xtext.nodemodel.INode;
 
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.util.*;
+import com.google.inject.*;
+
 /**
  * Registry of commonly used text in the 'Protocol Buffer' editor.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class Labels {
 
   @Inject private ModelNodes nodes;
+  @Inject private Options options;
   @Inject private Properties properties;
 
   public Object labelFor(Object o) {
+    if (o instanceof Option) {
+      Option option = (Option) o;
+      return labelFor(option);
+    }
     if (o instanceof ExtendMessage) {
       ExtendMessage extend = (ExtendMessage) o;
       return labelFor(extend);
@@ -59,13 +63,18 @@ import org.eclipse.xtext.nodemodel.INode;
     return null;
   }
 
-  private Object labelFor(ExtendMessage extend) {
-    return messageName(extend.getMessage());
+  private Object labelFor(Option o) {
+    Property p = options.propertyFrom(o);
+    return p == null ? null : p.getName();
   }
 
-  private Object labelFor(Extensions extensions) {
+  private Object labelFor(ExtendMessage e) {
+    return messageName(e.getMessage());
+  }
+
+  private Object labelFor(Extensions e) {
     StringBuilder builder = new StringBuilder();
-    EList<Range> ranges = extensions.getRanges();
+    EList<Range> ranges = e.getRanges();
     int rangeCount = ranges.size();
     for (int i = 0; i < rangeCount; i++) {
       if (i > 0) builder.append(", ");

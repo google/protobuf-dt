@@ -22,9 +22,9 @@ import java.net.URL;
 import java.util.*;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.nodemodel.INode;
-import org.eclipse.xtext.parser.IParseResult;
-import org.eclipse.xtext.parser.IParser;
+import org.eclipse.xtext.parser.*;
 import org.eclipse.xtext.resource.XtextResource;
 
 import com.google.eclipse.protobuf.protobuf.*;
@@ -50,7 +50,6 @@ public class ProtoDescriptor {
     OPTION_DEFINITION_BY_NAME.put("MessageOptions", MESSAGE);
     OPTION_DEFINITION_BY_NAME.put("FieldOptions", FIELD);
     OPTION_DEFINITION_BY_NAME.put("EnumOptions", ENUM);
-    OPTION_DEFINITION_BY_NAME.put("MethodOptions", METHOD);
   }
 
   private final List<Type> allTypes = new ArrayList<Type>();
@@ -131,6 +130,20 @@ public class ProtoDescriptor {
   }
 
   /**
+   * Returns the options available for the given object. For example, if the given object is an
+   * <code>{@link Enum}</code>, this method will return <code>{@link #enumOptions()}</code>.
+   * @param o the given object.
+   * @return the options available for the given object, or an empty collection if the are not any options available for
+   * the given object.
+   */
+  public Collection<Property> availableOptionsFor(EObject o) {
+    if (o instanceof Protobuf) return fileOptions();
+    if (o instanceof Enum) return enumOptions();
+    if (o instanceof Message) return messageOptions();
+    return emptyList();
+  }
+
+  /**
    * Returns all the file-level options available. These are the options defined in
    * {@code google/protobuf/descriptor.proto} (more details can be found
    * <a href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
@@ -148,7 +161,7 @@ public class ProtoDescriptor {
    * @return the option whose name matches the given one or {@code null} if a matching option is not found.
    */
   public Property lookupOption(String name) {
-    return lookupOption(name, FILE, MESSAGE, ENUM, METHOD);
+    return lookupOption(name, FILE, MESSAGE, ENUM);
   }
 
   private Property lookupOption(String name, OptionType...types) {
@@ -215,24 +228,19 @@ public class ProtoDescriptor {
    * @param option the given option.
    * @return the enum type of the given option or {@code null} if the type of the given option is not enum.
    */
-  public Enum enumTypeOf(BuiltInOption option) {
-    String name = option.getName();
-    return enumTypeOf(lookupOption(name));
-  }
-
-  /**
-   * Returns the enum type of the given option, only if the given option is defined in
-   * {@code google/protobuf/descriptor.proto} and its type is enum (more details can be found <a
-   * href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
-   * @param option the given option.
-   * @return the enum type of the given option or {@code null} if the type of the given option is not enum.
-   */
   public Enum enumTypeOf(BuiltInFieldOption option) {
     String name = option.getName();
     return enumTypeOf(lookupFieldOption(name));
   }
 
-  private Enum enumTypeOf(Property p) {
+  /**
+   * Returns the enum type of the given property, only if the given property is defined in
+   * {@code google/protobuf/descriptor.proto} and its type is enum (more details can be found <a
+   * href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
+   * @param p the given property.
+   * @return the enum type of the given property or {@code null} if the type of the given property is not enum.
+   */
+  public Enum enumTypeOf(Property p) {
     if (p == null) return null;
     INode node = nodes.firstNodeForFeature(p, PROPERTY__TYPE);
     if (node == null) return null;

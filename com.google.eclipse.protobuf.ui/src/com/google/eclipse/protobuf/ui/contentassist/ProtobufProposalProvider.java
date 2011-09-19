@@ -53,6 +53,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Inject private Fields fields;
   @Inject private Images images;
   @Inject private Literals literals;
+  @Inject private Options options;
   @Inject private Properties properties;
 
   @Override public void completeProtobuf_Syntax(EObject model, Assignment assignment, ContentAssistContext context,
@@ -69,67 +70,35 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     proposeAndAccept(proposal, imageHelper.getImage(images.imageFor(Syntax.class)), context, acceptor);
   }
 
-  @Override public void completeBuiltInOption_Name(EObject model, Assignment assignment, ContentAssistContext context,
-      ICompletionProposalAcceptor acceptor) {
-    if (proposeOptions(model, context, acceptor)) return;
-    if (model instanceof Option) {
-      EObject container = model.eContainer();
-      proposeOptions(container, context, acceptor);
-    }
-  }
-
-  private boolean proposeOptions(EObject model, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    if (model instanceof Protobuf) {
-      proposeCommonFileOptions(context, acceptor);
-      return true;
-    }
-    if (model instanceof Message) {
-      proposeCommonMessageOptions(context, acceptor);
-      return true;
-    }
-    if (model instanceof Enum) {
-      proposeCommonEnumOptions(context, acceptor);
-      return true;
-    }
-    return false;
-  }
-
-  private void proposeCommonFileOptions(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    proposeOptions(descriptorProvider.get().fileOptions(), context, acceptor);
-  }
-
-  private void proposeCommonMessageOptions(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    proposeOptions(descriptorProvider.get().messageOptions(), context, acceptor);
-  }
-
-  private void proposeCommonEnumOptions(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    proposeOptions(descriptorProvider.get().enumOptions(), context, acceptor);
-  }
-
-  private void proposeOptions(Collection<Property> options, ContentAssistContext context,
-      ICompletionProposalAcceptor acceptor) {
-    for (Property option : options)
-      proposeOption(option, context, acceptor);
-  }
-
-  @Override public void completeBuiltInOption_Value(EObject model, Assignment assignment, ContentAssistContext context,
-      ICompletionProposalAcceptor acceptor) {
-    if (!(model instanceof BuiltInOption)) return;
-    BuiltInOption option = (BuiltInOption) model;
+  @Override public void completeBuiltInOption_Property(EObject model, Assignment assignment,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     ProtoDescriptor descriptor = descriptorProvider.get();
-    Enum enumType = descriptor.enumTypeOf(option);
+    Collection<Property> optionProperties = descriptor.availableOptionsFor(model);
+    if (!optionProperties.isEmpty()) proposeOptions(optionProperties, context, acceptor);
+  }
+
+  private void proposeOptions(Collection<Property> optionProperties, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+    for (Property p : optionProperties) proposeOption(p, context, acceptor);
+  }
+
+  @Override public void completeBuiltInOption_Value(EObject model, Assignment assignment,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    BuiltInOption option = (BuiltInOption) model;
+    Property property = options.propertyFrom(option);
+    if (property == null) return;
+    ProtoDescriptor descriptor = descriptorProvider.get();
+    Enum enumType = descriptor.enumTypeOf(property);
     if (enumType != null) {
       proposeAndAccept(enumType, context, acceptor);
       return;
     }
-    Property fileOption = descriptor.lookupOption(option.getName());
-    if (fileOption == null) return;
-    if (properties.isString(fileOption)) {
-      proposeEmptyString(context, acceptor);
+    if (properties.isBool(property)) {
+      proposeBooleanValues(context, acceptor);
       return;
     }
-    if (properties.isBool(fileOption)) {
-      proposeBooleanValues(context, acceptor);
+    if (properties.isString(property)) {
+      proposeEmptyString(context, acceptor);
       return;
     }
   }
@@ -157,7 +126,10 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       }
       return true;
     }
-    if (OPENING_BRACKET.hasValue(keyword)) { return proposeOpenBracket(context, acceptor); }
+    if (OPENING_BRACKET.hasValue(keyword)) return proposeOpeningBracket(context, acceptor);
+    if (OPENING_CURLY_BRACKET.hasValue(keyword)) {
+      return context.getCurrentModel() instanceof Option;
+    }
     if (TRUE.hasValue(keyword) || FALSE.hasValue(keyword)) {
       if (isBoolProposalValid(context)) {
         proposeBooleanValues(context, acceptor);
@@ -187,8 +159,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     EObject model = context.getCurrentModel();
     if (model instanceof Property) return properties.isBool((Property) model);
     if (model instanceof Option) {
-      Property fileOption = descriptorProvider.get().lookupOption(((Option) model).getName());
-      return fileOption != null && properties.isBool(fileOption);
+      Property option = options.propertyFrom((Option) model);
+      return option != null && properties.isBool(option);
     }
     if (model instanceof FieldOption) {
       Property fileOption = descriptorProvider.get().lookupOption(((FieldOption) model).getName());
@@ -201,8 +173,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     EObject model = context.getCurrentModel();
     if (model instanceof Property) return properties.mayBeNan((Property) model);
     if (model instanceof Option) {
-      Property fileOption = descriptorProvider.get().lookupOption(((Option) model).getName());
-      return fileOption != null && properties.mayBeNan(fileOption);
+      Property option = options.propertyFrom((Option) model);
+      return option != null && properties.mayBeNan(option);
     }
     if (model instanceof FieldOption) {
       Property fileOption = descriptorProvider.get().lookupOption(((FieldOption) model).getName());
@@ -211,7 +183,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     return false;
   }
 
-  private boolean proposeOpenBracket(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+  private boolean proposeOpeningBracket(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     EObject model = context.getCurrentModel();
     if (!(model instanceof Property)) return false;
     Property p = (Property) model;
@@ -318,20 +290,20 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   }
 
   private void proposeCommonFieldOptions(Field field, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    List<String> options = existingFieldOptionNames(field);
-    proposeDefaultKeyword(field, options, context, acceptor);
+    List<String> optionNames = existingFieldOptionNames(field);
+    proposeDefaultKeyword(field, optionNames, context, acceptor);
     for (Property option : descriptorProvider.get().fieldOptions()) {
       String optionName = option.getName();
-      if (options.contains(optionName) || ("packed".equals(optionName) && !canBePacked(field))) continue;
+      if (optionNames.contains(optionName) || ("packed".equals(optionName) && !canBePacked(field))) continue;
       proposeOption(option, context, acceptor);
     }
   }
 
   private List<String> existingFieldOptionNames(Field field) {
-    List<FieldOption> options = field.getFieldOptions();
-    if (options.isEmpty()) return emptyList();
+    List<FieldOption> allFieldOptions = field.getFieldOptions();
+    if (allFieldOptions.isEmpty()) return emptyList();
     List<String> optionNames = new ArrayList<String>();
-    for (FieldOption option : options)
+    for (FieldOption option : allFieldOptions)
       optionNames.add(option.getName());
     return optionNames;
   }

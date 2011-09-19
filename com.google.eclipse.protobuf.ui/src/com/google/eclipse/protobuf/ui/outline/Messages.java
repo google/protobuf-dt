@@ -14,10 +14,9 @@ import org.eclipse.osgi.util.NLS;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Messages extends NLS {
-  
+
   public static String importDeclarations;
-  public static String optionDeclarations;
-  
+
   static {
     Class<Messages> targetType = Messages.class;
     NLS.initializeMessages(targetType.getName(), targetType);

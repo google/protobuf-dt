@@ -15,13 +15,13 @@ package com.google.eclipse.protobuf.grammar;
  */
 public enum CommonKeyword {
 
-  // we used to get keywords from IGrammarAccess. The problem was that we still had to hardcode the keyword we were
+  // we used to get keywords from IGrammarAccess. The problem was that we still had to hard-code the keyword we were
   // looking for. The code was too complicated and if the grammar changed for some reason, we had to change our
   // implementation anyway.
 
-  BOOL("bool"), TRUE("true"), FALSE("false"), BYTES("bytes"), OPENING_BRACKET("["), CLOSING_BRACKET("]"), 
-    DEFAULT("default"), EQUAL("="), SEMICOLON(";"), STRING("string"), SYNTAX("syntax"), NAN("nan"), FLOAT("float"), 
-    DOUBLE("double");
+  BOOL("bool"), TRUE("true"), FALSE("false"), BYTES("bytes"), OPENING_BRACKET("["), CLOSING_BRACKET("]"),
+      OPENING_CURLY_BRACKET("{"), CLOSING_CURLY_BRACKET("}"), DEFAULT("default"), EQUAL("="), SEMICOLON(";"),
+      STRING("string"), SYNTAX("syntax"), NAN("nan"), FLOAT("float"), DOUBLE("double");
 
   private final String value;
 
