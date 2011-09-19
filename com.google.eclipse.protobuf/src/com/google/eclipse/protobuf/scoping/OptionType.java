@@ -8,6 +8,9 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+/**
+ * @author alruiz@google.com (Alex Ruiz)
+ */
 enum OptionType {
   FILE, MESSAGE, FIELD, ENUM;
 }
