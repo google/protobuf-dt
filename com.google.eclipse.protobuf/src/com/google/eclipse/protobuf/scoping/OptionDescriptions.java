@@ -9,7 +9,6 @@
 package com.google.eclipse.protobuf.scoping;
 
 import static com.google.eclipse.protobuf.scoping.OptionType.*;
-import static com.google.eclipse.protobuf.scoping.QualifiedNames.addLeadingDot;
 import static java.util.Collections.emptyList;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
@@ -17,7 +16,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.naming.*;
+import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
 import com.google.eclipse.protobuf.protobuf.*;
@@ -41,7 +40,7 @@ class OptionDescriptions {
 
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private LocalNamesProvider localNamesProvider;
-  @Inject private IQualifiedNameProvider nameProvider;
+  @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
 
   Collection <IEObjectDescription> builtInOptionProperties(BuiltInOption option) {
     ProtoDescriptor descriptor = descriptorProvider.get();
@@ -68,7 +67,7 @@ class OptionDescriptions {
           for (int i = level; i < nameCount; i++) {
             descriptions.add(create(names.get(i), e));
           }
-          descriptions.addAll(fullyQualifiedNamesOf(e));
+          descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(e));
         }
         continue;
       }
@@ -99,15 +98,6 @@ class OptionDescriptions {
   private Message messageFrom(ExtendMessage extend) {
     MessageRef ref = extend.getMessage();
     return ref == null ? null : ref.getType();
-  }
-
-  // TODO remove duplication in TypeDescriptions
-  private Collection<IEObjectDescription> fullyQualifiedNamesOf(EObject obj) {
-    List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
-    QualifiedName fqn = nameProvider.getFullyQualifiedName(obj);
-    descriptions.add(create(fqn, obj));
-    descriptions.add(create(addLeadingDot(fqn), obj));
-    return descriptions;
   }
 
   private Collection<IEObjectDescription> describe(Collection<Property> properties) {

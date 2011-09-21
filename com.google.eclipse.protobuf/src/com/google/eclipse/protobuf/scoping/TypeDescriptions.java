@@ -8,7 +8,6 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.eclipse.protobuf.scoping.QualifiedNames.addLeadingDot;
 import static java.util.Collections.emptyList;
 import static org.eclipse.emf.common.util.URI.createURI;
 import static org.eclipse.emf.ecore.util.EcoreUtil.getAllContents;
@@ -19,7 +18,7 @@ import java.util.*;
 import org.eclipse.emf.common.util.*;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.*;
-import org.eclipse.xtext.naming.*;
+import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.*;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 
@@ -37,8 +36,8 @@ class TypeDescriptions {
   @Inject private ProtobufElementFinder finder;
   @Inject private ImportedNamesProvider importedNamesProvider;
   @Inject private LocalNamesProvider localNamesProvider;
-  @Inject private IQualifiedNameProvider nameProvider;
   @Inject private PackageResolver packageResolver;
+  @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
   @Inject private ImportUriResolver uriResolver;
 
   <T extends Type> Collection<IEObjectDescription> localTypes(EObject root, Class<T> targetType) {
@@ -54,7 +53,7 @@ class TypeDescriptions {
       for (int i = level; i < nameCount; i++) {
         descriptions.add(create(names.get(i), element));
       }
-      descriptions.addAll(fullyQualifiedNamesOf(element));
+      descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(element));
       // TODO investigate if groups can have messages, and if so, add those messages to the scope.
       if (element instanceof Message) {
         descriptions.addAll(localTypes(element, targetType, level + 1));
@@ -102,7 +101,7 @@ class TypeDescriptions {
     for (Type t : descriptor.allTypes()) {
       if (!targetType.isInstance(t)) continue;
       T type = targetType.cast(t);
-      descriptions.addAll(fullyQualifiedNamesOf(type));
+      descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(type));
     }
     return descriptions;
   }
@@ -148,19 +147,11 @@ class TypeDescriptions {
       Object next = contents.next();
       if (!targetType.isInstance(next)) continue;
       T type = targetType.cast(next);
-      descriptions.addAll(fullyQualifiedNamesOf(type));
+      descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(type));
       for (QualifiedName name : importedNamesProvider.namesOf(type)) {
         descriptions.add(create(name, type));
       }
     }
-    return descriptions;
-  }
-
-  private Collection<IEObjectDescription> fullyQualifiedNamesOf(EObject obj) {
-    List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
-    QualifiedName fqn = nameProvider.getFullyQualifiedName(obj);
-    descriptions.add(create(fqn, obj));
-    descriptions.add(create(addLeadingDot(fqn), obj));
     return descriptions;
   }
 }
