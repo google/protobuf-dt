@@ -133,16 +133,18 @@ public class ProtoDescriptor {
   }
 
   /**
-   * Returns the options available for the given option container. For example, if the given object is an
+   * Returns the options available for the given option or option container. For example, if the given object is an
    * <code>{@link Enum}</code>, this method will return <code>{@link #enumOptions()}</code>.
-   * @param optionContainer the given container of an option.
-   * @return the options available for the given option container, or an empty collection if the are not any
+   * @param o an option or an option container.
+   * @return the options available for the given option or option container, or an empty collection if the are not any
    * options available for the given option container.
    */
-  public Collection<Property> availableOptionPropertiesFor(EObject optionContainer) {
-    if (optionContainer instanceof Protobuf) return fileOptions();
-    if (optionContainer instanceof Enum) return enumOptions();
-    if (optionContainer instanceof Message) return messageOptions();
+  public Collection<Property> availableOptionPropertiesFor(EObject o) {
+    EObject target = o;
+    if (target instanceof BuiltInOption) target = target.eContainer();
+    if (target instanceof Protobuf) return fileOptions();
+    if (target instanceof Enum) return enumOptions();
+    if (target instanceof Message) return messageOptions();
     return emptyList();
   }
 

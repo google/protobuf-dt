@@ -261,11 +261,6 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     proposeAndAccept(name, context, acceptor);
   }
 
-  private ICompletionProposal createCompletionProposal(String proposal, String displayString,
-      ContentAssistContext context) {
-    return createCompletionProposal(proposal, displayString, defaultImage(), context);
-  }
-
   private void proposeAndAccept(String proposalText, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     acceptor.accept(createCompletionProposal(proposalText, context));
   }
@@ -337,7 +332,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     } else if (properties.isBool(option)) {
       proposalText = proposalText + TRUE;
     }
-    ICompletionProposal proposal = createCompletionProposal(proposalText, displayString, context);
+    Image image = imageHelper.getImage(images.imageFor(Option.class));
+    ICompletionProposal proposal = createCompletionProposal(proposalText, displayString, image, context);
     if (isStringOption && proposal instanceof ConfigurableCompletionProposal) {
       // set cursor between the proposal's quotes
       ConfigurableCompletionProposal configurable = (ConfigurableCompletionProposal) proposal;
@@ -416,5 +412,10 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (start < 0) return false;
     String previousWord = styledText.getTextRange(start, valueLength);
     return word.equals(previousWord);
+  }
+
+  /** {@inheritDoc} */
+  @Override public void completePropertyRef_Property(EObject model, Assignment assignment,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
   }
 }
