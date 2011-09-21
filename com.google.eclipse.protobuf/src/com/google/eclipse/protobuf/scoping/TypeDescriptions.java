@@ -19,12 +19,12 @@ import org.eclipse.emf.common.util.*;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.*;
 import org.eclipse.xtext.naming.QualifiedName;
-import org.eclipse.xtext.resource.*;
+import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.eclipse.protobuf.util.ProtobufElementFinder;
+import com.google.eclipse.protobuf.util.*;
 import com.google.inject.Inject;
 
 /**
@@ -35,6 +35,7 @@ class TypeDescriptions {
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private ProtobufElementFinder finder;
   @Inject private ImportedNamesProvider importedNamesProvider;
+  @Inject private Imports imports;
   @Inject private LocalNamesProvider localNamesProvider;
   @Inject private PackageResolver packageResolver;
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
@@ -65,19 +66,20 @@ class TypeDescriptions {
   <T extends Type> Collection<IEObjectDescription> importedTypes(Protobuf root, Class<T> targetType) {
     List<Import> allImports = finder.importsIn(root);
     if (allImports.isEmpty()) return emptyList();
-    return importedTypes(allImports, finder.packageOf(root), targetType);
+    ResourceSet resourceSet = root.eResource().getResourceSet();
+    return importedTypes(allImports, finder.packageOf(root), resourceSet, targetType);
   }
 
   private <T extends Type> Collection<IEObjectDescription> importedTypes(List<Import> allImports, Package aPackage,
-      Class<T> targetType) {
+      ResourceSet resourceSet, Class<T> targetType) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     for (Import anImport : allImports) {
-      if (isImportingDescriptor(anImport)) {
+      if (imports.isImportingDescriptor(anImport)) {
         descriptions.addAll(allBuiltInTypes(targetType));
         continue;
       }
-      Resource importedResource = importedResourceFrom(anImport);
-      Protobuf importedRoot = rootElementOf(importedResource);
+      Resource importedResource = importedResource(anImport, resourceSet);
+      Protobuf importedRoot = finder.rootOf(importedResource);
       if (importedRoot != null) {
         descriptions.addAll(publicImportedTypes(importedRoot, targetType));
         if (arePackagesRelated(aPackage, importedRoot)) {
@@ -85,14 +87,9 @@ class TypeDescriptions {
           continue;
         }
       }
-      descriptions.addAll(children(importedResource, targetType));
+      descriptions.addAll(localTypes(importedResource, targetType));
     }
     return descriptions;
-  }
-
-  private boolean isImportingDescriptor(Import anImport) {
-    String descriptorLocation = descriptorProvider.descriptorLocation().toString();
-    return descriptorLocation.equals(anImport.getImportURI());
   }
 
   private <T extends Type> Collection<IEObjectDescription> allBuiltInTypes(Class<T> targetType) {
@@ -106,14 +103,7 @@ class TypeDescriptions {
     return descriptions;
   }
 
-  private <T extends Type> Collection<IEObjectDescription> publicImportedTypes(Protobuf root, Class<T> targetType) {
-    List<Import> allImports = finder.publicImportsIn(root);
-    if (allImports.isEmpty()) return emptyList();
-    return importedTypes(allImports, finder.packageOf(root), targetType);
-  }
-
-  private Resource importedResourceFrom(Import anImport) {
-    ResourceSet resourceSet = finder.rootOf(anImport).eResource().getResourceSet();
+  private Resource importedResource(Import anImport, ResourceSet resourceSet) {
     URI importUri = createURI(uriResolver.apply(anImport));
     try {
       return resourceSet.getResource(importUri, true);
@@ -122,17 +112,11 @@ class TypeDescriptions {
     }
   }
 
-  private Protobuf rootElementOf(Resource resource) {
-    if (resource instanceof XtextResource) {
-      EObject root = ((XtextResource) resource).getParseResult().getRootASTElement();
-      return (Protobuf) root;
-    }
-    TreeIterator<Object> contents = getAllContents(resource, true);
-    if (contents.hasNext()) {
-      Object next = contents.next();
-      if (next instanceof Protobuf) return (Protobuf) next;
-    }
-    return null;
+  private <T extends Type> Collection<IEObjectDescription> publicImportedTypes(Protobuf root, Class<T> targetType) {
+    List<Import> allImports = finder.publicImportsIn(root);
+    if (allImports.isEmpty()) return emptyList();
+    ResourceSet resourceSet = root.eResource().getResourceSet();
+    return importedTypes(allImports, finder.packageOf(root), resourceSet, targetType);
   }
 
   private boolean arePackagesRelated(Package aPackage, EObject root) {
@@ -140,7 +124,7 @@ class TypeDescriptions {
     return packageResolver.areRelated(aPackage, p);
   }
 
-  private <T extends Type> Collection<IEObjectDescription> children(Resource resource, Class<T> targetType) {
+  private <T extends Type> Collection<IEObjectDescription> localTypes(Resource resource, Class<T> targetType) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     TreeIterator<Object> contents = getAllContents(resource, true);
     while (contents.hasNext()) {

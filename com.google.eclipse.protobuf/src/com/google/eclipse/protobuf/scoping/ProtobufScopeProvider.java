@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static com.google.eclipse.protobuf.scoping.OptionType.optionType;
+
 import java.util.*;
 
 import org.eclipse.emf.ecore.*;
@@ -97,7 +99,13 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     }
     if (mayBeOption instanceof CustomOption) {
       Protobuf root = finder.rootOf(propertyRef);
-      descriptions.addAll(optionDescriptions.localCustomOptionProperties(root, (CustomOption) mayBeOption));
+      OptionType optionType = optionType((CustomOption) mayBeOption);
+      EObject current = mayBeOption.eContainer();
+      while (current != null) {
+        descriptions.addAll(optionDescriptions.localCustomOptionProperties(current, optionType));
+        current = current.eContainer();
+      }
+      descriptions.addAll(optionDescriptions.importedCustomOptionProperties(root, optionType));
     }
     return createScope(descriptions);
   }

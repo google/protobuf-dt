@@ -33,7 +33,7 @@ class QualifiedNames {
     return QualifiedName.create(segments.toArray(new String[segments.size()]));
   }
 
-  List<QualifiedName> addPackageNameSegments(QualifiedName name, Package p) {
+  Collection<QualifiedName> addPackageNameSegments(QualifiedName name, Package p) {
     QualifiedName current = name;
     List<String> segments = fqnSegments(p);
     int segmentCount = segments.size();

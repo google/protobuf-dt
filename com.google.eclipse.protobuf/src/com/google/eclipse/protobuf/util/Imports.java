@@ -11,7 +11,8 @@ package com.google.eclipse.protobuf.util;
 import static com.google.eclipse.protobuf.scoping.ProtoDescriptor.DESCRIPTOR_IMPORT_URI;
 
 import com.google.eclipse.protobuf.protobuf.Import;
-import com.google.inject.Singleton;
+import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider;
+import com.google.inject.*;
 
 /**
  * Utility methods related to imports.
@@ -20,6 +21,8 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class Imports {
+
+  @Inject private ProtoDescriptorProvider descriptorProvider;
 
   /**
    * Indicates whether the URI of the given import is equal to the path of descriptor.proto
@@ -41,5 +44,15 @@ public class Imports {
    */
   public boolean isUnresolvedDescriptorUri(String uri) {
     return DESCRIPTOR_IMPORT_URI.equals(uri);
+  }
+
+  /**
+   * Indicates whether the given <code>{@link Import}</code> is pointing to descriptor.proto.
+   * @param anImport the given import to check.
+   * @return {@code true} if the given import is pointing to descriptor.proto, {@code false} otherwise.
+   */
+  public boolean isImportingDescriptor(Import anImport) {
+    String descriptorLocation = descriptorProvider.descriptorLocation().toString();
+    return descriptorLocation.equals(anImport.getImportURI());
   }
 }

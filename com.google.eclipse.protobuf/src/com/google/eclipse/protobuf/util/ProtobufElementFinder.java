@@ -9,10 +9,14 @@
 package com.google.eclipse.protobuf.util;
 
 import static java.util.Collections.unmodifiableList;
+import static org.eclipse.emf.ecore.util.EcoreUtil.getAllContents;
 
 import java.util.*;
 
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.xtext.resource.XtextResource;
 
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
@@ -103,4 +107,21 @@ public class ProtobufElementFinder {
     }
     return unmodifiableList(imports);
   }
-}
+
+  /**
+   * Returns the root element of the given resource.
+   * @param resource the given resource.
+   * @return the root element of the given resource, or {@code null} if the given resource does not have a root element.
+   */
+  public Protobuf rootOf(Resource resource) {
+    if (resource instanceof XtextResource) {
+      EObject root = ((XtextResource) resource).getParseResult().getRootASTElement();
+      return (Protobuf) root;
+    }
+    TreeIterator<Object> contents = getAllContents(resource, true);
+    if (contents.hasNext()) {
+      Object next = contents.next();
+      if (next instanceof Protobuf) return (Protobuf) next;
+    }
+    return null;
+  }}
