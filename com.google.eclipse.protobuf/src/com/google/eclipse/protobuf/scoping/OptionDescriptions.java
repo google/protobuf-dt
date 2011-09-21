@@ -66,9 +66,9 @@ class OptionDescriptions {
           List<QualifiedName> names = localNamesProvider.namesOf(e);
           int nameCount = names.size();
           for (int i = level; i < nameCount; i++) {
-            descriptions.add(create(names.get(i), element));
+            descriptions.add(create(names.get(i), e));
           }
-          descriptions.addAll(fullyQualifiedNamesOf(element));
+          descriptions.addAll(fullyQualifiedNamesOf(e));
         }
         continue;
       }
