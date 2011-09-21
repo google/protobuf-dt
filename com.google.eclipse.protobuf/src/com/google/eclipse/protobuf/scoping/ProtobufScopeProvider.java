@@ -8,8 +8,6 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static org.eclipse.xtext.resource.EObjectDescription.create;
-
 import java.util.*;
 
 import org.eclipse.emf.ecore.*;
@@ -37,6 +35,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   @Inject private FieldOptions fieldOptions;
   @Inject private ProtobufElementFinder finder;
   @Inject private LiteralDescriptions literalDescriptions;
+  @Inject private OptionDescriptions optionDescriptions;
   @Inject private Options options;
   @Inject private TypeDescriptions typeDescriptions;
 
@@ -69,8 +68,9 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     EObject container = literalRef.eContainer();
     Enum anEnum = null;
     if (container instanceof BuiltInOption) {
+      ProtoDescriptor descriptor = descriptorProvider.get();
       Property p = options.propertyFrom((Option) container);
-      anEnum = descriptorProvider.get().enumTypeOf(p);
+      anEnum = descriptor.enumTypeOf(p);
     }
     if (container instanceof Property) {
       anEnum = finder.enumTypeOf((Property) container);
@@ -81,33 +81,25 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
         Property property = (Property) option.eContainer();
         anEnum = finder.enumTypeOf(property);
       } else {
-        anEnum = descriptorProvider.get().enumTypeOf(option);
+        ProtoDescriptor descriptor = descriptorProvider.get();
+        anEnum = descriptor.enumTypeOf(option);
       }
     }
-    if (anEnum != null) return createScope(literalDescriptions.literalsOf(anEnum));
-    return null;
+    return createScope(literalDescriptions.literalsOf(anEnum));
   }
 
   @SuppressWarnings("unused")
   IScope scope_PropertyRef_property(PropertyRef propertyRef, EReference reference) {
+    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     EObject mayBeOption = propertyRef.eContainer();
     if (mayBeOption instanceof BuiltInOption) {
-      ProtoDescriptor descriptor = descriptorProvider.get();
-      EObject optionContainer = mayBeOption.eContainer();
-      Collection<Property> propertyOptions = descriptor.availableOptionsFor(optionContainer);
-      if (!propertyOptions.isEmpty()) return createScope(describe(propertyOptions));
+      descriptions.addAll(optionDescriptions.builtInOptionProperties((BuiltInOption) mayBeOption));
     }
-    List<IEObjectDescription> descriptions = Collections.emptyList();
-    // return new SimpleScope(descriptions, DO_NOT_IGNORE_CASE);
-    return null;
-  }
-
-  private Collection<IEObjectDescription> describe(Collection<Property> properties) {
-    List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
-    for (Property p : properties) {
-      descriptions.add(create(p.getName(), p));
+    if (mayBeOption instanceof CustomOption) {
+      Protobuf root = finder.rootOf(propertyRef);
+      descriptions.addAll(optionDescriptions.localCustomOptionProperties(root, (CustomOption) mayBeOption));
     }
-    return descriptions;
+    return createScope(descriptions);
   }
 
   private static IScope createScope(Iterable<IEObjectDescription> descriptions) {

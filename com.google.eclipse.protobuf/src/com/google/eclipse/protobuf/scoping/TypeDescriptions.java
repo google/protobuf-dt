@@ -42,10 +42,10 @@ class TypeDescriptions {
   @Inject private ImportUriResolver uriResolver;
 
   <T extends Type> Collection<IEObjectDescription> localTypes(EObject root, Class<T> targetType) {
-    return children(root, targetType, 0);
+    return localTypes(root, targetType, 0);
   }
 
-  private <T extends Type> Collection<IEObjectDescription> children(EObject root, Class<T> targetType, int level) {
+  private <T extends Type> Collection<IEObjectDescription> localTypes(EObject root, Class<T> targetType, int level) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     for (EObject element : root.eContents()) {
       if (!targetType.isInstance(element)) continue;
@@ -57,7 +57,7 @@ class TypeDescriptions {
       descriptions.addAll(fullyQualifiedNamesOf(element));
       // TODO investigate if groups can have messages, and if so, add those messages to the scope.
       if (element instanceof Message) {
-        descriptions.addAll(children(element, targetType, level + 1));
+        descriptions.addAll(localTypes(element, targetType, level + 1));
       }
     }
     return descriptions;

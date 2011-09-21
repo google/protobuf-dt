@@ -46,10 +46,13 @@ public class ProtoDescriptor {
   private static final Map<String, OptionType> OPTION_DEFINITION_BY_NAME = new HashMap<String, OptionType>();
 
   static {
-    OPTION_DEFINITION_BY_NAME.put("FileOptions", FILE);
-    OPTION_DEFINITION_BY_NAME.put("MessageOptions", MESSAGE);
-    OPTION_DEFINITION_BY_NAME.put("FieldOptions", FIELD);
-    OPTION_DEFINITION_BY_NAME.put("EnumOptions", ENUM);
+    addOptionTypes(FILE, MESSAGE, FIELD, ENUM);
+  }
+
+  private static void addOptionTypes(OptionType...types) {
+    for (OptionType type : types) {
+      OPTION_DEFINITION_BY_NAME.put(type.messageName, type);
+    }
   }
 
   private final List<Type> allTypes = new ArrayList<Type>();
@@ -130,16 +133,16 @@ public class ProtoDescriptor {
   }
 
   /**
-   * Returns the options available for the given object. For example, if the given object is an
+   * Returns the options available for the given option container. For example, if the given object is an
    * <code>{@link Enum}</code>, this method will return <code>{@link #enumOptions()}</code>.
-   * @param o the given object.
-   * @return the options available for the given object, or an empty collection if the are not any options available for
-   * the given object.
+   * @param optionContainer the given container of an option.
+   * @return the options available for the given option container, or an empty collection if the are not any
+   * options available for the given option container.
    */
-  public Collection<Property> availableOptionsFor(EObject o) {
-    if (o instanceof Protobuf) return fileOptions();
-    if (o instanceof Enum) return enumOptions();
-    if (o instanceof Message) return messageOptions();
+  public Collection<Property> availableOptionPropertiesFor(EObject optionContainer) {
+    if (optionContainer instanceof Protobuf) return fileOptions();
+    if (optionContainer instanceof Enum) return enumOptions();
+    if (optionContainer instanceof Message) return messageOptions();
     return emptyList();
   }
 

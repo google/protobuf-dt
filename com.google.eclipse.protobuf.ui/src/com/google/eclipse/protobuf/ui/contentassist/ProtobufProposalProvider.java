@@ -73,7 +73,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Override public void completeBuiltInOption_Property(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     ProtoDescriptor descriptor = descriptorProvider.get();
-    Collection<Property> optionProperties = descriptor.availableOptionsFor(model);
+    Collection<Property> optionProperties = descriptor.availableOptionPropertiesFor(model);
     if (!optionProperties.isEmpty()) proposeOptions(optionProperties, context, acceptor);
   }
 

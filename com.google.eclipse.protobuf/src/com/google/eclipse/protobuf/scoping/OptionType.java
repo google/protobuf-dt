@@ -12,5 +12,12 @@ package com.google.eclipse.protobuf.scoping;
  * @author alruiz@google.com (Alex Ruiz)
  */
 enum OptionType {
-  FILE, MESSAGE, FIELD, ENUM;
+  FILE("FileOptions"), MESSAGE("MessageOptions"), FIELD("FieldOptions"), ENUM("EnumOptions"),
+      ENUM_LITERAL("EnumValueOptions"), SERVICE("ServiceOptions"), RPC("MethodOptions");
+
+  final String messageName;
+
+  private OptionType(String messageName) {
+    this.messageName = messageName;
+  }
 }
