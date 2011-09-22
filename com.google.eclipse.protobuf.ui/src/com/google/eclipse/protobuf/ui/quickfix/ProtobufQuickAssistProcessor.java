@@ -10,6 +10,7 @@
 package com.google.eclipse.protobuf.ui.quickfix;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 
 import com.google.inject.Inject;
 
@@ -27,10 +28,21 @@ public class ProtobufQuickAssistProcessor extends XtextQuickAssistProcessor {
 
   @Inject private SpellingCorrectionProcessor spellingCorrectionProcessor;
 
-  @Override public ICompletionProposal[] computeQuickAssistProposals(IQuickAssistInvocationContext invocationContext) {
+  @Override public ICompletionProposal[] computeQuickAssistProposals(IQuickAssistInvocationContext context) {
     List<ICompletionProposal> proposals = new ArrayList<ICompletionProposal>();
-    proposals.addAll(asList(spellingCorrectionProcessor.computeQuickAssistProposals(invocationContext)));
-    proposals.addAll(asList(super.computeQuickAssistProposals(invocationContext)));
+    proposals.addAll(spellingFixes(context));
+    proposals.addAll(asList(super.computeQuickAssistProposals(context)));
     return proposals.toArray(new ICompletionProposal[proposals.size()]);
+  }
+  
+  private List<ICompletionProposal> spellingFixes(IQuickAssistInvocationContext context) {
+    ICompletionProposal[] spellingFixes = spellingCorrectionProcessor.computeQuickAssistProposals(context);
+    if (spellingFixes.length == 0) return emptyList();
+    if (spellingFixes.length == 1 && isNoCompletionsProposal(spellingFixes[0])) return emptyList();
+    return asList(spellingFixes);
+  }
+  
+  private boolean isNoCompletionsProposal(ICompletionProposal p) {
+    return p.getClass().getSimpleName().equals("NoCompletionsProposal");
   }
 }

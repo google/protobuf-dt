@@ -30,6 +30,9 @@ import com.google.inject.Inject;
  */
 public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
 
+  public static final String SYNTAX_IS_NOT_PROTO2_ERROR_CODE = "syntaxIsNotProto2";
+  public static final String TAG_NUMBER_IS_NOT_UNIQUE_ERROR_CODE = "tagNumberIsNotUnique";
+
   @Inject private FieldOptions fieldOptions;
   @Inject private ImportUriResolver uriResolver;
   @Inject private IQualifiedNameProvider qualifiedNameProvider;
@@ -71,7 +74,7 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
     String name = syntax.getName();
     if ("proto2".equals(name)) return;
     String msg = (name == null) ? expectedSyntaxIdentifier : format(unrecognizedSyntaxIdentifier, name);
-    error(msg, SYNTAX__NAME);
+    error(msg, syntax, SYNTAX__NAME, SYNTAX_IS_NOT_PROTO2_ERROR_CODE);
   }
 
   @Check public void checkTagNumberIsUnique(Field field) {
@@ -87,7 +90,7 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
         if (other.getIndex() != index) continue;
         QualifiedName messageName = qualifiedNameProvider.getFullyQualifiedName(message);
         String msg = format(fieldNumberAlreadyUsed, index, messageName.toString(), other.getName());
-        error(msg, FIELD__INDEX);
+        error(msg, field, FIELD__INDEX, TAG_NUMBER_IS_NOT_UNIQUE_ERROR_CODE);
         break;
       }
     }
