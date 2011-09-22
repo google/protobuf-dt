@@ -41,7 +41,7 @@ public class STRINGValueConverter extends AbstractLexerBasedConverter<String> {
   public String toValue(String string, INode node) throws ValueConverterException {
     if (string == null) return null;
     try {
-      String clean = removeLineBreaksFrom(string);
+      String clean = removeLineBreaksFrom(string).trim();
       return convertToJavaString(clean.substring(1, clean.length() - 1), true);
     } catch (IllegalArgumentException e) {
       throw parsingError(string, node, e);
