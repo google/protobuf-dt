@@ -13,7 +13,7 @@ package com.google.eclipse.protobuf.scoping;
  */
 enum OptionType {
   FILE("FileOptions"), MESSAGE("MessageOptions"), FIELD("FieldOptions"), ENUM("EnumOptions"),
-      ENUM_LITERAL("EnumValueOptions"), SERVICE("ServiceOptions"), RPC("MethodOptions");
+      LITERAL("EnumValueOptions"), SERVICE("ServiceOptions"), RPC("MethodOptions");
 
   final String messageName;
 

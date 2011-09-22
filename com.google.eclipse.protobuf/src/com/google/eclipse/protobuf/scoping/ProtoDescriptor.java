@@ -46,11 +46,11 @@ public class ProtoDescriptor {
   private static final Map<String, OptionType> OPTION_DEFINITION_BY_NAME = new HashMap<String, OptionType>();
 
   static {
-    addOptionTypes(FILE, MESSAGE, FIELD, ENUM);
+    addOptionTypeMappings();
   }
 
-  private static void addOptionTypes(OptionType...types) {
-    for (OptionType type : types) {
+  private static void addOptionTypeMappings() {
+    for (OptionType type : OptionType.values()) {
       OPTION_DEFINITION_BY_NAME.put(type.messageName, type);
     }
   }
@@ -133,27 +133,20 @@ public class ProtoDescriptor {
   }
 
   /**
-   * Returns the options available for the given option container. For example, if the given object is an
-   * <code>{@link Enum}</code>, this method will return <code>{@link #enumOptions()}</code>.
+   * Returns the options available for the given option container. The returned options are defined in
+   * {@code google/protobuf/descriptor.proto} (more details can be found
+   * <a href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
    * @param optionContainer the given container of an option.
    * @return the options available for the given option container, or an empty collection if the are not any
    * options available for the given option container.
    */
   public Collection<Property> availableOptionPropertiesFor(EObject optionContainer) {
-    if (optionContainer instanceof Protobuf) return fileOptions();
-    if (optionContainer instanceof Enum) return enumOptions();
-    if (optionContainer instanceof Message) return messageOptions();
+    if (optionContainer instanceof Protobuf) return optionsOfType(FILE);
+    if (optionContainer instanceof Enum) return optionsOfType(ENUM);
+    if (optionContainer instanceof Message) return optionsOfType(MESSAGE);
+    if (optionContainer instanceof Service) return optionsOfType(SERVICE);
+    if (optionContainer instanceof Rpc) return optionsOfType(RPC);
     return emptyList();
-  }
-
-  /**
-   * Returns all the file-level options available. These are the options defined in
-   * {@code google/protobuf/descriptor.proto} (more details can be found
-   * <a href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
-   * @return all the file-level options available.
-   */
-  public Collection<Property> fileOptions() {
-    return optionsOfType(FILE);
   }
 
   /**
@@ -191,16 +184,6 @@ public class ProtoDescriptor {
   }
 
   /**
-   * Returns all the message-level options available. These are the options defined in
-   * {@code google/protobuf/descriptor.proto} (more details can be found
-   * <a href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
-   * @return all the message-level options available.
-   */
-  public Collection<Property> messageOptions() {
-    return optionsOfType(MESSAGE);
-  }
-
-  /**
    * Returns all the field-level options available. These are the options defined in
    * {@code google/protobuf/descriptor.proto} (more details can be found
    * <a href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
@@ -209,17 +192,7 @@ public class ProtoDescriptor {
   public Collection<Property> fieldOptions() {
     return optionsOfType(FIELD);
   }
-
-  /**
-   * Returns all the enum-level options available. These are the options defined in
-   * {@code google/protobuf/descriptor.proto} (more details can be found
-   * <a href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
-   * @return all the enum-level options available.
-   */
-  public Collection<Property> enumOptions() {
-    return optionsOfType(ENUM);
-  }
-
+  
   private Collection<Property> optionsOfType(OptionType type) {
     return unmodifiableCollection(optionsByType.get(type).values());
   }

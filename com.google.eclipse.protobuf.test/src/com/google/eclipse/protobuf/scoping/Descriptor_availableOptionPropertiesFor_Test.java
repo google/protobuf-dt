@@ -11,32 +11,35 @@ package com.google.eclipse.protobuf.scoping;
 import static com.google.eclipse.protobuf.junit.matchers.PropertyHasType.hasType;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
 import java.util.*;
 
+import org.eclipse.emf.ecore.EObject;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.Property;
+import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link ProtoDescriptor#fileOptions()}</code>.
+ * Tests for <code>{@link ProtoDescriptor#availableOptionPropertiesFor(EObject)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Ignore("This test requires to be executed as a 'JUnit plug-in test'. I haven't found a way to register PlatformURLHandler with the JVM")
-public class Descriptor_fileOptions_Test {
+// @Ignore("This test requires to be executed as a 'JUnit plug-in test'. I haven't found a way to register PlatformURLHandler with the JVM")
+public class Descriptor_availableOptionPropertiesFor_Test {
 
   @Rule public XtextRule xtext = new XtextRule();
 
   private ProtoDescriptor descriptor;
-
+  
   @Before public void setUp() {
     descriptor = xtext.getInstanceOf(ProtoDescriptorProvider.class).get();
   }
 
   @Test public void should_return_all_file_options() {
-    Map<String, Property> fileOptions = mapByName(descriptor.fileOptions());
+    Protobuf optionContainer = mock(Protobuf.class);
+    Map<String, Property> fileOptions = mapByName(descriptor.availableOptionPropertiesFor(optionContainer));
     assertThat(fileOptions.get("java_package"), hasType("string"));
     assertThat(fileOptions.get("java_outer_classname"), hasType("string"));
     assertThat(fileOptions.get("java_multiple_files"), hasType("bool"));
