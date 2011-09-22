@@ -11,14 +11,14 @@ package com.google.eclipse.protobuf.ui.documentation;
 import static com.google.eclipse.protobuf.util.CommonWords.space;
 import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.getNode;
 
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.scoping.*;
-import com.google.eclipse.protobuf.util.ModelNodes;
-import com.google.inject.Inject;
-
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
 import org.eclipse.xtext.nodemodel.*;
+
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.scoping.*;
+import com.google.eclipse.protobuf.util.*;
+import com.google.inject.Inject;
 
 /**
  * Provides single line comments of a protobuf element as its documentation when hovered.
@@ -33,6 +33,7 @@ public class SingleLineCommentDocumentationProvider implements IEObjectDocumenta
 
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private ModelNodes nodes;
+  @Inject private Options options;
 
   public String getDocumentation(EObject o) {
     String comment = findComment(o);
@@ -56,8 +57,7 @@ public class SingleLineCommentDocumentationProvider implements IEObjectDocumenta
 
   private EObject findRealTarget(EObject o) {
     if (o instanceof Option) {
-      ProtoDescriptor descriptor = descriptorProvider.get();
-      Property p = descriptor.lookupOption(((Option) o).getName());
+      Property p = options.propertyFrom((Option) o);
       return p != null ? p : o;
     }
     if (o instanceof FieldOption) {

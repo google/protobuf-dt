@@ -12,7 +12,9 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 import org.eclipse.xtext.naming.QualifiedName;
-import org.junit.Test;
+import org.junit.*;
+
+import com.google.eclipse.protobuf.junit.core.XtextRule;
 
 /**
  * Tests for <code>{@link QualifiedNames#addLeadingDot(QualifiedName)}</code>.
@@ -21,15 +23,23 @@ import org.junit.Test;
  */
 public class QualifiedNames_addLeadingDot_Test {
 
+  @Rule public XtextRule xtext = new XtextRule();
+
+  private QualifiedNames qualifiedNames;
+
+  @Before public void setUp() {
+    qualifiedNames = xtext.getInstanceOf(QualifiedNames.class);
+  }
+
   @Test public void should_add_leading_dot() {
     QualifiedName name = QualifiedName.create("jedis", "Luke");
-    QualifiedName withLeadingDot = QualifiedNames.addLeadingDot(name);
+    QualifiedName withLeadingDot = qualifiedNames.addLeadingDot(name);
     assertThat(withLeadingDot.toString(), equalTo(".jedis.Luke"));
   }
 
   @Test public void should_not_add_leading_dot_if_qualified_name_already_has_it() {
     QualifiedName name = QualifiedName.create("", "jedis", "Luke");
-    QualifiedName withLeadingDot = QualifiedNames.addLeadingDot(name);
+    QualifiedName withLeadingDot = qualifiedNames.addLeadingDot(name);
     assertThat(withLeadingDot.toString(), equalTo(".jedis.Luke"));
   }
 }

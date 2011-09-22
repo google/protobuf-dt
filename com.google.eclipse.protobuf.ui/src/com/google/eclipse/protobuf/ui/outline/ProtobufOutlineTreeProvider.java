@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.outline;
 
-import static com.google.eclipse.protobuf.ui.outline.Messages.*;
+import static com.google.eclipse.protobuf.ui.outline.Messages.importDeclarations;
 
 import java.util.*;
 
@@ -32,7 +32,7 @@ public class ProtobufOutlineTreeProvider extends DefaultOutlineTreeProvider {
     IGNORED_ELEMENT_TYPES.add(FieldOption.class);
     IGNORED_ELEMENT_TYPES.add(MessageRef.class);
   }
-  
+
   boolean _isLeaf(Extensions e) {
     return true;
   }
@@ -49,7 +49,6 @@ public class ProtobufOutlineTreeProvider extends DefaultOutlineTreeProvider {
     OutlineViewModel model = new OutlineViewModel(protobuf);
     for (EObject aPackage : model.packages()) createNode(parent, aPackage);
     addGroup(parent, protobuf, model.imports(), "imports", importDeclarations);
-    addGroup(parent, protobuf, model.options(), "options", optionDeclarations);
     for (EObject e : model.remainingElements()) {
       createNode(parent, e);
     }

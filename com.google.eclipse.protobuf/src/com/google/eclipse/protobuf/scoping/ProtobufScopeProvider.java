@@ -8,33 +8,16 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.eclipse.protobuf.scoping.QualifiedNames.addLeadingDot;
-import static java.util.Collections.emptyList;
-import static org.eclipse.emf.common.util.URI.createURI;
-import static org.eclipse.emf.ecore.util.EcoreUtil.getAllContents;
-import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
-import static org.eclipse.xtext.resource.EObjectDescription.create;
-
 import java.util.*;
 
-import org.eclipse.emf.common.util.TreeIterator;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.xtext.naming.IQualifiedNameProvider;
-import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.emf.ecore.*;
 import org.eclipse.xtext.resource.IEObjectDescription;
-import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.impl.*;
 
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.eclipse.protobuf.util.FieldOptions;
-import com.google.eclipse.protobuf.util.ProtobufElementFinder;
+import com.google.eclipse.protobuf.util.*;
 import com.google.inject.Inject;
 
 /**
@@ -48,206 +31,75 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
 
   private static final boolean DO_NOT_IGNORE_CASE = false;
 
+  @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private FieldOptions fieldOptions;
   @Inject private ProtobufElementFinder finder;
-  @Inject private ProtoDescriptorProvider descriptorProvider;
-  @Inject private IQualifiedNameProvider nameProvider;
-  @Inject private ImportUriResolver uriResolver;
-  @Inject private LocalNamesProvider localNamesProvider;
-  @Inject private ImportedNamesProvider importedNamesProvider;
-  @Inject private PackageResolver packageResolver;
+  @Inject private LiteralDescriptions literalDescriptions;
+  @Inject private OptionDescriptions optionDescriptions;
+  @Inject private Options options;
+  @Inject private TypeDescriptions typeDescriptions;
 
   @SuppressWarnings("unused")
   IScope scope_TypeRef_type(TypeRef typeRef, EReference reference) {
     Protobuf root = finder.rootOf(typeRef);
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     EObject current = typeRef.eContainer().eContainer(); // get message of the property containing the TypeReference
+    Class<Type> targetType = Type.class;
     while (current != null) {
-      descriptions.addAll(typesIn(current));
+      descriptions.addAll(typeDescriptions.localTypes(current, targetType));
       current = current.eContainer();
     }
-    descriptions.addAll(importedTypes(root, Type.class));
+    descriptions.addAll(typeDescriptions.importedTypes(root, targetType));
     return createScope(descriptions);
-  }
-
-  private Collection<IEObjectDescription> typesIn(EObject root) {
-    return children(root, Type.class);
   }
 
   @SuppressWarnings("unused")
-  IScope scope_MessageRef_type(MessageRef msgRef, EReference reference) {
-    Protobuf root = finder.rootOf(msgRef);
+  IScope scope_MessageRef_type(MessageRef messageRef, EReference reference) {
+    Protobuf root = finder.rootOf(messageRef);
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
-    descriptions.addAll(messagesIn(root));
-    descriptions.addAll(importedTypes(root, Message.class));
+    Class<Message> targetType = Message.class;
+    descriptions.addAll(typeDescriptions.localTypes(root, targetType));
+    descriptions.addAll(typeDescriptions.importedTypes(root, targetType));
     return createScope(descriptions);
-  }
-
-  private Collection<IEObjectDescription> messagesIn(Protobuf root) {
-    return children(root, Message.class);
-  }
-
-  private <T extends Type> Collection<IEObjectDescription> children(EObject root, Class<T> targetType) {
-    return children(root, targetType, 0);
-  }
-
-  private <T extends Type> Collection<IEObjectDescription> children(EObject root, Class<T> targetType, int level) {
-    List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
-    for (EObject element : root.eContents()) {
-      if (!targetType.isInstance(element)) continue;
-      List<QualifiedName> names = localNamesProvider.namesOf(element);
-      int nameCount = names.size();
-      for (int i = level; i < nameCount; i++) {
-        descriptions.add(create(names.get(i), element));
-      }
-      descriptions.addAll(fullyQualifiedNamesOf(element));
-      // TODO investigate if groups can have messages, and if so, add those messages to the scope.
-      if (element instanceof Message) {
-        descriptions.addAll(children(element, targetType, level + 1));
-      }
-    }
-    return descriptions;
-  }
-
-  private <T extends Type> Collection<IEObjectDescription> importedTypes(Protobuf root, Class<T> targetType) {
-    List<Import> allImports = finder.importsIn(root);
-    if (allImports.isEmpty()) return emptyList();
-    return importedTypes(allImports, finder.packageOf(root), targetType);
-  }
-
-  private <T extends Type> Collection<IEObjectDescription> importedTypes(List<Import> allImports, Package aPackage,
-      Class<T> targetType) {
-    List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
-    for (Import anImport : allImports) {
-      if (isImportingDescriptor(anImport)) {
-        descriptions.addAll(allBuiltInTypes(targetType));
-        continue;
-      }
-      Resource importedResource = importedResourceFrom(anImport);
-      Protobuf importedRoot = rootElementOf(importedResource);
-      if (importedRoot != null) {
-        descriptions.addAll(publicImportedTypes(importedRoot, targetType));
-        if (arePackagesRelated(aPackage, importedRoot)) {
-          descriptions.addAll(typesIn(importedRoot));
-          continue;
-        }
-      }
-      descriptions.addAll(children(importedResource, targetType));
-    }
-    return descriptions;
-  }
-
-  private boolean isImportingDescriptor(Import anImport) {
-    String descriptorLocation = descriptorProvider.descriptorLocation().toString();
-    return descriptorLocation.equals(anImport.getImportURI());
-  }
-
-  private <T extends Type> Collection<IEObjectDescription> allBuiltInTypes(Class<T> targetType) {
-    List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
-    ProtoDescriptor descriptor = descriptorProvider.get();
-    for (Type t : descriptor.allTypes()) {
-      if (!targetType.isInstance(t)) continue;
-      T type = targetType.cast(t);
-      descriptions.addAll(fullyQualifiedNamesOf(type));
-    }
-    return descriptions;
-  }
-
-  private <T extends Type> Collection<IEObjectDescription> publicImportedTypes(Protobuf root, Class<T> targetType) {
-    List<Import> allImports = finder.publicImportsIn(root);
-    if (allImports.isEmpty()) return emptyList();
-    return importedTypes(allImports, finder.packageOf(root), targetType);
-  }
-
-  private Resource importedResourceFrom(Import anImport) {
-    ResourceSet resourceSet = finder.rootOf(anImport).eResource().getResourceSet();
-    URI importUri = createURI(uriResolver.apply(anImport));
-    try {
-      return resourceSet.getResource(importUri, true);
-    } catch (Throwable t) {
-      return null;
-    }
-  }
-
-  private Protobuf rootElementOf(Resource resource) {
-    if (resource instanceof XtextResource) {
-      EObject root = ((XtextResource) resource).getParseResult().getRootASTElement();
-      return (Protobuf) root;
-    }
-    TreeIterator<Object> contents = getAllContents(resource, true);
-    if (contents.hasNext()) {
-      Object next = contents.next();
-      if (next instanceof Protobuf) return (Protobuf) next;
-    }
-    return null;
-  }
-
-  private boolean arePackagesRelated(Package aPackage, EObject root) {
-    Package p = finder.packageOf(root);
-    return packageResolver.areRelated(aPackage, p);
-  }
-
-  private <T extends Type> Collection<IEObjectDescription> children(Resource resource, Class<T> targetType) {
-    List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
-    TreeIterator<Object> contents = getAllContents(resource, true);
-    while (contents.hasNext()) {
-      Object next = contents.next();
-      if (!targetType.isInstance(next)) continue;
-      T type = targetType.cast(next);
-      descriptions.addAll(fullyQualifiedNamesOf(type));
-      for (QualifiedName name : importedNamesProvider.namesOf(type)) {
-        descriptions.add(create(name, type));
-      }
-    }
-    return descriptions;
-  }
-
-  private Collection<IEObjectDescription> fullyQualifiedNamesOf(EObject obj) {
-    List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
-    QualifiedName fqn = nameProvider.getFullyQualifiedName(obj);
-    descriptions.add(create(fqn, obj));
-    descriptions.add(create(addLeadingDot(fqn), obj));
-    return descriptions;
   }
 
   @SuppressWarnings("unused")
   IScope scope_LiteralRef_literal(LiteralRef literalRef, EReference reference) {
     EObject container = literalRef.eContainer();
+    Enum anEnum = null;
+    if (container instanceof BuiltInOption) {
+      ProtoDescriptor descriptor = descriptorProvider.get();
+      Property p = options.propertyFrom((Option) container);
+      anEnum = descriptor.enumTypeOf(p);
+    }
     if (container instanceof Property) {
-      Enum anEnum = finder.enumTypeOf((Property) container);
-      if (anEnum != null) return scopeForLiterals(anEnum);
+      anEnum = finder.enumTypeOf((Property) container);
     }
-    Enum anEnum = enumTypeOfOption(container);
-    if (anEnum != null) return scopeForLiterals(anEnum);
-    return null;
-  }
-
-  private Enum enumTypeOfOption(EObject mayBeOption) {
-    ProtoDescriptor descriptor = descriptorProvider.get();
-    if (mayBeOption instanceof BuiltInOption) {
-      return descriptor.enumTypeOf((BuiltInOption) mayBeOption);
-    }
-    if (mayBeOption instanceof BuiltInFieldOption) {
-      BuiltInFieldOption option = (BuiltInFieldOption) mayBeOption;
+    if (container instanceof BuiltInFieldOption) {
+      BuiltInFieldOption option = (BuiltInFieldOption) container;
       if (fieldOptions.isDefaultValueOption(option)) {
         Property property = (Property) option.eContainer();
-        return finder.enumTypeOf(property);
+        anEnum = finder.enumTypeOf(property);
+      } else {
+        ProtoDescriptor descriptor = descriptorProvider.get();
+        anEnum = descriptor.enumTypeOf(option);
       }
-      return descriptor.enumTypeOf(option);
     }
-    return null;
+    return createScope(literalDescriptions.literalsOf(anEnum));
   }
 
-  private static IScope scopeForLiterals(Enum anEnum) {
-    Collection<IEObjectDescription> descriptions = describeLiterals(anEnum);
+  @SuppressWarnings("unused")
+  IScope scope_PropertyRef_property(PropertyRef propertyRef, EReference reference) {
+    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
+    EObject mayBeOption = propertyRef.eContainer();
+    if (mayBeOption instanceof BuiltInOption) {
+      descriptions.addAll(optionDescriptions.builtInOptionProperties((BuiltInOption) mayBeOption));
+    }
+    if (mayBeOption instanceof CustomOption) {
+      Protobuf root = finder.rootOf(propertyRef);
+      descriptions.addAll(optionDescriptions.localCustomOptionProperties(root, (CustomOption) mayBeOption));
+    }
     return createScope(descriptions);
-  }
-
-  private static Collection<IEObjectDescription> describeLiterals(Enum anEnum) {
-    List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
-    for (Literal literal : getAllContentsOfType(anEnum, Literal.class))
-      descriptions.add(create(literal.getName(), literal));
-    return descriptions;
   }
 
   private static IScope createScope(Iterable<IEObjectDescription> descriptions) {

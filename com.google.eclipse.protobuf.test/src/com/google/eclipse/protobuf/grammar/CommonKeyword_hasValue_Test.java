@@ -28,6 +28,8 @@ public class CommonKeyword_hasValue_Test {
     assertThat(BYTES.hasValue("bytes"), equalTo(true));
     assertThat(OPENING_BRACKET.hasValue("["), equalTo(true));
     assertThat(CLOSING_BRACKET.hasValue("]"), equalTo(true));
+    assertThat(OPENING_CURLY_BRACKET.hasValue("{"), equalTo(true));
+    assertThat(CLOSING_CURLY_BRACKET.hasValue("}"), equalTo(true));
     assertThat(DEFAULT.hasValue("default"), equalTo(true));
     assertThat(EQUAL.hasValue("="), equalTo(true));
     assertThat(SEMICOLON.hasValue(";"), equalTo(true));

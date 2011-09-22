@@ -16,13 +16,16 @@ import java.util.*;
 import org.eclipse.xtext.naming.*;
 
 import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.inject.Inject;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-final class QualifiedNames {
+class QualifiedNames {
 
-  static QualifiedName addLeadingDot(QualifiedName name) {
+  @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
+
+  QualifiedName addLeadingDot(QualifiedName name) {
     if (name.getFirstSegment().equals("")) return name;
     List<String> segments = new ArrayList<String>();
     segments.addAll(name.getSegments());
@@ -30,9 +33,9 @@ final class QualifiedNames {
     return QualifiedName.create(segments.toArray(new String[segments.size()]));
   }
 
-  static List<QualifiedName> addPackageNameSegments(QualifiedName name, Package p, IQualifiedNameConverter converter) {
+  List<QualifiedName> addPackageNameSegments(QualifiedName name, Package p) {
     QualifiedName current = name;
-    List<String> segments = fqnSegments(p, converter);
+    List<String> segments = fqnSegments(p);
     int segmentCount = segments.size();
     if (segmentCount <= 1) return emptyList();
     List<QualifiedName> allNames = new ArrayList<QualifiedName>();
@@ -43,12 +46,10 @@ final class QualifiedNames {
     return unmodifiableList(allNames);
   }
 
-  static private List<String> fqnSegments(Package p, IQualifiedNameConverter converter) {
+  private List<String> fqnSegments(Package p) {
     if (p == null) return emptyList();
     String packageName = p.getName();
     if (isEmpty(packageName)) return emptyList();
     return converter.toQualifiedName(packageName).getSegments();
   }
-
-  private QualifiedNames() {}
 }

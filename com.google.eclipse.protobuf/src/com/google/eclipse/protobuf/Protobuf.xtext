@@ -38,15 +38,6 @@ PublicImport:
 QualifiedName:
   '.'? Name ('.' Name)*;
 
-Option:
-  BuiltInOption | CustomOption;
-
-BuiltInOption:
-  'option' name=Name '=' value=ValueRef ';';
-
-CustomOption:
-  'option' '(' name=QualifiedName ')' '=' value=ValueRef ';';
-
 Type:
   Message | Enum;
 
@@ -56,7 +47,7 @@ Message:
   '}' (';')?;
 
 MessageElement:
-  Extensions | Type | Field | ExtendMessage | Option;
+  Option | Extensions | Type | Field | ExtendMessage;
 
 Extensions:
   'extensions' ranges+=Range (',' ranges+=Range)* ';';
@@ -77,7 +68,7 @@ Group:
   '}' (';')?;
 
 GroupElement:
-  Field | Option | Enum;
+  Option | Field | Enum;
 
 Property:
   modifier=Modifier type=AbstractTypeRef name=Name '=' index=(LONG | HEX)
@@ -209,4 +200,16 @@ Name:
 
 MessageRef:
   type=[Message|QualifiedName];
+
+Option:
+  BuiltInOption | CustomOption;
+
+BuiltInOption:
+  'option' property=PropertyRef '=' value=ValueRef ';';
+
+CustomOption:
+  'option' '(' property=PropertyRef ')' '=' value=ValueRef ';';
+
+PropertyRef:
+  property=[Property|QualifiedName];
   

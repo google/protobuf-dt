@@ -8,21 +8,20 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.eclipse.protobuf.scoping.QualifiedNames.addPackageNameSegments;
 import static java.util.Collections.*;
 import static org.eclipse.xtext.util.SimpleAttributeResolver.newResolver;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 import static org.eclipse.xtext.util.Tuples.pair;
 
-import com.google.common.base.Function;
-import com.google.eclipse.protobuf.util.ProtobufElementFinder;
-import com.google.inject.*;
+import java.util.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.util.*;
 
-import java.util.*;
+import com.google.common.base.Function;
+import com.google.eclipse.protobuf.util.ProtobufElementFinder;
+import com.google.inject.*;
 
 /**
  * Provides alternative qualified names for protobuf elements.
@@ -61,6 +60,7 @@ class LocalNamesProvider {
   @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
 
   @Inject private ProtobufElementFinder finder;
+  @Inject private QualifiedNames qualifiedNames;
 
   private final Function<EObject, String> resolver = newResolver(String.class, "name");
 
@@ -81,7 +81,7 @@ class LocalNamesProvider {
           qualifiedName = converter.toQualifiedName(containerName).append(qualifiedName);
           allNames.add(qualifiedName);
         }
-        allNames.addAll(addPackageNameSegments(qualifiedName, finder.packageOf(obj), converter));
+        allNames.addAll(qualifiedNames.addPackageNameSegments(qualifiedName, finder.packageOf(obj)));
         return unmodifiableList(allNames);
       }
     });

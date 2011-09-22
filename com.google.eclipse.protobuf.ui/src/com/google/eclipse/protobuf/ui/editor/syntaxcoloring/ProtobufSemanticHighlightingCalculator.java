@@ -30,6 +30,7 @@ import com.google.inject.Inject;
 public class ProtobufSemanticHighlightingCalculator implements ISemanticHighlightingCalculator {
 
   @Inject private ModelNodes nodes;
+  @Inject private Options options;
   @Inject private FieldOptions fieldOptions;
 
   public void provideHighlightingFor(XtextResource resource, IHighlightedPositionAcceptor acceptor) {
@@ -199,7 +200,8 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
   }
 
   private void highlight(Option option, IHighlightedPositionAcceptor acceptor) {
-    highlightName(option, acceptor, DEFAULT_ID);
+    Property property = options.propertyFrom(option);
+    if (property != null) highlightName(property, acceptor, DEFAULT_ID);
     ValueRef ref = option.getValue();
     if (ref instanceof LiteralRef) {
       highlightFirstFeature(option, OPTION__VALUE, acceptor, ENUM_LITERAL_ID);

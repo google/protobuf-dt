@@ -16,7 +16,7 @@ import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.Singleton;
 
 /**
- * Utility methods re <code>{@link Property}</code>.
+ * Utility methods related to <code>{@link Property}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
