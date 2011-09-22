@@ -55,6 +55,11 @@ public class Properties {
     return isScalarType(p, BOOL);
   }
 
+  /**
+   * Indicates whether the given property can accept "nan" as its default value.
+   * @param p the given property.
+   * @return {@code true} if the given property  can accept "nan" as its default value, {@code false} otherwise.
+   */
   public boolean mayBeNan(Property p) {
     String typeName = typeNameOf(p);
     return FLOAT.hasValue(typeName) || DOUBLE.hasValue(typeName);

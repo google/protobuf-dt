@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.conversion;
 
+import static java.lang.Double.*;
+import static java.lang.Double.NaN;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import org.eclipse.xtext.conversion.ValueConverterException;
@@ -15,11 +17,11 @@ import org.eclipse.xtext.conversion.impl.AbstractLexerBasedConverter;
 import org.eclipse.xtext.nodemodel.INode;
 
 /**
- * Converts floating-point numbers to {@code float}s.
+ * Converts floating-point numbers to {@code double}s.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class FLOATValueConverter extends AbstractLexerBasedConverter<Float> {
+public class DOUBLEValueConverter extends AbstractLexerBasedConverter<Double> {
 
   /**
    * Creates an {@code float} from the given input, if the given input represents a floating-point number.
@@ -29,16 +31,18 @@ public class FLOATValueConverter extends AbstractLexerBasedConverter<Float> {
    * @throws ValueConverterException if the given input is {@code null}, empty or does not represent a floating-point 
    * number.
    */
-  public Float toValue(String string, INode node) throws ValueConverterException {
-    if (isEmpty(string)) throw new ValueConverterException("Couldn't convert empty string to float.", node, null);
+  public Double toValue(String string, INode node) throws ValueConverterException {
+    if (isEmpty(string)) throw new ValueConverterException("Couldn't convert empty string to double.", node, null);
+    if ("nan".equals(string)) return NaN;
+    if ("inf".equals(string)) return POSITIVE_INFINITY;
     try {
-      return Float.parseFloat(string);
+      return Double.parseDouble(string);
     } catch (NumberFormatException e) {
       throw parsingError(string, node, e);
     }
   }
 
   private ValueConverterException parsingError(String string, INode node, Exception cause) {
-    return new ValueConverterException("Couldn't convert '" + string + "' to float.", node, cause);
+    return new ValueConverterException("Couldn't convert '" + string + "' to double.", node, cause);
   }
 }
