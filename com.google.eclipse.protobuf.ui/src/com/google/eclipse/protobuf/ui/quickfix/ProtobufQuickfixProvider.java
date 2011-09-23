@@ -32,7 +32,7 @@ public class ProtobufQuickfixProvider extends DefaultQuickfixProvider {
   @Inject private Fields fields;
   @Inject private Images images;
 
-  @Fix(SYNTAX_IS_NOT_PROTO2_ERROR_CODE)
+  @Fix(SYNTAX_IS_NOT_PROTO2_ERROR)
   public void makeSyntaxProto2(Issue issue, IssueResolutionAcceptor acceptor) {
     String image = images.imageFor(Syntax.class);
     acceptor.accept(issue, changeToProto2Label, changeToProto2, image, new ISemanticModification() {
@@ -44,7 +44,7 @@ public class ProtobufQuickfixProvider extends DefaultQuickfixProvider {
     });
   }
 
-  @Fix(INVALID_FIELD_TAG_NUMBER_ERROR_CODE)
+  @Fix(INVALID_FIELD_TAG_NUMBER_ERROR)
   public void regenerateTagNumber(Issue issue, IssueResolutionAcceptor acceptor) {
     acceptor.accept(issue, regenerateTagNumberLabel, regenerateTagNumber, "property.gif", new ISemanticModification() {
       public void apply(EObject element, IModificationContext context) throws Exception {
@@ -56,7 +56,7 @@ public class ProtobufQuickfixProvider extends DefaultQuickfixProvider {
     });
   }
 
-  @Fix(MORE_THAN_ONE_PACKAGE_ERROR_CODE)
+  @Fix(MORE_THAN_ONE_PACKAGE_ERROR)
   public void removeDuplicatePackage(Issue issue, IssueResolutionAcceptor acceptor) {
     String image = images.imageFor(Package.class);
     acceptor.accept(issue, removeDuplicatePackageLabel, removeDuplicatePackage, image, new ISemanticModification() {

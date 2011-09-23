@@ -29,9 +29,9 @@ import com.google.inject.Inject;
  */
 public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
 
-  public static final String SYNTAX_IS_NOT_PROTO2_ERROR_CODE = "syntaxIsNotProto2";
-  public static final String INVALID_FIELD_TAG_NUMBER_ERROR_CODE = "invalidFieldTagNumber";
-  public static final String MORE_THAN_ONE_PACKAGE_ERROR_CODE = "moreThanOnePackage";
+  public static final String SYNTAX_IS_NOT_PROTO2_ERROR = "syntaxIsNotProto2";
+  public static final String INVALID_FIELD_TAG_NUMBER_ERROR = "invalidFieldTagNumber";
+  public static final String MORE_THAN_ONE_PACKAGE_ERROR = "moreThanOnePackage";
 
   @Inject private FieldOptions fieldOptions;
   @Inject private ImportUriResolver uriResolver;
@@ -74,7 +74,7 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
     String name = syntax.getName();
     if ("proto2".equals(name)) return;
     String msg = (name == null) ? expectedSyntaxIdentifier : format(unrecognizedSyntaxIdentifier, name);
-    error(msg, syntax, SYNTAX__NAME, SYNTAX_IS_NOT_PROTO2_ERROR_CODE);
+    error(msg, syntax, SYNTAX__NAME, SYNTAX_IS_NOT_PROTO2_ERROR);
   }
 
   @Check public void checkTagNumberIsUnique(Field field) {
@@ -90,7 +90,7 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
         if (other.getIndex() != index) continue;
         QualifiedName messageName = qualifiedNameProvider.getFullyQualifiedName(message);
         String msg = format(fieldNumberAlreadyUsed, index, messageName.toString(), other.getName());
-        error(msg, field, FIELD__INDEX, INVALID_FIELD_TAG_NUMBER_ERROR_CODE);
+        error(msg, field, FIELD__INDEX, INVALID_FIELD_TAG_NUMBER_ERROR);
         break;
       }
     }
@@ -101,7 +101,7 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
     long index = field.getIndex();
     if (index > 0) return;
     String msg = (index == 0) ? fieldNumbersMustBePositive : expectedFieldNumber;
-    error(msg, field, FIELD__INDEX, INVALID_FIELD_TAG_NUMBER_ERROR_CODE);
+    error(msg, field, FIELD__INDEX, INVALID_FIELD_TAG_NUMBER_ERROR);
   }
 
   @Check public void checkOnlyOnePackageDefinition(Package aPackage) {
@@ -109,7 +109,7 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
     Protobuf root = (Protobuf) aPackage.eContainer();
     for (ProtobufElement e : root.getElements()) {
       if (e == aPackage) {
-        if (firstFound) error(multiplePackages, aPackage, PACKAGE__NAME, MORE_THAN_ONE_PACKAGE_ERROR_CODE);
+        if (firstFound) error(multiplePackages, aPackage, PACKAGE__NAME, MORE_THAN_ONE_PACKAGE_ERROR);
         return;
       }
       if (e instanceof Package && !firstFound) firstFound = true;
