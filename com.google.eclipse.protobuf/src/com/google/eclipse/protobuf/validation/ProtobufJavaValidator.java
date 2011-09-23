@@ -31,6 +31,7 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
 
   public static final String SYNTAX_IS_NOT_PROTO2_ERROR_CODE = "syntaxIsNotProto2";
   public static final String INVALID_FIELD_TAG_NUMBER_ERROR_CODE = "invalidFieldTagNumber";
+  public static final String MORE_THAN_ONE_PACKAGE_ERROR_CODE = "moreThanOnePackage";
 
   @Inject private FieldOptions fieldOptions;
   @Inject private ImportUriResolver uriResolver;
@@ -108,7 +109,7 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
     Protobuf root = (Protobuf) aPackage.eContainer();
     for (ProtobufElement e : root.getElements()) {
       if (e == aPackage) {
-        if (firstFound) error(multiplePackages, PACKAGE__NAME);
+        if (firstFound) error(multiplePackages, aPackage, PACKAGE__NAME, MORE_THAN_ONE_PACKAGE_ERROR_CODE);
         return;
       }
       if (e instanceof Package && !firstFound) firstFound = true;

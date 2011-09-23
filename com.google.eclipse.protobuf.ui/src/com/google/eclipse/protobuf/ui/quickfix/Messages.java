@@ -20,6 +20,8 @@ public class Messages extends NLS {
   public static String changeToProto2Label;
   public static String regenerateTagNumber;
   public static String regenerateTagNumberLabel;
+  public static String removeDuplicatePackage;
+  public static String removeDuplicatePackageLabel;
 
   static {
     Class<Messages> targetType = Messages.class;

@@ -11,6 +11,7 @@ package com.google.eclipse.protobuf.ui.quickfix;
 
 import static com.google.eclipse.protobuf.ui.quickfix.Messages.*;
 import static com.google.eclipse.protobuf.validation.ProtobufJavaValidator.*;
+import static org.eclipse.emf.ecore.util.EcoreUtil.remove;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.ui.editor.model.edit.*;
@@ -18,6 +19,7 @@ import org.eclipse.xtext.ui.editor.quickfix.*;
 import org.eclipse.xtext.validation.Issue;
 
 import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.eclipse.protobuf.ui.labeling.Images;
 import com.google.eclipse.protobuf.ui.util.Fields;
 import com.google.inject.Inject;
@@ -50,6 +52,18 @@ public class ProtobufQuickfixProvider extends DefaultQuickfixProvider {
         Field field = (Field) element;
         long tagNumber = fields.calculateTagNumberOf(field);
         field.setIndex(tagNumber);
+      }
+    });
+  }
+
+  @Fix(MORE_THAN_ONE_PACKAGE_ERROR_CODE)
+  public void removeDuplicatePackage(Issue issue, IssueResolutionAcceptor acceptor) {
+    String image = images.imageFor(Package.class);
+    acceptor.accept(issue, removeDuplicatePackageLabel, removeDuplicatePackage, image, new ISemanticModification() {
+      public void apply(EObject element, IModificationContext context) throws Exception {
+        if (!(element instanceof Package)) return;
+        Package aPackage = (Package) element;
+        remove(aPackage);
       }
     });
   }
