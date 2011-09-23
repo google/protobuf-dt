@@ -25,6 +25,7 @@ import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.eclipse.protobuf.util.*;
+import com.google.eclipse.protobuf.util.Properties;
 import com.google.inject.Inject;
 
 /**
@@ -38,13 +39,14 @@ class OptionDescriptions {
   @Inject private Imports imports;
   @Inject private LocalNamesProvider localNamesProvider;
   @Inject private PackageResolver packageResolver;
+  @Inject private Properties properties;
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
   @Inject private ImportUriResolver uriResolver;
 
   Collection <IEObjectDescription> builtInOptionProperties(BuiltInOption option) {
     ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
-    Collection<Property> properties = descriptor.availableOptionPropertiesFor(option.eContainer());
-    if (!properties.isEmpty()) return describe(properties);
+    Collection<Property> optionProperties = descriptor.availableOptionPropertiesFor(option.eContainer());
+    if (!optionProperties.isEmpty()) return describe(optionProperties);
     return emptyList();
   }
 
@@ -54,18 +56,20 @@ class OptionDescriptions {
 
   private Collection <IEObjectDescription> localCustomOptionProperties(EObject root, OptionType optionType, int level) {
     if (optionType == null) return emptyList();
-    List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
+    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     for (EObject element : root.eContents()) {
       if (isExtendingOptionMessage(element, optionType)) {
         ExtendMessage extend = (ExtendMessage) element;
         for (MessageElement e : extend.getElements()) {
           if (!(e instanceof Property)) continue;
-          List<QualifiedName> names = localNamesProvider.namesOf(e);
+          Property p = (Property) e;
+          List<QualifiedName> names = localNamesProvider.namesOf(p);
           int nameCount = names.size();
           for (int i = level; i < nameCount; i++) {
-            descriptions.add(create(names.get(i), e));
+            descriptions.add(create(names.get(i), p));
           }
-          descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(e));
+          descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(p));
+          descriptions.addAll(customOptionPropertyFields(p));
         }
         continue;
       }
@@ -75,7 +79,7 @@ class OptionDescriptions {
     }
     return descriptions;
   }
-
+  
   Collection<IEObjectDescription> importedCustomOptionProperties(Protobuf root, OptionType optionType) {
     List<Import> allImports = finder.importsIn(root);
     if (allImports.isEmpty()) return emptyList();
@@ -124,9 +128,9 @@ class OptionDescriptions {
     return packageResolver.areRelated(aPackage, p);
   }
 
-  private Collection<IEObjectDescription> describe(Collection<Property> properties) {
+  private Collection<IEObjectDescription> describe(Collection<Property> optionProperties) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
-    for (Property p : properties) {
+    for (Property p : optionProperties) {
       descriptions.add(create(p.getName(), p));
     }
     return descriptions;
@@ -141,10 +145,12 @@ class OptionDescriptions {
       ExtendMessage extend = (ExtendMessage) next;
       for (MessageElement e : extend.getElements()) {
         if (!(e instanceof Property)) continue;
-        descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(e));
-        for (QualifiedName name : importedNamesProvider.namesOf(e)) {
+        Property p = (Property) e;
+        descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(p));
+        for (QualifiedName name : importedNamesProvider.namesOf(p)) {
           descriptions.add(create(name, e));
         }
+        descriptions.addAll(customOptionPropertyFields(p));
       }
     }
     return descriptions;
@@ -160,5 +166,17 @@ class OptionDescriptions {
   private Message messageFrom(ExtendMessage extend) {
     MessageRef ref = extend.getMessage();
     return ref == null ? null : ref.getType();
+  }
+
+  private Collection <IEObjectDescription> customOptionPropertyFields(Property optionProperty) {
+    Message propertyType = properties.messageTypeIfApplicable(optionProperty);
+    if (propertyType == null) return emptyList();
+    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
+    for (MessageElement e : propertyType.getElements()) {
+      if (!(e instanceof Property)) continue;
+      Property optionPropertyField = (Property) e;
+      descriptions.add(create(optionPropertyField.getName(), optionPropertyField));
+    }
+    return descriptions;
   }
 }
