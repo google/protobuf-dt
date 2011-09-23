@@ -22,7 +22,7 @@ import org.junit.rules.ExpectedException;
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 
 /**
- * Tests for <code>{@link FLOATValueConverter#toValue(String, INode)}</code>.
+ * Tests for <code>{@link DOUBLEValueConverter#toValue(String, INode)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
@@ -31,12 +31,12 @@ public class FLOATValueConverter_toValue_withInvalidInput_Test {
   @Rule public XtextRule xtext = new XtextRule();
   @Rule public ExpectedException thrown = none();
 
-  private FLOATValueConverter converter;
+  private DOUBLEValueConverter converter;
   private INode node;
 
   @Before public void setUp() {
     node = mock(INode.class);
-    converter = xtext.injector().getInstance(FLOATValueConverter.class);
+    converter = xtext.injector().getInstance(DOUBLEValueConverter.class);
   }
 
   @Test public void should_throw_error_if_input_is_null() {

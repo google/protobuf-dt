@@ -133,11 +133,12 @@ public class ProtoDescriptor {
   }
 
   /**
-   * Returns the options available for the given option or option container. For example, if the given object is an
-   * <code>{@link Enum}</code>, this method will return <code>{@link #enumOptions()}</code>.
-   * @param o an option or an option container.
+   * Returns the options available for the given option or option container. The returned options are defined in
+   * {@code google/protobuf/descriptor.proto} (more details can be found
+   * <a href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
+   * @param o the given option or option container.
    * @return the options available for the given option or option container, or an empty collection if the are not any
-   * options available for the given option container.
+   * options available.
    */
   public Collection<Property> availableOptionPropertiesFor(EObject o) {
     EObject target = o;

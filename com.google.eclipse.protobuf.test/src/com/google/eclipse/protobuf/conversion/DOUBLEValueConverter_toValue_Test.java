@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.conversion;
 
+import static java.lang.Double.*;
 import static java.util.Arrays.asList;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
@@ -24,45 +25,47 @@ import org.junit.runners.Parameterized.Parameters;
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 
 /**
- * Tests for <code>{@link FLOATValueConverter#toValue(String, INode)}</code>.
+ * Tests for <code>{@link DOUBLEValueConverter#toValue(String, INode)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
 @RunWith(Parameterized.class)
-public class FLOATValueConverter_toValue_Test {
+public class DOUBLEValueConverter_toValue_Test {
 
   @Rule public XtextRule xtext = new XtextRule();
 
   private final String input;
-  private final Float expected;
+  private final Double expected;
 
   @Parameters
   public static Collection<Object[]> parameters() {
     return asList(new Object[][] {
-      { "52e3", 52e3F },
-      { "52E3", 52e3F },
-      { "6e-3", 0.006F },
-      { "6.8", 6.8F },
-      { "-3.1", -3.1F },
-      { ".3", 0.3F }
+      { "52e3", 52e3D },
+      { "52E3", 52e3D },
+      { "6e-3", 0.006D },
+      { "6.8", 6.8D },
+      { "-3.1", -3.1D },
+      { ".3", 0.3D },
+      { "nan", NaN },
+      { "inf", POSITIVE_INFINITY }
     });
   }
 
-  public FLOATValueConverter_toValue_Test(String input, Float expected) {
+  public DOUBLEValueConverter_toValue_Test(String input, Double expected) {
     this.input = input;
     this.expected = expected;
   }
 
-  private FLOATValueConverter converter;
+  private DOUBLEValueConverter converter;
   private INode node;
 
   @Before public void setUp() {
     node = mock(INode.class);
-    converter = xtext.injector().getInstance(FLOATValueConverter.class);
+    converter = xtext.injector().getInstance(DOUBLEValueConverter.class);
   }
 
   @Test public void should_parse_hexadecimal_number() {
-    Float value = converter.toValue(input, node);
+    Double value = converter.toValue(input, node);
     assertThat(value, equalTo(expected));
   }
 }

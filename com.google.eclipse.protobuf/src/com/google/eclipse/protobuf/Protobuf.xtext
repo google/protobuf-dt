@@ -106,7 +106,7 @@ FieldNotation:
   name=Name ':' value=SimpleRef;
 
 SimpleRef:
-	LiteralRef | BooleanRef | NumberRef | StringRef | Nan;
+	LiteralRef | BooleanRef | NumberRef | StringRef;
 
 LiteralRef:
   literal=[Literal];
@@ -119,7 +119,7 @@ enum BOOL:
   | false;
 
 NumberRef:
-  HexRef | LongRef | FloatRef;
+  HexRef | LongRef | DoubleRef;
 
 HexRef:
   hex=HEX;
@@ -130,11 +130,11 @@ LongRef:
 terminal LONG returns ecore::ELong:
   ('-')? (NUMBER)+;
 
-FloatRef:
-  float=FLOAT;
+DoubleRef:
+  double=DOUBLE;
 
-terminal FLOAT returns ecore::EFloat:
-  ('-')? (NUMBER)* ('.' (NUMBER)+)? (('e'|'E')('-')? (NUMBER)+)?;
+terminal DOUBLE returns ecore::EDouble:
+  (('-')? (NUMBER)* ('.' (NUMBER)+)? (('e'|'E')('-')? (NUMBER)+)?) | 'nan' | 'inf';
 
 StringRef:
   string=STRING;
@@ -143,13 +143,11 @@ terminal STRING:
   SL_STRING (SL_STRING)*;
 
 terminal SL_STRING:
-  '"' ('\\' ('b' | 't' | 'n' | 'f' | 'r' | 'u' | '"' | "'" | '\\' | UNICODE_OCTAL) | !('\\' | '"'))* '"' (WS)*;
+  '"' ('\\' ('b' | 't' | 'n' | 'f' | 'r' | 'u' | '"' | "'" | '\\' | UNICODE_OCTAL) | !('\\' | '"'))* '"' (WS)* |
+  "'" ('\\' ('b' | 't' | 'n' | 'f' | 'r' | 'u' | '"' | "'" | '\\' | UNICODE_OCTAL) | !('\\' | "'"))* "'" (WS)*;
 
 terminal UNICODE_OCTAL:
   ('0'..'3')('0'..'7')('0'..'7');
-  
-Nan:
-  number='nan';
 
 Enum:
   'enum' name=Name '{'
