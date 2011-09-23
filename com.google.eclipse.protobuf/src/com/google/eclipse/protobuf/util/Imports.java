@@ -12,6 +12,8 @@ import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider;
 import com.google.inject.*;
 
+import org.eclipse.emf.common.util.URI;
+
 /**
  * Utility methods related to imports.
  *
@@ -31,17 +33,7 @@ public class Imports {
    */
   public boolean hasUnresolvedDescriptorUri(Import anImport) {
     if (anImport == null) return false;
-    return isUnresolvedDescriptorUri(anImport.getImportURI());
-  }
-
-  /**
-   * Indicates whether the given import URI is equal to the path of descriptor.proto
-   * ("google/protobuf/descriptor.proto").
-   * @param uri the URI to check.
-   * @return {@code true} if the given import URI is equal to the path of descriptor.proto, {@code false} otherwise.
-   */
-  public boolean isUnresolvedDescriptorUri(String uri) {
-    return descriptorProvider.primaryDescriptor().importUri().equals(uri);
+    return descriptorProvider.descriptorLocation(anImport.getImportURI()) != null;
   }
 
   /**
@@ -50,7 +42,13 @@ public class Imports {
    * @return {@code true} if the given import is pointing to descriptor.proto, {@code false} otherwise.
    */
   public boolean isImportingDescriptor(Import anImport) {
-    String descriptorLocation = descriptorProvider.primaryDescriptorLocation().toString();
-    return descriptorLocation.equals(anImport.getImportURI());
+    if (hasUnresolvedDescriptorUri(anImport)) return true;
+    if (anImport == null) return false;
+    String importUri = anImport.getImportURI();
+    for (URI locationUri : descriptorProvider.allDescriptorLocations()) {
+      String location = locationUri.toString();
+      if (location.equals(importUri)) return true;
+    }
+    return false;
   }
 }

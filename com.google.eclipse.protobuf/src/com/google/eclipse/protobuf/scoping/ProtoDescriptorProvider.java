@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static java.util.Collections.unmodifiableCollection;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -62,6 +63,11 @@ public class ProtoDescriptorProvider {
         }
       }
     }
+  }
+  
+  public Collection<URI> allDescriptorLocations() {
+    ensureProtoDescriptorInfosAreCreated();
+    return unmodifiableCollection(descriptorInfos.values());
   }
   
   public URI primaryDescriptorLocation() {

@@ -75,7 +75,7 @@ class TypeDescriptions {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     for (Import anImport : allImports) {
       if (imports.isImportingDescriptor(anImport)) {
-        descriptions.addAll(allBuiltInTypes(targetType));
+        descriptions.addAll(allBuiltInTypes(anImport, targetType));
         continue;
       }
       Resource importedResource = importedResource(anImport, resourceSet);
@@ -92,9 +92,9 @@ class TypeDescriptions {
     return descriptions;
   }
 
-  private <T extends Type> Collection<IEObjectDescription> allBuiltInTypes(Class<T> targetType) {
+  private <T extends Type> Collection<IEObjectDescription> allBuiltInTypes(Import anImport, Class<T> targetType) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
-    ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
+    ProtoDescriptor descriptor = descriptorProvider.descriptor(anImport.getImportURI());
     for (Type t : descriptor.allTypes()) {
       if (!targetType.isInstance(t)) continue;
       T type = targetType.cast(t);
