@@ -42,7 +42,7 @@ class OptionDescriptions {
   @Inject private ImportUriResolver uriResolver;
 
   Collection <IEObjectDescription> builtInOptionProperties(BuiltInOption option) {
-    ProtoDescriptor descriptor = descriptorProvider.get();
+    ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
     Collection<Property> properties = descriptor.availableOptionPropertiesFor(option.eContainer());
     if (!properties.isEmpty()) return describe(properties);
     return emptyList();

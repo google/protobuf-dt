@@ -72,7 +72,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeBuiltInOption_Property(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    ProtoDescriptor descriptor = descriptorProvider.get();
+    ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
     Collection<Property> optionProperties = descriptor.availableOptionPropertiesFor(model);
     if (!optionProperties.isEmpty()) proposeOptions(optionProperties, context, acceptor);
   }
@@ -87,7 +87,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     BuiltInOption option = (BuiltInOption) model;
     Property property = options.propertyFrom(option);
     if (property == null) return;
-    ProtoDescriptor descriptor = descriptorProvider.get();
+    ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
     Enum enumType = descriptor.enumTypeOf(property);
     if (enumType != null) {
       proposeAndAccept(enumType, context, acceptor);
@@ -163,7 +163,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       return option != null && properties.isBool(option);
     }
     if (model instanceof FieldOption) {
-      Property fileOption = descriptorProvider.get().lookupOption(((FieldOption) model).getName());
+      Property fileOption = descriptorProvider.primaryDescriptor().lookupOption(((FieldOption) model).getName());
       return fileOption != null && properties.isBool(fileOption);
     }
     return false;
@@ -177,7 +177,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       return option != null && properties.mayBeNan(option);
     }
     if (model instanceof FieldOption) {
-      Property fileOption = descriptorProvider.get().lookupOption(((FieldOption) model).getName());
+      Property fileOption = descriptorProvider.primaryDescriptor().lookupOption(((FieldOption) model).getName());
       return fileOption != null && properties.mayBeNan(fileOption);
     }
     return false;
@@ -287,7 +287,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   private void proposeCommonFieldOptions(Field field, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     List<String> optionNames = existingFieldOptionNames(field);
     proposeDefaultKeyword(field, optionNames, context, acceptor);
-    for (Property option : descriptorProvider.get().fieldOptions()) {
+    for (Property option : descriptorProvider.primaryDescriptor().fieldOptions()) {
       String optionName = option.getName();
       if (optionNames.contains(optionName) || ("packed".equals(optionName) && !canBePacked(field))) continue;
       proposeOption(option, context, acceptor);
@@ -350,7 +350,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       proposeDefaultValue(option, context, acceptor);
       return;
     }
-    ProtoDescriptor descriptor = descriptorProvider.get();
+    ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
     Enum enumType = descriptor.enumTypeOf(option);
     if (enumType != null) {
       proposeAndAccept(enumType, context, acceptor);

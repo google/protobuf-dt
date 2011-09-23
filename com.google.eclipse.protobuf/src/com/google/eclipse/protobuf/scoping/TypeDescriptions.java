@@ -94,7 +94,7 @@ class TypeDescriptions {
 
   private <T extends Type> Collection<IEObjectDescription> allBuiltInTypes(Class<T> targetType) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
-    ProtoDescriptor descriptor = descriptorProvider.get();
+    ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
     for (Type t : descriptor.allTypes()) {
       if (!targetType.isInstance(t)) continue;
       T type = targetType.cast(t);

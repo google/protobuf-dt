@@ -26,7 +26,7 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class FLOATValueConverter_toValue_withInvalidInput_Test {
+public class DOUBLEValueConverter_toValue_withInvalidInput_Test {
 
   @Rule public XtextRule xtext = new XtextRule();
   @Rule public ExpectedException thrown = none();
@@ -41,13 +41,13 @@ public class FLOATValueConverter_toValue_withInvalidInput_Test {
 
   @Test public void should_throw_error_if_input_is_null() {
     thrown.expect(ValueConverterException.class);
-    thrown.expectMessage("Couldn't convert empty string to float.");
+    thrown.expectMessage("Couldn't convert empty string to double.");
     converter.toValue(null, node);
   }
 
   @Test public void should_throw_error_if_input_is_empty() {
     thrown.expect(ValueConverterException.class);
-    thrown.expectMessage("Couldn't convert empty string to float.");
+    thrown.expectMessage("Couldn't convert empty string to double.");
     converter.toValue("", node);
   }
 
@@ -56,7 +56,7 @@ public class FLOATValueConverter_toValue_withInvalidInput_Test {
       converter.toValue("abc", node);
       fail("Expecting a " + ValueConverterException.class.getName());
     } catch (ValueConverterException e) {
-      assertThat(e.getMessage(), equalTo("Couldn't convert 'abc' to float."));
+      assertThat(e.getMessage(), equalTo("Couldn't convert 'abc' to double."));
       assertThat(e.getCause(), instanceOf(NumberFormatException.class));
     }
   }

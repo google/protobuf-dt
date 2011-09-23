@@ -61,7 +61,7 @@ public class SingleLineCommentDocumentationProvider implements IEObjectDocumenta
       return p != null ? p : o;
     }
     if (o instanceof FieldOption) {
-      ProtoDescriptor descriptor = descriptorProvider.get();
+      ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
       Property p = descriptor.lookupFieldOption(((FieldOption) o).getName());
       return p != null ? p : o;
     }

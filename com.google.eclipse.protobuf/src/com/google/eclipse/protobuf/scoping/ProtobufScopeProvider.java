@@ -70,7 +70,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     EObject container = literalRef.eContainer();
     Enum anEnum = null;
     if (container instanceof BuiltInOption) {
-      ProtoDescriptor descriptor = descriptorProvider.get();
+      ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
       Property p = options.propertyFrom((Option) container);
       anEnum = descriptor.enumTypeOf(p);
     }
@@ -83,7 +83,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
         Property property = (Property) option.eContainer();
         anEnum = finder.enumTypeOf(property);
       } else {
-        ProtoDescriptor descriptor = descriptorProvider.get();
+        ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
         anEnum = descriptor.enumTypeOf(option);
       }
     }

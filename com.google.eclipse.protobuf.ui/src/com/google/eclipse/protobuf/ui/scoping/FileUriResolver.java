@@ -63,7 +63,7 @@ public class FileUriResolver implements IFileUriResolver {
 
   private String resolveUri(String importUri, URI resourceUri) {
     if (imports.isUnresolvedDescriptorUri(importUri)) {
-      return descriptorProvider.descriptorLocation().toString();
+      return descriptorProvider.primaryDescriptorLocation().toString();
     }
     IProject project = resources.project(resourceUri);
     if (project == null) project = resources.activeProject();

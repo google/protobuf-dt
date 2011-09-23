@@ -34,7 +34,7 @@ public class Descriptor_availableOptionPropertiesFor_Test {
   private ProtoDescriptor descriptor;
   
   @Before public void setUp() {
-    descriptor = xtext.getInstanceOf(ProtoDescriptorProvider.class).get();
+    descriptor = xtext.getInstanceOf(ProtoDescriptorProvider.class).primaryDescriptor();
   }
 
   @Test public void should_return_all_file_options() {

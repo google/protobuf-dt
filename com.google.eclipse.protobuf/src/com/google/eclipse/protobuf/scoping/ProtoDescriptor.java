@@ -38,11 +38,6 @@ import com.google.eclipse.protobuf.util.ModelNodes;
  */
 public class ProtoDescriptor {
 
-  /**
-   * The URI to use when importing descriptor.proto.
-   */
-  public static String DESCRIPTOR_IMPORT_URI = "google/protobuf/descriptor.proto";
-
   private static final Map<String, OptionType> OPTION_DEFINITION_BY_NAME = new HashMap<String, OptionType>();
 
   static {
@@ -61,16 +56,18 @@ public class ProtoDescriptor {
 
   private Protobuf root;
 
+  private final String importUri;
   private final ModelNodes nodes;
   private final XtextResource resource;
 
-  public ProtoDescriptor(IParser parser, URI descriptorLocation, ModelNodes nodes) {
+  public ProtoDescriptor(String importUri, URI location, IParser parser, ModelNodes nodes) {
+    this.importUri = importUri;
     this.nodes = nodes;
     addOptionTypes();
     InputStreamReader reader = null;
     try {
-      resource = new XtextResource(descriptorLocation);
-      reader = new InputStreamReader(contents(descriptorLocation), UTF_8);
+      resource = new XtextResource(location);
+      reader = new InputStreamReader(contents(location), UTF_8);
       IParseResult result = parser.parse(reader);
       root = (Protobuf) result.getRootASTElement();
       resource.getContents().add(root);
@@ -264,5 +261,13 @@ public class ProtoDescriptor {
 
   public XtextResource resource() {
     return resource;
+  }
+  
+  /**
+   * Returns the URI to use when importing descriptor.proto.
+   * @return the URI to use when importing descriptor.proto.
+   */
+  public String importUri() {
+    return importUri;
   }
 }
