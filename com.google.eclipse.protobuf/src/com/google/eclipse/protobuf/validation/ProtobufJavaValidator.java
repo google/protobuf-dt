@@ -15,8 +15,7 @@ import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.naming.IQualifiedNameProvider;
-import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 import org.eclipse.xtext.validation.Check;
 
@@ -31,13 +30,13 @@ import com.google.inject.Inject;
 public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
 
   public static final String SYNTAX_IS_NOT_PROTO2_ERROR_CODE = "syntaxIsNotProto2";
-  public static final String TAG_NUMBER_IS_NOT_UNIQUE_ERROR_CODE = "tagNumberIsNotUnique";
+  public static final String INVALID_FIELD_TAG_NUMBER_ERROR_CODE = "invalidFieldTagNumber";
 
   @Inject private FieldOptions fieldOptions;
   @Inject private ImportUriResolver uriResolver;
   @Inject private IQualifiedNameProvider qualifiedNameProvider;
   @Inject private Properties properties;
-  
+
   @Check public void checkDefaultValueType(FieldOption option) {
     if (!fieldOptions.isDefaultValueOption(option)) return;
     Property property = (Property) option.eContainer();
@@ -90,7 +89,7 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
         if (other.getIndex() != index) continue;
         QualifiedName messageName = qualifiedNameProvider.getFullyQualifiedName(message);
         String msg = format(fieldNumberAlreadyUsed, index, messageName.toString(), other.getName());
-        error(msg, field, FIELD__INDEX, TAG_NUMBER_IS_NOT_UNIQUE_ERROR_CODE);
+        error(msg, field, FIELD__INDEX, INVALID_FIELD_TAG_NUMBER_ERROR_CODE);
         break;
       }
     }
@@ -101,7 +100,7 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
     long index = field.getIndex();
     if (index > 0) return;
     String msg = (index == 0) ? fieldNumbersMustBePositive : expectedFieldNumber;
-    error(msg, FIELD__INDEX);
+    error(msg, field, FIELD__INDEX, INVALID_FIELD_TAG_NUMBER_ERROR_CODE);
   }
 
   @Check public void checkOnlyOnePackageDefinition(Package aPackage) {
