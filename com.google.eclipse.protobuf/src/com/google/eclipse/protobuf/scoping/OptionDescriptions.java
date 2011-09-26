@@ -69,7 +69,7 @@ class OptionDescriptions {
             descriptions.add(create(names.get(i), p));
           }
           descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(p));
-          descriptions.addAll(customOptionPropertyFields(p));
+          // descriptions.addAll(customOptionPropertyFields(p));
         }
         continue;
       }
@@ -150,7 +150,7 @@ class OptionDescriptions {
         for (QualifiedName name : importedNamesProvider.namesOf(p)) {
           descriptions.add(create(name, e));
         }
-        descriptions.addAll(customOptionPropertyFields(p));
+        // descriptions.addAll(customOptionPropertyFields(p));
       }
     }
     return descriptions;
@@ -168,7 +168,11 @@ class OptionDescriptions {
     return ref == null ? null : ref.getType();
   }
 
-  private Collection <IEObjectDescription> customOptionPropertyFields(Property optionProperty) {
+  /*
+   * Scope for 'y' in:
+   * option Type (x).y = 0;
+   */
+  Collection <IEObjectDescription> customOptionPropertyFields(Property optionProperty) {
     Message propertyType = properties.messageTypeIfApplicable(optionProperty);
     if (propertyType == null) return emptyList();
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();

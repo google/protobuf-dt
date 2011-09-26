@@ -93,14 +93,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       proposeAndAccept(enumType, context, acceptor);
       return;
     }
-    if (properties.isBool(property)) {
-      proposeBooleanValues(context, acceptor);
-      return;
-    }
-    if (properties.isString(property)) {
-      proposeEmptyString(context, acceptor);
-      return;
-    }
+    proposePrimitiveValues(property, context, acceptor);
   }
 
   @Override public void complete_ID(EObject model, RuleCall ruleCall, ContentAssistContext context,
@@ -233,10 +226,6 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     proposeIndex(index, context, acceptor);
   }
 
-  private void proposeEmptyString(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    createAndAccept(EMPTY_STRING, 1, context, acceptor);
-  }
-
   @Override public void completeProperty_Index(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     long index = fields.calculateTagNumberOf((Property) model);
@@ -358,33 +347,40 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     }
     Property fieldOption = descriptor.lookupFieldOption(option.getName());
     if (fieldOption == null) return;
-    if (properties.isBool(fieldOption)) {
-      proposeBooleanValues(context, acceptor);
-      return;
-    }
+    proposePrimitiveValues(fieldOption, context, acceptor);
   }
 
   private void proposeDefaultValue(FieldOption option, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     Property property = (Property) option.eContainer();
     if (!properties.isOptional(property)) return;
-    if (properties.isBool(property)) {
-      proposeBooleanValues(context, acceptor);
-      return;
-    }
-    if (properties.isString(property)) {
-      proposeEmptyString(context, acceptor);
-      return;
-    }
+    if (proposePrimitiveValues(property, context, acceptor)) return;
     Enum enumType = finder.enumTypeOf(property);
     if (enumType != null) {
       proposeAndAccept(enumType, context, acceptor);
     }
   }
 
+  private boolean proposePrimitiveValues(Property property, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+    if (properties.isBool(property)) {
+      proposeBooleanValues(context, acceptor);
+      return true;
+    }
+    if (properties.isString(property)) {
+      proposeEmptyString(context, acceptor);
+      return true;
+    }
+    return false;
+  }
+  
   private void proposeBooleanValues(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     CommonKeyword[] keywords = { FALSE, TRUE };
     proposeAndAccept(keywords, context, acceptor);
+  }
+
+  private void proposeEmptyString(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    createAndAccept(EMPTY_STRING, 1, context, acceptor);
   }
 
   private void proposeAndAccept(CommonKeyword[] keywords, ContentAssistContext context,
@@ -414,8 +410,15 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     return word.equals(previousWord);
   }
 
-  /** {@inheritDoc} */
   @Override public void completePropertyRef_Property(EObject model, Assignment assignment,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+  }
+  
+  @Override public void completeSimplePropertyRef_Property(EObject model, Assignment assignment,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+  }
+  
+  @Override public void completeCustomOption_PropertyField(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
   }
 }

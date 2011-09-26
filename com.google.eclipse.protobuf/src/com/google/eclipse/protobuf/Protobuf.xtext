@@ -206,8 +206,10 @@ BuiltInOption:
   'option' property=PropertyRef '=' value=ValueRef ';';
 
 CustomOption:
-  'option' '(' property=PropertyRef ')'('.' property2 = PropertyRef)? '=' value=ValueRef ';';
+  'option' '(' property=PropertyRef ')'('.' propertyField = SimplePropertyRef)? '=' value=ValueRef ';';
 
 PropertyRef:
   property=[Property|QualifiedName];
-  
+
+SimplePropertyRef:
+  property=[Property];  

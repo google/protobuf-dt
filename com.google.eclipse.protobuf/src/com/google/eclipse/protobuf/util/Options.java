@@ -35,12 +35,33 @@ public class Options {
   }
 
   /**
-   * Returns the <code>{@link Property}</code> the given <code>{@link Option}</code> is referring to.
+   * Returns the <code>{@link Property}</code> the given <code>{@link Option}</code> is referring to. In the
+   * following example
+   * <pre>
+   * option (myOption) = true;
+   * </pre>
+   * this method will return the <code>{@link Property}</code> "myOption" is pointing to.
    * @param option the given {@code BuiltInFileOption}.
    * @return the {@code Property} the given {code BuiltInFileOption} is referring to, or {@code null} if it cannot be
    * found.
    */
   public Property propertyFrom(Option option) {
+    PropertyRef ref = option.getProperty();
+    return (ref == null) ? null : ref.getProperty();
+  }
+
+  /**
+   * Returns the <code>{@link Property}</code> field the given <code>{@link Option}</code> is referring to. In the
+   * following example
+   * <pre>
+   * option (myOption).field = true;
+   * </pre>
+   * this method will return the <code>{@link Property}</code> "field" is pointing to.
+   * @param option the given {@code BuiltInFileOption}.
+   * @return the {@code Property} the given {code BuiltInFileOption} is referring to, or {@code null} if it cannot be
+   * found.
+   */
+  public Property propertyFieldFrom(Option option) {
     PropertyRef ref = option.getProperty();
     return (ref == null) ? null : ref.getProperty();
   }
