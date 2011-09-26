@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.scoping;
+package com.google.eclipse.protobuf.util;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
@@ -15,18 +15,19 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.stubs.protobuf.PackageStub;
 import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.eclipse.protobuf.util.Packages;
 
 /**
- * Tests for <code>{@link PackageResolver#areRelated(Package, Package)}</code>.
+ * Tests for <code>{@link Packages#areRelated(Package, Package)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class PackageResolver_areRelated_Test {
+public class Packages_areRelated_Test {
 
-  private static PackageResolver resolver;
+  private static Packages packages;
 
   @BeforeClass public static void setUpOnce() {
-    resolver = new PackageResolver();
+    packages = new Packages();
   }
 
   private String baseName;
@@ -49,13 +50,13 @@ public class PackageResolver_areRelated_Test {
 
   @Test public void should_return_true_if_packages_are_equal() {
     p2.setName(p1.getName());
-    assertThat(resolver.areRelated(p1, p2), equalTo(true));
+    assertThat(packages.areRelated(p1, p2), equalTo(true));
   }
 
   @Test public void should_return_true_second_is_subPackage_of_first() {
     for (String name : subpackageNames) {
       p2.setName(name);
-      assertThat(resolver.areRelated(p1, p2), equalTo(true));
+      assertThat(packages.areRelated(p1, p2), equalTo(true));
     }
   }
 
@@ -63,17 +64,17 @@ public class PackageResolver_areRelated_Test {
     p2.setName(baseName);
     for (String name : subpackageNames) {
       p1.setName(name);
-      assertThat(resolver.areRelated(p1, p2), equalTo(true));
+      assertThat(packages.areRelated(p1, p2), equalTo(true));
     }
   }
 
   @Test public void should_return_false_if_second_starts_with_few_segments_of_first_but_is_not_subpackage() {
     p2.setName("may.the.ring");
-    assertThat(resolver.areRelated(p1, p2), equalTo(false));
+    assertThat(packages.areRelated(p1, p2), equalTo(false));
   }
 
   @Test public void should_return_false_if_names_are_completely_different() {
     p2.setName("peace.dog");
-    assertThat(resolver.areRelated(p1, p2), equalTo(false));
+    assertThat(packages.areRelated(p1, p2), equalTo(false));
   }
 }

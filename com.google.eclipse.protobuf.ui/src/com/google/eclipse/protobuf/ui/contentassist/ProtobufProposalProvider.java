@@ -45,13 +45,13 @@ import com.google.inject.Inject;
  */
 public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
-  @Inject private ProtobufElementFinder finder;
+  @Inject private CustomOptionProperties customOptionProperties;
   @Inject private ProtoDescriptorProvider descriptorProvider;
-  @Inject private PluginImageHelper imageHelper;
-
   @Inject private FieldOptions fieldOptions;
+  @Inject private ProtobufElementFinder finder;
   @Inject private Fields fields;
   @Inject private Images images;
+  @Inject private PluginImageHelper imageHelper;
   @Inject private Literals literals;
   @Inject private Options options;
   @Inject private Properties properties;
@@ -321,8 +321,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     } else if (properties.isBool(option)) {
       proposalText = proposalText + TRUE;
     }
-    Image image = imageHelper.getImage(images.imageFor(Option.class));
-    ICompletionProposal proposal = createCompletionProposal(proposalText, displayString, image, context);
+    ICompletionProposal proposal = createCompletionProposal(proposalText, displayString, imageForOption(), context);
     if (isStringOption && proposal instanceof ConfigurableCompletionProposal) {
       // set cursor between the proposal's quotes
       ConfigurableCompletionProposal configurable = (ConfigurableCompletionProposal) proposal;
@@ -414,6 +413,13 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   
   @Override public void completeCustomOption_Property(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    if (!(model instanceof CustomOption)) return;
+    Collection<Property> allProperties = customOptionProperties.propertiesFor((CustomOption) model);
+    proposeAndAccept(allProperties, imageForOption(), context, acceptor);
+  }
+
+  private Image imageForOption() {
+    return imageHelper.getImage(images.imageFor(Option.class));
   }
   
   @Override public void completeCustomOption_PropertyField(EObject model, Assignment assignment,
@@ -422,11 +428,13 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     Property property = options.propertyFrom((CustomOption) model);
     if (property == null) return;
     Message message = finder.messageTypeOf(property);
-    if (message != null) proposeAndAccept(finder.propertiesOf(message), context, acceptor);
+    if (message != null) {
+      Image image = imageHelper.getImage("property.gif");
+      proposeAndAccept(finder.propertiesOf(message), image, context, acceptor);
+    }
   }
 
-  private void proposeAndAccept(Collection<Property> allProperties, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    Image image = imageHelper.getImage("property.gif");
+  private void proposeAndAccept(Collection<Property> allProperties, Image image, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     for (Property p : allProperties)
       proposeAndAccept(p.getName(), image, context, acceptor);
   }

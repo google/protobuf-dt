@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.scoping;
+package com.google.eclipse.protobuf.util;
 
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
@@ -20,11 +20,18 @@ import com.google.inject.Inject;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class PackageResolver {
+public class Packages {
 
   @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
 
-  boolean areRelated(Package p1, Package p2) {
+  /**
+   * Indicates whether the given packages are "related." "Related" means that the names of the packages are equal or one 
+   * package is a sub-package of the other one.
+   * @param p1 package to verify against {@code p2}.
+   * @param p2 package to verify against {@code p1}.
+   * @return {@code true} if the given packages are related; {@code false} otherwise.
+   */
+  public boolean areRelated(Package p1, Package p2) {
     if (p1 == null || p2 == null) return false;
     QualifiedName name1 = nameOf(p1);
     QualifiedName name2 = nameOf(p2);

@@ -9,7 +9,6 @@
 package com.google.eclipse.protobuf.scoping;
 
 import static java.util.Collections.emptyList;
-import static org.eclipse.emf.common.util.URI.createURI;
 import static org.eclipse.emf.ecore.util.EcoreUtil.getAllContents;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
@@ -20,7 +19,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.*;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IEObjectDescription;
-import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
@@ -37,9 +35,9 @@ class TypeDescriptions {
   @Inject private ImportedNamesProvider importedNamesProvider;
   @Inject private Imports imports;
   @Inject private LocalNamesProvider localNamesProvider;
-  @Inject private PackageResolver packageResolver;
+  @Inject private Packages packages;
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
-  @Inject private ImportUriResolver uriResolver;
+  @Inject private Resources resources;
 
   <T extends Type> Collection<IEObjectDescription> localTypes(EObject root, Class<T> targetType) {
     return localTypes(root, targetType, 0);
@@ -78,7 +76,7 @@ class TypeDescriptions {
         descriptions.addAll(allBuiltInTypes(anImport, targetType));
         continue;
       }
-      Resource importedResource = importedResource(anImport, resourceSet);
+      Resource importedResource = resources.importedResource(anImport, resourceSet);
       Protobuf importedRoot = finder.rootOf(importedResource);
       if (importedRoot != null) {
         descriptions.addAll(publicImportedTypes(importedRoot, targetType));
@@ -103,15 +101,6 @@ class TypeDescriptions {
     return descriptions;
   }
 
-  private Resource importedResource(Import anImport, ResourceSet resourceSet) {
-    URI importUri = createURI(uriResolver.apply(anImport));
-    try {
-      return resourceSet.getResource(importUri, true);
-    } catch (Throwable t) {
-      return null;
-    }
-  }
-
   private <T extends Type> Collection<IEObjectDescription> publicImportedTypes(Protobuf root, Class<T> targetType) {
     List<Import> allImports = finder.publicImportsIn(root);
     if (allImports.isEmpty()) return emptyList();
@@ -121,7 +110,7 @@ class TypeDescriptions {
 
   private boolean arePackagesRelated(Package aPackage, EObject root) {
     Package p = finder.packageOf(root);
-    return packageResolver.areRelated(aPackage, p);
+    return packages.areRelated(aPackage, p);
   }
 
   private <T extends Type> Collection<IEObjectDescription> localTypes(Resource resource, Class<T> targetType) {

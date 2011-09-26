@@ -65,4 +65,24 @@ public class Options {
     PropertyRef ref = option.getProperty();
     return (ref == null) ? null : ref.getProperty();
   }
+  
+  /**
+   * Indicates whether the given object is an "extend message" and its name matches the one specified in the given 
+   * option type.
+   * @param o the object to check.
+   * @param optionType the type of option we are interested in.
+   * @return {@code true} if the given object is an "extend message" and its name matches the one specified in the given 
+   * option type; {@code false} otherwise.
+   */
+  public boolean isExtendingOptionMessage(EObject o, OptionType optionType) {
+    if (!(o instanceof ExtendMessage)) return false;
+    Message message = messageFrom((ExtendMessage) o);
+    if (message == null) return false;
+    return optionType.messageName.equals(message.getName());
+  }
+
+  private Message messageFrom(ExtendMessage extend) {
+    MessageRef ref = extend.getMessage();
+    return ref == null ? null : ref.getType();
+  }
 }
