@@ -92,11 +92,4 @@ public class Properties {
     }
     return r.toString();
   }
-  
-  public Message messageTypeIfApplicable(Property p) {
-    AbstractTypeRef r = p.getType();
-    if (!(r instanceof TypeRef)) return null;
-    Type type = ((TypeRef) r).getType();
-    return (type instanceof Message) ? (Message) type : null;
-  }
 }

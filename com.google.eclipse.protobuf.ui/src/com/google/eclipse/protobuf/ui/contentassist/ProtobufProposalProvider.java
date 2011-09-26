@@ -395,12 +395,6 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       proposeAndAccept(literal.getName(), image, context, acceptor);
   }
 
-  private void proposeAndAccept(String proposalText, Image image, ContentAssistContext context,
-      ICompletionProposalAcceptor acceptor) {
-    ICompletionProposal proposal = createCompletionProposal(proposalText, proposalText, image, context);
-    acceptor.accept(proposal);
-  }
-
   private boolean isLastWordFromCaretPositionEqualTo(String word, ContentAssistContext context) {
     StyledText styledText = context.getViewer().getTextWidget();
     int valueLength = word.length();
@@ -418,7 +412,28 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
   }
   
+  @Override public void completeCustomOption_Property(EObject model, Assignment assignment,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+  }
+  
   @Override public void completeCustomOption_PropertyField(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    if (!(model instanceof CustomOption)) return;
+    Property property = options.propertyFrom((CustomOption) model);
+    if (property == null) return;
+    Message message = finder.messageTypeOf(property);
+    if (message != null) proposeAndAccept(finder.propertiesOf(message), context, acceptor);
+  }
+
+  private void proposeAndAccept(Collection<Property> allProperties, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    Image image = imageHelper.getImage("property.gif");
+    for (Property p : allProperties)
+      proposeAndAccept(p.getName(), image, context, acceptor);
+  }
+
+  private void proposeAndAccept(String proposalText, Image image, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+    ICompletionProposal proposal = createCompletionProposal(proposalText, proposalText, image, context);
+    acceptor.accept(proposal);
   }
 }

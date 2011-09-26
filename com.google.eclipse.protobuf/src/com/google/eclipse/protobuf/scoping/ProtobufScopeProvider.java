@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.eclipse.protobuf.scoping.OptionType.optionType;
+import static com.google.eclipse.protobuf.util.OptionType.typeOf;
 
 import java.util.*;
 
@@ -99,7 +99,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     }
     if (mayBeOption instanceof CustomOption) {
       Protobuf root = finder.rootOf(propertyRef);
-      OptionType optionType = optionType((CustomOption) mayBeOption);
+      OptionType optionType = typeOf((CustomOption) mayBeOption);
       EObject current = mayBeOption.eContainer();
       while (current != null) {
         descriptions.addAll(optionDescriptions.localCustomOptionProperties(current, optionType));

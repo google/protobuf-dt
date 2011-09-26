@@ -25,7 +25,6 @@ import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.eclipse.protobuf.util.*;
-import com.google.eclipse.protobuf.util.Properties;
 import com.google.inject.Inject;
 
 /**
@@ -39,7 +38,6 @@ class OptionDescriptions {
   @Inject private Imports imports;
   @Inject private LocalNamesProvider localNamesProvider;
   @Inject private PackageResolver packageResolver;
-  @Inject private Properties properties;
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
   @Inject private ImportUriResolver uriResolver;
 
@@ -173,7 +171,7 @@ class OptionDescriptions {
    * option Type (x).y = 0;
    */
   Collection <IEObjectDescription> customOptionPropertyFields(Property optionProperty) {
-    Message propertyType = properties.messageTypeIfApplicable(optionProperty);
+    Message propertyType = finder.messageTypeOf(optionProperty);
     if (propertyType == null) return emptyList();
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     for (MessageElement e : propertyType.getElements()) {

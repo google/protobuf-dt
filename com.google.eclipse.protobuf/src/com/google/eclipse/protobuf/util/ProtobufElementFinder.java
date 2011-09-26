@@ -32,17 +32,29 @@ import com.google.inject.Singleton;
 public class ProtobufElementFinder {
 
   /**
+   * Returns the message type of the given property, only if the type of the given property is a message.
+   * @param p the given property.
+   * @return the message type of the given property or {@code null} if the type of the given property is not message.
+   */
+  public Message messageTypeOf(Property p) {
+    Type type = typeOf(p);
+    return (type instanceof Message) ? (Message) type : null;
+  }
+  
+  /**
    * Returns the enum type of the given property, only if the type of the given property is an enum.
    * @param p the given property.
    * @return the enum type of the given property or {@code null} if the type of the given property is not enum.
    */
   public Enum enumTypeOf(Property p) {
-    AbstractTypeRef aTypeRef = (p).getType();
-    if (aTypeRef instanceof TypeRef) {
-      Type type = ((TypeRef) aTypeRef).getType();
-      if (type instanceof Enum) return (Enum) type;
-    }
-    return null;
+    Type type = typeOf(p);
+    return (type instanceof Enum) ? (Enum) type : null;
+  }
+  
+  private Type typeOf(Property p) {
+    AbstractTypeRef r = p.getType();
+    if (!(r instanceof TypeRef)) return null;
+    return ((TypeRef) r).getType();
   }
 
   /**
@@ -124,4 +136,13 @@ public class ProtobufElementFinder {
       if (next instanceof Protobuf) return (Protobuf) next;
     }
     return null;
-  }}
+  }
+
+  public Collection<Property> propertiesOf(Message message) {
+    List<Property> properties = new ArrayList<Property>();
+    for (MessageElement e :message.getElements()) {
+      if (e instanceof Property) properties.add((Property) e);
+    }
+    return unmodifiableList(properties);
+  }
+}

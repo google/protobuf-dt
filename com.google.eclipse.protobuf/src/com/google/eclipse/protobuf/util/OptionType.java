@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.scoping;
+package com.google.eclipse.protobuf.util;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -17,9 +17,11 @@ import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 
 /**
+ * Types of options (by location.)
+ * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-enum OptionType {
+public enum OptionType {
   FILE("FileOptions"), MESSAGE("MessageOptions"), FIELD("FieldOptions"), ENUM("EnumOptions"),
       LITERAL("EnumValueOptions"), SERVICE("ServiceOptions"), RPC("MethodOptions");
 
@@ -33,13 +35,21 @@ enum OptionType {
     OPTION_TYPES_BY_CONTAINER.put(Rpc.class, RPC);
   }
 
-  final String messageName;
+  /**
+   * The name of the message in descriptor.proto that specifies the type of an option.
+   */
+  public final String messageName;
 
   private OptionType(String messageName) {
     this.messageName = messageName;
   }
 
-  static OptionType optionType(CustomOption option) {
+  /**
+   * Returns the type of the given option.
+   * @param option the given option.
+   * @return the type of the given option or {@code null} if a type cannot be found.
+   */
+  public static OptionType typeOf(Option option) {
     EObject container = option.eContainer();
     for (Entry<Class<?>, OptionType> optionTypeByContainer : OPTION_TYPES_BY_CONTAINER.entrySet()) {
       if (optionTypeByContainer.getKey().isInstance(container)) {
