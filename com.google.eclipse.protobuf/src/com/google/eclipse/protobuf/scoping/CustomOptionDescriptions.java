@@ -28,9 +28,8 @@ import com.google.inject.Inject;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class OptionDescriptions {
+class CustomOptionDescriptions {
 
-  @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private ProtobufElementFinder finder;
   @Inject private ImportedNamesProvider importedNamesProvider;
   @Inject private Imports imports;
@@ -40,18 +39,11 @@ class OptionDescriptions {
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
   @Inject private Resources resources;
 
-  Collection <IEObjectDescription> builtInOptionProperties(BuiltInOption option) {
-    ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
-    Collection<Property> optionProperties = descriptor.availableOptionPropertiesFor(option.eContainer());
-    if (!optionProperties.isEmpty()) return describe(optionProperties);
-    return emptyList();
+  Collection <IEObjectDescription> localProperties(EObject root, OptionType optionType) {
+    return localProperties(root, optionType, 0);
   }
 
-  Collection <IEObjectDescription> localCustomOptionProperties(EObject root, OptionType optionType) {
-    return localCustomOptionProperties(root, optionType, 0);
-  }
-
-  private Collection <IEObjectDescription> localCustomOptionProperties(EObject root, OptionType optionType, int level) {
+  private Collection <IEObjectDescription> localProperties(EObject root, OptionType optionType, int level) {
     if (optionType == null) return emptyList();
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     for (EObject element : root.eContents()) {
@@ -69,20 +61,20 @@ class OptionDescriptions {
         }
       }
       if (element instanceof Message) {
-        descriptions.addAll(localCustomOptionProperties(element, optionType, level + 1));
+        descriptions.addAll(localProperties(element, optionType, level + 1));
       }
     }
     return descriptions;
   }
   
-  Collection<IEObjectDescription> importedCustomOptionProperties(Protobuf root, OptionType optionType) {
+  Collection<IEObjectDescription> importedProperties(Protobuf root, OptionType optionType) {
     List<Import> allImports = finder.importsIn(root);
     if (allImports.isEmpty()) return emptyList();
     ResourceSet resourceSet = root.eResource().getResourceSet();
-    return importedCustomOptionProperties(allImports, finder.packageOf(root), resourceSet, optionType);
+    return importedProperties(allImports, finder.packageOf(root), resourceSet, optionType);
   }
 
-  private Collection<IEObjectDescription> importedCustomOptionProperties(List<Import> allImports, Package aPackage,
+  private Collection<IEObjectDescription> importedProperties(List<Import> allImports, Package aPackage,
       ResourceSet resourceSet, OptionType optionType) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     for (Import anImport : allImports) {
@@ -90,23 +82,22 @@ class OptionDescriptions {
       Resource importedResource = resources.importedResource(anImport, resourceSet);
       Protobuf importedRoot = finder.rootOf(importedResource);
       if (importedRoot != null) {
-        descriptions.addAll(publicImportedCustomOptionProperties(importedRoot, optionType));
+        descriptions.addAll(publicImportedProperties(importedRoot, optionType));
         if (arePackagesRelated(aPackage, importedRoot)) {
-          descriptions.addAll(localCustomOptionProperties(importedRoot, optionType));
+          descriptions.addAll(localProperties(importedRoot, optionType));
           continue;
         }
       }
-      descriptions.addAll(localCustomOptionProperties(importedResource, optionType));
+      descriptions.addAll(localProperties(importedResource, optionType));
     }
     return descriptions;
   }
 
-  private <T extends Type> Collection<IEObjectDescription> publicImportedCustomOptionProperties(Protobuf root,
-      OptionType optionType) {
+  private <T extends Type> Collection<IEObjectDescription> publicImportedProperties(Protobuf root, OptionType optionType) {
     List<Import> allImports = finder.publicImportsIn(root);
     if (allImports.isEmpty()) return emptyList();
     ResourceSet resourceSet = root.eResource().getResourceSet();
-    return importedCustomOptionProperties(allImports, finder.packageOf(root), resourceSet, optionType);
+    return importedProperties(allImports, finder.packageOf(root), resourceSet, optionType);
   }
 
   private boolean arePackagesRelated(Package aPackage, EObject root) {
@@ -114,15 +105,7 @@ class OptionDescriptions {
     return packages.areRelated(aPackage, p);
   }
 
-  private Collection<IEObjectDescription> describe(Collection<Property> optionProperties) {
-    List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
-    for (Property p : optionProperties) {
-      descriptions.add(create(p.getName(), p));
-    }
-    return descriptions;
-  }
-
-  private Collection<IEObjectDescription> localCustomOptionProperties(Resource resource, OptionType optionType) {
+  private Collection<IEObjectDescription> localProperties(Resource resource, OptionType optionType) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     TreeIterator<Object> contents = getAllContents(resource, true);
     while (contents.hasNext()) {
@@ -145,7 +128,7 @@ class OptionDescriptions {
    * Scope for 'y' in:
    * option Type (x).y = 0;
    */
-  Collection <IEObjectDescription> customOptionPropertyFields(Property optionProperty) {
+  Collection <IEObjectDescription> fields(Property optionProperty) {
     Message propertyType = finder.messageTypeOf(optionProperty);
     if (propertyType == null) return emptyList();
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();

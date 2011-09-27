@@ -33,11 +33,12 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
 
   private static final boolean DO_NOT_IGNORE_CASE = false;
 
+  @Inject private BuiltInOptionDescriptions builtInOptionDescriptions;
+  @Inject private CustomOptionDescriptions customOptionDescriptions;
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private FieldOptions fieldOptions;
   @Inject private ProtobufElementFinder finder;
   @Inject private LiteralDescriptions literalDescriptions;
-  @Inject private OptionDescriptions optionDescriptions;
   @Inject private Options options;
   @Inject private TypeDescriptions typeDescriptions;
 
@@ -95,17 +96,17 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     EObject mayBeOption = propertyRef.eContainer();
     if (mayBeOption instanceof BuiltInOption) {
-      descriptions.addAll(optionDescriptions.builtInOptionProperties((BuiltInOption) mayBeOption));
+      descriptions.addAll(builtInOptionDescriptions.properties((BuiltInOption) mayBeOption));
     }
     if (mayBeOption instanceof CustomOption) {
       Protobuf root = finder.rootOf(propertyRef);
       OptionType optionType = typeOf((CustomOption) mayBeOption);
       EObject current = mayBeOption.eContainer();
       while (current != null) {
-        descriptions.addAll(optionDescriptions.localCustomOptionProperties(current, optionType));
+        descriptions.addAll(customOptionDescriptions.localProperties(current, optionType));
         current = current.eContainer();
       }
-      descriptions.addAll(optionDescriptions.importedCustomOptionProperties(root, optionType));
+      descriptions.addAll(customOptionDescriptions.importedProperties(root, optionType));
     }
     return createScope(descriptions);
   }
@@ -119,7 +120,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
       Property property = options.propertyFieldFrom(option);
       if (property == null) property = options.propertyFrom(option);
       if (property != null) {
-        descriptions.addAll(optionDescriptions.customOptionPropertyFields(property));
+        descriptions.addAll(customOptionDescriptions.fields(property));
       }
     }
     return createScope(descriptions);
