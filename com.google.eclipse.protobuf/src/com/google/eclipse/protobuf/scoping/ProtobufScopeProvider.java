@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.eclipse.protobuf.util.OptionType.typeOf;
+import static java.util.Collections.emptySet;
 
 import java.util.*;
 
@@ -33,7 +33,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
 
   private static final boolean DO_NOT_IGNORE_CASE = false;
 
-  @Inject private BuiltInOptionDescriptions builtInOptionDescriptions;
+  @Inject private NativeOptionDescriptions nativeOptionDescriptions;
   @Inject private CustomOptionDescriptions customOptionDescriptions;
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private FieldOptions fieldOptions;
@@ -70,7 +70,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   IScope scope_LiteralRef_literal(LiteralRef literalRef, EReference reference) {
     EObject container = literalRef.eContainer();
     Enum anEnum = null;
-    if (container instanceof BuiltInOption) {
+    if (container instanceof NativeOption) {
       ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
       Property p = options.propertyFrom((Option) container);
       anEnum = descriptor.enumTypeOf(p);
@@ -78,8 +78,8 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     if (container instanceof Property) {
       anEnum = finder.enumTypeOf((Property) container);
     }
-    if (container instanceof BuiltInFieldOption) {
-      BuiltInFieldOption option = (BuiltInFieldOption) container;
+    if (container instanceof NativeFieldOption) {
+      NativeFieldOption option = (NativeFieldOption) container;
       if (fieldOptions.isDefaultValueOption(option)) {
         Property property = (Property) option.eContainer();
         anEnum = finder.enumTypeOf(property);
@@ -93,21 +93,16 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
 
   @SuppressWarnings("unused")
   IScope scope_PropertyRef_property(PropertyRef propertyRef, EReference reference) {
-    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     EObject mayBeOption = propertyRef.eContainer();
-    if (mayBeOption instanceof BuiltInOption) {
-      descriptions.addAll(builtInOptionDescriptions.properties((BuiltInOption) mayBeOption));
+    if (mayBeOption instanceof NativeOption) {
+      NativeOption option = (NativeOption) mayBeOption;
+      return createScope(nativeOptionDescriptions.properties(option));
     }
     if (mayBeOption instanceof CustomOption) {
-      Protobuf root = finder.rootOf(propertyRef);
-      OptionType optionType = typeOf((CustomOption) mayBeOption);
-      EObject current = mayBeOption.eContainer();
-      while (current != null) {
-        descriptions.addAll(customOptionDescriptions.localProperties(current, optionType));
-        current = current.eContainer();
-      }
-      descriptions.addAll(customOptionDescriptions.importedProperties(root, optionType));
+      CustomOption option = (CustomOption) mayBeOption;
+      return createScope(customOptionDescriptions.properties(option));
     }
+    Set<IEObjectDescription> descriptions = emptySet();
     return createScope(descriptions);
   }
   

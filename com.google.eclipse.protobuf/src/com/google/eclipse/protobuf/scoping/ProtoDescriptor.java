@@ -139,7 +139,7 @@ public class ProtoDescriptor {
    */
   public Collection<Property> availableOptionPropertiesFor(EObject o) {
     EObject target = o;
-    if (target instanceof BuiltInOption) target = target.eContainer();
+    if (target instanceof NativeOption) target = target.eContainer();
     if (target instanceof Protobuf) return fileOptions();
     if (target instanceof Enum) return enumOptions();
     if (target instanceof Message) return messageOptions();
@@ -231,7 +231,7 @@ public class ProtoDescriptor {
    * @param option the given option.
    * @return the enum type of the given option or {@code null} if the type of the given option is not enum.
    */
-  public Enum enumTypeOf(BuiltInFieldOption option) {
+  public Enum enumTypeOf(NativeFieldOption option) {
     String name = option.getName();
     return enumTypeOf(lookupFieldOption(name));
   }

@@ -72,7 +72,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     proposeAndAccept(proposal, imageHelper.getImage(images.imageFor(Syntax.class)), context, acceptor);
   }
 
-  @Override public void completeBuiltInOption_Property(EObject model, Assignment assignment,
+  @Override public void completeNativeOption_Property(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
     Collection<Property> optionProperties = descriptor.availableOptionPropertiesFor(model);
@@ -84,9 +84,9 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     for (Property p : optionProperties) proposeOption(p, context, acceptor);
   }
 
-  @Override public void completeBuiltInOption_Value(EObject model, Assignment assignment,
+  @Override public void completeNativeOption_Value(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    BuiltInOption option = (BuiltInOption) model;
+    NativeOption option = (NativeOption) model;
     Property property = options.propertyFrom(option);
     if (property == null) return;
     ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
@@ -265,7 +265,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     return imageHelper.getImage(images.defaultImage());
   }
 
-  @Override public void completeBuiltInFieldOption_Name(EObject model, Assignment assignment,
+  @Override public void completeNativeFieldOption_Name(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     Field field = extractFieldFrom(context);
     proposeCommonFieldOptions(field, context, acceptor);
@@ -332,10 +332,10 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     acceptor.accept(proposal);
   }
 
-  @Override public void completeBuiltInFieldOption_Value(EObject model, Assignment assignment,
+  @Override public void completeNativeFieldOption_Value(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    if (!(model instanceof BuiltInFieldOption)) return;
-    BuiltInFieldOption option = (BuiltInFieldOption) model;
+    if (!(model instanceof NativeFieldOption)) return;
+    NativeFieldOption option = (NativeFieldOption) model;
     if (fieldOptions.isDefaultValueOption(option)) {
       proposeDefaultValue(option, context, acceptor);
       return;

@@ -162,9 +162,9 @@ Literal:
   ('[' fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)* ']')? ';';
 
 FieldOption:
-  BuiltInFieldOption | CustomFieldOption;
+  NativeFieldOption | CustomFieldOption;
 
-BuiltInFieldOption:
+NativeFieldOption:
   name=Name '=' value=ValueRef;
 
 CustomFieldOption:
@@ -200,9 +200,9 @@ MessageRef:
   type=[Message|QualifiedName];
 
 Option:
-  BuiltInOption | CustomOption;
+  NativeOption | CustomOption;
 
-BuiltInOption:
+NativeOption:
   'option' property=PropertyRef '=' value=ValueRef ';';
 
 CustomOption:

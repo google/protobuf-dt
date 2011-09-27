@@ -21,20 +21,20 @@ import java.util.*;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class BuiltInOptionDescriptions {
+public class NativeOptionDescriptions {
 
   @Inject private ProtoDescriptorProvider descriptorProvider;
 
-  Collection <IEObjectDescription> properties(BuiltInOption option) {
+  Collection <IEObjectDescription> properties(NativeOption option) {
     ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
-    Collection<Property> optionProperties = descriptor.availableOptionPropertiesFor(option.eContainer());
-    if (!optionProperties.isEmpty()) return describe(optionProperties);
-    return emptyList();
+    Collection<Property> properties = descriptor.availableOptionPropertiesFor(option.eContainer());
+    if (properties.isEmpty()) return emptyList();
+    return describe(properties);
   }
 
-  private Collection<IEObjectDescription> describe(Collection<Property> optionProperties) {
+  private Collection<IEObjectDescription> describe(Collection<Property> properties) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
-    for (Property p : optionProperties) {
+    for (Property p : properties) {
       descriptions.add(create(p.getName(), p));
     }
     return descriptions;
