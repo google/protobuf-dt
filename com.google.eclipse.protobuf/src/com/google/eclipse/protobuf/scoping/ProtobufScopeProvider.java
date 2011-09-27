@@ -106,15 +106,15 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   
   @SuppressWarnings("unused") 
   IScope scope_SimplePropertyRef_property(SimplePropertyRef propertyRef, EReference reference) {
-    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     EObject mayBeOption = propertyRef.eContainer();
     if (mayBeOption instanceof CustomOption) {
       CustomOption option = (CustomOption) mayBeOption;
       Property property = options.propertyFrom(option);
       if (property != null) {
-        descriptions.addAll(customOptionDescriptions.fields(property));
+        return createScope(customOptionDescriptions.fields(property));
       }
     }
+    Set<IEObjectDescription> descriptions = emptySet();
     return createScope(descriptions);
   }
 
