@@ -440,6 +440,20 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     }
   }
 
+  @Override public void completeCustomOption_Value(EObject model, Assignment assignment, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+    if (!(model instanceof CustomOption)) return;
+    CustomOption option = (CustomOption) model;
+    Property property = options.propertyFieldFrom(option);
+    if (property == null) property = options.propertyFrom(option);
+    if (property == null) return;
+    if (proposePrimitiveValues(property, context, acceptor)) return;
+    Enum enumType = finder.enumTypeOf(property);
+    if (enumType != null) {
+      proposeAndAccept(enumType, context, acceptor);
+    }
+  }
+  
   private void proposeAndAccept(String proposalText, Image image, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     ICompletionProposal proposal = createCompletionProposal(proposalText, proposalText, image, context);

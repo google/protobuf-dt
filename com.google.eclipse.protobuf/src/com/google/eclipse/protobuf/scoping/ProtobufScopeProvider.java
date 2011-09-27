@@ -68,7 +68,11 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
       Property p = options.propertyFrom((Option) container);
       anEnum = descriptor.enumTypeOf(p);
     }
-    // TODO support custom options
+    if (container instanceof CustomOption) {
+      CustomOption option = (CustomOption) container;
+      container = options.propertyFieldFrom(option);
+      if (container == null) container = options.propertyFrom(option);
+    }
     if (container instanceof Property) {
       anEnum = finder.enumTypeOf((Property) container);
     }
@@ -106,8 +110,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     EObject mayBeOption = propertyRef.eContainer();
     if (mayBeOption instanceof CustomOption) {
       CustomOption option = (CustomOption) mayBeOption;
-      Property property = options.propertyFieldFrom(option);
-      if (property == null) property = options.propertyFrom(option);
+      Property property = options.propertyFrom(option);
       if (property != null) {
         descriptions.addAll(customOptionDescriptions.fields(property));
       }
