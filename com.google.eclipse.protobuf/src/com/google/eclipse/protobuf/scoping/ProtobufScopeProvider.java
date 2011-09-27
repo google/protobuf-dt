@@ -33,37 +33,30 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
 
   private static final boolean DO_NOT_IGNORE_CASE = false;
 
-  @Inject private NativeOptionDescriptions nativeOptionDescriptions;
   @Inject private CustomOptionDescriptions customOptionDescriptions;
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private FieldOptions fieldOptions;
   @Inject private ProtobufElementFinder finder;
   @Inject private LiteralDescriptions literalDescriptions;
+  @Inject private NativeOptionDescriptions nativeOptionDescriptions;
   @Inject private Options options;
   @Inject private TypeDescriptions typeDescriptions;
 
   @SuppressWarnings("unused")
   IScope scope_TypeRef_type(TypeRef typeRef, EReference reference) {
-    Protobuf root = finder.rootOf(typeRef);
-    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
-    EObject current = typeRef.eContainer().eContainer(); // get message of the property containing the TypeReference
-    Class<Type> targetType = Type.class;
-    while (current != null) {
-      descriptions.addAll(typeDescriptions.localTypes(current, targetType));
-      current = current.eContainer();
+    EObject container = typeRef.eContainer();
+    if (container instanceof Property) {
+      Property property = (Property) container;
+      return createScope(typeDescriptions.types(property));
     }
-    descriptions.addAll(typeDescriptions.importedTypes(root, targetType));
+    Set<IEObjectDescription> descriptions = emptySet();
     return createScope(descriptions);
   }
 
   @SuppressWarnings("unused")
   IScope scope_MessageRef_type(MessageRef messageRef, EReference reference) {
     Protobuf root = finder.rootOf(messageRef);
-    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
-    Class<Message> targetType = Message.class;
-    descriptions.addAll(typeDescriptions.localTypes(root, targetType));
-    descriptions.addAll(typeDescriptions.importedTypes(root, targetType));
-    return createScope(descriptions);
+    return createScope(typeDescriptions.messages(root));
   }
 
   @SuppressWarnings("unused")
@@ -75,6 +68,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
       Property p = options.propertyFrom((Option) container);
       anEnum = descriptor.enumTypeOf(p);
     }
+    // TODO support custom options
     if (container instanceof Property) {
       anEnum = finder.enumTypeOf((Property) container);
     }

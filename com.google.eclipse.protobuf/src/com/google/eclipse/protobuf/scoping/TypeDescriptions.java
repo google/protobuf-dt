@@ -39,11 +39,32 @@ class TypeDescriptions {
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
   @Inject private Resources resources;
 
-  <T extends Type> Collection<IEObjectDescription> localTypes(EObject root, Class<T> targetType) {
-    return localTypes(root, targetType, 0);
+  Collection<IEObjectDescription> types(Property property) {
+    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
+    EObject current = property.eContainer();
+    Class<Type> targetType = Type.class;
+    while (current != null) {
+      descriptions.addAll(local(current, targetType));
+      current = current.eContainer();
+    }
+    Protobuf root = finder.rootOf(property);
+    descriptions.addAll(imported(root, targetType));
+    return descriptions;
+  }
+  
+  Collection<IEObjectDescription> messages(Protobuf root) {
+    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
+    Class<Message> targetType = Message.class;
+    descriptions.addAll(local(root, targetType));
+    descriptions.addAll(imported(root, targetType));
+    return descriptions;
+  }
+  
+  private <T extends Type> Collection<IEObjectDescription> local(EObject root, Class<T> targetType) {
+    return local(root, targetType, 0);
   }
 
-  private <T extends Type> Collection<IEObjectDescription> localTypes(EObject root, Class<T> targetType, int level) {
+  private <T extends Type> Collection<IEObjectDescription> local(EObject root, Class<T> targetType, int level) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     for (EObject element : root.eContents()) {
       if (!targetType.isInstance(element)) continue;
@@ -55,42 +76,42 @@ class TypeDescriptions {
       descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(element));
       // TODO investigate if groups can have messages, and if so, add those messages to the scope.
       if (element instanceof Message) {
-        descriptions.addAll(localTypes(element, targetType, level + 1));
+        descriptions.addAll(local(element, targetType, level + 1));
       }
     }
     return descriptions;
   }
 
-  <T extends Type> Collection<IEObjectDescription> importedTypes(Protobuf root, Class<T> targetType) {
+  private <T extends Type> Collection<IEObjectDescription> imported(Protobuf root, Class<T> targetType) {
     List<Import> allImports = finder.importsIn(root);
     if (allImports.isEmpty()) return emptyList();
     ResourceSet resourceSet = root.eResource().getResourceSet();
-    return importedTypes(allImports, finder.packageOf(root), resourceSet, targetType);
+    return imported(allImports, finder.packageOf(root), resourceSet, targetType);
   }
 
-  private <T extends Type> Collection<IEObjectDescription> importedTypes(List<Import> allImports, Package aPackage,
+  private <T extends Type> Collection<IEObjectDescription> imported(List<Import> allImports, Package aPackage,
       ResourceSet resourceSet, Class<T> targetType) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     for (Import anImport : allImports) {
       if (imports.isImportingDescriptor(anImport)) {
-        descriptions.addAll(allBuiltInTypes(anImport, targetType));
+        descriptions.addAll(allNative(anImport, targetType));
         continue;
       }
       Resource importedResource = resources.importedResource(anImport, resourceSet);
       Protobuf importedRoot = finder.rootOf(importedResource);
       if (importedRoot != null) {
-        descriptions.addAll(publicImportedTypes(importedRoot, targetType));
+        descriptions.addAll(publicImported(importedRoot, targetType));
         if (arePackagesRelated(aPackage, importedRoot)) {
-          descriptions.addAll(localTypes(importedRoot, targetType));
+          descriptions.addAll(local(importedRoot, targetType));
           continue;
         }
       }
-      descriptions.addAll(localTypes(importedResource, targetType));
+      descriptions.addAll(local(importedResource, targetType));
     }
     return descriptions;
   }
 
-  private <T extends Type> Collection<IEObjectDescription> allBuiltInTypes(Import anImport, Class<T> targetType) {
+  private <T extends Type> Collection<IEObjectDescription> allNative(Import anImport, Class<T> targetType) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     ProtoDescriptor descriptor = descriptorProvider.descriptor(anImport.getImportURI());
     for (Type t : descriptor.allTypes()) {
@@ -101,11 +122,11 @@ class TypeDescriptions {
     return descriptions;
   }
 
-  private <T extends Type> Collection<IEObjectDescription> publicImportedTypes(Protobuf root, Class<T> targetType) {
+  private <T extends Type> Collection<IEObjectDescription> publicImported(Protobuf root, Class<T> targetType) {
     List<Import> allImports = finder.publicImportsIn(root);
     if (allImports.isEmpty()) return emptyList();
     ResourceSet resourceSet = root.eResource().getResourceSet();
-    return importedTypes(allImports, finder.packageOf(root), resourceSet, targetType);
+    return imported(allImports, finder.packageOf(root), resourceSet, targetType);
   }
 
   private boolean arePackagesRelated(Package aPackage, EObject root) {
@@ -113,7 +134,7 @@ class TypeDescriptions {
     return packages.areRelated(aPackage, p);
   }
 
-  private <T extends Type> Collection<IEObjectDescription> localTypes(Resource resource, Class<T> targetType) {
+  private <T extends Type> Collection<IEObjectDescription> local(Resource resource, Class<T> targetType) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     TreeIterator<Object> contents = getAllContents(resource, true);
     while (contents.hasNext()) {

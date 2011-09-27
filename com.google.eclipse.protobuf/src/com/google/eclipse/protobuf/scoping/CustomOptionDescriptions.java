@@ -42,14 +42,14 @@ class CustomOptionDescriptions {
 
   Collection <IEObjectDescription> properties(CustomOption option) {
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
-    Protobuf root = finder.rootOf(option);
-    OptionType optionType = typeOf(option);
+    OptionType type = typeOf(option);
     EObject current = option.eContainer();
     while (current != null) {
-      descriptions.addAll(local(current, optionType));
+      descriptions.addAll(local(current, type));
       current = current.eContainer();
     }
-    descriptions.addAll(imported(root, optionType));    
+    Protobuf root = finder.rootOf(option);
+    descriptions.addAll(imported(root, type));    
     return descriptions;
   }
   
