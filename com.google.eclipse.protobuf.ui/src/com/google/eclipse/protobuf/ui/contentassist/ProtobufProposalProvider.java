@@ -24,6 +24,7 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.xtext.*;
+import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.ui.PluginImageHelper;
 import org.eclipse.xtext.ui.editor.contentassist.*;
 
@@ -53,9 +54,10 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Inject private Images images;
   @Inject private PluginImageHelper imageHelper;
   @Inject private Literals literals;
+  @Inject private IQualifiedNameProvider nameProvider;
   @Inject private Options options;
   @Inject private Properties properties;
-
+  
   @Override public void completeProtobuf_Syntax(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {}
 
@@ -414,8 +416,11 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Override public void completeCustomOption_Property(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     if (!(model instanceof CustomOption)) return;
-    Collection<Property> allProperties = customOptionProperties.propertiesFor((CustomOption) model);
-    proposeAndAccept(allProperties, imageForOption(), context, acceptor);
+    Image image = imageForOption();
+    for (Property p : customOptionProperties.propertiesFor((CustomOption) model)) {
+      QualifiedName name = nameProvider.getFullyQualifiedName(p);
+      proposeAndAccept(name.toString(), image, context, acceptor);
+    }
   }
 
   private Image imageForOption() {
@@ -430,13 +435,9 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     Message message = finder.messageTypeOf(property);
     if (message != null) {
       Image image = imageHelper.getImage("property.gif");
-      proposeAndAccept(finder.propertiesOf(message), image, context, acceptor);
+      for (Property p : finder.propertiesOf(message))
+        proposeAndAccept(p.getName(), image, context, acceptor);
     }
-  }
-
-  private void proposeAndAccept(Collection<Property> allProperties, Image image, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    for (Property p : allProperties)
-      proposeAndAccept(p.getName(), image, context, acceptor);
   }
 
   private void proposeAndAccept(String proposalText, Image image, ContentAssistContext context,
