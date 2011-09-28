@@ -44,9 +44,9 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
 
   @SuppressWarnings("unused")
   IScope scope_TypeRef_type(TypeRef typeRef, EReference reference) {
-    EObject container = typeRef.eContainer();
-    if (container instanceof Property) {
-      Property property = (Property) container;
+    EObject c = typeRef.eContainer();
+    if (c instanceof Property) {
+      Property property = (Property) c;
       return createScope(typeDescriptions.types(property));
     }
     Set<IEObjectDescription> descriptions = emptySet();
@@ -61,23 +61,23 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
 
   @SuppressWarnings("unused")
   IScope scope_LiteralRef_literal(LiteralRef literalRef, EReference reference) {
-    EObject container = literalRef.eContainer();
+    EObject c = literalRef.eContainer();
     Enum anEnum = null;
-    if (container instanceof NativeOption) {
+    if (c instanceof NativeOption) {
       ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
-      Property p = options.propertyFrom((Option) container);
+      Property p = options.propertyFrom((Option) c);
       anEnum = descriptor.enumTypeOf(p);
     }
-    if (container instanceof CustomOption) {
-      CustomOption option = (CustomOption) container;
-      container = options.propertyFieldFrom(option);
-      if (container == null) container = options.propertyFrom(option);
+    if (c instanceof CustomOption) {
+      CustomOption option = (CustomOption) c;
+      c = options.propertyFieldFrom(option);
+      if (c == null) c = options.propertyFrom(option);
     }
-    if (container instanceof Property) {
-      anEnum = finder.enumTypeOf((Property) container);
+    if (c instanceof Property) {
+      anEnum = finder.enumTypeOf((Property) c);
     }
-    if (container instanceof NativeFieldOption) {
-      NativeFieldOption option = (NativeFieldOption) container;
+    if (c instanceof NativeFieldOption) {
+      NativeFieldOption option = (NativeFieldOption) c;
       if (fieldOptions.isDefaultValueOption(option)) {
         Property property = (Property) option.eContainer();
         anEnum = finder.enumTypeOf(property);
@@ -91,13 +91,13 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
 
   @SuppressWarnings("unused")
   IScope scope_PropertyRef_property(PropertyRef propertyRef, EReference reference) {
-    EObject mayBeOption = propertyRef.eContainer();
-    if (mayBeOption instanceof NativeOption) {
-      NativeOption option = (NativeOption) mayBeOption;
+    EObject c = propertyRef.eContainer();
+    if (c instanceof NativeOption) {
+      NativeOption option = (NativeOption) c;
       return createScope(nativeOptionDescriptions.properties(option));
     }
-    if (mayBeOption instanceof CustomOption) {
-      CustomOption option = (CustomOption) mayBeOption;
+    if (c instanceof CustomOption) {
+      CustomOption option = (CustomOption) c;
       return createScope(customOptionDescriptions.properties(option));
     }
     Set<IEObjectDescription> descriptions = emptySet();
@@ -106,9 +106,9 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   
   @SuppressWarnings("unused") 
   IScope scope_SimplePropertyRef_property(SimplePropertyRef propertyRef, EReference reference) {
-    EObject mayBeOption = propertyRef.eContainer();
-    if (mayBeOption instanceof CustomOption) {
-      CustomOption option = (CustomOption) mayBeOption;
+    EObject c = propertyRef.eContainer();
+    if (c instanceof CustomOption) {
+      CustomOption option = (CustomOption) c;
       Property property = options.propertyFrom(option);
       if (property != null) {
         return createScope(customOptionDescriptions.fields(property));
