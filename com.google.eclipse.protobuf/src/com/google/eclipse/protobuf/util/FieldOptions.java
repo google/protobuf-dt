@@ -8,8 +8,6 @@
  */
 package com.google.eclipse.protobuf.util;
 
-import static com.google.eclipse.protobuf.grammar.CommonKeyword.DEFAULT;
-
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.Singleton;
 
@@ -27,6 +25,56 @@ public class FieldOptions {
    * @return {@code true} if the given option is the "default value" one, {@code false} otherwise.
    */
   public boolean isDefaultValueOption(FieldOption option) {
-    return DEFAULT.hasValue(option.getName()) && option.eContainer() instanceof Property;
+    return option instanceof DefaultValueFieldOption && option.eContainer() instanceof Property;
+  }
+
+  /**
+   * Returns the name of the given option.
+   * @param option the given option.
+   * @return the name of the given option.
+   */
+  public String nameOf(FieldOption option) {
+    Property p = propertyFrom(option);
+    return (p == null) ? null : p.getName();
+  }
+  
+  /**
+   * Returns the <code>{@link Property}</code> the given <code>{@link FieldOption}</code> is referring to. In the
+   * following example
+   * <pre>
+   * [(myFieldOption) = true]
+   * </pre>
+   * this method will return the <code>{@link Property}</code> "myFieldOption" is pointing to.
+   * @param option the given {@code FieldOption}.
+   * @return the {@code Property} the given {@code FieldOption} is referring to, or {@code null} if it cannot be
+   * found.
+   */
+  public Property propertyFrom(FieldOption option) {
+    PropertyRef ref = null;
+    if (option instanceof NativeFieldOption) {
+      NativeFieldOption nativeOption = (NativeFieldOption) option;
+      ref = nativeOption.getProperty();
+    }
+    if (option instanceof CustomFieldOption) {
+      CustomFieldOption customOption = (CustomFieldOption) option;
+      ref = customOption.getProperty();
+    }
+    return (ref == null) ? null : ref.getProperty();
+  }
+
+  /**
+   * Returns the <code>{@link Property}</code> field the given <code>{@link CustomFieldOption}</code> is referring to. 
+   * In the following example
+   * <pre>
+   * [(myFieldOption).field = true]
+   * </pre>
+   * this method will return the <code>{@link Property}</code> "field" is pointing to.
+   * @param option the given {@code FieldOption}.
+   * @return the {@code Property} the given {@code CustomFieldOption} is referring to, or {@code null} if it cannot be
+   * found.
+   */
+  public Property propertyFieldFrom(CustomFieldOption option) {
+    SimplePropertyRef ref = option.getPropertyField();
+    return (ref == null) ? null : ref.getProperty();
   }
 }

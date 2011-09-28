@@ -161,15 +161,6 @@ Literal:
   name=Name '=' index=(LONG | HEX) 
   ('[' fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)* ']')? ';';
 
-FieldOption:
-  NativeFieldOption | CustomFieldOption;
-
-NativeFieldOption:
-  name=Name '=' value=ValueRef;
-
-CustomFieldOption:
-  '(' name=QualifiedName ')' '=' value=ValueRef;
-
 terminal HEX returns ecore::ELong:
   '0x' (NUMBER | 'a'..'f' | 'A'..'F')+;
 
@@ -207,6 +198,24 @@ NativeOption:
 
 CustomOption:
   'option' '(' property=PropertyRef ')'('.' propertyField = SimplePropertyRef)? '=' value=ValueRef ';';
+
+FieldOption:
+  LanguageFieldOption | NativeFieldOption | CustomFieldOption;
+
+LanguageFieldOption:
+  DefaultValueFieldOption | PackedFieldOption;
+
+DefaultValueFieldOption:
+  'default' '=' value=ValueRef;
+
+PackedFieldOption:
+  'packed' '=' value=ValueRef;
+
+NativeFieldOption:
+  property=PropertyRef '=' value=ValueRef;
+
+CustomFieldOption:
+  '(' property=PropertyRef ')'('.' propertyField = SimplePropertyRef)? '=' value=ValueRef;
 
 PropertyRef:
   property=[Property|QualifiedName];

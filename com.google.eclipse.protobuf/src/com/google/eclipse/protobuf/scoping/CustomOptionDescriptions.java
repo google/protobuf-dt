@@ -40,7 +40,7 @@ class CustomOptionDescriptions {
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
   @Inject private Resources resources;
 
-  Collection <IEObjectDescription> properties(CustomOption option) {
+  Collection <IEObjectDescription> properties(EObject option) {
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     OptionType type = typeOf(option);
     EObject current = option.eContainer();

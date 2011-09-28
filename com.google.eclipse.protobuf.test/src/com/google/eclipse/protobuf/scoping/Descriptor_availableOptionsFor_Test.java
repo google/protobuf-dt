@@ -22,12 +22,12 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link ProtoDescriptor#availableOptionPropertiesFor(EObject)}</code>.
+ * Tests for <code>{@link ProtoDescriptor#availableOptionsFor(EObject)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Ignore("This test requires to be executed as a 'JUnit plug-in test'. I haven't found a way to register PlatformURLHandler with the JVM")
-public class Descriptor_availableOptionPropertiesFor_Test {
+public class Descriptor_availableOptionsFor_Test {
 
   @Rule public XtextRule xtext = new XtextRule();
 
@@ -39,7 +39,7 @@ public class Descriptor_availableOptionPropertiesFor_Test {
 
   @Test public void should_return_all_file_options() {
     Protobuf optionContainer = mock(Protobuf.class);
-    Map<String, Property> fileOptions = mapByName(descriptor.availableOptionPropertiesFor(optionContainer));
+    Map<String, Property> fileOptions = mapByName(descriptor.availableOptionsFor(optionContainer));
     assertThat(fileOptions.get("java_package"), hasType("string"));
     assertThat(fileOptions.get("java_outer_classname"), hasType("string"));
     assertThat(fileOptions.get("java_multiple_files"), hasType("bool"));

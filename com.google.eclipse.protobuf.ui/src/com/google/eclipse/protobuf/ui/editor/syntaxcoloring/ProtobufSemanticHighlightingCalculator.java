@@ -122,8 +122,9 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
 
   private void highlightOptions(Field field, IHighlightedPositionAcceptor acceptor) {
     for (FieldOption option : field.getFieldOptions()) {
-      String highlightId = fieldOptions.isDefaultValueOption(option) ? KEYWORD_ID : DEFAULT_ID;
-      highlightName(option, acceptor, highlightId);
+      // TODO fix this 
+      // String highlightId = fieldOptions.isDefaultValueOption(option) ? KEYWORD_ID : DEFAULT_ID;
+      // highlightName(option, acceptor, highlightId);
       ValueRef ref = option.getValue();
       if (ref instanceof LiteralRef) {
         highlightFirstFeature(option, FIELD_OPTION__VALUE, acceptor, ENUM_LITERAL_ID);

@@ -75,7 +75,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Override public void completeNativeOption_Property(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
-    Collection<Property> optionProperties = descriptor.availableOptionPropertiesFor(model);
+    Collection<Property> optionProperties = descriptor.availableOptionsFor(model);
     if (!optionProperties.isEmpty()) proposeOptions(optionProperties, context, acceptor);
   }
 
@@ -151,31 +151,27 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   }
 
   private boolean isBoolProposalValid(ContentAssistContext context) {
-    EObject model = context.getCurrentModel();
-    if (model instanceof Property) return properties.isBool((Property) model);
-    if (model instanceof Option) {
-      Property option = options.propertyFrom((Option) model);
-      return option != null && properties.isBool(option);
-    }
-    if (model instanceof FieldOption) {
-      Property fileOption = descriptorProvider.primaryDescriptor().lookupOption(((FieldOption) model).getName());
-      return fileOption != null && properties.isBool(fileOption);
-    }
-    return false;
+    Property p = propertyFrom(context);
+    return p != null && properties.isBool(p);
   }
 
   private boolean isNanProposalValid(ContentAssistContext context) {
+    Property p = propertyFrom(context);
+    return p != null && properties.mayBeNan(p);
+  }
+  
+  private Property propertyFrom(ContentAssistContext context) {
     EObject model = context.getCurrentModel();
-    if (model instanceof Property) return properties.mayBeNan((Property) model);
+    if (model instanceof Property) return (Property) model;
     if (model instanceof Option) {
-      Property option = options.propertyFrom((Option) model);
-      return option != null && properties.mayBeNan(option);
+      Option option = (Option) model;
+      return options.propertyFrom(option);
     }
     if (model instanceof FieldOption) {
-      Property fileOption = descriptorProvider.primaryDescriptor().lookupOption(((FieldOption) model).getName());
-      return fileOption != null && properties.mayBeNan(fileOption);
+      FieldOption option = (FieldOption) model;
+      return fieldOptions.propertyFrom(option);
     }
-    return false;
+    return null;
   }
 
   private boolean proposeOpeningBracket(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
@@ -265,22 +261,21 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     return imageHelper.getImage(images.defaultImage());
   }
 
-  @Override public void completeNativeFieldOption_Name(EObject model, Assignment assignment,
+  @Override public void completeNativeFieldOption_Property(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    Field field = extractFieldFrom(context);
-    proposeCommonFieldOptions(field, context, acceptor);
+    Property p = extractElementFromContext(context, Property.class);
+    if (p != null) {
+      proposeNativeOptions(p, context, acceptor);
+    }
   }
 
-  private Field extractFieldFrom(ContentAssistContext context) {
-    return extractElementFromContext(context, Field.class);
-  }
-
-  private void proposeCommonFieldOptions(Field field, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    List<String> optionNames = existingFieldOptionNames(field);
-    proposeDefaultKeyword(field, optionNames, context, acceptor);
-    for (Property option : descriptorProvider.primaryDescriptor().fieldOptions()) {
+  private void proposeNativeOptions(Property p, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    List<String> optionNames = existingFieldOptionNames(p);
+    proposeDefaultKeyword(p, optionNames, context, acceptor);
+    ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
+    for (Property option : descriptor.availableOptionsFor(p)) {
       String optionName = option.getName();
-      if (optionNames.contains(optionName) || ("packed".equals(optionName) && !canBePacked(field))) continue;
+      if (optionNames.contains(optionName) || ("packed".equals(optionName) && !canBePacked(p))) continue;
       proposeOption(option, context, acceptor);
     }
   }
@@ -290,7 +285,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (allFieldOptions.isEmpty()) return emptyList();
     List<String> optionNames = new ArrayList<String>();
     for (FieldOption option : allFieldOptions)
-      optionNames.add(option.getName());
+      optionNames.add(fieldOptions.nameOf(option));
     return optionNames;
   }
 
@@ -341,14 +336,13 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       return;
     }
     ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
-    Enum enumType = descriptor.enumTypeOf(option);
+    Property property = fieldOptions.propertyFrom(option);
+    Enum enumType = descriptor.enumTypeOf(property);
     if (enumType != null) {
       proposeAndAccept(enumType, context, acceptor);
       return;
     }
-    Property fieldOption = descriptor.lookupFieldOption(option.getName());
-    if (fieldOption == null) return;
-    proposePrimitiveValues(fieldOption, context, acceptor);
+    proposePrimitiveValues(property, context, acceptor);
   }
 
   private void proposeDefaultValue(FieldOption option, ContentAssistContext context,

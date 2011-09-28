@@ -22,6 +22,7 @@ import com.google.eclipse.protobuf.protobuf.Enum;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public enum OptionType {
+  
   FILE("FileOptions"), MESSAGE("MessageOptions"), FIELD("FieldOptions"), ENUM("EnumOptions"),
       LITERAL("EnumValueOptions"), SERVICE("ServiceOptions"), RPC("MethodOptions");
 
@@ -31,6 +32,7 @@ public enum OptionType {
     OPTION_TYPES_BY_CONTAINER.put(Protobuf.class, FILE);
     OPTION_TYPES_BY_CONTAINER.put(Enum.class, ENUM);
     OPTION_TYPES_BY_CONTAINER.put(Message.class, MESSAGE);
+    OPTION_TYPES_BY_CONTAINER.put(Property.class, FIELD);
     OPTION_TYPES_BY_CONTAINER.put(Service.class, SERVICE);
     OPTION_TYPES_BY_CONTAINER.put(Rpc.class, RPC);
   }
@@ -49,7 +51,7 @@ public enum OptionType {
    * @param option the given option.
    * @return the type of the given option or {@code null} if a type cannot be found.
    */
-  public static OptionType typeOf(Option option) {
+  public static OptionType typeOf(EObject option) {
     EObject container = option.eContainer();
     for (Entry<Class<?>, OptionType> optionTypeByContainer : OPTION_TYPES_BY_CONTAINER.entrySet()) {
       if (optionTypeByContainer.getKey().isInstance(container)) {

@@ -16,7 +16,6 @@ import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
 import org.eclipse.xtext.nodemodel.*;
 
 import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.scoping.*;
 import com.google.eclipse.protobuf.util.*;
 import com.google.inject.Inject;
 
@@ -31,7 +30,7 @@ public class SingleLineCommentDocumentationProvider implements IEObjectDocumenta
   private static final String WINDOWS_NEW_LINE = "\\r\\n";
   private static final String UNIX_NEW_LINE = "\\n";
 
-  @Inject private ProtoDescriptorProvider descriptorProvider;
+  @Inject private FieldOptions fieldOptions;
   @Inject private ModelNodes nodes;
   @Inject private Options options;
 
@@ -61,8 +60,7 @@ public class SingleLineCommentDocumentationProvider implements IEObjectDocumenta
       return p != null ? p : o;
     }
     if (o instanceof FieldOption) {
-      ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
-      Property p = descriptor.lookupFieldOption(((FieldOption) o).getName());
+      Property p = fieldOptions.propertyFrom((FieldOption) o);
       return p != null ? p : o;
     }
     return o;
