@@ -9,7 +9,8 @@
  */
 package com.google.eclipse.protobuf.ui.validation;
 
-import static com.google.eclipse.protobuf.ui.validation.Validation.*;
+import static com.google.eclipse.protobuf.ui.Internals.injector;
+import static com.google.eclipse.protobuf.ui.validation.Validation.validate;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.*;

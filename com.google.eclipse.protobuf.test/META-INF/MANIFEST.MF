@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Tests for com.google.eclipse.protobuf
 Bundle-SymbolicName: com.google.eclipse.protobuf.test
 Bundle-Version: 1.0.0
-Bundle-Vendor: Google
+Bundle-Vendor: Google Inc.
 Fragment-Host: com.google.eclipse.protobuf;bundle-version="1.0.0"
 Require-Bundle: org.junit;bundle-version="4.8.1",
  org.eclipse.xtext.junit;bundle-version="2.0.0",

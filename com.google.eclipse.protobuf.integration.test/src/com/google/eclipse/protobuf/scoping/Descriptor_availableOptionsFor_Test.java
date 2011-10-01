@@ -9,6 +9,7 @@
 package com.google.eclipse.protobuf.scoping;
 
 import static com.google.eclipse.protobuf.junit.matchers.PropertyHasType.hasType;
+import static com.google.eclipse.protobuf.ui.Internals.injector;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
@@ -18,7 +19,6 @@ import java.util.*;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.*;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
@@ -26,15 +26,13 @@ import com.google.eclipse.protobuf.protobuf.*;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Ignore("This test requires to be executed as a 'JUnit plug-in test'. I haven't found a way to register PlatformURLHandler with the JVM")
 public class Descriptor_availableOptionsFor_Test {
 
-  @Rule public XtextRule xtext = new XtextRule();
+  private static ProtoDescriptor descriptor;
 
-  private ProtoDescriptor descriptor;
-  
-  @Before public void setUp() {
-    descriptor = xtext.getInstanceOf(ProtoDescriptorProvider.class).primaryDescriptor();
+  @BeforeClass public static void setUpOnce() {
+    ProtoDescriptorProvider descriptorProvider = injector().getInstance(ProtoDescriptorProvider.class);
+    descriptor = descriptorProvider.primaryDescriptor();
   }
 
   @Test public void should_return_all_file_options() {

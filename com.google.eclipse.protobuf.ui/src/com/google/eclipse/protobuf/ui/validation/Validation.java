@@ -9,6 +9,7 @@
 package com.google.eclipse.protobuf.ui.validation;
 
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
+import static com.google.eclipse.protobuf.ui.Internals.*;
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
 import java.util.List;
@@ -25,16 +26,12 @@ import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
 import com.google.eclipse.protobuf.conversion.STRINGValueConverter;
 import com.google.eclipse.protobuf.protobuf.Import;
-import com.google.eclipse.protobuf.ui.internal.ProtobufActivator;
 import com.google.eclipse.protobuf.util.ModelNodes;
-import com.google.inject.Injector;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 final class Validation {
-
-  private static final String LANGUAGE_NAME = "com.google.eclipse.protobuf.Protobuf";
 
   static void validate(IEditorPart editor) {
     XtextEditor protoEditor = asProtoEditor(editor);
@@ -45,7 +42,7 @@ final class Validation {
   private static XtextEditor asProtoEditor(IEditorPart editor) {
     XtextEditor xtextEditor = asXtextEditor(editor);
     if (xtextEditor == null) return null;
-    if (!LANGUAGE_NAME.equals(xtextEditor.getLanguageName())) return null;
+    if (!languageName().equals(xtextEditor.getLanguageName())) return null;
     return xtextEditor;
   }
 
@@ -99,10 +96,6 @@ final class Validation {
 
   private static ModelNodes nodes() {
     return injector().getInstance(ModelNodes.class);
-  }
-
-  static Injector injector() {
-    return ProtobufActivator.getInstance().getInjector(LANGUAGE_NAME);
   }
 
   private Validation() {}

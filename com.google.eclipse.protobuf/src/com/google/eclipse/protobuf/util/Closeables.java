@@ -8,15 +8,15 @@
  */
 package com.google.eclipse.protobuf.util;
 
-import java.io.*;
+import java.io.Closeable;
 
 /**
  * Utility methods related to <code>{@link Closeable}</code>s.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Closeables {
-  
+
   /**
    * Invokes {@code close()} on the given <code>{@link Closeable}</code>, ignoring any thrown exceptions.
    * @param c the given {@code Closeable}.
@@ -26,7 +26,7 @@ public class Closeables {
     if (c == null) return false;
     try {
       c.close();
-    } catch (IOException ignored) {}
+    } catch (Throwable ignored) {}
     return true;
   }
 

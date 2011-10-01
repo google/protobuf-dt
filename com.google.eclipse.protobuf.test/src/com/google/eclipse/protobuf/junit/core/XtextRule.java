@@ -13,11 +13,10 @@ import static org.eclipse.emf.common.util.URI.createURI;
 import static org.eclipse.emf.ecore.util.EcoreUtil.resolveAll;
 import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
 
-import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
-import com.google.eclipse.protobuf.protobuf.Protobuf;
-import com.google.inject.Injector;
+import java.io.*;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.xtext.ISetup;
 import org.eclipse.xtext.linking.lazy.LazyLinkingResource;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.parser.IParseResult;
@@ -26,7 +25,9 @@ import org.eclipse.xtext.util.StringInputStream;
 import org.junit.rules.MethodRule;
 import org.junit.runners.model.*;
 
-import java.io.*;
+import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.inject.Injector;
 
 /**
  * Rule that performs configuration of a standalone Xtext environment.
@@ -35,7 +36,16 @@ import java.io.*;
  */
 public class XtextRule implements MethodRule {
 
+  private final ISetup setup;
   private Injector injector;
+
+  public XtextRule() {
+    this(new TestingStandaloneSetup());
+  }
+
+  public XtextRule(ISetup setup) {
+    this.setup = setup;
+  }
 
   public Statement apply(Statement base, FrameworkMethod method, Object target) {
     return new XtextStatement(base);
@@ -55,7 +65,7 @@ public class XtextRule implements MethodRule {
     if (!parseResult.hasSyntaxErrors()) return (Protobuf) parseResult.getRootASTElement();
     StringBuilder builder = new StringBuilder();
     builder.append("Syntax errors:");
-    for (INode error : parseResult.getSyntaxErrors()) 
+    for (INode error : parseResult.getSyntaxErrors())
       builder.append(lineSeparator()).append("- ").append(error.getSyntaxErrorMessage());
     throw new IllegalStateException(builder.toString());
   }
@@ -99,7 +109,7 @@ public class XtextRule implements MethodRule {
     }
 
     private void setUpInjector() {
-      injector = new TestingStandaloneSetup().createInjectorAndDoEMFRegistration();
+      injector = setup.createInjectorAndDoEMFRegistration();
     }
   }
 }
