@@ -27,7 +27,7 @@ import com.google.eclipse.protobuf.protobuf.Enum;
  */
 public class ProtobufElementFinder_enumTypeOf_Test {
 
-  @Rule public XtextRule xtext = new XtextRule();
+  @Rule public XtextRule xtext = XtextRule.unitTestSetup();
 
   private ProtobufElementFinder finder;
 

@@ -31,7 +31,7 @@ import com.google.eclipse.protobuf.protobuf.*;
  */
 public class CommentNodesFinder_matchingCommentNode_Test {
 
-  @Rule public XtextRule xtext = new XtextRule();
+  @Rule public XtextRule xtext = XtextRule.unitTestSetup();
 
   private CommentNodesFinder finder;
 

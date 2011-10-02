@@ -31,7 +31,7 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
  */
 public class LONGValueConverter_toValue_Test {
 
-  @Rule public XtextRule xtext = new XtextRule();
+  @Rule public XtextRule xtext = XtextRule.unitTestSetup();
   @Rule public ExpectedException thrown = none();
 
   private LONGValueConverter converter;

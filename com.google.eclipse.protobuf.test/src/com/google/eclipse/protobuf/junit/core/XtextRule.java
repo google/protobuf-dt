@@ -25,6 +25,7 @@ import org.eclipse.xtext.util.StringInputStream;
 import org.junit.rules.MethodRule;
 import org.junit.runners.model.*;
 
+import com.google.eclipse.protobuf.ProtobufStandaloneSetup;
 import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.inject.Injector;
@@ -39,11 +40,15 @@ public class XtextRule implements MethodRule {
   private final ISetup setup;
   private Injector injector;
 
-  public XtextRule() {
-    this(new TestingStandaloneSetup());
+  public static XtextRule unitTestSetup() {
+    return new XtextRule(new TestingStandaloneSetup());
   }
 
-  public XtextRule(ISetup setup) {
+  public static XtextRule integrationTestSetup() {
+    return new XtextRule(new ProtobufStandaloneSetup());
+  }
+
+  private XtextRule(ISetup setup) {
     this.setup = setup;
   }
 

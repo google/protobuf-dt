@@ -26,7 +26,7 @@ import com.google.eclipse.protobuf.protobuf.Protobuf;
  */
 public class Literals_calculateIndexOf_Test {
 
-  @Rule public XtextRule xtext = new XtextRule();
+  @Rule public XtextRule xtext = XtextRule.unitTestSetup();
 
   private Literals literals;
 

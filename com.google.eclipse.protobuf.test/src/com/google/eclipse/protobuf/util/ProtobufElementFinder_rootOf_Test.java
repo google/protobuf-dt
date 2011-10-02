@@ -27,7 +27,7 @@ import com.google.eclipse.protobuf.protobuf.Protobuf;
  */
 public class ProtobufElementFinder_rootOf_Test {
 
-  @Rule public XtextRule xtext = new XtextRule();
+  @Rule public XtextRule xtext = XtextRule.unitTestSetup();
 
   private ProtobufElementFinder finder;
 

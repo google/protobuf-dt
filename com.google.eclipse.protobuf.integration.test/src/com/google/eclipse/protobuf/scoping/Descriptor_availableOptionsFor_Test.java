@@ -9,7 +9,6 @@
 package com.google.eclipse.protobuf.scoping;
 
 import static com.google.eclipse.protobuf.junit.matchers.PropertyHasType.hasType;
-import static com.google.eclipse.protobuf.ui.Internals.injector;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
@@ -19,6 +18,7 @@ import java.util.*;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.*;
 
+import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
@@ -28,10 +28,12 @@ import com.google.eclipse.protobuf.protobuf.*;
  */
 public class Descriptor_availableOptionsFor_Test {
 
-  private static ProtoDescriptor descriptor;
+  @Rule public XtextRule xtext = XtextRule.integrationTestSetup();
 
-  @BeforeClass public static void setUpOnce() {
-    ProtoDescriptorProvider descriptorProvider = injector().getInstance(ProtoDescriptorProvider.class);
+  private ProtoDescriptor descriptor;
+
+  @Before public void setUp() {
+    ProtoDescriptorProvider descriptorProvider = xtext.getInstanceOf(ProtoDescriptorProvider.class);
     descriptor = descriptorProvider.primaryDescriptor();
   }
 

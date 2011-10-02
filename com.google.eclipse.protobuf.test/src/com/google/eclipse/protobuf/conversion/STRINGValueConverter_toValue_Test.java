@@ -31,7 +31,7 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 @RunWith(Parameterized.class)
 public class STRINGValueConverter_toValue_Test {
 
-  @Rule public XtextRule xtext = new XtextRule();
+  @Rule public XtextRule xtext = XtextRule.unitTestSetup();
 
   private final String input;
   private final String expected;

@@ -26,7 +26,7 @@ import org.junit.*;
  */
 public class SingleLineCommentDocumentationProvider_getDocumentation_Test {
 
-  @Rule public XtextRule xtext = new XtextRule();
+  @Rule public XtextRule xtext = XtextRule.unitTestSetup();
 
   private SingleLineCommentDocumentationProvider provider;
   

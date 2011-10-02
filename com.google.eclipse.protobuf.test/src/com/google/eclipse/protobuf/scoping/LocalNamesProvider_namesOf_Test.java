@@ -32,7 +32,7 @@ import com.google.eclipse.protobuf.protobuf.Protobuf;
  */
 public class LocalNamesProvider_namesOf_Test {
 
-  @Rule public XtextRule xtext = new XtextRule();
+  @Rule public XtextRule xtext = XtextRule.unitTestSetup();
 
   private LocalNamesProvider namesProvider;
 

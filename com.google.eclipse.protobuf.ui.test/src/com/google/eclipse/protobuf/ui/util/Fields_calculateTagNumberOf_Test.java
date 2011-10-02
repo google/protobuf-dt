@@ -25,7 +25,7 @@ import com.google.eclipse.protobuf.protobuf.*;
  */
 public class Fields_calculateTagNumberOf_Test {
 
-  @Rule public XtextRule xtext = new XtextRule();
+  @Rule public XtextRule xtext = XtextRule.unitTestSetup();
 
   private Fields fields;
 

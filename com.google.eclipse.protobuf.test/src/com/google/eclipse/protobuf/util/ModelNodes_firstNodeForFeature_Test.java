@@ -28,7 +28,7 @@ import org.junit.*;
  */
 public class ModelNodes_firstNodeForFeature_Test {
 
-  @Rule public XtextRule xtext = new XtextRule();
+  @Rule public XtextRule xtext = XtextRule.unitTestSetup();
 
   private ModelNodes nodes;
   

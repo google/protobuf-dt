@@ -20,7 +20,7 @@ import org.junit.*;
  */
 public class Issue91AddSupportForUTF16Strings {
 
-  @Rule public XtextRule xtext = new XtextRule();
+  @Rule public XtextRule xtext = XtextRule.unitTestSetup();
 
   @Test public void should_recognize_UTF16_strings() {
     MultiLineTextBuilder proto = new MultiLineTextBuilder();

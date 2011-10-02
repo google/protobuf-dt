@@ -4,7 +4,7 @@ Bundle-Name: Integration tests for com.google.eclipse.protobuf
 Bundle-SymbolicName: com.google.eclipse.protobuf.integration.test
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Google Inc.
-Fragment-Host: com.google.eclipse.protobuf.ui;bundle-version="1.0.9"
+Fragment-Host: com.google.eclipse.protobuf;bundle-version="1.0.9"
 Require-Bundle: org.junit;bundle-version="4.8.1",
  org.eclipse.xtext.junit;bundle-version="2.0.0",
  org.eclipse.xtext.junit4;bundle-version="2.0.0",
