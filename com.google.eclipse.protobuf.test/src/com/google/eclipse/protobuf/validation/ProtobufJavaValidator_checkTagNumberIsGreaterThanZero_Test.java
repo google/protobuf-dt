@@ -43,9 +43,9 @@ public class ProtobufJavaValidator_checkTagNumberIsGreaterThanZero_Test {
 
   @Test public void should_create_error_if_field_index_is_zero() {
     MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("message Person {       ");
-    proto.append("  optional long id = 0;");
-    proto.append("}                      ");
+    proto.append("message Person {       ")
+         .append("  optional long id = 0;")
+         .append("}                      ");
     Protobuf root = xtext.parseText(proto);
     Property p = findProperty(name("id"), in(root));
     validator.checkTagNumberIsGreaterThanZero(p);
@@ -55,9 +55,9 @@ public class ProtobufJavaValidator_checkTagNumberIsGreaterThanZero_Test {
   
   @Test public void should_create_error_if_field_index_is_negative() {
     MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("message Person {        ");
-    proto.append("  optional long id = -1;");
-    proto.append("}                       ");
+    proto.append("message Person {        ")
+         .append("  optional long id = -1;")
+         .append("}                       ");
     Protobuf root = xtext.parseText(proto);
     Property p = findProperty(name("id"), in(root));
     validator.checkTagNumberIsGreaterThanZero(p);
@@ -67,9 +67,9 @@ public class ProtobufJavaValidator_checkTagNumberIsGreaterThanZero_Test {
 
   @Test public void should_not_create_error_if_field_index_is_greater_than_zero() {
     MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("message Person {       ");
-    proto.append("  optional long id = 1;");
-    proto.append("}                      ");
+    proto.append("message Person {       ")
+         .append("  optional long id = 1;")
+         .append("}                      ");
     Protobuf root = xtext.parseText(proto);
     Property p = findProperty(name("id"), in(root));
     validator.checkTagNumberIsGreaterThanZero(p);
