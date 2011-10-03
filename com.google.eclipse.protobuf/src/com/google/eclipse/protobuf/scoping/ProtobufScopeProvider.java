@@ -74,7 +74,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     }
     if (c instanceof CustomOption) {
       CustomOption option = (CustomOption) c;
-      c = options.propertyFieldFrom(option);
+      c = options.fieldFrom(option);
       if (c == null) c = options.propertyFrom(option);
     }
     if (c instanceof NativeFieldOption) {
@@ -84,7 +84,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     }
     if (c instanceof CustomFieldOption) {
       CustomFieldOption option = (CustomFieldOption) c;
-      c = fieldOptions.propertyFieldFrom(option);
+      c = fieldOptions.fieldFrom(option);
       if (c == null) c = fieldOptions.propertyFrom(option);
     }
     if (c instanceof Property) {

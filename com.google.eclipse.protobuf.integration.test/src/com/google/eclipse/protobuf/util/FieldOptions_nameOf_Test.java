@@ -48,7 +48,7 @@ public class FieldOptions_nameOf_Test {
 
   @Test public void should_return_name_of_custom_field_option() {
     MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("import \"google/protobuf/descriptor.proto\";         ")
+    proto.append("import 'google/protobuf/descriptor.proto';         ")
          .append("                                                     ")
          .append("extend google.protobuf.FieldOptions {                ")
          .append("  optional string encoding = 1000;                   ")

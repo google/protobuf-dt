@@ -22,19 +22,6 @@ import com.google.inject.Singleton;
 public class Options {
 
   /**
-   * Indicates whether the given option is a file-level option.
-   * @param option the option to verify.
-   * @return {@code true} if the given option is a file-level option, {@code false} otherwise.
-   */
-  public boolean isFileOption(Option option) {
-    return isOptionContainerInstanceOf(option, Protobuf.class);
-  }
-
-  private boolean isOptionContainerInstanceOf(Option option, Class<? extends EObject> type) {
-    return type.isInstance(option.eContainer());
-  }
-
-  /**
    * Returns the <code>{@link Property}</code> the given <code>{@link Option}</code> is referring to. In the
    * following example
    * <pre>
@@ -51,17 +38,17 @@ public class Options {
   }
 
   /**
-   * Returns the <code>{@link Property}</code> field the given <code>{@link CustomOption}</code> is referring to. In the
-   * following example
+   * Returns the field of the <code>{@link Property}</code> the given <code>{@link CustomOption}</code> is referring to. 
+   * In the following example
    * <pre>
    * option (myOption).field = true;
    * </pre>
    * this method will return the <code>{@link Property}</code> "field" is pointing to.
    * @param option the given {@code Option}.
-   * @return the {@code Property} the given {@code CustomOption} is referring to, or {@code null} if it cannot be
-   * found.
+   * @return the field of the {@code Property} the given {@code CustomOption} is referring to, or {@code null} if one 
+   * cannot be found.
    */
-  public Property propertyFieldFrom(CustomOption option) {
+  public Property fieldFrom(CustomOption option) {
     SimplePropertyRef ref = option.getPropertyField();
     return (ref == null) ? null : ref.getProperty();
   }

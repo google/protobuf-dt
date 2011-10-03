@@ -40,16 +40,16 @@ class CustomOptionProperties {
     Protobuf root = finder.rootOf(option);
     if (root == null) return emptyList();
     List<Property> properties = new ArrayList<Property>();
-    properties.addAll(localProperties(root, type));
-    properties.addAll(importedProperties(root, type));
+    properties.addAll(local(root, type));
+    properties.addAll(imported(root, type));
     return unmodifiableList(properties);
   }
 
-  private Collection<Property> localProperties(Protobuf root, OptionType type) {
-    return localProperties(root, type, 0);
+  private Collection<Property> local(Protobuf root, OptionType type) {
+    return local(root, type, 0);
   }
 
-  private Collection<Property> localProperties(EObject root, OptionType optionType, int level) {
+  private Collection<Property> local(EObject root, OptionType optionType, int level) {
     List<Property> properties = new ArrayList<Property>();
     for (EObject element : root.eContents()) {
       if (options.isExtendingOptionMessage(element, optionType)) {
@@ -60,20 +60,20 @@ class CustomOptionProperties {
         }
       }
       if (element instanceof Message) {
-        properties.addAll(localProperties(element, optionType, level + 1));
+        properties.addAll(local(element, optionType, level + 1));
       }
     }
     return unmodifiableList(properties);
   }
 
-  private Collection<Property> importedProperties(Protobuf root, OptionType optionType) {
+  private Collection<Property> imported(Protobuf root, OptionType optionType) {
     List<Import> allImports = finder.importsIn(root);
     if (allImports.isEmpty()) return emptyList();
     ResourceSet resourceSet = root.eResource().getResourceSet();
-    return importedProperties(allImports, finder.packageOf(root), resourceSet, optionType);
+    return imported(allImports, finder.packageOf(root), resourceSet, optionType);
   }
 
-  private Collection<Property> importedProperties(List<Import> allImports, Package aPackage,
+  private Collection<Property> imported(List<Import> allImports, Package aPackage,
       ResourceSet resourceSet, OptionType optionType) {
     List<Property> properties = new ArrayList<Property>();
     for (Import anImport : allImports) {
@@ -81,22 +81,22 @@ class CustomOptionProperties {
       Resource importedResource = resources.importedResource(anImport, resourceSet);
       Protobuf importedRoot = finder.rootOf(importedResource);
       if (importedRoot != null) {
-        properties.addAll(publicImportedProperties(importedRoot, optionType));
+        properties.addAll(publicImported(importedRoot, optionType));
         if (arePackagesRelated(aPackage, importedRoot)) {
-          properties.addAll(localProperties(importedRoot, optionType));
+          properties.addAll(local(importedRoot, optionType));
           continue;
         }
       }
-      properties.addAll(localProperties(importedResource, optionType));
+      properties.addAll(local(importedResource, optionType));
     }
     return unmodifiableList(properties);
   }
 
-  private Collection<Property> publicImportedProperties(Protobuf root, OptionType optionType) {
+  private Collection<Property> publicImported(Protobuf root, OptionType optionType) {
     List<Import> allImports = finder.publicImportsIn(root);
     if (allImports.isEmpty()) return emptyList();
     ResourceSet resourceSet = root.eResource().getResourceSet();
-    return importedProperties(allImports, finder.packageOf(root), resourceSet, optionType);
+    return imported(allImports, finder.packageOf(root), resourceSet, optionType);
   }
 
   private boolean arePackagesRelated(Package aPackage, EObject root) {
@@ -104,7 +104,7 @@ class CustomOptionProperties {
     return packages.areRelated(aPackage, p);
   }
 
-  private Collection<Property> localProperties(Resource resource, OptionType optionType) {
+  private Collection<Property> local(Resource resource, OptionType optionType) {
     List<Property> properties = new ArrayList<Property>();
     TreeIterator<Object> contents = getAllContents(resource, true);
     while (contents.hasNext()) {

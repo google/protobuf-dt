@@ -438,7 +438,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ICompletionProposalAcceptor acceptor) {
     if (!(model instanceof CustomOption)) return;
     CustomOption option = (CustomOption) model;
-    Property property = options.propertyFieldFrom(option);
+    Property property = options.fieldFrom(option);
     if (property == null) property = options.propertyFrom(option);
     if (property == null) return;
     if (proposePrimitiveValues(property, context, acceptor)) return;
