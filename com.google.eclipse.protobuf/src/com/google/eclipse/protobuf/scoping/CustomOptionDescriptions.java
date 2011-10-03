@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.eclipse.protobuf.util.OptionType.typeOf;
+import static com.google.eclipse.protobuf.model.OptionType.typeOf;
 import static java.util.Collections.emptyList;
 import static org.eclipse.emf.ecore.util.EcoreUtil.getAllContents;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
@@ -21,6 +21,8 @@ import org.eclipse.emf.ecore.resource.*;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
+import com.google.eclipse.protobuf.model.OptionType;
+import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.eclipse.protobuf.util.*;
@@ -31,7 +33,7 @@ import com.google.inject.Inject;
  */
 class CustomOptionDescriptions {
 
-  @Inject private ProtobufElementFinder finder;
+  @Inject private ModelFinder finder;
   @Inject private ImportedNamesProvider importedNamesProvider;
   @Inject private Imports imports;
   @Inject private LocalNamesProvider localNamesProvider;

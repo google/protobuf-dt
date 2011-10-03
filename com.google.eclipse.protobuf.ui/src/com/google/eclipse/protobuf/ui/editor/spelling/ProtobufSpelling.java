@@ -21,17 +21,17 @@ import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.model.XtextDocument;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
+import com.google.eclipse.protobuf.model.util.INodes;
 import com.google.eclipse.protobuf.protobuf.Import;
-import com.google.eclipse.protobuf.util.ModelNodes;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 class ProtobufSpelling extends SpellingReconcileStrategy {
 
-  private final ModelNodes nodes;
+  private final INodes nodes;
 
-  ProtobufSpelling(ISourceViewer viewer, SpellingService spellingService, ModelNodes nodes) {
+  ProtobufSpelling(ISourceViewer viewer, SpellingService spellingService, INodes nodes) {
     super(viewer, spellingService);
     this.nodes = nodes;
   }

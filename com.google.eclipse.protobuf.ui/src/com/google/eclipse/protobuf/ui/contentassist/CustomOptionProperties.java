@@ -12,6 +12,8 @@ package com.google.eclipse.protobuf.ui.contentassist;
 import static java.util.Collections.*;
 import static org.eclipse.emf.ecore.util.EcoreUtil.getAllContents;
 
+import com.google.eclipse.protobuf.model.OptionType;
+import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.eclipse.protobuf.util.*;
@@ -29,7 +31,7 @@ import java.util.*;
 class CustomOptionProperties {
 
   @Inject private Imports imports;
-  @Inject private ProtobufElementFinder finder;
+  @Inject private ModelFinder finder;
   @Inject private Options options;
   @Inject private Packages packages;
   @Inject private Resources resources;

@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.util;
+package com.google.eclipse.protobuf.model.util;
 
 import static com.google.eclipse.protobuf.junit.find.Name.name;
 import static com.google.eclipse.protobuf.junit.find.OptionFinder.findOption;
@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
+import com.google.eclipse.protobuf.model.util.Options;
 import com.google.eclipse.protobuf.protobuf.CustomOption;
 import com.google.eclipse.protobuf.protobuf.Property;
 import com.google.eclipse.protobuf.protobuf.Protobuf;

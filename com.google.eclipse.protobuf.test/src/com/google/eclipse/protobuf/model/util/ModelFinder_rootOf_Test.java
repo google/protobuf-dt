@@ -6,52 +6,44 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.util;
+package com.google.eclipse.protobuf.model.util;
 
 import static com.google.eclipse.protobuf.junit.find.Name.name;
 import static com.google.eclipse.protobuf.junit.find.PropertyFinder.findProperty;
 import static com.google.eclipse.protobuf.junit.find.Root.in;
-import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.Assert.assertThat;
 
+import org.eclipse.emf.ecore.EObject;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
+import com.google.eclipse.protobuf.model.util.ModelFinder;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link Properties#isString(Property)}</code>.
+ * Tests for <code>{@link ModelFinder#rootOf(EObject)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Properties_isString_Test {
+public class ModelFinder_rootOf_Test {
 
   @Rule public XtextRule xtext = XtextRule.unitTestSetup();
 
-  private Properties properties;
+  private ModelFinder finder;
 
   @Before public void setUp() {
-    properties = xtext.getInstanceOf(Properties.class);
+    finder = xtext.getInstanceOf(ModelFinder.class);
   }
 
-  @Test public void should_return_true_if_property_is_string() {
+  @Test public void should_return_root_of_proto() {
     MultiLineTextBuilder proto = new MultiLineTextBuilder();
     proto.append("message Person {           ")
          .append("  optional string name = 1;")
          .append("}                          ");
     Protobuf root = xtext.parseText(proto);
     Property name = findProperty(name("name"), in(root));
-    assertThat(properties.isString(name), equalTo(true));
-  }
-
-  @Test public void should_return_false_if_property_is_not_string() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("message Person {           ")
-         .append("  optional bool active = 1;")
-         .append("}                          ");
-    Protobuf root = xtext.parseText(proto);
-    Property active = findProperty(name("active"), in(root));
-    assertThat(properties.isString(active), equalTo(false));
+    assertThat(finder.rootOf(name), sameInstance(root));
   }
 }

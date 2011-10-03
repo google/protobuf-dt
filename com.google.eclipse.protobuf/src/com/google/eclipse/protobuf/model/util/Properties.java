@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.util;
+package com.google.eclipse.protobuf.model.util;
 
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.*;
 import static com.google.eclipse.protobuf.protobuf.Modifier.OPTIONAL;

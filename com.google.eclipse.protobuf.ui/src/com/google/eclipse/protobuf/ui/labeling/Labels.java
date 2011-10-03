@@ -16,8 +16,8 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.xtext.nodemodel.INode;
 
+import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.util.*;
 import com.google.inject.*;
 
 /**
@@ -27,7 +27,7 @@ import com.google.inject.*;
  */
 @Singleton public class Labels {
 
-  @Inject private ModelNodes nodes;
+  @Inject private INodes nodes;
   @Inject private Options options;
   @Inject private Properties properties;
 

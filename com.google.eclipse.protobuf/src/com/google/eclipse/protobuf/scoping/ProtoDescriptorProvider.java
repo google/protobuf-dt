@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.parser.IParser;
 
-import com.google.eclipse.protobuf.util.ModelNodes;
+import com.google.eclipse.protobuf.model.util.INodes;
 import com.google.inject.*;
 
 /**
@@ -32,7 +32,7 @@ public class ProtoDescriptorProvider {
   private static final String EXTENSION_ID = "com.google.eclipse.protobuf.descriptorSource";
 
   @Inject private IParser parser;
-  @Inject private ModelNodes nodes;
+  @Inject private INodes nodes;
   @Inject private IExtensionRegistry registry;
 
   private Map<String, URI> descriptorInfos;

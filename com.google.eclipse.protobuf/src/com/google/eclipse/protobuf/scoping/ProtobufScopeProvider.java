@@ -17,9 +17,9 @@ import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.impl.*;
 
+import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.eclipse.protobuf.util.*;
 import com.google.inject.Inject;
 
 /**
@@ -36,7 +36,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   @Inject private CustomOptionDescriptions customOptionDescriptions;
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private FieldOptions fieldOptions;
-  @Inject private ProtobufElementFinder finder;
+  @Inject private ModelFinder finder;
   @Inject private LiteralDescriptions literalDescriptions;
   @Inject private NativeOptionDescriptions nativeOptionDescriptions;
   @Inject private Options options;

@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.util;
+package com.google.eclipse.protobuf.model.util;
 
 import static com.google.eclipse.protobuf.junit.find.Name.name;
 import static com.google.eclipse.protobuf.junit.find.PropertyFinder.findProperty;
@@ -20,22 +20,23 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
+import com.google.eclipse.protobuf.model.util.ModelFinder;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
 
 /**
- * Tests for <code>{@link ProtobufElementFinder#packageOf(EObject)}</code>.
+ * Tests for <code>{@link ModelFinder#packageOf(EObject)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ProtobufElementFinder_packageOf_Test {
+public class ModelFinder_packageOf_Test {
 
   @Rule public XtextRule xtext = XtextRule.unitTestSetup();
 
-  private ProtobufElementFinder finder;
+  private ModelFinder finder;
 
   @Before public void setUp() {
-    finder = xtext.getInstanceOf(ProtobufElementFinder.class);
+    finder = xtext.getInstanceOf(ModelFinder.class);
   }
 
   @Test public void should_return_package_if_proto_has_one() {

@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.util;
+package com.google.eclipse.protobuf.model.util;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
@@ -14,8 +14,8 @@ import static org.junit.Assert.assertThat;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.stubs.protobuf.PackageStub;
+import com.google.eclipse.protobuf.model.util.Packages;
 import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.eclipse.protobuf.util.Packages;
 
 /**
  * Tests for <code>{@link Packages#areRelated(Package, Package)}</code>.

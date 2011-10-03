@@ -6,43 +6,47 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.util;
+package com.google.eclipse.protobuf.model.util;
 
 import static com.google.eclipse.protobuf.junit.find.Name.name;
 import static com.google.eclipse.protobuf.junit.find.PropertyFinder.findProperty;
 import static com.google.eclipse.protobuf.junit.find.Root.in;
-import static org.hamcrest.core.IsSame.sameInstance;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.FIELD__NAME;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.*;
+import org.eclipse.xtext.nodemodel.INode;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
+import com.google.eclipse.protobuf.model.util.INodes;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link ProtobufElementFinder#rootOf(EObject)}</code>.
+ * Tests for <code>{@link INodes#firstNodeForFeature(EObject, EStructuralFeature)}</code>
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ProtobufElementFinder_rootOf_Test {
+public class ModelNodes_firstNodeForFeature_Test {
 
   @Rule public XtextRule xtext = XtextRule.unitTestSetup();
 
-  private ProtobufElementFinder finder;
+  private INodes nodes;
 
   @Before public void setUp() {
-    finder = xtext.getInstanceOf(ProtobufElementFinder.class);
+    nodes = xtext.getInstanceOf(INodes.class);
   }
 
-  @Test public void should_return_root_of_proto() {
+  @Test public void should_return_first_node_for_feature() {
     MultiLineTextBuilder proto = new MultiLineTextBuilder();
     proto.append("message Person {           ")
-         .append("  optional string name = 1;")
+         .append("  optional bool active = 1;")
          .append("}                          ");
     Protobuf root = xtext.parseText(proto);
-    Property name = findProperty(name("name"), in(root));
-    assertThat(finder.rootOf(name), sameInstance(root));
+    Property active = findProperty(name("active"), in(root));
+    INode node = nodes.firstNodeForFeature(active, FIELD__NAME);
+    assertThat(node.getText().trim(), equalTo("active"));
   }
 }

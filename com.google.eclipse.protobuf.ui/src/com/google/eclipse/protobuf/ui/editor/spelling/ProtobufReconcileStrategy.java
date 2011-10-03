@@ -15,7 +15,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.texteditor.spelling.SpellingService;
 import org.eclipse.xtext.ui.editor.reconciler.XtextDocumentReconcileStrategy;
 
-import com.google.eclipse.protobuf.util.ModelNodes;
+import com.google.eclipse.protobuf.model.util.INodes;
 import com.google.inject.Inject;
 
 /**
@@ -25,7 +25,7 @@ public class ProtobufReconcileStrategy extends XtextDocumentReconcileStrategy {
 
   private ProtobufSpelling spellingStrategy;
 
-  @Inject private ModelNodes nodes;
+  @Inject private INodes nodes;
 
   @Override public void reconcile(DirtyRegion dirtyRegion, IRegion subRegion) {
     super.reconcile(dirtyRegion, subRegion);

@@ -29,14 +29,14 @@ import org.eclipse.xtext.ui.PluginImageHelper;
 import org.eclipse.xtext.ui.editor.contentassist.*;
 
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.model.util.Properties;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.scoping.*;
 import com.google.eclipse.protobuf.ui.grammar.CompoundElement;
 import com.google.eclipse.protobuf.ui.labeling.Images;
 import com.google.eclipse.protobuf.ui.util.*;
-import com.google.eclipse.protobuf.util.*;
-import com.google.eclipse.protobuf.util.Properties;
 import com.google.inject.Inject;
 
 /**
@@ -49,7 +49,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Inject private CustomOptionProperties customOptionProperties;
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private FieldOptions fieldOptions;
-  @Inject private ProtobufElementFinder finder;
+  @Inject private ModelFinder finder;
   @Inject private Fields fields;
   @Inject private Images images;
   @Inject private PluginImageHelper imageHelper;

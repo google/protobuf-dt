@@ -15,8 +15,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
 import org.eclipse.xtext.nodemodel.*;
 
+import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.util.*;
 import com.google.inject.Inject;
 
 /**
@@ -31,7 +31,7 @@ public class SingleLineCommentDocumentationProvider implements IEObjectDocumenta
   private static final String UNIX_NEW_LINE = "\\n";
 
   @Inject private FieldOptions fieldOptions;
-  @Inject private ModelNodes nodes;
+  @Inject private INodes nodes;
   @Inject private Options options;
 
   public String getDocumentation(EObject o) {

@@ -8,10 +8,10 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static com.google.eclipse.protobuf.model.OptionType.*;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.PROPERTY__TYPE;
 import static com.google.eclipse.protobuf.util.Closeables.closeQuietly;
 import static com.google.eclipse.protobuf.util.Encodings.UTF_8;
-import static com.google.eclipse.protobuf.util.OptionType.*;
 import static java.util.Collections.*;
 import static org.eclipse.xtext.EcoreUtil2.*;
 import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
@@ -28,9 +28,10 @@ import org.eclipse.xtext.parser.*;
 import org.eclipse.xtext.resource.XtextResource;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.eclipse.protobuf.model.OptionType;
+import com.google.eclipse.protobuf.model.util.INodes;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.eclipse.protobuf.util.*;
 
 /**
  * Contains the elements from descriptor.proto (provided with protobuf's library.)
@@ -58,10 +59,10 @@ public class ProtoDescriptor {
   private Protobuf root;
 
   private final String importUri;
-  private final ModelNodes nodes;
+  private final INodes nodes;
   private final XtextResource resource;
 
-  ProtoDescriptor(String importUri, URI location, IParser parser, ModelNodes nodes) {
+  ProtoDescriptor(String importUri, URI location, IParser parser, INodes nodes) {
     this.importUri = importUri;
     this.nodes = nodes;
     addOptionTypes();

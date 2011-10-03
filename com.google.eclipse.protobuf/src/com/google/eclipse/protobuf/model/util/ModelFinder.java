@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.util;
+package com.google.eclipse.protobuf.model.util;
 
 import static java.util.Collections.unmodifiableList;
 import static org.eclipse.emf.ecore.util.EcoreUtil.getAllContents;
@@ -29,7 +29,7 @@ import com.google.inject.Singleton;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton
-public class ProtobufElementFinder {
+public class ModelFinder {
 
   /**
    * Returns the message type of the given property, only if the type of the given property is a message.

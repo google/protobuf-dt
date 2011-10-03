@@ -27,11 +27,11 @@ import org.eclipse.xtext.util.Pair;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
+import com.google.eclipse.protobuf.model.util.INodes;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag.*;
 import com.google.eclipse.protobuf.ui.util.*;
-import com.google.eclipse.protobuf.util.ModelNodes;
 import com.google.inject.Inject;
 
 /**
@@ -50,7 +50,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
   @Inject private CommentNodesFinder commentNodesFinder;
   @Inject private Fields fields;
   @Inject private Literals literals;
-  @Inject private ModelNodes nodes;
+  @Inject private INodes nodes;
   @Inject private NumericTagPreferencesFactory preferencesFactory;
   @Inject private ParserBasedContentAssistContextFactory contextFactory;
 

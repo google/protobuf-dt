@@ -20,7 +20,7 @@ import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.util.*;
 
 import com.google.common.base.Function;
-import com.google.eclipse.protobuf.util.ProtobufElementFinder;
+import com.google.eclipse.protobuf.model.util.ModelFinder;
 import com.google.inject.*;
 
 /**
@@ -33,7 +33,7 @@ class ImportedNamesProvider {
   @Inject private final IResourceScopeCache cache = IResourceScopeCache.NullImpl.INSTANCE;
   @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
 
-  @Inject private ProtobufElementFinder finder;
+  @Inject private ModelFinder finder;
   @Inject private QualifiedNames qualifiedNames;
 
   private final Function<EObject, String> resolver = newResolver(String.class, "name");

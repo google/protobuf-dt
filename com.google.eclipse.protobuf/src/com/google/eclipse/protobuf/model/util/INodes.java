@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.util;
+package com.google.eclipse.protobuf.model.util;
 
 import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.findNodesForFeature;
 
@@ -24,7 +24,7 @@ import com.google.inject.Singleton;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton
-public class ModelNodes {
+public class INodes {
 
   private static final String SINGLE_LINE_COMMENT_RULE_NAME = "SL_COMMENT";
 

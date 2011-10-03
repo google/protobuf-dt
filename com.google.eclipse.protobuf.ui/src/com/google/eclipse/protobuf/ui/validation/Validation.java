@@ -25,8 +25,8 @@ import org.eclipse.xtext.ui.editor.model.*;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
 import com.google.eclipse.protobuf.conversion.STRINGValueConverter;
+import com.google.eclipse.protobuf.model.util.INodes;
 import com.google.eclipse.protobuf.protobuf.Import;
-import com.google.eclipse.protobuf.util.ModelNodes;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -94,8 +94,8 @@ final class Validation {
     return converter.toValue(text, node);
   }
 
-  private static ModelNodes nodes() {
-    return injector().getInstance(ModelNodes.class);
+  private static INodes nodes() {
+    return injector().getInstance(INodes.class);
   }
 
   private Validation() {}

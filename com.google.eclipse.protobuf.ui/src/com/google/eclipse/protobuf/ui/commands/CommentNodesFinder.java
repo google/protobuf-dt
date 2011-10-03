@@ -21,7 +21,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.nodemodel.*;
 import org.eclipse.xtext.util.*;
 
-import com.google.eclipse.protobuf.util.ModelNodes;
+import com.google.eclipse.protobuf.model.util.INodes;
 import com.google.inject.*;
 
 /**
@@ -32,7 +32,7 @@ class CommentNodesFinder {
 
   private static final String MATCH_ANYTHING = ".*";
 
-  @Inject private ModelNodes nodes;
+  @Inject private INodes nodes;
   @Inject private final IResourceScopeCache cache = IResourceScopeCache.NullImpl.INSTANCE;
 
   Pair<INode, Matcher> matchingCommentNode(EObject target, String...patternsToMatch) {

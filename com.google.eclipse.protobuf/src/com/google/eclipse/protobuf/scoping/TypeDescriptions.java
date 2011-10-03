@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.resource.*;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
+import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.eclipse.protobuf.util.*;
@@ -31,7 +32,7 @@ import com.google.inject.Inject;
 class TypeDescriptions {
 
   @Inject private ProtoDescriptorProvider descriptorProvider;
-  @Inject private ProtobufElementFinder finder;
+  @Inject private ModelFinder finder;
   @Inject private ImportedNamesProvider importedNamesProvider;
   @Inject private Imports imports;
   @Inject private LocalNamesProvider localNamesProvider;

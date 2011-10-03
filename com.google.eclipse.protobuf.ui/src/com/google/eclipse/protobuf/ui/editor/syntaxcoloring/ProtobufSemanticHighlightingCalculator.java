@@ -18,10 +18,10 @@ import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.*;
 
+import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.eclipse.protobuf.util.*;
 import com.google.inject.Inject;
 
 /**
@@ -29,9 +29,8 @@ import com.google.inject.Inject;
  */
 public class ProtobufSemanticHighlightingCalculator implements ISemanticHighlightingCalculator {
 
-  @Inject private ModelNodes nodes;
+  @Inject private INodes nodes;
   @Inject private Options options;
-  @Inject private FieldOptions fieldOptions;
 
   public void provideHighlightingFor(XtextResource resource, IHighlightedPositionAcceptor acceptor) {
     if (resource == null) return;
@@ -122,9 +121,6 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
 
   private void highlightOptions(Field field, IHighlightedPositionAcceptor acceptor) {
     for (FieldOption option : field.getFieldOptions()) {
-      // TODO fix this 
-      // String highlightId = fieldOptions.isDefaultValueOption(option) ? KEYWORD_ID : DEFAULT_ID;
-      // highlightName(option, acceptor, highlightId);
       ValueRef ref = option.getValue();
       if (ref instanceof LiteralRef) {
         highlightFirstFeature(option, FIELD_OPTION__VALUE, acceptor, ENUM_LITERAL_ID);
