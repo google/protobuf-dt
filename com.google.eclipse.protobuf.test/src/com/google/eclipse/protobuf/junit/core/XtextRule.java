@@ -60,11 +60,11 @@ public class XtextRule implements MethodRule {
     return injector;
   }
 
-  public Protobuf parse(MultiLineTextBuilder text) {
-    return parse(text.toString());
+  public Protobuf parseText(MultiLineTextBuilder text) {
+    return parseText(text.toString());
   }
 
-  public Protobuf parse(String text) {
+  public Protobuf parseText(String text) {
     XtextResource resource = resourceFrom(new StringInputStream(text));
     IParseResult parseResult = resource.getParseResult();
     if (!parseResult.hasSyntaxErrors()) return (Protobuf) parseResult.getRootASTElement();

@@ -8,7 +8,9 @@
  */
 package com.google.eclipse.protobuf.util;
 
-import static com.google.eclipse.protobuf.junit.util.Finder.findProperty;
+import static com.google.eclipse.protobuf.junit.find.Name.name;
+import static com.google.eclipse.protobuf.junit.find.PropertyFinder.findProperty;
+import static com.google.eclipse.protobuf.junit.find.Root.in;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -16,8 +18,7 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
-import com.google.eclipse.protobuf.protobuf.Property;
-import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.eclipse.protobuf.protobuf.*;
 
 /**
  * Tests for <code>{@link Properties#isBool(Property)}</code>.
@@ -39,8 +40,8 @@ public class Properties_isBool_Test {
     proto.append("message Person {           ")
          .append("  optional bool active = 1;")
          .append("}                          ");
-    Protobuf root = xtext.parse(proto);
-    Property active = findProperty("active", root);
+    Protobuf root = xtext.parseText(proto);
+    Property active = findProperty(name("active"), in(root));
     assertThat(properties.isBool(active), equalTo(true));
   }
 
@@ -49,8 +50,8 @@ public class Properties_isBool_Test {
     proto.append("message Person {           ")
          .append("  optional string name = 1;")
          .append("}                          ");
-    Protobuf root = xtext.parse(proto);
-    Property name = findProperty("name", root);
+    Protobuf root = xtext.parseText(proto);
+    Property name = findProperty(name("name"), in(root));
     assertThat(properties.isBool(name), equalTo(false));
   }
 }

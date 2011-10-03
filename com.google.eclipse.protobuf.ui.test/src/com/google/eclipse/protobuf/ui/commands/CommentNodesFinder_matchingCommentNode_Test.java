@@ -8,7 +8,9 @@
  */
 package com.google.eclipse.protobuf.ui.commands;
 
-import static com.google.eclipse.protobuf.junit.util.Finder.findProperty;
+import static com.google.eclipse.protobuf.junit.find.Name.name;
+import static com.google.eclipse.protobuf.junit.find.PropertyFinder.findProperty;
+import static com.google.eclipse.protobuf.junit.find.Root.in;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.*;
 import static org.junit.Assert.assertThat;
@@ -45,8 +47,8 @@ public class CommentNodesFinder_matchingCommentNode_Test {
          .append("  // Next Id: 6            ")
          .append("  optional bool active = 1;")
          .append("}                          ");
-    Protobuf root = xtext.parse(proto);
-    Property active = findProperty("active", root);
+    Protobuf root = xtext.parseText(proto);
+    Property active = findProperty(name("active"), in(root));
     Pair<INode, Matcher> match = finder.matchingCommentNode(active, "next id: [\\d]+");
     INode node = match.getFirst();
     assertThat(node.getText().trim(), equalTo("// Next Id: 6"));
@@ -60,8 +62,8 @@ public class CommentNodesFinder_matchingCommentNode_Test {
          .append("   */                      ")
          .append("  optional bool active = 1;")
          .append("}                          ");
-    Protobuf root = xtext.parse(proto);
-    Property active = findProperty("active", root);
+    Protobuf root = xtext.parseText(proto);
+    Property active = findProperty(name("active"), in(root));
     Pair<INode, Matcher> match = finder.matchingCommentNode(active, "NEXT ID: [\\d]+");
     INode node = match.getFirst();
     assertThat(node, notNullValue());
@@ -73,8 +75,8 @@ public class CommentNodesFinder_matchingCommentNode_Test {
          .append("  // Next Id: 6            ")
          .append("  optional bool active = 1;")
          .append("}                          ");
-    Protobuf root = xtext.parse(proto);
-    Property active = findProperty("active", root);
+    Protobuf root = xtext.parseText(proto);
+    Property active = findProperty(name("active"), in(root));
     Pair<INode, Matcher> match = finder.matchingCommentNode(active, "Hello");
     assertThat(match, nullValue());
   }

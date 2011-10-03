@@ -38,7 +38,7 @@ public class ProtobufElementFinder_importsIn_Test {
     MultiLineTextBuilder proto = new MultiLineTextBuilder();
     proto.append("import \"luke.proto\";")
          .append("import \"leia.proto\";");
-    Protobuf root = xtext.parse(proto);
+    Protobuf root = xtext.parseText(proto);
     List<Import> allImports = finder.importsIn(root);
     assertThat(allImports.size(), equalTo(2));
     assertThat(allImports.get(0).getImportURI(), equalTo("luke.proto"));
@@ -52,7 +52,7 @@ public class ProtobufElementFinder_importsIn_Test {
          .append("  HOME = 1;     ")
          .append("  WORK = 2;     ")
          .append("}               ");
-    Protobuf root = xtext.parse(proto);
+    Protobuf root = xtext.parseText(proto);
     List<Import> allImports = finder.importsIn(root);
     assertThat(allImports.size(), equalTo(0));
   }

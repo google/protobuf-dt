@@ -8,7 +8,9 @@
  */
 package com.google.eclipse.protobuf.ui.util;
 
-import static com.google.eclipse.protobuf.junit.util.Finder.findLiteral;
+import static com.google.eclipse.protobuf.junit.find.LiteralFinder.findLiteral;
+import static com.google.eclipse.protobuf.junit.find.Name.name;
+import static com.google.eclipse.protobuf.junit.find.Root.in;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -16,8 +18,7 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
-import com.google.eclipse.protobuf.protobuf.Literal;
-import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.eclipse.protobuf.protobuf.*;
 
 /**
  * Tests for <code>{@link Literals#calculateIndexOf(Literal)}</code>.
@@ -39,8 +40,8 @@ public class Literals_calculateIndexOf_Test {
     proto.append("enum PhoneType {")
          .append("  MOBILE = 1;   ")
          .append("}               ");
-    Protobuf root = xtext.parse(proto);
-    Literal mobile = findLiteral("MOBILE", root);
+    Protobuf root = xtext.parseText(proto);
+    Literal mobile = findLiteral(name("MOBILE"), in(root));
     long index = literals.calculateIndexOf(mobile);
     assertThat(index, equalTo(0L));
   }
@@ -52,8 +53,8 @@ public class Literals_calculateIndexOf_Test {
          .append("  HOME = 5;     ")
          .append("  WORK = 9;     ")
          .append("}               ");
-    Protobuf root = xtext.parse(proto);
-    Literal work = findLiteral("WORK", root);
+    Protobuf root = xtext.parseText(proto);
+    Literal work = findLiteral(name("WORK"), in(root));
     long index = literals.calculateIndexOf(work);
     assertThat(index, equalTo(6L));
   }

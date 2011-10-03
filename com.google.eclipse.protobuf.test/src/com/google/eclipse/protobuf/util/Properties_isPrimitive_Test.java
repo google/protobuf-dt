@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.util;
 
-import static com.google.eclipse.protobuf.junit.util.Finder.allProperties;
+import static com.google.eclipse.protobuf.junit.find.PropertyFinder.allPropertiesIn;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -16,8 +16,7 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
-import com.google.eclipse.protobuf.protobuf.Property;
-import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.eclipse.protobuf.protobuf.*;
 
 /**
  * Tests for <code>{@link Properties#isPrimitive(Property)}</code>.
@@ -48,8 +47,8 @@ public class Properties_isPrimitive_Test {
          .append("  optional fixed64 fixed64_1 = 9;")
          .append("  optional bool bool_1 = 10;     ")
          .append("}                                ");
-    Protobuf root = xtext.parse(proto);
-    for (Property p : allProperties(root))
+    Protobuf root = xtext.parseText(proto);
+    for (Property p : allPropertiesIn(root))
       assertThat(properties.isPrimitive(p), equalTo(true));
   }
 
@@ -64,8 +63,8 @@ public class Properties_isPrimitive_Test {
          .append("message Person {                 ")
          .append("  optional string name = 1;      ")
          .append("}                                ");
-    Protobuf root = xtext.parse(proto);
-    for (Property p : allProperties(root))
+    Protobuf root = xtext.parseText(proto);
+    for (Property p : allPropertiesIn(root))
       assertThat(properties.isPrimitive(p), equalTo(false));
   }
 }

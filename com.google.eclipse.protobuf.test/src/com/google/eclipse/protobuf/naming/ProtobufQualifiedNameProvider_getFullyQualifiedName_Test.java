@@ -8,12 +8,14 @@
  */
 package com.google.eclipse.protobuf.naming;
 
-import static com.google.eclipse.protobuf.junit.util.Finder.*;
+import static com.google.eclipse.protobuf.junit.find.MessageFinder.findMessage;
+import static com.google.eclipse.protobuf.junit.find.Name.name;
+import static com.google.eclipse.protobuf.junit.find.PropertyFinder.findProperty;
+import static com.google.eclipse.protobuf.junit.find.Root.in;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import org.eclipse.xtext.naming.IQualifiedNameProvider;
-import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.naming.*;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
@@ -28,13 +30,13 @@ import com.google.eclipse.protobuf.protobuf.*;
 public class ProtobufQualifiedNameProvider_getFullyQualifiedName_Test {
 
   @Rule public XtextRule xtext = XtextRule.unitTestSetup();
-  
+
   private ProtobufQualifiedNameProvider provider;
-  
+
   @Before public void setUp() {
     provider = (ProtobufQualifiedNameProvider) xtext.getInstanceOf(IQualifiedNameProvider.class);
   }
-  
+
   @Test public void should_include_existing_package_name_as_part_of_message_FQN() {
     MultiLineTextBuilder proto = new MultiLineTextBuilder();
     proto.append("package fqn.test;          ")
@@ -42,8 +44,8 @@ public class ProtobufQualifiedNameProvider_getFullyQualifiedName_Test {
          .append("message Person {           ")
          .append("  optional string name = 1;")
          .append("}                          ");
-    Protobuf root = xtext.parse(proto);
-    Message person = findMessage("Person", root);
+    Protobuf root = xtext.parseText(proto);
+    Message person = findMessage(name("Person"), in(root));
     QualifiedName fqn = provider.getFullyQualifiedName(person);
     assertThat(fqn.toString(), equalTo("fqn.test.Person"));
   }
@@ -55,8 +57,8 @@ public class ProtobufQualifiedNameProvider_getFullyQualifiedName_Test {
          .append("message Person {           ")
          .append("  optional string name = 1;")
          .append("}                          ");
-    Protobuf root = xtext.parse(proto);
-    Property name = findProperty("name", root);
+    Protobuf root = xtext.parseText(proto);
+    Property name = findProperty(name("name"), in(root));
     QualifiedName fqn = provider.getFullyQualifiedName(name);
     assertThat(fqn.toString(), equalTo("fqn.test.Person.name"));
   }
@@ -66,8 +68,8 @@ public class ProtobufQualifiedNameProvider_getFullyQualifiedName_Test {
     proto.append("message Person {           ")
          .append("  optional string name = 1;")
          .append("}                          ");
-    Protobuf root = xtext.parse(proto);
-    Message person = findMessage("Person", root);
+    Protobuf root = xtext.parseText(proto);
+    Message person = findMessage(name("Person"), in(root));
     QualifiedName fqn = provider.getFullyQualifiedName(person);
     assertThat(fqn.toString(), equalTo("Person"));
   }
@@ -77,8 +79,8 @@ public class ProtobufQualifiedNameProvider_getFullyQualifiedName_Test {
     proto.append("message Person {           ")
          .append("  optional string name = 1;")
          .append("}                          ");
-    Protobuf root = xtext.parse(proto);
-    Property name = findProperty("name", root);
+    Protobuf root = xtext.parseText(proto);
+    Property name = findProperty(name("name"), in(root));
     QualifiedName fqn = provider.getFullyQualifiedName(name);
     assertThat(fqn.toString(), equalTo("Person.name"));
   }

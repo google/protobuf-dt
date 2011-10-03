@@ -42,14 +42,11 @@ public class ProtoDescriptorProvider {
   private final Object lock = new Object();
 
   public ProtoDescriptor primaryDescriptor() {
-    return retrieveDescriptor(primaryImportUri);
+    ensureProtoDescriptorsAreCreated();
+    return descriptors.get(primaryImportUri);
   }
 
   public ProtoDescriptor descriptor(String importUri) {
-    return retrieveDescriptor(importUri);
-  }
-
-  private ProtoDescriptor retrieveDescriptor(String importUri) {
     ensureProtoDescriptorsAreCreated();
     return descriptors.get(importUri);
   }

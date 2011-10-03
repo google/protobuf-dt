@@ -27,6 +27,6 @@ public class Issue91AddSupportForUTF16Strings {
     proto.append("message Foo {                                      ")
          .append("  optional string bar = 1 [default=\"\\302\\265\"];")
          .append("}                                                  ");
-    xtext.parse(proto);
+    xtext.parseText(proto);
   }
 }

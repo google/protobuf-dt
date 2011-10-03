@@ -8,7 +8,9 @@
  */
 package com.google.eclipse.protobuf.util;
 
-import static com.google.eclipse.protobuf.junit.util.Finder.findProperty;
+import static com.google.eclipse.protobuf.junit.find.Name.name;
+import static com.google.eclipse.protobuf.junit.find.PropertyFinder.findProperty;
+import static com.google.eclipse.protobuf.junit.find.Root.in;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -16,8 +18,7 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
-import com.google.eclipse.protobuf.protobuf.Property;
-import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.eclipse.protobuf.protobuf.*;
 
 /**
  * Tests for <code>{@link Properties#typeNameOf(Property)}</code>.
@@ -39,8 +40,8 @@ public class Properties_typeNameOf_Test {
     proto.append("message Person {           ")
          .append("  optional string name = 1;")
          .append("}                          ");
-    Protobuf root = xtext.parse(proto);
-    Property name = findProperty("name", root);
+    Protobuf root = xtext.parseText(proto);
+    Property name = findProperty(name("name"), in(root));
     assertThat(properties.typeNameOf(name), equalTo("string"));
   }
 
@@ -54,8 +55,8 @@ public class Properties_typeNameOf_Test {
          .append("    optional string value = 1;    ")
          .append("  }                               ")
          .append("}                                 ");
-    Protobuf root = xtext.parse(proto);
-    Property number = findProperty("number", root);
+    Protobuf root = xtext.parseText(proto);
+    Property number = findProperty(name("number"), in(root));
     assertThat(properties.typeNameOf(number), equalTo("PhoneNumber"));
   }
 

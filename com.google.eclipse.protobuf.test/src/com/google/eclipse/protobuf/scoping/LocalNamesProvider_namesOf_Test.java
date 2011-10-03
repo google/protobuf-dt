@@ -8,7 +8,9 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.eclipse.protobuf.junit.util.Finder.findEnum;
+import static com.google.eclipse.protobuf.junit.find.EnumFinder.findEnum;
+import static com.google.eclipse.protobuf.junit.find.Name.name;
+import static com.google.eclipse.protobuf.junit.find.Root.in;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -16,14 +18,12 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.QualifiedName;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
+import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.eclipse.protobuf.protobuf.Protobuf;
 
 /**
  * Tests for <code>{@link LocalNamesProvider#namesOf(EObject)}</code>.
@@ -54,8 +54,8 @@ public class LocalNamesProvider_namesOf_Test {
     proto.append("    }                                            ");
     proto.append(" }                                               ");
     proto.append("}                                                ");
-    Protobuf root = xtext.parse(proto);
-    Enum phoneType = findEnum("PhoneType", root);
+    Protobuf root = xtext.parseText(proto);
+    Enum phoneType = findEnum(name("PhoneType"), in(root));
     List<QualifiedName> names = namesProvider.namesOf(phoneType);
     assertThat(names.get(0).toString(), equalTo("PhoneType"));
     assertThat(names.get(1).toString(), equalTo("PhoneNumber.PhoneType"));

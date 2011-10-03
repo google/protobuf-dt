@@ -8,7 +8,9 @@
  */
 package com.google.eclipse.protobuf.util;
 
-import static com.google.eclipse.protobuf.junit.util.Finder.findProperty;
+import static com.google.eclipse.protobuf.junit.find.Name.name;
+import static com.google.eclipse.protobuf.junit.find.PropertyFinder.findProperty;
+import static com.google.eclipse.protobuf.junit.find.Root.in;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
@@ -46,8 +48,8 @@ public class ProtobufElementFinder_enumTypeOf_Test {
          .append("message PhoneNumber {         ")
          .append("  optional PhoneType type = 1;")
          .append("}                             ");
-    Protobuf root = xtext.parse(proto);
-    Property type = findProperty("type", root);
+    Protobuf root = xtext.parseText(proto);
+    Property type = findProperty(name("type"), in(root));
     Enum phoneType = finder.enumTypeOf(type);
     assertThat(phoneType.getName(), equalTo("PhoneType"));
   }
@@ -57,8 +59,8 @@ public class ProtobufElementFinder_enumTypeOf_Test {
     proto.append("message Person {           ")
          .append("  optional string name = 1;")
          .append("}                          ");
-    Protobuf root = xtext.parse(proto);
-    Property name = findProperty("name", root);
+    Protobuf root = xtext.parseText(proto);
+    Property name = findProperty(name("name"), in(root));
     Enum anEnum = finder.enumTypeOf(name);
     assertThat(anEnum, nullValue());
   }

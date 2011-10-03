@@ -8,7 +8,9 @@
  */
 package com.google.eclipse.protobuf.util;
 
-import static com.google.eclipse.protobuf.junit.util.Finder.findProperty;
+import static com.google.eclipse.protobuf.junit.find.Name.name;
+import static com.google.eclipse.protobuf.junit.find.PropertyFinder.findProperty;
+import static com.google.eclipse.protobuf.junit.find.Root.in;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
@@ -39,8 +41,8 @@ public class ProtobufElementFinder_scalarTypeOf_Test {
     proto.append("message Person {        ")
          .append("  optional int32 id = 1;")
          .append("}                       ");
-    Protobuf root = xtext.parse(proto);
-    Property id = findProperty("id", root);
+    Protobuf root = xtext.parseText(proto);
+    Property id = findProperty(name("id"), in(root));
     ScalarType int32 = finder.scalarTypeOf(id);
     assertThat(int32.getName(), equalTo("int32"));
   }
@@ -56,8 +58,8 @@ public class ProtobufElementFinder_scalarTypeOf_Test {
          .append("message PhoneNumber {         ")
          .append("  optional PhoneType type = 1;")
          .append("}                             ");
-    Protobuf root = xtext.parse(proto);
-    Property type = findProperty("type", root);
+    Protobuf root = xtext.parseText(proto);
+    Property type = findProperty(name("type"), in(root));
     ScalarType scalar = finder.scalarTypeOf(type);
     assertThat(scalar, nullValue());
   }

@@ -8,7 +8,9 @@
  */
 package com.google.eclipse.protobuf.util;
 
-import static com.google.eclipse.protobuf.junit.util.Finder.findProperty;
+import static com.google.eclipse.protobuf.junit.find.Name.name;
+import static com.google.eclipse.protobuf.junit.find.PropertyFinder.findProperty;
+import static com.google.eclipse.protobuf.junit.find.Root.in;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
@@ -43,8 +45,8 @@ public class ProtobufElementFinder_packageOf_Test {
          .append("message Person {        ")
          .append("  optional int32 id = 1;")
          .append("}                       ");
-    Protobuf root = xtext.parse(proto);
-    Property id = findProperty("id", root);
+    Protobuf root = xtext.parseText(proto);
+    Property id = findProperty(name("id"), in(root));
     Package aPackage = finder.packageOf(id);
     assertThat(aPackage.getName(), equalTo("person.test"));
   }
@@ -54,8 +56,8 @@ public class ProtobufElementFinder_packageOf_Test {
     proto.append("message Person {        ")
          .append("  optional int32 id = 1;")
          .append("}                       ");
-    Protobuf root = xtext.parse(proto);
-    Property id = findProperty("id", root);
+    Protobuf root = xtext.parseText(proto);
+    Property id = findProperty(name("id"), in(root));
     Package aPackage = finder.packageOf(id);
     assertThat(aPackage, nullValue());
   }
