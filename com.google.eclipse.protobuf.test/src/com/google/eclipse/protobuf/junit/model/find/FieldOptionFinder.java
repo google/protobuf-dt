@@ -22,7 +22,7 @@ public final class FieldOptionFinder {
       if (name.value.equals(nameOf(option))) return option;
     return null;
   }
-
+  
   private static String nameOf(FieldOption option) {
     if (option instanceof DefaultValueFieldOption) return "default";
     PropertyRef ref = null;
