@@ -35,9 +35,9 @@ public class FieldOptions_isDefaultValueOption_Test {
   @Before public void setUp() {
     fieldOptions = xtext.getInstanceOf(FieldOptions.class);
     MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("message Person {                                                   ");
-    proto.append("  optional boolean active = 1 [default = true, deprecated = false];");
-    proto.append("}                                                                  ");
+    proto.append("message Person {                                                   ")
+         .append("  optional boolean active = 1 [default = true, deprecated = false];")
+         .append("}                                                                  ");
     root = xtext.parseText(proto);
   }
 
