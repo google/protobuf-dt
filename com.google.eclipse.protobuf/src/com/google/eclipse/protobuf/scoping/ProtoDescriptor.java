@@ -27,6 +27,7 @@ import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.parser.*;
 import org.eclipse.xtext.resource.XtextResource;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.util.*;
@@ -60,7 +61,7 @@ public class ProtoDescriptor {
   private final ModelNodes nodes;
   private final XtextResource resource;
 
-  public ProtoDescriptor(String importUri, URI location, IParser parser, ModelNodes nodes) {
+  ProtoDescriptor(String importUri, URI location, IParser parser, ModelNodes nodes) {
     this.importUri = importUri;
     this.nodes = nodes;
     addOptionTypes();
@@ -177,12 +178,18 @@ public class ProtoDescriptor {
   public XtextResource resource() {
     return resource;
   }
-  
+
   /**
    * Returns the URI to use when importing descriptor.proto.
    * @return the URI to use when importing descriptor.proto.
    */
   public String importUri() {
     return importUri;
+  }
+
+  @VisibleForTesting
+  Property option(String name, OptionType type) {
+    Map<String, Property> optionByName = optionsByType.get(type);
+    return (optionByName != null) ? optionByName.get(name) : null;
   }
 }

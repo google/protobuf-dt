@@ -200,16 +200,10 @@ CustomOption:
   'option' '(' property=PropertyRef ')'('.' propertyField = SimplePropertyRef)? '=' value=ValueRef ';';
 
 FieldOption:
-  LanguageFieldOption | NativeFieldOption | CustomFieldOption;
-
-LanguageFieldOption:
-  DefaultValueFieldOption | PackedFieldOption;
+  DefaultValueFieldOption | NativeFieldOption | CustomFieldOption;
 
 DefaultValueFieldOption:
   'default' '=' value=ValueRef;
-
-PackedFieldOption:
-  'packed' '=' value=ValueRef;
 
 NativeFieldOption:
   property=PropertyRef '=' value=ValueRef;

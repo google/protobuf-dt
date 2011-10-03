@@ -8,8 +8,9 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.eclipse.protobuf.junit.matchers.PropertyHasType.hasType;
+import static com.google.eclipse.protobuf.junit.matchers.PropertyHasType.*;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -30,30 +31,62 @@ public class Descriptor_availableOptionsFor_Test {
 
   @Rule public XtextRule xtext = XtextRule.integrationTestSetup();
 
+  private Options options;
   private ProtoDescriptor descriptor;
 
   @Before public void setUp() {
+    options = new Options();
     ProtoDescriptorProvider descriptorProvider = xtext.getInstanceOf(ProtoDescriptorProvider.class);
     descriptor = descriptorProvider.primaryDescriptor();
   }
 
   @Test public void should_return_all_file_options() {
     Protobuf optionContainer = mock(Protobuf.class);
-    Map<String, Property> fileOptions = mapByName(descriptor.availableOptionsFor(optionContainer));
-    assertThat(fileOptions.get("java_package"), hasType("string"));
-    assertThat(fileOptions.get("java_outer_classname"), hasType("string"));
-    assertThat(fileOptions.get("java_multiple_files"), hasType("bool"));
-    assertThat(fileOptions.get("java_generate_equals_and_hash"), hasType("bool"));
-    assertThat(fileOptions.containsKey("optimize_for"), equalTo(true));
-    assertThat(fileOptions.get("cc_generic_services"), hasType("bool"));
-    assertThat(fileOptions.get("java_generic_services"), hasType("bool"));
-    assertThat(fileOptions.get("py_generic_services"), hasType("bool"));
+    options.mapByName(descriptor.availableOptionsFor(optionContainer));
+    assertThat(options.option("java_package"), isString());
+    assertThat(options.option("java_outer_classname"), isString());
+    assertThat(options.option("java_multiple_files"), isBool());
+    assertThat(options.option("java_generate_equals_and_hash"), isBool());
+    assertThat(options.option("optimize_for"), notNullValue());
+    assertThat(options.option("cc_generic_services"), isBool());
+    assertThat(options.option("java_generic_services"), isBool());
+    assertThat(options.option("py_generic_services"), isBool());
   }
 
-  private static Map<String, Property> mapByName(Collection<Property> properties) {
-    Map<String, Property> mapByName = new HashMap<String, Property>();
-    for (Property property : properties)
-      mapByName.put(property.getName(), property);
-    return mapByName;
+  @Test public void should_return_all_message_options() {
+    Message optionContainer = mock(Message.class);
+    options.mapByName(descriptor.availableOptionsFor(optionContainer));
+    assertThat(options.option("message_set_wire_format"), isBool());
+    assertThat(options.option("no_standard_descriptor_accessor"), isBool());
+  }
+
+  @Test public void should_return_all_field_options() {
+    Property optionContainer = mock(Property.class);
+    options.mapByName(descriptor.availableOptionsFor(optionContainer));
+    assertThat(options.option("ctype"), notNullValue());
+    assertThat(options.option("packed"), isBool());
+    assertThat(options.option("deprecated"), isBool());
+    assertThat(options.option("experimental_map_key"), isString());
+  }
+
+  @Test public void should_return_empty_List_if_given_model_does_not_have_options() {
+    Import optionContainer = mock(Import.class);
+    Collection<Property> foundOptions = descriptor.availableOptionsFor(optionContainer);
+    assertThat(foundOptions.size(), equalTo(0));
+  }
+
+  private static class Options {
+    private final Map<String, Property> optionsByName = new HashMap<String, Property>();
+
+    void mapByName(Collection<Property> options) {
+      optionsByName.clear();
+      for (Property option : options) {
+        optionsByName.put(option.getName(), option);
+      }
+    }
+
+    Property option(String name) {
+      return optionsByName.get(name);
+    }
   }
 }

@@ -8,8 +8,7 @@
  */
 package com.google.eclipse.protobuf.junit.matchers;
 
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
+import org.hamcrest.*;
 
 import com.google.eclipse.protobuf.protobuf.*;
 
@@ -20,21 +19,29 @@ public class PropertyHasType extends BaseMatcher<Property> {
 
   private final String typeName;
 
+  public static PropertyHasType isBool() {
+    return hasType("bool");
+  }
+
+  public static PropertyHasType isString() {
+    return hasType("string");
+  }
+
   public static PropertyHasType hasType(String typeName) {
     return new PropertyHasType(typeName);
   }
-  
+
   private PropertyHasType(String typeName) {
     this.typeName = typeName;
   }
-  
+
   /** {@inheritDoc} */
   public boolean matches(Object arg) {
     if (!(arg instanceof Property)) return false;
     Property property = (Property) arg;
     return typeName.equals(typeNameOf(property));
   }
-  
+
   private String typeNameOf(Property property) {
     AbstractTypeRef r = property.getType();
     if (r instanceof ScalarTypeRef) return ((ScalarTypeRef) r).getScalar().getName();
