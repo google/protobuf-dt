@@ -66,7 +66,7 @@ public class Options {
     if (!(o instanceof ExtendMessage)) return false;
     Message message = messageFrom((ExtendMessage) o);
     if (message == null) return false;
-    return optionType.messageName.equals(message.getName());
+    return optionType.messageName().equals(message.getName());
   }
 
   private Message messageFrom(ExtendMessage extend) {

@@ -8,9 +8,9 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
-import static com.google.eclipse.protobuf.junit.find.FieldOptionFinder.findFieldOption;
-import static com.google.eclipse.protobuf.junit.find.Name.name;
-import static com.google.eclipse.protobuf.junit.find.Root.in;
+import static com.google.eclipse.protobuf.junit.model.find.FieldOptionFinder.findFieldOption;
+import static com.google.eclipse.protobuf.junit.model.find.Name.name;
+import static com.google.eclipse.protobuf.junit.model.find.Root.in;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 

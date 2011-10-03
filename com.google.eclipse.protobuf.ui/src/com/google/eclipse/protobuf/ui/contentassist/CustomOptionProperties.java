@@ -16,7 +16,6 @@ import com.google.eclipse.protobuf.model.OptionType;
 import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.eclipse.protobuf.util.*;
 import com.google.inject.Inject;
 
 import org.eclipse.emf.common.util.TreeIterator;

@@ -37,13 +37,19 @@ public enum OptionType {
     OPTION_TYPES_BY_CONTAINER.put(Rpc.class, RPC);
   }
 
-  /**
-   * The name of the message in descriptor.proto that specifies the type of an option.
-   */
-  public final String messageName;
+  // The name of the message in descriptor.proto that specifies the type of an option.
+  private final String messageName;
 
   private OptionType(String messageName) {
     this.messageName = messageName;
+  }
+
+  /**
+   * Returns the name of the message in descriptor.proto that specifies the type of an option.
+   * @return the name of the message in descriptor.proto that specifies the type of an option.
+   */
+  public String messageName() {
+    return messageName;
   }
 
   /**
@@ -51,8 +57,20 @@ public enum OptionType {
    * @param option the given option.
    * @return the type of the given option or {@code null} if a type cannot be found.
    */
-  public static OptionType typeOf(EObject option) {
-    EObject container = option.eContainer();
+  public static OptionType typeOf(FieldOption option) {
+    return findType(option.eContainer());
+  }
+
+  /**
+   * Returns the type of the given option.
+   * @param option the given option.
+   * @return the type of the given option or {@code null} if a type cannot be found.
+   */
+  public static OptionType typeOf(Option option) {
+    return findType(option.eContainer());
+  }
+
+  private static OptionType findType(EObject container) {
     for (Entry<Class<?>, OptionType> optionTypeByContainer : OPTION_TYPES_BY_CONTAINER.entrySet()) {
       if (optionTypeByContainer.getKey().isInstance(container)) {
         return optionTypeByContainer.getValue();

@@ -48,7 +48,7 @@ public class ProtoDescriptor {
 
   private static void populateMap() {
     for (OptionType type : OptionType.values()) {
-      OPTION_DEFINITION_BY_NAME.put(type.messageName, type);
+      OPTION_DEFINITION_BY_NAME.put(type.messageName(), type);
     }
   }
 

@@ -11,7 +11,7 @@ package com.google.eclipse.protobuf.scoping;
 import static java.util.Collections.emptyList;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
-import com.google.eclipse.protobuf.protobuf.Property;
+import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.Inject;
 
 import org.eclipse.emf.ecore.EObject;
@@ -26,7 +26,15 @@ class NativeOptionDescriptions {
 
   @Inject private ProtoDescriptorProvider descriptorProvider;
   
-  Collection <IEObjectDescription> properties(EObject option) {
+  Collection <IEObjectDescription> properties(NativeOption option) {
+    return allProperties(option);
+  }
+
+  Collection <IEObjectDescription> properties(NativeFieldOption option) {
+    return allProperties(option);
+  }
+
+  private Collection <IEObjectDescription> allProperties(EObject option) {
     ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
     Collection<Property> properties = descriptor.availableOptionsFor(option.eContainer());
     if (properties.isEmpty()) return emptyList();

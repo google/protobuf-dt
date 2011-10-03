@@ -6,25 +6,22 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.junit.find;
+package com.google.eclipse.protobuf.junit.model.find;
 
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
-import java.util.List;
-
-import com.google.eclipse.protobuf.protobuf.Literal;
+import com.google.eclipse.protobuf.protobuf.Message;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-public final class LiteralFinder {
+public final class MessageFinder {
 
-  public static Literal findLiteral(Name name, Root root) {
-    List<Literal> literals = getAllContentsOfType(root.value, Literal.class);
-    for (Literal literal : literals)
-      if (name.value.equals(literal.getName())) return literal;
+  public static Message findMessage(Name name, Root root) {
+    for (Message message : getAllContentsOfType(root.value, Message.class))
+      if (name.value.equals(message.getName())) return message;
     return null;
   }
 
-  private LiteralFinder() {}
+  private MessageFinder() {}
 }

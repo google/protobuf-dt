@@ -8,9 +8,9 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.eclipse.protobuf.junit.find.EnumFinder.findEnum;
-import static com.google.eclipse.protobuf.junit.find.Name.name;
-import static com.google.eclipse.protobuf.junit.find.Root.in;
+import static com.google.eclipse.protobuf.junit.model.find.EnumFinder.findEnum;
+import static com.google.eclipse.protobuf.junit.model.find.Name.name;
+import static com.google.eclipse.protobuf.junit.model.find.Root.in;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 

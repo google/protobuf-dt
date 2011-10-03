@@ -102,11 +102,21 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   @SuppressWarnings("unused")
   IScope scope_PropertyRef_property(PropertyRef propertyRef, EReference reference) {
     EObject c = propertyRef.eContainer();
-    if (c instanceof NativeOption || c instanceof NativeFieldOption) {
-      return createScope(nativeOptionDescriptions.properties(c));
+    if (c instanceof NativeOption) {
+      NativeOption option = (NativeOption) c;
+      return createScope(nativeOptionDescriptions.properties(option));
     }
-    if (c instanceof CustomOption || c instanceof CustomFieldOption) {
-      return createScope(customOptionDescriptions.properties(c));
+    if (c instanceof NativeFieldOption) {
+      NativeFieldOption option = (NativeFieldOption) c;
+      return createScope(nativeOptionDescriptions.properties(option));
+    }
+    if (c instanceof CustomOption) {
+      CustomOption option = (CustomOption) c;
+      return createScope(customOptionDescriptions.properties(option));
+    }
+    if (c instanceof CustomFieldOption) {
+      CustomFieldOption option = (CustomFieldOption) c;
+      return createScope(customOptionDescriptions.properties(option));
     }
     Set<IEObjectDescription> descriptions = emptySet();
     return createScope(descriptions);

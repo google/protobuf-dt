@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
-import static com.google.eclipse.protobuf.junit.find.PropertyFinder.allPropertiesIn;
+import static com.google.eclipse.protobuf.junit.model.find.PropertyFinder.allPropertiesIn;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 

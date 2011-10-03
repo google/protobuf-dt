@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.junit.find;
+package com.google.eclipse.protobuf.junit.model.find;
 
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 

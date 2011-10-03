@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.junit.find;
+package com.google.eclipse.protobuf.junit.model.find;
 
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
@@ -15,26 +15,20 @@ import com.google.eclipse.protobuf.protobuf.*;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-public final class FieldOptionFinder {
+public final class OptionFinder {
 
-  public static FieldOption findFieldOption(Name name, Root root) {
-    for (FieldOption option : getAllContentsOfType(root.value, FieldOption.class))
+  private OptionFinder() {}
+
+  public static Option findOption(Name name, Root root) {
+    for (Option option : getAllContentsOfType(root.value, Option.class))
       if (name.value.equals(nameOf(option))) return option;
     return null;
   }
 
-  private static String nameOf(FieldOption option) {
-    if (option instanceof DefaultValueFieldOption) return "default";
-    PropertyRef ref = null;
-    if (option instanceof NativeFieldOption) {
-      ref = ((NativeFieldOption) option).getProperty();
-    }
-    if (option instanceof CustomFieldOption) {
-      ref = ((CustomFieldOption) option).getProperty();
-    }
+  private static String nameOf(Option option) {
+    PropertyRef ref = option.getProperty();
+    if (ref == null) return null;
     Property property = ref.getProperty();
     return (property == null) ? null : property.getName();
   }
-
-  private FieldOptionFinder() {}
 }

@@ -25,7 +25,6 @@ import com.google.eclipse.protobuf.model.OptionType;
 import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.eclipse.protobuf.util.*;
 import com.google.inject.Inject;
 
 /**
@@ -42,9 +41,16 @@ class CustomOptionDescriptions {
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
   @Inject private Resources resources;
 
-  Collection <IEObjectDescription> properties(EObject option) {
+  Collection <IEObjectDescription> properties(CustomOption option) {
+    return allProperties(option, typeOf(option));
+  }
+
+  Collection <IEObjectDescription> properties(CustomFieldOption option) {
+    return allProperties(option, typeOf(option));
+  }
+
+  private Collection <IEObjectDescription> allProperties(EObject option, OptionType type) {
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
-    OptionType type = typeOf(option);
     EObject current = option.eContainer();
     while (current != null) {
       descriptions.addAll(local(current, type));

@@ -23,7 +23,6 @@ import org.eclipse.xtext.resource.IEObjectDescription;
 import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.eclipse.protobuf.util.*;
 import com.google.inject.Inject;
 
 /**

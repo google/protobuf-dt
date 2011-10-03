@@ -6,19 +6,20 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.junit.find;
+package com.google.eclipse.protobuf.junit.model.find;
 
-import org.eclipse.emf.ecore.EObject;
+/**
+ * @author alruiz@google.com (Alex Ruiz)
+ */
+public final class Name {
 
-public final class Root {
+  final String value;
 
-  final EObject value;
-
-  public static Root in(EObject value) {
-    return new Root(value);
+  public static Name name(String value) {
+    return new Name(value);
   }
 
-  private Root(EObject value) {
+  private Name(String value) {
     this.value = value;
   }
 }

@@ -6,22 +6,22 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.junit.find;
+package com.google.eclipse.protobuf.junit.model.find;
 
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
-import com.google.eclipse.protobuf.protobuf.Message;
+import com.google.eclipse.protobuf.protobuf.Enum;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-public final class MessageFinder {
+public final class EnumFinder {
 
-  public static Message findMessage(Name name, Root root) {
-    for (Message message : getAllContentsOfType(root.value, Message.class))
-      if (name.value.equals(message.getName())) return message;
+  public static Enum findEnum(Name name, Root root) {
+    for (Enum anEnum : getAllContentsOfType(root.value, Enum.class))
+      if (name.value.equals(anEnum.getName())) return anEnum;
     return null;
   }
 
-  private MessageFinder() {}
+  private EnumFinder() {}
 }
