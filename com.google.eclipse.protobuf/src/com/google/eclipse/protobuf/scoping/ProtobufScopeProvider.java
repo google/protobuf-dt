@@ -90,12 +90,6 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     if (c instanceof Property) {
       anEnum = finder.enumTypeOf((Property) c);
     }
-    if (c instanceof NativeFieldOption) {
-      NativeFieldOption option = (NativeFieldOption) c;
-      ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
-      Property p = fieldOptions.propertyFrom((NativeFieldOption) c);
-      anEnum = descriptor.enumTypeOf(p);
-    }
     return createScope(literalDescriptions.literalsOf(anEnum));
   }
 

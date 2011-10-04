@@ -165,9 +165,14 @@ public class ProtoDescriptor {
     INode node = nodes.firstNodeForFeature(p, PROPERTY__TYPE);
     if (node == null) return null;
     String typeName = node.getText();
-    return (isEmpty(typeName)) ? null : enumsByName.get(typeName.trim());
+    return (isEmpty(typeName)) ? null : enumByName(typeName.trim());
   }
 
+  @VisibleForTesting
+  Enum enumByName(String name) {
+    return enumsByName.get(name);
+  }
+  
   /**
    * Returns all types in descriptor.proto.
    * @return all types in descriptor.proto.

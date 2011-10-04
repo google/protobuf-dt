@@ -37,4 +37,8 @@ class IEObjectDescriptions {
     IEObjectDescription d = descriptions.get(name);
     return d.getEObjectOrProxy();
   }
+  
+  int size() {
+    return descriptions.size();
+  }
 }

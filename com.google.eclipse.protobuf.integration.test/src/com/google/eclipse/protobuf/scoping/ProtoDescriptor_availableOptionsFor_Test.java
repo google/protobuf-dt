@@ -27,7 +27,7 @@ import com.google.eclipse.protobuf.protobuf.*;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Descriptor_availableOptionsFor_Test {
+public class ProtoDescriptor_availableOptionsFor_Test {
 
   @Rule public XtextRule xtext = XtextRule.integrationTestSetup();
 
