@@ -35,6 +35,7 @@ public class ProtobufHyperlinkDetector extends DefaultHyperlinkDetector {
 
   private static final IHyperlink[] NO_HYPERLINKS = null;
 
+  // TODO support single quotes too.
   private static final char QUOTE = '\"';
 
   @Inject private EObjectAtOffsetHelper eObjectAtOffsetHelper;

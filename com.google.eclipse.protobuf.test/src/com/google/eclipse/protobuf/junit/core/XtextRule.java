@@ -37,8 +37,7 @@ import com.google.inject.Injector;
  */
 public class XtextRule implements MethodRule {
 
-  private final ISetup setup;
-  private Injector injector;
+  private final Injector injector;
 
   public static XtextRule unitTestSetup() {
     return new XtextRule(new TestingStandaloneSetup());
@@ -49,11 +48,11 @@ public class XtextRule implements MethodRule {
   }
 
   private XtextRule(ISetup setup) {
-    this.setup = setup;
+    injector = setup.createInjectorAndDoEMFRegistration();
   }
 
   public Statement apply(Statement base, FrameworkMethod method, Object target) {
-    return new XtextStatement(base);
+    return base;
   }
 
   public Injector injector() {
@@ -99,22 +98,5 @@ public class XtextRule implements MethodRule {
 
   public <T> T getInstanceOf(Class<T> type) {
     return injector.getInstance(type);
-  }
-
-  private class XtextStatement extends Statement {
-    private final Statement base;
-
-    public XtextStatement(Statement base) {
-      this.base = base;
-    }
-
-    @Override public void evaluate() throws Throwable {
-      setUpInjector();
-      base.evaluate();
-    }
-
-    private void setUpInjector() {
-      injector = setup.createInjectorAndDoEMFRegistration();
-    }
   }
 }

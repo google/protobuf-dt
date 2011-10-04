@@ -18,11 +18,23 @@ import com.google.eclipse.protobuf.protobuf.*;
 public final class FieldOptionFinder {
 
   public static FieldOption findFieldOption(Name name, Root root) {
-    for (FieldOption option : getAllContentsOfType(root.value, FieldOption.class))
+    return fieldOption(name, root, FieldOption.class);
+  }
+  
+  public static NativeFieldOption findNativeFieldOption(Name name, Root root) {
+    return fieldOption(name, root, NativeFieldOption.class);
+  }
+
+  public static CustomFieldOption findCustomFieldOption(Name name, Root root) {
+    return fieldOption(name, root, CustomFieldOption.class);
+  }
+
+  private static <T extends FieldOption> T fieldOption(Name name, Root root, Class<T> optionType) {
+    for (T option : getAllContentsOfType(root.value, optionType))
       if (name.value.equals(nameOf(option))) return option;
     return null;
   }
-  
+
   private static String nameOf(FieldOption option) {
     if (option instanceof DefaultValueFieldOption) return "default";
     PropertyRef ref = null;

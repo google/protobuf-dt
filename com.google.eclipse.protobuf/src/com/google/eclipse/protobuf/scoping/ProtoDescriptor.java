@@ -149,7 +149,8 @@ public class ProtoDescriptor {
     return emptyList();
   }
 
-  private Collection<Property> optionsOfType(OptionType type) {
+  @VisibleForTesting
+  Collection<Property> optionsOfType(OptionType type) {
     return unmodifiableCollection(optionsByType.get(type).values());
   }
 

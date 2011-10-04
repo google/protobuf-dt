@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static java.util.Collections.unmodifiableSet;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IEObjectDescription;
@@ -21,13 +23,17 @@ import java.util.*;
 class IEObjectDescriptions {
 
   static IEObjectDescriptions descriptionsIn(IScope scope) {
-    return new IEObjectDescriptions(scope);
+    return descriptions(scope.getAllElements());
   }
 
+  static IEObjectDescriptions descriptions(Iterable<IEObjectDescription> elements) {
+    return new IEObjectDescriptions(elements);
+  }
+  
   private final Map<String, IEObjectDescription> descriptions = new LinkedHashMap<String, IEObjectDescription>();
   
-  private IEObjectDescriptions(IScope scope) {
-    for (IEObjectDescription d : scope.getAllElements()) {
+  private IEObjectDescriptions(Iterable<IEObjectDescription> elements) {
+    for (IEObjectDescription d : elements) {
       QualifiedName name = d.getName();
       descriptions.put(name.toString(), d);
     }
@@ -40,6 +46,10 @@ class IEObjectDescriptions {
   
   int size() {
     return descriptions.size();
+  }
+  
+  Collection<String> names() {
+    return unmodifiableSet(descriptions.keySet()); 
   }
   
   @Override public String toString() {

@@ -20,7 +20,15 @@ public final class OptionFinder {
   private OptionFinder() {}
 
   public static Option findOption(Name name, Root root) {
-    for (Option option : getAllContentsOfType(root.value, Option.class))
+    return option(name, root, Option.class);
+  }
+
+  public static CustomOption findCustomOption(Name name, Root root) {
+    return option(name, root, CustomOption.class);
+  }
+
+  private static <T extends Option> T option(Name name, Root root, Class<T> optionType) {
+    for (T option : getAllContentsOfType(root.value, optionType))
       if (name.value.equals(nameOf(option))) return option;
     return null;
   }
