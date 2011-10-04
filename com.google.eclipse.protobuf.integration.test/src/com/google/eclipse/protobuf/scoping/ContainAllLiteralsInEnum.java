@@ -8,14 +8,12 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.eclipse.protobuf.scoping.IEObjectDescriptions.descriptionsIn;
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.scoping.IScope;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
@@ -25,21 +23,21 @@ import com.google.eclipse.protobuf.protobuf.Enum;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class ContainsAllLiteralsInEnum extends BaseMatcher<IScope> {
+class ContainAllLiteralsInEnum extends BaseMatcher<IEObjectDescriptions> {
 
   private final Enum anEnum;
 
-  static ContainsAllLiteralsInEnum containsAllLiteralsIn(Enum anEnum) {
-    return new ContainsAllLiteralsInEnum(anEnum);
+  static ContainAllLiteralsInEnum containAllLiteralsIn(Enum anEnum) {
+    return new ContainAllLiteralsInEnum(anEnum);
   }
   
-  private ContainsAllLiteralsInEnum(Enum anEnum) {
+  private ContainAllLiteralsInEnum(Enum anEnum) {
     this.anEnum = anEnum;
   }
   
   public boolean matches(Object arg) {
-    if (!(arg instanceof IScope)) return false;
-    IEObjectDescriptions descriptions = descriptionsIn((IScope) arg);
+    if (!(arg instanceof IEObjectDescriptions)) return false;
+    IEObjectDescriptions descriptions = (IEObjectDescriptions) arg;
     List<Literal> literals = allLiterals();
     if (descriptions.size() != literals.size()) return false;
     for (Literal literal : literals) {

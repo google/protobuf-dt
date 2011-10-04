@@ -13,7 +13,8 @@ import static com.google.eclipse.protobuf.junit.model.find.FieldOptionFinder.fin
 import static com.google.eclipse.protobuf.junit.model.find.Name.name;
 import static com.google.eclipse.protobuf.junit.model.find.OptionFinder.findOption;
 import static com.google.eclipse.protobuf.junit.model.find.Root.in;
-import static com.google.eclipse.protobuf.scoping.ContainsAllLiteralsInEnum.containsAllLiteralsIn;
+import static com.google.eclipse.protobuf.scoping.ContainAllLiteralsInEnum.containAllLiteralsIn;
+import static com.google.eclipse.protobuf.scoping.IEObjectDescriptions.descriptionsIn;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -67,7 +68,7 @@ public class ProtobufScopeProvider_scope_LiteralRef_literal_Test {
     FieldOption option = findFieldOption(name("default"), in(root));
     IScope scope = provider.scope_LiteralRef_literal(valueOf(option), reference);
     Enum typeEnum = findEnum(name("Type"), in(root));
-    assertThat(scope, containsAllLiteralsIn(typeEnum));
+    assertThat(descriptionsIn(scope), containAllLiteralsIn(typeEnum));
   }
   
   @Test public void should_provide_Literals_for_native_option() {
@@ -75,7 +76,7 @@ public class ProtobufScopeProvider_scope_LiteralRef_literal_Test {
     Option option = findOption(name("optimize_for"), in(root));
     IScope scope = provider.scope_LiteralRef_literal(valueOf(option), reference);
     Enum optimizeModeEnum = descriptor().enumByName("OptimizeMode");
-    assertThat(scope, containsAllLiteralsIn(optimizeModeEnum));
+    assertThat(descriptionsIn(scope), containAllLiteralsIn(optimizeModeEnum));
   }
   
   @Test public void should_provide_Literals_for_custom_option() {
@@ -96,7 +97,7 @@ public class ProtobufScopeProvider_scope_LiteralRef_literal_Test {
     Option option = findOption(name("type"), in(root));
     IScope scope = provider.scope_LiteralRef_literal(valueOf(option), reference);
     Enum typeEnum = findEnum(name("Type"), in(root));
-    assertThat(scope, containsAllLiteralsIn(typeEnum));
+    assertThat(descriptionsIn(scope), containAllLiteralsIn(typeEnum));
   }
 
   private static LiteralRef valueOf(Option option) {
@@ -112,7 +113,7 @@ public class ProtobufScopeProvider_scope_LiteralRef_literal_Test {
     FieldOption option = findFieldOption(name("ctype"), in(root));
     IScope scope = provider.scope_LiteralRef_literal(valueOf(option), reference);
     Enum cTypeEnum = descriptor().enumByName("CType");
-    assertThat(scope, containsAllLiteralsIn(cTypeEnum));
+    assertThat(descriptionsIn(scope), containAllLiteralsIn(cTypeEnum));
   }
   
   private ProtoDescriptor descriptor() {
@@ -140,7 +141,7 @@ public class ProtobufScopeProvider_scope_LiteralRef_literal_Test {
     FieldOption option = findFieldOption(name("type"), in(root));
     IScope scope = provider.scope_LiteralRef_literal(valueOf(option), reference);
     Enum typeEnum = findEnum(name("Type"), in(root));
-    assertThat(scope, containsAllLiteralsIn(typeEnum));
+    assertThat(descriptionsIn(scope), containAllLiteralsIn(typeEnum));
   }
 
   private static LiteralRef valueOf(FieldOption option) {

@@ -24,7 +24,7 @@ class IEObjectDescriptions {
     return new IEObjectDescriptions(scope);
   }
 
-  private final Map<String, IEObjectDescription> descriptions = new HashMap<String, IEObjectDescription>();
+  private final Map<String, IEObjectDescription> descriptions = new LinkedHashMap<String, IEObjectDescription>();
   
   private IEObjectDescriptions(IScope scope) {
     for (IEObjectDescription d : scope.getAllElements()) {
@@ -40,5 +40,9 @@ class IEObjectDescriptions {
   
   int size() {
     return descriptions.size();
+  }
+  
+  @Override public String toString() {
+    return descriptions.keySet().toString();
   }
 }
