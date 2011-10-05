@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.util;
 
+import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static com.google.eclipse.protobuf.junit.model.find.Name.name;
 import static com.google.eclipse.protobuf.junit.model.find.PropertyFinder.findProperty;
 import static com.google.eclipse.protobuf.junit.model.find.Root.in;
@@ -27,7 +29,7 @@ import com.google.eclipse.protobuf.protobuf.*;
  */
 public class Fields_calculateTagNumberOf_Test {
 
-  @Rule public XtextRule xtext = XtextRule.unitTestSetup();
+  @Rule public XtextRule xtext = createWith(unitTestSetup());
 
   private Fields fields;
 

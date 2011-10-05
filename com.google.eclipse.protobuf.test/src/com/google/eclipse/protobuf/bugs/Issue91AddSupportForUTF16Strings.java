@@ -8,6 +8,9 @@
  */
 package com.google.eclipse.protobuf.bugs;
 
+import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
+
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 
@@ -20,7 +23,7 @@ import org.junit.*;
  */
 public class Issue91AddSupportForUTF16Strings {
 
-  @Rule public XtextRule xtext = XtextRule.unitTestSetup();
+  @Rule public XtextRule xtext = createWith(unitTestSetup());
 
   @Test public void should_recognize_UTF16_strings() {
     MultiLineTextBuilder proto = new MultiLineTextBuilder();

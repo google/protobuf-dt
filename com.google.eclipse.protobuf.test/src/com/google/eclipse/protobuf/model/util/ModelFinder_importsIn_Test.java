@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
+import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -27,7 +29,7 @@ import com.google.eclipse.protobuf.protobuf.*;
  */
 public class ModelFinder_importsIn_Test {
 
-  @Rule public XtextRule xtext = XtextRule.unitTestSetup();
+  @Rule public XtextRule xtext = createWith(unitTestSetup());
 
   private ModelFinder finder;
 

@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static com.google.eclipse.protobuf.junit.core.Setups.integrationTestSetup;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static com.google.eclipse.protobuf.junit.model.find.FieldOptionFinder.*;
 import static com.google.eclipse.protobuf.junit.model.find.Name.name;
 import static com.google.eclipse.protobuf.junit.model.find.OptionFinder.findOption;
@@ -42,7 +44,7 @@ public class ProtobufScopeProvider_scope_PropertyRef_property_Test {
     reference = mock(EReference.class);
   }
   
-  @Rule public XtextRule xtext = XtextRule.integrationTestSetup();
+  @Rule public XtextRule xtext = createWith(integrationTestSetup());
   
   private ProtobufScopeProvider provider;
   

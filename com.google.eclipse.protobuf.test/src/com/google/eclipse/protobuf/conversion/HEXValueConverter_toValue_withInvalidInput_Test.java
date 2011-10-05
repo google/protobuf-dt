@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.conversion;
 
+import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.*;
@@ -28,7 +30,7 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
  */
 public class HEXValueConverter_toValue_withInvalidInput_Test {
 
-  @Rule public XtextRule xtext = XtextRule.unitTestSetup();
+  @Rule public XtextRule xtext = createWith(unitTestSetup());
   @Rule public ExpectedException thrown = none();
 
   private HEXValueConverter converter;

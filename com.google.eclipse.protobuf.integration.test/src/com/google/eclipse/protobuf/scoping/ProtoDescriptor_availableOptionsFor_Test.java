@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static com.google.eclipse.protobuf.junit.core.Setups.integrationTestSetup;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static com.google.eclipse.protobuf.junit.matchers.PropertyHasType.*;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -29,7 +31,7 @@ import com.google.eclipse.protobuf.protobuf.*;
  */
 public class ProtoDescriptor_availableOptionsFor_Test {
 
-  @Rule public XtextRule xtext = XtextRule.integrationTestSetup();
+  @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
   private Options options;
   private ProtoDescriptor descriptor;

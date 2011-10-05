@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
+import static com.google.eclipse.protobuf.junit.core.Setups.integrationTestSetup;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static com.google.eclipse.protobuf.junit.model.find.Name.name;
 import static com.google.eclipse.protobuf.junit.model.find.OptionFinder.findOption;
 import static com.google.eclipse.protobuf.junit.model.find.Root.in;
@@ -28,7 +30,7 @@ import com.google.eclipse.protobuf.protobuf.*;
  */
 public class Options_propertyFrom_Test {
 
-  @Rule public XtextRule xtext = XtextRule.integrationTestSetup();
+  @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
   private Options options;
 

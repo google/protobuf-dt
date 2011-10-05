@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.naming;
 
+import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static com.google.eclipse.protobuf.junit.model.find.MessageFinder.findMessage;
 import static com.google.eclipse.protobuf.junit.model.find.Name.name;
 import static com.google.eclipse.protobuf.junit.model.find.PropertyFinder.findProperty;
@@ -29,7 +31,7 @@ import com.google.eclipse.protobuf.protobuf.*;
  */
 public class ProtobufQualifiedNameProvider_getFullyQualifiedName_Test {
 
-  @Rule public XtextRule xtext = XtextRule.unitTestSetup();
+  @Rule public XtextRule xtext = createWith(unitTestSetup());
 
   private ProtobufQualifiedNameProvider provider;
 

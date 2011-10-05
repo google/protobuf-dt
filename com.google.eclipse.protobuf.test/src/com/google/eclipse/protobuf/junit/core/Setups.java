@@ -8,18 +8,22 @@
  */
 package com.google.eclipse.protobuf.junit.core;
 
+import org.eclipse.xtext.ISetup;
 
-import org.eclipse.core.runtime.IExtensionRegistry;
-
-import com.google.eclipse.protobuf.ProtobufRuntimeModule;
-import com.google.inject.Binder;
+import com.google.eclipse.protobuf.ProtobufStandaloneSetup;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class TestingModule extends ProtobufRuntimeModule {
+public final class Setups {
 
-  @Override public void configureExtensionRegistry(Binder binder) {
-    binder.bind(IExtensionRegistry.class).toProvider(FakeExtensionRegistryProvider.class);    
+  public static ISetup unitTestSetup() {
+    return new TestingStandaloneSetup();
   }
+  
+  public static ISetup integrationTestSetup() {
+    return new ProtobufStandaloneSetup();
+  }
+  
+  private Setups() {}
 }

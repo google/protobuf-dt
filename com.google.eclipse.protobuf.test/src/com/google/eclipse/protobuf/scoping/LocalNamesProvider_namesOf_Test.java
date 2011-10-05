@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static com.google.eclipse.protobuf.junit.model.find.EnumFinder.findEnum;
 import static com.google.eclipse.protobuf.junit.model.find.Name.name;
 import static com.google.eclipse.protobuf.junit.model.find.Root.in;
@@ -32,7 +34,7 @@ import com.google.eclipse.protobuf.protobuf.Enum;
  */
 public class LocalNamesProvider_namesOf_Test {
 
-  @Rule public XtextRule xtext = XtextRule.unitTestSetup();
+  @Rule public XtextRule xtext = createWith(unitTestSetup());
 
   private LocalNamesProvider namesProvider;
 

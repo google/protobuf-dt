@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static com.google.eclipse.protobuf.junit.core.Setups.integrationTestSetup;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static com.google.eclipse.protobuf.junit.model.find.EnumFinder.findEnum;
 import static com.google.eclipse.protobuf.junit.model.find.FieldOptionFinder.findFieldOption;
 import static com.google.eclipse.protobuf.junit.model.find.Name.name;
@@ -46,7 +48,7 @@ public class ProtobufScopeProvider_scope_LiteralRef_literal_Test {
     reference = mock(EReference.class);
   }
   
-  @Rule public XtextRule xtext = XtextRule.integrationTestSetup();
+  @Rule public XtextRule xtext = createWith(integrationTestSetup());
   
   private ProtobufScopeProvider provider;
   

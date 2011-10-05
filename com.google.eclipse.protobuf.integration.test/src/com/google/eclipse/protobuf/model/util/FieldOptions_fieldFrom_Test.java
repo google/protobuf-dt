@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
+import static com.google.eclipse.protobuf.junit.core.Setups.integrationTestSetup;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static com.google.eclipse.protobuf.junit.model.find.FieldOptionFinder.findFieldOption;
 import static com.google.eclipse.protobuf.junit.model.find.Name.name;
 import static com.google.eclipse.protobuf.junit.model.find.Root.in;
@@ -18,7 +20,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.junit.core.*;
 import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 import com.google.eclipse.protobuf.model.util.FieldOptions;
 import com.google.eclipse.protobuf.protobuf.CustomFieldOption;
@@ -32,7 +34,7 @@ import com.google.eclipse.protobuf.protobuf.Protobuf;
  */
 public class FieldOptions_fieldFrom_Test {
 
-  @Rule public XtextRule xtext = XtextRule.integrationTestSetup();
+  @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
   private FieldOptions fieldOptions;
 

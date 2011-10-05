@@ -8,18 +8,17 @@
  */
 package com.google.eclipse.protobuf.junit.core;
 
+import static org.mockito.Mockito.mock;
 
 import org.eclipse.core.runtime.IExtensionRegistry;
 
-import com.google.eclipse.protobuf.ProtobufRuntimeModule;
-import com.google.inject.Binder;
+import com.google.inject.Provider;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class TestingModule extends ProtobufRuntimeModule {
-
-  @Override public void configureExtensionRegistry(Binder binder) {
-    binder.bind(IExtensionRegistry.class).toProvider(FakeExtensionRegistryProvider.class);    
+public class FakeExtensionRegistryProvider implements Provider<IExtensionRegistry> {
+  public IExtensionRegistry get() {
+    return mock(IExtensionRegistry.class);
   }
 }
