@@ -1,0 +1,8 @@
+package com.google.test;
+
+import "google/protobuf/descriptor.proto";
+
+extend google.protobuf.FileOptions {
+  optional int32 code = 1000;
+  optional int32 info = 1002;
+}

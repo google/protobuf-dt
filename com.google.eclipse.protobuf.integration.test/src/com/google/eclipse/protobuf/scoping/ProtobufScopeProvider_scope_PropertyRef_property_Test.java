@@ -8,16 +8,14 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.eclipse.protobuf.junit.model.find.ExtendMessageFinder.findExtendMessage;
 import static com.google.eclipse.protobuf.junit.model.find.FieldOptionFinder.*;
 import static com.google.eclipse.protobuf.junit.model.find.Name.name;
 import static com.google.eclipse.protobuf.junit.model.find.OptionFinder.findOption;
 import static com.google.eclipse.protobuf.junit.model.find.Root.in;
 import static com.google.eclipse.protobuf.model.OptionType.*;
+import static com.google.eclipse.protobuf.scoping.ContainAllNames.containAll;
 import static com.google.eclipse.protobuf.scoping.ContainAllProperties.containAll;
-import static com.google.eclipse.protobuf.scoping.ContainNames.containAll;
-import static com.google.eclipse.protobuf.scoping.IEObjectDescriptions.*;
-import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
+import static com.google.eclipse.protobuf.scoping.IEObjectDescriptions.descriptionsIn;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -29,7 +27,7 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.xtext.scoping.IScope;
 import org.junit.*;
 
-import java.util.*;
+import java.util.Collection;
 
 /**
  * Tests for <code>{@link ProtobufScopeProvider#scope_PropertyRef_property(PropertyRef, EReference)}</code>
@@ -84,21 +82,33 @@ public class ProtobufScopeProvider_scope_PropertyRef_property_Test {
          .append("                                          ")
          .append("extend google.protobuf.FileOptions {      ")
          .append("  optional int32 code = 1000;             ")
-         .append("  optional string name = 1001;            ")
+         .append("  optional int32 info = 1001;             ")
          .append("}                                         ")
          .append("                                          ")
          .append("option (code) = 68;                       ");
     Protobuf root = xtext.parseText(proto);
     Option option = findOption(name("code"), in(root));
     IScope scope = provider.scope_PropertyRef_property(option.getProperty(), reference);
-    ExtendMessage extendFileOptionsMessage = findExtendMessage(name("FileOptions"), in(root));
-    Map<String, Property> properties = propertiesOf(extendFileOptionsMessage);
-    Property code = properties.get("code");
-    assertThat(descriptions(scope.getElements(code)), containAll("code", "proto.code", "google.proto.code", 
-                                                                 "com.google.proto.code", ".com.google.proto.code"));
-    Property name = properties.get("name");
-    assertThat(descriptions(scope.getElements(name)), containAll("name", "proto.name", "google.proto.name", 
-                                                                 "com.google.proto.name", ".com.google.proto.name"));
+    assertThat(descriptionsIn(scope), containAll("code", "proto.code", "google.proto.code", "com.google.proto.code", 
+                                                 ".com.google.proto.code",
+                                                 "info", "proto.info", "google.proto.info", "com.google.proto.info", 
+                                                 ".com.google.proto.info"));
+  }
+
+  @Test public void should_provide_imported_Property_fields_for_custom_option() {
+    MultiLineTextBuilder proto = new MultiLineTextBuilder();
+    proto.append("package com.google.proto;            ")
+         .append("                                     ")
+         .append("import 'protos/custom-options.proto';") // file is in this project.
+         .append("                                     ")
+         .append("option (code) = 68;                  ");
+    Protobuf root = xtext.parseText(proto);
+    Option option = findOption(name("code"), in(root));
+    IScope scope = provider.scope_PropertyRef_property(option.getProperty(), reference);
+    assertThat(descriptionsIn(scope), containAll("code", "test.code", "google.test.code", "com.google.test.code", 
+                                                 ".com.google.test.code",
+                                                 "info", "test.info", "google.test.info", "com.google.test.info", 
+                                                 ".com.google.test.info"));
   }
 
   @Test public void should_provide_Property_fields_for_custom_field_option() {
@@ -108,7 +118,7 @@ public class ProtobufScopeProvider_scope_PropertyRef_property_Test {
          .append("                                            ")
          .append("extend google.protobuf.FieldOptions {       ")
          .append("  optional int32 code = 1000;               ")
-         .append("  optional string name = 1001;              ")
+         .append("  optional int32 info = 1001;               ")
          .append("}                                           ")
          .append("                                            ")
          .append("message Person {                            ")
@@ -117,21 +127,9 @@ public class ProtobufScopeProvider_scope_PropertyRef_property_Test {
     Protobuf root = xtext.parseText(proto);
     CustomFieldOption option = findCustomFieldOption(name("code"), in(root));
     IScope scope = provider.scope_PropertyRef_property(option.getProperty(), reference);
-    ExtendMessage extendFileOptionsMessage = findExtendMessage(name("FieldOptions"), in(root));
-    Map<String, Property> properties = propertiesOf(extendFileOptionsMessage);
-    Property code = properties.get("code");
-    assertThat(descriptions(scope.getElements(code)), containAll("code", "proto.code", "google.proto.code", 
-                                                                 "com.google.proto.code", ".com.google.proto.code"));
-    Property name = properties.get("name");
-    assertThat(descriptions(scope.getElements(name)), containAll("name", "proto.name", "google.proto.name", 
-                                                                 "com.google.proto.name", ".com.google.proto.name"));
-  }
-
-  private static Map<String, Property> propertiesOf(ExtendMessage m) {
-    Map<String, Property> properties = new HashMap<String, Property>();
-    for (Property p : getAllContentsOfType(m, Property.class)) {
-      properties.put(p.getName(), p);
-    }
-    return properties;
+    assertThat(descriptionsIn(scope), containAll("code", "proto.code", "google.proto.code", "com.google.proto.code", 
+                                                 ".com.google.proto.code",
+                                                 "info", "proto.info", "google.proto.info", "com.google.proto.info", 
+                                                 ".com.google.proto.info"));
   }
 }

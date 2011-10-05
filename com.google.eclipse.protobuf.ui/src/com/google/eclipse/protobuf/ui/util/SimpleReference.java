@@ -11,7 +11,6 @@ package com.google.eclipse.protobuf.ui.util;
 
 /**
  * A reference to an object. This class is not thread-safe.
- * @param T the type of the object being referenced.
  * 
  * @author alruiz@google.com (Alex Ruiz)
  */
