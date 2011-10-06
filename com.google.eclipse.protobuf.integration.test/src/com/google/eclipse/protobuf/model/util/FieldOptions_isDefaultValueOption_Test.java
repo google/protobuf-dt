@@ -16,12 +16,10 @@ import static com.google.eclipse.protobuf.junit.model.find.Root.in;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import org.junit.*;
-
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
-import com.google.eclipse.protobuf.model.util.FieldOptions;
 import com.google.eclipse.protobuf.protobuf.*;
+
+import org.junit.*;
 
 /**
  * Tests for <code>{@link FieldOptions#isDefaultValueOption(FieldOption)}</code>.
@@ -32,24 +30,26 @@ public class FieldOptions_isDefaultValueOption_Test {
 
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
-  private FieldOptions fieldOptions;
   private Protobuf root;
+  private FieldOptions fieldOptions;
 
   @Before public void setUp() {
+    root = xtext.root();
     fieldOptions = xtext.getInstanceOf(FieldOptions.class);
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("message Person {                                                   ")
-         .append("  optional boolean active = 1 [default = true, deprecated = false];")
-         .append("}                                                                  ");
-    root = xtext.parseText(proto);
   }
 
+  // message Person {
+  //   optional boolean active = 1 [default = true, deprecated = false];
+  // }
   @Test public void should_return_true_if_FieldOption_is_default_value_one() {
     FieldOption option = findFieldOption(name("default"), in(root));
     boolean result = fieldOptions.isDefaultValueOption(option);
     assertThat(result, equalTo(true));
   }
 
+  // message Person {
+  //   optional boolean active = 1 [default = true, deprecated = false];
+  // }
   @Test public void should_return_false_if_FieldOption_is_not_default_value_one() {
     FieldOption option = findFieldOption(name("deprecated"), in(root));
     boolean result = fieldOptions.isDefaultValueOption(option);

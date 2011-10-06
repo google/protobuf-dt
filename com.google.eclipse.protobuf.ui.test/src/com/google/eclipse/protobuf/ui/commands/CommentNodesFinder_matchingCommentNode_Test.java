@@ -17,16 +17,15 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.*;
 import static org.junit.Assert.assertThat;
 
-import java.util.regex.Matcher;
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.util.Pair;
 import org.junit.*;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
-import com.google.eclipse.protobuf.protobuf.*;
+import java.util.regex.Matcher;
 
 /**
  * Tests for <code>{@link CommentNodesFinder#matchingCommentNode(EObject, String...)}</code>.
@@ -37,47 +36,43 @@ public class CommentNodesFinder_matchingCommentNode_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
+  private Protobuf root;
   private CommentNodesFinder finder;
 
   @Before public void setUp() {
+    root = xtext.root();
     finder = xtext.getInstanceOf(CommentNodesFinder.class);
   }
 
+  // message Person {
+  //   // Next Id: 6
+  //   optional bool active = 1;
+  // }
   @Test public void should_return_matching_single_line_comment_of_element() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("message Person {           ")
-         .append("  // Next Id: 6            ")
-         .append("  optional bool active = 1;")
-         .append("}                          ");
-    Protobuf root = xtext.parseText(proto);
     Property active = findProperty(name("active"), in(root));
     Pair<INode, Matcher> match = finder.matchingCommentNode(active, "next id: [\\d]+");
     INode node = match.getFirst();
     assertThat(node.getText().trim(), equalTo("// Next Id: 6"));
   }
 
+  // message Person {
+  //   /*
+  //    * Next Id: 6
+  //    */
+  //   optional bool active = 1;
+  // }
   @Test public void should_return_matching_multi_line_comment_of_element() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("message Person {           ")
-         .append("  /*                       ")
-         .append("   * Next Id: 6            ")
-         .append("   */                      ")
-         .append("  optional bool active = 1;")
-         .append("}                          ");
-    Protobuf root = xtext.parseText(proto);
     Property active = findProperty(name("active"), in(root));
     Pair<INode, Matcher> match = finder.matchingCommentNode(active, "NEXT ID: [\\d]+");
     INode node = match.getFirst();
     assertThat(node, notNullValue());
   }
 
+  // message Person {
+  //   // Next Id: 6
+  //   optional bool active = 1;
+  // }
   @Test public void should_return_null_if_no_matching_node_found() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("message Person {           ")
-         .append("  // Next Id: 6            ")
-         .append("  optional bool active = 1;")
-         .append("}                          ");
-    Protobuf root = xtext.parseText(proto);
     Property active = findProperty(name("active"), in(root));
     Pair<INode, Matcher> match = finder.matchingCommentNode(active, "Hello");
     assertThat(match, nullValue());

@@ -16,12 +16,10 @@ import static com.google.eclipse.protobuf.junit.model.find.Root.in;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import org.junit.*;
-
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
-import com.google.eclipse.protobuf.model.util.Options;
 import com.google.eclipse.protobuf.protobuf.*;
+
+import org.junit.*;
 
 /**
  * Tests for <code>{@link Options#propertyFrom(Option)}</code>.
@@ -32,31 +30,29 @@ public class Options_propertyFrom_Test {
 
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
+  private Protobuf root;
   private Options options;
 
   @Before public void setUp() {
+    root = xtext.root();
     options = xtext.getInstanceOf(Options.class);
   }
 
+  // option java_package = 'com.google.eclipse.protobuf.tests';
   @Test public void should_return_property_of_native_option() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("option java_package = 'com.google.eclipse.protobuf.tests';");
-    Protobuf root = xtext.parseText(proto);
     Option option = findOption(name("java_package"), in(root));
     Property p = options.propertyFrom(option);
     assertThat(p.getName(), equalTo("java_package"));
   }
 
+  // import 'google/protobuf/descriptor.proto';
+  //  
+  // extend google.protobuf.FileOptions {
+  //   optional string encoding = 1000;
+  // }
+  //  
+  // option (encoding) = 'UTF-8';
   @Test public void should_return_property_of_custom_option() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("import 'google/protobuf/descriptor.proto';")
-         .append("                                          ")
-         .append("extend google.protobuf.FileOptions {      ")
-         .append("  optional string encoding = 1000;        ")
-         .append("}                                         ")
-         .append("                                          ")
-         .append("option (encoding) = 'UTF-8';              ");
-    Protobuf root = xtext.parseText(proto);
     Option option = findOption(name("encoding"), in(root));
     Property p = options.propertyFrom(option);
     assertThat(p.getName(), equalTo("encoding"));

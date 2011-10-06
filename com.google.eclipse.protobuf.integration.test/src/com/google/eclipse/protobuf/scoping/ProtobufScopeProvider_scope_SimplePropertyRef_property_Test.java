@@ -21,7 +21,6 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 import com.google.eclipse.protobuf.protobuf.*;
 
 import org.eclipse.emf.ecore.EReference;
@@ -42,51 +41,49 @@ public class ProtobufScopeProvider_scope_SimplePropertyRef_property_Test {
   }
   
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
-  
+
+  private Protobuf root;
   private ProtobufScopeProvider provider;
   
   @Before public void setUp() {
+    root = xtext.root();
     provider = xtext.getInstanceOf(ProtobufScopeProvider.class);
   }
 
+  // import 'google/protobuf/descriptor.proto';
+  //  
+  // message Type {
+  //   optional int32 code = 1;
+  //   optional string name = 2;
+  // }
+  //  
+  // extend google.protobuf.FileOptions {
+  //   optional Type type = 1000;  
+  // }
+  //  
+  // option (type).code = 68;
   @Test public void should_provide_Property_fields_for_custom_option_field() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("import 'google/protobuf/descriptor.proto';")
-         .append("                                          ")
-         .append("message Type {                            ")
-         .append("  optional int32 code = 1;                ")
-         .append("  optional string name = 2;               ")
-         .append("}                                         ")
-         .append("                                          ")
-         .append("extend google.protobuf.FileOptions {      ")
-         .append("  optional Type type = 1000;              ")
-         .append("}                                         ")
-         .append("                                          ")
-         .append("option (type).code = 68;                  ");
-    Protobuf root = xtext.parseText(proto);
     CustomOption option = findCustomOption(name("type"), in(root));
     IScope scope = provider.scope_SimplePropertyRef_property(option.getPropertyField(), reference);
     Message typeMessage = findMessage(name("Type"), in(root));
     assertThat(descriptionsIn(scope), containAllPropertiesIn(typeMessage));
   }
 
+  // import 'google/protobuf/descriptor.proto';
+  //  
+  // message Type {
+  //   optional int32 code = 1;
+  //   optional string name = 2;
+  // }
+  //
+  // extend google.protobuf.FieldOptions {
+  //   optional Type type = 1000;
+  // }
+  //  
+  // message Person {
+  //   optional boolean active = 1 [(type).code = 68];
+  // }
   @Test public void should_provide_Property_fields_for_custom_field_option_field() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("import 'google/protobuf/descriptor.proto';       ")
-         .append("                                                 ")
-         .append("message Type {                                   ")
-         .append("  optional int32 code = 1;                       ")
-         .append("  optional string name = 2;                      ")
-         .append("}                                                ")
-         .append("                                                 ")
-         .append("extend google.protobuf.FieldOptions {            ")
-         .append("  optional Type type = 1000;                     ")
-         .append("}                                                ")
-         .append("                                                 ")
-         .append("message Person {                                 ")
-         .append("  optional boolean active = 1 [(type).code = 68];")
-         .append("}                                                ");
-    Protobuf root = xtext.parseText(proto);
     CustomFieldOption option = findCustomFieldOption(name("type"), in(root));
     IScope scope = provider.scope_SimplePropertyRef_property(option.getPropertyField(), reference);
     Message typeMessage = findMessage(name("Type"), in(root));

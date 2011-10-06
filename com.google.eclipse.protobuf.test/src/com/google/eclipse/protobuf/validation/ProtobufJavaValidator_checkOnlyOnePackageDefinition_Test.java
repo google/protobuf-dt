@@ -19,7 +19,6 @@ import static org.eclipse.xtext.validation.ValidationMessageAcceptor.INSIGNIFICA
 import static org.mockito.Mockito.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
 
@@ -35,30 +34,28 @@ public class ProtobufJavaValidator_checkOnlyOnePackageDefinition_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
   
+  private Protobuf root;
   private ValidationMessageAcceptor messageAcceptor;
   private ProtobufJavaValidator validator;
   
   @Before public void setUp() {
+    root = xtext.root();
     messageAcceptor = mock(ValidationMessageAcceptor.class);
     validator = xtext.getInstanceOf(ProtobufJavaValidator.class);
     validator.setMessageAcceptor(messageAcceptor);
   }
 
+  // package com.google.protobuf;
+  // package com.google.eclipse;
   @Test public void should_create_error_if_there_are_more_than_one_package_definitions() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("package com.google.protobuf;")
-         .append("package com.google.eclipse; ");
-    Protobuf root = xtext.parseText(proto);
     Package p = findPackage(name("com.google.eclipse"), in(root));
     validator.checkOnlyOnePackageDefinition(p);
     String message = "Multiple package definitions.";
     verify(messageAcceptor).acceptError(message, p, PACKAGE__NAME, INSIGNIFICANT_INDEX, MORE_THAN_ONE_PACKAGE_ERROR);
   }
 
+  // package com.google.eclipse;
   @Test public void should_not_create_error_if_there_is_only_one_package_definition() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("package com.google.eclipse; ");
-    Protobuf root = xtext.parseText(proto);
     Package p = findPackage(name("com.google.eclipse"), in(root));
     validator.checkOnlyOnePackageDefinition(p);
     verifyZeroInteractions(messageAcceptor);

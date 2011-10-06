@@ -19,7 +19,6 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 import com.google.eclipse.protobuf.model.OptionType;
 import com.google.eclipse.protobuf.protobuf.*;
 
@@ -35,20 +34,20 @@ public class Options_isExtendingOptionMessage_Test {
   
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
+  private Protobuf root;
   private Options options;
 
   @Before public void setUp() {
+    root = xtext.root();
     options = xtext.getInstanceOf(Options.class);
   }
 
+  // import 'google/protobuf/descriptor.proto';
+  //
+  // extend google.protobuf.FileOptions {
+  //   optional string encoding = 1000;
+  // }
   @Test public void should_return_true_if_name_of_extended_message_is_equal_to_message_name_in_OptionType() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("import 'google/protobuf/descriptor.proto';")
-         .append("                                          ")
-         .append("extend google.protobuf.FileOptions {      ")
-         .append("  optional string encoding = 1000;        ")
-         .append("}                                         ");
-    Protobuf root = xtext.parseText(proto);
     ExtendMessage extend = findExtendMessage(name("FileOptions"), in(root));
     boolean result = options.isExtendingOptionMessage(extend, FILE);
     assertThat(result, equalTo(true));
@@ -60,14 +59,12 @@ public class Options_isExtendingOptionMessage_Test {
     assertThat(result, equalTo(false));
   }
 
+  // import 'google/protobuf/descriptor.proto';
+  //
+  // extend google.protobuf.FieldOptions {
+  //   optional string encoding = 1000;
+  // }
   @Test public void should_return_false_if_name_of_extended_message_is_not_equal_to_message_name_in_OptionType() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("import 'google/protobuf/descriptor.proto';")
-         .append("                                          ")
-         .append("extend google.protobuf.FieldOptions {     ")
-         .append("  optional string encoding = 1000;        ")
-         .append("}                                         ");
-    Protobuf root = xtext.parseText(proto);
     ExtendMessage extend = findExtendMessage(name("FieldOptions"), in(root));
     boolean result = options.isExtendingOptionMessage(extend, FILE);
     assertThat(result, equalTo(false));

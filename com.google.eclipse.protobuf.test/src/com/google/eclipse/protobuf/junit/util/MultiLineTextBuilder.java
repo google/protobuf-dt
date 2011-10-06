@@ -22,6 +22,10 @@ public class MultiLineTextBuilder {
     return this;
   }
   
+  public boolean isEmpty() {
+    return builder.length() == 0;
+  }
+  
   @Override public String toString() {
     return builder.toString();
   }

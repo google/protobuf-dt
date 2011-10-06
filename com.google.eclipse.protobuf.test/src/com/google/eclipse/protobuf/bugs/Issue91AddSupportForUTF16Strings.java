@@ -10,9 +10,11 @@ package com.google.eclipse.protobuf.bugs;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertThat;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
 
 import org.junit.*;
 
@@ -24,12 +26,17 @@ import org.junit.*;
 public class Issue91AddSupportForUTF16Strings {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
+  
+  private Protobuf root;
 
+  @Before public void setUp() {
+    root = xtext.root();
+  }
+  
+  //  message Foo {
+  //    optional string bar = 1 [default="\\302\\265"];
+  //  }
   @Test public void should_recognize_UTF16_strings() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("message Foo {                                      ")
-         .append("  optional string bar = 1 [default=\"\\302\\265\"];")
-         .append("}                                                  ");
-    xtext.parseText(proto);
+    assertThat(root, notNullValue());
   }
 }

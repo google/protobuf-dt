@@ -16,11 +16,10 @@ import static com.google.eclipse.protobuf.junit.model.find.Root.in;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import org.junit.*;
-
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 import com.google.eclipse.protobuf.protobuf.*;
+
+import org.junit.*;
 
 /**
  * Tests for <code>{@link Literals#calculateIndexOf(Literal)}</code>.
@@ -31,31 +30,29 @@ public class Literals_calculateIndexOf_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
+  private Protobuf root;
   private Literals literals;
 
   @Before public void setUp() {
+    root = xtext.root();
     literals = xtext.getInstanceOf(Literals.class);
   }
 
+  // enum PhoneType {
+  //   MOBILE = 1;
+  // }
   @Test public void should_return_zero_for_first_and_only_literal() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("enum PhoneType {")
-         .append("  MOBILE = 1;   ")
-         .append("}               ");
-    Protobuf root = xtext.parseText(proto);
     Literal mobile = findLiteral(name("MOBILE"), in(root));
     long index = literals.calculateIndexOf(mobile);
     assertThat(index, equalTo(0L));
   }
 
+  // enum PhoneType {
+  //   MOBILE = 1;
+  //   HOME = 5;
+  //   WORK = 9;
+  // }
   @Test public void should_return_max_index_value_plus_one_for_new_literal() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("enum PhoneType {")
-         .append("  MOBILE = 1;   ")
-         .append("  HOME = 5;     ")
-         .append("  WORK = 9;     ")
-         .append("}               ");
-    Protobuf root = xtext.parseText(proto);
     Literal work = findLiteral(name("WORK"), in(root));
     long index = literals.calculateIndexOf(work);
     assertThat(index, equalTo(6L));

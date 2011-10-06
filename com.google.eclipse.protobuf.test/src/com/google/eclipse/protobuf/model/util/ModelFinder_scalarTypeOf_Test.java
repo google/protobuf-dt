@@ -17,12 +17,10 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 
-import org.junit.*;
-
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
-import com.google.eclipse.protobuf.model.util.ModelFinder;
 import com.google.eclipse.protobuf.protobuf.*;
+
+import org.junit.*;
 
 /**
  * Tests for <code>{@link ModelFinder#scalarTypeOf(Property)}</code>.
@@ -33,35 +31,33 @@ public class ModelFinder_scalarTypeOf_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
+  private Protobuf root;
   private ModelFinder finder;
 
   @Before public void setUp() {
+    root = xtext.root();
     finder = xtext.getInstanceOf(ModelFinder.class);
   }
 
+  // message Person {
+  //   optional int32 id = 1;
+  // }
   @Test public void should_return_scalar_if_property_type_is_scalar() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("message Person {        ")
-         .append("  optional int32 id = 1;")
-         .append("}                       ");
-    Protobuf root = xtext.parseText(proto);
     Property id = findProperty(name("id"), in(root));
     ScalarType int32 = finder.scalarTypeOf(id);
     assertThat(int32.getName(), equalTo("int32"));
   }
 
+  // enum PhoneType {
+  //   MOBILE = 0;
+  //   HOME = 1;
+  //   WORK = 2;
+  // }
+  //
+  // message PhoneNumber {
+  //   optional PhoneType type = 1;
+  // }
   @Test public void should_return_null_if_property_type_is_not_scalar() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("enum PhoneType {              ")
-         .append("  MOBILE = 0;                 ")
-         .append("  HOME = 1;                   ")
-         .append("  WORK = 2;                   ")
-         .append("}                             ")
-         .append("                              ")
-         .append("message PhoneNumber {         ")
-         .append("  optional PhoneType type = 1;")
-         .append("}                             ");
-    Protobuf root = xtext.parseText(proto);
     Property type = findProperty(name("type"), in(root));
     ScalarType scalar = finder.scalarTypeOf(type);
     assertThat(scalar, nullValue());

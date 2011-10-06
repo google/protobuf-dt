@@ -16,12 +16,10 @@ import static com.google.eclipse.protobuf.junit.model.find.Root.in;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import org.junit.*;
-
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
-import com.google.eclipse.protobuf.model.util.Properties;
 import com.google.eclipse.protobuf.protobuf.*;
+
+import org.junit.*;
 
 /**
  * Tests for <code>{@link Properties#isBool(Property)}</code>.
@@ -32,28 +30,26 @@ public class Properties_isBool_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
+  private Protobuf root;
   private Properties properties;
 
   @Before public void setUp() {
+    root = xtext.root();
     properties = xtext.getInstanceOf(Properties.class);
   }
 
+  // message Person {
+  //   optional bool active = 1;
+  // }
   @Test public void should_return_true_if_property_is_bool() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("message Person {           ")
-         .append("  optional bool active = 1;")
-         .append("}                          ");
-    Protobuf root = xtext.parseText(proto);
     Property active = findProperty(name("active"), in(root));
     assertThat(properties.isBool(active), equalTo(true));
   }
 
+  // message Person {
+  //   optional string name = 1;
+  // }
   @Test public void should_return_false_if_property_is_not_bool() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("message Person {           ")
-         .append("  optional string name = 1;")
-         .append("}                          ");
-    Protobuf root = xtext.parseText(proto);
     Property name = findProperty(name("name"), in(root));
     assertThat(properties.isBool(name), equalTo(false));
   }

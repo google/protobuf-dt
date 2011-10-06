@@ -28,7 +28,6 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.protobuf.FieldOption;
 import com.google.eclipse.protobuf.protobuf.LiteralRef;
@@ -50,77 +49,73 @@ public class ProtobufScopeProvider_scope_LiteralRef_literal_Test {
   
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
   
+  private Protobuf root;
   private ProtobufScopeProvider provider;
   
   @Before public void setUp() {
+    root = xtext.root();
     provider = xtext.getInstanceOf(ProtobufScopeProvider.class);
   }
   
+  // enum Type {
+  //   ONE = 0;
+  //   TWO = 1;
+  // }
+  // 
+  // message Person {
+  //   optional Type type = 1 [default = ONE];
+  // }
   @Test public void should_provide_Literals_for_default_value() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("enum Type {                              ")
-         .append("  ONE = 0;                               ")
-         .append("  TWO = 1;                               ")
-         .append("}                                        ")
-         .append("                                         ")
-         .append("message Person {                         ")
-         .append("  optional Type type = 1 [default = ONE];")
-         .append("}                                        ");
-    Protobuf root = xtext.parseText(proto);
     FieldOption option = findFieldOption(name("default"), in(root));
     IScope scope = provider.scope_LiteralRef_literal(valueOf(option), reference);
     Enum typeEnum = findEnum(name("Type"), in(root));
     assertThat(descriptionsIn(scope), containAllLiteralsIn(typeEnum));
   }
   
+  // option optimize_for = SPEED;
   @Test public void should_provide_Literals_for_native_option() {
-    Protobuf root = xtext.parseText("option optimize_for = SPEED;");
     Option option = findOption(name("optimize_for"), in(root));
     IScope scope = provider.scope_LiteralRef_literal(valueOf(option), reference);
     Enum optimizeModeEnum = descriptor().enumByName("OptimizeMode");
     assertThat(descriptionsIn(scope), containAllLiteralsIn(optimizeModeEnum));
   }
   
+  // import 'google/protobuf/descriptor.proto';
+  //
+  // enum Type {
+  //   ONE = 0;
+  //   TWO = 1;
+  // }
+  //
+  // extend google.protobuf.FileOptions {
+  //   optional Type type = 1000;
+  // }
+  //  
+  // option (type) = ONE; 
   @Test public void should_provide_Literals_for_custom_option() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("import 'google/protobuf/descriptor.proto';")
-         .append("                                          ")
-         .append("enum Type {                               ")
-         .append("  ONE = 0;                                ")
-         .append("  TWO = 1;                                ")
-         .append("}                                         ")
-         .append("                                          ")
-         .append("extend google.protobuf.FileOptions {      ")
-         .append("  optional Type type = 1000;              ")
-         .append("}                                         ")
-         .append("                                          ")
-         .append("option (type) = ONE;                      ");
-    Protobuf root = xtext.parseText(proto);
     Option option = findOption(name("type"), in(root));
     IScope scope = provider.scope_LiteralRef_literal(valueOf(option), reference);
     Enum typeEnum = findEnum(name("Type"), in(root));
     assertThat(descriptionsIn(scope), containAllLiteralsIn(typeEnum));
   }
 
+  // import 'google/protobuf/descriptor.proto';
+  //
+  // enum Type {
+  //   ONE = 0;
+  //   TWO = 1;
+  // }
+  //
+  // message Info {
+  //   optional Type type = 1;
+  // }
+  //
+  // extend google.protobuf.FileOptions {
+  //   optional Info info = 1000;
+  // }
+  //  
+  // option (info).type = ONE; 
   @Test public void should_provide_Literals_for_property_of_custom_option() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("import 'google/protobuf/descriptor.proto';")
-         .append("                                          ")
-         .append("enum Type {                               ")
-         .append("  ONE = 0;                                ")
-         .append("  TWO = 1;                                ")
-         .append("}                                         ")
-         .append("                                          ")
-         .append("message Info {                            ")
-         .append("  optional Type type = 1;                 ")
-         .append("}                                         ")
-         .append("                                          ")
-         .append("extend google.protobuf.FileOptions {      ")
-         .append("  optional Info info = 1000;              ")
-         .append("}                                         ")
-         .append("                                          ")
-         .append("option (info).type = ONE;                 ");
-    Protobuf root = xtext.parseText(proto);
     Option option = findOption(name("info"), in(root));
     IScope scope = provider.scope_LiteralRef_literal(valueOf(option), reference);
     Enum typeEnum = findEnum(name("Type"), in(root));
@@ -131,12 +126,10 @@ public class ProtobufScopeProvider_scope_LiteralRef_literal_Test {
     return (LiteralRef) option.getValue();
   }
   
+  //  message Person {
+  //    optional Type type = 1 [ctype = STRING];
+  //  }
   @Test public void should_provide_Literals_for_native_field_option() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("message Person {                          ")
-         .append("  optional Type type = 1 [ctype = STRING];")
-         .append("}                                         ");
-    Protobuf root = xtext.parseText(proto);
     FieldOption option = findFieldOption(name("ctype"), in(root));
     IScope scope = provider.scope_LiteralRef_literal(valueOf(option), reference);
     Enum cTypeEnum = descriptor().enumByName("CType");
@@ -148,50 +141,46 @@ public class ProtobufScopeProvider_scope_LiteralRef_literal_Test {
     return descriptorProvider.primaryDescriptor();
   }
 
+  // import 'google/protobuf/descriptor.proto';
+  //
+  // enum Type {
+  //   ONE = 0;
+  //   TWO = 1;
+  // }
+  //
+  // extend google.protobuf.FieldOptions {
+  //   optional Type type = 1000;
+  // }
+  //  
+  // message Person {
+  //   optional boolean active = 1 [(type) = ONE];
+  // }
   @Test public void should_provide_Literals_for_custom_field_option() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("import 'google/protobuf/descriptor.proto';   ")
-         .append("                                             ")
-         .append("enum Type {                                  ")
-         .append("  ONE = 0;                                   ")
-         .append("  TWO = 1;                                   ")
-         .append("}                                            ")
-         .append("                                             ")
-         .append("extend google.protobuf.FieldOptions {        ")
-         .append("  optional Type type = 1000;                 ")
-         .append("}                                            ")
-         .append("                                             ")
-         .append("message Person {                             ")
-         .append("  optional boolean active = 1 [(type) = ONE];")
-         .append("}                                            ");
-    Protobuf root = xtext.parseText(proto);
     FieldOption option = findFieldOption(name("type"), in(root));
     IScope scope = provider.scope_LiteralRef_literal(valueOf(option), reference);
     Enum typeEnum = findEnum(name("Type"), in(root));
     assertThat(descriptionsIn(scope), containAllLiteralsIn(typeEnum));
   }
 
+  // import 'google/protobuf/descriptor.proto';
+  //
+  // enum Type {
+  //   ONE = 0;
+  //   TWO = 1;
+  // }
+  //
+  // message Info {
+  //   optional Type type = 1;
+  // }
+  //
+  // extend google.protobuf.FieldOptions {
+  //   optional Info info = 1000;
+  // }
+  //  
+  // message Person {
+  //   optional boolean active = 1 [(info).type = ONE];
+  // }
   @Test public void should_provide_Literals_for_property_of_custom_field_option() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("import 'google/protobuf/descriptor.proto';        ")
-         .append("                                                  ")
-         .append("enum Type {                                       ")
-         .append("  ONE = 0;                                        ")
-         .append("  TWO = 1;                                        ")
-         .append("}                                                 ")
-         .append("                                                  ")
-         .append("message Info {                                    ")
-         .append("  optional Type type = 1;                         ")
-         .append("}                                                 ")
-         .append("                                                  ")
-         .append("extend google.protobuf.FieldOptions {             ")
-         .append("  optional Info info = 1000;                      ")
-         .append("}                                                 ")
-         .append("                                                  ")
-         .append("message Person {                                  ")
-         .append("  optional boolean active = 1 [(info).type = ONE];")
-         .append("}                                                 ");
-    Protobuf root = xtext.parseText(proto);
     FieldOption option = findFieldOption(name("info"), in(root));
     IScope scope = provider.scope_LiteralRef_literal(valueOf(option), reference);
     Enum typeEnum = findEnum(name("Type"), in(root));

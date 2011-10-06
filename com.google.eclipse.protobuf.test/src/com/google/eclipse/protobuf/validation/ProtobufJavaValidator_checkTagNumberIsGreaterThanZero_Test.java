@@ -19,7 +19,6 @@ import static org.eclipse.xtext.validation.ValidationMessageAcceptor.INSIGNIFICA
 import static org.mockito.Mockito.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 import com.google.eclipse.protobuf.protobuf.*;
 
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
@@ -34,45 +33,41 @@ public class ProtobufJavaValidator_checkTagNumberIsGreaterThanZero_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
   
+  private Protobuf root;
   private ValidationMessageAcceptor messageAcceptor;
   private ProtobufJavaValidator validator;
   
   @Before public void setUp() {
+    root = xtext.root();
     messageAcceptor = mock(ValidationMessageAcceptor.class);
     validator = xtext.getInstanceOf(ProtobufJavaValidator.class);
     validator.setMessageAcceptor(messageAcceptor);
   }
 
+  // message Person {
+  //   optional long id = 0;
+  // }
   @Test public void should_create_error_if_field_index_is_zero() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("message Person {       ")
-         .append("  optional long id = 0;")
-         .append("}                      ");
-    Protobuf root = xtext.parseText(proto);
     Property p = findProperty(name("id"), in(root));
     validator.checkTagNumberIsGreaterThanZero(p);
     String message = "Field numbers must be positive integers.";
     verify(messageAcceptor).acceptError(message, p, FIELD__INDEX, INSIGNIFICANT_INDEX, INVALID_FIELD_TAG_NUMBER_ERROR);
   }
   
+  // message Person {
+  //   optional long id = -1;
+  // }
   @Test public void should_create_error_if_field_index_is_negative() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("message Person {        ")
-         .append("  optional long id = -1;")
-         .append("}                       ");
-    Protobuf root = xtext.parseText(proto);
     Property p = findProperty(name("id"), in(root));
     validator.checkTagNumberIsGreaterThanZero(p);
     String message = "Expected field number.";
     verify(messageAcceptor).acceptError(message, p, FIELD__INDEX, INSIGNIFICANT_INDEX, INVALID_FIELD_TAG_NUMBER_ERROR);
   }
 
+  // message Person {
+  //   optional long id = 1;
+  // }
   @Test public void should_not_create_error_if_field_index_is_greater_than_zero() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("message Person {       ")
-         .append("  optional long id = 1;")
-         .append("}                      ");
-    Protobuf root = xtext.parseText(proto);
     Property p = findProperty(name("id"), in(root));
     validator.checkTagNumberIsGreaterThanZero(p);
     verifyZeroInteractions(messageAcceptor);

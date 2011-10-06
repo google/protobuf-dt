@@ -17,14 +17,12 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 
-import org.eclipse.emf.ecore.EObject;
-import org.junit.*;
-
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
-import com.google.eclipse.protobuf.model.util.ModelFinder;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
+
+import org.eclipse.emf.ecore.EObject;
+import org.junit.*;
 
 /**
  * Tests for <code>{@link ModelFinder#packageOf(EObject)}</code>.
@@ -35,31 +33,29 @@ public class ModelFinder_packageOf_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
+  private Protobuf root;
   private ModelFinder finder;
 
   @Before public void setUp() {
+    root = xtext.root();
     finder = xtext.getInstanceOf(ModelFinder.class);
   }
 
+  // package person.test;
+  //  
+  // message Person {
+  //   optional int32 id = 1;
+  // }
   @Test public void should_return_package_if_proto_has_one() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("package person.test;    ")
-         .append("                        ")
-         .append("message Person {        ")
-         .append("  optional int32 id = 1;")
-         .append("}                       ");
-    Protobuf root = xtext.parseText(proto);
     Property id = findProperty(name("id"), in(root));
     Package aPackage = finder.packageOf(id);
     assertThat(aPackage.getName(), equalTo("person.test"));
   }
 
+  // message Person {
+  //   optional int32 id = 1;
+  // }
   @Test public void should_return_null_if_proto_does_not_have_package() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("message Person {        ")
-         .append("  optional int32 id = 1;")
-         .append("}                       ");
-    Protobuf root = xtext.parseText(proto);
     Property id = findProperty(name("id"), in(root));
     Package aPackage = finder.packageOf(id);
     assertThat(aPackage, nullValue());

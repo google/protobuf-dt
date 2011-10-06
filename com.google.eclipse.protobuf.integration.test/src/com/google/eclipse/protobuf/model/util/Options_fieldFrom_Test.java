@@ -16,16 +16,10 @@ import static com.google.eclipse.protobuf.junit.model.find.Root.in;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
-import com.google.eclipse.protobuf.model.util.Options;
-import com.google.eclipse.protobuf.protobuf.CustomOption;
-import com.google.eclipse.protobuf.protobuf.Property;
-import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.eclipse.protobuf.protobuf.*;
+
+import org.junit.*;
 
 /**
  * Tests for <code>{@link Options#fieldFrom(CustomOption)}</code>.
@@ -36,26 +30,26 @@ public class Options_fieldFrom_Test {
 
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
+  private Protobuf root;
   private Options options;
 
   @Before public void setUp() {
+    root = xtext.root();
     options = xtext.getInstanceOf(Options.class);
   }
   
+  // import 'google/protobuf/descriptor.proto';
+  //
+  // message Custom {
+  //   optional int32 count = 1;
+  // }
+  //  
+  // extend google.protobuf.FileOptions {
+  //   optional Custom custom = 1000;
+  // }
+  //  
+  // option (custom).count = 6;
   @Test public void should_return_property_field() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("import 'google/protobuf/descriptor.proto';")
-         .append("                                          ")
-         .append("message Custom {                          ")
-         .append("  optional int32 count = 1;               ")
-         .append("}                                         ")
-         .append("                                          ")
-         .append("extend google.protobuf.FileOptions {      ")
-         .append("  optional Custom custom = 1000;          ")
-         .append("}                                         ")
-         .append("                                          ")
-         .append("option (custom).count = 6;");
-    Protobuf root = xtext.parseText(proto);
     CustomOption option = (CustomOption) findOption(name("custom"), in(root));
     Property p = options.fieldFrom(option);
     assertThat(p.getName(), equalTo("count"));

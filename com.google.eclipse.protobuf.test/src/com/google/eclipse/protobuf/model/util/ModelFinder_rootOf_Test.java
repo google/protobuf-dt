@@ -16,13 +16,11 @@ import static com.google.eclipse.protobuf.junit.model.find.Root.in;
 import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.Assert.assertThat;
 
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.*;
+
 import org.eclipse.emf.ecore.EObject;
 import org.junit.*;
-
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
-import com.google.eclipse.protobuf.model.util.ModelFinder;
-import com.google.eclipse.protobuf.protobuf.*;
 
 /**
  * Tests for <code>{@link ModelFinder#rootOf(EObject)}</code>.
@@ -33,18 +31,18 @@ public class ModelFinder_rootOf_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
+  private Protobuf root;
   private ModelFinder finder;
 
   @Before public void setUp() {
+    root = xtext.root();
     finder = xtext.getInstanceOf(ModelFinder.class);
   }
 
+  // message Person {
+  //   optional string name = 1;
+  // }
   @Test public void should_return_root_of_proto() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("message Person {           ")
-         .append("  optional string name = 1;")
-         .append("}                          ");
-    Protobuf root = xtext.parseText(proto);
     Property name = findProperty(name("name"), in(root));
     assertThat(finder.rootOf(name), sameInstance(root));
   }

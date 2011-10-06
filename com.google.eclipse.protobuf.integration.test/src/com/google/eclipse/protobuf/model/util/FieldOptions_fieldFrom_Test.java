@@ -10,22 +10,16 @@ package com.google.eclipse.protobuf.model.util;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.integrationTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.junit.model.find.FieldOptionFinder.findFieldOption;
+import static com.google.eclipse.protobuf.junit.model.find.FieldOptionFinder.findCustomFieldOption;
 import static com.google.eclipse.protobuf.junit.model.find.Name.name;
 import static com.google.eclipse.protobuf.junit.model.find.Root.in;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.*;
 
-import com.google.eclipse.protobuf.junit.core.*;
-import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
-import com.google.eclipse.protobuf.model.util.FieldOptions;
-import com.google.eclipse.protobuf.protobuf.CustomFieldOption;
-import com.google.eclipse.protobuf.protobuf.Property;
-import com.google.eclipse.protobuf.protobuf.Protobuf;
+import org.junit.*;
 
 /**
  * Tests for <code>{@link FieldOptions#fieldFrom(CustomFieldOption)}</code>.
@@ -36,29 +30,29 @@ public class FieldOptions_fieldFrom_Test {
 
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
+  private Protobuf root;
   private FieldOptions fieldOptions;
 
   @Before public void setUp() {
+    root = xtext.root();
     fieldOptions = xtext.getInstanceOf(FieldOptions.class);
   }
   
+  //  import 'google/protobuf/descriptor.proto';
+  //  
+  //  message Custom {
+  //    optional int32 count = 1;
+  //  }
+  //  
+  //  extend google.protobuf.FieldOptions {
+  //    optional Custom custom = 1000;
+  //  }
+  //  
+  //  message Person {
+  //    optional boolean active = 1 [(custom).count = 6];
+  //  }
   @Test public void should_return_property_field() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("import 'google/protobuf/descriptor.proto';         ")
-         .append("                                                   ")
-         .append("message Custom {                                   ")
-         .append("  optional int32 count = 1;                        ")
-         .append("}                                                  ")
-         .append("                                                   ")
-         .append("extend google.protobuf.FieldOptions {              ")
-         .append("  optional Custom custom = 1000;                   ")
-         .append("}                                                  ")
-         .append("                                                   ")
-         .append("message Person {                                   ")
-         .append("  optional boolean active = 1 [(custom).count = 6];")
-         .append("}                                                  ");
-    Protobuf root = xtext.parseText(proto);
-    CustomFieldOption option = (CustomFieldOption) findFieldOption(name("custom"), in(root));
+    CustomFieldOption option = findCustomFieldOption(name("custom"), in(root));
     Property p = fieldOptions.fieldFrom(option);
     assertThat(p.getName(), equalTo("count"));
   }

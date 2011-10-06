@@ -19,7 +19,6 @@ import static org.eclipse.xtext.validation.ValidationMessageAcceptor.INSIGNIFICA
 import static org.mockito.Mockito.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 import com.google.eclipse.protobuf.protobuf.*;
 
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
@@ -33,36 +32,34 @@ import org.junit.*;
 public class ProtobufJavaValidator_checkTagNumberIsUnique_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
-  
+
+  private Protobuf root;
   private ValidationMessageAcceptor messageAcceptor;
   private ProtobufJavaValidator validator;
   
   @Before public void setUp() {
+    root = xtext.root();
     messageAcceptor = mock(ValidationMessageAcceptor.class);
     validator = xtext.getInstanceOf(ProtobufJavaValidator.class);
     validator.setMessageAcceptor(messageAcceptor);
   }
 
+  // message Person {
+  //   optional long id = 1;
+  //   optional string name = 1;
+  // }
   @Test public void should_create_error_if_field_does_not_have_unique_tag_number() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("message Person {           ")
-         .append("  optional long id = 1;    ")
-         .append("  optional string name = 1;")
-         .append("}                          ");
-    Protobuf root = xtext.parseText(proto);
     Property p = findProperty(name("name"), in(root));
     validator.checkTagNumberIsUnique(p);
     String message = "Field number 1 has already been used in \"Person\" by field \"id\".";
     verify(messageAcceptor).acceptError(message, p, FIELD__INDEX, INSIGNIFICANT_INDEX, INVALID_FIELD_TAG_NUMBER_ERROR);
   }
   
+  // message Person {
+  //   optional long id = 1;
+  //   optional string name = 2;
+  // }
   @Test public void should_not_create_error_if_field_has_unique_tag_number() {
-    MultiLineTextBuilder proto = new MultiLineTextBuilder();
-    proto.append("message Person {           ")
-         .append("  optional long id = 1;    ")
-         .append("  optional string name = 2;")
-         .append("}                          ");
-    Protobuf root = xtext.parseText(proto);
     Property p = findProperty(name("name"), in(root));
     validator.checkTagNumberIsUnique(p);
     verifyZeroInteractions(messageAcceptor);
