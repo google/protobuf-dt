@@ -10,9 +10,6 @@ package com.google.eclipse.protobuf.validation;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.junit.model.find.Name.name;
-import static com.google.eclipse.protobuf.junit.model.find.PropertyFinder.findProperty;
-import static com.google.eclipse.protobuf.junit.model.find.Root.in;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.FIELD__INDEX;
 import static com.google.eclipse.protobuf.validation.ProtobufJavaValidator.INVALID_FIELD_TAG_NUMBER_ERROR;
 import static org.eclipse.xtext.validation.ValidationMessageAcceptor.INSIGNIFICANT_INDEX;
@@ -33,12 +30,10 @@ public class ProtobufJavaValidator_checkTagNumberIsGreaterThanZero_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
   
-  private Protobuf root;
   private ValidationMessageAcceptor messageAcceptor;
   private ProtobufJavaValidator validator;
   
   @Before public void setUp() {
-    root = xtext.root();
     messageAcceptor = mock(ValidationMessageAcceptor.class);
     validator = xtext.getInstanceOf(ProtobufJavaValidator.class);
     validator.setMessageAcceptor(messageAcceptor);
@@ -48,28 +43,28 @@ public class ProtobufJavaValidator_checkTagNumberIsGreaterThanZero_Test {
   //   optional long id = 0;
   // }
   @Test public void should_create_error_if_field_index_is_zero() {
-    Property p = findProperty(name("id"), in(root));
-    validator.checkTagNumberIsGreaterThanZero(p);
+    Property id = xtext.find("id", Property.class);
+    validator.checkTagNumberIsGreaterThanZero(id);
     String message = "Field numbers must be positive integers.";
-    verify(messageAcceptor).acceptError(message, p, FIELD__INDEX, INSIGNIFICANT_INDEX, INVALID_FIELD_TAG_NUMBER_ERROR);
+    verify(messageAcceptor).acceptError(message, id, FIELD__INDEX, INSIGNIFICANT_INDEX, INVALID_FIELD_TAG_NUMBER_ERROR);
   }
   
   // message Person {
   //   optional long id = -1;
   // }
   @Test public void should_create_error_if_field_index_is_negative() {
-    Property p = findProperty(name("id"), in(root));
-    validator.checkTagNumberIsGreaterThanZero(p);
+    Property id = xtext.find("id", Property.class);
+    validator.checkTagNumberIsGreaterThanZero(id);
     String message = "Expected field number.";
-    verify(messageAcceptor).acceptError(message, p, FIELD__INDEX, INSIGNIFICANT_INDEX, INVALID_FIELD_TAG_NUMBER_ERROR);
+    verify(messageAcceptor).acceptError(message, id, FIELD__INDEX, INSIGNIFICANT_INDEX, INVALID_FIELD_TAG_NUMBER_ERROR);
   }
 
   // message Person {
   //   optional long id = 1;
   // }
   @Test public void should_not_create_error_if_field_index_is_greater_than_zero() {
-    Property p = findProperty(name("id"), in(root));
-    validator.checkTagNumberIsGreaterThanZero(p);
+    Property id = xtext.find("id", Property.class);
+    validator.checkTagNumberIsGreaterThanZero(id);
     verifyZeroInteractions(messageAcceptor);
   }
 }

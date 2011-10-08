@@ -10,11 +10,6 @@ package com.google.eclipse.protobuf.scoping;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.integrationTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.junit.model.find.FieldOptionFinder.findCustomFieldOption;
-import static com.google.eclipse.protobuf.junit.model.find.MessageFinder.findMessage;
-import static com.google.eclipse.protobuf.junit.model.find.Name.name;
-import static com.google.eclipse.protobuf.junit.model.find.OptionFinder.findCustomOption;
-import static com.google.eclipse.protobuf.junit.model.find.Root.in;
 import static com.google.eclipse.protobuf.scoping.ContainAllPropertiesInMessage.containAllPropertiesIn;
 import static com.google.eclipse.protobuf.scoping.IEObjectDescriptions.descriptionsIn;
 import static org.junit.Assert.assertThat;
@@ -42,11 +37,9 @@ public class ProtobufScopeProvider_scope_SimplePropertyRef_property_Test {
   
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
-  private Protobuf root;
   private ProtobufScopeProvider provider;
   
   @Before public void setUp() {
-    root = xtext.root();
     provider = xtext.getInstanceOf(ProtobufScopeProvider.class);
   }
 
@@ -63,9 +56,9 @@ public class ProtobufScopeProvider_scope_SimplePropertyRef_property_Test {
   //  
   // option (type).code = 68;
   @Test public void should_provide_Property_fields_for_custom_option_field() {
-    CustomOption option = findCustomOption(name("type"), in(root));
+    CustomOption option = xtext.find("type", ")", CustomOption.class);
     IScope scope = provider.scope_SimplePropertyRef_property(option.getPropertyField(), reference);
-    Message typeMessage = findMessage(name("Type"), in(root));
+    Message typeMessage = xtext.find("Type", " {", Message.class);
     assertThat(descriptionsIn(scope), containAllPropertiesIn(typeMessage));
   }
 
@@ -84,9 +77,9 @@ public class ProtobufScopeProvider_scope_SimplePropertyRef_property_Test {
   //   optional boolean active = 1 [(type).code = 68];
   // }
   @Test public void should_provide_Property_fields_for_custom_field_option_field() {
-    CustomFieldOption option = findCustomFieldOption(name("type"), in(root));
+    CustomFieldOption option = xtext.find("type", ")", CustomFieldOption.class);
     IScope scope = provider.scope_SimplePropertyRef_property(option.getPropertyField(), reference);
-    Message typeMessage = findMessage(name("Type"), in(root));
+    Message typeMessage = xtext.find("Type", " {", Message.class);
     assertThat(descriptionsIn(scope), containAllPropertiesIn(typeMessage));
   }
 }

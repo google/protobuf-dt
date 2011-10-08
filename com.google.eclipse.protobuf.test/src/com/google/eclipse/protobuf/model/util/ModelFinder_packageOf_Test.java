@@ -10,9 +10,6 @@ package com.google.eclipse.protobuf.model.util;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.junit.model.find.Name.name;
-import static com.google.eclipse.protobuf.junit.model.find.PropertyFinder.findProperty;
-import static com.google.eclipse.protobuf.junit.model.find.Root.in;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
@@ -33,11 +30,9 @@ public class ModelFinder_packageOf_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
-  private Protobuf root;
   private ModelFinder finder;
 
   @Before public void setUp() {
-    root = xtext.root();
     finder = xtext.getInstanceOf(ModelFinder.class);
   }
 
@@ -47,7 +42,7 @@ public class ModelFinder_packageOf_Test {
   //   optional int32 id = 1;
   // }
   @Test public void should_return_package_if_proto_has_one() {
-    Property id = findProperty(name("id"), in(root));
+    Property id = xtext.find("id", Property.class);
     Package aPackage = finder.packageOf(id);
     assertThat(aPackage.getName(), equalTo("person.test"));
   }
@@ -56,7 +51,7 @@ public class ModelFinder_packageOf_Test {
   //   optional int32 id = 1;
   // }
   @Test public void should_return_null_if_proto_does_not_have_package() {
-    Property id = findProperty(name("id"), in(root));
+    Property id = xtext.find("id", Property.class);
     Package aPackage = finder.packageOf(id);
     assertThat(aPackage, nullValue());
   }

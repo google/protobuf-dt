@@ -10,15 +10,12 @@ package com.google.eclipse.protobuf.model.util;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.junit.model.find.Name.name;
-import static com.google.eclipse.protobuf.junit.model.find.PropertyFinder.findProperty;
-import static com.google.eclipse.protobuf.junit.model.find.Root.in;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.FIELD__NAME;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Property;
 
 import org.eclipse.emf.ecore.*;
 import org.eclipse.xtext.nodemodel.INode;
@@ -33,11 +30,9 @@ public class ModelNodes_firstNodeForFeature_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
-  private Protobuf root;
   private INodes nodes;
 
   @Before public void setUp() {
-    root = xtext.root();
     nodes = xtext.getInstanceOf(INodes.class);
   }
 
@@ -45,7 +40,7 @@ public class ModelNodes_firstNodeForFeature_Test {
   //   optional bool active = 1;    
   // }
   @Test public void should_return_first_node_for_feature() {
-    Property active = findProperty(name("active"), in(root));
+    Property active = xtext.find("active", Property.class);
     INode node = nodes.firstNodeForFeature(active, FIELD__NAME);
     assertThat(node.getText().trim(), equalTo("active"));
   }

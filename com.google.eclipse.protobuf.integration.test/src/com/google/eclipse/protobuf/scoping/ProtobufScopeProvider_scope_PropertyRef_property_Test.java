@@ -10,10 +10,6 @@ package com.google.eclipse.protobuf.scoping;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.integrationTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.junit.model.find.FieldOptionFinder.*;
-import static com.google.eclipse.protobuf.junit.model.find.Name.name;
-import static com.google.eclipse.protobuf.junit.model.find.OptionFinder.findOption;
-import static com.google.eclipse.protobuf.junit.model.find.Root.in;
 import static com.google.eclipse.protobuf.model.OptionType.*;
 import static com.google.eclipse.protobuf.scoping.ContainAllNames.containAll;
 import static com.google.eclipse.protobuf.scoping.ContainAllProperties.containAll;
@@ -45,17 +41,15 @@ public class ProtobufScopeProvider_scope_PropertyRef_property_Test {
   
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
   
-  private Protobuf root;
   private ProtobufScopeProvider provider;
   
   @Before public void setUp() {
-    root = xtext.root();
     provider = xtext.getInstanceOf(ProtobufScopeProvider.class);
   }
 
   // option optimize_for = SPEED;
   @Test public void should_provide_Property_fields_for_native_option() {
-    Option option = findOption(name("optimize_for"), in(root));
+    Option option = xtext.find("optimize_for", Option.class);
     IScope scope = provider.scope_PropertyRef_property(option.getProperty(), reference);
     Collection<Property> fileOptions = descriptor().optionsOfType(FILE);
     assertThat(descriptionsIn(scope), containAll(fileOptions));
@@ -65,7 +59,7 @@ public class ProtobufScopeProvider_scope_PropertyRef_property_Test {
   //   optional Type type = 1 [ctype = STRING];
   // }
   @Test public void should_provide_Property_fields_for_native_field_option() {
-    NativeFieldOption option = findNativeFieldOption(name("ctype"), in(root));
+    NativeFieldOption option = xtext.find("ctype", NativeFieldOption.class);
     IScope scope = provider.scope_PropertyRef_property(option.getProperty(), reference);
     Collection<Property> fieldOptions = descriptor().optionsOfType(FIELD);
     assertThat(descriptionsIn(scope), containAll(fieldOptions));
@@ -86,7 +80,7 @@ public class ProtobufScopeProvider_scope_PropertyRef_property_Test {
   //
   // option (code) = 68;
   @Test public void should_provide_Property_fields_for_custom_option() {
-    Option option = findOption(name("code"), in(root));
+    Option option = xtext.find("code", ")", Option.class);
     IScope scope = provider.scope_PropertyRef_property(option.getProperty(), reference);
     assertThat(descriptionsIn(scope), containAll("code", "proto.code", "google.proto.code", "com.google.proto.code", 
                                                  ".com.google.proto.code",
@@ -100,7 +94,7 @@ public class ProtobufScopeProvider_scope_PropertyRef_property_Test {
   //
   // option (code) = 68;
   @Test public void should_provide_imported_Property_fields_for_custom_option() {
-    Option option = findOption(name("code"), in(root));
+    Option option = xtext.find("code", ")", Option.class);
     IScope scope = provider.scope_PropertyRef_property(option.getProperty(), reference);
     assertThat(descriptionsIn(scope), containAll("code", "test.code", "google.test.code", "com.google.test.code", 
                                                  ".com.google.test.code",
@@ -120,7 +114,7 @@ public class ProtobufScopeProvider_scope_PropertyRef_property_Test {
   //   optional boolean active = 1 [(code) = 68];
   // }
   @Test public void should_provide_Property_fields_for_custom_field_option() {
-    CustomFieldOption option = findCustomFieldOption(name("code"), in(root));
+    CustomFieldOption option = xtext.find("code", ")", CustomFieldOption.class);
     IScope scope = provider.scope_PropertyRef_property(option.getProperty(), reference);
     assertThat(descriptionsIn(scope), containAll("code", "proto.code", "google.proto.code", "com.google.proto.code", 
                                                  ".com.google.proto.code",

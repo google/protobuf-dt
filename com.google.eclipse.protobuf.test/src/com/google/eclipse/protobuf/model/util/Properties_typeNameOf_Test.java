@@ -10,9 +10,6 @@ package com.google.eclipse.protobuf.model.util;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.junit.model.find.Name.name;
-import static com.google.eclipse.protobuf.junit.model.find.PropertyFinder.findProperty;
-import static com.google.eclipse.protobuf.junit.model.find.Root.in;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -30,11 +27,9 @@ public class Properties_typeNameOf_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
-  private Protobuf root;
   private Properties properties;
 
   @Before public void setUp() {
-    root = xtext.root();
     properties = xtext.getInstanceOf(Properties.class);
   }
 
@@ -42,7 +37,7 @@ public class Properties_typeNameOf_Test {
   //   optional string name = 1;
   // }
   @Test public void should_return_name_of_scalar() {
-    Property name = findProperty(name("name"), in(root));
+    Property name = xtext.find("name", Property.class);
     assertThat(properties.typeNameOf(name), equalTo("string"));
   }
 
@@ -55,8 +50,7 @@ public class Properties_typeNameOf_Test {
   //   }
   // }
   @Test public void should_return_name_of_type() {
-    Property number = findProperty(name("number"), in(root));
+    Property number = xtext.find("number", Property.class);
     assertThat(properties.typeNameOf(number), equalTo("PhoneNumber"));
   }
-
 }

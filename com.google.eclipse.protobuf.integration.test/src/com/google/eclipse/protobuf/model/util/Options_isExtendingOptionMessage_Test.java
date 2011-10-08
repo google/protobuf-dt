@@ -10,9 +10,6 @@ package com.google.eclipse.protobuf.model.util;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.integrationTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.junit.model.find.ExtendMessageFinder.findExtendMessage;
-import static com.google.eclipse.protobuf.junit.model.find.Name.name;
-import static com.google.eclipse.protobuf.junit.model.find.Root.in;
 import static com.google.eclipse.protobuf.model.OptionType.FILE;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
@@ -34,11 +31,9 @@ public class Options_isExtendingOptionMessage_Test {
   
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
-  private Protobuf root;
   private Options options;
 
   @Before public void setUp() {
-    root = xtext.root();
     options = xtext.getInstanceOf(Options.class);
   }
 
@@ -48,7 +43,7 @@ public class Options_isExtendingOptionMessage_Test {
   //   optional string encoding = 1000;
   // }
   @Test public void should_return_true_if_name_of_extended_message_is_equal_to_message_name_in_OptionType() {
-    ExtendMessage extend = findExtendMessage(name("FileOptions"), in(root));
+    ExtendMessage extend = xtext.find("FileOptions", ExtendMessage.class);
     boolean result = options.isExtendingOptionMessage(extend, FILE);
     assertThat(result, equalTo(true));
   }
@@ -65,7 +60,7 @@ public class Options_isExtendingOptionMessage_Test {
   //   optional string encoding = 1000;
   // }
   @Test public void should_return_false_if_name_of_extended_message_is_not_equal_to_message_name_in_OptionType() {
-    ExtendMessage extend = findExtendMessage(name("FieldOptions"), in(root));
+    ExtendMessage extend = xtext.find("FieldOptions", ExtendMessage.class);
     boolean result = options.isExtendingOptionMessage(extend, FILE);
     assertThat(result, equalTo(false));
   }

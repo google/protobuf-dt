@@ -10,7 +10,7 @@ package com.google.eclipse.protobuf.model.util;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.junit.model.find.PropertyFinder.allPropertiesIn;
+import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -28,11 +28,9 @@ public class Properties_isPrimitive_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
-  private Protobuf root;
   private Properties properties;
 
   @Before public void setUp() {
-    root = xtext.root();
     properties = xtext.getInstanceOf(Properties.class);
   }
 
@@ -49,7 +47,7 @@ public class Properties_isPrimitive_Test {
   //   optional bool bool_1 = 10;     
   // }
   @Test public void should_return_true_if_property_is_primitive() {
-    for (Property p : allPropertiesIn(root))
+    for (Property p : getAllContentsOfType(xtext.root(), Property.class))
       assertThat(properties.isPrimitive(p), equalTo(true));
   }
 
@@ -63,7 +61,7 @@ public class Properties_isPrimitive_Test {
   //   optional string name = 1;
   // }
   @Test public void should_return_false_if_property_is_not_primitive() {
-    for (Property p : allPropertiesIn(root))
+    for (Property p : getAllContentsOfType(xtext.root(), Property.class))
       assertThat(properties.isPrimitive(p), equalTo(false));
   }
 }

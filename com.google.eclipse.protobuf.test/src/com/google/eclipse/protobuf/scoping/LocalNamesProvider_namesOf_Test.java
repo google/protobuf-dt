@@ -10,14 +10,10 @@ package com.google.eclipse.protobuf.scoping;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.junit.model.find.EnumFinder.findEnum;
-import static com.google.eclipse.protobuf.junit.model.find.Name.name;
-import static com.google.eclipse.protobuf.junit.model.find.Root.in;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 
 import org.eclipse.emf.ecore.EObject;
@@ -35,20 +31,16 @@ public class LocalNamesProvider_namesOf_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
-  private Protobuf root;
   private LocalNamesProvider namesProvider;
 
   @Before public void setUp() {
-    root = xtext.root();
     namesProvider = xtext.getInstanceOf(LocalNamesProvider.class);
   }
 
   // package test.alternative.names;
-  //
   // message Person {
   //   message PhoneNumber {
   //     optional PhoneType type = 1 [default = HOME];
-  //      
   //     enum PhoneType {
   //       HOME = 0;
   //       WORK = 1;
@@ -56,7 +48,7 @@ public class LocalNamesProvider_namesOf_Test {
   //   }
   // }
   @Test public void should_return_all_possible_local_names() {
-    Enum phoneType = findEnum(name("PhoneType"), in(root));
+    Enum phoneType = xtext.find("PhoneType", " {", Enum.class);
     List<QualifiedName> names = namesProvider.namesOf(phoneType);
     assertThat(names.get(0).toString(), equalTo("PhoneType"));
     assertThat(names.get(1).toString(), equalTo("PhoneNumber.PhoneType"));

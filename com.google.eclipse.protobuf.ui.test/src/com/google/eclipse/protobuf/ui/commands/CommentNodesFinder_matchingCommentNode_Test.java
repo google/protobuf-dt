@@ -10,9 +10,6 @@ package com.google.eclipse.protobuf.ui.commands;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.junit.model.find.Name.name;
-import static com.google.eclipse.protobuf.junit.model.find.PropertyFinder.findProperty;
-import static com.google.eclipse.protobuf.junit.model.find.Root.in;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.*;
 import static org.junit.Assert.assertThat;
@@ -36,11 +33,9 @@ public class CommentNodesFinder_matchingCommentNode_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
-  private Protobuf root;
   private CommentNodesFinder finder;
 
   @Before public void setUp() {
-    root = xtext.root();
     finder = xtext.getInstanceOf(CommentNodesFinder.class);
   }
 
@@ -49,7 +44,7 @@ public class CommentNodesFinder_matchingCommentNode_Test {
   //   optional bool active = 1;
   // }
   @Test public void should_return_matching_single_line_comment_of_element() {
-    Property active = findProperty(name("active"), in(root));
+    Property active = xtext.find("active", Property.class);
     Pair<INode, Matcher> match = finder.matchingCommentNode(active, "next id: [\\d]+");
     INode node = match.getFirst();
     assertThat(node.getText().trim(), equalTo("// Next Id: 6"));
@@ -62,7 +57,7 @@ public class CommentNodesFinder_matchingCommentNode_Test {
   //   optional bool active = 1;
   // }
   @Test public void should_return_matching_multi_line_comment_of_element() {
-    Property active = findProperty(name("active"), in(root));
+    Property active = xtext.find("active", Property.class);
     Pair<INode, Matcher> match = finder.matchingCommentNode(active, "NEXT ID: [\\d]+");
     INode node = match.getFirst();
     assertThat(node, notNullValue());
@@ -73,7 +68,7 @@ public class CommentNodesFinder_matchingCommentNode_Test {
   //   optional bool active = 1;
   // }
   @Test public void should_return_null_if_no_matching_node_found() {
-    Property active = findProperty(name("active"), in(root));
+    Property active = xtext.find("active", Property.class);
     Pair<INode, Matcher> match = finder.matchingCommentNode(active, "Hello");
     assertThat(match, nullValue());
   }

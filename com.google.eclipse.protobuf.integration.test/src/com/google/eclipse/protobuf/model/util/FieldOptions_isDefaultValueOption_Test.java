@@ -10,9 +10,6 @@ package com.google.eclipse.protobuf.model.util;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.integrationTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.junit.model.find.FieldOptionFinder.findFieldOption;
-import static com.google.eclipse.protobuf.junit.model.find.Name.name;
-import static com.google.eclipse.protobuf.junit.model.find.Root.in;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -30,11 +27,9 @@ public class FieldOptions_isDefaultValueOption_Test {
 
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
-  private Protobuf root;
   private FieldOptions fieldOptions;
 
   @Before public void setUp() {
-    root = xtext.root();
     fieldOptions = xtext.getInstanceOf(FieldOptions.class);
   }
 
@@ -42,7 +37,7 @@ public class FieldOptions_isDefaultValueOption_Test {
   //   optional boolean active = 1 [default = true, deprecated = false];
   // }
   @Test public void should_return_true_if_FieldOption_is_default_value_one() {
-    FieldOption option = findFieldOption(name("default"), in(root));
+    FieldOption option = xtext.find("default", FieldOption.class);
     boolean result = fieldOptions.isDefaultValueOption(option);
     assertThat(result, equalTo(true));
   }
@@ -51,7 +46,7 @@ public class FieldOptions_isDefaultValueOption_Test {
   //   optional boolean active = 1 [default = true, deprecated = false];
   // }
   @Test public void should_return_false_if_FieldOption_is_not_default_value_one() {
-    FieldOption option = findFieldOption(name("deprecated"), in(root));
+    FieldOption option = xtext.find("deprecated", FieldOption.class);
     boolean result = fieldOptions.isDefaultValueOption(option);
     assertThat(result, equalTo(false));
   }

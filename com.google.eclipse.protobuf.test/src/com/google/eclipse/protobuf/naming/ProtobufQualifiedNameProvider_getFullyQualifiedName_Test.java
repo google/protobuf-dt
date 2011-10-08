@@ -10,10 +10,6 @@ package com.google.eclipse.protobuf.naming;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.junit.model.find.MessageFinder.findMessage;
-import static com.google.eclipse.protobuf.junit.model.find.Name.name;
-import static com.google.eclipse.protobuf.junit.model.find.PropertyFinder.findProperty;
-import static com.google.eclipse.protobuf.junit.model.find.Root.in;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -32,11 +28,9 @@ public class ProtobufQualifiedNameProvider_getFullyQualifiedName_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
-  private Protobuf root;
   private ProtobufQualifiedNameProvider provider;
 
   @Before public void setUp() {
-    root = xtext.root();
     provider = (ProtobufQualifiedNameProvider) xtext.getInstanceOf(IQualifiedNameProvider.class);
   }
 
@@ -46,7 +40,7 @@ public class ProtobufQualifiedNameProvider_getFullyQualifiedName_Test {
   //   optional string name = 1;
   // }
   @Test public void should_include_existing_package_name_as_part_of_message_FQN() {
-    Message person = findMessage(name("Person"), in(root));
+    Message person = xtext.find("Person", Message.class);
     QualifiedName fqn = provider.getFullyQualifiedName(person);
     assertThat(fqn.toString(), equalTo("fqn.test.Person"));
   }
@@ -57,7 +51,7 @@ public class ProtobufQualifiedNameProvider_getFullyQualifiedName_Test {
   //   optional string name = 1;
   // }
   @Test public void should_include_existing_package_name_as_part_of_property_FQN() {
-    Property name = findProperty(name("name"), in(root));
+    Property name = xtext.find("name", Property.class);
     QualifiedName fqn = provider.getFullyQualifiedName(name);
     assertThat(fqn.toString(), equalTo("fqn.test.Person.name"));
   }
@@ -66,7 +60,7 @@ public class ProtobufQualifiedNameProvider_getFullyQualifiedName_Test {
   //   optional string name = 1;
   // }
   @Test public void should_not_include_package_name_as_part_of_message_FQN_if_package_is_not_specified() {
-    Message person = findMessage(name("Person"), in(root));
+    Message person = xtext.find("Person", Message.class);
     QualifiedName fqn = provider.getFullyQualifiedName(person);
     assertThat(fqn.toString(), equalTo("Person"));
   }
@@ -75,7 +69,7 @@ public class ProtobufQualifiedNameProvider_getFullyQualifiedName_Test {
   //   optional string name = 1;
   // }
   @Test public void should_not_include_package_name_as_part_of_property_FQN_if_package_is_not_specified() {
-    Property name = findProperty(name("name"), in(root));
+    Property name = xtext.find("name", Property.class);
     QualifiedName fqn = provider.getFullyQualifiedName(name);
     assertThat(fqn.toString(), equalTo("Person.name"));
   }

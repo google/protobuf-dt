@@ -10,9 +10,6 @@ package com.google.eclipse.protobuf.ui.documentation;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.junit.model.find.Name.name;
-import static com.google.eclipse.protobuf.junit.model.find.PropertyFinder.findProperty;
-import static com.google.eclipse.protobuf.junit.model.find.Root.in;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -31,11 +28,9 @@ public class SingleLineCommentDocumentationProvider_getDocumentation_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
-  private Protobuf root;
   private SingleLineCommentDocumentationProvider provider;
 
   @Before public void setUp() {
-    root = xtext.root();
     provider = xtext.getInstanceOf(SingleLineCommentDocumentationProvider.class);
   }
 
@@ -44,7 +39,7 @@ public class SingleLineCommentDocumentationProvider_getDocumentation_Test {
   //   optional bool active = 1; 
   // }
   @Test public void should_return_single_line_comment_of_element() {
-    Property active = findProperty(name("active"), in(root));
+    Property active = xtext.find("active", Property.class);
     String documentation = provider.getDocumentation(active);
     assertThat(documentation, equalTo("Indicates whether the person is active or not."));
   }
@@ -53,7 +48,7 @@ public class SingleLineCommentDocumentationProvider_getDocumentation_Test {
   //   optional bool active = 1; 
   // }
   @Test public void should_return_empty_String_if_element_does_not_have_single_line_comment() {
-    Property active = findProperty(name("active"), in(root));
+    Property active = xtext.find("active", Property.class);
     String documentation = provider.getDocumentation(active);
     assertThat(documentation, equalTo(""));
   }

@@ -10,9 +10,6 @@ package com.google.eclipse.protobuf.model.util;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.junit.model.find.Name.name;
-import static com.google.eclipse.protobuf.junit.model.find.PropertyFinder.findProperty;
-import static com.google.eclipse.protobuf.junit.model.find.Root.in;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -30,11 +27,9 @@ public class Properties_isBool_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
-  private Protobuf root;
   private Properties properties;
 
   @Before public void setUp() {
-    root = xtext.root();
     properties = xtext.getInstanceOf(Properties.class);
   }
 
@@ -42,7 +37,7 @@ public class Properties_isBool_Test {
   //   optional bool active = 1;
   // }
   @Test public void should_return_true_if_property_is_bool() {
-    Property active = findProperty(name("active"), in(root));
+    Property active = xtext.find("active", Property.class);
     assertThat(properties.isBool(active), equalTo(true));
   }
 
@@ -50,7 +45,7 @@ public class Properties_isBool_Test {
   //   optional string name = 1;
   // }
   @Test public void should_return_false_if_property_is_not_bool() {
-    Property name = findProperty(name("name"), in(root));
+    Property name = xtext.find("name", Property.class);
     assertThat(properties.isBool(name), equalTo(false));
   }
 }

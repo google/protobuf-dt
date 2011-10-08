@@ -10,9 +10,6 @@ package com.google.eclipse.protobuf.model.util;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.integrationTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.junit.model.find.FieldOptionFinder.findFieldOption;
-import static com.google.eclipse.protobuf.junit.model.find.Name.name;
-import static com.google.eclipse.protobuf.junit.model.find.Root.in;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -30,11 +27,9 @@ public class FieldOptions_propertyFrom_Test {
 
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
-  private Protobuf root;
   private FieldOptions fieldOptions;
 
   @Before public void setUp() {
-    root = xtext.root();
     fieldOptions = xtext.getInstanceOf(FieldOptions.class);
   }
 
@@ -42,7 +37,7 @@ public class FieldOptions_propertyFrom_Test {
   //   optional boolean active = 1 [deprecated = false];
   // }
   @Test public void should_return_property_of_native_field_option() {
-    FieldOption option = findFieldOption(name("deprecated"), in(root));
+    FieldOption option = xtext.find("deprecated", FieldOption.class);
     Property p = fieldOptions.propertyFrom(option);
     assertThat(p.getName(), equalTo("deprecated"));
   }
@@ -57,7 +52,7 @@ public class FieldOptions_propertyFrom_Test {
   //   optional boolean active = 1 [(encoding) = 'UTF-8'];
   // }
   @Test public void should_return_property_of_custom_field_option() {
-    FieldOption option = findFieldOption(name("encoding"), in(root));
+    FieldOption option = xtext.find("encoding", ")", FieldOption.class);
     Property p = fieldOptions.propertyFrom(option);
     assertThat(p.getName(), equalTo("encoding"));
   }

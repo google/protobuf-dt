@@ -10,16 +10,12 @@ package com.google.eclipse.protobuf.validation;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.junit.model.find.Name.name;
-import static com.google.eclipse.protobuf.junit.model.find.PackageFinder.findPackage;
-import static com.google.eclipse.protobuf.junit.model.find.Root.in;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.PACKAGE__NAME;
 import static com.google.eclipse.protobuf.validation.ProtobufJavaValidator.MORE_THAN_ONE_PACKAGE_ERROR;
 import static org.eclipse.xtext.validation.ValidationMessageAcceptor.INSIGNIFICANT_INDEX;
 import static org.mockito.Mockito.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
 
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
@@ -34,12 +30,10 @@ public class ProtobufJavaValidator_checkOnlyOnePackageDefinition_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
   
-  private Protobuf root;
   private ValidationMessageAcceptor messageAcceptor;
   private ProtobufJavaValidator validator;
   
   @Before public void setUp() {
-    root = xtext.root();
     messageAcceptor = mock(ValidationMessageAcceptor.class);
     validator = xtext.getInstanceOf(ProtobufJavaValidator.class);
     validator.setMessageAcceptor(messageAcceptor);
@@ -48,7 +42,7 @@ public class ProtobufJavaValidator_checkOnlyOnePackageDefinition_Test {
   // package com.google.protobuf;
   // package com.google.eclipse;
   @Test public void should_create_error_if_there_are_more_than_one_package_definitions() {
-    Package p = findPackage(name("com.google.eclipse"), in(root));
+    Package p = xtext.find("com.google.eclipse", Package.class);
     validator.checkOnlyOnePackageDefinition(p);
     String message = "Multiple package definitions.";
     verify(messageAcceptor).acceptError(message, p, PACKAGE__NAME, INSIGNIFICANT_INDEX, MORE_THAN_ONE_PACKAGE_ERROR);
@@ -56,7 +50,7 @@ public class ProtobufJavaValidator_checkOnlyOnePackageDefinition_Test {
 
   // package com.google.eclipse;
   @Test public void should_not_create_error_if_there_is_only_one_package_definition() {
-    Package p = findPackage(name("com.google.eclipse"), in(root));
+    Package p = xtext.find("com.google.eclipse", Package.class);
     validator.checkOnlyOnePackageDefinition(p);
     verifyZeroInteractions(messageAcceptor);
   }

@@ -18,6 +18,7 @@ import static org.eclipse.xtext.util.Strings.isEmpty;
 import java.io.*;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.ISetup;
 import org.eclipse.xtext.linking.lazy.LazyLinkingResource;
 import org.eclipse.xtext.nodemodel.INode;
@@ -41,6 +42,8 @@ public class XtextRule implements MethodRule {
   private final TestSourceReader reader;
   
   private Protobuf root;
+  private XtextResource resource;
+  private ModelFinder finder;
 
   public static XtextRule createWith(ISetup setup) {
     return new XtextRule(setup);
@@ -55,7 +58,8 @@ public class XtextRule implements MethodRule {
     root = null;
     String comments = reader.commentsIn(method);
     if (!isEmpty(comments)) {
-      root = parseText(comments);
+      parseText(comments);
+      finder = new ModelFinder(resource.getParseResult().getRootNode(), comments);
     }
     return base;
   }
@@ -64,10 +68,13 @@ public class XtextRule implements MethodRule {
     return injector;
   }
 
-  private Protobuf parseText(String text) {
-    XtextResource resource = resourceFrom(new StringInputStream(text));
+  private void parseText(String text) {
+    resource = resourceFrom(new StringInputStream(text));
     IParseResult parseResult = resource.getParseResult();
-    if (!parseResult.hasSyntaxErrors()) return (Protobuf) parseResult.getRootASTElement();
+    if (!parseResult.hasSyntaxErrors()) {
+      root = (Protobuf) parseResult.getRootASTElement();
+      return;
+    }
     StringBuilder builder = new StringBuilder();
     builder.append("Syntax errors:");
     for (INode error : parseResult.getSyntaxErrors())
@@ -103,5 +110,17 @@ public class XtextRule implements MethodRule {
   
   public Protobuf root() {
     return root;
+  }
+
+  public <T extends EObject> T find(String name, String extra, Class<T> type) {
+    return find(name + extra, name.length(), type);
+  }
+
+  public <T extends EObject> T find(String name, Class<T> type) {
+    return find(name, name.length(), type);
+  }
+
+  public <T extends EObject> T find(String text, int count, Class<T> type) {
+    return finder.find(text, count, type);
   }
 }

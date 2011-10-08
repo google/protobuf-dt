@@ -10,9 +10,6 @@ package com.google.eclipse.protobuf.ui.util;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.junit.model.find.LiteralFinder.findLiteral;
-import static com.google.eclipse.protobuf.junit.model.find.Name.name;
-import static com.google.eclipse.protobuf.junit.model.find.Root.in;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -30,11 +27,9 @@ public class Literals_calculateIndexOf_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
-  private Protobuf root;
   private Literals literals;
 
   @Before public void setUp() {
-    root = xtext.root();
     literals = xtext.getInstanceOf(Literals.class);
   }
 
@@ -42,7 +37,7 @@ public class Literals_calculateIndexOf_Test {
   //   MOBILE = 1;
   // }
   @Test public void should_return_zero_for_first_and_only_literal() {
-    Literal mobile = findLiteral(name("MOBILE"), in(root));
+    Literal mobile = xtext.find("MOBILE", Literal.class);
     long index = literals.calculateIndexOf(mobile);
     assertThat(index, equalTo(0L));
   }
@@ -53,7 +48,7 @@ public class Literals_calculateIndexOf_Test {
   //   WORK = 9;
   // }
   @Test public void should_return_max_index_value_plus_one_for_new_literal() {
-    Literal work = findLiteral(name("WORK"), in(root));
+    Literal work = xtext.find("WORK", Literal.class);
     long index = literals.calculateIndexOf(work);
     assertThat(index, equalTo(6L));
   }

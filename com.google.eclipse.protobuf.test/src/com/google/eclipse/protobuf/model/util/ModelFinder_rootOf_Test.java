@@ -10,9 +10,6 @@ package com.google.eclipse.protobuf.model.util;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.junit.model.find.Name.name;
-import static com.google.eclipse.protobuf.junit.model.find.PropertyFinder.findProperty;
-import static com.google.eclipse.protobuf.junit.model.find.Root.in;
 import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.Assert.assertThat;
 
@@ -31,11 +28,9 @@ public class ModelFinder_rootOf_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
-  private Protobuf root;
   private ModelFinder finder;
 
   @Before public void setUp() {
-    root = xtext.root();
     finder = xtext.getInstanceOf(ModelFinder.class);
   }
 
@@ -43,7 +38,7 @@ public class ModelFinder_rootOf_Test {
   //   optional string name = 1;
   // }
   @Test public void should_return_root_of_proto() {
-    Property name = findProperty(name("name"), in(root));
-    assertThat(finder.rootOf(name), sameInstance(root));
+    Property name = xtext.find("name", Property.class);
+    assertThat(finder.rootOf(name), sameInstance(xtext.root()));
   }
 }
