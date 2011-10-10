@@ -8,15 +8,10 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static org.eclipse.xtext.util.Strings.isEmpty;
+import org.eclipse.emf.ecore.resource.Resource;
 
 import com.google.eclipse.protobuf.scoping.IFileUriResolver.NullFileUriResolver;
 import com.google.inject.ImplementedBy;
-
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
-
-import java.io.File;
 
 /**
  * Resolves "import" URIs.
@@ -36,12 +31,7 @@ public interface IFileUriResolver {
 
   class NullFileUriResolver implements IFileUriResolver {
     public String resolveUri(String importUri, Resource declaringResource) {
-      // default implementation that simply checks that the file exists in the file system.
-      URI uri = URI.createURI(importUri);
-      if (!isEmpty(uri.scheme())) return importUri; // already resolved.
-      File file = new File(importUri);
-      if (!file.exists()) throw new IllegalArgumentException("File: " + importUri + " does not exist.");
-      return file.toURI().toString();
+      throw new UnsupportedOperationException();
     }
   }
 }

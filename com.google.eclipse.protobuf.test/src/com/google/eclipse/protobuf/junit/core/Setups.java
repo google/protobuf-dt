@@ -10,19 +10,17 @@ package com.google.eclipse.protobuf.junit.core;
 
 import org.eclipse.xtext.ISetup;
 
-import com.google.eclipse.protobuf.ProtobufStandaloneSetup;
-
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 public final class Setups {
 
   public static ISetup unitTestSetup() {
-    return new TestingStandaloneSetup();
+    return new UnitTestSetup();
   }
   
   public static ISetup integrationTestSetup() {
-    return new ProtobufStandaloneSetup();
+    return new IntegrationTestSetup();
   }
   
   private Setups() {}

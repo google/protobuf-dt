@@ -88,9 +88,20 @@ public class ProtobufScopeProvider_scope_PropertyRef_property_Test {
                                                  ".com.google.proto.info"));
   }
 
+  // // Create file custom-options.proto
+  // 
+  // package com.google.test;
+  //
+  // import "google/protobuf/descriptor.proto";
+  //
+  // extend google.protobuf.FileOptions {
+  //   optional int32 code = 1000;
+  //   optional int32 info = 1002;
+  // }  
+  
   // package com.google.proto;
   //  
-  // import 'protos/custom-options.proto';
+  // import 'custom-options.proto';
   //
   // option (code) = 68;
   @Test public void should_provide_imported_Property_fields_for_custom_option() {

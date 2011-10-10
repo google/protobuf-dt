@@ -9,6 +9,8 @@
  */
 package com.google.eclipse.protobuf.junit.core;
 
+import static java.io.File.separator;
+
 import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 
 import org.junit.runners.model.FrameworkMethod;
@@ -21,21 +23,25 @@ import java.util.*;
  */
 class TestSourceReader {
 
-  private final Map<String, MultiLineTextBuilder> comments = new HashMap<String, MultiLineTextBuilder>();
-  private final Object lock = new Object();
+  private static final String COMMENT_START = "//";
+
+  private final Map<String, List<String>> comments = new HashMap<String, List<String>>();
+  private final CommentProcessor processor = new CommentProcessor();
+  
   private boolean initialized;
   
-  private String testName(String line) {
-    if (!line.startsWith("@Test")) return null;
-    int indexOfShould = line.indexOf("should");
-    return (indexOfShould == -1) ? null : line.substring(indexOfShould, line.indexOf("("));
-  }
+  private final Object lock = new Object();
  
   String commentsIn(FrameworkMethod method) {
     synchronized (lock) {
       ensureCommentsAreRead(method.getMethod().getDeclaringClass());
-      MultiLineTextBuilder text = comments.get(method.getName());
-      return (text == null) ? null : text.toString();
+      List<String> allComments = comments.get(method.getName());
+      if (allComments == null || allComments.isEmpty()) return null;
+      for (String comment : allComments) {
+        Object processed = processor.processComment(comment);
+        if (processed instanceof String) return (String) processed;
+      }
+      return null;
     }
   }
   
@@ -49,33 +55,41 @@ class TestSourceReader {
     String fqn = testClass.getName().replace('.', '/');
     fqn = fqn.indexOf("$") == -1 ? fqn : fqn.substring(0, fqn.indexOf("$"));
     String classFile = fqn + ".java";
-    File file = new File("src" + File.separator + classFile);
-    BufferedReader reader = null;
-    MultiLineTextBuilder text = new MultiLineTextBuilder();
+    File file = new File("src" + separator + classFile);
+    Scanner scanner = null;
+    List<String> allComments = new ArrayList<String>();
+    MultiLineTextBuilder comment = new MultiLineTextBuilder();
     try {
-      reader = new BufferedReader(new FileReader(file));
+      scanner = new Scanner(new FileInputStream(file));
       String line;
-      while ((line = reader.readLine()) != null) {
-        line = line.replaceFirst("^\\s*", "");
-        if (line.startsWith("//")) {
-          text.append(line.substring(2));
+      while (scanner.hasNextLine()) {
+        line = scanner.nextLine().replaceFirst("^\\s*", "");
+        if (line.startsWith(COMMENT_START)) {
+          comment.append(line.substring(COMMENT_START.length()));
           continue;
         }
-        if (text.isEmpty()) continue;
+        if (comment.isEmpty()) continue;
+        line = line.trim();
         String testName = testName(line);
+        if (line.length() == 0 || testName != null) {
+          if (!allComments.contains(comment)) allComments.add(comment.toString());
+          comment = new MultiLineTextBuilder();
+        }
         if (testName != null) {
-          comments.put(testName, text);
-          text = new MultiLineTextBuilder();
+          comments.put(testName, allComments);
+          allComments = new ArrayList<String>(); 
         }
       }
     } catch (IOException e) {
       e.printStackTrace();
     } finally {
-      if (reader != null) {
-        try {
-          reader.close();
-        } catch (IOException e) {}
-      }
+      scanner.close();
     }
+  }
+
+  private static String testName(String line) {
+    if (!line.startsWith("@Test")) return null;
+    int indexOfShould = line.indexOf("should");
+    return (indexOfShould == -1) ? null : line.substring(indexOfShould, line.indexOf("("));
   }
 }

@@ -8,17 +8,12 @@
  */
 package com.google.eclipse.protobuf.junit.core;
 
-import com.google.eclipse.protobuf.ProtobufStandaloneSetup;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class TestingStandaloneSetup extends ProtobufStandaloneSetup {
+final class GeneratedProtoFiles {
 
-  @Override
-  public Injector createInjector() {
-    return Guice.createInjector(new TestingModule());
-  }
+  static final String PARENT_DIRECTORY_NAME = "test-protos";
+  
+  private GeneratedProtoFiles() {}
 }
