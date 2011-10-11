@@ -21,7 +21,7 @@ import com.google.inject.Singleton;
 @Singleton
 class ContentReader {
 
-  private static final int DEFAULT_FILE_SIZE= 15 * 1024;
+  private static final int DEFAULT_FILE_SIZE = 15 * 1024;
 
   String contentsOf(InputStream inputStream) throws IOException {
     Reader reader = null;

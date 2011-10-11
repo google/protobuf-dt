@@ -47,12 +47,12 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
   private static final IRegion[] NO_CHANGE = new IRegion[0];
   
   @Inject private Editors editors;
-  @Inject private DocumentContentsFactoryRegistry contentsFactories;
+  @Inject private DocumentContentsFactoryRegistry documentContentsFactories;
   @Inject private SaveActionsPreferencesFactory preferencesFactory;  
   @Inject private SaveActions saveActions;
 
   @Override protected ElementInfo createElementInfo(Object element) throws CoreException {
-    if (contentsFactories.findFactory(element) != null) return createElementInfo((IEditorInput) element);
+    if (documentContentsFactories.findFactory(element) != null) return createElementInfo((IEditorInput) element);
     return super.createElementInfo(element);
   }
 
@@ -76,8 +76,8 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
   }
 
   @Override protected IDocument createDocument(Object element) throws CoreException {
-    DocumentContentsFactory contentsFactory = contentsFactories.findFactory(element);
-    if (contentsFactory != null) return createDocument(contentsFactory, element);
+    DocumentContentsFactory factory = documentContentsFactories.findFactory(element);
+    if (factory != null) return createDocument(factory, element);
     return super.createDocument(element);
   }
 
