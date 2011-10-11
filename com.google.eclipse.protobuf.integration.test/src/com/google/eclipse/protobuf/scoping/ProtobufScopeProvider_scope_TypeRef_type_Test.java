@@ -60,7 +60,7 @@ public class ProtobufScopeProvider_scope_TypeRef_type_Test {
   // message Contact {
   //   optional Type type = 1;  
   // }
-  @Test public void should_provide_Property_fields_for_custom_option_field() {
+  @Test public void should_provide_Types() {
     Property p = xtext.find("type", Property.class);
     IScope scope = provider.scope_TypeRef_type(typeOf(p), reference);
     assertThat(descriptionsIn(scope), containAll("Type", "proto.Type", "google.proto.Type", "com.google.proto.Type", 
@@ -71,6 +71,142 @@ public class ProtobufScopeProvider_scope_TypeRef_type_Test {
                                                  "com.google.proto.Contact", ".com.google.proto.Contact"));
   }
   
+  // // Create file types.proto
+  // 
+  // package test.proto;
+  //
+  // enum Type {
+  //   PERSONAL = 0;
+  //   BUSINESS = 1;
+  // }
+  //
+  // message Address {
+  //   optional int32 number = 1;
+  //   optional string street = 2;
+  //   optional string city = 3;
+  //   optional int32 zipCode = 4;
+  // }
+  
+  // package com.google.proto;
+  // 
+  // import "types.proto";
+  //
+  // message Contact {
+  //   optional com.google.test.Type type = 1;  
+  // }
+  @Test public void should_provide_imported_Types() {
+    Property p = xtext.find("type", " =", Property.class);
+    IScope scope = provider.scope_TypeRef_type(typeOf(p), reference);
+    assertThat(descriptionsIn(scope), containAll("test.proto.Type", ".test.proto.Type",
+                                                 "test.proto.Address", ".test.proto.Address",
+                                                 "Contact", "proto.Contact", "google.proto.Contact", 
+                                                 "com.google.proto.Contact", ".com.google.proto.Contact"));
+  }
+
+  // // Create file types.proto
+  // 
+  // package com.google.proto;
+  //
+  // enum Type {
+  //   PERSONAL = 0;
+  //   BUSINESS = 1;
+  // }
+  //
+  // message Address {
+  //   optional int32 number = 1;
+  //   optional string street = 2;
+  //   optional string city = 3;
+  //   optional int32 zipCode = 4;
+  // }
+  
+  // package com.google.proto;
+  // 
+  // import "types.proto";
+  //
+  // message Contact {
+  //   optional com.google.test.Type type = 1;  
+  // }
+  @Test public void should_provide_imported_Types_with_equal_package() {
+    Property p = xtext.find("type", " =", Property.class);
+    IScope scope = provider.scope_TypeRef_type(typeOf(p), reference);
+    assertThat(descriptionsIn(scope), containAll("Type", "proto.Type", "google.proto.Type", "com.google.proto.Type",
+                                                 ".com.google.proto.Type",
+                                                 "Address", "proto.Address", "google.proto.Address",
+                                                 "com.google.proto.Address", ".com.google.proto.Address",
+                                                 "Contact", "proto.Contact", "google.proto.Contact", 
+                                                 "com.google.proto.Contact", ".com.google.proto.Contact"));
+  }
+
+  // // Create file types.proto
+  // 
+  // package test.proto;
+  //
+  // enum Type {
+  //   PERSONAL = 0;
+  //   BUSINESS = 1;
+  // }
+  //
+  // message Address {
+  //   optional int32 number = 1;
+  //   optional string street = 2;
+  //   optional string city = 3;
+  //   optional int32 zipCode = 4;
+  // }
+  
+  // package com.google.proto;
+  // 
+  // import public "types.proto";
+  //
+  // message Contact {
+  //   optional test.proto.Type type = 1;  
+  // }
+  @Test public void should_provide_public_imported_Types() {
+    Property p = xtext.find("type", " =", Property.class);
+    IScope scope = provider.scope_TypeRef_type(typeOf(p), reference);
+    assertThat(descriptionsIn(scope), containAll("test.proto.Type", ".test.proto.Type",
+                                                 "test.proto.Address", ".test.proto.Address",
+                                                 "Contact", "proto.Contact", "google.proto.Contact", 
+                                                 "com.google.proto.Contact", ".com.google.proto.Contact"));
+  }
+
+  // // Create file public-types.proto
+  // 
+  // package test.proto;
+  //
+  // enum Type {
+  //   PERSONAL = 0;
+  //   BUSINESS = 1;
+  // }
+  //
+  // message Address {
+  //   optional int32 number = 1;
+  //   optional string street = 2;
+  //   optional string city = 3;
+  //   optional int32 zipCode = 4;
+  // }
+
+  // // Create file types.proto
+  // 
+  // package com.google.proto;
+  // 
+  // import public "public-types.proto";
+
+  // package com.google.proto;
+  // 
+  // import "types.proto";
+  //
+  // message Contact {
+  //   optional test.proto.Type type = 1;  
+  // }
+  @Test public void should_provide_public_imported_Types_with_more_than_one_level() {
+    Property p = xtext.find("type", " =", Property.class);
+    IScope scope = provider.scope_TypeRef_type(typeOf(p), reference);
+    assertThat(descriptionsIn(scope), containAll("test.proto.Type", ".test.proto.Type",
+                                                 "test.proto.Address", ".test.proto.Address",
+                                                 "Contact", "proto.Contact", "google.proto.Contact", 
+                                                 "com.google.proto.Contact", ".com.google.proto.Contact"));
+  }
+
   private static TypeRef typeOf(Property p) {
     return (TypeRef) p.getType();
   }

@@ -43,7 +43,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   @Inject private TypeDescriptions typeDescriptions;
 
   @SuppressWarnings("unused")
-  IScope scope_TypeRef_type(TypeRef typeRef, EReference reference) {
+  public IScope scope_TypeRef_type(TypeRef typeRef, EReference reference) {
     EObject c = typeRef.eContainer();
     if (c instanceof Property) {
       Property property = (Property) c;
@@ -54,13 +54,13 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   }
 
   @SuppressWarnings("unused")
-  IScope scope_MessageRef_type(MessageRef messageRef, EReference reference) {
+  public IScope scope_MessageRef_type(MessageRef messageRef, EReference reference) {
     Protobuf root = finder.rootOf(messageRef);
     return createScope(typeDescriptions.messages(root));
   }
 
   @SuppressWarnings("unused")
-  IScope scope_LiteralRef_literal(LiteralRef literalRef, EReference reference) {
+  public IScope scope_LiteralRef_literal(LiteralRef literalRef, EReference reference) {
     EObject c = literalRef.eContainer();
     Enum anEnum = null;
     if (c instanceof DefaultValueFieldOption) {
@@ -94,7 +94,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   }
 
   @SuppressWarnings("unused")
-  IScope scope_PropertyRef_property(PropertyRef propertyRef, EReference reference) {
+  public IScope scope_PropertyRef_property(PropertyRef propertyRef, EReference reference) {
     EObject c = propertyRef.eContainer();
     if (c instanceof NativeOption) {
       NativeOption option = (NativeOption) c;
@@ -117,7 +117,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   }
   
   @SuppressWarnings("unused") 
-  IScope scope_SimplePropertyRef_property(SimplePropertyRef propertyRef, EReference reference) {
+  public IScope scope_SimplePropertyRef_property(SimplePropertyRef propertyRef, EReference reference) {
     EObject c = propertyRef.eContainer();
     Property property = null;
     if (c instanceof CustomOption) {

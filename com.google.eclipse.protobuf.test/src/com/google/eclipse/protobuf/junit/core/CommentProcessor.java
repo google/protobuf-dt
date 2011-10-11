@@ -8,8 +8,7 @@
  */
 package com.google.eclipse.protobuf.junit.core;
 
-import static com.google.eclipse.protobuf.junit.core.GeneratedProtoFiles.PARENT_DIRECTORY_NAME;
-import static java.io.File.separator;
+import static com.google.eclipse.protobuf.junit.core.GeneratedProtoFiles.*;
 
 import java.io.*;
 import java.util.Scanner;
@@ -36,8 +35,8 @@ class CommentProcessor {
   }
 
   private File createFile(String fileName, String contents) {
-    verifyParentDirectoryExists();
-    File file = new File(PARENT_DIRECTORY_NAME + separator + fileName);
+    ensureParentDirectoryExists();
+    File file = protoFile(fileName);
     if (file.isFile()) file.delete();
     Writer out = null;
     try {
@@ -49,12 +48,6 @@ class CommentProcessor {
       closeQuietly(out);
     }
     return file;
-  }
-
-  private void verifyParentDirectoryExists() {
-    File directory = new File(PARENT_DIRECTORY_NAME);
-    if (directory.isDirectory()) return;
-    directory.mkdir();
   }
   
   private void closeQuietly(Writer out) {

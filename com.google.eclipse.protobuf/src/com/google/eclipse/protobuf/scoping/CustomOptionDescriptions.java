@@ -33,7 +33,6 @@ import com.google.inject.Inject;
 class CustomOptionDescriptions {
 
   @Inject private ModelFinder finder;
-  @Inject private ImportedNamesProvider importedNamesProvider;
   @Inject private Imports imports;
   @Inject private LocalNamesProvider localNamesProvider;
   @Inject private Options options;
@@ -41,16 +40,16 @@ class CustomOptionDescriptions {
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
   @Inject private Resources resources;
 
-  Collection <IEObjectDescription> properties(CustomOption option) {
+  public Collection <IEObjectDescription> properties(CustomOption option) {
     return allProperties(option, typeOf(option));
   }
 
-  Collection <IEObjectDescription> properties(CustomFieldOption option) {
+  public Collection <IEObjectDescription> properties(CustomFieldOption option) {
     return allProperties(option, typeOf(option));
   }
 
   private Collection <IEObjectDescription> allProperties(EObject option, OptionType type) {
-    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
+    Set<IEObjectDescription> descriptions = new LinkedHashSet<IEObjectDescription>();
     EObject current = option.eContainer();
     while (current != null) {
       descriptions.addAll(local(current, type));
@@ -67,7 +66,7 @@ class CustomOptionDescriptions {
 
   private Collection <IEObjectDescription> local(EObject root, OptionType optionType, int level) {
     if (optionType == null) return emptyList();
-    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
+    Set<IEObjectDescription> descriptions = new LinkedHashSet<IEObjectDescription>();
     for (EObject element : root.eContents()) {
       if (options.isExtendingOptionMessage(element, optionType)) {
         ExtendMessage extend = (ExtendMessage) element;
@@ -98,7 +97,7 @@ class CustomOptionDescriptions {
 
   private Collection<IEObjectDescription> imported(List<Import> allImports, Package aPackage,
       ResourceSet resourceSet, OptionType optionType) {
-    List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
+    Set<IEObjectDescription> descriptions = new LinkedHashSet<IEObjectDescription>();
     for (Import anImport : allImports) {
       if (imports.isImportingDescriptor(anImport)) continue;
       Resource importedResource = resources.importedResource(anImport, resourceSet);
@@ -138,9 +137,7 @@ class CustomOptionDescriptions {
         if (!(e instanceof Property)) continue;
         Property p = (Property) e;
         descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(p));
-        for (QualifiedName name : importedNamesProvider.namesOf(p)) {
-          descriptions.add(create(name, e));
-        }
+        // TODO verify that call to 'importedNamesProvider.namesOf' is not necessary
       }
     }
     return descriptions;

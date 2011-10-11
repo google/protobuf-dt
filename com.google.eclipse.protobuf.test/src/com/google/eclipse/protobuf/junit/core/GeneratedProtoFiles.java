@@ -8,12 +8,29 @@
  */
 package com.google.eclipse.protobuf.junit.core;
 
+import static java.io.File.separator;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
+
+import java.io.File;
+
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 final class GeneratedProtoFiles {
 
-  static final String PARENT_DIRECTORY_NAME = "test-protos";
+  private static final String PARENT_DIRECTORY_NAME = "test-protos";
+  
+  static File protoFile(String fileName) {
+    return new File(PARENT_DIRECTORY_NAME + separator + fileName);
+  }
+  
+  static void ensureParentDirectoryExists() {
+    File parent = new File(PARENT_DIRECTORY_NAME);
+    if (!parent.isDirectory()) {
+      assertThat(parent.mkdir(), equalTo(true));
+    }
+  }
   
   private GeneratedProtoFiles() {}
 }

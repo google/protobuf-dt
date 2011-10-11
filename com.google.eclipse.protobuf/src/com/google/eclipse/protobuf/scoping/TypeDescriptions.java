@@ -32,7 +32,6 @@ class TypeDescriptions {
 
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private ModelFinder finder;
-  @Inject private ImportedNamesProvider importedNamesProvider;
   @Inject private Imports imports;
   @Inject private LocalNamesProvider localNamesProvider;
   @Inject private Packages packages;
@@ -98,11 +97,11 @@ class TypeDescriptions {
         continue;
       }
       Resource importedResource = resources.importedResource(anImport, resourceSet);
-      Protobuf importedRoot = finder.rootOf(importedResource);
-      if (importedRoot != null) {
-        descriptions.addAll(publicImported(importedRoot, targetType));
-        if (arePackagesRelated(aPackage, importedRoot)) {
-          descriptions.addAll(local(importedRoot, targetType));
+      Protobuf rootOfImported = finder.rootOf(importedResource);
+      if (rootOfImported != null) {
+        descriptions.addAll(publicImported(rootOfImported, targetType));
+        if (arePackagesRelated(aPackage, rootOfImported)) {
+          descriptions.addAll(local(rootOfImported, targetType));
           continue;
         }
       }
@@ -142,9 +141,7 @@ class TypeDescriptions {
       if (!targetType.isInstance(next)) continue;
       T type = targetType.cast(next);
       descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(type));
-      for (QualifiedName name : importedNamesProvider.namesOf(type)) {
-        descriptions.add(create(name, type));
-      }
+      // TODO verify that call to 'importedNamesProvider.namesOf' is not necessary
     }
     return descriptions;
   }

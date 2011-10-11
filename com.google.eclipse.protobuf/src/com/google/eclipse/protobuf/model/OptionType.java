@@ -23,6 +23,8 @@ import com.google.eclipse.protobuf.protobuf.Enum;
  */
 public enum OptionType {
   
+  // TODO move back to package "com.google.eclipse.protobuf.scoping" and make it package-protected.
+  
   FILE("FileOptions"), MESSAGE("MessageOptions"), FIELD("FieldOptions"), ENUM("EnumOptions"),
       LITERAL("EnumValueOptions"), SERVICE("ServiceOptions"), RPC("MethodOptions");
 

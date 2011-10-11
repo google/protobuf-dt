@@ -90,7 +90,30 @@ public class ProtobufScopeProvider_scope_PropertyRef_property_Test {
 
   // // Create file custom-options.proto
   // 
-  // package com.google.test;
+  // package test.proto;
+  //
+  // import "google/protobuf/descriptor.proto";
+  //
+  // extend google.protobuf.FileOptions {
+  //   optional int32 code = 1000;
+  //   optional int32 info = 1002;
+  // }  
+  
+  // package com.google.proto;
+  //  
+  // import 'custom-options.proto';
+  //
+  // option (test.proto.code) = 68;
+  @Test public void should_provide_imported_Property_fields_for_custom_option() {
+    Option option = xtext.find("code", ")", Option.class);
+    IScope scope = provider.scope_PropertyRef_property(option.getProperty(), reference);
+    assertThat(descriptionsIn(scope), containAll("test.proto.code", ".test.proto.code",
+                                                 "test.proto.info", ".test.proto.info"));
+  }
+
+  // // Create file custom-options.proto
+  // 
+  // package com.google.proto;
   //
   // import "google/protobuf/descriptor.proto";
   //
@@ -104,15 +127,15 @@ public class ProtobufScopeProvider_scope_PropertyRef_property_Test {
   // import 'custom-options.proto';
   //
   // option (code) = 68;
-  @Test public void should_provide_imported_Property_fields_for_custom_option() {
+  @Test public void should_provide_imported_Property_fields_for_custom_option_with_equal_package() {
     Option option = xtext.find("code", ")", Option.class);
     IScope scope = provider.scope_PropertyRef_property(option.getProperty(), reference);
-    assertThat(descriptionsIn(scope), containAll("code", "test.code", "google.test.code", "com.google.test.code", 
-                                                 ".com.google.test.code",
-                                                 "info", "test.info", "google.test.info", "com.google.test.info", 
-                                                 ".com.google.test.info"));
+    assertThat(descriptionsIn(scope), containAll("code", "proto.code", "google.proto.code", "com.google.proto.code", 
+                                                 ".com.google.proto.code",
+                                                 "info", "proto.info", "google.proto.info", "com.google.proto.info",
+                                                 ".com.google.proto.info"));
   }
-
+ 
   // package com.google.proto;
   // import 'google/protobuf/descriptor.proto';
   //  

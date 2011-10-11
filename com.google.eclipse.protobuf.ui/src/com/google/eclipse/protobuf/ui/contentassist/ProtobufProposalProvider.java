@@ -25,6 +25,8 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.xtext.*;
 import org.eclipse.xtext.naming.*;
+import org.eclipse.xtext.resource.IEObjectDescription;
+import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.ui.PluginImageHelper;
 import org.eclipse.xtext.ui.editor.contentassist.*;
 
@@ -46,7 +48,7 @@ import com.google.inject.Inject;
  */
 public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
-  @Inject private CustomOptionProperties customOptionProperties;
+  @Inject private ProtobufScopeProvider scopes;
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private FieldOptions fieldOptions;
   @Inject private ModelFinder finder;
@@ -54,7 +56,6 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Inject private Images images;
   @Inject private PluginImageHelper imageHelper;
   @Inject private Literals literals;
-  @Inject private IQualifiedNameProvider nameProvider;
   @Inject private Options options;
   @Inject private Properties properties;
   
@@ -410,27 +411,59 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Override public void completeCustomOption_Property(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     if (!(model instanceof CustomOption)) return;
-    Image image = imageForOption();
-    for (Property p : customOptionProperties.propertiesFor((CustomOption) model)) {
-      QualifiedName name = nameProvider.getFullyQualifiedName(p);
-      proposeAndAccept(name.toString(), image, context, acceptor);
-    }
+    CustomOption option = (CustomOption) model;
+    IScope scope = scopes.scope_PropertyRef_property(option.getProperty(), null);
+    proposeAndAcceptOptions(scope, context, acceptor);
   }
 
+  @Override public void completeCustomFieldOption_Property(EObject model, Assignment assignment,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    if (!(model instanceof CustomFieldOption)) return;
+    CustomFieldOption option = (CustomFieldOption) model;
+    IScope scope = scopes.scope_PropertyRef_property(option.getProperty(), null);
+    proposeAndAcceptOptions(scope, context, acceptor);
+  }
+  
+  private void proposeAndAcceptOptions(IScope scope, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    Image image = imageForOption();
+    for (IEObjectDescription d : scope.getAllElements()) {
+      proposeAndAccept(d, image, context, acceptor);
+    }
+  }
+  
   private Image imageForOption() {
     return imageHelper.getImage(images.imageFor(Option.class));
+  }
+
+  private void proposeAndAccept(IEObjectDescription d, Image image, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+    QualifiedName name = d.getName();
+    String display = name.getLastSegment()  + " - " + name.toString();
+    ICompletionProposal proposal = createCompletionProposal(name.toString(), display, image, context);
+    acceptor.accept(proposal);
   }
   
   @Override public void completeCustomOption_PropertyField(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     if (!(model instanceof CustomOption)) return;
     Property property = options.propertyFrom((CustomOption) model);
-    if (property == null) return;
+    proposeAndAcceptOptionFields(property, context, acceptor);
+  }
+  
+  @Override public void completeCustomFieldOption_PropertyField(EObject model, Assignment assignment,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    if (!(model instanceof CustomFieldOption)) return;
+    Property property = fieldOptions.propertyFrom((CustomFieldOption) model);
+    proposeAndAcceptOptionFields(property, context, acceptor);
+  }
+  
+  private void proposeAndAcceptOptionFields(Property property, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
     Message message = finder.messageTypeOf(property);
-    if (message != null) {
-      Image image = imageHelper.getImage("property.gif");
-      for (Property p : finder.propertiesOf(message))
-        proposeAndAccept(p.getName(), image, context, acceptor);
+    if (message == null) return;
+    Image image = imageHelper.getImage("property.gif");
+    for (Property p : finder.propertiesOf(message)) {
+      proposeAndAccept(p.getName(), image, context, acceptor);
     }
   }
 
@@ -440,6 +473,21 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     CustomOption option = (CustomOption) model;
     Property property = options.fieldFrom(option);
     if (property == null) property = options.propertyFrom(option);
+    proposeAndAcceptOptionFieldValue(property, context, acceptor);
+  }
+  
+  @Override public void completeCustomFieldOption_Value(EObject model, Assignment assignment,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    // TODO content assist returns "{"
+    if (!(model instanceof CustomFieldOption)) return;
+    CustomFieldOption option = (CustomFieldOption) model;
+    Property property = fieldOptions.fieldFrom(option);
+    if (property == null) property = fieldOptions.propertyFrom(option);
+    proposeAndAcceptOptionFieldValue(property, context, acceptor);
+  }
+
+  private void proposeAndAcceptOptionFieldValue(Property property, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
     if (property == null) return;
     if (proposePrimitiveValues(property, context, acceptor)) return;
     Enum enumType = finder.enumTypeOf(property);
