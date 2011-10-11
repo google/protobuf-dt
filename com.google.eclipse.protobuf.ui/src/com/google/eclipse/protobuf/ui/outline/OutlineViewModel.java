@@ -40,7 +40,9 @@ class OutlineViewModel {
   }
 
   private void initialize() {
-    for (Class<?> type : GROUP_TYPES) elements.put(type, new ArrayList<EObject>());
+    for (Class<?> type : GROUP_TYPES) {
+      elements.put(type, new ArrayList<EObject>());
+    }
   }
 
   List<EObject> packages() {
