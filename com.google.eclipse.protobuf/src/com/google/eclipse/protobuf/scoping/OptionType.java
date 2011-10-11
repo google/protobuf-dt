@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.model;
+package com.google.eclipse.protobuf.scoping;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -18,13 +18,13 @@ import com.google.eclipse.protobuf.protobuf.Enum;
 
 /**
  * Types of options (by location.)
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public enum OptionType {
-  
+enum OptionType {
+
   // TODO move back to package "com.google.eclipse.protobuf.scoping" and make it package-protected.
-  
+
   FILE("FileOptions"), MESSAGE("MessageOptions"), FIELD("FieldOptions"), ENUM("EnumOptions"),
       LITERAL("EnumValueOptions"), SERVICE("ServiceOptions"), RPC("MethodOptions");
 
@@ -50,7 +50,7 @@ public enum OptionType {
    * Returns the name of the message in descriptor.proto that specifies the type of an option.
    * @return the name of the message in descriptor.proto that specifies the type of an option.
    */
-  public String messageName() {
+  String messageName() {
     return messageName;
   }
 
@@ -59,7 +59,7 @@ public enum OptionType {
    * @param option the given option.
    * @return the type of the given option or {@code null} if a type cannot be found.
    */
-  public static OptionType typeOf(FieldOption option) {
+  static OptionType typeOf(FieldOption option) {
     return findType(option.eContainer());
   }
 
@@ -68,7 +68,7 @@ public enum OptionType {
    * @param option the given option.
    * @return the type of the given option or {@code null} if a type cannot be found.
    */
-  public static OptionType typeOf(Option option) {
+  static OptionType typeOf(Option option) {
     return findType(option.eContainer());
   }
 

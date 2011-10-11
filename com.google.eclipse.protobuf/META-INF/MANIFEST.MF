@@ -23,7 +23,6 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: com.google.eclipse.protobuf,
  com.google.eclipse.protobuf.conversion,
  com.google.eclipse.protobuf.grammar,
- com.google.eclipse.protobuf.model,
  com.google.eclipse.protobuf.model.util,
  com.google.eclipse.protobuf.parseTreeConstruction,
  com.google.eclipse.protobuf.parser.antlr,

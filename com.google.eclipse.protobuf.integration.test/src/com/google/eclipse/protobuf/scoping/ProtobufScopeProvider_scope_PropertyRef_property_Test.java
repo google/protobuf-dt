@@ -10,10 +10,10 @@ package com.google.eclipse.protobuf.scoping;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.integrationTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.model.OptionType.*;
 import static com.google.eclipse.protobuf.scoping.ContainAllNames.containAll;
 import static com.google.eclipse.protobuf.scoping.ContainAllProperties.containAll;
 import static com.google.eclipse.protobuf.scoping.IEObjectDescriptions.descriptionsIn;
+import static com.google.eclipse.protobuf.scoping.OptionType.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 

@@ -8,8 +8,8 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.eclipse.protobuf.model.OptionType.*;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.PROPERTY__TYPE;
+import static com.google.eclipse.protobuf.scoping.OptionType.*;
 import static com.google.eclipse.protobuf.util.Closeables.closeQuietly;
 import static com.google.eclipse.protobuf.util.Encodings.UTF_8;
 import static java.util.Collections.*;
@@ -28,7 +28,6 @@ import org.eclipse.xtext.parser.*;
 import org.eclipse.xtext.resource.XtextResource;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.eclipse.protobuf.model.OptionType;
 import com.google.eclipse.protobuf.model.util.INodes;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;

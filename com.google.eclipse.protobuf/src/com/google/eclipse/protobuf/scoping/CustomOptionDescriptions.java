@@ -8,20 +8,19 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.eclipse.protobuf.model.OptionType.typeOf;
+import static com.google.eclipse.protobuf.scoping.OptionType.typeOf;
 import static java.util.Collections.emptyList;
 import static org.eclipse.emf.ecore.util.EcoreUtil.getAllContents;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
 import java.util.*;
 
-import org.eclipse.emf.common.util.*;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.*;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
-import com.google.eclipse.protobuf.model.OptionType;
 import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
@@ -35,7 +34,6 @@ class CustomOptionDescriptions {
   @Inject private ModelFinder finder;
   @Inject private Imports imports;
   @Inject private LocalNamesProvider localNamesProvider;
-  @Inject private Options options;
   @Inject private Packages packages;
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
   @Inject private Resources resources;
@@ -56,10 +54,10 @@ class CustomOptionDescriptions {
       current = current.eContainer();
     }
     Protobuf root = finder.rootOf(option);
-    descriptions.addAll(imported(root, type));    
+    descriptions.addAll(imported(root, type));
     return descriptions;
   }
-  
+
   private Collection <IEObjectDescription> local(EObject root, OptionType optionType) {
     return local(root, optionType, 0);
   }
@@ -68,7 +66,7 @@ class CustomOptionDescriptions {
     if (optionType == null) return emptyList();
     Set<IEObjectDescription> descriptions = new LinkedHashSet<IEObjectDescription>();
     for (EObject element : root.eContents()) {
-      if (options.isExtendingOptionMessage(element, optionType)) {
+      if (isExtendingOptionMessage(element, optionType)) {
         ExtendMessage extend = (ExtendMessage) element;
         for (MessageElement e : extend.getElements()) {
           if (!(e instanceof Property)) continue;
@@ -87,7 +85,7 @@ class CustomOptionDescriptions {
     }
     return descriptions;
   }
-  
+
   private Collection<IEObjectDescription> imported(Protobuf root, OptionType optionType) {
     List<Import> allImports = finder.importsIn(root);
     if (allImports.isEmpty()) return emptyList();
@@ -131,7 +129,7 @@ class CustomOptionDescriptions {
     TreeIterator<Object> contents = getAllContents(resource, true);
     while (contents.hasNext()) {
       Object next = contents.next();
-      if (!options.isExtendingOptionMessage((EObject) next, optionType)) continue;
+      if (!isExtendingOptionMessage((EObject) next, optionType)) continue;
       ExtendMessage extend = (ExtendMessage) next;
       for (MessageElement e : extend.getElements()) {
         if (!(e instanceof Property)) continue;
@@ -141,6 +139,18 @@ class CustomOptionDescriptions {
       }
     }
     return descriptions;
+  }
+
+  private boolean isExtendingOptionMessage(EObject o, OptionType optionType) {
+    if (!(o instanceof ExtendMessage)) return false;
+    Message message = messageFrom((ExtendMessage) o);
+    if (message == null) return false;
+    return optionType.messageName().equals(message.getName());
+  }
+
+  private Message messageFrom(ExtendMessage extend) {
+    MessageRef ref = extend.getMessage();
+    return ref == null ? null : ref.getType();
   }
 
   /*
