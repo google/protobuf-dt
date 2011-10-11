@@ -15,11 +15,11 @@ import java.util.*;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class ContainAllNames extends BaseMatcher<IEObjectDescriptions> {
+public class ContainAllNames extends BaseMatcher<IEObjectDescriptions> {
 
   private final String[] expectedNames;
 
-  static ContainAllNames containAll(String... names) {
+  public static ContainAllNames containAll(String... names) {
     return new ContainAllNames(names);
   }
   

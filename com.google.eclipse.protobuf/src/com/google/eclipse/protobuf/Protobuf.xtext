@@ -174,8 +174,11 @@ ExtendMessage:
 
 Service:
   'service' name=Name '{'
-  rpcs+=Rpc*
+  (elements+=ServiceElement)*
   '}' (';')?;
+
+ServiceElement:
+  Option | Rpc;
 
 Rpc:
   'rpc' name=Name '(' argType=MessageRef ')' 'returns' '(' returnType=MessageRef ')'

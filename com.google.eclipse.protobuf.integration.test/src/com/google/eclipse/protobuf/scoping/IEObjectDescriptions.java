@@ -20,13 +20,13 @@ import java.util.*;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class IEObjectDescriptions {
+public class IEObjectDescriptions {
 
-  static IEObjectDescriptions descriptionsIn(IScope scope) {
+  public static IEObjectDescriptions descriptionsIn(IScope scope) {
     return descriptions(scope.getAllElements());
   }
 
-  static IEObjectDescriptions descriptions(Iterable<IEObjectDescription> elements) {
+  public static IEObjectDescriptions descriptions(Iterable<IEObjectDescription> elements) {
     return new IEObjectDescriptions(elements);
   }
   
@@ -39,16 +39,16 @@ class IEObjectDescriptions {
     }
   }
   
-  EObject objectDescribedAs(String name) {
+  public EObject objectDescribedAs(String name) {
     IEObjectDescription d = descriptions.get(name);
     return d.getEObjectOrProxy();
   }
   
-  int size() {
+  public int size() {
     return descriptions.size();
   }
   
-  Collection<String> names() {
+  public Collection<String> names() {
     return unmodifiableSet(descriptions.keySet()); 
   }
   

@@ -182,8 +182,14 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
 
   private void highlight(Service service, IHighlightedPositionAcceptor acceptor) {
     highlightName(service, acceptor, SERVICE_DEFINITION_ID);
-    for (Rpc rpc : service.getRpcs()) {
-      highlight(rpc, acceptor);
+    for (ServiceElement e : service.getElements()) {
+      if (e instanceof Rpc) {
+        highlight((Rpc) e, acceptor);
+        continue;
+      }
+      if (e instanceof Option) {
+        highlight((Option) e, acceptor);
+      }
     }
   }
 
