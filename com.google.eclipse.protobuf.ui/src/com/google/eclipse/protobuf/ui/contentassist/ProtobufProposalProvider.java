@@ -48,6 +48,7 @@ import com.google.inject.Inject;
  */
 public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
+  @Inject private IEObjectDescriptionChooser descriptionChooser;
   @Inject private ProtobufScopeProvider scopes;
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private FieldOptions fieldOptions;
@@ -426,7 +427,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   
   private void proposeAndAcceptOptions(IScope scope, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     Image image = imageForOption();
-    for (IEObjectDescription d : scope.getAllElements()) {
+    for (IEObjectDescription d : descriptionChooser.shortestQualifiedNamesIn(scope)) {
       proposeAndAccept(d, image, context, acceptor);
     }
   }
