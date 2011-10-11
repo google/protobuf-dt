@@ -11,7 +11,12 @@ package com.google.eclipse.protobuf.ui.commands;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import java.util.regex.*;
+import com.google.eclipse.protobuf.grammar.CommonKeyword;
+import com.google.eclipse.protobuf.model.util.INodes;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag.*;
+import com.google.eclipse.protobuf.ui.util.*;
+import com.google.inject.Inject;
 
 import org.apache.log4j.Logger;
 import org.eclipse.emf.ecore.EObject;
@@ -26,13 +31,7 @@ import org.eclipse.xtext.ui.editor.model.IXtextDocument;
 import org.eclipse.xtext.util.Pair;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
-import com.google.eclipse.protobuf.grammar.CommonKeyword;
-import com.google.eclipse.protobuf.model.util.INodes;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag.*;
-import com.google.eclipse.protobuf.ui.util.*;
-import com.google.inject.Inject;
+import java.util.regex.*;
 
 /**
  * Inserts a semicolon at the end of a line, regardless of the current position of the caret in the editor. If the
@@ -94,10 +93,6 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
           for (ContentAssistContext c : context) {
             if (nodes.wasCreatedByAnyCommentOrString(c.getCurrentNode())) continue;
             EObject model = c.getCurrentModel();
-            if (model instanceof Message || model instanceof Enum || model instanceof Protobuf) {
-              // need to retry, parsing may not be finished yet.
-              return ContentToInsert.RETRY;
-            }
             if (model instanceof FieldOption) {
               FieldOption option = (FieldOption) model;
               model = option.eContainer();
