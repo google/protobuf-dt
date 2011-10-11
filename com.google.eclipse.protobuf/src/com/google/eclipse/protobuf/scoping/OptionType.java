@@ -60,7 +60,7 @@ enum OptionType {
    * @return the type of the given option or {@code null} if a type cannot be found.
    */
   static OptionType typeOf(FieldOption option) {
-    return findType(option.eContainer());
+    return findTypeForContainer(option.eContainer());
   }
 
   /**
@@ -69,10 +69,10 @@ enum OptionType {
    * @return the type of the given option or {@code null} if a type cannot be found.
    */
   static OptionType typeOf(Option option) {
-    return findType(option.eContainer());
+    return findTypeForContainer(option.eContainer());
   }
 
-  private static OptionType findType(EObject container) {
+  static OptionType findTypeForContainer(EObject container) {
     for (Entry<Class<?>, OptionType> optionTypeByContainer : OPTION_TYPES_BY_CONTAINER.entrySet()) {
       if (optionTypeByContainer.getKey().isInstance(container)) {
         return optionTypeByContainer.getValue();

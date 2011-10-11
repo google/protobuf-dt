@@ -9,7 +9,6 @@
 package com.google.eclipse.protobuf.scoping;
 
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.PROPERTY__TYPE;
-import static com.google.eclipse.protobuf.scoping.OptionType.*;
 import static com.google.eclipse.protobuf.util.Closeables.closeQuietly;
 import static com.google.eclipse.protobuf.util.Encodings.UTF_8;
 import static java.util.Collections.*;
@@ -141,11 +140,9 @@ public class ProtoDescriptor {
   public Collection<Property> availableOptionsFor(EObject o) {
     EObject target = o;
     if (target instanceof NativeOption) target = target.eContainer();
-    if (target instanceof Protobuf) return optionsOfType(FILE);
-    if (target instanceof Enum) return optionsOfType(ENUM);
-    if (target instanceof Message) return optionsOfType(MESSAGE);
-    if (target instanceof Property) return optionsOfType(FIELD);
-    return emptyList();
+    OptionType type = OptionType.findTypeForContainer(target);
+    if (type == null) return emptyList();
+    return optionsOfType(type);
   }
 
   @VisibleForTesting
