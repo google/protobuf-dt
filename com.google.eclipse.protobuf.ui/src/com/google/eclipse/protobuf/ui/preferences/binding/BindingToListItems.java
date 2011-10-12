@@ -44,15 +44,15 @@ public class BindingToListItems implements Binding {
 
   /** {@inheritDoc} */
   public void applyPreferenceValueToTarget() {
-    applyValue(preference.value());
+    apply(preference.value());
   }
 
   /** {@inheritDoc} */
   public void applyDefaultPreferenceValueToTarget() {
-    applyValue(preference.defaultValue());
+    apply(preference.defaultValue());
   }
 
-  private void applyValue(Collection<String> value) {
+  private void apply(Collection<String> value) {
     list.removeAll();
     for (String s : value) list.add(s);
   }

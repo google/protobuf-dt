@@ -40,13 +40,15 @@ public class BindingToButtonSelection implements Binding {
 
   /** {@inheritDoc} */
   public void applyPreferenceValueToTarget() {
-    boolean value = preference.value();
-    button.setSelection(value);
+    apply(preference.value());
   }
 
   /** {@inheritDoc} */
   public void applyDefaultPreferenceValueToTarget() {
-    boolean value = preference.defaultValue();
+    apply(preference.defaultValue());
+  }
+
+  private void apply(boolean value) {
     button.setSelection(value);
   }
 

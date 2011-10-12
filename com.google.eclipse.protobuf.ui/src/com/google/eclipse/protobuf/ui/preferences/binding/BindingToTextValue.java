@@ -40,13 +40,15 @@ public class BindingToTextValue implements Binding {
 
   /** {@inheritDoc} */
   public void applyPreferenceValueToTarget() {
-    String value = preference.value();
-    text.setText(value);
+    apply(preference.value());
   }
 
   /** {@inheritDoc} */
   public void applyDefaultPreferenceValueToTarget() {
-    String value = preference.defaultValue();
+    apply(preference.defaultValue());
+  }
+
+  private void apply(String value) {
     text.setText(value);
   }
 

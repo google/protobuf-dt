@@ -11,7 +11,7 @@ package com.google.eclipse.protobuf.ui.preferences.binding;
 import java.util.*;
 
 /**
- * Binds preferences to UI controls.
+ * Binds preference values to properties in UI controls.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
@@ -19,26 +19,43 @@ public class PreferenceBinder {
 
   private final List<Binding> allBindings = new ArrayList<Binding>();
 
+  /**
+   * Adds all the given bindings to this binder.
+   * @param bindings the bindings to add.
+   */
   public void addAll(Binding...bindings) {
     for (Binding binding : bindings) add(binding);
   }
 
+  /**
+   * Adds the given binding to this binder.
+   * @param binding the binding to add.
+   */
   public void add(Binding binding) {
     allBindings.add(binding);
   }
 
+  /**
+   * Calls <code>{@link Binding#applyPreferenceValueToTarget()}</code> on each of the bindings in this binder.
+   */
   public void applyValues() {
     for (Binding binding : allBindings) {
       binding.applyPreferenceValueToTarget();
     }
   }
 
+  /**
+   * Calls <code>{@link Binding#applyDefaultPreferenceValueToTarget()}</code> on each of the bindings in this binder.
+   */
   public void applyDefaults() {
     for (Binding binding : allBindings) {
       binding.applyDefaultPreferenceValueToTarget();
     }
   }
 
+  /**
+   * Calls <code>{@link Binding#savePreferenceValue()}</code> on each of the bindings in this binder.
+   */
   public void saveValues() {
     for (Binding binding : allBindings) {
       binding.savePreferenceValue();
