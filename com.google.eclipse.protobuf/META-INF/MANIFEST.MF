@@ -19,7 +19,7 @@ Require-Bundle: org.eclipse.xtext,
  org.eclipse.core.runtime;bundle-version="3.7.0"
 Import-Package: org.apache.log4j,
  org.apache.commons.logging
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: com.google.eclipse.protobuf,
  com.google.eclipse.protobuf.conversion,
  com.google.eclipse.protobuf.grammar,

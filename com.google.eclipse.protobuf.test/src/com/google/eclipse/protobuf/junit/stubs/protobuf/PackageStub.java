@@ -29,107 +29,107 @@ public class PackageStub implements Package {
   }
 
   /** {@inheritDoc} */
-  public EClass eClass() {
+  @Override public EClass eClass() {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public Resource eResource() {
+  @Override public Resource eResource() {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public EObject eContainer() {
+  @Override public EObject eContainer() {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public EStructuralFeature eContainingFeature() {
+  @Override public EStructuralFeature eContainingFeature() {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public EReference eContainmentFeature() {
+  @Override public EReference eContainmentFeature() {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public EList<EObject> eContents() {
+  @Override public EList<EObject> eContents() {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public TreeIterator<EObject> eAllContents() {
+  @Override public TreeIterator<EObject> eAllContents() {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public boolean eIsProxy() {
+  @Override public boolean eIsProxy() {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public EList<EObject> eCrossReferences() {
+  @Override public EList<EObject> eCrossReferences() {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public Object eGet(EStructuralFeature feature) {
+  @Override public Object eGet(EStructuralFeature feature) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public Object eGet(EStructuralFeature feature, boolean resolve) {
+  @Override public Object eGet(EStructuralFeature feature, boolean resolve) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void eSet(EStructuralFeature feature, Object newValue) {
+  @Override public void eSet(EStructuralFeature feature, Object newValue) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public boolean eIsSet(EStructuralFeature feature) {
+  @Override public boolean eIsSet(EStructuralFeature feature) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void eUnset(EStructuralFeature feature) {
+  @Override public void eUnset(EStructuralFeature feature) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public Object eInvoke(EOperation operation, EList<?> arguments) {
+  @Override public Object eInvoke(EOperation operation, EList<?> arguments) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public EList<Adapter> eAdapters() {
+  @Override public EList<Adapter> eAdapters() {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public boolean eDeliver() {
+  @Override public boolean eDeliver() {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void eSetDeliver(boolean deliver) {
+  @Override public void eSetDeliver(boolean deliver) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void eNotify(Notification notification) {
+  @Override public void eNotify(Notification notification) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public String getName() {
+  @Override public String getName() {
     return name;
   }
 
   /** {@inheritDoc} */
-  public void setName(String value) {
+  @Override public void setName(String value) {
     name = value;
   }
 

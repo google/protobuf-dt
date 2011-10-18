@@ -10,12 +10,10 @@ package com.google.eclipse.protobuf.scoping;
 
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.eclipse.emf.ecore.EObject;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
+import org.hamcrest.*;
 
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
@@ -35,7 +33,7 @@ class ContainAllLiteralsInEnum extends BaseMatcher<IEObjectDescriptions> {
     this.anEnum = anEnum;
   }
   
-  public boolean matches(Object arg) {
+  @Override public boolean matches(Object arg) {
     if (!(arg instanceof IEObjectDescriptions)) return false;
     IEObjectDescriptions descriptions = (IEObjectDescriptions) arg;
     List<Literal> literals = allLiterals();
@@ -48,7 +46,7 @@ class ContainAllLiteralsInEnum extends BaseMatcher<IEObjectDescriptions> {
     return true;
   }
 
-  public void describeTo(Description description) {
+  @Override public void describeTo(Description description) {
     List<String> names = new ArrayList<String>();
     for (Literal literal : allLiterals()) {
       names.add(literal.getName());

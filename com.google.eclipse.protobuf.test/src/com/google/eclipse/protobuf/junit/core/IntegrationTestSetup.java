@@ -40,7 +40,7 @@ public class IntegrationTestSetup extends ProtobufStandaloneSetup {
   }
   
   private static class FileUriResolver implements IFileUriResolver {
-    public String resolveUri(String importUri, Resource declaringResource) {
+    @Override public String resolveUri(String importUri, Resource declaringResource) {
       URI uri = URI.createURI(importUri);
       if (!isEmpty(uri.scheme())) return importUri; // already resolved.
       File file = protoFile(importUri);

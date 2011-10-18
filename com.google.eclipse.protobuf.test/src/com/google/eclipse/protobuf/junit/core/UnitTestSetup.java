@@ -34,7 +34,7 @@ public class UnitTestSetup extends ProtobufStandaloneSetup {
   }
   
   private static class ExtensionRegistryProvider implements Provider<IExtensionRegistry> {
-    public IExtensionRegistry get() {
+    @Override public IExtensionRegistry get() {
       return mock(IExtensionRegistry.class);
     }
   }

@@ -10,12 +10,10 @@ package com.google.eclipse.protobuf.scoping;
 
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.eclipse.emf.ecore.EObject;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
+import org.hamcrest.*;
 
 import com.google.eclipse.protobuf.protobuf.*;
 
@@ -34,7 +32,7 @@ class ContainAllPropertiesInMessage extends BaseMatcher<IEObjectDescriptions> {
     this.message = message;
   }
   
-  public boolean matches(Object arg) {
+  @Override public boolean matches(Object arg) {
     if (!(arg instanceof IEObjectDescriptions)) return false;
     IEObjectDescriptions descriptions = (IEObjectDescriptions) arg;
     List<Property> properties = allProperties();
@@ -47,7 +45,7 @@ class ContainAllPropertiesInMessage extends BaseMatcher<IEObjectDescriptions> {
     return true;
   }
 
-  public void describeTo(Description description) {
+  @Override public void describeTo(Description description) {
     List<String> names = new ArrayList<String>();
     for (Property property : allProperties()) {
       names.add(property.getName());
