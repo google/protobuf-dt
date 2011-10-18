@@ -10,20 +10,22 @@ package com.google.eclipse.protobuf.ui.editor.hyperlinking;
 
 import static org.eclipse.emf.common.util.URI.createURI;
 
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.jface.text.*;
-import org.eclipse.jface.text.hyperlink.IHyperlink;
-import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
-import org.eclipse.xtext.CrossReference;
-import org.eclipse.xtext.resource.EObjectAtOffsetHelper;
-import org.eclipse.xtext.resource.XtextResource;
-import org.eclipse.xtext.ui.editor.hyperlinking.DefaultHyperlinkDetector;
-import org.eclipse.xtext.ui.editor.model.IXtextDocument;
-import org.eclipse.xtext.util.concurrent.IUnitOfWork;
-
+import com.google.eclipse.protobuf.model.util.INodes;
 import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.ui.editor.FileOpener;
 import com.google.inject.Inject;
+
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.jface.text.*;
+import org.eclipse.jface.text.hyperlink.*;
+import org.eclipse.xtext.CrossReference;
+import org.eclipse.xtext.nodemodel.INode;
+import org.eclipse.xtext.resource.*;
+import org.eclipse.xtext.ui.editor.hyperlinking.DefaultHyperlinkDetector;
+import org.eclipse.xtext.ui.editor.model.IXtextDocument;
+import org.eclipse.xtext.util.concurrent.IUnitOfWork;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
+
 
 /**
  * Represents an implementation of interface <code>{@link IHyperlinkDetector}</code> to find and convert
@@ -35,11 +37,9 @@ public class ProtobufHyperlinkDetector extends DefaultHyperlinkDetector {
 
   private static final IHyperlink[] NO_HYPERLINKS = null;
 
-  // TODO support single quotes too.
-  private static final char QUOTE = '\"';
-
   @Inject private EObjectAtOffsetHelper eObjectAtOffsetHelper;
   @Inject private FileOpener fileOpener;
+  @Inject private INodes nodes;
 
   @Override public IHyperlink[] detectHyperlinks(ITextViewer textViewer, final IRegion region,
       final boolean canShowMultipleHyperlinks) {
@@ -59,27 +59,35 @@ public class ProtobufHyperlinkDetector extends DefaultHyperlinkDetector {
         EObject resolved = eObjectAtOffsetHelper.resolveElementAt(resource, region.getOffset());
         if (!(resolved instanceof Import)) return NO_HYPERLINKS;
         Import anImport = (Import) resolved;
+        String importUri = rawUriIn(anImport);
+        if (importUri == null) return NO_HYPERLINKS;
         IRegion importUriRegion;
         try {
-          importUriRegion = importUriRegion(document, region.getOffset());
+          importUriRegion = importUriRegion(document, region.getOffset(), importUri);
         } catch (BadLocationException e) {
           return NO_HYPERLINKS;
         }
-        String importUri = anImport.getImportURI();
-        IHyperlink hyperlink = new ImportHyperlink(createURI(importUri), importUriRegion, fileOpener);
+        if (importUriRegion == null) return NO_HYPERLINKS;
+        IHyperlink hyperlink = new ImportHyperlink(createURI(anImport.getImportURI()), importUriRegion, fileOpener);
         return new IHyperlink[] { hyperlink };
       }
     });
   }
-
-  private IRegion importUriRegion(final IXtextDocument document, final int offset) throws BadLocationException {
+  
+  private String rawUriIn(Import anImport) {
+    INode node = nodes.firstNodeForFeature(anImport, IMPORT__IMPORT_URI);
+    if (node == null) return null;
+    String text = node.getText();
+    if (text == null || text.length() < 3) return null;
+    return text.substring(1, text.length() - 1); // remove quotes
+  }
+  
+  private IRegion importUriRegion(IXtextDocument document, int offset, String importUri) throws BadLocationException {
     int lineNumber = document.getLineOfOffset(offset);
     int lineLength = document.getLineLength(lineNumber);
     int lineOffset = document.getLineOffset(lineNumber);
     String line = document.get(lineOffset, lineLength);
-    int openingQuoteIndex = line.indexOf(QUOTE);
-    int closingQuoteIndex = line.indexOf(QUOTE, ++openingQuoteIndex);
-    String importUri = line.substring(openingQuoteIndex, closingQuoteIndex);
-    return new Region(lineOffset + openingQuoteIndex, importUri.length());
+    int uriIndex = line.indexOf(importUri);
+    return new Region(lineOffset + uriIndex, importUri.length());
   }
 }

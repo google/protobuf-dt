@@ -26,7 +26,7 @@ import org.junit.*;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ModelNodes_firstNodeForFeature_Test {
+public class INodes_firstNodeForFeature_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
