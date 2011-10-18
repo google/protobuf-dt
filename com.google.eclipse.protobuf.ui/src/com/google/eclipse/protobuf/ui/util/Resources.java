@@ -23,6 +23,7 @@ import com.google.inject.Singleton;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
+@SuppressWarnings("deprecation") 
 @Singleton
 public class Resources {
 
@@ -40,8 +41,7 @@ public class Resources {
   }
 
   public IProject activeProject() {
-    IViewReference[] references = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences();
-    for (IViewReference reference : references) {
+    for (IViewReference reference : viewReferencesInActivePage()) {
       IViewPart part = reference.getView(false);
       if (!(part instanceof ResourceNavigator)) continue;
       ResourceNavigator navigator = (ResourceNavigator) part;
@@ -52,6 +52,12 @@ public class Resources {
     return null;
   }
 
+  private IViewReference[] viewReferencesInActivePage() {
+    IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+    if (activePage == null) return new IViewReference[0];
+    return activePage.getViewReferences();
+  }
+  
   /**
    * Indicates whether the given URI belongs to an existing file.
    * @param fileUri the URI to check, as a {@code String}.
