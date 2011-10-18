@@ -34,7 +34,7 @@ public class SingleLineCommentDocumentationProvider implements IEObjectDocumenta
   @Inject private INodes nodes;
   @Inject private Options options;
 
-  public String getDocumentation(EObject o) {
+  @Override public String getDocumentation(EObject o) {
     String comment = findComment(o);
     return comment != null ? comment : "";
   }

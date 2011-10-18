@@ -28,27 +28,27 @@ public class UriEditorInput implements IEditorInput {
   }
 
   @SuppressWarnings("rawtypes")
-  public Object getAdapter(Class adapter) {
+  @Override public Object getAdapter(Class adapter) {
     return Platform.getAdapterManager().getAdapter(this, adapter);
   }
 
-  public boolean exists() {
+  @Override public boolean exists() {
     return false;
   }
 
-  public ImageDescriptor getImageDescriptor() {
+  @Override public ImageDescriptor getImageDescriptor() {
     return null;
   }
 
-  public String getName() {
+  @Override public String getName() {
     return name;
   }
 
-  public IPersistableElement getPersistable() {
+  @Override public IPersistableElement getPersistable() {
     return null;
   }
 
-  public String getToolTipText() {
+  @Override public String getToolTipText() {
     return name;
   }
 
