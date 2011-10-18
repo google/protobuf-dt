@@ -58,13 +58,13 @@ public class ProtobufQuickfixProvider extends DefaultQuickfixProvider {
 
   @Fix(MORE_THAN_ONE_PACKAGE_ERROR)
   public void removeDuplicatePackage(Issue issue, IssueResolutionAcceptor acceptor) {
-    String image = images.imageFor(Package.class);
-    acceptor.accept(issue, removeDuplicatePackageLabel, removeDuplicatePackage, image, new ISemanticModification() {
-      @Override public void apply(EObject element, IModificationContext context) throws Exception {
-        if (!(element instanceof Package)) return;
-        Package aPackage = (Package) element;
-        remove(aPackage);
-      }
-    });
+    acceptor.accept(issue, removeDuplicatePackageLabel, removeDuplicatePackage, "remove.gif",
+        new ISemanticModification() {
+          @Override public void apply(EObject element, IModificationContext context) throws Exception {
+            if (!(element instanceof Package)) return;
+            Package aPackage = (Package) element;
+            remove(aPackage);
+          }
+        });
   }
 }
