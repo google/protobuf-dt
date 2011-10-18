@@ -9,21 +9,17 @@
 package com.google.eclipse.protobuf.ui.preferences.pages.paths;
 
 import static com.google.eclipse.protobuf.ui.ProtobufUiModule.PLUGIN_ID;
-import static com.google.eclipse.protobuf.ui.preferences.EventListeners.addSelectionListener;
+import static com.google.eclipse.protobuf.ui.preferences.Buttons.with;
 import static com.google.eclipse.protobuf.ui.preferences.binding.BindingToButtonSelection.bindSelectionOf;
 import static com.google.eclipse.protobuf.ui.preferences.pages.paths.Messages.*;
-import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static org.eclipse.core.resources.IncrementalProjectBuilder.FULL_BUILD;
 import static org.eclipse.core.runtime.Status.OK_STATUS;
 import static org.eclipse.core.runtime.jobs.Job.BUILD;
 import static org.eclipse.xtext.util.Strings.*;
 
-import com.google.eclipse.protobuf.ui.preferences.*;
-import com.google.eclipse.protobuf.ui.preferences.binding.*;
-import com.google.eclipse.protobuf.ui.preferences.pages.PreferenceAndPropertyPage;
-import com.google.eclipse.protobuf.ui.validation.ValidationTrigger;
-import com.google.inject.Inject;
+import java.util.*;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.*;
@@ -35,8 +31,11 @@ import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.xtext.ui.PluginImageHelper;
 
-import java.util.*;
-import java.util.List;
+import com.google.eclipse.protobuf.ui.preferences.*;
+import com.google.eclipse.protobuf.ui.preferences.binding.*;
+import com.google.eclipse.protobuf.ui.preferences.pages.PreferenceAndPropertyPage;
+import com.google.eclipse.protobuf.ui.validation.ValidationTrigger;
+import com.google.inject.Inject;
 
 /**
  * Preference page for import paths.
@@ -83,19 +82,18 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
 
     directoryPathsEditor = new DirectoryPathsEditor(grpResolutionOfImported, project(), imageHelper);
     directoryPathsEditor.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-    new Label(parent, SWT.NONE);
 
     addEventListeners();
   }
 
   private void addEventListeners() {
-    addSelectionListener(new SelectionAdapter() {
+    with(btnOneDirectoryOnly, btnMultipleDirectories).add(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
         boolean selected = btnMultipleDirectories.getSelection();
         directoryPathsEditor.setEnabled(selected);
         checkState();
       }
-    }, asList(btnOneDirectoryOnly, btnMultipleDirectories));
+    });
     directoryPathsEditor.setDataChangedListener(new DataChangedListener() {
       public void dataChanged() {
         checkState();

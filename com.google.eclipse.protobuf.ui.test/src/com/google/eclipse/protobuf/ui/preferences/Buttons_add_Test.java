@@ -1,0 +1,38 @@
+/*
+ * Copyright (c) 2011 Google Inc.
+ *
+ * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License v1.0 which accompanies this distribution, and is available at
+ *
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
+package com.google.eclipse.protobuf.ui.preferences;
+
+import static org.mockito.Mockito.*;
+
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.widgets.Button;
+import org.junit.*;
+
+/**
+ * Tests for <code>{@link Buttons#add(SelectionListener)}</code>.
+ *
+ * @author alruiz@google.com (Alex Ruiz)
+ */
+public class Buttons_add_Test {
+
+  private Button[] buttons;
+  private SelectionListener listener;
+
+  @Before public void setUp() {
+    buttons = new Button[] { mock(Button.class), mock(Button.class), mock(Button.class) };
+    listener = new SelectionAdapter() {};
+  }
+
+  @Test public void should_add_SelectionListener_to_all_buttons() {
+    Buttons.with(buttons).add(listener);
+    for (Button b : buttons) {
+      verify(b).addSelectionListener(listener);
+    }
+  }
+}
