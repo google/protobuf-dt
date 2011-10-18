@@ -43,7 +43,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
   @Inject private ProtocOutputParser outputParser;
   @Inject private ProtoDescriptorPathFinder protoDescriptorPathFinder;
 
-  public void build(IBuildContext context, IProgressMonitor monitor) throws CoreException {
+  @Override public void build(IBuildContext context, IProgressMonitor monitor) throws CoreException {
     IProject project = context.getBuiltProject();
     CompilerPreferences preferences = compilerPreferencesFactory.preferences(project);
     if (!preferences.shouldCompileProtoFiles()) return;

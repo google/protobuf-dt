@@ -27,6 +27,7 @@ class CodeGenerationErrorParser implements ProtocOutputParser {
    */
   private static final Pattern ERROR_PATTERN = Pattern.compile("(.*):\\s*(--.*)");
 
+  @Override 
   public boolean parseAndAddMarkerIfNecessary(String line, ProtocMarkerFactory markerFactory) throws CoreException {
     Matcher errorMatcher = ERROR_PATTERN.matcher(line);
     if (!errorMatcher.matches()) return false;

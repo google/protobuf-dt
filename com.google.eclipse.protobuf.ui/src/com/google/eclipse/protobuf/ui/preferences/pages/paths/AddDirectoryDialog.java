@@ -117,7 +117,7 @@ public class AddDirectoryDialog extends InputDialog {
       }
     });
     txtPath.addModifyListener(new ModifyListener() {
-      public void modifyText(ModifyEvent e) {
+      @Override public void modifyText(ModifyEvent e) {
         boolean hasText = !isEmpty(enteredPathText());
         getButton(OK_ID).setEnabled(hasText);
       }

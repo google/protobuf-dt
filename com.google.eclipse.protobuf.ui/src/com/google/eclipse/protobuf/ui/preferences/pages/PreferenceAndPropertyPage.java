@@ -151,7 +151,7 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
    * Returns the <code>{@link IProject}</code> that owns the properties shown in this page.
    * @return the project that owns the properties shown in this page.
    */
-  public final IAdaptable getElement() {
+  @Override public final IAdaptable getElement() {
     return project;
   }
 
@@ -159,7 +159,7 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
    * Sets the <code>{@link IProject}</code> that owns the properties shown in this page.
    * @param element the {@code IAdaptable} associated with the project that owns the properties shown in this page.
    */
-  public final void setElement(IAdaptable element) {
+  @Override public final void setElement(IAdaptable element) {
     this.project = (IProject) element.getAdapter(IProject.class);
   }
 
@@ -215,7 +215,7 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
   }
 
   /** {@inheritDoc} */
-  public void init(IWorkbench workbench) {}
+  @Override public void init(IWorkbench workbench) {}
 
   @Override public final boolean performOk() {
     preferenceBinder.saveValues();

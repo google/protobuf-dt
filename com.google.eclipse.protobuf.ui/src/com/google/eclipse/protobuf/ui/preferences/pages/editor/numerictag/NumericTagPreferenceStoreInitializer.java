@@ -21,7 +21,7 @@ import org.eclipse.xtext.ui.editor.preferences.*;
 public class NumericTagPreferenceStoreInitializer implements IPreferenceStoreInitializer {
 
   /** {@inheritDoc} */
-  public void initialize(IPreferenceStoreAccess access) {
+  @Override public void initialize(IPreferenceStoreAccess access) {
     IPreferenceStore store = access.getWritablePreferenceStore();
     RawPreferences preferences = new RawPreferences(store);
     preferences.patterns().defaultValue(singletonList("Next[\\s]+Id:[\\s]+[\\d]+"));

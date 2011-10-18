@@ -36,7 +36,7 @@ public class ProtobufQuickfixProvider extends DefaultQuickfixProvider {
   public void makeSyntaxProto2(Issue issue, IssueResolutionAcceptor acceptor) {
     String image = images.imageFor(Syntax.class);
     acceptor.accept(issue, changeToProto2Label, changeToProto2, image, new ISemanticModification() {
-      public void apply(EObject element, IModificationContext context) throws Exception {
+      @Override public void apply(EObject element, IModificationContext context) throws Exception {
         if (!(element instanceof Syntax)) return;
         Syntax syntax = (Syntax) element;
         syntax.setName("proto2");
@@ -47,7 +47,7 @@ public class ProtobufQuickfixProvider extends DefaultQuickfixProvider {
   @Fix(INVALID_FIELD_TAG_NUMBER_ERROR)
   public void regenerateTagNumber(Issue issue, IssueResolutionAcceptor acceptor) {
     acceptor.accept(issue, regenerateTagNumberLabel, regenerateTagNumber, "property.gif", new ISemanticModification() {
-      public void apply(EObject element, IModificationContext context) throws Exception {
+      @Override public void apply(EObject element, IModificationContext context) throws Exception {
         if (!(element instanceof Field)) return;
         Field field = (Field) element;
         long tagNumber = fields.calculateTagNumberOf(field);
@@ -60,7 +60,7 @@ public class ProtobufQuickfixProvider extends DefaultQuickfixProvider {
   public void removeDuplicatePackage(Issue issue, IssueResolutionAcceptor acceptor) {
     String image = images.imageFor(Package.class);
     acceptor.accept(issue, removeDuplicatePackageLabel, removeDuplicatePackage, image, new ISemanticModification() {
-      public void apply(EObject element, IModificationContext context) throws Exception {
+      @Override public void apply(EObject element, IModificationContext context) throws Exception {
         if (!(element instanceof Package)) return;
         Package aPackage = (Package) element;
         remove(aPackage);

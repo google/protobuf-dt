@@ -38,7 +38,7 @@ public class STRINGValueConverter extends AbstractLexerBasedConverter<String> {
    * @return the new integer.
    * @throws ValueConverterException if the given input has illegal characters.
    */
-  public String toValue(String string, INode node) throws ValueConverterException {
+  @Override public String toValue(String string, INode node) throws ValueConverterException {
     if (string == null) return null;
     try {
       String clean = removeLineBreaksFrom(string).trim();

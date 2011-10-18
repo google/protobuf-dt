@@ -95,7 +95,7 @@ public class AddOrEditPatternDialog extends InputDialog {
 
   private void addEventListeners() {
     txtPattern.addModifyListener(new ModifyListener() {
-      public void modifyText(ModifyEvent e) {
+      @Override public void modifyText(ModifyEvent e) {
         String regex = enteredPattern();
         if (isEmpty(regex)) {
           clearTestErrorText();
@@ -115,7 +115,7 @@ public class AddOrEditPatternDialog extends InputDialog {
       }
     });
     txtTest.addModifyListener(new ModifyListener() {
-      public void modifyText(ModifyEvent e) {
+      @Override public void modifyText(ModifyEvent e) {
         testPattern();
       }
     });

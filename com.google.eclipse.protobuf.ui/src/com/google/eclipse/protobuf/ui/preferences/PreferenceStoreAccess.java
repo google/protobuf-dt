@@ -36,13 +36,13 @@ public class PreferenceStoreAccess implements IPreferenceStoreAccess {
 
   private String qualifier;
 
-  public IPreferenceStore getContextPreferenceStore(Object context) {
+  @Override public IPreferenceStore getContextPreferenceStore(Object context) {
     lazyInitialize();
     return new ChainedPreferenceStore(new IPreferenceStore[] { getWritablePreferenceStore(context),
         ProtobufActivator.getInstance().getPreferenceStore(), EditorsUI.getPreferenceStore()});
   }
 
-  public IPreferenceStore getPreferenceStore() {
+  @Override public IPreferenceStore getPreferenceStore() {
     lazyInitialize();
     return new ChainedPreferenceStore(new IPreferenceStore[] { getWritablePreferenceStore(),
         ProtobufActivator.getInstance().getPreferenceStore(), EditorsUI.getPreferenceStore()});
@@ -52,14 +52,14 @@ public class PreferenceStoreAccess implements IPreferenceStoreAccess {
     return qualifier;
   }
 
-  public IPreferenceStore getWritablePreferenceStore() {
+  @Override public IPreferenceStore getWritablePreferenceStore() {
     lazyInitialize();
     ScopedPreferenceStore result = new ScopedPreferenceStore(InstanceScope.INSTANCE, getQualifier());
     result.setSearchContexts(new IScopeContext[] { InstanceScope.INSTANCE, ConfigurationScope.INSTANCE });
     return result;
   }
 
-  public IPreferenceStore getWritablePreferenceStore(Object context) {
+  @Override public IPreferenceStore getWritablePreferenceStore(Object context) {
     lazyInitialize();
     Object finalContext = context;
     if (finalContext instanceof IFileEditorInput) {

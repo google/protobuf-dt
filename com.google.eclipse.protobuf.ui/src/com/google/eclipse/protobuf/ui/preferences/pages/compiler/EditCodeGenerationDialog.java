@@ -88,7 +88,7 @@ public class EditCodeGenerationDialog extends InputDialog {
       }
     });
     txtOutputDirectory.addModifyListener(new ModifyListener() {
-      public void modifyText(ModifyEvent e) {
+      @Override public void modifyText(ModifyEvent e) {
         checkState();
       }
     });

@@ -40,11 +40,11 @@ class LineComparator implements IRangeComparator {
     }
   }
 
-  public int getRangeCount() {
+  @Override public int getRangeCount() {
     return document.getNumberOfLines();
   }
 
-  public boolean rangesEqual(int thisIndex, IRangeComparator other, int otherIndex) {
+  @Override public boolean rangesEqual(int thisIndex, IRangeComparator other, int otherIndex) {
     try {
       return getHash(thisIndex) == ((LineComparator) other).getHash(otherIndex);
     } catch (BadLocationException e) {
@@ -53,7 +53,7 @@ class LineComparator implements IRangeComparator {
     }
   }
 
-  public boolean skipRangeComparison(int length, int maxLength, IRangeComparator other) {
+  @Override public boolean skipRangeComparison(int length, int maxLength, IRangeComparator other) {
     return false;
   }
 

@@ -30,7 +30,7 @@ public interface IFileUriResolver {
   String resolveUri(String importUri, Resource declaringResource);
 
   class NullFileUriResolver implements IFileUriResolver {
-    public String resolveUri(String importUri, Resource declaringResource) {
+    @Override public String resolveUri(String importUri, Resource declaringResource) {
       throw new UnsupportedOperationException();
     }
   }

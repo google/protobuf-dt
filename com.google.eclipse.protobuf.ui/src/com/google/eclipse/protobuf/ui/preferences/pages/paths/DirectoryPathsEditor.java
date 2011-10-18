@@ -210,7 +210,7 @@ public class DirectoryPathsEditor extends Composite {
       return getColumnImage(element, 0);
     }
 
-    public Image getColumnImage(Object element, int columnIndex) {
+    @Override public Image getColumnImage(Object element, int columnIndex) {
       DirectoryPath path = (DirectoryPath) element;
       String imageName = (path.isWorkspacePath()) ? "workspace.gif" : "folder.gif";
       return imageHelper.getImage(imageName);
@@ -220,7 +220,7 @@ public class DirectoryPathsEditor extends Composite {
       return getColumnText(element, 0);
     }
 
-    public String getColumnText(Object element, int columnIndex) {
+    @Override public String getColumnText(Object element, int columnIndex) {
       DirectoryPath path = (DirectoryPath) element;
       return path.value();
     }

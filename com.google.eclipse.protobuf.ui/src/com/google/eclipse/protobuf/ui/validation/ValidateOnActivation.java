@@ -29,7 +29,7 @@ public class ValidateOnActivation implements IPartListener2 {
    * Validates the active active editor in the given part that contains a .proto file in the Workspace.
    * @param partRef the part that was activated.
    */
-  public void partActivated(IWorkbenchPartReference partRef) {
+  @Override public void partActivated(IWorkbenchPartReference partRef) {
     IEditorPart activeEditor = activeEditor(partRef);
     IProject project = projectFrom(activeEditor);
     if (project == null || !shouldValidateEditor(project)) return;
@@ -57,41 +57,41 @@ public class ValidateOnActivation implements IPartListener2 {
    * This method does nothing.
    * @param partRef the part that was surfaced.
    */
-  public void partBroughtToTop(IWorkbenchPartReference partRef) {}
+  @Override public void partBroughtToTop(IWorkbenchPartReference partRef) {}
 
   /**
    * This method does nothing.
    * @param partRef the part that was closed.
    */
-  public void partClosed(IWorkbenchPartReference partRef) {}
+  @Override public void partClosed(IWorkbenchPartReference partRef) {}
 
   /**
    * This method does nothing.
    * @param partRef the part that was deactivated.
    */
-  public void partDeactivated(IWorkbenchPartReference partRef) {}
+  @Override public void partDeactivated(IWorkbenchPartReference partRef) {}
 
   /**
    * This method does nothing.
    * @param partRef the part that was opened.
    */
-  public void partOpened(IWorkbenchPartReference partRef) {}
+  @Override public void partOpened(IWorkbenchPartReference partRef) {}
 
   /**
    * This method does nothing.
    * @param partRef the part that was hidden.
    */
-  public void partHidden(IWorkbenchPartReference partRef) {}
+  @Override public void partHidden(IWorkbenchPartReference partRef) {}
 
   /**
    * This method does nothing.
    * @param partRef the part that is visible.
    */
-  public void partVisible(IWorkbenchPartReference partRef) {}
+  @Override public void partVisible(IWorkbenchPartReference partRef) {}
 
   /**
    * This method does nothing.
    * @param partRef the part whose input was changed.
    */
-  public void partInputChanged(IWorkbenchPartReference partRef) {}
+  @Override public void partInputChanged(IWorkbenchPartReference partRef) {}
 }

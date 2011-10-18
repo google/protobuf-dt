@@ -30,7 +30,7 @@ class SingleDirectoryFileResolver implements FileResolverStrategy {
     this.resources = resources;
   }
 
-  public String resolveUri(String importUri, URI declaringResourceUri, PathsPreferences preferences) {
+  @Override public String resolveUri(String importUri, URI declaringResourceUri, PathsPreferences preferences) {
     List<String> resourceUriSegments = removeFirstAndLast(declaringResourceUri.segmentsList());
     Pair<String, List<String>> importUriPair = pair(importUri, createURI(importUri).segmentsList());
     return resolveUri(importUriPair, resourceUriSegments);

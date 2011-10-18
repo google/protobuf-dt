@@ -97,7 +97,7 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
       }
     }, asList(btnOneDirectoryOnly, btnMultipleDirectories));
     directoryPathsEditor.setDataChangedListener(new DataChangedListener() {
-      public void dataChanged() {
+      @Override public void dataChanged() {
         checkState();
       }
     });
@@ -122,15 +122,15 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
         bindSelectionOf(btnMultipleDirectories).to(preferences.filesInMultipleDirectories()));
     final StringPreference directoryPaths = preferences.directoryPaths();
     preferenceBinder.add(new Binding() {
-      public void applyPreferenceValueToTarget() {
+      @Override public void applyPreferenceValueToTarget() {
         setDirectoryPaths(directoryPaths.value());
       }
 
-      public void applyDefaultPreferenceValueToTarget() {
+      @Override public void applyDefaultPreferenceValueToTarget() {
         setDirectoryPaths(directoryPaths.defaultValue());
       }
 
-      public void savePreferenceValue() {
+      @Override public void savePreferenceValue() {
         directoryPaths.value(directoryNames());
       }
     });
@@ -195,7 +195,7 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
 
   private void rebuildProject() {
     Job job = new Job("Rebuilding project") { //$NON-NLS-1$
-      protected IStatus run(IProgressMonitor monitor) {
+      @Override protected IStatus run(IProgressMonitor monitor) {
         try {
           project().build(FULL_BUILD, monitor);
         } catch (CoreException e) {

@@ -31,19 +31,19 @@ class BindingToCodeGeneration implements Binding {
   }
 
   /** {@inheritDoc} */
-  public void applyPreferenceValueToTarget() {
+  @Override public void applyPreferenceValueToTarget() {
     codeGeneration.enabled(enabled.value());
     codeGeneration.outputDirectory(outputDirectory.value());
   }
 
   /** {@inheritDoc} */
-  public void applyDefaultPreferenceValueToTarget() {
+  @Override public void applyDefaultPreferenceValueToTarget() {
     codeGeneration.enabled(enabled.defaultValue());
     codeGeneration.outputDirectory(outputDirectory.defaultValue());
   }
 
   /** {@inheritDoc} */
-  public void savePreferenceValue() {
+  @Override public void savePreferenceValue() {
     enabled.value(codeGeneration.isEnabled());
     outputDirectory.value(codeGeneration.outputDirectory());
   }

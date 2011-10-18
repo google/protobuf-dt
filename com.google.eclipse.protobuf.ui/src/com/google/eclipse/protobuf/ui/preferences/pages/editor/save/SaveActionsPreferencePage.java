@@ -42,7 +42,7 @@ public class SaveActionsPreferencePage extends PreferencePage implements IWorkbe
   private Button btnInAllLines;
 
   /** {@inheritDoc} */
-  public void init(IWorkbench workbench) {}
+  @Override public void init(IWorkbench workbench) {}
 
   @Override protected Control createContents(Composite parent) {
     Composite contents = new Composite(parent, NONE);

@@ -67,7 +67,7 @@ class LocalNamesProvider {
   List<QualifiedName> namesOf(final EObject obj) {
     Pair<EObject, String> key = pair(obj, "localFqns");
     return cache.get(key, obj.eResource(), new Provider<List<QualifiedName>>() {
-      public List<QualifiedName> get() {
+      @Override public List<QualifiedName> get() {
         List<QualifiedName> allNames = new ArrayList<QualifiedName>();
         EObject current = obj;
         String name = resolver.apply(current);

@@ -47,7 +47,7 @@ public class ProtobufHyperlinkDetector extends DefaultHyperlinkDetector {
     IHyperlink[] importHyperlinks = importHyperlinks(document, region);
     if (importHyperlinks != NO_HYPERLINKS) return importHyperlinks;
     return document.readOnly(new IUnitOfWork<IHyperlink[], XtextResource>() {
-      public IHyperlink[] exec(XtextResource resource) {
+      @Override public IHyperlink[] exec(XtextResource resource) {
         return getHelper().createHyperlinksByOffset(resource, region.getOffset(), canShowMultipleHyperlinks);
       }
     });
@@ -55,7 +55,7 @@ public class ProtobufHyperlinkDetector extends DefaultHyperlinkDetector {
 
   private IHyperlink[] importHyperlinks(final IXtextDocument document, final IRegion region) {
     return document.readOnly(new IUnitOfWork<IHyperlink[], XtextResource>() {
-      public IHyperlink[] exec(XtextResource resource) {
+      @Override public IHyperlink[] exec(XtextResource resource) {
         EObject resolved = eObjectAtOffsetHelper.resolveElementAt(resource, region.getOffset());
         if (!(resolved instanceof Import)) return NO_HYPERLINKS;
         Import anImport = (Import) resolved;

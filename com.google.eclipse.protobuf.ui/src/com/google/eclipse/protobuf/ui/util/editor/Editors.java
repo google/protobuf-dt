@@ -46,13 +46,13 @@ public class Editors {
     final SimpleReference<IStatus> errorStatus = new SimpleReference<IStatus>(OK_STATUS);
     try {
       SafeRunner.run(new ISafeRunnable() {
-        public void handleException(Throwable exception) {
+        @Override public void handleException(Throwable exception) {
           logger.error(exception.getMessage(), exception);
           errorStatus.set(new Status(ERROR, PLUGIN_ID, 0, errorCalculatingChangedRegions, exception));
           result.set(null);
         }
 
-        public void run() throws Exception {
+        @Override public void run() throws Exception {
           monitor.beginTask(calculatingChangedRegions, 20);
           IFileStore fileStore = buffer.getFileStore();
           ITextFileBufferManager fileBufferManager = createTextFileBufferManager();

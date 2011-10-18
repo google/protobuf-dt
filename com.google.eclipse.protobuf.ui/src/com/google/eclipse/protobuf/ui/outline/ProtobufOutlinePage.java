@@ -46,7 +46,7 @@ public class ProtobufOutlinePage extends OutlinePage {
   private Collection<IOutlineNode> childrenToExpand(IOutlineNode parent) {
     if (parent instanceof DocumentRootNode) {
       return filter(parent.getChildren(), new Predicate<IOutlineNode>() {
-        public boolean apply(IOutlineNode node) {
+        @Override public boolean apply(IOutlineNode node) {
           return !(node instanceof SimpleOutlineNode);
         }
       });

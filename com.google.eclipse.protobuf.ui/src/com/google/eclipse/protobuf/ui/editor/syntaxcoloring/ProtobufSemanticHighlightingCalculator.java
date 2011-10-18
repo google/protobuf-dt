@@ -32,7 +32,7 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
   @Inject private INodes nodes;
   @Inject private Options options;
 
-  public void provideHighlightingFor(XtextResource resource, IHighlightedPositionAcceptor acceptor) {
+  @Override public void provideHighlightingFor(XtextResource resource, IHighlightedPositionAcceptor acceptor) {
     if (resource == null) return;
     EList<EObject> contents = resource.getContents();
     if (contents == null || contents.isEmpty()) return;

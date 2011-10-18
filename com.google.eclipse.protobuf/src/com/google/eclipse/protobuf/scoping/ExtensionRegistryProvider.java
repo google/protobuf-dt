@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.*;
 @Singleton
 public class ExtensionRegistryProvider implements Provider<IExtensionRegistry> {
 
-  public IExtensionRegistry get() {
+  @Override public IExtensionRegistry get() {
     return Platform.getExtensionRegistry();
   }
 }

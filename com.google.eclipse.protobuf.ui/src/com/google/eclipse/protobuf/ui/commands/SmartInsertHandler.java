@@ -23,7 +23,7 @@ import org.eclipse.xtext.ui.editor.XtextEditor;
 public abstract class SmartInsertHandler extends AbstractHandler {
 
   /** {@inheritDoc} */
-  public final Object execute(ExecutionEvent event) {
+  @Override public final Object execute(ExecutionEvent event) {
     XtextEditor activeEditor = getActiveXtextEditor();
     if (activeEditor != null) insertContent(activeEditor, styledTextFrom(activeEditor));
     return null;
