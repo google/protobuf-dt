@@ -78,8 +78,8 @@ class ProtobufSpelling extends SpellingReconcileStrategy {
 
   private boolean shouldSpellCheck(INode node) {
     if (node == null) return false;
-    if (nodes.wasCreatedByAnyComment(node)) return true;
-    if (nodes.wasCreatedByString(node)) {
+    if (nodes.belongsToComment(node)) return true;
+    if (nodes.belongsToString(node)) {
       EObject o = findActualSemanticObjectFor(node);
       return !(o instanceof Import);
     }

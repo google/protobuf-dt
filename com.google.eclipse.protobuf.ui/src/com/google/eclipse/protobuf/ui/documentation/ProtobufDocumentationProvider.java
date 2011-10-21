@@ -14,7 +14,6 @@ import java.util.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
-import org.eclipse.xtext.documentation.impl.MultiLineCommentDocumentationProvider;
 
 import com.google.inject.Inject;
 
@@ -28,7 +27,7 @@ public class ProtobufDocumentationProvider implements IEObjectDocumentationProvi
   private final List<IEObjectDocumentationProvider> delegates = new ArrayList<IEObjectDocumentationProvider>();
 
   @Inject
-  public ProtobufDocumentationProvider(SingleLineCommentDocumentationProvider p1, MultiLineCommentDocumentationProvider p2) {
+  public ProtobufDocumentationProvider(SLCommentDocumentationProvider p1, MLCommentDocumentationProvider p2) {
     delegates.add(p1);
     delegates.add(p2);
   }

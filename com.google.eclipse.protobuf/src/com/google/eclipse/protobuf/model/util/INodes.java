@@ -26,7 +26,8 @@ import com.google.inject.Singleton;
 @Singleton
 public class INodes {
 
-  private static final String SINGLE_LINE_COMMENT_RULE_NAME = "SL_COMMENT";
+  private static final String SLCOMMENT_RULE_NAME = "SL_COMMENT";
+  private static final String MLCOMMENT_RULE_NAME = "ML_COMMENT";
 
   /**
    * Returns the first node that was used to assign values to the given feature for the given object.
@@ -42,30 +43,30 @@ public class INodes {
   }
 
   /**
-   * Indicates whether the given node was created by a string, or a single- or multi-line comment.
+   * Indicates whether the given node belongs to a string, or a single- or multi-line comment.
    * @param node the node to check.
-   * @return {@code true} if the given node was created by a string, or a single- or multi-line comment; {@code false}
+   * @return {@code true} if the given node belongs to a string, or a single- or multi-line comment; {@code false}
    * otherwise.
    */
-  public boolean wasCreatedByAnyCommentOrString(INode node) {
-    return wasCreatedByAnyComment(node) || wasCreatedByString(node);
+  public boolean belongsToCommentOrString(INode node) {
+    return belongsToComment(node) || belongsToString(node);
   }
 
   /**
-   * Indicates whether the given node was created by a single- or multi-line comment.
+   * Indicates whether the given node belongs to a single- or multiple-line comment.
    * @param node the node to check.
-   * @return {@code true} if the given node was created by a single- or multi-line comment; {@code false} otherwise.
+   * @return {@code true} if the given node belongs to a single- or multiple-line comment; {@code false} otherwise.
    */
-  public boolean wasCreatedByAnyComment(INode node) {
-    return wasCreatedByRule(node, SINGLE_LINE_COMMENT_RULE_NAME, "ML_COMMENT");
+  public boolean belongsToComment(INode node) {
+    return belongsToAnyOfGivenRules(node, SLCOMMENT_RULE_NAME, MLCOMMENT_RULE_NAME);
   }
 
   /**
-   * Indicates whether the given node was created by a string.
+   * Indicates whether the given node belongs to a string.
    * @param node the node to check.
-   * @return {@code true} if the given node was created by a string; {@code false} otherwise.
+   * @return {@code true} if the given node belongs to a string; {@code false} otherwise.
    */
-  public boolean wasCreatedByString(INode node) {
+  public boolean belongsToString(INode node) {
     EObject grammarElement = node.getGrammarElement();
     if (!(grammarElement instanceof RuleCall)) return false;
     AbstractRule rule = ((RuleCall) grammarElement).getRule();
@@ -75,15 +76,24 @@ public class INodes {
   }
 
   /**
-   * Indicates whether the given node was created by a single-line comment.
+   * Indicates whether the given node belongs to a single-line comment.
    * @param node the node to check.
-   * @return {@code true} if the given node was created by a single-line comment; {@code false} otherwise.
+   * @return {@code true} if the given node belongs to a single-line comment; {@code false} otherwise.
    */
-  public boolean wasCreatedBySingleLineComment(INode node) {
-    return wasCreatedByRule(node, SINGLE_LINE_COMMENT_RULE_NAME);
+  public boolean belongsToSingleLineComment(INode node) {
+    return belongsToAnyOfGivenRules(node, SLCOMMENT_RULE_NAME);
   }
 
-  private boolean wasCreatedByRule(INode node, String...ruleNames) {
+  /**
+   * Indicates whether the given node belongs to a multiple-line comment.
+   * @param node the node to check.
+   * @return {@code true} if the given node belongs to a multiple-line comment; {@code false} otherwise.
+   */
+  public boolean belongsToMultipleLineComment(INode node) {
+    return belongsToAnyOfGivenRules(node, MLCOMMENT_RULE_NAME);
+  }
+
+  private boolean belongsToAnyOfGivenRules(INode node, String...ruleNames) {
     EObject o = node.getGrammarElement();
     if (!(o instanceof TerminalRule)) return false;
     TerminalRule rule = (TerminalRule) o;

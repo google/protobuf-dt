@@ -24,7 +24,7 @@ import com.google.inject.Inject;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class SingleLineCommentDocumentationProvider implements IEObjectDocumentationProvider {
+class SLCommentDocumentationProvider implements IEObjectDocumentationProvider {
 
   private static final String COMMENT_START = "//\\s*"; // "//" plus any whitespace
   private static final String WINDOWS_NEW_LINE = "\\r\\n";
@@ -46,7 +46,7 @@ public class SingleLineCommentDocumentationProvider implements IEObjectDocumenta
     StringBuilder commentBuilder = new StringBuilder();
     for (INode currentNode : node.getAsTreeIterable()) {
       if (currentNode instanceof ILeafNode && !((ILeafNode) currentNode).isHidden()) break;
-      if (currentNode instanceof ILeafNode && nodes.wasCreatedBySingleLineComment(currentNode)) {
+      if (currentNode instanceof ILeafNode && nodes.belongsToSingleLineComment(currentNode)) {
         String comment = ((ILeafNode) currentNode).getText();
         commentBuilder.append(cleanUp(comment));
       }
