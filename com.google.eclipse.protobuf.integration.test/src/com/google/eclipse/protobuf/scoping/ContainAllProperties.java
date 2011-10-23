@@ -8,12 +8,12 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import com.google.eclipse.protobuf.protobuf.Property;
+import java.util.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.hamcrest.*;
 
-import java.util.*;
+import com.google.eclipse.protobuf.protobuf.Property;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -29,8 +29,8 @@ class ContainAllProperties extends BaseMatcher<IEObjectDescriptions> {
   private ContainAllProperties(Collection<Property> properties) {
     this.properties.addAll(properties);
   }
-  
-  public boolean matches(Object arg) {
+
+  @Override public boolean matches(Object arg) {
     if (!(arg instanceof IEObjectDescriptions)) return false;
     IEObjectDescriptions descriptions = (IEObjectDescriptions) arg;
     if (descriptions.size() != properties.size()) return false;
@@ -42,7 +42,7 @@ class ContainAllProperties extends BaseMatcher<IEObjectDescriptions> {
     return true;
   }
 
-  public void describeTo(Description description) {
+  @Override public void describeTo(Description description) {
     List<String> names = new ArrayList<String>();
     for (Property property : properties) {
       names.add(property.getName());

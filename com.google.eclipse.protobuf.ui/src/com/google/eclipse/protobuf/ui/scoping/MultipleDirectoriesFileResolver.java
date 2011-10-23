@@ -32,7 +32,7 @@ class MultipleDirectoriesFileResolver implements FileResolverStrategy {
   }
 
   /** {@inheritDoc} */
-  public String resolveUri(String importUri, URI declaringResourceUri, PathsPreferences preferences) {
+  @Override public String resolveUri(String importUri, URI declaringResourceUri, PathsPreferences preferences) {
     List<DirectoryPath> importRoots = preferences.importRoots();
     for (DirectoryPath root : importRoots) {
       String resolved = resolveUri(importUri, root);

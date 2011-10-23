@@ -33,8 +33,7 @@ public class EnumHasLiterals extends BaseMatcher<Enum> {
     this.literalNames = literalNames;
   }
   
-  /** {@inheritDoc} */
-  public boolean matches(Object arg) {
+  @Override public boolean matches(Object arg) {
     if (!(arg instanceof Enum)) return false;
     Enum anEnum = (Enum) arg;
     List<String> actualNames = literalNames(anEnum);
@@ -50,8 +49,7 @@ public class EnumHasLiterals extends BaseMatcher<Enum> {
     return names;
   }
   
-  /** {@inheritDoc} */
-  public void describeTo(Description description) {
+  @Override public void describeTo(Description description) {
     description.appendValue(Arrays.toString(literalNames));
   }
 }

@@ -15,6 +15,7 @@ class CompoundParser implements ProtocOutputParser {
 
   private static final List<ProtocOutputParser> PARSERS = asList(new LineSpecificErrorParser(), new CodeGenerationErrorParser()); 
   
+  @Override 
   public boolean parseAndAddMarkerIfNecessary(String line, ProtocMarkerFactory markerFactory) throws CoreException {
     for (ProtocOutputParser parser: PARSERS)
       if (parser.parseAndAddMarkerIfNecessary(line, markerFactory)) return true;

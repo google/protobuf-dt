@@ -32,7 +32,7 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
   @Inject private INodes nodes;
   @Inject private Options options;
 
-  public void provideHighlightingFor(XtextResource resource, IHighlightedPositionAcceptor acceptor) {
+  @Override public void provideHighlightingFor(XtextResource resource, IHighlightedPositionAcceptor acceptor) {
     if (resource == null) return;
     EList<EObject> contents = resource.getContents();
     if (contents == null || contents.isEmpty()) return;
@@ -204,7 +204,9 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
 
   private void highlight(Option option, IHighlightedPositionAcceptor acceptor) {
     Property property = options.propertyFrom(option);
-    if (property != null) highlightName(property, acceptor, DEFAULT_ID);
+    if (property != null) {
+      highlightFirstFeature(option, OPTION__PROPERTY, acceptor, DEFAULT_ID);
+    }
     ValueRef ref = option.getValue();
     if (ref instanceof LiteralRef) {
       highlightFirstFeature(option, OPTION__VALUE, acceptor, ENUM_LITERAL_ID);

@@ -35,7 +35,7 @@ class ImportHyperlink implements IHyperlink {
     this.fileOpener = fileOpener;
   }
 
-  public void open() {
+  @Override public void open() {
     try {
       if (importUri.isPlatformResource()) {
         fileOpener.openProtoFileInWorkspace(importUri);
@@ -51,15 +51,15 @@ class ImportHyperlink implements IHyperlink {
     }
   }
 
-  public String getTypeLabel() {
+  @Override public String getTypeLabel() {
     return null;
   }
 
-  public IRegion getHyperlinkRegion() {
+  @Override public IRegion getHyperlinkRegion() {
     return region;
   }
 
-  public String getHyperlinkText() {
+  @Override public String getHyperlinkText() {
     return null;
   }
 }

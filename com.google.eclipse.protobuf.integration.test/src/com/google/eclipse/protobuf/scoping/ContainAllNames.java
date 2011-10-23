@@ -8,9 +8,9 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import org.hamcrest.*;
-
 import java.util.*;
+
+import org.hamcrest.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -27,7 +27,7 @@ public class ContainAllNames extends BaseMatcher<IEObjectDescriptions> {
     expectedNames = names;
   }
   
-  public boolean matches(Object arg) {
+  @Override public boolean matches(Object arg) {
     if (!(arg instanceof IEObjectDescriptions)) return false;
     IEObjectDescriptions descriptions = (IEObjectDescriptions) arg;
     List<String> names = new ArrayList<String>(descriptions.names());
@@ -39,7 +39,7 @@ public class ContainAllNames extends BaseMatcher<IEObjectDescriptions> {
     return names.isEmpty();
   }
 
-  public void describeTo(Description description) {
+  @Override public void describeTo(Description description) {
     description.appendValue(Arrays.toString(expectedNames));
   }
 }

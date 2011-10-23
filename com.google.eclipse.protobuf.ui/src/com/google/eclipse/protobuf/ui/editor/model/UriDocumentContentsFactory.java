@@ -33,7 +33,7 @@ class UriDocumentContentsFactory implements DocumentContentsFactory {
   @Inject private ContentReader contentReader;
   @Inject private XtextResourceFactory resourceFactory;
 
-  public void createContents(XtextDocument document, Object element) throws CoreException {
+  @Override public void createContents(XtextDocument document, Object element) throws CoreException {
     UriEditorInput input = supportedEditorInputType().cast(element);
     URI uri = input.getFileUri();
     try {
@@ -57,7 +57,7 @@ class UriDocumentContentsFactory implements DocumentContentsFactory {
     }
   }
 
-  public boolean supportsEditorInputType(IEditorInput input) {
+  @Override public boolean supportsEditorInputType(IEditorInput input) {
     return supportedEditorInputType().isInstance(input);
   }
 

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
-Bundle-Version: 1.0.10.qualifier
+Bundle-Version: 1.0.11.qualifier
 Bundle-SymbolicName: com.google.eclipse.protobuf.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: com.google.eclipse.protobuf;visibility:=reexport,
@@ -22,6 +22,6 @@ Require-Bundle: com.google.eclipse.protobuf;visibility:=reexport,
 Import-Package: org.apache.commons.logging,
  org.apache.log4j,
  org.eclipse.ui.texteditor.spelling
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: com.google.eclipse.protobuf.ui.contentassist.antlr
 Bundle-Activator: com.google.eclipse.protobuf.ui.internal.ProtobufActivator

@@ -185,7 +185,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
       }
     });
     codeGenerationEditor.setDataChangedListener(new DataChangedListener() {
-      public void dataChanged() {
+      @Override public void dataChanged() {
         checkState();
       }
     });

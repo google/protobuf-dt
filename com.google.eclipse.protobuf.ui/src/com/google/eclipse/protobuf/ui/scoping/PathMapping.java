@@ -26,7 +26,7 @@ class PathMapping {
   }
 
   private static class FolderPathMapper implements Function<String, String> {
-    public String apply(String workspacePath) {
+    @Override public String apply(String workspacePath) {
       return folder(workspacePath).getLocation().toOSString();
     }
 

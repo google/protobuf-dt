@@ -87,11 +87,11 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
     final IXtextDocument document = editor.getDocument();
     try {
       return document.modify(new IUnitOfWork<ContentToInsert, XtextResource>() {
-        public ContentToInsert exec(XtextResource resource) {
+        @Override public ContentToInsert exec(XtextResource resource) {
           int offset = styledText.getCaretOffset();
           ContentAssistContext[] context = contextFactory.create(editor.getInternalSourceViewer(), offset, resource);
           for (ContentAssistContext c : context) {
-            if (nodes.wasCreatedByAnyCommentOrString(c.getCurrentNode())) continue;
+            if (nodes.belongsToCommentOrString(c.getCurrentNode())) continue;
             EObject model = c.getCurrentModel();
             if (model instanceof FieldOption) {
               FieldOption option = (FieldOption) model;

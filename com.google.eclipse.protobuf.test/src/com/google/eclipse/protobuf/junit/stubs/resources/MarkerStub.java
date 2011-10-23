@@ -12,8 +12,7 @@ import static java.util.Collections.unmodifiableMap;
 
 import java.util.*;
 
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -38,53 +37,53 @@ public class MarkerStub implements IMarker {
   }
 
   /** {@inheritDoc} */
-  @SuppressWarnings("rawtypes") public Object getAdapter(Class adapter) {
+  @Override @SuppressWarnings("rawtypes") public Object getAdapter(Class adapter) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void delete() {
+  @Override public void delete() {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public boolean exists() {
+  @Override public boolean exists() {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public Object getAttribute(String attributeName) {
+  @Override public Object getAttribute(String attributeName) {
     return attributes.get(attributeName);
   }
 
   /** {@inheritDoc} */
-  public int getAttribute(String attributeName, int defaultValue) {
+  @Override public int getAttribute(String attributeName, int defaultValue) {
     Object attribute = attributes.get(attributeName);
     if (attribute instanceof Integer) return (Integer) attribute;
     return defaultValue;
   }
 
   /** {@inheritDoc} */
-  public String getAttribute(String attributeName, String defaultValue) {
+  @Override public String getAttribute(String attributeName, String defaultValue) {
     Object attribute = attributes.get(attributeName);
     if (attribute instanceof String) return (String) attribute;
     return defaultValue;
   }
 
   /** {@inheritDoc} */
-  public boolean getAttribute(String attributeName, boolean defaultValue) {
+  @Override public boolean getAttribute(String attributeName, boolean defaultValue) {
     Object attribute = attributes.get(attributeName);
     if (attribute instanceof Boolean) return (Boolean) attribute;
     return defaultValue;
   }
 
   /** {@inheritDoc} */
-  public Map<String, Object> getAttributes() {
+  @Override public Map<String, Object> getAttributes() {
     return unmodifiableMap(attributes);
   }
 
   /** {@inheritDoc} */
-  public Object[] getAttributes(String[] attributeNames) {
+  @Override public Object[] getAttributes(String[] attributeNames) {
     List<Object> values = new ArrayList<Object>();
     for (String name : attributeNames)
       values.add(attributes.get(name));
@@ -92,52 +91,52 @@ public class MarkerStub implements IMarker {
   }
 
   /** {@inheritDoc} */
-  public long getCreationTime() {
+  @Override public long getCreationTime() {
     return creationTime;
   }
 
   /** {@inheritDoc} */
-  public long getId() {
+  @Override public long getId() {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public IResource getResource() {
+  @Override public IResource getResource() {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public String getType() {
+  @Override public String getType() {
     return type;
   }
 
   /** {@inheritDoc} */
-  public boolean isSubtypeOf(String superType) {
+  @Override public boolean isSubtypeOf(String superType) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void setAttribute(String attributeName, int value) {
+  @Override public void setAttribute(String attributeName, int value) {
     attributes.put(attributeName, value);
   }
 
   /** {@inheritDoc} */
-  public void setAttribute(String attributeName, Object value) {
+  @Override public void setAttribute(String attributeName, Object value) {
     attributes.put(attributeName, value);
   }
 
   /** {@inheritDoc} */
-  public void setAttribute(String attributeName, boolean value) {
+  @Override public void setAttribute(String attributeName, boolean value) {
     attributes.put(attributeName, value);
   }
 
   /** {@inheritDoc} */
-  public void setAttributes(String[] attributeNames, Object[] values) {
+  @Override public void setAttributes(String[] attributeNames, Object[] values) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
-  public void setAttributes(Map<String, ? extends Object> attributes) {
+  @Override public void setAttributes(Map<String, ? extends Object> attributes) {
     this.attributes.putAll(attributes);
   }
 

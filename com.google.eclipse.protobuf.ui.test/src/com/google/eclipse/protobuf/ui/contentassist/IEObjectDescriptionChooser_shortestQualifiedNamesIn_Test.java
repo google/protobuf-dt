@@ -8,13 +8,12 @@
  */
 package com.google.eclipse.protobuf.ui.contentassist;
 
-import static com.google.eclipse.protobuf.ui.contentassist.IEObjectDescriptionHasName.hasName;
+import static com.google.eclipse.protobuf.ui.contentassist.IEObjectDescriptionsHaveNames.containOnly;
 import static java.util.Collections.emptyMap;
-import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
-import com.google.eclipse.protobuf.protobuf.Message;
+import java.util.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.QualifiedName;
@@ -22,7 +21,7 @@ import org.eclipse.xtext.resource.*;
 import org.eclipse.xtext.scoping.IScope;
 import org.junit.*;
 
-import java.util.*;
+import com.google.eclipse.protobuf.protobuf.Message;
 
 /**
  * Tests for <code>{@link IEObjectDescriptionChooser#shortestQualifiedNamesIn(IScope)}</code>.
@@ -45,6 +44,17 @@ public class IEObjectDescriptionChooser_shortestQualifiedNamesIn_Test {
     describe(mock(Message.class), QualifiedName.create("com", "google", "test", "EMail"));
   }
 
+  /*
+   * Creates IEObjectDescriptions for the given EObject, one per segment in the given qualified name.
+   * 
+   * Example:
+   * Given the qualified name "com.google.test.Phone", this method will use these qualified names to create
+   * IEObjectDescriptions:
+   * - "Phone"
+   * - "test.Phone"
+   * - "google.test.Phone"
+   * - "com.google.test.Phone"
+   */
   private void describe(EObject e, QualifiedName name) {
     int count = name.getSegmentCount();
     List<String> segments = new ArrayList<String>();
@@ -57,9 +67,7 @@ public class IEObjectDescriptionChooser_shortestQualifiedNamesIn_Test {
   
   @Test public void should_return_descriptions_with_shortest_QualifiedName() {
     when(scope.getAllElements()).thenReturn(descriptions);
-    List<IEObjectDescription> chosen = new ArrayList<IEObjectDescription>(chooser.shortestQualifiedNamesIn(scope));
-    assertThat(chosen.size(), equalTo(2));
-    assertThat(chosen.get(0), hasName("Phone"));
-    assertThat(chosen.get(1), hasName("EMail"));
+    Collection<IEObjectDescription> chosen = chooser.shortestQualifiedNamesIn(scope);
+    assertThat(chosen, containOnly("EMail", "Phone"));
   }
 }

@@ -31,7 +31,7 @@ public class HEXValueConverter extends AbstractLexerBasedConverter<Long> {
    * @throws ValueConverterException if the given input is {@code null}, empty or does not represent an hexadecimal
    * number.
    */
-  public Long toValue(String string, INode node) throws ValueConverterException {
+  @Override public Long toValue(String string, INode node) throws ValueConverterException {
     if (isEmpty(string)) throw new ValueConverterException("Couldn't convert empty string to long.", node, null);
     if (!string.startsWith("0x") && !string.startsWith("0X")) throw parsingError(string, node);
     String withoutZeroX = string.substring(2, string.length());

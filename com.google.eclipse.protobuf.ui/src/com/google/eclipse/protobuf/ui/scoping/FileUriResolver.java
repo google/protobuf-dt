@@ -48,7 +48,7 @@ public class FileUriResolver implements IFileUriResolver {
    * If we import "folder/proto2.proto" into proto1.proto, proto1.proto will compile fine, but the editor will complain.
    * We need to have the import URI as "platform:/resource/protobuf-test/folder/proto2.proto" for the editor to see it.
    */
-  public String resolveUri(String importUri, Resource declaringResource) {
+  @Override public String resolveUri(String importUri, Resource declaringResource) {
     if (hasScheme(importUri)) return importUri;
     String resolved = resolveUri(importUri, declaringResource.getURI());
     return (resolved == null) ? importUri : resolved;

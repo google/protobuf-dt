@@ -51,7 +51,7 @@ class DirectorySelectionDialogs {
     }
     dialog.setInitialSelection(container);
     dialog.setValidator(new ISelectionStatusValidator() {
-      public IStatus validate(Object[] selection) {
+      @Override public IStatus validate(Object[] selection) {
         if (selection != null && selection.length > 0 && selection[0] instanceof IFile)
           return new Status(ERROR, PLUGIN_ID, errorElementIsNotDirectory);
         return OK_STATUS;

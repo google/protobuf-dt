@@ -54,7 +54,7 @@ public class XtextRule implements MethodRule {
     reader = new TestSourceReader();
   }
 
-  public Statement apply(Statement base, FrameworkMethod method, Object target) {
+  @Override public Statement apply(Statement base, FrameworkMethod method, Object target) {
     root = null;
     String comments = reader.commentsIn(method);
     if (!isEmpty(comments)) {

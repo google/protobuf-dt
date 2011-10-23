@@ -28,7 +28,7 @@ public class LONGValueConverter extends AbstractLexerBasedConverter<Long> {
    * @return the new {@code int}.
    * @throws ValueConverterException if the given input is {@code null}, empty or does not represent an integer number.
    */
-  public Long toValue(String string, INode node) throws ValueConverterException {
+  @Override public Long toValue(String string, INode node) throws ValueConverterException {
     if (isEmpty(string)) throw new ValueConverterException("Couldn't convert empty string to long.", node, null);
     try {
       return Long.parseLong(string, 10);

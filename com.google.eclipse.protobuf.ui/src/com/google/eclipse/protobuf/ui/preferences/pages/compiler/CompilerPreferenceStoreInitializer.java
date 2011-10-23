@@ -23,7 +23,7 @@ public class CompilerPreferenceStoreInitializer implements IPreferenceStoreIniti
   private static final String DEFAULT_OUTPUT_DIRECTORY = "src-gen";
 
   /** {@inheritDoc} */
-  public void initialize(IPreferenceStoreAccess access) {
+  @Override public void initialize(IPreferenceStoreAccess access) {
     IPreferenceStore store = access.getWritablePreferenceStore();
     enableProjectSettings(store).defaultValue(false);
     RawPreferences preferences = new RawPreferences(store);

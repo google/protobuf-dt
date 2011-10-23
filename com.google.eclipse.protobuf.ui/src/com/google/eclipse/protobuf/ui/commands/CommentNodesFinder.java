@@ -39,7 +39,7 @@ class CommentNodesFinder {
     ICompositeNode node = getNode(target);
     for (INode currentNode : node.getAsTreeIterable()) {
       if (currentNode instanceof ILeafNode && !((ILeafNode) currentNode).isHidden()) break;
-      if (currentNode instanceof ILeafNode && nodes.wasCreatedByAnyComment(currentNode)) {
+      if (currentNode instanceof ILeafNode && nodes.belongsToComment(currentNode)) {
         String rawComment = ((ILeafNode) currentNode).getText();
         if (isEmpty(rawComment)) continue;
         String[] comment = rawComment.split(lineSeparator());
@@ -58,7 +58,7 @@ class CommentNodesFinder {
     List<Pattern> compiled = new ArrayList<Pattern>();
     for (final String s : patterns) {
       Pattern p = cache.get(s, target.eResource(), new Provider<Pattern>() {
-        public Pattern get() {
+        @Override public Pattern get() {
           return Pattern.compile(MATCH_ANYTHING + s + MATCH_ANYTHING, CASE_INSENSITIVE);
         }
       });

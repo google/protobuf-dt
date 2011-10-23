@@ -13,25 +13,25 @@ import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.*;
-
 import org.eclipse.emf.ecore.EObject;
 import org.junit.*;
 
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.Property;
+
 /**
- * Tests for <code>{@link SingleLineCommentDocumentationProvider#getDocumentation(EObject)}</code>
+ * Tests for <code>{@link SLCommentDocumentationProvider#getDocumentation(EObject)}</code>
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class SingleLineCommentDocumentationProvider_getDocumentation_Test {
+public class SLCommentDocumentationProvider_getDocumentation_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
-  private SingleLineCommentDocumentationProvider provider;
+  private SLCommentDocumentationProvider provider;
 
   @Before public void setUp() {
-    provider = xtext.getInstanceOf(SingleLineCommentDocumentationProvider.class);
+    provider = xtext.getInstanceOf(SLCommentDocumentationProvider.class);
   }
 
   // message Person {
@@ -43,7 +43,7 @@ public class SingleLineCommentDocumentationProvider_getDocumentation_Test {
     String documentation = provider.getDocumentation(active);
     assertThat(documentation, equalTo("Indicates whether the person is active or not."));
   }
-
+  
   // message Person {
   //   optional bool active = 1; 
   // }

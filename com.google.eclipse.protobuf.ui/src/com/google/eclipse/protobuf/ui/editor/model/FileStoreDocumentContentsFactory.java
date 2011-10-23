@@ -31,7 +31,7 @@ class FileStoreDocumentContentsFactory implements DocumentContentsFactory {
   @Inject private UriEditorInputs files;
   @Inject private XtextResourceFactory resourceFactory;
 
-  public void createContents(XtextDocument document, Object element) throws CoreException {
+  @Override public void createContents(XtextDocument document, Object element) throws CoreException {
     FileStoreEditorInput input = supportedEditorInputType().cast(element);
     File file = files.fileFrom(input);
     try {
@@ -54,7 +54,7 @@ class FileStoreDocumentContentsFactory implements DocumentContentsFactory {
     }
   }
 
-  public boolean supportsEditorInputType(IEditorInput input) {
+  @Override public boolean supportsEditorInputType(IEditorInput input) {
     return supportedEditorInputType().isInstance(input);
   }
 

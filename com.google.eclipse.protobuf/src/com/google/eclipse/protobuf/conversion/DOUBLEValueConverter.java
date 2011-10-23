@@ -31,7 +31,7 @@ public class DOUBLEValueConverter extends AbstractLexerBasedConverter<Double> {
    * @throws ValueConverterException if the given input is {@code null}, empty or does not represent a floating-point 
    * number.
    */
-  public Double toValue(String string, INode node) throws ValueConverterException {
+  @Override public Double toValue(String string, INode node) throws ValueConverterException {
     if (isEmpty(string)) throw new ValueConverterException("Couldn't convert empty string to double.", node, null);
     if ("nan".equals(string)) return NaN;
     if ("inf".equals(string)) return POSITIVE_INFINITY;

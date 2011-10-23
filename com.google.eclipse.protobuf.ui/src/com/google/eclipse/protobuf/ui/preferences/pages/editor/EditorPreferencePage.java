@@ -35,7 +35,7 @@ public class EditorPreferencePage extends PreferencePage implements IWorkbenchPr
     link.setLayoutData(gridData);
     link.setText(header);
     link.addListener(SWT.Selection, new Listener() {
-      public void handleEvent(Event event) {
+      @Override public void handleEvent(Event event) {
         String u = event.text;
         createPreferenceDialogOn(getShell(), u, null, null);
       }
@@ -43,5 +43,5 @@ public class EditorPreferencePage extends PreferencePage implements IWorkbenchPr
     return contents;
   }
 
-  public void init(IWorkbench workbench) {}
+  @Override public void init(IWorkbench workbench) {}
 }

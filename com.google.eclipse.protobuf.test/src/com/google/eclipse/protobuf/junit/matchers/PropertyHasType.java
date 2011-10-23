@@ -35,8 +35,7 @@ public class PropertyHasType extends BaseMatcher<Property> {
     this.typeName = typeName;
   }
 
-  /** {@inheritDoc} */
-  public boolean matches(Object arg) {
+  @Override public boolean matches(Object arg) {
     if (!(arg instanceof Property)) return false;
     Property property = (Property) arg;
     return typeName.equals(typeNameOf(property));
@@ -52,8 +51,7 @@ public class PropertyHasType extends BaseMatcher<Property> {
     return r.toString();
   }
 
-  /** {@inheritDoc} */
-  public void describeTo(Description description) {
+  @Override public void describeTo(Description description) {
     description.appendValue(typeName);
   }
 }

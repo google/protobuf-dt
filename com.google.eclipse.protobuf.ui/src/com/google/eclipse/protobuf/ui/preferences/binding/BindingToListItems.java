@@ -43,12 +43,12 @@ public class BindingToListItems implements Binding {
   }
 
   /** {@inheritDoc} */
-  public void applyPreferenceValueToTarget() {
+  @Override public void applyPreferenceValueToTarget() {
     apply(preference.value());
   }
 
   /** {@inheritDoc} */
-  public void applyDefaultPreferenceValueToTarget() {
+  @Override public void applyDefaultPreferenceValueToTarget() {
     apply(preference.defaultValue());
   }
 
@@ -58,7 +58,7 @@ public class BindingToListItems implements Binding {
   }
 
   /** {@inheritDoc} */
-  public void savePreferenceValue() {
+  @Override public void savePreferenceValue() {
     preference.value(asList(list.getItems()));
   }
 

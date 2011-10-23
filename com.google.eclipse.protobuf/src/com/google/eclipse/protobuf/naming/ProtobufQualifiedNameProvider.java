@@ -39,10 +39,10 @@ public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.Abstra
   
   private Function<EObject, String> resolver = newResolver(String.class, "name");
 
-  public QualifiedName getFullyQualifiedName(final EObject obj) {
+  @Override public QualifiedName getFullyQualifiedName(final EObject obj) {
     Pair<EObject, String> key = pair(obj, "fqn");
     return cache.get(key, obj.eResource(), new Provider<QualifiedName>() {
-      public QualifiedName get() {
+      @Override public QualifiedName get() {
         EObject current = obj;
         String name = resolver.apply(current);
         if (isEmpty(name)) return null;
