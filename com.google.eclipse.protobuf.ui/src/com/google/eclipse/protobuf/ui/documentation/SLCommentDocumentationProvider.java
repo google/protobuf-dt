@@ -17,13 +17,14 @@ import org.eclipse.xtext.nodemodel.*;
 
 import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
-import com.google.inject.Inject;
+import com.google.inject.*;
 
 /**
  * Provides single line comments of a protobuf element as its documentation when hovered.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
+@Singleton
 class SLCommentDocumentationProvider implements IEObjectDocumentationProvider {
 
   private static final String COMMENT_START = "//\\s*"; // "//" plus any whitespace

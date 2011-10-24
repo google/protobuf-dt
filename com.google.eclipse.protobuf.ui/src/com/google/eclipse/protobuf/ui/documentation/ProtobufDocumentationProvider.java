@@ -15,13 +15,14 @@ import java.util.*;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
 
-import com.google.inject.Inject;
+import com.google.inject.*;
 
 /**
  * Provides single-line and multi-line comments as documentation of a protobuf element.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
+@Singleton
 public class ProtobufDocumentationProvider implements IEObjectDocumentationProvider {
 
   private final List<IEObjectDocumentationProvider> delegates = new ArrayList<IEObjectDocumentationProvider>();

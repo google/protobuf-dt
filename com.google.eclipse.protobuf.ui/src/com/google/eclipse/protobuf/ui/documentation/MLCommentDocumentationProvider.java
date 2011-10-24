@@ -15,13 +15,14 @@ import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
 import org.eclipse.xtext.nodemodel.*;
 
 import com.google.eclipse.protobuf.model.util.INodes;
-import com.google.inject.Inject;
+import com.google.inject.*;
 
 /**
  * Provides single line comments of a protobuf element as its documentation when hovered.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
+@Singleton
 class MLCommentDocumentationProvider implements IEObjectDocumentationProvider {
 
   private static final String START_TAG = "/\\*\\*?";
