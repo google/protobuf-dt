@@ -8,14 +8,13 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages.compiler;
 
-import static com.google.eclipse.protobuf.ui.preferences.EventListeners.addSelectionListener;
+import static com.google.eclipse.protobuf.ui.preferences.Buttons.with;
 import static com.google.eclipse.protobuf.ui.preferences.binding.BindingToButtonSelection.bindSelectionOf;
 import static com.google.eclipse.protobuf.ui.preferences.binding.BindingToTextValue.bindTextOf;
 import static com.google.eclipse.protobuf.ui.preferences.pages.compiler.BindingToCodeGeneration.bindCodeGeneration;
 import static com.google.eclipse.protobuf.ui.preferences.pages.compiler.EnableProjectSettingsPreference.enableProjectSettings;
 import static com.google.eclipse.protobuf.ui.preferences.pages.compiler.Messages.*;
 import static com.google.eclipse.protobuf.ui.swt.Colors.widgetBackground;
-import static java.util.Arrays.asList;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import java.io.File;
@@ -56,13 +55,13 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
   private Group grpRefresh;
   private Button btnRefreshProject;
   private Button btnRefreshOutputDirectory;
+  private Group grpDescriptorLocation;
+  private Text txtDescriptorFilePath;
+  private Button btnDescriptorPathBrowse;
 
   @Inject private PluginImageHelper imageHelper;
 
   private final CodeGenerationSettings codeGenerationSettings = new CodeGenerationSettings();
-  private Group grpDescriptorLocation;
-  private Text txtDescriptorFilePath;
-  private Button btnDescriptorPathBrowse;
 
   @Override protected void doCreateContents(Composite parent) {
     btnCompileProtoFiles = new Button(parent, SWT.CHECK);
@@ -156,13 +155,13 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
         checkState();
       }
     });
-    addSelectionListener(new SelectionAdapter() {
+    with(btnUseProtocInCustomPath, btnUseProtocInSystemPath).add(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
         boolean selected = btnUseProtocInCustomPath.getSelection();
         enableCompilerCustomPathOptions(selected);
         checkState();
       }
-    }, asList(btnUseProtocInCustomPath, btnUseProtocInSystemPath));
+    });
     btnProtocPathBrowse.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
         FileDialog dialog = new FileDialog(getShell(), SWT.OPEN | SWT.SHEET);
