@@ -10,6 +10,7 @@ package com.google.eclipse.protobuf.ui.documentation;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
+import static com.google.eclipse.protobuf.util.SystemProperties.lineSeparator;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -35,15 +36,19 @@ public class MLCommentDocumentationProvider_getDocumentation_Test {
   }
 
   // message Person {
+  //   /* This comment should be ignored. */
   //   /*
   //    * Indicates whether the person is active or not.
+  //    * (Optional.)
   //    */
   //   optional bool active = 1; 
   // }
   @Test public void should_return_single_line_comment_of_element() {
     Property active = xtext.find("active", Property.class);
     String documentation = provider.getDocumentation(active);
-    assertThat(documentation, equalTo("Indicates whether the person is active or not."));
+    String[] lines = documentation.split(lineSeparator());
+    assertThat(lines[0], equalTo("Indicates whether the person is active or not."));
+    assertThat(lines[1], equalTo("(Optional.)"));
   }
   
   // message Person {

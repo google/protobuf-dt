@@ -9,37 +9,46 @@
  */
 package com.google.eclipse.protobuf.junit.core;
 
-import com.google.eclipse.protobuf.protobuf.DefaultValueFieldOption;
+import static com.google.eclipse.protobuf.util.SystemProperties.lineSeparator;
 
 import org.eclipse.emf.ecore.*;
 import org.eclipse.xtext.nodemodel.*;
 import org.eclipse.xtext.nodemodel.impl.AbstractNode;
 
+import com.google.eclipse.protobuf.protobuf.DefaultValueFieldOption;
+
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class ModelFinder {
+class Finder {
 
   private static final String[] FEATURE_NAMES = { "name", "property", "message", "type" };
   
-  private final String content;
-  private final ICompositeNode root;
+  private final String protoAsText;
+  private final AbstractNode root;
 
-  ModelFinder(ICompositeNode root, String content) {
-    this.root = root;
-    this.content = content;
+  Finder(INode node, String protoAsText) {
+    this.root = rootOf(node);
+    this.protoAsText = protoAsText;
+  }
+  
+  private static AbstractNode rootOf(INode node) {
+    while (!(node instanceof AbstractNode)) {
+      node = node.getParent();
+    }
+    return (AbstractNode) node;
   }
   
   <T extends EObject> T find(String text, int count, Class<T> type) {
-    int offset = content.indexOf(text);
+    int offset = protoAsText.indexOf(text);
     String name = text.substring(0, count);
-    BidiTreeIterator<AbstractNode> iterator = root().basicIterator();
+    BidiTreeIterator<AbstractNode> iterator = root.basicIterator();
     while (iterator.hasNext()) {
       AbstractNode node = iterator.next();
       int nodeOffset = node.getOffset();
       if (nodeOffset > offset || (nodeOffset + node.getLength()) <= offset) continue;
       EObject e = node.getSemanticElement();
-      if (isDefaultValueFieldOption(e, name, type)) {
+      if (isDefaultValueFieldOption(name, type, e)) {
         return type.cast(e);
       }
       if (type.isInstance(e) && name.equals(nameOf(e))) {
@@ -50,16 +59,8 @@ class ModelFinder {
     throw new AssertionError(String.format(format, text, count, type.getName()));
   }
   
-  private AbstractNode root() {
-    INode node = root;
-    while (!(node instanceof AbstractNode)) {
-      node = node.getParent();
-    }
-    return (AbstractNode) node;
-  }
-  
-  private boolean isDefaultValueFieldOption(EObject e, String name, Class<?> type) {
-    return "default".equals(name) && type.isInstance(e) && e instanceof DefaultValueFieldOption;
+  private boolean isDefaultValueFieldOption(String name, Class<?> type, EObject element) {
+    return "default".equals(name) && type.isInstance(element) && element instanceof DefaultValueFieldOption;
   }
   
   private String nameOf(Object o) {
@@ -76,5 +77,19 @@ class ModelFinder {
   private Object feature(EObject e, String featureName) {
     EStructuralFeature f = e.eClass().getEStructuralFeature(featureName);
     return (f != null) ? e.eGet(f) : null;
+  }
+
+  INode find(String text) {
+    BidiTreeIterator<AbstractNode> iterator = root.basicIterator();
+    while (iterator.hasNext()) {
+      AbstractNode node = iterator.next();
+      String nodeText = clean(node.getText());
+      if (text.equals(nodeText)) return node;
+    }
+    return null;
+  }
+  
+  private String clean(String text) {
+    return text.replace(lineSeparator(), "");
   }
 }

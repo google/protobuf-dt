@@ -38,16 +38,15 @@ class CommentNodesFinder {
   Pair<INode, Matcher> matchingCommentNode(EObject target, String...patternsToMatch) {
     ICompositeNode node = getNode(target);
     for (INode currentNode : node.getAsTreeIterable()) {
-      if (currentNode instanceof ILeafNode && !((ILeafNode) currentNode).isHidden()) break;
-      if (currentNode instanceof ILeafNode && nodes.belongsToComment(currentNode)) {
-        String rawComment = ((ILeafNode) currentNode).getText();
-        if (isEmpty(rawComment)) continue;
-        String[] comment = rawComment.split(lineSeparator());
-        for (String line : comment) {
-          for (Pattern pattern : compile(patternsToMatch, target)) {
-            Matcher matcher = pattern.matcher(line);
-            if (matcher.matches()) return pair(currentNode, matcher);
-          }
+      if (!nodes.isHiddenLeafNode(node)) break;
+      if (!nodes.belongsToComment(currentNode)) continue;
+      String rawComment = ((ILeafNode) currentNode).getText();
+      if (isEmpty(rawComment)) continue;
+      String[] comment = rawComment.split(lineSeparator());
+      for (String line : comment) {
+        for (Pattern pattern : compile(patternsToMatch, target)) {
+          Matcher matcher = pattern.matcher(line);
+          if (matcher.matches()) return pair(currentNode, matcher);
         }
       }
     }

@@ -42,17 +42,15 @@ class MLCommentDocumentationProvider implements IEObjectDocumentationProvider {
     String returnValue = null;
     ICompositeNode node = getNode(o);
     if (node == null) return null;
-    // get the last multi line comment before a non hidden leaf node
+    // get the last multiple-line comment before a non hidden leaf node
     for (INode currentNode : node.getAsTreeIterable()) {
-      if (currentNode instanceof ILeafNode) {
-        if (!((ILeafNode) currentNode).isHidden()) break;
-        if (nodes.belongsToMultipleLineComment(currentNode)) {
-          String comment = ((ILeafNode) currentNode).getText();
-          if (comment.matches("(?s)" + START_TAG + ".*")) {
-            returnValue = cleanUp(comment);
-          }
+        if (!nodes.isHiddenLeafNode(currentNode)) continue;
+        if (!nodes.belongsToMultipleLineComment(currentNode)) continue;
+        String comment = ((ILeafNode) currentNode).getText();
+        // TODO pre-compile patterns.
+        if (comment.matches("(?s)" + START_TAG + ".*")) {
+          returnValue = cleanUp(comment);
         }
-      }
     }
     return returnValue;
   }

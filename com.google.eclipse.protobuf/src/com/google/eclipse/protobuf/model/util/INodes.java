@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.*;
 import org.eclipse.xtext.*;
-import org.eclipse.xtext.nodemodel.INode;
+import org.eclipse.xtext.nodemodel.*;
 
 import com.google.inject.Singleton;
 
@@ -25,9 +25,6 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class INodes {
-
-  private static final String SLCOMMENT_RULE_NAME = "SL_COMMENT";
-  private static final String MLCOMMENT_RULE_NAME = "ML_COMMENT";
 
   /**
    * Returns the first node that was used to assign values to the given feature for the given object.
@@ -58,7 +55,33 @@ public class INodes {
    * @return {@code true} if the given node belongs to a single- or multiple-line comment; {@code false} otherwise.
    */
   public boolean belongsToComment(INode node) {
-    return belongsToAnyOfGivenRules(node, SLCOMMENT_RULE_NAME, MLCOMMENT_RULE_NAME);
+    return belongsToSingleLineComment(node) || belongsToMultipleLineComment(node);
+  }
+
+  /**
+   * Indicates whether the given node belongs to a single-line comment.
+   * @param node the node to check.
+   * @return {@code true} if the given node belongs to a single-line comment; {@code false} otherwise.
+   */
+  public boolean belongsToSingleLineComment(INode node) {
+    return belongsToComment(node, "SL_COMMENT");
+  }
+
+  /**
+   * Indicates whether the given node belongs to a multiple-line comment.
+   * @param node the node to check.
+   * @return {@code true} if the given node belongs to a multiple-line comment; {@code false} otherwise.
+   */
+  public boolean belongsToMultipleLineComment(INode node) {
+    return belongsToComment(node, "ML_COMMENT");
+  }
+
+  private static boolean belongsToComment(INode node, String commentRuleName) {
+    if (!(node instanceof ILeafNode)) return false;
+    EObject o = node.getGrammarElement();
+    if (!(o instanceof TerminalRule)) return false;
+    TerminalRule rule = (TerminalRule) o;
+    return commentRuleName.equals(rule.getName());
   }
 
   /**
@@ -74,33 +97,14 @@ public class INodes {
     TerminalRule terminalRule = (TerminalRule) rule;
     return "STRING".equals(terminalRule.getName());
   }
-
+  
   /**
-   * Indicates whether the given node belongs to a single-line comment.
+   * Indicates whether the given node is a hidden leaf node.
    * @param node the node to check.
-   * @return {@code true} if the given node belongs to a single-line comment; {@code false} otherwise.
+   * @return {@code true} if the given node is a hidden leaf node; {@code false} otherwise.
    */
-  public boolean belongsToSingleLineComment(INode node) {
-    return belongsToAnyOfGivenRules(node, SLCOMMENT_RULE_NAME);
-  }
-
-  /**
-   * Indicates whether the given node belongs to a multiple-line comment.
-   * @param node the node to check.
-   * @return {@code true} if the given node belongs to a multiple-line comment; {@code false} otherwise.
-   */
-  public boolean belongsToMultipleLineComment(INode node) {
-    return belongsToAnyOfGivenRules(node, MLCOMMENT_RULE_NAME);
-  }
-
-  private boolean belongsToAnyOfGivenRules(INode node, String...ruleNames) {
-    EObject o = node.getGrammarElement();
-    if (!(o instanceof TerminalRule)) return false;
-    TerminalRule rule = (TerminalRule) o;
-    String actualName = rule.getName();
-    for (String name : ruleNames) {
-      if (name.equalsIgnoreCase(actualName)) return true;
-    }
-    return false;
+  public boolean isHiddenLeafNode(INode node) {
+    if (!(node instanceof ILeafNode)) return false;
+    return ((ILeafNode) node).isHidden();
   }
 }

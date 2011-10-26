@@ -36,12 +36,13 @@ public class SLCommentDocumentationProvider_getDocumentation_Test {
 
   // message Person {
   //   // Indicates whether the person is active or not.
+  //   // (Optional.)
   //   optional bool active = 1; 
   // }
   @Test public void should_return_single_line_comment_of_element() {
     Property active = xtext.find("active", Property.class);
     String documentation = provider.getDocumentation(active);
-    assertThat(documentation, equalTo("Indicates whether the person is active or not."));
+    assertThat(documentation, equalTo("Indicates whether the person is active or not. (Optional.)"));
   }
   
   // message Person {

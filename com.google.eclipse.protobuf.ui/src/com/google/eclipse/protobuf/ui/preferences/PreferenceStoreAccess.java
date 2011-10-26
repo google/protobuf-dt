@@ -8,10 +8,6 @@
  */
 package com.google.eclipse.protobuf.ui.preferences;
 
-import com.google.eclipse.protobuf.ui.internal.ProtobufActivator;
-import com.google.inject.*;
-import com.google.inject.name.Named;
-
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.preferences.*;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -22,8 +18,14 @@ import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.xtext.Constants;
 import org.eclipse.xtext.ui.editor.preferences.*;
 
+import com.google.eclipse.protobuf.ui.internal.ProtobufActivator;
+import com.google.inject.*;
+import com.google.inject.name.Named;
+
 /**
  * Workaround for bug in Xtext where a project's preference store is never used.
+ * 
+ * TODO verify if this bug is fixed in Xtext 2.0.1.
  * 
  * @author alruiz@google.com (Alex Ruiz)
  */

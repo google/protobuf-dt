@@ -24,7 +24,7 @@ import org.eclipse.xtext.linking.lazy.LazyLinkingResource;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.resource.*;
-import org.eclipse.xtext.util.*;
+import org.eclipse.xtext.util.StringInputStream;
 import org.junit.rules.MethodRule;
 import org.junit.runners.model.*;
 
@@ -43,7 +43,7 @@ public class XtextRule implements MethodRule {
   
   private Protobuf root;
   private XtextResource resource;
-  private ModelFinder finder;
+  private Finder finder;
 
   public static XtextRule createWith(ISetup setup) {
     return new XtextRule(setup);
@@ -59,11 +59,11 @@ public class XtextRule implements MethodRule {
     String comments = reader.commentsIn(method);
     if (!isEmpty(comments)) {
       parseText(comments);
-      finder = new ModelFinder(resource.getParseResult().getRootNode(), comments);
+      finder = new Finder(resource.getParseResult().getRootNode(), comments);
     }
     return base;
   }
-
+  
   public Injector injector() {
     return injector;
   }
@@ -122,5 +122,9 @@ public class XtextRule implements MethodRule {
 
   public <T extends EObject> T find(String text, int count, Class<T> type) {
     return finder.find(text, count, type);
+  }
+  
+  public INode find(String text) {
+    return finder.find(text);
   }
 }

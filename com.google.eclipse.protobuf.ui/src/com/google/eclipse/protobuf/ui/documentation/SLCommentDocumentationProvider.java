@@ -46,13 +46,10 @@ class SLCommentDocumentationProvider implements IEObjectDocumentationProvider {
     if (node == null) return null;
     StringBuilder commentBuilder = new StringBuilder();
     for (INode currentNode : node.getAsTreeIterable()) {
-      if (currentNode instanceof ILeafNode) {
-        if (!((ILeafNode) currentNode).isHidden()) break;
-        if (nodes.belongsToSingleLineComment(currentNode)) {
-          String comment = ((ILeafNode) currentNode).getText();
-          commentBuilder.append(cleanUp(comment));
-        }
-      }
+      if (!nodes.isHiddenLeafNode(currentNode)) continue;
+      if (!nodes.belongsToSingleLineComment(currentNode)) continue;
+      String comment = ((ILeafNode) currentNode).getText();
+      commentBuilder.append(cleanUp(comment));
     }
     return commentBuilder.toString().trim();
   }
