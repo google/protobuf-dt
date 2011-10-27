@@ -14,6 +14,9 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
 import org.eclipse.xtext.nodemodel.*;
 
+import java.util.*;
+import java.util.regex.Pattern;
+
 import com.google.eclipse.protobuf.model.util.INodes;
 import com.google.inject.*;
 
@@ -25,11 +28,20 @@ import com.google.inject.*;
 @Singleton
 public class MLCommentDocumentationProvider implements IEObjectDocumentationProvider {
 
-  private static final String START_TAG = "/\\*\\*?";
-  private static final String END_TAG = "\\*/";
-  private static final String LINE_PREFIX = "\\** ?";
-  private static final String LINE_POSTFIX = "\\**";
-  private static final String WHITE_SPACE = "( |\\t)*";
+  private static final Pattern COMMENT = Pattern.compile("(?s)/\\*\\*?.*");
+  
+  private static final List<Pattern> CLEAN_UP = new ArrayList<Pattern>();
+  
+  static {
+    addToCleanUp("\\A/\\*\\*?");
+    addToCleanUp("\\*/\\z");
+    addToCleanUp("(?m)^( |\\t)*\\** ?");
+    addToCleanUp("(?m)( |\\t)*\\**( |\\t)*$");
+  }
+  
+  private static void addToCleanUp(String regex) {
+    CLEAN_UP.add(Pattern.compile(regex));
+  }
   
   @Inject private INodes nodes;
 
@@ -46,20 +58,19 @@ public class MLCommentDocumentationProvider implements IEObjectDocumentationProv
     for (INode currentNode : node.getAsTreeIterable()) {
         if (!nodes.isHiddenLeafNode(currentNode)) continue;
         if (!nodes.belongsToMultipleLineComment(currentNode)) continue;
-        String comment = ((ILeafNode) currentNode).getText();
-        // TODO pre-compile patterns.
-        if (comment.matches("(?s)" + START_TAG + ".*")) {
-          returnValue = cleanUp(comment);
+        String text = ((ILeafNode) currentNode).getText();
+        if (COMMENT.matcher(text).matches()) {
+          returnValue = cleanUp(text);
         }
     }
     return returnValue;
   }
   
   private String cleanUp(String comment) {
-    return comment.replaceAll("\\A" + START_TAG, "")
-                  .replaceAll(END_TAG + "\\z", "")
-                  .replaceAll("(?m)^"+ WHITE_SPACE + LINE_PREFIX, "")
-                  .replaceAll("(?m)" + WHITE_SPACE + LINE_POSTFIX + WHITE_SPACE + "$", "")
-                  .trim();
+    String clean = comment;
+    for (Pattern pattern : CLEAN_UP) {
+      clean = pattern.matcher(clean).replaceAll("");
+    }
+    return clean.trim();
   }
 }

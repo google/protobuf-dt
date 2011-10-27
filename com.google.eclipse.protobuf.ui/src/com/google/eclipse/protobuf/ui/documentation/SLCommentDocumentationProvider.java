@@ -15,6 +15,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
 import org.eclipse.xtext.nodemodel.*;
 
+import java.util.regex.Pattern;
+
 import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.*;
@@ -27,9 +29,8 @@ import com.google.inject.*;
 @Singleton
 public class SLCommentDocumentationProvider implements IEObjectDocumentationProvider {
 
-  private static final String COMMENT_START = "//\\s*"; // "//" plus any whitespace
-  private static final String WINDOWS_NEW_LINE = "\\r\\n";
-  private static final String UNIX_NEW_LINE = "\\n";
+  private static final Pattern COMMENT_START = Pattern.compile("//\\s*"); // "//" plus any whitespace
+  private static final Pattern[] NEW_LINE = { Pattern.compile("\\r\\n"), Pattern.compile("\\n") };
 
   @Inject private FieldOptions fieldOptions;
   @Inject private INodes nodes;
@@ -67,8 +68,10 @@ public class SLCommentDocumentationProvider implements IEObjectDocumentationProv
   }
 
   private String cleanUp(String comment) {
-    return comment.replaceFirst(COMMENT_START, "")
-                  .replaceAll(WINDOWS_NEW_LINE, space())
-                  .replaceAll(UNIX_NEW_LINE, space());
+    String clean = COMMENT_START.matcher(comment).replaceFirst("");
+    for (Pattern pattern : NEW_LINE) {
+      clean = pattern.matcher(clean).replaceAll(space());
+    }
+    return clean;
   }
 }
