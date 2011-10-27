@@ -18,7 +18,6 @@ import org.eclipse.xtext.nodemodel.*;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.Message;
 
 /**
  * Test for <code>{@link INodes#belongsToMultipleLineComment(INode)}</code>
@@ -38,14 +37,13 @@ public class INodes_belongsToMultipleLineComment_Test {
   // /* This is a test. */
   // message Person {}
   @Test public void should_return_true_if_node_belongs_to_multiple_line_comment() {
-    INode commentNode = xtext.find("/* This is a test. */");
+    ILeafNode commentNode = xtext.find("/* This is a test. */");
     assertThat(nodes.belongsToMultipleLineComment(commentNode), equalTo(true));
   }
 
   // message Person {}
   @Test public void should_return_false_if_node_does_not_belong_to_single_line_comment() {
-    Message person = xtext.find("Person", Message.class);
-    ICompositeNode node = getNode(person);
+    ICompositeNode node = getNode(xtext.root());
     assertThat(nodes.belongsToMultipleLineComment(node), equalTo(false));
   }
 }

@@ -21,7 +21,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.ISetup;
 import org.eclipse.xtext.linking.lazy.LazyLinkingResource;
-import org.eclipse.xtext.nodemodel.INode;
+import org.eclipse.xtext.nodemodel.*;
 import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.resource.*;
 import org.eclipse.xtext.util.StringInputStream;
@@ -124,7 +124,7 @@ public class XtextRule implements MethodRule {
     return finder.find(text, count, type);
   }
   
-  public INode find(String text) {
+  public ILeafNode find(String text) {
     return finder.find(text);
   }
 }

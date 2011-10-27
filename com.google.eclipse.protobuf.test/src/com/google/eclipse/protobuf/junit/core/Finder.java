@@ -79,17 +79,18 @@ class Finder {
     return (f != null) ? e.eGet(f) : null;
   }
 
-  INode find(String text) {
+  ILeafNode find(String text) {
     BidiTreeIterator<AbstractNode> iterator = root.basicIterator();
     while (iterator.hasNext()) {
       AbstractNode node = iterator.next();
+      if (!(node instanceof ILeafNode)) continue;
       String nodeText = clean(node.getText());
-      if (text.equals(nodeText)) return node;
+      if (text.equals(nodeText)) return (ILeafNode) node;
     }
     return null;
   }
   
   private String clean(String text) {
-    return text.replace(lineSeparator(), "");
+    return text.replace(lineSeparator(), " ").trim();
   }
 }

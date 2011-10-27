@@ -20,12 +20,12 @@ import org.junit.*;
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 
 /**
- * Test for <code>{@link INodes#belongsToSingleLineComment(INode)}</code>
+ * Tests for <code>{@link INodes#belongsToString(INode)}</code>
  * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class INodes_belongsToSingleLineComment_Test {
-
+public class INodes_belongsToString_Test {
+  
   @Rule public XtextRule xtext = createWith(unitTestSetup());
   
   private INodes nodes;
@@ -34,16 +34,17 @@ public class INodes_belongsToSingleLineComment_Test {
     nodes = xtext.getInstanceOf(INodes.class);
   }
   
-  // // This is a test.
-  // message Person {}
-  @Test public void should_return_true_if_node_belongs_to_single_line_comment() {
-    ILeafNode commentNode = xtext.find("// This is a test.");
-    assertThat(nodes.belongsToSingleLineComment(commentNode), equalTo(true));
+  // message Person {
+  //   optional string name = 1 [default = 'Alex'];
+  // }
+  @Test public void should_return_true_if_node_belongs_to_string() {
+    ILeafNode node = xtext.find("'Alex'");
+    assertThat(nodes.belongsToString(node), equalTo(true));
   }
 
   // message Person {}
-  @Test public void should_return_false_if_node_does_not_belong_to_single_line_comment() {
+  @Test public void should_return_false_if_node_does_not_belong_to_string() {
     ICompositeNode node = getNode(xtext.root());
-    assertThat(nodes.belongsToSingleLineComment(node), equalTo(false));
+    assertThat(nodes.belongsToString(node), equalTo(false));
   }
 }
