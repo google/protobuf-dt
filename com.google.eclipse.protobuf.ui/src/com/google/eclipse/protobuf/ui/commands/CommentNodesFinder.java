@@ -38,7 +38,7 @@ class CommentNodesFinder {
   Pair<INode, Matcher> matchingCommentNode(EObject target, String...patternsToMatch) {
     ICompositeNode node = getNode(target);
     for (INode currentNode : node.getAsTreeIterable()) {
-      if (!nodes.isHiddenLeafNode(node)) break;
+      if (!nodes.isHiddenLeafNode(currentNode)) continue;
       if (!nodes.belongsToComment(currentNode)) continue;
       String rawComment = ((ILeafNode) currentNode).getText();
       if (isEmpty(rawComment)) continue;

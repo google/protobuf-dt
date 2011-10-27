@@ -12,6 +12,7 @@ import static java.io.File.separator;
 import static java.util.Arrays.asList;
 import static org.eclipse.xtext.util.Strings.*;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Singleton;
 
 /**
@@ -26,8 +27,9 @@ class ProtoDescriptorPathFinder {
     this(separator);
   }
   
+  @VisibleForTesting
   ProtoDescriptorPathFinder(String fileSeparator) {
-    descriptorFqn = concat(separator, asList("", "google", "protobuf", "descriptor.proto"));
+    descriptorFqn = concat(fileSeparator, asList("", "google", "protobuf", "descriptor.proto"));
   }
     
   String findRootOf(String descriptorFilePath) {
