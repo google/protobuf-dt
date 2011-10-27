@@ -15,6 +15,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
 import org.eclipse.xtext.nodemodel.*;
 
+import java.util.*;
 import java.util.regex.Pattern;
 
 import com.google.eclipse.protobuf.model.util.*;
@@ -30,7 +31,17 @@ import com.google.inject.*;
 public class SLCommentDocumentationProvider implements IEObjectDocumentationProvider {
 
   private static final Pattern COMMENT_START = Pattern.compile("//\\s*"); // "//" plus any whitespace
-  private static final Pattern[] NEW_LINE = { Pattern.compile("\\r\\n"), Pattern.compile("\\n") };
+  private static final List<Pattern> NEW_LINE = new ArrayList<Pattern>();
+  
+  static {
+    addToNewLine("\\r\\n", "\\n");
+  }
+  
+  private static void addToNewLine(String...patterns) {
+    for (String p : patterns) {
+      NEW_LINE.add(Pattern.compile(p));
+    }
+  }
 
   @Inject private FieldOptions fieldOptions;
   @Inject private INodes nodes;

@@ -33,14 +33,13 @@ public class MLCommentDocumentationProvider implements IEObjectDocumentationProv
   private static final List<Pattern> CLEAN_UP = new ArrayList<Pattern>();
   
   static {
-    addToCleanUp("\\A/\\*\\*?");
-    addToCleanUp("\\*/\\z");
-    addToCleanUp("(?m)^( |\\t)*\\** ?");
-    addToCleanUp("(?m)( |\\t)*\\**( |\\t)*$");
+    addToCleanUp("\\A/\\*\\*?", "\\*/\\z", "(?m)^( |\\t)*\\** ?", "(?m)( |\\t)*\\**( |\\t)*$");
   }
   
-  private static void addToCleanUp(String regex) {
-    CLEAN_UP.add(Pattern.compile(regex));
+  private static void addToCleanUp(String...patterns) {
+    for (String p : patterns) {
+      CLEAN_UP.add(Pattern.compile(p));
+    }
   }
   
   @Inject private INodes nodes;
