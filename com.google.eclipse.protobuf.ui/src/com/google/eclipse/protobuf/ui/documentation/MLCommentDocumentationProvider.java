@@ -23,7 +23,7 @@ import com.google.inject.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton
-class MLCommentDocumentationProvider implements IEObjectDocumentationProvider {
+public class MLCommentDocumentationProvider implements IEObjectDocumentationProvider {
 
   private static final String START_TAG = "/\\*\\*?";
   private static final String END_TAG = "\\*/";

@@ -25,7 +25,7 @@ import com.google.inject.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton
-class SLCommentDocumentationProvider implements IEObjectDocumentationProvider {
+public class SLCommentDocumentationProvider implements IEObjectDocumentationProvider {
 
   private static final String COMMENT_START = "//\\s*"; // "//" plus any whitespace
   private static final String WINDOWS_NEW_LINE = "\\r\\n";
