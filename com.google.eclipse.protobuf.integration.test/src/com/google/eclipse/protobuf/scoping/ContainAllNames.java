@@ -15,11 +15,11 @@ import org.hamcrest.*;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ContainAllNames extends BaseMatcher<IEObjectDescriptions> {
+class ContainAllNames extends BaseMatcher<IEObjectDescriptions> {
 
   private final String[] expectedNames;
 
-  public static ContainAllNames containAll(String... names) {
+  static ContainAllNames containAll(String... names) {
     return new ContainAllNames(names);
   }
   

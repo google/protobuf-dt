@@ -34,7 +34,7 @@ enum OptionType {
     OPTION_TYPES_BY_CONTAINER.put(Protobuf.class, FILE);
     OPTION_TYPES_BY_CONTAINER.put(Enum.class, ENUM);
     OPTION_TYPES_BY_CONTAINER.put(Message.class, MESSAGE);
-    OPTION_TYPES_BY_CONTAINER.put(Property.class, FIELD);
+    OPTION_TYPES_BY_CONTAINER.put(Field.class, FIELD);
     OPTION_TYPES_BY_CONTAINER.put(Service.class, SERVICE);
     OPTION_TYPES_BY_CONTAINER.put(Rpc.class, RPC);
   }
@@ -60,7 +60,7 @@ enum OptionType {
    * @return the type of the given option or {@code null} if a type cannot be found.
    */
   static OptionType typeOf(FieldOption option) {
-    return findTypeForContainer(option.eContainer());
+    return findOptionTypeForLevelOf(option.eContainer());
   }
 
   /**
@@ -69,10 +69,10 @@ enum OptionType {
    * @return the type of the given option or {@code null} if a type cannot be found.
    */
   static OptionType typeOf(Option option) {
-    return findTypeForContainer(option.eContainer());
+    return findOptionTypeForLevelOf(option.eContainer());
   }
 
-  static OptionType findTypeForContainer(EObject container) {
+  static OptionType findOptionTypeForLevelOf(EObject container) {
     for (Entry<Class<?>, OptionType> optionTypeByContainer : OPTION_TYPES_BY_CONTAINER.entrySet()) {
       if (optionTypeByContainer.getKey().isInstance(container)) {
         return optionTypeByContainer.getValue();
