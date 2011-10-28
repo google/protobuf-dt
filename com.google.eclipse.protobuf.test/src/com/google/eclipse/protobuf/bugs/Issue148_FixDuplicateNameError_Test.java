@@ -10,33 +10,41 @@ package com.google.eclipse.protobuf.bugs;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.eclipse.protobuf.validation.ProtobufJavaValidator;
 
+import org.eclipse.emf.common.util.*;
 import org.junit.*;
+
+import java.util.List;
 
 /**
  * Tests fix for <a href="http://code.google.com/p/protobuf-dt/issues/detail?id=91">Issue 91</a>.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Issue91AddSupportForUTF16Strings {
+public class Issue148_FixDuplicateNameError_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
   
-  private Protobuf root;
-
+  private ProtobufJavaValidator validator;
+  
   @Before public void setUp() {
-    root = xtext.root();
+    validator = xtext.getInstanceOf(ProtobufJavaValidator.class);
   }
   
-  //  message Foo {
-  //    optional string bar = 1 [default="\\302\\265"];
-  //  }
-  @Test public void should_recognize_UTF16_strings() {
-    assertThat(root, notNullValue());
+  // package abc;
+  //
+  // message abc {
+  //    
+  // }
+  @Test public void should_allow_elements_of_different_types_have_same_name() {
+    BasicDiagnostic diagnostics = new BasicDiagnostic();
+    validator.validate(xtext.root(), diagnostics, null);
+    List<Diagnostic> children = diagnostics.getChildren();
+    assertThat(children.size(), equalTo(0));
   }
 }
