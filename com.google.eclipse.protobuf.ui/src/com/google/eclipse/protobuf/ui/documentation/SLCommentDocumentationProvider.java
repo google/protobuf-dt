@@ -8,40 +8,31 @@
  */
 package com.google.eclipse.protobuf.ui.documentation;
 
+import static com.google.eclipse.protobuf.ui.documentation.Patterns.compileAll;
 import static com.google.eclipse.protobuf.util.CommonWords.space;
+import static java.util.regex.Pattern.compile;
 import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.getNode;
+
+import java.util.regex.Pattern;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
 import org.eclipse.xtext.nodemodel.*;
-
-import java.util.*;
-import java.util.regex.Pattern;
 
 import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.*;
 
 /**
- * Provides single line comments of a protobuf element as its documentation when hovered.
+ * Provides single-line comments of a protobuf element as its documentation when hovered.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton
 public class SLCommentDocumentationProvider implements IEObjectDocumentationProvider {
 
-  private static final Pattern COMMENT_START = Pattern.compile("//\\s*"); // "//" plus any whitespace
-  private static final List<Pattern> NEW_LINE = new ArrayList<Pattern>();
-  
-  static {
-    addToNewLine("\\r\\n", "\\n");
-  }
-  
-  private static void addToNewLine(String...patterns) {
-    for (String p : patterns) {
-      NEW_LINE.add(Pattern.compile(p));
-    }
-  }
+  private static final Pattern COMMENT_START = compile("//\\s*"); // "//" plus any whitespace
+  private static final Patterns NEW_LINE = compileAll("\\r\\n", "\\n");
 
   @Inject private FieldOptions fieldOptions;
   @Inject private INodes nodes;

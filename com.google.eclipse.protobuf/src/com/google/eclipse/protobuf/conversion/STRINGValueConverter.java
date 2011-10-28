@@ -8,13 +8,14 @@
  */
 package com.google.eclipse.protobuf.conversion;
 
+import static java.util.regex.Pattern.compile;
 import static org.eclipse.xtext.util.Strings.*;
+
+import java.util.regex.Pattern;
 
 import org.eclipse.xtext.conversion.ValueConverterException;
 import org.eclipse.xtext.conversion.impl.AbstractLexerBasedConverter;
 import org.eclipse.xtext.nodemodel.INode;
-
-import java.util.regex.Pattern;
 
 /**
  * Converts multi-line strings to {@code String}s.
@@ -23,8 +24,8 @@ import java.util.regex.Pattern;
  */
 public class STRINGValueConverter extends AbstractLexerBasedConverter<String> {
 
-  private static final Pattern LINE_BREAK = Pattern.compile("\"[\t\r\n]+\"|'[\t\r\n]+'");
-  
+  private static final Pattern LINE_BREAK = compile("\"[\t\r\n]+\"|'[\t\r\n]+'");
+
   @Override
   protected String toEscapedString(String value) {
     if (value == null) return null;

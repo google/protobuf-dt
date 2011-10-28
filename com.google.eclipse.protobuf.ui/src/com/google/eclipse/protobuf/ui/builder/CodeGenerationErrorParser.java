@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.builder;
 
+import static java.util.regex.Pattern.compile;
+
 import java.util.regex.*;
 
 import org.eclipse.core.runtime.CoreException;
@@ -25,9 +27,9 @@ class CodeGenerationErrorParser implements ProtocOutputParser {
    * *: whitespace
    * 2: description
    */
-  private static final Pattern ERROR_PATTERN = Pattern.compile("(.*):\\s*(--.*)");
+  private static final Pattern ERROR_PATTERN = compile("(.*):\\s*(--.*)");
 
-  @Override 
+  @Override
   public boolean parseAndAddMarkerIfNecessary(String line, ProtocMarkerFactory markerFactory) throws CoreException {
     Matcher errorMatcher = ERROR_PATTERN.matcher(line);
     if (!errorMatcher.matches()) return false;

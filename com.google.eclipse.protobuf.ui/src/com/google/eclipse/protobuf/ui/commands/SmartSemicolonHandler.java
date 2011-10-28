@@ -9,14 +9,10 @@
 package com.google.eclipse.protobuf.ui.commands;
 
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
+import static java.util.regex.Pattern.compile;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import com.google.eclipse.protobuf.grammar.CommonKeyword;
-import com.google.eclipse.protobuf.model.util.INodes;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag.*;
-import com.google.eclipse.protobuf.ui.util.*;
-import com.google.inject.Inject;
+import java.util.regex.*;
 
 import org.apache.log4j.Logger;
 import org.eclipse.emf.ecore.EObject;
@@ -31,7 +27,12 @@ import org.eclipse.xtext.ui.editor.model.IXtextDocument;
 import org.eclipse.xtext.util.Pair;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
-import java.util.regex.*;
+import com.google.eclipse.protobuf.grammar.CommonKeyword;
+import com.google.eclipse.protobuf.model.util.INodes;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag.*;
+import com.google.eclipse.protobuf.ui.util.*;
+import com.google.inject.Inject;
 
 /**
  * Inserts a semicolon at the end of a line, regardless of the current position of the caret in the editor. If the
@@ -42,7 +43,7 @@ import java.util.regex.*;
  */
 public class SmartSemicolonHandler extends SmartInsertHandler {
 
-  private static final Pattern NUMBERS_PATTERN = Pattern.compile("[\\d]+");
+  private static final Pattern NUMBERS_PATTERN = compile("[\\d]+");
 
   private static Logger logger = Logger.getLogger(SmartSemicolonHandler.class);
 

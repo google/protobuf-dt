@@ -9,6 +9,7 @@
 package com.google.eclipse.protobuf.junit.core;
 
 import static com.google.eclipse.protobuf.junit.core.GeneratedProtoFiles.*;
+import static java.util.regex.Pattern.compile;
 
 import java.io.*;
 import java.util.Scanner;
@@ -19,7 +20,7 @@ import java.util.regex.*;
  */
 class CommentProcessor {
 
-  private static final Pattern CREATE_FILE_PATTERN = Pattern.compile("// Create file (.*)");
+  private static final Pattern CREATE_FILE_PATTERN = compile("// Create file (.*)");
 
   Object processComment(String comment) {
     Scanner scanner = new Scanner(comment);
@@ -49,7 +50,7 @@ class CommentProcessor {
     }
     return file;
   }
-  
+
   private void closeQuietly(Writer out) {
     if (out == null) return;
     try {

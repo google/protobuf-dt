@@ -9,6 +9,7 @@
 package com.google.eclipse.protobuf.ui.builder;
 
 import static java.lang.Integer.parseInt;
+import static java.util.regex.Pattern.compile;
 
 import java.util.regex.*;
 
@@ -29,9 +30,9 @@ class LineSpecificErrorParser implements ProtocOutputParser {
    * *: whitespace
    * 4: description
    */
-  private static final Pattern ERROR_PATTERN = Pattern.compile("(.*):(\\d+):(\\d+):\\s*(.*)");
+  private static final Pattern ERROR_PATTERN = compile("(.*):(\\d+):(\\d+):\\s*(.*)");
 
-  @Override 
+  @Override
   public boolean parseAndAddMarkerIfNecessary(String line, ProtocMarkerFactory markerFactory) throws CoreException {
     Matcher errorMatcher = ERROR_PATTERN.matcher(line);
     if (!errorMatcher.matches()) return false;

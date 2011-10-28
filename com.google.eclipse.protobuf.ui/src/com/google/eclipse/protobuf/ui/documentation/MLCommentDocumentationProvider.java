@@ -8,40 +8,30 @@
  */
 package com.google.eclipse.protobuf.ui.documentation;
 
+import static com.google.eclipse.protobuf.ui.documentation.Patterns.compileAll;
+import static java.util.regex.Pattern.compile;
 import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.getNode;
+
+import java.util.regex.Pattern;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
 import org.eclipse.xtext.nodemodel.*;
 
-import java.util.*;
-import java.util.regex.Pattern;
-
 import com.google.eclipse.protobuf.model.util.INodes;
 import com.google.inject.*;
 
 /**
- * Provides single line comments of a protobuf element as its documentation when hovered.
+ * Provides multiple-line comments of a protobuf element as its documentation when hovered.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton
 public class MLCommentDocumentationProvider implements IEObjectDocumentationProvider {
 
-  private static final Pattern COMMENT = Pattern.compile("(?s)/\\*\\*?.*");
-  
-  private static final List<Pattern> CLEAN_UP = new ArrayList<Pattern>();
-  
-  static {
-    addToCleanUp("\\A/\\*\\*?", "\\*/\\z", "(?m)^( |\\t)*\\** ?", "(?m)( |\\t)*\\**( |\\t)*$");
-  }
-  
-  private static void addToCleanUp(String...patterns) {
-    for (String p : patterns) {
-      CLEAN_UP.add(Pattern.compile(p));
-    }
-  }
-  
+  private static final Pattern COMMENT = compile("(?s)/\\*\\*?.*");
+  private static final Patterns CLEAN_UP = compileAll("\\A/\\*\\*?", "\\*/\\z", "(?m)^( |\\t)*\\** ?", "(?m)( |\\t)*\\**( |\\t)*$");
+
   @Inject private INodes nodes;
 
   @Override public String getDocumentation(EObject o) {
@@ -64,7 +54,7 @@ public class MLCommentDocumentationProvider implements IEObjectDocumentationProv
     }
     return returnValue;
   }
-  
+
   private String cleanUp(String comment) {
     String clean = comment;
     for (Pattern pattern : CLEAN_UP) {

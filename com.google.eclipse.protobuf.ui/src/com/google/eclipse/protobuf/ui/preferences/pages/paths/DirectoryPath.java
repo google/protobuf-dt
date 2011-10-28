@@ -9,9 +9,9 @@
 package com.google.eclipse.protobuf.ui.preferences.pages.paths;
 
 import static com.google.eclipse.protobuf.ui.preferences.pages.paths.ProjectVariable.useProjectName;
+import static java.util.regex.Pattern.compile;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.*;
 
 import org.eclipse.core.filesystem.*;
 import org.eclipse.core.resources.*;
@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.Path;
  */
 public class DirectoryPath {
 
-  private static final Pattern WORKSPACE_PATH_PATTERN = Pattern.compile("\\$\\{workspace_loc:(.*)\\}");
+  private static final Pattern WORKSPACE_PATH_PATTERN = compile("\\$\\{workspace_loc:(.*)\\}");
 
   private final String value;
   private final boolean isWorkspacePath;
