@@ -8,8 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.preferences;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -35,13 +34,13 @@ public class BooleanPreference_Test {
   
   @Test public void should_read_value_from_IPreferenceStore() {
     when(store.getBoolean(name)).thenReturn(true);
-    assertThat(preference.value(), equalTo(true));
+    assertTrue(preference.value());
     verify(store).getBoolean(name);
   }
   
   @Test public void should_read_default_value_from_IPreferenceStore() {
     when(store.getDefaultBoolean(name)).thenReturn(true);
-    assertThat(preference.defaultValue(), equalTo(true));
+    assertTrue(preference.defaultValue());
     verify(store).getDefaultBoolean(name);
   }
   

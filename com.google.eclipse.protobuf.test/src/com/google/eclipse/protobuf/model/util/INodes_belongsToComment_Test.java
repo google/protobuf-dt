@@ -11,8 +11,7 @@ package com.google.eclipse.protobuf.model.util;
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.getNode;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 import org.eclipse.xtext.nodemodel.*;
 import org.junit.*;
@@ -38,19 +37,19 @@ public class INodes_belongsToComment_Test {
   // message Person {}
   @Test public void should_return_true_if_node_belongs_to_single_line_comment() {
     ILeafNode commentNode = xtext.find("// This is a test.");
-    assertThat(nodes.belongsToComment(commentNode), equalTo(true));
+    assertTrue(nodes.belongsToComment(commentNode));
   }
   
   // /* This is a test. */
   // message Person {}
   @Test public void should_return_true_if_node_belongs_to_multiple_line_comment() {
     ILeafNode commentNode = xtext.find("/* This is a test. */");
-    assertThat(nodes.belongsToComment(commentNode), equalTo(true));
+    assertTrue(nodes.belongsToComment(commentNode));
   }
 
   // message Person {}
   @Test public void should_return_false_if_node_does_not_belong_to_any_comment() {
     ICompositeNode node = getNode(xtext.root());
-    assertThat(nodes.belongsToComment(node), equalTo(false));
+    assertFalse(nodes.belongsToComment(node));
   }
 }

@@ -10,13 +10,12 @@ package com.google.eclipse.protobuf.model.util;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.integrationTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
-
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.*;
+import static org.junit.Assert.*;
 
 import org.junit.*;
+
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.FieldOption;
 
 /**
  * Tests for <code>{@link FieldOptions#isDefaultValueOption(FieldOption)}</code>.
@@ -38,8 +37,7 @@ public class FieldOptions_isDefaultValueOption_Test {
   // }
   @Test public void should_return_true_if_FieldOption_is_default_value_one() {
     FieldOption option = xtext.find("default", FieldOption.class);
-    boolean result = fieldOptions.isDefaultValueOption(option);
-    assertThat(result, equalTo(true));
+    assertTrue(fieldOptions.isDefaultValueOption(option));
   }
 
   // message Person {
@@ -47,7 +45,6 @@ public class FieldOptions_isDefaultValueOption_Test {
   // }
   @Test public void should_return_false_if_FieldOption_is_not_default_value_one() {
     FieldOption option = xtext.find("deprecated", FieldOption.class);
-    boolean result = fieldOptions.isDefaultValueOption(option);
-    assertThat(result, equalTo(false));
+    assertFalse(fieldOptions.isDefaultValueOption(option));
   }
 }

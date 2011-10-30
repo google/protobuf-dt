@@ -9,8 +9,7 @@
 package com.google.eclipse.protobuf.grammar;
 
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.*;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -22,22 +21,21 @@ import org.junit.Test;
 public class CommonKeyword_hasValue_Test {
 
   @Test public void should_return_true_if_value_is_equal_to_String() {
-    assertThat(BOOL.hasValue("bool"), equalTo(true));
-    assertThat(TRUE.hasValue("true"), equalTo(true));
-    assertThat(FALSE.hasValue("false"), equalTo(true));
-    assertThat(BYTES.hasValue("bytes"), equalTo(true));
-    assertThat(OPENING_BRACKET.hasValue("["), equalTo(true));
-    assertThat(CLOSING_BRACKET.hasValue("]"), equalTo(true));
-    assertThat(OPENING_CURLY_BRACKET.hasValue("{"), equalTo(true));
-    assertThat(CLOSING_CURLY_BRACKET.hasValue("}"), equalTo(true));
-    assertThat(DEFAULT.hasValue("default"), equalTo(true));
-    assertThat(EQUAL.hasValue("="), equalTo(true));
-    assertThat(SEMICOLON.hasValue(";"), equalTo(true));
-    assertThat(STRING.hasValue("string"), equalTo(true));
+    assertTrue(BOOL.hasValue("bool"));
+    assertTrue(TRUE.hasValue("true"));
+    assertTrue(FALSE.hasValue("false"));
+    assertTrue(BYTES.hasValue("bytes"));
+    assertTrue(OPENING_BRACKET.hasValue("["));
+    assertTrue(CLOSING_BRACKET.hasValue("]"));
+    assertTrue(OPENING_CURLY_BRACKET.hasValue("{"));
+    assertTrue(CLOSING_CURLY_BRACKET.hasValue("}"));
+    assertTrue(DEFAULT.hasValue("default"));
+    assertTrue(EQUAL.hasValue("="));
+    assertTrue(SEMICOLON.hasValue(";"));
+    assertTrue(STRING.hasValue("string"));
   }
 
   @Test public void should_return_false_if_value_is_not_equal_to_String() {
-    assertThat(STRING.hasValue(";"), equalTo(false));
+    assertFalse(STRING.hasValue(";"));
   }
-
 }

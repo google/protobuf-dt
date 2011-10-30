@@ -10,14 +10,13 @@ package com.google.eclipse.protobuf.bugs;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
-
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.validation.ProtobufJavaValidator;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.emf.common.util.BasicDiagnostic;
 import org.junit.*;
+
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.validation.ProtobufJavaValidator;
 
 /**
  * Tests fix for <a href="http://code.google.com/p/protobuf-dt/issues/detail?id=91">Issue 91</a>.
@@ -39,6 +38,6 @@ public class Issue148_FixDuplicateNameError_Test {
   // message abc {}
   @Test public void should_allow_elements_of_different_types_have_same_name() {
     boolean isValid = validator.validate(xtext.root(), new BasicDiagnostic(), null);
-    assertThat(isValid, equalTo(true));
+    assertTrue(isValid);
   }
 }

@@ -9,8 +9,7 @@
 package com.google.eclipse.protobuf.junit.core;
 
 import static java.io.File.separator;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
@@ -28,7 +27,7 @@ final class GeneratedProtoFiles {
   static void ensureParentDirectoryExists() {
     File parent = new File(PARENT_DIRECTORY_NAME);
     if (!parent.isDirectory()) {
-      assertThat(parent.mkdir(), equalTo(true));
+      assertTrue(parent.mkdir());
     }
   }
   

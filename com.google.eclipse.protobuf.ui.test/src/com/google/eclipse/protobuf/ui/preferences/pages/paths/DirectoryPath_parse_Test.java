@@ -9,11 +9,9 @@
 package com.google.eclipse.protobuf.ui.preferences.pages.paths;
 
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
-
-import com.google.eclipse.protobuf.ui.preferences.pages.paths.DirectoryPath;
 
 /**
  * Tests for <code>{@link DirectoryPath#parse(String)}</code>
@@ -25,12 +23,12 @@ public class DirectoryPath_parse_Test {
   @Test public void should_parse_workspace_path() {
     DirectoryPath path = DirectoryPath.parse("${workspace_loc:/test/src}");
     assertThat(path.value(), equalTo("/test/src"));
-    assertThat(path.isWorkspacePath(), equalTo(true));
+    assertTrue(path.isWorkspacePath());
   }
 
   @Test public void should_parse_file_system_path() {
     DirectoryPath path = DirectoryPath.parse("/test/src");
     assertThat(path.value(), equalTo("/test/src"));
-    assertThat(path.isWorkspacePath(), equalTo(false));
+    assertFalse(path.isWorkspacePath());
   }
 }

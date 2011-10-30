@@ -9,8 +9,7 @@
 package com.google.eclipse.protobuf.ui.grammar;
 
 import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.*;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -22,14 +21,14 @@ import org.junit.Test;
 public class CompoundElement_hasValue_Test {
 
   @Test public void should_return_true_if_value_is_equal_to_String() {
-    assertThat(DEFAULT_EQUAL.hasValue("default = "), equalTo(true));
-    assertThat(DEFAULT_EQUAL_IN_BRACKETS.hasValue("[default = ]"), equalTo(true));
-    assertThat(EMPTY_STRING.hasValue("\"\""), equalTo(true));
-    assertThat(DEFAULT_EQUAL_STRING.hasValue("default = \"\""), equalTo(true));
-    assertThat(DEFAULT_EQUAL_STRING_IN_BRACKETS.hasValue("[default = \"\"]"), equalTo(true));
+    assertTrue(DEFAULT_EQUAL.hasValue("default = "));
+    assertTrue(DEFAULT_EQUAL_IN_BRACKETS.hasValue("[default = ]"));
+    assertTrue(EMPTY_STRING.hasValue("\"\""));
+    assertTrue(DEFAULT_EQUAL_STRING.hasValue("default = \"\""));
+    assertTrue(DEFAULT_EQUAL_STRING_IN_BRACKETS.hasValue("[default = \"\"]"));
   }
 
   @Test public void should_return_false_if_value_is_not_equal_to_String() {
-    assertThat(DEFAULT_EQUAL.hasValue("packed ="), equalTo(false));
+    assertFalse(DEFAULT_EQUAL.hasValue("packed ="));
   }
 }

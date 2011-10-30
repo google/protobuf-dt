@@ -8,8 +8,7 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import org.eclipse.xtext.nodemodel.*;
@@ -31,16 +30,17 @@ public class INodes_isHiddenLeafNode_Test {
   @Test public void should_return_true_if_given_node_is_an_ILeafNode_and_is_hidden() {
     ILeafNode node = mock(ILeafNode.class);
     when(node.isHidden()).thenReturn(true);
-    assertThat(nodes.isHiddenLeafNode(node), equalTo(true));
+    assertTrue(nodes.isHiddenLeafNode(node));
   }
 
   @Test public void should_return_false_if_given_node_is_an_ILeafNode_but_is_not_hidden() {
     ILeafNode node = mock(ILeafNode.class);
     when(node.isHidden()).thenReturn(false);
-    assertThat(nodes.isHiddenLeafNode(node), equalTo(false));
+    assertFalse(nodes.isHiddenLeafNode(node));
   }
   
   @Test public void should_return_false_if_given_node_is_not_an_ILeafNode() {
-    assertThat(nodes.isHiddenLeafNode(mock(INode.class)), equalTo(false));
+    INode node = mock(INode.class);
+    assertFalse(nodes.isHiddenLeafNode(node));
   }
 }

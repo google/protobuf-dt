@@ -11,8 +11,7 @@ package com.google.eclipse.protobuf.model.util;
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.getNode;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 import org.eclipse.xtext.nodemodel.*;
 import org.junit.*;
@@ -39,12 +38,12 @@ public class INodes_belongsToString_Test {
   // }
   @Test public void should_return_true_if_node_belongs_to_string() {
     ILeafNode node = xtext.find("'Alex'");
-    assertThat(nodes.belongsToString(node), equalTo(true));
+    assertTrue(nodes.belongsToString(node));
   }
 
   // message Person {}
   @Test public void should_return_false_if_node_does_not_belong_to_string() {
     ICompositeNode node = getNode(xtext.root());
-    assertThat(nodes.belongsToString(node), equalTo(false));
+    assertFalse(nodes.belongsToString(node));
   }
 }

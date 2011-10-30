@@ -8,13 +8,11 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import org.junit.*;
 
-import com.google.eclipse.protobuf.junit.stubs.protobuf.PackageStub;
-import com.google.eclipse.protobuf.model.util.Packages;
 import com.google.eclipse.protobuf.protobuf.Package;
 
 /**
@@ -44,37 +42,37 @@ public class Packages_areRelated_Test {
         "may.the",
         "may"
     };
-    p1 = new PackageStub(baseName);
-    p2 = new PackageStub();
+    p1 = mock(Package.class);
+    when(p1.getName()).thenReturn(baseName);
+    p2 = mock(Package.class);
   }
 
   @Test public void should_return_true_if_packages_are_equal() {
-    p2.setName(p1.getName());
-    assertThat(packages.areRelated(p1, p2), equalTo(true));
+    when(p2.getName()).thenReturn(baseName);
+    assertTrue(packages.areRelated(p1, p2));
   }
 
   @Test public void should_return_true_second_is_subPackage_of_first() {
     for (String name : subpackageNames) {
-      p2.setName(name);
-      assertThat(packages.areRelated(p1, p2), equalTo(true));
+      when(p2.getName()).thenReturn(name);
+      assertTrue(packages.areRelated(p1, p2));
     }
   }
 
   @Test public void should_return_true_first_is_subPackage_of_second() {
-    p2.setName(baseName);
     for (String name : subpackageNames) {
-      p1.setName(name);
-      assertThat(packages.areRelated(p1, p2), equalTo(true));
+      when(p2.getName()).thenReturn(name);
+      assertTrue(packages.areRelated(p2, p1));
     }
   }
 
   @Test public void should_return_false_if_second_starts_with_few_segments_of_first_but_is_not_subpackage() {
-    p2.setName("may.the.ring");
-    assertThat(packages.areRelated(p1, p2), equalTo(false));
+    when(p2.getName()).thenReturn("may.the.ring");
+    assertFalse(packages.areRelated(p1, p2));
   }
 
   @Test public void should_return_false_if_names_are_completely_different() {
-    p2.setName("peace.dog");
-    assertThat(packages.areRelated(p1, p2), equalTo(false));
+    when(p2.getName()).thenReturn("peace.dog");
+    assertFalse(packages.areRelated(p1, p2));
   }
 }

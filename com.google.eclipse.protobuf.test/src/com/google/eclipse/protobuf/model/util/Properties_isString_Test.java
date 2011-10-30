@@ -10,13 +10,12 @@ package com.google.eclipse.protobuf.model.util;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
-
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.*;
+import static org.junit.Assert.*;
 
 import org.junit.*;
+
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.Property;
 
 /**
  * Tests for <code>{@link Properties#isString(Property)}</code>.
@@ -37,15 +36,15 @@ public class Properties_isString_Test {
   //   optional string name = 1;
   // }
   @Test public void should_return_true_if_property_is_string() {
-    Property name = xtext.find("name", Property.class);
-    assertThat(properties.isString(name), equalTo(true));
+    Property p = xtext.find("name", Property.class);
+    assertTrue(properties.isString(p));
   }
 
   // message Person {
-  //   optional bool active = 1;
+  //   optional double code = 1;
   // }
   @Test public void should_return_false_if_property_is_not_string() {
-    Property active = xtext.find("active", Property.class);
-    assertThat(properties.isString(active), equalTo(false));
+    Property p = xtext.find("code", Property.class);
+    assertFalse(properties.isString(p));
   }
 }
