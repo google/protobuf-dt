@@ -11,13 +11,12 @@ package com.google.eclipse.protobuf.model.util;
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
+
+import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
-
-import org.junit.*;
 
 /**
  * Tests for <code>{@link ModelFinder#scalarTypeOf(Property)}</code>.
@@ -54,7 +53,6 @@ public class ModelFinder_scalarTypeOf_Test {
   // }
   @Test public void should_return_null_if_property_type_is_not_scalar() {
     Property type = xtext.find("type", Property.class);
-    ScalarType scalar = finder.scalarTypeOf(type);
-    assertThat(scalar, nullValue());
+    assertNull(finder.scalarTypeOf(type));
   }
 }

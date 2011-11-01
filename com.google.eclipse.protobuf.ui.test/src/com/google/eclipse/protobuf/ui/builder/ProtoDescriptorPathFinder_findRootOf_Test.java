@@ -9,8 +9,7 @@
 package com.google.eclipse.protobuf.ui.builder;
 
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.junit.rules.ExpectedException.none;
 
 import org.junit.*;
@@ -32,11 +31,11 @@ public class ProtoDescriptorPathFinder_findRootOf_Test {
   @Rule public ExpectedException thrown = none();
 
   @Test public void should_return_null_if_path_is_null() {
-    assertThat(finder.findRootOf(null), nullValue());
+    assertNull(finder.findRootOf(null));
   }
 
   @Test public void should_return_null_if_path_is_empty() {
-    assertThat(finder.findRootOf(""), nullValue());
+    assertNull(finder.findRootOf(""));
   }
 
   @Test public void should_throw_error_if_path_does_not_contain_descriptor_FQN() {

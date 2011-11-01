@@ -12,8 +12,7 @@ import static com.google.eclipse.protobuf.junit.core.Setups.integrationTestSetup
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static com.google.eclipse.protobuf.junit.matchers.PropertyHasType.*;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
 import java.util.*;
@@ -49,7 +48,7 @@ public class ProtoDescriptor_availableOptionsFor_Test {
     assertThat(options.option("java_outer_classname"), isString());
     assertThat(options.option("java_multiple_files"), isBool());
     assertThat(options.option("java_generate_equals_and_hash"), isBool());
-    assertThat(options.option("optimize_for"), notNullValue());
+    assertNotNull(options.option("optimize_for"));
     assertThat(options.option("cc_generic_services"), isBool());
     assertThat(options.option("java_generic_services"), isBool());
     assertThat(options.option("py_generic_services"), isBool());
@@ -65,7 +64,7 @@ public class ProtoDescriptor_availableOptionsFor_Test {
   @Test public void should_return_all_field_options() {
     Property optionContainer = mock(Property.class);
     options.mapByName(descriptor.availableOptionsFor(optionContainer));
-    assertThat(options.option("ctype"), notNullValue());
+    assertNotNull(options.option("ctype"));
     assertThat(options.option("packed"), isBool());
     assertThat(options.option("deprecated"), isBool());
     assertThat(options.option("experimental_map_key"), isString());

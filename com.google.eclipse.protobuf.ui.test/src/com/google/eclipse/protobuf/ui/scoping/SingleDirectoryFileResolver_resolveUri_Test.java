@@ -10,7 +10,7 @@ package com.google.eclipse.protobuf.ui.scoping;
 
 import static org.eclipse.emf.common.util.URI.createURI;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -44,20 +44,30 @@ public class SingleDirectoryFileResolver_resolveUri_Test {
   }
 
   @Test public void should_resolve_import_URI_if_missing_scheme() {
-    when(resources.fileExists(any(URI.class))).thenReturn(true);
+    expectResolvedPathToBelongToExistingFile();
     String resolved = resolver.resolveUri("folder1/address.proto", resourceUri, preferences);
     assertThat(resolved, equalTo("platform:/resource/src/proto/folder1/address.proto"));
   }
 
-  @Test public void should_resolve_import_URI_even_if_overlapping_folders_with_resource_URI() {
-    when(resources.fileExists(any(URI.class))).thenReturn(true);
+  @Test public void should_resolve_import_URI_when_overlapping_folders_with_resource_URI() {
+    expectResolvedPathToBelongToExistingFile();
     String resolved = resolver.resolveUri("src/proto/folder1/address.proto", resourceUri, preferences);
     assertThat(resolved, equalTo("platform:/resource/src/proto/folder1/address.proto"));
   }
 
-  @Test public void should_resolve_import_URI_even_if_overlapping_one_folder_only_with_resource_URI() {
-    when(resources.fileExists(any(URI.class))).thenReturn(true);
+  @Test public void should_resolve_import_URI_when_overlapping_one_folder_only_with_resource_URI() {
+    expectResolvedPathToBelongToExistingFile();
     String resolved = resolver.resolveUri("src/proto/read-only/address.proto", resourceUri, preferences);
     assertThat(resolved, equalTo("platform:/resource/src/proto/read-only/address.proto"));
+  }
+  
+  private void expectResolvedPathToBelongToExistingFile() {
+    when(resources.fileExists(any(URI.class))).thenReturn(true);
+  }
+  
+  @Test public void should_return_null_if_URI_cannot_be_resolved() {
+    when(resources.fileExists(any(URI.class))).thenReturn(false);
+    String resolved = resolver.resolveUri("src/proto/read-only/person.proto", resourceUri, preferences);
+    assertNull(resolved);
   }
 }

@@ -12,8 +12,7 @@ import static com.google.eclipse.protobuf.junit.core.Setups.integrationTestSetup
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static com.google.eclipse.protobuf.scoping.OptionType.FILE;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 import org.junit.*;
 
@@ -44,6 +43,6 @@ public class ProtoDescriptor_enumTypeOf_Test {
   }
 
   @Test public void should_return_null_if_property_is_null() {
-    assertThat(descriptor.enumTypeOf(null), nullValue());
+    assertNull(descriptor.enumTypeOf(null));
   }
 }

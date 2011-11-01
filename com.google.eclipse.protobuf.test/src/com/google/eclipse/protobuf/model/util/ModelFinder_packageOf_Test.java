@@ -11,15 +11,14 @@ package com.google.eclipse.protobuf.model.util;
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
+
+import org.eclipse.emf.ecore.EObject;
+import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
-
-import org.eclipse.emf.ecore.EObject;
-import org.junit.*;
 
 /**
  * Tests for <code>{@link ModelFinder#packageOf(EObject)}</code>.
@@ -52,7 +51,6 @@ public class ModelFinder_packageOf_Test {
   // }
   @Test public void should_return_null_if_proto_does_not_have_package() {
     Property id = xtext.find("id", Property.class);
-    Package aPackage = finder.packageOf(id);
-    assertThat(aPackage, nullValue());
+    assertNull(finder.packageOf(id));
   }
 }

@@ -10,13 +10,12 @@ package com.google.eclipse.protobuf.bugs;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertNotNull;
+
+import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
-
-import org.junit.*;
 
 /**
  * Tests fix for <a href="http://code.google.com/p/protobuf-dt/issues/detail?id=91">Issue 91</a>.
@@ -37,6 +36,6 @@ public class Issue91_AddSupportForUTF16Strings_Test {
   //    optional string bar = 1 [default="\\302\\265"];
   //  }
   @Test public void should_recognize_UTF16_strings() {
-    assertThat(root, notNullValue());
+    assertNotNull(root);
   }
 }

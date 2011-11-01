@@ -11,14 +11,13 @@ package com.google.eclipse.protobuf.model.util;
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
+
+import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
-
-import org.junit.*;
 
 /**
  * Tests for <code>{@link ModelFinder#enumTypeOf(Property)}</code>.
@@ -55,7 +54,6 @@ public class ModelFinder_enumTypeOf_Test {
   // }
   @Test public void should_return_null_if_property_type_is_not_enum() {
     Property name = xtext.find("name", Property.class);
-    Enum anEnum = finder.enumTypeOf(name);
-    assertThat(anEnum, nullValue());
+    assertNull(finder.enumTypeOf(name));
   }
 }
