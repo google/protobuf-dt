@@ -12,12 +12,15 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.xtext.conversion.IValueConverterService;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.parser.antlr.ISyntaxErrorMessageProvider;
+import org.eclipse.xtext.resource.IGlobalServiceProvider;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 
 import com.google.eclipse.protobuf.conversion.ProtobufTerminalConverters;
 import com.google.eclipse.protobuf.naming.ProtobufQualifiedNameProvider;
+import com.google.eclipse.protobuf.parser.Proto2OnlyParser;
+import com.google.eclipse.protobuf.resource.ResourceServiceProvider;
 import com.google.eclipse.protobuf.scoping.*;
-import com.google.eclipse.protobuf.validation.ProtobufSyntaxErrorMessageProvider;
+import com.google.eclipse.protobuf.validation.*;
 import com.google.inject.Binder;
 
 /**
@@ -25,8 +28,16 @@ import com.google.inject.Binder;
  */
 public class ProtobufRuntimeModule extends com.google.eclipse.protobuf.AbstractProtobufRuntimeModule {
 
+  public Class<? extends IGlobalServiceProvider> bindIGlobalServiceProvider() {
+    return ResourceServiceProvider.class;
+  }
+  
   public Class<? extends ImportUriResolver> bindImportUriResolver() {
     return ProtobufImportUriResolver.class;
+  }
+  
+  @Override public Class<? extends org.eclipse.xtext.parser.IParser> bindIParser() {
+    return Proto2OnlyParser.class;
   }
 
   @Override public Class<? extends IQualifiedNameProvider> bindIQualifiedNameProvider() {

@@ -25,6 +25,7 @@ public class Messages extends NLS {
   public static String importNotFound;
   public static String missingFieldNumber;
   public static String multiplePackages;
+  public static String nonProto2;
   public static String unrecognizedSyntaxIdentifier;
 
   static {

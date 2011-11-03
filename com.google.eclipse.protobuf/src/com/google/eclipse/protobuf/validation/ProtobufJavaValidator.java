@@ -20,6 +20,7 @@ import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 import org.eclipse.xtext.validation.Check;
 
 import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.parser.NonProto2;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.inject.Inject;
@@ -38,6 +39,12 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
   @Inject private IQualifiedNameProvider qualifiedNameProvider;
   @Inject private Properties properties;
 
+  @Check public void checkIsProto2(Protobuf protobuf) {
+    if (protobuf instanceof NonProto2) {
+      warning(nonProto2, null);
+    }
+  }
+  
   @Check public void checkDefaultValueType(FieldOption option) {
     if (!fieldOptions.isDefaultValueOption(option)) return;
     Property property = (Property) option.eContainer();
