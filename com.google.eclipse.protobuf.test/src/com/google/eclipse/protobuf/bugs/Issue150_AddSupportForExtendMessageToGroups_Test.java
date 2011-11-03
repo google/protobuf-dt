@@ -17,18 +17,26 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import org.junit.*;
 
 /**
- * Tests fix for <a href="http://code.google.com/p/protobuf-dt/issues/detail?id=91">Issue 91</a>.
+ * Tests fix for <a href="http://code.google.com/p/protobuf-dt/issues/detail?id=150">Issue 150</a>.
  * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Issue91_AddSupportForUTF16Strings_Test {
+public class Issue150_AddSupportForExtendMessageToGroups_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
   
-  //  message Foo {
-  //    optional string bar = 1 [default="\\302\\265"];
-  //  }
-  @Test public void should_recognize_UTF16_strings() {
+  // message ABC {
+  //   extensions 1000 to max;
+  // }
+  //
+  // message XYZ {
+  //   optional group MyGroup = 1 {
+  //     extend ABC {
+  //       optional int32 extension_in_group = 1000;
+  //     }
+  //   }
+  // }
+  @Test public void should_recognize_extendMessage_in_group() {
     assertNotNull(xtext.root());
   }
 }

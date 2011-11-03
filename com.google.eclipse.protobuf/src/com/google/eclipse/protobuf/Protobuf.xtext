@@ -68,7 +68,7 @@ Group:
   '}' (';')?;
 
 GroupElement:
-  Option | Field | Enum;
+  Option | Field | Enum | ExtendMessage;
 
 Property:
   modifier=Modifier type=AbstractTypeRef name=Name '=' index=(LONG | HEX)
