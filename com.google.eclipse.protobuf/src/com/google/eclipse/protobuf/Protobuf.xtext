@@ -72,7 +72,7 @@ GroupElement:
 
 Property:
   modifier=Modifier type=AbstractTypeRef name=Name '=' index=(LONG | HEX)
-  ('[' fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)* ']')? ';';
+  ('[' fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)* ']')? (';')+;
 
 enum Modifier:
   required
