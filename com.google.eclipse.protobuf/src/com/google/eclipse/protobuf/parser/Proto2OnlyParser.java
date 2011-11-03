@@ -10,6 +10,7 @@
 package com.google.eclipse.protobuf.parser;
 
 import com.google.eclipse.protobuf.parser.antlr.ProtobufParser;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
 
 import org.antlr.runtime.CharStream;
 import org.eclipse.xtext.nodemodel.*;
@@ -29,21 +30,26 @@ public class Proto2OnlyParser extends ProtobufParser {
   @Override 
   protected IParseResult doParse(String ruleName, CharStream in, NodeModelBuilder builder, int initialLookAhead) {
     IParseResult result = super.doParse(ruleName, in, builder, initialLookAhead);
-    if (hasNonProto2Keywords(result)) {
+    // TODO ignore this check via preferences in open source version.
+    if (isNonProto2(result)) {
       return new ParseResult(new NonProto2(), result.getRootNode(), false);
     }
     return result;
   }
 
-  private boolean hasNonProto2Keywords(IParseResult result) {
+  private boolean isNonProto2(IParseResult result) {
     if (!result.hasSyntaxErrors()) return false;
+    Protobuf root = (Protobuf) result.getRootASTElement();
+    if (root != null) {
+      if (root.getSyntax() == null) return true;
+    }
     for (INode node : result.getSyntaxErrors()) {
-      if (hasNonProto2Keywords(node.getSyntaxErrorMessage())) return true;
+      if (isNonProto2(node.getSyntaxErrorMessage())) return true;
     }
     return false;
   }
 
-  private boolean hasNonProto2Keywords(SyntaxErrorMessage syntaxErrorMessage) {
+  private boolean isNonProto2(SyntaxErrorMessage syntaxErrorMessage) {
     if (syntaxErrorMessage == null) return false;
     String message = syntaxErrorMessage.getMessage();
     for (String nonProto2Keyword : ERRORS_TO_IGNORE) {
