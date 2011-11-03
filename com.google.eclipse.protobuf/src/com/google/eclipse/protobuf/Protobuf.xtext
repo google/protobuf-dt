@@ -162,7 +162,7 @@ Literal:
   ('[' fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)* ']')? ';';
 
 terminal HEX returns ecore::ELong:
-  '0x' (NUMBER | 'a'..'f' | 'A'..'F')+;
+  ('-')? '0x' (NUMBER | 'a'..'f' | 'A'..'F')+;
 
 terminal NUMBER:
   '0'..'9';

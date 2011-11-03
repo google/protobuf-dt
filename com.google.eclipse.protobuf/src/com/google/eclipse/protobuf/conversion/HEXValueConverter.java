@@ -23,6 +23,8 @@ import java.math.BigInteger;
  */
 public class HEXValueConverter extends AbstractLexerBasedConverter<Long> {
 
+  private static final String[] VALID_PREFIXES = { "0x", "-0x", "0X", "-0x" };
+  
   /**
    * Creates an {@code int} from the given input, if the given input represents an hexadecimal number.
    * @param string the given input.
@@ -33,8 +35,8 @@ public class HEXValueConverter extends AbstractLexerBasedConverter<Long> {
    */
   @Override public Long toValue(String string, INode node) throws ValueConverterException {
     if (isEmpty(string)) throw new ValueConverterException("Couldn't convert empty string to long.", node, null);
-    if (!string.startsWith("0x") && !string.startsWith("0X")) throw parsingError(string, node);
-    String withoutZeroX = string.substring(2, string.length());
+    if (!startsWithValidPrefix(string)) throw parsingError(string, node);
+    String withoutZeroX = removeZeroX(string);
     try {
       BigInteger value = new BigInteger(withoutZeroX, 16);
       return value.longValue();
@@ -43,6 +45,21 @@ public class HEXValueConverter extends AbstractLexerBasedConverter<Long> {
     }
   }
 
+  private boolean startsWithValidPrefix(String string) {
+    for (String prefix : VALID_PREFIXES) {
+      if (string.startsWith(prefix)) return true;
+    }
+    return false;
+  }
+  
+  private String removeZeroX(String string) {
+    if (string.startsWith("-")) {
+      String withoutSign = string.substring(3, string.length());
+      return "-" + withoutSign;
+    }
+    return string.substring(2, string.length());
+  }
+  
   private ValueConverterException parsingError(String string, INode node) {
     return parsingError(string, node, null);
   }
