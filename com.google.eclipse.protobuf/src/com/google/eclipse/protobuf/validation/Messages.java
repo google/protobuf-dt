@@ -22,6 +22,7 @@ public class Messages extends NLS {
   public static String expectedTrueOrFalse;
   public static String fieldNumberAlreadyUsed;
   public static String fieldNumbersMustBePositive;
+  public static String importingNonProto2;
   public static String importNotFound;
   public static String missingFieldNumber;
   public static String multiplePackages;

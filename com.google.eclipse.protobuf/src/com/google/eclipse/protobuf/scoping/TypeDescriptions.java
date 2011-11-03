@@ -21,6 +21,7 @@ import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
 import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.parser.NonProto2;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.inject.Inject;
@@ -98,6 +99,7 @@ class TypeDescriptions {
       }
       Resource importedResource = resources.importedResource(anImport, resourceSet);
       Protobuf rootOfImported = finder.rootOf(importedResource);
+      if (rootOfImported instanceof NonProto2) continue;
       if (rootOfImported != null) {
         descriptions.addAll(publicImported(rootOfImported, targetType));
         if (arePackagesRelated(aPackage, rootOfImported)) {
