@@ -134,7 +134,7 @@ DoubleRef:
   double=DOUBLE;
 
 terminal DOUBLE returns ecore::EDouble:
-  (('-')? (NUMBER)* ('.' (NUMBER)+)? (('e'|'E')('-')? (NUMBER)+)?) | 'nan' | 'inf';
+  (('-')? (NUMBER)* ('.' (NUMBER)+)? (('e'|'E')('-')? (NUMBER)+)?) | 'nan' | 'inf' | '-inf';
 
 StringRef:
   string=STRING;

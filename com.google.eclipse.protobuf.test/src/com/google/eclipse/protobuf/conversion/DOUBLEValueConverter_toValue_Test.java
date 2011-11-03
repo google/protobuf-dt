@@ -49,7 +49,8 @@ public class DOUBLEValueConverter_toValue_Test {
       { "-3.1", -3.1D },
       { ".3", 0.3D },
       { "nan", NaN },
-      { "inf", POSITIVE_INFINITY }
+      { "inf", POSITIVE_INFINITY },
+      { "-inf", NEGATIVE_INFINITY }
     });
   }
 

@@ -35,6 +35,7 @@ public class DOUBLEValueConverter extends AbstractLexerBasedConverter<Double> {
     if (isEmpty(string)) throw new ValueConverterException("Couldn't convert empty string to double.", node, null);
     if ("nan".equals(string)) return NaN;
     if ("inf".equals(string)) return POSITIVE_INFINITY;
+    if ("-inf".equals(string)) return NEGATIVE_INFINITY;
     try {
       return Double.parseDouble(string);
     } catch (NumberFormatException e) {
