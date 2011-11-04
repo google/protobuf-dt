@@ -405,7 +405,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
   }
   
-  @Override public void completeSimplePropertyRef_Property(EObject model, Assignment assignment,
+  @Override public void completeMessagePropertyRef_MessageProperty(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
   }
   
@@ -444,19 +444,34 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     acceptor.accept(proposal);
   }
   
-  @Override public void completeCustomOption_PropertyField(EObject model, Assignment assignment,
+  @Override public void completeCustomOption_OptionFields(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    if (!(model instanceof CustomOption)) return;
-    Property property = options.propertyFrom((CustomOption) model);
-    proposeAndAcceptOptionFields(property, context, acceptor);
+    super.completeCustomOption_OptionFields(model, assignment, context, acceptor);
+  }
+
+  @Override public void completeCustomFieldOption_OptionFields(EObject model, Assignment assignment,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    super.completeCustomFieldOption_OptionFields(model, assignment, context, acceptor);
   }
   
-  @Override public void completeCustomFieldOption_PropertyField(EObject model, Assignment assignment,
-      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    if (!(model instanceof CustomFieldOption)) return;
-    Property property = fieldOptions.propertyFrom((CustomFieldOption) model);
-    proposeAndAcceptOptionFields(property, context, acceptor);
+  @Override public void complete_MessagePropertyRef(EObject model, RuleCall ruleCall, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {  
+    super.complete_MessagePropertyRef(model, ruleCall, context, acceptor);
   }
+  
+//  @Override public void completeCustomOption_PropertyField(EObject model, Assignment assignment,
+//      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+//    if (!(model instanceof CustomOption)) return;
+//    Property property = options.propertyFrom((CustomOption) model);
+//    proposeAndAcceptOptionFields(property, context, acceptor);
+//  }
+//  
+//  @Override public void completeCustomFieldOption_PropertyField(EObject model, Assignment assignment,
+//      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+//    if (!(model instanceof CustomFieldOption)) return;
+//    Property property = fieldOptions.propertyFrom((CustomFieldOption) model);
+//    proposeAndAcceptOptionFields(property, context, acceptor);
+//  }
   
   private void proposeAndAcceptOptionFields(Property property, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {

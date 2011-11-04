@@ -8,19 +8,21 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static java.util.Collections.emptySet;
+import static com.google.eclipse.protobuf.scoping.OptionType.typeOf;
+import static java.util.Collections.*;
+import static org.eclipse.xtext.resource.EObjectDescription.create;
 
-import java.util.*;
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.inject.*;
 
 import org.eclipse.emf.ecore.*;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.impl.*;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.inject.Inject;
+import java.util.*;
 
 /**
  * Custom scoping description.
@@ -33,21 +35,23 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
 
   private static final boolean DO_NOT_IGNORE_CASE = false;
 
-  @Inject private CustomOptionDescriptions customOptionDescriptions;
+  @Inject private CustomOptionSearchDelegate customOptionSearchDelegate;
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private FieldOptions fieldOptions;
-  @Inject private ModelFinder finder;
+  @Inject private ModelFinder modelFinder;
   @Inject private LiteralDescriptions literalDescriptions;
   @Inject private NativeOptionDescriptions nativeOptionDescriptions;
   @Inject private Options options;
-  @Inject private TypeDescriptions typeDescriptions;
+  @Inject private ScopeFinder scopeFinder;
+  @Inject private TypeSearchDelegate typeSearchDelegate;
+  @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
 
   @SuppressWarnings("unused")
   public IScope scope_TypeRef_type(TypeRef typeRef, EReference reference) {
     EObject c = typeRef.eContainer();
     if (c instanceof Property) {
       Property property = (Property) c;
-      return createScope(typeDescriptions.types(property));
+      return createScope(scopeFinder.findScope(property, typeSearchDelegate, Type.class));
     }
     Set<IEObjectDescription> descriptions = emptySet();
     return createScope(descriptions);
@@ -55,8 +59,8 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
 
   @SuppressWarnings("unused")
   public IScope scope_MessageRef_type(MessageRef messageRef, EReference reference) {
-    Protobuf root = finder.rootOf(messageRef);
-    return createScope(typeDescriptions.messages(root));
+    Protobuf root = modelFinder.rootOf(messageRef);
+    return createScope(scopeFinder.findScope(root, typeSearchDelegate, Message.class));
   }
 
   @SuppressWarnings("unused")
@@ -65,7 +69,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     Enum anEnum = null;
     if (c instanceof DefaultValueFieldOption) {
       EObject optionContainer = c.eContainer();
-      if (optionContainer instanceof Property) anEnum = finder.enumTypeOf((Property) optionContainer);
+      if (optionContainer instanceof Property) anEnum = modelFinder.enumTypeOf((Property) optionContainer);
     }
     if (c instanceof NativeOption) {
       ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
@@ -88,7 +92,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
       if (c == null) c = fieldOptions.propertyFrom(option);
     }
     if (c instanceof Property) {
-      anEnum = finder.enumTypeOf((Property) c);
+      anEnum = modelFinder.enumTypeOf((Property) c);
     }
     return createScope(literalDescriptions.literalsOf(anEnum));
   }
@@ -106,35 +110,132 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     }
     if (c instanceof CustomOption) {
       CustomOption option = (CustomOption) c;
-      return createScope(customOptionDescriptions.properties(option));
+      return createScope(scopeFinder.findScope(option, customOptionSearchDelegate, typeOf(option)));
     }
     if (c instanceof CustomFieldOption) {
       CustomFieldOption option = (CustomFieldOption) c;
-      return createScope(customOptionDescriptions.properties(option));
+      return createScope(scopeFinder.findScope(option, customOptionSearchDelegate, typeOf(option)));
     }
     Set<IEObjectDescription> descriptions = emptySet();
     return createScope(descriptions);
   }
   
   @SuppressWarnings("unused") 
-  public IScope scope_SimplePropertyRef_property(SimplePropertyRef propertyRef, EReference reference) {
+  public IScope scope_MessagePropertyRef_messageProperty(MessagePropertyRef propertyRef, EReference reference) {
     EObject c = propertyRef.eContainer();
     Property property = null;
     if (c instanceof CustomOption) {
-      CustomOption option = (CustomOption) c;
-      property = options.propertyFrom(option);
+      final CustomOption option = (CustomOption) c;
+      property = referencedProperty(propertyRef, option.getOptionFields(), new Provider<Property>() {
+        @Override public Property get() {
+          return options.propertyFrom(option);
+        }
+      });
     }
     if (c instanceof CustomFieldOption) {
-      CustomFieldOption option = (CustomFieldOption) c;
-      property = fieldOptions.propertyFrom(option);
+      final CustomFieldOption option = (CustomFieldOption) c;
+      property = referencedProperty(propertyRef, option.getOptionFields(), new Provider<Property>() {
+        @Override public Property get() {
+          return fieldOptions.propertyFrom(option);
+        }
+      });
     }
     if (property != null) {
-      return createScope(customOptionDescriptions.fields(property));
+      return createScope(fieldsInMessageContaining(property));
+    }
+    Set<IEObjectDescription> descriptions = emptySet();
+    return createScope(descriptions);
+  }
+  
+  private Property referencedProperty(MessagePropertyRef ref, List<OptionField> fields, Provider<Property> provider) {
+    OptionField previous = null;
+    boolean isFirstField = true;
+    for (OptionField field : fields) {
+      if (field == ref) return (isFirstField) ? provider.get() : propertyFrom(previous);
+      previous = field;
+      isFirstField = false;
+    }
+    return null;
+  }
+  
+  private Collection <IEObjectDescription> fieldsInMessageContaining(Property p) {
+    Message propertyType = modelFinder.messageTypeOf(p);
+    if (propertyType == null) return emptyList();
+    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
+    for (MessageElement e : propertyType.getElements()) {
+      if (!(e instanceof Property)) continue;
+      Property optionPropertyField = (Property) e;
+      descriptions.add(create(optionPropertyField.getName(), optionPropertyField));
+    }
+    return descriptions;
+  }
+
+  @SuppressWarnings("unused") 
+  public IScope scope_ExtendMessagePropertyRef_extendMessageProperty(ExtendMessagePropertyRef propertyRef, 
+      EReference reference) {
+    EObject c = propertyRef.eContainer();
+    Property property = null;
+    if (c instanceof CustomOption) {
+      final CustomOption option = (CustomOption) c;
+      property = referencedProperty(propertyRef, option.getOptionFields(), new Provider<Property>() {
+        @Override public Property get() {
+          return options.propertyFrom(option);
+        }
+      });
+    }
+    if (c instanceof CustomFieldOption) {
+      final CustomFieldOption option = (CustomFieldOption) c;
+      property = referencedProperty(propertyRef, option.getOptionFields(), new Provider<Property>() {
+        @Override public Property get() {
+          return fieldOptions.propertyFrom(option);
+        }
+      });
+    }
+    if (property != null) {
+      return createScope(fieldsInExtendedVersionOfMessageContaining(property));
     }
     Set<IEObjectDescription> descriptions = emptySet();
     return createScope(descriptions);
   }
 
+  private Property referencedProperty(ExtendMessagePropertyRef ref, List<OptionField> fields, Provider<Property> provider) {
+    OptionField previous = null;
+    boolean isFirstField = true;
+    for (OptionField field : fields) {
+      if (field == ref) return (isFirstField) ? provider.get() : propertyFrom(previous);
+      previous = field;
+      isFirstField = false;
+    }
+    return null;
+  }
+
+  private Collection <IEObjectDescription> fieldsInExtendedVersionOfMessageContaining(Property p) {
+    Message propertyType = modelFinder.messageTypeOf(p);
+    if (propertyType == null) return emptyList();
+    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
+    for (ExtendMessage extend : modelFinder.extensionsOf(propertyType)) {
+      for (MessageElement e : extend.getElements()) {
+        if (!(e instanceof Property)) continue;
+        Property optionPropertyField = (Property) e;
+        descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(optionPropertyField));
+        descriptions.add(create(optionPropertyField.getName(), optionPropertyField));
+      }
+    }
+    return descriptions;
+  }
+
+  private Property propertyFrom(OptionField field) {
+    if (field instanceof MessagePropertyRef) {
+      MessagePropertyRef ref = (MessagePropertyRef) field;
+      return ref.getMessageProperty();
+    }
+    if (field instanceof ExtendMessagePropertyRef) {
+      ExtendMessagePropertyRef ref = (ExtendMessagePropertyRef) field;
+      return ref.getExtendMessageProperty();
+    }
+    return null;
+  }
+  
   private static IScope createScope(Iterable<IEObjectDescription> descriptions) {
     return new SimpleScope(descriptions, DO_NOT_IGNORE_CASE);
   }

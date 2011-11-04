@@ -10,18 +10,19 @@ package com.google.eclipse.protobuf.model.util;
 
 import static java.util.Collections.unmodifiableList;
 import static org.eclipse.emf.ecore.util.EcoreUtil.getAllContents;
+import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
-import java.util.*;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.inject.Singleton;
 
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.resource.XtextResource;
 
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.inject.Singleton;
+import java.util.*;
 
 /**
  * Utility methods to find elements in a parser proto file.
@@ -30,6 +31,31 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class ModelFinder {
+
+  /**
+   * Returns all the <strong>local</strong> extensions of the given message.
+   * @param m the given message.
+   * @return all the <strong>local</strong> extensions of the given message, or an empty collection if none is found.
+   */
+  public Collection<ExtendMessage> extensionsOf(Message m) {
+    Set<ExtendMessage> extensions = new HashSet<ExtendMessage>();
+    Protobuf root = rootOf(m);
+    for (ExtendMessage extension : getAllContentsOfType(root, ExtendMessage.class)) {
+      Message referred = messageFrom(extension);
+      if (m.equals(referred)) extensions.add(extension);
+    }
+    return extensions;
+  }
+  
+  /**
+   * Returns the message from the given extension.
+   * @param e the given extension.
+   * @return the message from the given extension, or {@code null} if the extension is not referring to a message.
+   */
+  public Message messageFrom(ExtendMessage e) {
+    MessageRef ref = e.getMessage();
+    return ref == null ? null : ref.getType();
+  }
 
   /**
    * Returns the message type of the given property, only if the type of the given property is a message.

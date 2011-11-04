@@ -1,0 +1,83 @@
+/*
+ * Copyright (c) 2011 Google Inc.
+ *
+ * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License v1.0 which accompanies this distribution, and is available at
+ *
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
+package com.google.eclipse.protobuf.scoping;
+
+import static java.util.Collections.emptySet;
+import static org.eclipse.xtext.resource.EObjectDescription.create;
+
+import com.google.eclipse.protobuf.model.util.ModelFinder;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.inject.Inject;
+
+import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.resource.IEObjectDescription;
+
+import java.util.*;
+
+/**
+ * @author alruiz@google.com (Alex Ruiz)
+ */
+class ExtendMessageSearchDelegate implements SearchDelegate {
+
+  @Inject private LocalNamesProvider localNamesProvider;
+  @Inject private ModelFinder modelFinder;
+  @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
+
+  @Override public boolean continueSearchOneLevelHigher(Object target) {
+    return target instanceof Message;
+  }
+
+  @Override public Collection<IEObjectDescription> fromProtoDescriptor(Import anImport, Object criteria) {
+    return emptySet();
+  }
+
+  @Override public Collection<IEObjectDescription> descriptions(Object target, Object criteria) {
+    String messageName = messageNameFrom(criteria);
+    if (!isExtendingOptionMessage(target, messageName)) return emptySet();
+    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
+    ExtendMessage extend = (ExtendMessage) target;
+    for (MessageElement e : extend.getElements()) {
+      if (!(e instanceof Property)) continue;
+      Property p = (Property) e;
+      descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(p));
+    }
+    return descriptions;
+  }
+
+  @Override public Collection<IEObjectDescription> descriptions(Object target, Object criteria, int level) {
+    String messageName = messageNameFrom(criteria);
+    if (!isExtendingOptionMessage(target, messageName)) return emptySet();
+    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
+    ExtendMessage extend = (ExtendMessage) target;
+    for (MessageElement e : extend.getElements()) {
+      if (!(e instanceof Property)) continue;
+      Property p = (Property) e;
+      List<QualifiedName> names = localNamesProvider.namesOf(p);
+      int nameCount = names.size();
+      for (int i = level; i < nameCount; i++) {
+        descriptions.add(create(names.get(i), p));
+      }
+      descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(p));
+    }
+    return descriptions;
+  }
+
+  private String messageNameFrom(Object criteria) {
+    if (!(criteria instanceof String)) 
+      throw new IllegalArgumentException("Search criteria should be String");
+    return (String) criteria;
+  }
+
+  private boolean isExtendingOptionMessage(Object o, String messageName) {
+    if (!(o instanceof ExtendMessage)) return false;
+    Message message = modelFinder.messageFrom((ExtendMessage) o);
+    if (message == null) return false;
+    return messageName.equals(message.getName());
+  }
+}

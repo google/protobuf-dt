@@ -74,7 +74,8 @@ public class FieldOptions {
    * one cannot be found.
    */
   public Property fieldFrom(CustomFieldOption option) {
-    SimplePropertyRef ref = option.getPropertyField();
-    return (ref == null) ? null : ref.getProperty();
+    return null;
+    // SimplePropertyRef ref = option.getPropertyField();
+    // return (ref == null) ? null : ref.getProperty();
   }
 }
