@@ -73,22 +73,22 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     if (c instanceof NativeOption) {
       ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
       Field f = options.sourceOf((Option) c);
-      if (f instanceof Property) anEnum = descriptor.enumTypeOf((Property) f);
+      anEnum = descriptor.enumTypeOf((Property) f);
     }
     if (c instanceof CustomOption) {
       CustomOption option = (CustomOption) c;
-      c = options.fieldFrom(option);
+      c = options.lastFieldSourceFrom(option);
       if (c == null) c = options.sourceOf(option);
     }
     if (c instanceof NativeFieldOption) {
       ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
       Field f = fieldOptions.sourceOf((FieldOption) c);
-      if (f instanceof Property) anEnum = descriptor.enumTypeOf((Property) f);
+      anEnum = descriptor.enumTypeOf((Property) f);
     }
     if (c instanceof CustomFieldOption) {
       CustomFieldOption option = (CustomFieldOption) c;
-      c = fieldOptions.fieldFrom(option);
-      if (c == null) c = fieldOptions.fieldFrom(option);
+      c = fieldOptions.lastFieldSourceFrom(option);
+      if (c == null) c = fieldOptions.sourceOf(option);
     }
     if (c instanceof Property) {
       anEnum = modelFinder.enumTypeOf((Property) c);

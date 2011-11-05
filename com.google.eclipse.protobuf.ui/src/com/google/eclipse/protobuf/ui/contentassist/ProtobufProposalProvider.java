@@ -481,7 +481,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ICompletionProposalAcceptor acceptor) {
     if (!(model instanceof CustomOption)) return;
     CustomOption option = (CustomOption) model;
-    Field f = options.fieldFrom(option);
+    Field f = options.lastFieldSourceFrom(option);
     if (f == null) f = options.sourceOf(option);
     if (f instanceof Property) {
       proposeAndAcceptOptionFieldValue((Property) f, context, acceptor);
@@ -493,9 +493,11 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     // TODO content assist returns "{"
     if (!(model instanceof CustomFieldOption)) return;
     CustomFieldOption option = (CustomFieldOption) model;
-    Property property = fieldOptions.fieldFrom(option);
-    if (property == null) property = fieldOptions.fieldFrom(option);
-    proposeAndAcceptOptionFieldValue(property, context, acceptor);
+    Field field = fieldOptions.lastFieldSourceFrom(option);
+    if (field == null) field = fieldOptions.sourceOf(option);
+    if (field instanceof Property) {
+      proposeAndAcceptOptionFieldValue((Property) field, context, acceptor);
+    }
   }
 
   private void proposeAndAcceptOptionFieldValue(Property property, ContentAssistContext context,

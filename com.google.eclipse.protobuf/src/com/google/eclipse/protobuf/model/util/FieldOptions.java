@@ -9,7 +9,9 @@
 package com.google.eclipse.protobuf.model.util;
 
 import com.google.eclipse.protobuf.protobuf.*;
-import com.google.inject.Singleton;
+import com.google.inject.*;
+
+import java.util.List;
 
 /**
  * Utility methods related to field options.
@@ -18,6 +20,8 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class FieldOptions {
+
+  private @Inject OptionFields optionFields;
 
   /**
    * Indicates whether the given option is the "default value" one.
@@ -63,19 +67,20 @@ public class FieldOptions {
   }
 
   /**
-   * Returns the field of the <code>{@link Field}</code> the given <code>{@link CustomFieldOption}</code> is referring 
-   * to. In the following example
+   * Returns the last field of the given <code>{@link CustomFieldOption}</code>.
+   * In the following example
    * <pre>
-   * [(myFieldOption).field = true]
+   * [(myOption).foo = true];
    * </pre>
-   * this method will return the <code>{@link Field}</code> "field" is pointing to.
-   * @param option the given {@code FieldOption}.
-   * @return the field of the {@code Field} the given {@code CustomFieldOption} is referring to, or {@code null} if 
-   * one cannot be found.
+   * this method will return the field that "foo" is pointing to.
+   * @param option the given {@code CustomFieldOption}.
+   * @return the last field of the given {@code CustomFieldOption} is referring to, or {@code null} if one cannot be 
+   * found.
    */
-  public Property fieldFrom(CustomFieldOption option) {
-    return null;
-    // SimplePropertyRef ref = option.getPropertyField();
-    // return (ref == null) ? null : ref.getProperty();
+  public Field lastFieldSourceFrom(CustomFieldOption option) {
+    List<OptionFieldSource> fields = option.getOptionFields();
+    if (fields.isEmpty()) return null;
+    OptionFieldSource last = fields.get(fields.size() - 1);
+    return optionFields.sourceOf(last);
   }
 }

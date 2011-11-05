@@ -27,6 +27,7 @@ class CustomOptionFieldScopeFinder {
 
   @Inject private FieldOptions fieldOptions;
   @Inject private ModelFinder modelFinder;
+  @Inject private OptionFields optionFields;
   @Inject private Options options;
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
 
@@ -93,7 +94,7 @@ class CustomOptionFieldScopeFinder {
   private Field referredField(EObject fieldSource, final CustomFieldOption option) {
     return referredField(fieldSource, option.getOptionFields(), new Provider<Field>() {
       @Override public Field get() {
-        return fieldOptions.fieldFrom(option);
+        return fieldOptions.sourceOf(option);
       }
     });
   }
@@ -104,22 +105,10 @@ class CustomOptionFieldScopeFinder {
     boolean isFirstField = true;
     for (OptionFieldSource s : allFieldSources) {
       if (s == fieldSource) {
-        return (isFirstField) ? provider.get() : fieldFrom(previous);
+        return (isFirstField) ? provider.get() : optionFields.sourceOf(previous);
       }
       previous = s;
       isFirstField = false;
-    }
-    return null;
-  }
-
-  private Field fieldFrom(OptionFieldSource fieldSource) {
-    if (fieldSource instanceof OptionMessageFieldSource) {
-      OptionMessageFieldSource source = (OptionMessageFieldSource) fieldSource;
-      return source.getOptionMessageField();
-    }
-    if (fieldSource instanceof OptionExtendMessageFieldSource) {
-      OptionExtendMessageFieldSource source = (OptionExtendMessageFieldSource) fieldSource;
-      return source.getOptionExtendMessageField();
     }
     return null;
   }

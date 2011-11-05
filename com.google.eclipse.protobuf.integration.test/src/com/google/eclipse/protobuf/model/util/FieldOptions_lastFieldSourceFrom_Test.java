@@ -19,11 +19,11 @@ import com.google.eclipse.protobuf.protobuf.*;
 import org.junit.*;
 
 /**
- * Tests for <code>{@link FieldOptions#fieldFrom(CustomFieldOption)}</code>.
+ * Tests for <code>{@link FieldOptions#lastFieldSourceFrom(CustomFieldOption)}</code>.
  * 
  * alruiz@google.com (Alex Ruiz)
  */
-public class FieldOptions_fieldFrom_Test {
+public class FieldOptions_lastFieldSourceFrom_Test {
 
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
@@ -48,7 +48,7 @@ public class FieldOptions_fieldFrom_Test {
   //  }
   @Test public void should_return_property_field() {
     CustomFieldOption option = xtext.find("custom", ").", CustomFieldOption.class);
-    Property p = fieldOptions.fieldFrom(option);
+    Property p = (Property) fieldOptions.lastFieldSourceFrom(option);
     assertThat(p.getName(), equalTo("count"));
   }
 }
