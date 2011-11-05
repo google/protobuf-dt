@@ -34,20 +34,38 @@ class CustomOptionFieldScopeFinder {
   Collection<IEObjectDescription> findScope(OptionMessageFieldSource fieldSource) {
     return findScope(fieldSource, new IEObjectDescriptionsProvider() {
       @Override public Collection<IEObjectDescription> fieldsInType(Field f) {
-        if (!(f instanceof Property)) return emptyList();
-        Message propertyType = modelFinder.messageTypeOf((Property) f);
-        if (propertyType == null) return emptyList();
         Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
-        for (MessageElement e : propertyType.getElements()) {
-          if (!(e instanceof Property)) continue;
-          Property current = (Property) e;
-          descriptions.add(create(current.getName(), current));
+        if (f instanceof Property) {
+          Message propertyType = modelFinder.messageTypeOf((Property) f);
+          for (MessageElement e : propertyType.getElements()) {
+            IEObjectDescription d = describe(e);
+            if (d != null) descriptions.add(d);
+          }
+        }
+        if (f instanceof Group) {
+          Group group = (Group) f;
+          for (GroupElement e : group.getElements()) {
+            IEObjectDescription d = describe(e);
+            if (d != null) descriptions.add(d);
+          }
         }
         return descriptions;
       }
     });
   }
 
+  private IEObjectDescription describe(EObject e) {
+    if (e instanceof Property) {
+      Property p = (Property) e;
+      return create(p.getName(), p);
+    }
+    if (e instanceof Group) {
+      Group g = (Group) e;
+      return create(g.getName(), g);
+    }
+    return null;
+  }
+  
   Collection<IEObjectDescription> findScope(OptionExtendMessageFieldSource fieldSource) {
     return findScope(fieldSource, new IEObjectDescriptionsProvider() {
       @Override public Collection<IEObjectDescription> fieldsInType(Field f) {

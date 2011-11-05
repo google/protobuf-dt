@@ -39,9 +39,7 @@ class CustomOptionScopeFinder implements ScopeFinder {
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     ExtendMessage extend = (ExtendMessage) target;
     for (MessageElement e : extend.getElements()) {
-      if (!(e instanceof Property)) continue;
-      Property p = (Property) e;
-      descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(p));
+      descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(e));
     }
     return descriptions;
   }
@@ -52,14 +50,12 @@ class CustomOptionScopeFinder implements ScopeFinder {
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     ExtendMessage extend = (ExtendMessage) target;
     for (MessageElement e : extend.getElements()) {
-      if (!(e instanceof Property)) continue;
-      Property p = (Property) e;
-      List<QualifiedName> names = localNamesProvider.namesOf(p);
+      List<QualifiedName> names = localNamesProvider.namesOf(e);
       int nameCount = names.size();
       for (int i = level; i < nameCount; i++) {
-        descriptions.add(create(names.get(i), p));
+        descriptions.add(create(names.get(i), e));
       }
-      descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(p));
+      descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(e));
     }
     return descriptions;
   }
