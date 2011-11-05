@@ -23,15 +23,11 @@ import java.util.*;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class ExtendMessageSearchDelegate implements SearchDelegate {
+class ExtendMessageScopeFinder implements ScopeFinder {
 
   @Inject private LocalNamesProvider localNamesProvider;
   @Inject private ModelFinder modelFinder;
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
-
-  @Override public boolean continueSearchOneLevelHigher(Object target) {
-    return target instanceof Message;
-  }
 
   @Override public Collection<IEObjectDescription> fromProtoDescriptor(Import anImport, Object criteria) {
     return emptySet();

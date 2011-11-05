@@ -22,15 +22,11 @@ import java.util.*;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class TypeSearchDelegate implements SearchDelegate {
+class TypeScopeFinder implements ScopeFinder {
 
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private LocalNamesProvider localNamesProvider;
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
-
-  @Override public boolean continueSearchOneLevelHigher(Object target) {
-    return target instanceof Message;
-  }
 
   @Override public Collection<IEObjectDescription> fromProtoDescriptor(Import anImport, Object criteria) {
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();

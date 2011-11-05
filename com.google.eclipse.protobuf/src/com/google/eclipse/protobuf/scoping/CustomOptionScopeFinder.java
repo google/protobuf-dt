@@ -15,7 +15,7 @@ import java.util.Collection;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class CustomOptionSearchDelegate extends ExtendMessageSearchDelegate {
+class CustomOptionScopeFinder extends ExtendMessageScopeFinder {
 
   @Override public Collection<IEObjectDescription> descriptions(Object target, Object criteria) {
     OptionType optionType = optionTypeFrom(criteria);
