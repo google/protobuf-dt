@@ -20,40 +20,44 @@ import com.google.eclipse.protobuf.protobuf.*;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class ContainAllPropertiesInMessage extends BaseMatcher<IEObjectDescriptions> {
+class ContainAllFieldsInMessage extends BaseMatcher<IEObjectDescriptions> {
 
-  private final Message message;
+  private final EObject container;
 
-  static ContainAllPropertiesInMessage containAllPropertiesIn(Message message) {
-    return new ContainAllPropertiesInMessage(message);
+  static ContainAllFieldsInMessage containAllFieldsIn(Group group) {
+    return new ContainAllFieldsInMessage(group);
   }
-  
-  private ContainAllPropertiesInMessage(Message message) {
-    this.message = message;
+
+  static ContainAllFieldsInMessage containAllFieldsIn(Message message) {
+    return new ContainAllFieldsInMessage(message);
   }
-  
+
+  private ContainAllFieldsInMessage(EObject container) {
+    this.container = container;
+  }
+
   @Override public boolean matches(Object arg) {
     if (!(arg instanceof IEObjectDescriptions)) return false;
     IEObjectDescriptions descriptions = (IEObjectDescriptions) arg;
-    List<Property> properties = allProperties();
-    if (descriptions.size() != properties.size()) return false;
-    for (Property property : properties) {
-      String name = property.getName();
+    List<Field> fields = allFields();
+    if (descriptions.size() != fields.size()) return false;
+    for (Field field : fields) {
+      String name = field.getName();
       EObject described = descriptions.objectDescribedAs(name);
-      if (described != property) return false;
+      if (described != field) return false;
     }
     return true;
   }
 
   @Override public void describeTo(Description description) {
     List<String> names = new ArrayList<String>();
-    for (Property property : allProperties()) {
-      names.add(property.getName());
+    for (Field field : allFields()) {
+      names.add(field.getName());
     }
     description.appendValue(names);
   }
 
-  private List<Property> allProperties() {
-    return getAllContentsOfType(message, Property.class);
+  private List<Field> allFields() {
+    return getAllContentsOfType(container, Field.class);
   }
 }

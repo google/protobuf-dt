@@ -11,14 +11,14 @@ package com.google.eclipse.protobuf.scoping;
 import static java.util.Collections.*;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.inject.*;
+import java.util.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
-import java.util.*;
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.inject.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -43,8 +43,7 @@ class CustomOptionFieldScopeFinder {
           }
         }
         if (f instanceof Group) {
-          Group group = (Group) f;
-          for (GroupElement e : group.getElements()) {
+          for (GroupElement e : ((Group) f).getElements()) {
             IEObjectDescription d = describe(e);
             if (d != null) descriptions.add(d);
           }
@@ -55,17 +54,11 @@ class CustomOptionFieldScopeFinder {
   }
 
   private IEObjectDescription describe(EObject e) {
-    if (e instanceof Property) {
-      Property p = (Property) e;
-      return create(p.getName(), p);
-    }
-    if (e instanceof Group) {
-      Group g = (Group) e;
-      return create(g.getName(), g);
-    }
-    return null;
+    if (!(e instanceof Field)) return null;
+    Field f = (Field) e;
+    return create(f.getName(), f);
   }
-  
+
   Collection<IEObjectDescription> findScope(OptionExtendMessageFieldSource fieldSource) {
     return findScope(fieldSource, new IEObjectDescriptionsProvider() {
       @Override public Collection<IEObjectDescription> fieldsInType(Field f) {
@@ -116,8 +109,8 @@ class CustomOptionFieldScopeFinder {
       }
     });
   }
-  
-  private Field referredField(EObject fieldSource, List<OptionFieldSource> allFieldSources, 
+
+  private Field referredField(EObject fieldSource, List<OptionFieldSource> allFieldSources,
       Provider<Field> provider) {
     OptionFieldSource previous = null;
     boolean isFirstField = true;
@@ -130,7 +123,7 @@ class CustomOptionFieldScopeFinder {
     }
     return null;
   }
-  
+
   private static interface IEObjectDescriptionsProvider {
     Collection<IEObjectDescription> fieldsInType(Field f);
   }
