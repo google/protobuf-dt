@@ -64,8 +64,9 @@ import com.google.inject.*;
   }
 
   private Object labelFor(Option o) {
-    Property p = options.propertyFrom(o);
-    return p == null ? null : p.getName();
+    Field f = options.sourceOf(o);
+    if (f instanceof Property) return ((Property) f).getName();
+    return null;
   }
 
   private Object labelFor(ExtendMessage e) {

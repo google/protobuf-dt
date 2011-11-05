@@ -19,37 +19,41 @@ import com.google.eclipse.protobuf.protobuf.*;
 import org.junit.*;
 
 /**
- * Tests for <code>{@link Options#propertyFrom(Option)}</code>.
+ * Tests for <code>{@link FieldOptions#sourceOf(FieldOption)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Options_propertyFrom_Test {
+public class FieldOptions_sourceOf_Test {
 
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
-  private Options options;
+  private FieldOptions fieldOptions;
 
   @Before public void setUp() {
-    options = xtext.getInstanceOf(Options.class);
+    fieldOptions = xtext.getInstanceOf(FieldOptions.class);
   }
 
-  // option java_package = 'com.google.eclipse.protobuf.tests';
-  @Test public void should_return_property_of_native_option() {
-    Option option = xtext.find("java_package", Option.class);
-    Property p = options.propertyFrom(option);
-    assertThat(p.getName(), equalTo("java_package"));
+  // message Person {
+  //   optional boolean active = 1 [deprecated = false];
+  // }
+  @Test public void should_return_property_of_native_field_option() {
+    FieldOption option = xtext.find("deprecated", FieldOption.class);
+    Property p = (Property) fieldOptions.sourceOf(option);
+    assertThat(p.getName(), equalTo("deprecated"));
   }
 
   // import 'google/protobuf/descriptor.proto';
-  //  
-  // extend google.protobuf.FileOptions {
+  //
+  // extend google.protobuf.FieldOptions {
   //   optional string encoding = 1000;
   // }
-  //  
-  // option (encoding) = 'UTF-8';
-  @Test public void should_return_property_of_custom_option() {
-    Option option = xtext.find("encoding", ")", Option.class);
-    Property p = options.propertyFrom(option);
+  //
+  // message Person {
+  //   optional boolean active = 1 [(encoding) = 'UTF-8'];
+  // }
+  @Test public void should_return_property_of_custom_field_option() {
+    FieldOption option = xtext.find("encoding", ")", FieldOption.class);
+    Property p = (Property) fieldOptions.sourceOf(option);
     assertThat(p.getName(), equalTo("encoding"));
   }
 }

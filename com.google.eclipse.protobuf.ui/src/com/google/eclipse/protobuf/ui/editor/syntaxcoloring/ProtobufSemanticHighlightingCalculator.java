@@ -203,9 +203,9 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
   }
 
   private void highlight(Option option, IHighlightedPositionAcceptor acceptor) {
-    Property property = options.propertyFrom(option);
-    if (property != null) {
-      highlightFirstFeature(option, OPTION__PROPERTY, acceptor, DEFAULT_ID);
+    Field field = options.sourceOf(option);
+    if (field != null) {
+      highlightFirstFeature(option, OPTION__SOURCE, acceptor, DEFAULT_ID);
     }
     ValueRef ref = option.getValue();
     if (ref instanceof LiteralRef) {

@@ -197,11 +197,11 @@ Option:
   NativeOption | CustomOption;
 
 NativeOption:
-  'option' property=PropertyRef '=' value=ValueRef ';';
+  'option' source=OptionSource '=' value=ValueRef ';';
 
 CustomOption:
-  'option' '(' property=PropertyRef ')'
-  ('.' optionFields+=OptionField ('.' optionFields+=OptionField)*)? '=' value=ValueRef ';';
+  'option' '(' source=OptionSource ')'
+  ('.' optionFields+=OptionFieldSource ('.' optionFields+=OptionFieldSource)*)? '=' value=ValueRef ';';
  
 FieldOption:
   DefaultValueFieldOption | NativeFieldOption | CustomFieldOption;
@@ -210,21 +210,21 @@ DefaultValueFieldOption:
   'default' '=' value=ValueRef;
 
 NativeFieldOption:
-  property=PropertyRef '=' value=ValueRef;
+  source=OptionSource '=' value=ValueRef;
 
 CustomFieldOption:
-  '(' property=PropertyRef ')'
-  ('.' optionFields+=OptionField ('.' optionFields+=OptionField)*)? '=' value=ValueRef;
+  '(' source=OptionSource ')'
+  ('.' optionFields+=OptionFieldSource ('.' optionFields+=OptionFieldSource)*)? '=' value=ValueRef;
 
-PropertyRef:
-  property=[Property|QualifiedName];
+OptionSource:
+  optionField=[Field|QualifiedName];
 
-OptionField:
-  MessagePropertyRef | ExtendMessagePropertyRef;
+OptionFieldSource:
+  OptionMessageFieldSource | OptionExtendMessageFieldSource;
 
-MessagePropertyRef:
-  messageProperty=[Property];  
+OptionMessageFieldSource:
+  optionMessageField=[Field];  
 
-ExtendMessagePropertyRef:
-  '(' extendMessageProperty=[Property|QualifiedName] ')';  
+OptionExtendMessageFieldSource:
+  '(' optionExtendMessageField=[Field|QualifiedName] ')';  
   

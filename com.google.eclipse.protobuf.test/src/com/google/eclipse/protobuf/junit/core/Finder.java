@@ -22,7 +22,7 @@ import com.google.eclipse.protobuf.protobuf.DefaultValueFieldOption;
  */
 class Finder {
 
-  private static final String[] FEATURE_NAMES = { "name", "property", "message", "type" };
+  private static final String[] FEATURE_NAMES = { "name", "message", "type", "source", "optionField" };
   
   private final String protoAsText;
   private final AbstractNode root;

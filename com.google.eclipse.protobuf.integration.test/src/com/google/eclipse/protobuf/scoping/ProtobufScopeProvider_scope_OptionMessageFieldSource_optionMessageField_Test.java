@@ -23,11 +23,11 @@ import org.eclipse.xtext.scoping.IScope;
 import org.junit.*;
 
 /**
- * Tests for <code>{@link ProtobufScopeProvider#scope_MessagePropertyRef_messageProperty(MessagePropertyRef, EReference)}</code>.
+ * Tests for <code>{@link ProtobufScopeProvider#scope_OptionMessageFieldSource_optionMessageField(OptionMessageFieldSource, EReference)}</code>.
  * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ProtobufScopeProvider_scope_MessagePropertyRef_messageProperty_Test {
+public class ProtobufScopeProvider_scope_OptionMessageFieldSource_optionMessageField_Test {
 
   private static EReference reference;
   
@@ -57,8 +57,8 @@ public class ProtobufScopeProvider_scope_MessagePropertyRef_messageProperty_Test
   // option (type).code = 68;
   @Test public void should_provide_Property_fields_for_custom_option_field() {
     CustomOption option = xtext.find("type", ")", CustomOption.class);
-    MessagePropertyRef optionField = (MessagePropertyRef) option.getOptionFields().get(0);
-    IScope scope = provider.scope_MessagePropertyRef_messageProperty(optionField, reference);
+    OptionMessageFieldSource optionField = (OptionMessageFieldSource) option.getOptionFields().get(0);
+    IScope scope = provider.scope_OptionMessageFieldSource_optionMessageField(optionField, reference);
     Message typeMessage = xtext.find("Type", " {", Message.class);
     assertThat(descriptionsIn(scope), containAllPropertiesIn(typeMessage));
   }
@@ -79,8 +79,8 @@ public class ProtobufScopeProvider_scope_MessagePropertyRef_messageProperty_Test
   // }
   @Test public void should_provide_Property_fields_for_custom_field_option_field() {
     CustomFieldOption option = xtext.find("type", ")", CustomFieldOption.class);
-    MessagePropertyRef optionField = (MessagePropertyRef) option.getOptionFields().get(0);
-    IScope scope = provider.scope_MessagePropertyRef_messageProperty(optionField, reference);
+    OptionMessageFieldSource optionField = (OptionMessageFieldSource) option.getOptionFields().get(0);
+    IScope scope = provider.scope_OptionMessageFieldSource_optionMessageField(optionField, reference);
     Message typeMessage = xtext.find("Type", " {", Message.class);
     assertThat(descriptionsIn(scope), containAllPropertiesIn(typeMessage));
   }

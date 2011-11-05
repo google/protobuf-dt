@@ -20,19 +20,19 @@ import com.google.inject.Singleton;
 public class Options {
 
   /**
-   * Returns the <code>{@link Property}</code> the given <code>{@link Option}</code> is referring to. In the
+   * Returns the <code>{@link Field}</code> the given <code>{@link Option}</code> is referring to. In the
    * following example
    * <pre>
    * option (myOption) = true;
    * </pre>
-   * this method will return the <code>{@link Property}</code> "myOption" is pointing to.
+   * this method will return the <code>{@link Field}</code> "myOption" is pointing to.
    * @param option the given {@code Option}.
-   * @return the {@code Property} the given {@code Option} is referring to, or {@code null} if it cannot be
+   * @return the {@code Field} the given {@code Option} is referring to, or {@code null} if it cannot be
    * found.
    */
-  public Property propertyFrom(Option option) {
-    PropertyRef ref = option.getProperty();
-    return (ref == null) ? null : ref.getProperty();
+  public Field sourceOf(Option option) {
+    OptionSource source = option.getSource();
+    return (source == null) ? null : source.getOptionField();
   }
 
   /**

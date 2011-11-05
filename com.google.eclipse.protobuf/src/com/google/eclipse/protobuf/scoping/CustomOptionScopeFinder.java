@@ -8,28 +8,72 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static java.util.Collections.emptySet;
+import static org.eclipse.xtext.resource.EObjectDescription.create;
+
+import com.google.eclipse.protobuf.model.util.ModelFinder;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.inject.Inject;
+
+import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
-import java.util.Collection;
+import java.util.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class CustomOptionScopeFinder extends ExtendMessageScopeFinder {
+class CustomOptionScopeFinder implements ScopeFinder {
+
+  @Inject private LocalNamesProvider localNamesProvider;
+  @Inject private ModelFinder modelFinder;
+  @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
+
+  @Override public Collection<IEObjectDescription> fromProtoDescriptor(Import anImport, Object criteria) {
+    return emptySet();
+  }
 
   @Override public Collection<IEObjectDescription> descriptions(Object target, Object criteria) {
     OptionType optionType = optionTypeFrom(criteria);
-    return super.descriptions(target, optionType.messageName());
+    if (!isExtendingOptionMessage(target, optionType)) return emptySet();
+    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
+    ExtendMessage extend = (ExtendMessage) target;
+    for (MessageElement e : extend.getElements()) {
+      if (!(e instanceof Property)) continue;
+      Property p = (Property) e;
+      descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(p));
+    }
+    return descriptions;
   }
 
   @Override public Collection<IEObjectDescription> descriptions(Object target, Object criteria, int level) {
     OptionType optionType = optionTypeFrom(criteria);
-    return super.descriptions(target, optionType.messageName(), level);
+    if (!isExtendingOptionMessage(target, optionType)) return emptySet();
+    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
+    ExtendMessage extend = (ExtendMessage) target;
+    for (MessageElement e : extend.getElements()) {
+      if (!(e instanceof Property)) continue;
+      Property p = (Property) e;
+      List<QualifiedName> names = localNamesProvider.namesOf(p);
+      int nameCount = names.size();
+      for (int i = level; i < nameCount; i++) {
+        descriptions.add(create(names.get(i), p));
+      }
+      descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(p));
+    }
+    return descriptions;
   }
 
   private OptionType optionTypeFrom(Object criteria) {
     if (!(criteria instanceof OptionType)) 
       throw new IllegalArgumentException("Search criteria should be OptionType");
     return (OptionType) criteria;
+  }
+
+  private boolean isExtendingOptionMessage(Object o, OptionType optionType) {
+    if (!(o instanceof ExtendMessage)) return false;
+    Message message = modelFinder.messageFrom((ExtendMessage) o);
+    if (message == null) return false;
+    return optionType.messageName().equals(message.getName());
   }
 }

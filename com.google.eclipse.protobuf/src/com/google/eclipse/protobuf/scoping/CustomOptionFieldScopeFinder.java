@@ -30,34 +30,36 @@ class CustomOptionFieldScopeFinder {
   @Inject private Options options;
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
 
-  Collection<IEObjectDescription> findScope(MessagePropertyRef ref) {
-    return findScope(ref, new IEObjectDescriptionsProvider() {
-      @Override public Collection<IEObjectDescription> fieldsInType(Property p) {
-        Message propertyType = modelFinder.messageTypeOf(p);
+  Collection<IEObjectDescription> findScope(OptionMessageFieldSource fieldSource) {
+    return findScope(fieldSource, new IEObjectDescriptionsProvider() {
+      @Override public Collection<IEObjectDescription> fieldsInType(Field f) {
+        if (!(f instanceof Property)) return emptyList();
+        Message propertyType = modelFinder.messageTypeOf((Property) f);
         if (propertyType == null) return emptyList();
         Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
         for (MessageElement e : propertyType.getElements()) {
           if (!(e instanceof Property)) continue;
-          Property f = (Property) e;
-          descriptions.add(create(f.getName(), f));
+          Property current = (Property) e;
+          descriptions.add(create(current.getName(), current));
         }
         return descriptions;
       }
     });
   }
 
-  Collection<IEObjectDescription> findScope(ExtendMessagePropertyRef ref) {
-    return findScope(ref, new IEObjectDescriptionsProvider() {
-      @Override public Collection<IEObjectDescription> fieldsInType(Property p) {
-        Message propertyType = modelFinder.messageTypeOf(p);
+  Collection<IEObjectDescription> findScope(OptionExtendMessageFieldSource fieldSource) {
+    return findScope(fieldSource, new IEObjectDescriptionsProvider() {
+      @Override public Collection<IEObjectDescription> fieldsInType(Field f) {
+        if (!(f instanceof Property)) return emptyList();
+        Message propertyType = modelFinder.messageTypeOf((Property) f);
         if (propertyType == null) return emptyList();
         Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
         for (ExtendMessage extend : modelFinder.extensionsOf(propertyType)) {
           for (MessageElement e : extend.getElements()) {
             if (!(e instanceof Property)) continue;
-            Property f = (Property) e;
-            descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(f));
-            descriptions.add(create(f.getName(), f));
+            Property current = (Property) e;
+            descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(current));
+            descriptions.add(create(current.getName(), current));
           }
         }
         return descriptions;
@@ -65,63 +67,64 @@ class CustomOptionFieldScopeFinder {
     });
   }
 
-  private Collection<IEObjectDescription> findScope(EObject ref, IEObjectDescriptionsProvider provider) {
-    EObject container = ref.eContainer();
-    Property p = null;
+  private Collection<IEObjectDescription> findScope(EObject fieldSource, IEObjectDescriptionsProvider provider) {
+    EObject container = fieldSource.eContainer();
+    Field f = null;
     if (container instanceof CustomOption) {
       CustomOption option = (CustomOption) container;
-      p = referredProperty(ref, option);
+      f = referredField(fieldSource, option);
     }
     if (container instanceof CustomFieldOption) {
       CustomFieldOption option = (CustomFieldOption) container;
-      p = referredProperty(ref, option);
+      f = referredField(fieldSource, option);
     }
-    if (p != null) return provider.fieldsInType(p);
+    if (f != null) return provider.fieldsInType(f);
     return emptySet();
   }
 
-  private Property referredProperty(EObject ref, final CustomOption option) {
-    return referredProperty(ref, option.getOptionFields(), new Provider<Property>() {
-      @Override public Property get() {
-        return options.propertyFrom(option);
+  private Field referredField(EObject fieldSource, final CustomOption option) {
+    return referredField(fieldSource, option.getOptionFields(), new Provider<Field>() {
+      @Override public Field get() {
+        return options.sourceOf(option);
       }
     });
   }
 
-  private Property referredProperty(EObject ref, final CustomFieldOption option) {
-    return referredProperty(ref, option.getOptionFields(), new Provider<Property>() {
-      @Override public Property get() {
-        return fieldOptions.propertyFrom(option);
+  private Field referredField(EObject fieldSource, final CustomFieldOption option) {
+    return referredField(fieldSource, option.getOptionFields(), new Provider<Field>() {
+      @Override public Field get() {
+        return fieldOptions.fieldFrom(option);
       }
     });
   }
   
-  private Property referredProperty(EObject ref, List<OptionField> fields, Provider<Property> provider) {
-    OptionField previous = null;
+  private Field referredField(EObject fieldSource, List<OptionFieldSource> allFieldSources, 
+      Provider<Field> provider) {
+    OptionFieldSource previous = null;
     boolean isFirstField = true;
-    for (OptionField field : fields) {
-      if (field == ref) {
-        return (isFirstField) ? provider.get() : propertyFrom(previous);
+    for (OptionFieldSource s : allFieldSources) {
+      if (s == fieldSource) {
+        return (isFirstField) ? provider.get() : fieldFrom(previous);
       }
-      previous = field;
+      previous = s;
       isFirstField = false;
     }
     return null;
   }
 
-  private Property propertyFrom(OptionField field) {
-    if (field instanceof MessagePropertyRef) {
-      MessagePropertyRef ref = (MessagePropertyRef) field;
-      return ref.getMessageProperty();
+  private Field fieldFrom(OptionFieldSource fieldSource) {
+    if (fieldSource instanceof OptionMessageFieldSource) {
+      OptionMessageFieldSource source = (OptionMessageFieldSource) fieldSource;
+      return source.getOptionMessageField();
     }
-    if (field instanceof ExtendMessagePropertyRef) {
-      ExtendMessagePropertyRef ref = (ExtendMessagePropertyRef) field;
-      return ref.getExtendMessageProperty();
+    if (fieldSource instanceof OptionExtendMessageFieldSource) {
+      OptionExtendMessageFieldSource source = (OptionExtendMessageFieldSource) fieldSource;
+      return source.getOptionExtendMessageField();
     }
     return null;
   }
   
   private static interface IEObjectDescriptionsProvider {
-    Collection<IEObjectDescription> fieldsInType(Property p);
+    Collection<IEObjectDescription> fieldsInType(Field f);
   }
 }

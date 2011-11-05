@@ -72,23 +72,23 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     }
     if (c instanceof NativeOption) {
       ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
-      Property p = options.propertyFrom((Option) c);
-      anEnum = descriptor.enumTypeOf(p);
+      Field f = options.sourceOf((Option) c);
+      if (f instanceof Property) anEnum = descriptor.enumTypeOf((Property) f);
     }
     if (c instanceof CustomOption) {
       CustomOption option = (CustomOption) c;
       c = options.fieldFrom(option);
-      if (c == null) c = options.propertyFrom(option);
+      if (c == null) c = options.sourceOf(option);
     }
     if (c instanceof NativeFieldOption) {
       ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
-      Property p = fieldOptions.propertyFrom((FieldOption) c);
-      anEnum = descriptor.enumTypeOf(p);
+      Field f = fieldOptions.sourceOf((FieldOption) c);
+      if (f instanceof Property) anEnum = descriptor.enumTypeOf((Property) f);
     }
     if (c instanceof CustomFieldOption) {
       CustomFieldOption option = (CustomFieldOption) c;
       c = fieldOptions.fieldFrom(option);
-      if (c == null) c = fieldOptions.propertyFrom(option);
+      if (c == null) c = fieldOptions.fieldFrom(option);
     }
     if (c instanceof Property) {
       anEnum = modelFinder.enumTypeOf((Property) c);
@@ -97,8 +97,8 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   }
 
   @SuppressWarnings("unused")
-  public IScope scope_PropertyRef_property(PropertyRef propertyRef, EReference reference) {
-    EObject c = propertyRef.eContainer();
+  public IScope scope_OptionSource_optionField(OptionSource optionSource, EReference reference) {
+    EObject c = optionSource.eContainer();
     if (c instanceof NativeOption) {
       NativeOption option = (NativeOption) c;
       return createScope(nativeOptionDescriptions.properties(option));
@@ -120,14 +120,15 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   }
   
   @SuppressWarnings("unused") 
-  public IScope scope_MessagePropertyRef_messageProperty(MessagePropertyRef propertyRef, EReference reference) {
-    return createScope(customOptionFieldScopeFinder.findScope(propertyRef));
+  public IScope scope_OptionMessageFieldSource_optionMessageField(OptionMessageFieldSource source, 
+      EReference reference) {
+    return createScope(customOptionFieldScopeFinder.findScope(source));
   }
   
   @SuppressWarnings("unused") 
-  public IScope scope_ExtendMessagePropertyRef_extendMessageProperty(ExtendMessagePropertyRef propertyRef, 
+  public IScope scope_OptionExtendMessageFieldSource_optionExtendMessageField(OptionExtendMessageFieldSource source, 
       EReference reference) {
-    return createScope(customOptionFieldScopeFinder.findScope(propertyRef));
+    return createScope(customOptionFieldScopeFinder.findScope(source));
   }
   
   private static IScope createScope(Iterable<IEObjectDescription> descriptions) {

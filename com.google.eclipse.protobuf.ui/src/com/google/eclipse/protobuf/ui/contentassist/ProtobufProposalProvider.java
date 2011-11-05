@@ -73,8 +73,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     String proposal = SYNTAX + space() + EQUAL_PROTO2_IN_QUOTES;
     proposeAndAccept(proposal, imageHelper.getImage(images.imageFor(Syntax.class)), context, acceptor);
   }
-
-  @Override public void completeNativeOption_Property(EObject model, Assignment assignment,
+  
+  @Override public void completeNativeOption_Source(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
     Collection<Property> optionProperties = descriptor.availableOptionsFor(model);
@@ -89,7 +89,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Override public void completeNativeOption_Value(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     NativeOption option = (NativeOption) model;
-    Property property = options.propertyFrom(option);
+    Property property = (Property) options.sourceOf(option);
     if (property == null) return;
     ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
     Enum enumType = descriptor.enumTypeOf(property);
@@ -167,11 +167,13 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (model instanceof Property) return (Property) model;
     if (model instanceof Option) {
       Option option = (Option) model;
-      return options.propertyFrom(option);
+      Field source = options.sourceOf(option);
+      if (source instanceof Property) return (Property) source;
     }
     if (model instanceof FieldOption) {
       FieldOption option = (FieldOption) model;
-      return fieldOptions.propertyFrom(option);
+      Field source = fieldOptions.sourceOf(option);
+      if (source instanceof Property) return (Property) source;
     }
     return null;
   }
@@ -263,7 +265,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     return imageHelper.getImage(images.defaultImage());
   }
 
-  @Override public void completeNativeFieldOption_Property(EObject model, Assignment assignment,
+  @Override public void completeNativeFieldOption_Source(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     Property p = extractElementFromContext(context, Property.class);
     if (p != null) {
@@ -338,7 +340,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       return;
     }
     ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
-    Property property = fieldOptions.propertyFrom(option);
+    Property property = (Property) fieldOptions.sourceOf(option);
     Enum enumType = descriptor.enumTypeOf(property);
     if (enumType != null) {
       proposeAndAccept(enumType, context, acceptor);
@@ -401,27 +403,23 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     return word.equals(previousWord);
   }
 
-  @Override public void completePropertyRef_Property(EObject model, Assignment assignment,
+  @Override public void completeOptionSource_OptionField(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
   }
   
-  @Override public void completeMessagePropertyRef_MessageProperty(EObject model, Assignment assignment,
-      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-  }
-  
-  @Override public void completeCustomOption_Property(EObject model, Assignment assignment,
+  @Override public void completeCustomOption_Source(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     if (!(model instanceof CustomOption)) return;
     CustomOption option = (CustomOption) model;
-    IScope scope = scopes.scope_PropertyRef_property(option.getProperty(), null);
+    IScope scope = scopes.scope_OptionSource_optionField(option.getSource(), null);
     proposeAndAcceptOptions(scope, context, acceptor);
   }
 
-  @Override public void completeCustomFieldOption_Property(EObject model, Assignment assignment,
+  @Override public void completeCustomFieldOption_Source(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     if (!(model instanceof CustomFieldOption)) return;
     CustomFieldOption option = (CustomFieldOption) model;
-    IScope scope = scopes.scope_PropertyRef_property(option.getProperty(), null);
+    IScope scope = scopes.scope_OptionSource_optionField(option.getSource(), null);
     proposeAndAcceptOptions(scope, context, acceptor);
   }
   
@@ -453,11 +451,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     super.completeCustomFieldOption_OptionFields(model, assignment, context, acceptor);
   }
-  
-  @Override public void complete_MessagePropertyRef(EObject model, RuleCall ruleCall, ContentAssistContext context,
-      ICompletionProposalAcceptor acceptor) {  
-    super.complete_MessagePropertyRef(model, ruleCall, context, acceptor);
-  }
+
   
 //  @Override public void completeCustomOption_PropertyField(EObject model, Assignment assignment,
 //      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
@@ -487,9 +481,11 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ICompletionProposalAcceptor acceptor) {
     if (!(model instanceof CustomOption)) return;
     CustomOption option = (CustomOption) model;
-    Property property = options.fieldFrom(option);
-    if (property == null) property = options.propertyFrom(option);
-    proposeAndAcceptOptionFieldValue(property, context, acceptor);
+    Field f = options.fieldFrom(option);
+    if (f == null) f = options.sourceOf(option);
+    if (f instanceof Property) {
+      proposeAndAcceptOptionFieldValue((Property) f, context, acceptor);
+    }
   }
   
   @Override public void completeCustomFieldOption_Value(EObject model, Assignment assignment,
@@ -498,7 +494,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (!(model instanceof CustomFieldOption)) return;
     CustomFieldOption option = (CustomFieldOption) model;
     Property property = fieldOptions.fieldFrom(option);
-    if (property == null) property = fieldOptions.propertyFrom(option);
+    if (property == null) property = fieldOptions.fieldFrom(option);
     proposeAndAcceptOptionFieldValue(property, context, acceptor);
   }
 

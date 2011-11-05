@@ -34,8 +34,9 @@ public class FieldOptions {
    * @return the name of the given option.
    */
   public String nameOf(FieldOption option) {
-    Property p = propertyFrom(option);
-    return (p == null) ? null : p.getName();
+    Field f = sourceOf(option);
+    if (f instanceof Property) return ((Property) f).getName();
+    return null;
   }
   
   /**
@@ -44,33 +45,32 @@ public class FieldOptions {
    * <pre>
    * [(myFieldOption) = true]
    * </pre>
-   * this method will return the <code>{@link Property}</code> "myFieldOption" is pointing to.
+   * this method will return the <code>{@link Field}</code> "myFieldOption" is pointing to.
    * @param option the given {@code FieldOption}.
-   * @return the {@code Property} the given {@code FieldOption} is referring to, or {@code null} if it cannot be
-   * found.
+   * @return the {@code Property} the given {@code FieldOption} is referring to, or {@code null} if it cannot be found.
    */
-  public Property propertyFrom(FieldOption option) {
-    PropertyRef ref = null;
+  public Field sourceOf(FieldOption option) {
+    OptionSource source = null;
     if (option instanceof NativeFieldOption) {
       NativeFieldOption nativeOption = (NativeFieldOption) option;
-      ref = nativeOption.getProperty();
+      source = nativeOption.getSource();
     }
     if (option instanceof CustomFieldOption) {
       CustomFieldOption customOption = (CustomFieldOption) option;
-      ref = customOption.getProperty();
+      source = customOption.getSource();
     }
-    return (ref == null) ? null : ref.getProperty();
+    return (source == null) ? null : source.getOptionField();
   }
 
   /**
-   * Returns the field of the <code>{@link Property}</code> the given <code>{@link CustomFieldOption}</code> is 
-   * referring to. In the following example
+   * Returns the field of the <code>{@link Field}</code> the given <code>{@link CustomFieldOption}</code> is referring 
+   * to. In the following example
    * <pre>
    * [(myFieldOption).field = true]
    * </pre>
-   * this method will return the <code>{@link Property}</code> "field" is pointing to.
+   * this method will return the <code>{@link Field}</code> "field" is pointing to.
    * @param option the given {@code FieldOption}.
-   * @return the field of the {@code Property} the given {@code CustomFieldOption} is referring to, or {@code null} if 
+   * @return the field of the {@code Field} the given {@code CustomFieldOption} is referring to, or {@code null} if 
    * one cannot be found.
    */
   public Property fieldFrom(CustomFieldOption option) {

@@ -27,11 +27,11 @@ import org.junit.*;
 import java.util.Collection;
 
 /**
- * Tests for <code>{@link ProtobufScopeProvider#scope_PropertyRef_property(PropertyRef, EReference)}</code>
+ * Tests for <code>{@link ProtobufScopeProvider#scope_OptionSource_optionField(OptionSource, EReference)}</code>
  * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ProtobufScopeProvider_scope_PropertyRef_property_Test {
+public class ProtobufScopeProvider_scope_OptionSource_optionField_Test {
 
   private static EReference reference;
   
@@ -50,7 +50,7 @@ public class ProtobufScopeProvider_scope_PropertyRef_property_Test {
   // option optimize_for = SPEED;
   @Test public void should_provide_Property_fields_for_native_option() {
     Option option = xtext.find("optimize_for", Option.class);
-    IScope scope = provider.scope_PropertyRef_property(option.getProperty(), reference);
+    IScope scope = provider.scope_OptionSource_optionField(option.getSource(), reference);
     Collection<Property> fileOptions = descriptor().optionsOfType(FILE);
     assertThat(descriptionsIn(scope), containAll(fileOptions));
   }
@@ -60,7 +60,7 @@ public class ProtobufScopeProvider_scope_PropertyRef_property_Test {
   // }
   @Test public void should_provide_Property_fields_for_native_field_option() {
     NativeFieldOption option = xtext.find("ctype", NativeFieldOption.class);
-    IScope scope = provider.scope_PropertyRef_property(option.getProperty(), reference);
+    IScope scope = provider.scope_OptionSource_optionField(option.getSource(), reference);
     Collection<Property> fieldOptions = descriptor().optionsOfType(FIELD);
     assertThat(descriptionsIn(scope), containAll(fieldOptions));
   }
@@ -81,7 +81,7 @@ public class ProtobufScopeProvider_scope_PropertyRef_property_Test {
   // option (code) = 68;
   @Test public void should_provide_Property_fields_for_custom_option() {
     Option option = xtext.find("code", ")", Option.class);
-    IScope scope = provider.scope_PropertyRef_property(option.getProperty(), reference);
+    IScope scope = provider.scope_OptionSource_optionField(option.getSource(), reference);
     assertThat(descriptionsIn(scope), containAll("code", "proto.code", "google.proto.code", "com.google.proto.code", 
                                                  ".com.google.proto.code",
                                                  "info", "proto.info", "google.proto.info", "com.google.proto.info", 
@@ -106,7 +106,7 @@ public class ProtobufScopeProvider_scope_PropertyRef_property_Test {
   // option (test.proto.code) = 68;
   @Test public void should_provide_imported_Property_fields_for_custom_option() {
     Option option = xtext.find("code", ")", Option.class);
-    IScope scope = provider.scope_PropertyRef_property(option.getProperty(), reference);
+    IScope scope = provider.scope_OptionSource_optionField(option.getSource(), reference);
     assertThat(descriptionsIn(scope), containAll("test.proto.code", ".test.proto.code",
                                                  "test.proto.info", ".test.proto.info"));
   }
@@ -129,7 +129,7 @@ public class ProtobufScopeProvider_scope_PropertyRef_property_Test {
   // option (code) = 68;
   @Test public void should_provide_imported_Property_fields_for_custom_option_with_equal_package() {
     Option option = xtext.find("code", ")", Option.class);
-    IScope scope = provider.scope_PropertyRef_property(option.getProperty(), reference);
+    IScope scope = provider.scope_OptionSource_optionField(option.getSource(), reference);
     assertThat(descriptionsIn(scope), containAll("code", "proto.code", "google.proto.code", "com.google.proto.code", 
                                                  ".com.google.proto.code",
                                                  "info", "proto.info", "google.proto.info", "com.google.proto.info",
@@ -149,7 +149,7 @@ public class ProtobufScopeProvider_scope_PropertyRef_property_Test {
   // }
   @Test public void should_provide_Property_fields_for_custom_field_option() {
     CustomFieldOption option = xtext.find("code", ")", CustomFieldOption.class);
-    IScope scope = provider.scope_PropertyRef_property(option.getProperty(), reference);
+    IScope scope = provider.scope_OptionSource_optionField(option.getSource(), reference);
     assertThat(descriptionsIn(scope), containAll("code", "proto.code", "google.proto.code", "com.google.proto.code", 
                                                  ".com.google.proto.code",
                                                  "info", "proto.info", "google.proto.info", "com.google.proto.info", 
