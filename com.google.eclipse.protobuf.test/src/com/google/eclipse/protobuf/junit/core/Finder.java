@@ -15,6 +15,7 @@ import static com.google.eclipse.protobuf.util.SystemProperties.lineSeparator;
 import java.util.List;
 
 import org.eclipse.emf.ecore.*;
+import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.nodemodel.*;
 import org.eclipse.xtext.nodemodel.impl.AbstractNode;
 
@@ -55,7 +56,7 @@ class Finder {
         return type.cast(e);
       }
       if (type.isInstance(e)) {
-        if (areEqual(name, nameOf(e), options)) return type.cast(e);
+        if (areNamesEqual(name, nameOf(e), options)) return type.cast(e);
       }
     }
     String format = "Unable to find element. Text: '%s', count: %d, type: %s, options: %s";
@@ -82,9 +83,15 @@ class Finder {
     return (f != null) ? e.eGet(f) : null;
   }
 
-  private boolean areEqual(String s1, String s2, List<SearchOption> options) {
-    if (options.contains(IGNORE_CASE)) return s1.equalsIgnoreCase(s2);
-    return s1.equals(s2);
+  private boolean areNamesEqual(String expected, String actual, List<SearchOption> options) {
+    String realExpected = expected;
+    if (realExpected.indexOf(".") != -1) {
+      String[] segments = expected.split("\\.");
+      QualifiedName qualifiedName = QualifiedName.create(segments);
+      realExpected = qualifiedName.getLastSegment();
+    }
+    if (options.contains(IGNORE_CASE)) return realExpected.equalsIgnoreCase(actual);
+    return realExpected.equals(actual);
   }
 
   ILeafNode find(String text) {

@@ -58,10 +58,34 @@ public class ProtobufScopeProvider_scope_OptionMessageFieldSource_optionMessageF
   // option (type).code = 68;
   @Test public void should_provide_message_fields_for_first_field_in_custom_option() {
     CustomOption option = xtext.find("type", ")", CustomOption.class);
-    OptionMessageFieldSource optionField = (OptionMessageFieldSource) option.getOptionFields().get(0);
-    IScope scope = provider.scope_OptionMessageFieldSource_optionMessageField(optionField, reference);
+    OptionMessageFieldSource codeOptionField = (OptionMessageFieldSource) option.getOptionFields().get(0);
+    IScope scope = provider.scope_OptionMessageFieldSource_optionMessageField(codeOptionField, reference);
     Message typeMessage = xtext.find("Type", " {", Message.class);
     assertThat(descriptionsIn(scope), containAllFieldsIn(typeMessage));
+  }
+
+  // import 'google/protobuf/descriptor.proto';
+  //
+  // message Code {
+  //   optional double number = 1;
+  // }
+  //
+  // message Type {
+  //   optional Code code = 1;
+  //   optional string name = 2;
+  // }
+  //
+  // extend google.protobuf.FileOptions {
+  //   optional Type type = 1000;
+  // }
+  //
+  // option (type).code.number = 68;
+  @Test public void should_provide_message_fields_for_field_in_custom_option() {
+    CustomOption option = xtext.find("type", ")", CustomOption.class);
+    OptionMessageFieldSource numberOptionField = (OptionMessageFieldSource) option.getOptionFields().get(1);
+    IScope scope = provider.scope_OptionMessageFieldSource_optionMessageField(numberOptionField, reference);
+    Message codeMessage = xtext.find("Code", " {", Message.class);
+    assertThat(descriptionsIn(scope), containAllFieldsIn(codeMessage));
   }
 
   // import 'google/protobuf/descriptor.proto';
@@ -76,8 +100,8 @@ public class ProtobufScopeProvider_scope_OptionMessageFieldSource_optionMessageF
   // option (type).code = 68;
   @Test public void should_provide_group_fields_for_first_field_in_custom_option() {
     CustomOption option = xtext.find("type", ")", CustomOption.class, IGNORE_CASE);
-    OptionMessageFieldSource optionField = (OptionMessageFieldSource) option.getOptionFields().get(0);
-    IScope scope = provider.scope_OptionMessageFieldSource_optionMessageField(optionField, reference);
+    OptionMessageFieldSource codeOptionField = (OptionMessageFieldSource) option.getOptionFields().get(0);
+    IScope scope = provider.scope_OptionMessageFieldSource_optionMessageField(codeOptionField, reference);
     Group groupMessage = xtext.find("Type", " =", Group.class);
     assertThat(descriptionsIn(scope), containAllFieldsIn(groupMessage));
   }
@@ -98,10 +122,36 @@ public class ProtobufScopeProvider_scope_OptionMessageFieldSource_optionMessageF
   // }
   @Test public void should_provide_message_fields_for_first_field_in_field_custom_option() {
     CustomFieldOption option = xtext.find("type", ")", CustomFieldOption.class);
-    OptionMessageFieldSource optionField = (OptionMessageFieldSource) option.getOptionFields().get(0);
-    IScope scope = provider.scope_OptionMessageFieldSource_optionMessageField(optionField, reference);
+    OptionMessageFieldSource codeOptionField = (OptionMessageFieldSource) option.getOptionFields().get(0);
+    IScope scope = provider.scope_OptionMessageFieldSource_optionMessageField(codeOptionField, reference);
     Message typeMessage = xtext.find("Type", " {", Message.class);
     assertThat(descriptionsIn(scope), containAllFieldsIn(typeMessage));
+  }
+
+  // import 'google/protobuf/descriptor.proto';
+  //
+  // message Code {
+  //   optional double number = 1;
+  // }
+  //
+  // message Type {
+  //   optional Code code = 1;
+  //   optional string name = 2;
+  // }
+  //
+  // extend google.protobuf.FieldOptions {
+  //   optional Type type = 1000;
+  // }
+  //
+  // message Person {
+  //   optional boolean active = 1 [(type).code.number = 68];
+  // }
+  @Test public void should_provide_message_fields_for_field_in_field_custom_option() {
+    CustomFieldOption option = xtext.find("type", ")", CustomFieldOption.class);
+    OptionMessageFieldSource numberOptionField = (OptionMessageFieldSource) option.getOptionFields().get(1);
+    IScope scope = provider.scope_OptionMessageFieldSource_optionMessageField(numberOptionField, reference);
+    Message codeMessage = xtext.find("Code", " {", Message.class);
+    assertThat(descriptionsIn(scope), containAllFieldsIn(codeMessage));
   }
 
   // import 'google/protobuf/descriptor.proto';
@@ -118,8 +168,8 @@ public class ProtobufScopeProvider_scope_OptionMessageFieldSource_optionMessageF
   // }
   @Test public void should_provide_group_fields_for_first_field_in_field_custom_option() {
     CustomFieldOption option = xtext.find("type", ")", CustomFieldOption.class, IGNORE_CASE);
-    OptionMessageFieldSource optionField = (OptionMessageFieldSource) option.getOptionFields().get(0);
-    IScope scope = provider.scope_OptionMessageFieldSource_optionMessageField(optionField, reference);
+    OptionMessageFieldSource codeOptionField = (OptionMessageFieldSource) option.getOptionFields().get(0);
+    IScope scope = provider.scope_OptionMessageFieldSource_optionMessageField(codeOptionField, reference);
     Group groupMessage = xtext.find("Type", " =", Group.class);
     assertThat(descriptionsIn(scope), containAllFieldsIn(groupMessage));
   }
