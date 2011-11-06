@@ -1,15 +1,16 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
- * 
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.junit.core;
 
 import static com.google.eclipse.protobuf.util.SystemProperties.lineSeparator;
+import static java.util.Arrays.asList;
 import static org.eclipse.emf.common.util.URI.createURI;
 import static org.eclipse.emf.ecore.util.EcoreUtil.resolveAll;
 import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
@@ -33,14 +34,14 @@ import com.google.inject.Injector;
 
 /**
  * Rule that performs configuration of a standalone Xtext environment.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class XtextRule implements MethodRule {
 
   private final Injector injector;
   private final TestSourceReader reader;
-  
+
   private Protobuf root;
   private XtextResource resource;
   private Finder finder;
@@ -63,7 +64,7 @@ public class XtextRule implements MethodRule {
     }
     return base;
   }
-  
+
   public Injector injector() {
     return injector;
   }
@@ -107,23 +108,23 @@ public class XtextRule implements MethodRule {
   public <T> T getInstanceOf(Class<T> type) {
     return injector.getInstance(type);
   }
-  
+
   public Protobuf root() {
     return root;
   }
 
-  public <T extends EObject> T find(String name, String extra, Class<T> type) {
-    return find(name + extra, name.length(), type);
+  public <T extends EObject> T find(String name, String extra, Class<T> type, SearchOption...options) {
+    return find(name + extra, name.length(), type, options);
   }
 
-  public <T extends EObject> T find(String name, Class<T> type) {
-    return find(name, name.length(), type);
+  public <T extends EObject> T find(String name, Class<T> type, SearchOption...options) {
+    return find(name, name.length(), type, options);
   }
 
-  public <T extends EObject> T find(String text, int count, Class<T> type) {
-    return finder.find(text, count, type);
+  public <T extends EObject> T find(String text, int count, Class<T> type, SearchOption...options) {
+    return finder.find(text, count, type, asList(options));
   }
-  
+
   public ILeafNode find(String text) {
     return finder.find(text);
   }

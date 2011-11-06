@@ -56,7 +56,11 @@ class CustomOptionFieldScopeFinder {
   private IEObjectDescription describe(EObject e) {
     if (!(e instanceof Field)) return null;
     Field f = (Field) e;
-    return create(f.getName(), f);
+    String name = f.getName();
+    if (name != null && f instanceof Group) {
+      name = name.toLowerCase();
+    }
+    return create(name, f);
   }
 
   Collection<IEObjectDescription> findScope(OptionExtendMessageFieldSource fieldSource) {

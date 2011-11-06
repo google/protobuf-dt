@@ -13,31 +13,28 @@ import static org.eclipse.xtext.util.Strings.isEmpty;
 import static org.eclipse.xtext.util.Tuples.pair;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.naming.IQualifiedNameConverter;
-import org.eclipse.xtext.naming.IQualifiedNameProvider;
-import org.eclipse.xtext.naming.QualifiedName;
-import org.eclipse.xtext.util.IResourceScopeCache;
-import org.eclipse.xtext.util.Pair;
+import org.eclipse.xtext.naming.*;
+import org.eclipse.xtext.util.*;
 
 import com.google.common.base.Function;
 import com.google.eclipse.protobuf.model.util.ModelFinder;
+import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
+import com.google.inject.*;
 
 /**
  * Provides fully-qualified names for protobuf elements.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.AbstractImpl {
 
-  @Inject private IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
-  @Inject private IResourceScopeCache cache = IResourceScopeCache.NullImpl.INSTANCE;
+  @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
+  @Inject private final IResourceScopeCache cache = IResourceScopeCache.NullImpl.INSTANCE;
 
   @Inject private ModelFinder finder;
-  
-  private Function<EObject, String> resolver = newResolver(String.class, "name");
+
+  private final Function<EObject, String> resolver = newResolver(String.class, "name");
 
   @Override public QualifiedName getFullyQualifiedName(final EObject obj) {
     Pair<EObject, String> key = pair(obj, "fqn");
@@ -46,6 +43,7 @@ public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.Abstra
         EObject current = obj;
         String name = resolver.apply(current);
         if (isEmpty(name)) return null;
+        if (obj instanceof Group) name = name.toLowerCase();
         QualifiedName qualifiedName = converter.toQualifiedName(name);
         while (current.eContainer() != null) {
           current = current.eContainer();

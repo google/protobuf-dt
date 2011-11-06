@@ -11,14 +11,14 @@ package com.google.eclipse.protobuf.scoping;
 import static java.util.Collections.emptySet;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
-import com.google.eclipse.protobuf.model.util.ModelFinder;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.inject.Inject;
+import java.util.*;
 
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
-import java.util.*;
+import com.google.eclipse.protobuf.model.util.ModelFinder;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.inject.Inject;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -61,7 +61,7 @@ class CustomOptionScopeFinder implements ScopeFinder {
   }
 
   private OptionType optionTypeFrom(Object criteria) {
-    if (!(criteria instanceof OptionType)) 
+    if (!(criteria instanceof OptionType))
       throw new IllegalArgumentException("Search criteria should be OptionType");
     return (OptionType) criteria;
   }

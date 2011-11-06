@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static com.google.eclipse.protobuf.junit.core.SearchOption.IGNORE_CASE;
 import static com.google.eclipse.protobuf.junit.core.Setups.integrationTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static com.google.eclipse.protobuf.scoping.ContainAllFieldsInMessage.containAllFieldsIn;
@@ -72,9 +73,9 @@ public class ProtobufScopeProvider_scope_OptionMessageFieldSource_optionMessageF
   //   }
   // }
   //
-  // option (Type).code = 68;
+  // option (type).code = 68;
   @Test public void should_provide_group_fields_for_first_field_in_custom_option() {
-    CustomOption option = xtext.find("Type", ")", CustomOption.class);
+    CustomOption option = xtext.find("type", ")", CustomOption.class, IGNORE_CASE);
     OptionMessageFieldSource optionField = (OptionMessageFieldSource) option.getOptionFields().get(0);
     IScope scope = provider.scope_OptionMessageFieldSource_optionMessageField(optionField, reference);
     Group groupMessage = xtext.find("Type", " =", Group.class);
@@ -103,7 +104,6 @@ public class ProtobufScopeProvider_scope_OptionMessageFieldSource_optionMessageF
     assertThat(descriptionsIn(scope), containAllFieldsIn(typeMessage));
   }
 
-
   // import 'google/protobuf/descriptor.proto';
   //
   // extend google.protobuf.FieldOptions {
@@ -114,10 +114,10 @@ public class ProtobufScopeProvider_scope_OptionMessageFieldSource_optionMessageF
   // }
   //
   // message Person {
-  //   optional boolean active = 1 [(Type).code = 68];
+  //   optional boolean active = 1 [(type).code = 68];
   // }
   @Test public void should_provide_group_fields_for_first_field_in_field_custom_option() {
-    CustomFieldOption option = xtext.find("Type", ")", CustomFieldOption.class);
+    CustomFieldOption option = xtext.find("type", ")", CustomFieldOption.class, IGNORE_CASE);
     OptionMessageFieldSource optionField = (OptionMessageFieldSource) option.getOptionFields().get(0);
     IScope scope = provider.scope_OptionMessageFieldSource_optionMessageField(optionField, reference);
     Group groupMessage = xtext.find("Type", " =", Group.class);
