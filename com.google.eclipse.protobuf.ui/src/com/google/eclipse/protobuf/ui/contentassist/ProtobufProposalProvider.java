@@ -408,7 +408,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     if (!(model instanceof CustomOption)) return;
     CustomOption option = (CustomOption) model;
-    IScope scope = getScopeProvider().scope_OptionSource_optionField(option.getSource(), null);
+    IScope scope = getScopeProvider().allPossibleSourcesOf(option);
     proposeAndAcceptOptions(scope, context, acceptor);
   }
 
@@ -455,12 +455,13 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     INode node = context.getCurrentNode();
     EObject e = findActualSemanticObjectFor(node);
-    if (!(e instanceof OptionMessageFieldSource)) return;
-    OptionMessageFieldSource s = (OptionMessageFieldSource) e;
-    IScope scope = getScopeProvider().scope_OptionMessageFieldSource_optionMessageField(s, null);
-    for (IEObjectDescription d : descriptionChooser.shortestQualifiedNamesIn(scope)) {
-      Image image = imageHelper.getImage(images.imageFor(d.getEObjectOrProxy()));
-      proposeAndAccept(d, image, context, acceptor);
+    if (e instanceof OptionMessageFieldSource) {
+      OptionMessageFieldSource s = (OptionMessageFieldSource) e;
+      IScope scope = getScopeProvider().scope_OptionMessageFieldSource_optionMessageField(s, null);
+      for (IEObjectDescription d : descriptionChooser.shortestQualifiedNamesIn(scope)) {
+        Image image = imageHelper.getImage(images.imageFor(d.getEObjectOrProxy()));
+        proposeAndAccept(d, image, context, acceptor);
+      }
     }
   }
 

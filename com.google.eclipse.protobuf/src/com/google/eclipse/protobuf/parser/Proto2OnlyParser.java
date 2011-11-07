@@ -40,11 +40,11 @@ public class Proto2OnlyParser extends ProtobufParser {
   private boolean isNonProto2(IParseResult result) {
     if (!result.hasSyntaxErrors()) return false;
     Protobuf root = (Protobuf) result.getRootASTElement();
-    if (root != null) {
-      if (root.getSyntax() == null) return true;
-    }
     for (INode node : result.getSyntaxErrors()) {
       if (isNonProto2(node.getSyntaxErrorMessage())) return true;
+    }
+    if (root != null) {
+      if (root.getSyntax() == null) return true;
     }
     return false;
   }

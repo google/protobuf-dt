@@ -48,7 +48,14 @@ public class ProtoDescriptorProvider {
 
   public ProtoDescriptor descriptor(String importUri) {
     ensureProtoDescriptorsAreCreated();
-    return descriptors.get(importUri);
+    ProtoDescriptor protoDescriptor = descriptors.get(importUri);
+    if (protoDescriptor != null) return protoDescriptor;
+    // URI could have been resolved
+    URI uri = URI.createURI(importUri);
+    for (Entry<String, URI> info : descriptorInfos.entrySet()) {
+      if (info.getValue().equals(uri)) return descriptor(info.getKey());
+    }
+    return null;
   }
 
   private void ensureProtoDescriptorsAreCreated() {

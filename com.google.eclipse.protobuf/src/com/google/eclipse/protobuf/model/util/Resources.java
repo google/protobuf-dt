@@ -35,8 +35,8 @@ public class Resources {
    * not contain the resource.
    */
   public Resource importedResource(Import anImport, ResourceSet resourceSet) {
-    URI importUri = createURI(uriResolver.apply(anImport));
     try {
+      URI importUri = createURI(uriResolver.apply(anImport));
       return resourceSet.getResource(importUri, true);
     } catch (Throwable t) {
       return null;

@@ -21,7 +21,7 @@ import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.impl.*;
 
-import java.util.Set;
+import java.util.*;
 
 /**
  * Custom scoping description.
@@ -109,16 +109,34 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     }
     if (c instanceof CustomOption) {
       CustomOption option = (CustomOption) c;
-      return createScope(astWalker.traverseAst(option, customOptionScopeFinder, typeOf(option)));
+      return allPossibleSourcesOf(option);
     }
     if (c instanceof CustomFieldOption) {
       CustomFieldOption option = (CustomFieldOption) c;
-      return createScope(astWalker.traverseAst(option, customOptionScopeFinder, typeOf(option)));
+      return allPossibleSourcesOf(option);
     }
     Set<IEObjectDescription> descriptions = emptySet();
     return createScope(descriptions);
   }
   
+  public IScope allPossibleSourcesOf(CustomOption option) {
+    OptionType optionType = typeOf(option);
+    Collection<IEObjectDescription> descriptions = emptySet();
+    if (optionType != null) {
+      descriptions = astWalker.traverseAst(option, customOptionScopeFinder, optionType);
+    }
+    return createScope(descriptions);
+  }
+
+  public IScope allPossibleSourcesOf(CustomFieldOption option) {
+    OptionType optionType = typeOf(option);
+    Collection<IEObjectDescription> descriptions = emptySet();
+    if (optionType != null) {
+      descriptions = astWalker.traverseAst(option, customOptionScopeFinder, optionType);
+    }
+    return createScope(descriptions);
+  }
+
   @SuppressWarnings("unused") 
   public IScope scope_OptionMessageFieldSource_optionMessageField(OptionMessageFieldSource source, 
       EReference reference) {

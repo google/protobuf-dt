@@ -71,9 +71,7 @@ class AstWalker {
   private Collection<IEObjectDescription> imported(Protobuf start, ScopeFinder scopeFinder, Object criteria) {
     List<Import> allImports = modelFinder.importsIn(start);
     if (allImports.isEmpty()) return emptyList();
-    Resource resource = start.eResource();
-    if (resource == null) return emptySet();
-    ResourceSet resourceSet = resource.getResourceSet();
+    ResourceSet resourceSet = start.eResource().getResourceSet();
     return imported(allImports, modelFinder.packageOf(start), resourceSet, scopeFinder, criteria);
   }
 
@@ -101,6 +99,7 @@ class AstWalker {
   }
 
   private Collection<IEObjectDescription> publicImported(Protobuf start, ScopeFinder scopeFinder, Object criteria) {
+    if (start instanceof NonProto2) return emptySet();
     List<Import> allImports = modelFinder.publicImportsIn(start);
     if (allImports.isEmpty()) return emptyList();
     ResourceSet resourceSet = start.eResource().getResourceSet();

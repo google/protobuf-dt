@@ -27,6 +27,8 @@ import com.google.inject.Singleton;
 @Singleton
 public class Resources {
 
+  private static final IViewReference[] NO_VIEW_REFERENCES = new IViewReference[0];
+  
   public static final String URI_SCHEME_FOR_FILES = "file";
 
   /**
@@ -53,9 +55,17 @@ public class Resources {
   }
 
   private IViewReference[] viewReferencesInActivePage() {
-    IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-    if (activePage == null) return new IViewReference[0];
-    return activePage.getViewReferences();
+    IWorkbenchPage page = activeWorkbenchPage();
+    if (page == null) return NO_VIEW_REFERENCES;
+    IViewReference[] references = page.getViewReferences();
+    return (references == null) ? NO_VIEW_REFERENCES : references;
+  }
+  
+  private IWorkbenchPage activeWorkbenchPage() {
+    IWorkbench workbench = PlatformUI.getWorkbench();
+    if (workbench == null) return null;
+    IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+    return (window == null) ? null : window.getActivePage();
   }
   
   /**
