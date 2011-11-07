@@ -8,21 +8,21 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static java.util.Collections.emptyList;
+import static java.util.Collections.*;
 import static org.eclipse.emf.ecore.util.EcoreUtil.getAllContents;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.parser.NonProto2;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.inject.Inject;
+import java.util.*;
 
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.*;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
-import java.util.*;
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.parser.NonProto2;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.inject.Inject;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -45,7 +45,7 @@ class AstWalker {
     descriptions.addAll(imported(root, scopeFinder, criteria));
     return descriptions;
   }
-  
+
   Collection<IEObjectDescription> traverseAst(Protobuf start, ScopeFinder scopeFinder, Object criteria) {
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     descriptions.addAll(local(start, scopeFinder, criteria));
@@ -58,7 +58,7 @@ class AstWalker {
   }
 
   private Collection<IEObjectDescription> local(EObject start, ScopeFinder scopeFinder, Object criteria, int level) {
-    List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
+    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     for (EObject element : start.eContents()) {
       descriptions.addAll(scopeFinder.descriptions(element, criteria, level));
       if (element instanceof Message) {
@@ -71,13 +71,15 @@ class AstWalker {
   private Collection<IEObjectDescription> imported(Protobuf start, ScopeFinder scopeFinder, Object criteria) {
     List<Import> allImports = modelFinder.importsIn(start);
     if (allImports.isEmpty()) return emptyList();
-    ResourceSet resourceSet = start.eResource().getResourceSet();
+    Resource resource = start.eResource();
+    if (resource == null) return emptySet();
+    ResourceSet resourceSet = resource.getResourceSet();
     return imported(allImports, modelFinder.packageOf(start), resourceSet, scopeFinder, criteria);
   }
 
   private Collection<IEObjectDescription> imported(List<Import> allImports, Package aPackage,
       ResourceSet resourceSet, ScopeFinder scopeFinder, Object criteria) {
-    List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
+    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     for (Import anImport : allImports) {
       if (imports.isImportingDescriptor(anImport)) {
         descriptions.addAll(scopeFinder.fromProtoDescriptor(anImport, criteria));
@@ -111,7 +113,7 @@ class AstWalker {
   }
 
   private Collection<IEObjectDescription> local(Resource resource, ScopeFinder scopeFinder, Object criteria) {
-    List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
+    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     TreeIterator<Object> contents = getAllContents(resource, true);
     while (contents.hasNext()) {
       Object next = contents.next();

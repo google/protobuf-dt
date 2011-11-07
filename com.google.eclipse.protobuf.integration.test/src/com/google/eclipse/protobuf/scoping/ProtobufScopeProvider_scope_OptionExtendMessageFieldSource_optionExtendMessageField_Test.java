@@ -54,7 +54,7 @@ public class ProtobufScopeProvider_scope_OptionExtendMessageFieldSource_optionEx
   // }
   //
   // extend Type {
-  //   optional boolean active = 10;
+  //   optional bool active = 10;
   // }
   //
   // extend google.protobuf.FileOptions {
@@ -80,7 +80,7 @@ public class ProtobufScopeProvider_scope_OptionExtendMessageFieldSource_optionEx
   // }
   //
   // extend Type {
-  //   optional boolean active = 10;
+  //   optional bool active = 10;
   // }
   //
   // extend google.protobuf.FieldOptions {
@@ -88,7 +88,7 @@ public class ProtobufScopeProvider_scope_OptionExtendMessageFieldSource_optionEx
   // }
   //
   // message Person {
-  //   optional boolean active = 1 [(type).(active) = true];
+  //   optional bool active = 1 [(type).(active) = true];
   // }
   @Test public void should_provide_message_fields_for_first_field_in_field_custom_option() {
     CustomFieldOption option = xtext.find("type", ")", CustomFieldOption.class);
