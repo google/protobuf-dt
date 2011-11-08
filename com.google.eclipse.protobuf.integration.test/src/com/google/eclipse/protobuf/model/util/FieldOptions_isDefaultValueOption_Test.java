@@ -32,6 +32,8 @@ public class FieldOptions_isDefaultValueOption_Test {
     fieldOptions = xtext.getInstanceOf(FieldOptions.class);
   }
 
+  // syntax = "proto2";
+  //
   // message Person {
   //   optional boolean active = 1 [default = true, deprecated = false];
   // }
@@ -40,6 +42,8 @@ public class FieldOptions_isDefaultValueOption_Test {
     assertTrue(fieldOptions.isDefaultValueOption(option));
   }
 
+  // syntax = "proto2";
+  //
   // message Person {
   //   optional boolean active = 1 [default = true, deprecated = false];
   // }

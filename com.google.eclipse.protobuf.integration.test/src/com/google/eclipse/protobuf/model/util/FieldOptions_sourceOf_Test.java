@@ -13,10 +13,10 @@ import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
+import org.junit.*;
+
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
-
-import org.junit.*;
 
 /**
  * Tests for <code>{@link FieldOptions#sourceOf(FieldOption)}</code>.
@@ -33,6 +33,8 @@ public class FieldOptions_sourceOf_Test {
     fieldOptions = xtext.getInstanceOf(FieldOptions.class);
   }
 
+  // syntax = "proto2";
+  //
   // message Person {
   //   optional boolean active = 1 [deprecated = false];
   // }
@@ -42,6 +44,8 @@ public class FieldOptions_sourceOf_Test {
     assertThat(p.getName(), equalTo("deprecated"));
   }
 
+  // syntax = "proto2";
+  //
   // import 'google/protobuf/descriptor.proto';
   //
   // extend google.protobuf.FieldOptions {

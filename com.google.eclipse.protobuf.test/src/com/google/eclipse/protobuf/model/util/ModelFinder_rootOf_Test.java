@@ -13,11 +13,11 @@ import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.Assert.assertThat;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.*;
-
 import org.eclipse.emf.ecore.EObject;
 import org.junit.*;
+
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.Property;
 
 /**
  * Tests for <code>{@link ModelFinder#rootOf(EObject)}</code>.
@@ -34,6 +34,8 @@ public class ModelFinder_rootOf_Test {
     finder = xtext.getInstanceOf(ModelFinder.class);
   }
 
+  // syntax = "proto2";
+  //
   // message Person {
   //   optional string name = 1;
   // }

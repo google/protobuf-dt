@@ -14,12 +14,12 @@ import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.FIEL
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.Property;
-
 import org.eclipse.emf.ecore.*;
 import org.eclipse.xtext.nodemodel.INode;
 import org.junit.*;
+
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.Property;
 
 /**
  * Tests for <code>{@link INodes#firstNodeForFeature(EObject, EStructuralFeature)}</code>
@@ -36,8 +36,10 @@ public class INodes_firstNodeForFeature_Test {
     nodes = xtext.getInstanceOf(INodes.class);
   }
 
+  // syntax = "proto2";
+  //
   // message Person {
-  //   optional bool active = 1;    
+  //   optional bool active = 1;
   // }
   @Test public void should_return_first_node_for_feature() {
     Property active = xtext.find("active", Property.class);

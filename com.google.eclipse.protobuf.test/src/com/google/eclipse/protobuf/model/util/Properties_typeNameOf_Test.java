@@ -13,10 +13,10 @@ import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.*;
-
 import org.junit.*;
+
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.Property;
 
 /**
  * Tests for <code>{@link Properties#typeNameOf(Property)}</code>.
@@ -33,6 +33,8 @@ public class Properties_typeNameOf_Test {
     properties = xtext.getInstanceOf(Properties.class);
   }
 
+  // syntax = "proto2";
+  //
   // message Person {
   //   optional string name = 1;
   // }
@@ -41,6 +43,8 @@ public class Properties_typeNameOf_Test {
     assertThat(properties.typeNameOf(name), equalTo("string"));
   }
 
+  // syntax = "proto2";
+  //
   // message Person {
   //   optional string name = 1;
   //   optional PhoneNumber number = 2;

@@ -13,14 +13,14 @@ import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
+import org.junit.*;
+
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
-import org.junit.*;
-
 /**
  * Tests for <code>{@link Options#lastFieldSourceFrom(CustomOption)}</code>.
- * 
+ *
  * alruiz@google.com (Alex Ruiz)
  */
 public class Options_lastFieldSourceFrom_Test {
@@ -32,17 +32,19 @@ public class Options_lastFieldSourceFrom_Test {
   @Before public void setUp() {
     options = xtext.getInstanceOf(Options.class);
   }
-  
+
+  // syntax = "proto2";
+  //
   // import 'google/protobuf/descriptor.proto';
   //
   // message Custom {
   //   optional int32 count = 1;
   // }
-  //  
+  //
   // extend google.protobuf.FileOptions {
   //   optional Custom custom = 1000;
   // }
-  //  
+  //
   // option (custom).count = 6;
   @Test public void should_return_property_field() {
     CustomOption option = xtext.find("custom", ")", CustomOption.class);

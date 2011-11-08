@@ -38,6 +38,8 @@ public class CommentNodesFinder_matchingCommentNode_Test {
     finder = xtext.getInstanceOf(CommentNodesFinder.class);
   }
 
+  // syntax = "proto2";
+  //
   // message Person {
   //   // Next Id: 6
   //   optional bool active = 1;
@@ -49,6 +51,8 @@ public class CommentNodesFinder_matchingCommentNode_Test {
     assertThat(node.getText().trim(), equalTo("// Next Id: 6"));
   }
 
+  // syntax = "proto2";
+  //
   // message Person {
   //   /*
   //    * Next Id: 6
@@ -61,6 +65,8 @@ public class CommentNodesFinder_matchingCommentNode_Test {
     assertNotNull(match.getFirst());
   }
 
+  // syntax = "proto2";
+  //
   // message Person {
   //   // Next Id: 6
   //   optional bool active = 1;

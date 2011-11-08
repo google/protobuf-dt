@@ -13,10 +13,10 @@ import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
+import org.junit.*;
+
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
-
-import org.junit.*;
 
 /**
  * Tests for <code>{@link Fields#calculateTagNumberOf(Field)}</code>.
@@ -33,8 +33,10 @@ public class Fields_calculateTagNumberOf_Test {
     fields = xtext.getInstanceOf(Fields.class);
   }
 
+  // syntax = "proto2";
+  //
   // message Person {
-  //   required string name = 2; 
+  //   required string name = 2;
   // }
   @Test public void should_return_one_for_first_and_only_property() {
     Property name = xtext.find("name", Property.class);
@@ -42,6 +44,8 @@ public class Fields_calculateTagNumberOf_Test {
     assertThat(index, equalTo(1L));
   }
 
+  // syntax = "proto2";
+  //
   // message Person {
   //   required string name = 6;
   //   required int32 id = 8;

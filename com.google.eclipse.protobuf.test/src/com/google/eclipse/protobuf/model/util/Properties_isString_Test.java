@@ -32,6 +32,8 @@ public class Properties_isString_Test {
     properties = xtext.getInstanceOf(Properties.class);
   }
 
+  // syntax = "proto2";
+  //
   // message Person {
   //   optional string name = 1;
   // }
@@ -40,6 +42,8 @@ public class Properties_isString_Test {
     assertTrue(properties.isString(p));
   }
 
+  // syntax = "proto2";
+  //
   // message Person {
   //   optional double code = 1;
   // }

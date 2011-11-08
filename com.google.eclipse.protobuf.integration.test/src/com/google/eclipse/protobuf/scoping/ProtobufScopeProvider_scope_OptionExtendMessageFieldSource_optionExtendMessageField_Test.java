@@ -43,6 +43,8 @@ public class ProtobufScopeProvider_scope_OptionExtendMessageFieldSource_optionEx
     provider = xtext.getInstanceOf(ProtobufScopeProvider.class);
   }
 
+  // syntax = "proto2";
+  //
   // package com.google.proto;
   //
   // import 'google/protobuf/descriptor.proto';
@@ -69,6 +71,8 @@ public class ProtobufScopeProvider_scope_OptionExtendMessageFieldSource_optionEx
     assertThat(descriptionsIn(scope), containAll("active", "com.google.proto.active", ".com.google.proto.active"));
   }
 
+  // syntax = "proto2";
+  //
   // package com.google.proto;
   //
   // import 'google/protobuf/descriptor.proto';

@@ -19,7 +19,8 @@ import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.nodemodel.*;
 import org.eclipse.xtext.nodemodel.impl.AbstractNode;
 
-import com.google.eclipse.protobuf.protobuf.DefaultValueFieldOption;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Package;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -56,7 +57,7 @@ class Finder {
         return type.cast(e);
       }
       if (type.isInstance(e)) {
-        if (areNamesEqual(name, nameOf(e), options)) return type.cast(e);
+        if (areNamesEqual(name, e, options)) return type.cast(e);
       }
     }
     String format = "Unable to find element. Text: '%s', count: %d, type: %s, options: %s";
@@ -65,6 +66,23 @@ class Finder {
 
   private boolean isDefaultValueFieldOption(String name, Class<?> type, EObject element) {
     return "default".equals(name) && type.isInstance(element) && element instanceof DefaultValueFieldOption;
+  }
+
+  private Object feature(EObject e, String featureName) {
+    EStructuralFeature f = e.eClass().getEStructuralFeature(featureName);
+    return (f != null) ? e.eGet(f) : null;
+  }
+
+  private boolean areNamesEqual(String expected, Object e, List<SearchOption> options) {
+    String realExpected = expected;
+    if (realExpected.indexOf(".") != -1 && !(e instanceof Package)) {
+      String[] segments = expected.split("\\.");
+      QualifiedName qualifiedName = QualifiedName.create(segments);
+      realExpected = qualifiedName.getLastSegment();
+    }
+    String actual = nameOf(e);
+    if (options.contains(IGNORE_CASE)) return realExpected.equalsIgnoreCase(actual);
+    return realExpected.equals(actual);
   }
 
   private String nameOf(Object o) {
@@ -76,22 +94,6 @@ class Finder {
       if (value != null) return nameOf(value);
     }
     return null;
-  }
-
-  private Object feature(EObject e, String featureName) {
-    EStructuralFeature f = e.eClass().getEStructuralFeature(featureName);
-    return (f != null) ? e.eGet(f) : null;
-  }
-
-  private boolean areNamesEqual(String expected, String actual, List<SearchOption> options) {
-    String realExpected = expected;
-    if (realExpected.indexOf(".") != -1) {
-      String[] segments = expected.split("\\.");
-      QualifiedName qualifiedName = QualifiedName.create(segments);
-      realExpected = qualifiedName.getLastSegment();
-    }
-    if (options.contains(IGNORE_CASE)) return realExpected.equalsIgnoreCase(actual);
-    return realExpected.equals(actual);
   }
 
   ILeafNode find(String text) {

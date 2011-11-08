@@ -35,8 +35,10 @@ public class ModelFinder_packageOf_Test {
     finder = xtext.getInstanceOf(ModelFinder.class);
   }
 
+  // syntax = "proto2";
+  //
   // package person.test;
-  //  
+  //
   // message Person {
   //   optional int32 id = 1;
   // }
@@ -46,6 +48,8 @@ public class ModelFinder_packageOf_Test {
     assertThat(aPackage.getName(), equalTo("person.test"));
   }
 
+  // syntax = "proto2";
+  //
   // message Person {
   //   optional int32 id = 1;
   // }

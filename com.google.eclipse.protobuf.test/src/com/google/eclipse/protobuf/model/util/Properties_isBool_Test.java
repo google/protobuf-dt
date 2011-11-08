@@ -32,6 +32,8 @@ public class Properties_isBool_Test {
     properties = xtext.getInstanceOf(Properties.class);
   }
 
+  // syntax = "proto2";
+  //
   // message Person {
   //   optional bool code = 1;
   // }
@@ -40,6 +42,8 @@ public class Properties_isBool_Test {
     assertTrue(properties.isBool(p));
   }
 
+  // syntax = "proto2";
+  //
   // message Person {
   //   optional string name = 1;
   // }

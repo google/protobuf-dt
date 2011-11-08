@@ -47,6 +47,8 @@ public class Issue147_AddSupportForGroupOptions_Test {
     provider = xtext.getInstanceOf(ProtobufScopeProvider.class);
   }
 
+  // syntax = "proto2";
+  //
   // message Person {
   //   repeated group membership = 1 [deprecated = true] {
   //     required int64 groupId = 2;
@@ -64,6 +66,8 @@ public class Issue147_AddSupportForGroupOptions_Test {
     return descriptorProvider.primaryDescriptor();
   }
 
+  // syntax = "proto2";
+  //
   // package com.google.proto;
   // import 'google/protobuf/descriptor.proto';
   //

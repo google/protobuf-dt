@@ -13,11 +13,11 @@ import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.*;
-
 import org.eclipse.xtext.naming.*;
 import org.junit.*;
+
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.*;
 
 /**
  * Tests for <code>{@link ProtobufQualifiedNameProvider}</code>.
@@ -34,6 +34,8 @@ public class ProtobufQualifiedNameProvider_getFullyQualifiedName_Test {
     provider = (ProtobufQualifiedNameProvider) xtext.getInstanceOf(IQualifiedNameProvider.class);
   }
 
+  // syntax = "proto2";
+  //
   // package fqn.test;
   //
   // message Person {
@@ -45,6 +47,8 @@ public class ProtobufQualifiedNameProvider_getFullyQualifiedName_Test {
     assertThat(fqn.toString(), equalTo("fqn.test.Person"));
   }
 
+  // syntax = "proto2";
+  //
   // package fqn.test;
   //
   // message Person {
@@ -56,6 +60,8 @@ public class ProtobufQualifiedNameProvider_getFullyQualifiedName_Test {
     assertThat(fqn.toString(), equalTo("fqn.test.Person.name"));
   }
 
+  // syntax = "proto2";
+  //
   // message Person {
   //   optional string name = 1;
   // }

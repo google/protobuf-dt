@@ -12,19 +12,21 @@ import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.junit.Assert.assertNotNull;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-
 import org.junit.*;
+
+import com.google.eclipse.protobuf.junit.core.XtextRule;
 
 /**
  * Tests fix for <a href="http://code.google.com/p/protobuf-dt/issues/detail?id=150">Issue 150</a>.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Issue150_AddSupportForExtendMessageToGroups_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
-  
+
+  // syntax = "proto2";
+  //
   // message ABC {
   //   extensions 1000 to max;
   // }

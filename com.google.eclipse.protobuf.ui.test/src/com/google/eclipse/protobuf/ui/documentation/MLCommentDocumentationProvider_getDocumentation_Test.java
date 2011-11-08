@@ -35,13 +35,15 @@ public class MLCommentDocumentationProvider_getDocumentation_Test {
     provider = xtext.getInstanceOf(MLCommentDocumentationProvider.class);
   }
 
+  // syntax = "proto2";
+  //
   // message Person {
   //   /* This comment should be ignored. */
   //   /*
   //    * Indicates whether the person is active or not.
   //    * (Optional.)
   //    */
-  //   optional bool active = 1; 
+  //   optional bool active = 1;
   // }
   @Test public void should_return_single_line_comment_of_element() {
     Property active = xtext.find("active", Property.class);
@@ -50,9 +52,9 @@ public class MLCommentDocumentationProvider_getDocumentation_Test {
     assertThat(lines[0], equalTo("Indicates whether the person is active or not."));
     assertThat(lines[1], equalTo("(Optional.)"));
   }
-  
+
   // message Person {
-  //   optional bool active = 1; 
+  //   optional bool active = 1;
   // }
   @Test public void should_return_empty_String_if_element_does_not_have_single_line_comment() {
     Property active = xtext.find("active", Property.class);

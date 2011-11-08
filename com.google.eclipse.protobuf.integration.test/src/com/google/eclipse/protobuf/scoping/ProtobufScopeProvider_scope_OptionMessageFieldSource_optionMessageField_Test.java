@@ -44,6 +44,8 @@ public class ProtobufScopeProvider_scope_OptionMessageFieldSource_optionMessageF
     provider = xtext.getInstanceOf(ProtobufScopeProvider.class);
   }
 
+  // syntax = "proto2";
+  //
   // import 'google/protobuf/descriptor.proto';
   //
   // message Type {
@@ -64,6 +66,8 @@ public class ProtobufScopeProvider_scope_OptionMessageFieldSource_optionMessageF
     assertThat(descriptionsIn(scope), containAllFieldsIn(typeMessage));
   }
 
+  // syntax = "proto2";
+  //
   // import 'google/protobuf/descriptor.proto';
   //
   // message Code {
@@ -88,6 +92,8 @@ public class ProtobufScopeProvider_scope_OptionMessageFieldSource_optionMessageF
     assertThat(descriptionsIn(scope), containAllFieldsIn(codeMessage));
   }
 
+  // syntax = "proto2";
+  //
   // import 'google/protobuf/descriptor.proto';
   //
   // extend google.protobuf.FileOptions {
@@ -106,6 +112,8 @@ public class ProtobufScopeProvider_scope_OptionMessageFieldSource_optionMessageF
     assertThat(descriptionsIn(scope), containAllFieldsIn(groupMessage));
   }
 
+  // syntax = "proto2";
+  //
   // import 'google/protobuf/descriptor.proto';
   //
   // message Type {
@@ -128,6 +136,8 @@ public class ProtobufScopeProvider_scope_OptionMessageFieldSource_optionMessageF
     assertThat(descriptionsIn(scope), containAllFieldsIn(typeMessage));
   }
 
+  // syntax = "proto2";
+  //
   // import 'google/protobuf/descriptor.proto';
   //
   // message Code {
@@ -154,6 +164,8 @@ public class ProtobufScopeProvider_scope_OptionMessageFieldSource_optionMessageF
     assertThat(descriptionsIn(scope), containAllFieldsIn(codeMessage));
   }
 
+  // syntax = "proto2";
+  //
   // import 'google/protobuf/descriptor.proto';
   //
   // extend google.protobuf.FieldOptions {

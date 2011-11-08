@@ -43,6 +43,8 @@ public class Issue156_AddSupportForEnumValueOptions_Test {
     provider = xtext.getInstanceOf(ProtobufScopeProvider.class);
   }
 
+  // syntax = "proto2";
+  //
   // import 'google/protobuf/descriptor.proto';
   //
   // extend google.protobuf.EnumValueOptions {

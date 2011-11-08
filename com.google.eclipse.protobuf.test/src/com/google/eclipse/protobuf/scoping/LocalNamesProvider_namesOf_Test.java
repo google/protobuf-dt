@@ -13,14 +13,14 @@ import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.Enum;
+import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.junit.*;
 
-import java.util.List;
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.Enum;
 
 /**
  * Tests for <code>{@link LocalNamesProvider#namesOf(EObject)}</code>.
@@ -37,6 +37,8 @@ public class LocalNamesProvider_namesOf_Test {
     namesProvider = xtext.getInstanceOf(LocalNamesProvider.class);
   }
 
+  // syntax = "proto2";
+  //
   // package test.alternative.names;
   // message Person {
   //   message PhoneNumber {

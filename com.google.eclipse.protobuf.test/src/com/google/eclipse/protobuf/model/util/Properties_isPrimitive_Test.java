@@ -33,6 +33,8 @@ public class Properties_isPrimitive_Test {
     properties = xtext.getInstanceOf(Properties.class);
   }
 
+  // syntax = "proto2";
+  //
   // message Primitives {
   //   optional float float_1 = 1;
   //   optional int32 int32_1 = 2;
@@ -43,19 +45,21 @@ public class Properties_isPrimitive_Test {
   //   optional sint64 sint64_1 = 7;
   //   optional fixed32 fixed32_1 = 8;
   //   optional fixed64 fixed64_1 = 9;
-  //   optional bool bool_1 = 10;     
+  //   optional bool bool_1 = 10;
   // }
   @Test public void should_return_true_if_property_is_primitive() {
     for (Property p : getAllContentsOfType(xtext.root(), Property.class))
       assertTrue(properties.isPrimitive(p));
   }
 
+  // syntax = "proto2";
+  //
   // message Types {
   //   optional string string_1 = 1;
   //   optional bytes bytes_1 = 2;
   //   optional Person person = 3;
   // }
-  // 
+  //
   // message Person {
   //   optional string name = 1;
   // }

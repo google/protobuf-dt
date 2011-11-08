@@ -12,23 +12,25 @@ import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.junit.Assert.assertNotNull;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-
 import org.junit.*;
+
+import com.google.eclipse.protobuf.junit.core.XtextRule;
 
 /**
  * Tests fix for <a href="http://code.google.com/p/protobuf-dt/issues/detail?id=153">Issue 153</a>.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Issue153_AddSupportForNegativeInf_Test {
-  
+
   @Rule public XtextRule xtext = createWith(unitTestSetup());
-  
-  //  message Foo {
-  //    optional double bar = 1 [default = -inf];
-  //  }
+
+  // syntax = "proto2";
+  //
+  // message Foo {
+  //   optional double bar = 1 [default = -inf];
+  // }
   @Test public void should_recognize_negative_inf() {
     assertNotNull(xtext.root());
-  } 
+  }
 }

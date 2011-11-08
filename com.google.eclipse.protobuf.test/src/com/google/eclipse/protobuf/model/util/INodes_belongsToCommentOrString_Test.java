@@ -20,26 +20,30 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 
 /**
  * Test for <code>{@link INodes#belongsToCommentOrString(INode)}</code>
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class INodes_belongsToCommentOrString_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
-  
+
   private INodes nodes;
-  
+
   @Before public void setUp() {
     nodes = xtext.getInstanceOf(INodes.class);
   }
 
+  // syntax = "proto2";
+  //
   // // This is a test.
   // message Person {}
   @Test public void should_return_true_if_node_belongs_to_single_line_comment() {
     ILeafNode commentNode = xtext.find("// This is a test.");
     assertTrue(nodes.belongsToCommentOrString(commentNode));
   }
-  
+
+  // syntax = "proto2";
+  //
   // /* This is a test. */
   // message Person {}
   @Test public void should_return_true_if_node_belongs_to_multiple_line_comment() {
@@ -47,6 +51,8 @@ public class INodes_belongsToCommentOrString_Test {
     assertTrue(nodes.belongsToCommentOrString(commentNode));
   }
 
+  // syntax = "proto2";
+  //
   // message Person {
   //   optional string name = 1 [default = 'Alex'];
   // }
@@ -55,6 +61,8 @@ public class INodes_belongsToCommentOrString_Test {
     assertTrue(nodes.belongsToCommentOrString(node));
   }
 
+  // syntax = "proto2";
+  //
   // message Person {}
   @Test public void should_return_false_if_node_does_not_belong_to_any_comment_or_string() {
     ICompositeNode node = getNode(xtext.root());

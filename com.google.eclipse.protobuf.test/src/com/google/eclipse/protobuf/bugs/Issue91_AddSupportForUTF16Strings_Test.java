@@ -12,22 +12,24 @@ import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.junit.Assert.assertNotNull;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-
 import org.junit.*;
+
+import com.google.eclipse.protobuf.junit.core.XtextRule;
 
 /**
  * Tests fix for <a href="http://code.google.com/p/protobuf-dt/issues/detail?id=91">Issue 91</a>.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Issue91_AddSupportForUTF16Strings_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
-  
-  //  message Foo {
-  //    optional string bar = 1 [default="\\302\\265"];
-  //  }
+
+  // syntax = "proto2";
+  //
+  // message Foo {
+  //   optional string bar = 1 [default="\\302\\265"];
+  // }
   @Test public void should_recognize_UTF16_strings() {
     assertNotNull(xtext.root());
   }

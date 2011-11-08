@@ -26,13 +26,15 @@ import com.google.eclipse.protobuf.validation.ProtobufJavaValidator;
 public class Issue148_FixDuplicateNameError_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
-  
+
   private ProtobufJavaValidator validator;
-  
+
   @Before public void setUp() {
     validator = xtext.getInstanceOf(ProtobufJavaValidator.class);
   }
-  
+
+  // syntax = "proto2";
+  //
   // package abc;
   //
   // message abc {}

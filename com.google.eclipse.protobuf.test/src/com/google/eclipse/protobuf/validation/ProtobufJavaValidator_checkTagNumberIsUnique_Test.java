@@ -15,15 +15,15 @@ import static com.google.eclipse.protobuf.validation.ProtobufJavaValidator.INVAL
 import static org.eclipse.xtext.validation.ValidationMessageAcceptor.INSIGNIFICANT_INDEX;
 import static org.mockito.Mockito.*;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.*;
-
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
 import org.junit.*;
 
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.*;
+
 /**
  * Tests for <code>{@link ProtobufJavaValidator#checkTagNumberIsUnique(Field)}</code>
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufJavaValidator_checkTagNumberIsUnique_Test {
@@ -32,13 +32,15 @@ public class ProtobufJavaValidator_checkTagNumberIsUnique_Test {
 
   private ValidationMessageAcceptor messageAcceptor;
   private ProtobufJavaValidator validator;
-  
+
   @Before public void setUp() {
     messageAcceptor = mock(ValidationMessageAcceptor.class);
     validator = xtext.getInstanceOf(ProtobufJavaValidator.class);
     validator.setMessageAcceptor(messageAcceptor);
   }
 
+  // syntax = "proto2";
+  //
   // message Person {
   //   optional long id = 1;
   //   optional string name = 1;
@@ -49,7 +51,9 @@ public class ProtobufJavaValidator_checkTagNumberIsUnique_Test {
     String message = "Field number 1 has already been used in \"Person\" by field \"id\".";
     verify(messageAcceptor).acceptError(message, name, FIELD__INDEX, INSIGNIFICANT_INDEX, INVALID_FIELD_TAG_NUMBER_ERROR);
   }
-  
+
+  // syntax = "proto2";
+  //
   // message Person {
   //   optional long id = 1;
   //   optional string name = 2;

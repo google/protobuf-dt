@@ -14,10 +14,10 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import org.junit.*;
+
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
-
-import org.junit.*;
 
 /**
  * Tests for <code>{@link ModelFinder#messageFrom(ExtendMessage)}</code>.
@@ -34,6 +34,8 @@ public class ModelFinder_messageFrom_Test {
     finder = xtext.getInstanceOf(ModelFinder.class);
   }
 
+  // syntax = "proto2";
+  //
   // message Person {
   //   optional string name = 1;
   // }
@@ -44,7 +46,7 @@ public class ModelFinder_messageFrom_Test {
     Message message = finder.messageFrom(extension);
     assertThat(message.getName(), equalTo("Person"));
   }
-  
+
   @Test public void should_return_null_if_extension_is_not_referring_to_message() {
     ExtendMessage extension = mock(ExtendMessage.class);
     when(extension.getMessage()).thenReturn(null);

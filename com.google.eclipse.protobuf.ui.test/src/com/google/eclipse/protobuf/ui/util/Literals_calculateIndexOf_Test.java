@@ -13,10 +13,10 @@ import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.*;
-
 import org.junit.*;
+
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.Literal;
 
 /**
  * Tests for <code>{@link Literals#calculateIndexOf(Literal)}</code>.
@@ -33,6 +33,8 @@ public class Literals_calculateIndexOf_Test {
     literals = xtext.getInstanceOf(Literals.class);
   }
 
+  // syntax = "proto2";
+  //
   // enum PhoneType {
   //   MOBILE = 1;
   // }
@@ -42,6 +44,8 @@ public class Literals_calculateIndexOf_Test {
     assertThat(index, equalTo(0L));
   }
 
+  // syntax = "proto2";
+  //
   // enum PhoneType {
   //   MOBILE = 1;
   //   HOME = 5;

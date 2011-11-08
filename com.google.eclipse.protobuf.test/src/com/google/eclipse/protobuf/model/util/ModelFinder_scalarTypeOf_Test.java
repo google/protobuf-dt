@@ -33,6 +33,8 @@ public class ModelFinder_scalarTypeOf_Test {
     finder = xtext.getInstanceOf(ModelFinder.class);
   }
 
+  // syntax = "proto2";
+  //
   // message Person {
   //   optional int32 id = 1;
   // }
@@ -42,6 +44,8 @@ public class ModelFinder_scalarTypeOf_Test {
     assertThat(int32.getName(), equalTo("int32"));
   }
 
+  // syntax = "proto2";
+  //
   // enum PhoneType {
   //   MOBILE = 0;
   //   HOME = 1;

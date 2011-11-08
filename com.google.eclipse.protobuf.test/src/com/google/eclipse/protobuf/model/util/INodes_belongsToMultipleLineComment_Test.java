@@ -20,19 +20,21 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 
 /**
  * Test for <code>{@link INodes#belongsToMultipleLineComment(INode)}</code>
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class INodes_belongsToMultipleLineComment_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
-  
+
   private INodes nodes;
-  
+
   @Before public void setUp() {
     nodes = xtext.getInstanceOf(INodes.class);
   }
-  
+
+  // syntax = "proto2";
+  //
   // /* This is a test. */
   // message Person {}
   @Test public void should_return_true_if_node_belongs_to_multiple_line_comment() {
@@ -40,6 +42,8 @@ public class INodes_belongsToMultipleLineComment_Test {
     assertTrue(nodes.belongsToMultipleLineComment(commentNode));
   }
 
+  // syntax = "proto2";
+  //
   // message Person {}
   @Test public void should_return_false_if_node_does_not_belong_to_single_line_comment() {
     ICompositeNode node = getNode(xtext.root());

@@ -12,12 +12,12 @@ import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.junit.Assert.assertSame;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.*;
+import java.util.*;
 
 import org.junit.*;
 
-import java.util.*;
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.*;
 
 /**
  * Tests for <code>{@link ModelFinder#extensionsOf(Message)}</code>.
@@ -34,6 +34,8 @@ public class ModelFinder_extensionsFrom_Test {
     finder = xtext.getInstanceOf(ModelFinder.class);
   }
 
+  // syntax = "proto2";
+  //
   // message Person {
   //   optional string name = 1;
   // }

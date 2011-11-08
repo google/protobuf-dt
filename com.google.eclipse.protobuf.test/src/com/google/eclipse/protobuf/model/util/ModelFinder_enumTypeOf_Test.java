@@ -34,6 +34,8 @@ public class ModelFinder_enumTypeOf_Test {
     finder = xtext.getInstanceOf(ModelFinder.class);
   }
 
+  // syntax = "proto2";
+  //
   // enum PhoneType {
   //   MOBILE = 0;
   //   HOME = 1;
@@ -49,6 +51,8 @@ public class ModelFinder_enumTypeOf_Test {
     assertThat(phoneType.getName(), equalTo("PhoneType"));
   }
 
+  // syntax = "proto2";
+  //
   // message Person {
   //   optional string name = 1;
   // }

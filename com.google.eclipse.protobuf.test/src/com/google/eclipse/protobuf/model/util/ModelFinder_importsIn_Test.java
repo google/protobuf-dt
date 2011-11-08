@@ -13,12 +13,12 @@ import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.*;
+import java.util.List;
 
 import org.junit.*;
 
-import java.util.List;
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.*;
 
 /**
  * Tests for <code>{@link ModelFinder#importsIn(Protobuf)}</code>.
@@ -37,6 +37,8 @@ public class ModelFinder_importsIn_Test {
     finder = xtext.getInstanceOf(ModelFinder.class);
   }
 
+  // syntax = "proto2";
+  //
   // import "luke.proto";
   // import "leia.proto";
   @Test public void should_return_all_imports() {
@@ -46,6 +48,8 @@ public class ModelFinder_importsIn_Test {
     assertThat(allImports.get(1).getImportURI(), equalTo("leia.proto"));
   }
 
+  // syntax = "proto2";
+  //
   // enum PhoneType {
   //   MOBILE = 0;
   //   HOME = 1;
