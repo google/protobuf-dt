@@ -11,32 +11,29 @@ package com.google.eclipse.protobuf.ui.contentassist;
 import static com.google.eclipse.protobuf.ui.contentassist.IEObjectDescriptionsHaveNames.containOnly;
 import static java.util.Collections.emptyMap;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
-import java.util.*;
+import com.google.eclipse.protobuf.protobuf.Message;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.*;
-import org.eclipse.xtext.scoping.IScope;
 import org.junit.*;
 
-import com.google.eclipse.protobuf.protobuf.Message;
+import java.util.*;
 
 /**
- * Tests for <code>{@link IEObjectDescriptionChooser#shortestQualifiedNamesIn(IScope)}</code>.
+ * Tests for <code>{@link IEObjectDescriptionChooser#shortestQualifiedNamesIn(Collection)}</code>.
  * 
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class IEObjectDescriptionChooser_shortestQualifiedNamesIn_Test {
 
-  private IScope scope;
   private List<IEObjectDescription> descriptions;
   private Map<String, String> userData;
   private IEObjectDescriptionChooser chooser;
   
   @Before public void setUp() {
-    scope = mock(IScope.class);
     userData = emptyMap();
     chooser = new IEObjectDescriptionChooser();
     descriptions = new ArrayList<IEObjectDescription>();
@@ -66,8 +63,7 @@ public class IEObjectDescriptionChooser_shortestQualifiedNamesIn_Test {
   }
   
   @Test public void should_return_descriptions_with_shortest_QualifiedName() {
-    when(scope.getAllElements()).thenReturn(descriptions);
-    Collection<IEObjectDescription> chosen = chooser.shortestQualifiedNamesIn(scope);
+    Collection<IEObjectDescription> chosen = chooser.shortestQualifiedNamesIn(descriptions);
     assertThat(chosen, containOnly("EMail", "Phone"));
   }
 }

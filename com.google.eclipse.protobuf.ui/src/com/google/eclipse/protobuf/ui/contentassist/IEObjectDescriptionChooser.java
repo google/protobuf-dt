@@ -13,7 +13,6 @@ import static java.util.Collections.unmodifiableCollection;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IEObjectDescription;
-import org.eclipse.xtext.scoping.IScope;
 
 import java.util.*;
 
@@ -22,17 +21,17 @@ import java.util.*;
  */
 class IEObjectDescriptionChooser {
 
-  Collection<IEObjectDescription> shortestQualifiedNamesIn(IScope scope) {
-    Map<EObject, IEObjectDescription> descriptions = new HashMap<EObject, IEObjectDescription>();
-    for (IEObjectDescription d : scope.getAllElements()) {
+  Collection<IEObjectDescription> shortestQualifiedNamesIn(Collection<IEObjectDescription> descriptions) {
+    Map<EObject, IEObjectDescription> shortestOnes = new HashMap<EObject, IEObjectDescription>();
+    for (IEObjectDescription d : descriptions) {
       EObject e = d.getEObjectOrProxy();
-      IEObjectDescription stored = descriptions.get(e);
+      IEObjectDescription stored = shortestOnes.get(e);
       if (stored != null) {
         QualifiedName currentName = d.getName();
         if (currentName.getSegmentCount() >= stored.getName().getSegmentCount()) continue; 
       }
-      descriptions.put(e, d);
+      shortestOnes.put(e, d);
     }
-    return unmodifiableCollection(descriptions.values());
+    return unmodifiableCollection(shortestOnes.values());
   }
 }

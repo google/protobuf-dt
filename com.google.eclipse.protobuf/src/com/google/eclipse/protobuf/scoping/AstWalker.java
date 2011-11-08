@@ -43,14 +43,14 @@ class AstWalker {
     }
     Protobuf root = modelFinder.rootOf(start);
     descriptions.addAll(imported(root, scopeFinder, criteria));
-    return descriptions;
+    return unmodifiableSet(descriptions);
   }
 
   Collection<IEObjectDescription> traverseAst(Protobuf start, ScopeFinder scopeFinder, Object criteria) {
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     descriptions.addAll(local(start, scopeFinder, criteria));
     descriptions.addAll(imported(start, scopeFinder, criteria));
-    return descriptions;
+    return unmodifiableSet(descriptions);
   }
 
   private Collection<IEObjectDescription> local(EObject start, ScopeFinder scopeFinder, Object criteria) {
@@ -83,8 +83,8 @@ class AstWalker {
         descriptions.addAll(scopeFinder.fromProtoDescriptor(anImport, criteria));
         continue;
       }
-      Resource importedResource = resources.importedResource(anImport, resourceSet);
-      Protobuf rootOfImported = modelFinder.rootOf(importedResource);
+      Resource imported = resources.importedResource(anImport, resourceSet);
+      Protobuf rootOfImported = modelFinder.rootOf(imported);
       if (rootOfImported instanceof NonProto2) continue;
       if (rootOfImported != null) {
         descriptions.addAll(publicImported(rootOfImported, scopeFinder, criteria));
@@ -93,7 +93,7 @@ class AstWalker {
           continue;
         }
       }
-      descriptions.addAll(local(importedResource, scopeFinder, criteria));
+      descriptions.addAll(local(imported, scopeFinder, criteria));
     }
     return descriptions;
   }

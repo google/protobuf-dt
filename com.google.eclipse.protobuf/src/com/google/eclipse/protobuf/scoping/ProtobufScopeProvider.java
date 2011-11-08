@@ -30,7 +30,7 @@ import java.util.*;
  *
  * @see <a href="http://www.eclipse.org/Xtext/documentation/latest/xtext.html#scoping">Xtext Scoping</a>
  */
-public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
+public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider implements Scoping {
 
   private static final boolean DO_NOT_IGNORE_CASE = false;
 
@@ -109,44 +109,98 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     }
     if (c instanceof CustomOption) {
       CustomOption option = (CustomOption) c;
-      return allPossibleSourcesOf(option);
+      return createScope(findSources(option));
     }
     if (c instanceof CustomFieldOption) {
       CustomFieldOption option = (CustomFieldOption) c;
-      return allPossibleSourcesOf(option);
+      return createScope(findSources(option));
     }
     Set<IEObjectDescription> descriptions = emptySet();
     return createScope(descriptions);
   }
   
-  public IScope allPossibleSourcesOf(CustomOption option) {
+  @Override public Collection<IEObjectDescription> findSources(CustomOption option) {
     OptionType optionType = typeOf(option);
     Collection<IEObjectDescription> descriptions = emptySet();
     if (optionType != null) {
       descriptions = astWalker.traverseAst(option, customOptionScopeFinder, optionType);
     }
-    return createScope(descriptions);
+    return descriptions;
   }
 
-  public IScope allPossibleSourcesOf(CustomFieldOption option) {
+  @Override public Collection<IEObjectDescription> findSources(CustomFieldOption option) {
     OptionType optionType = typeOf(option);
     Collection<IEObjectDescription> descriptions = emptySet();
     if (optionType != null) {
       descriptions = astWalker.traverseAst(option, customOptionScopeFinder, optionType);
     }
-    return createScope(descriptions);
+    return descriptions;
   }
 
   @SuppressWarnings("unused") 
   public IScope scope_OptionMessageFieldSource_optionMessageField(OptionMessageFieldSource source, 
       EReference reference) {
-    return createScope(customOptionFieldScopeFinder.findScope(source));
+    return createScope(findSources(source));
+  }
+  
+  @Override public Collection<IEObjectDescription> findSources(OptionMessageFieldSource source) {
+    EObject container = source.eContainer();
+    if (container instanceof CustomOption) {
+      return findSources((CustomOption) container, source);
+    }
+    if (container instanceof CustomFieldOption) {
+      return findSources((CustomFieldOption) container, source);
+    }
+    return emptySet();
+  }
+  
+  @Override public Collection<IEObjectDescription> findNextMessageFieldSources(CustomOption option) {
+    return findSources(option, (OptionMessageFieldSource) null);
+  }
+
+  @Override public Collection<IEObjectDescription> findNextMessageFieldSources(CustomFieldOption option) {
+    return findSources(option, (OptionMessageFieldSource) null);
+  }
+
+  private Collection<IEObjectDescription> findSources(CustomOption option, OptionMessageFieldSource source) {
+    return customOptionFieldScopeFinder.findScope(option, source);
+  }
+
+  private Collection<IEObjectDescription> findSources(CustomFieldOption option, OptionMessageFieldSource source) {
+    return customOptionFieldScopeFinder.findScope(option, source);
   }
   
   @SuppressWarnings("unused") 
   public IScope scope_OptionExtendMessageFieldSource_optionExtendMessageField(OptionExtendMessageFieldSource source, 
       EReference reference) {
-    return createScope(customOptionFieldScopeFinder.findScope(source));
+    return createScope(findSources(source));
+  }
+  
+  @Override public Collection<IEObjectDescription> findSources(OptionExtendMessageFieldSource source) {
+    EObject container = source.eContainer();
+    if (container instanceof CustomOption) {
+      return findSources((CustomOption) container, source);
+    }
+    if (container instanceof CustomFieldOption) {
+      return findSources((CustomFieldOption) container, source);
+    }
+    return emptySet();
+  }
+
+  @Override public Collection<IEObjectDescription> findNextExtendMessageFieldSources(CustomOption option) {
+    return findSources(option, (OptionExtendMessageFieldSource) null);
+  }
+
+  @Override public Collection<IEObjectDescription> findNextExtendMessageFieldSources(CustomFieldOption option) {
+    return findSources(option, (OptionExtendMessageFieldSource) null);
+  }
+
+  private Collection<IEObjectDescription> findSources(CustomOption option, OptionExtendMessageFieldSource source) {
+    return customOptionFieldScopeFinder.findScope(option, source);
+  }
+
+  private Collection<IEObjectDescription> findSources(CustomFieldOption option, OptionExtendMessageFieldSource source) {
+    return customOptionFieldScopeFinder.findScope(option, source);
   }
   
   private static IScope createScope(Iterable<IEObjectDescription> descriptions) {
