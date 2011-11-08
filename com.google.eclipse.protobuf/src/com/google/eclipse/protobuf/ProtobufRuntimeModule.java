@@ -14,6 +14,7 @@ import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.parser.antlr.ISyntaxErrorMessageProvider;
 import org.eclipse.xtext.resource.IGlobalServiceProvider;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
+import org.eclipse.xtext.validation.IResourceValidator;
 
 import com.google.eclipse.protobuf.conversion.ProtobufTerminalConverters;
 import com.google.eclipse.protobuf.naming.ProtobufQualifiedNameProvider;
@@ -31,11 +32,11 @@ public class ProtobufRuntimeModule extends com.google.eclipse.protobuf.AbstractP
   public Class<? extends IGlobalServiceProvider> bindIGlobalServiceProvider() {
     return ResourceServiceProvider.class;
   }
-  
+
   public Class<? extends ImportUriResolver> bindImportUriResolver() {
     return ProtobufImportUriResolver.class;
   }
-  
+
   @Override public Class<? extends org.eclipse.xtext.parser.IParser> bindIParser() {
     return Proto2OnlyParser.class;
   }
@@ -44,14 +45,18 @@ public class ProtobufRuntimeModule extends com.google.eclipse.protobuf.AbstractP
     return ProtobufQualifiedNameProvider.class;
   }
 
+  public Class<? extends IResourceValidator> bindIResourceValidator() {
+    return ProtobufResourceValidator.class;
+  }
+
   public Class<? extends ISyntaxErrorMessageProvider> bindISyntaxErrorMessageProvider() {
     return ProtobufSyntaxErrorMessageProvider.class;
   }
-  
+
   @Override public Class<? extends IValueConverterService> bindIValueConverterService() {
     return ProtobufTerminalConverters.class;
   }
-  
+
   public void configureExtensionRegistry(Binder binder) {
     binder.bind(IExtensionRegistry.class).toProvider(ExtensionRegistryProvider.class);
   }
