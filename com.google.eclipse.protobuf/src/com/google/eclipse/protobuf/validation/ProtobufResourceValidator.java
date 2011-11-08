@@ -10,7 +10,7 @@ package com.google.eclipse.protobuf.validation;
 
 import static com.google.common.collect.Lists.newArrayListWithExpectedSize;
 import static com.google.common.collect.Maps.newHashMap;
-import static com.google.eclipse.protobuf.validation.Messages.importingNonProto2;
+import static com.google.eclipse.protobuf.validation.Messages.*;
 import static org.eclipse.xtext.diagnostics.Severity.*;
 import static org.eclipse.xtext.validation.AbstractInjectableValidator.CURRENT_LANGUAGE_NAME;
 import static org.eclipse.xtext.validation.CancelableDiagnostician.CANCEL_INDICATOR;
@@ -72,7 +72,8 @@ public class ProtobufResourceValidator extends ResourceValidatorImpl {
             severity = WARNING;
             ProtobufLinkingDiagnostic d = (ProtobufLinkingDiagnostic) error;
             if (!d.getMessage().endsWith(".")) d.appendToMessage(".");
-            d.appendToMessage(" It may be caused by a non-proto2 file imported directly or indirectly.");
+            d.appendToMessage(" ");
+            d.appendToMessage(scopingError);
           }
           issueFromXtextResourceDiagnostic(error, severity, acceptor);
         }
