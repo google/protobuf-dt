@@ -16,6 +16,8 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.xtext.nodemodel.INode;
 
+import java.util.List;
+
 import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.*;
@@ -65,8 +67,32 @@ import com.google.inject.*;
 
   private Object labelFor(Option o) {
     Field f = options.sourceOf(o);
-    if (f instanceof Property) return ((Property) f).getName();
-    return null;
+    String name = options.nameForOption(f);
+    StringBuilder b = new StringBuilder();
+    b.append(name);
+    if (o instanceof CustomOption) {
+      appendFields(b, ((CustomOption) o).getOptionFields());
+    }
+    if (o instanceof CustomFieldOption) {
+      appendFields(b, ((CustomFieldOption) o).getOptionFields());
+    }
+    return b.toString();
+  }
+  
+  private void appendFields(StringBuilder b, List<OptionFieldSource> fields) {
+    for (OptionFieldSource field : fields) {
+      b.append(".");
+      if (field instanceof OptionMessageFieldSource) {
+        Field source = ((OptionMessageFieldSource) field).getOptionMessageField();
+        b.append(options.nameForOption(source));
+      }
+      if (field instanceof OptionExtendMessageFieldSource) {
+        Field source = ((OptionExtendMessageFieldSource) field).getOptionExtendMessageField();
+        b.append("(")
+         .append(options.nameForOption(source))
+         .append(")");
+      }
+    }
   }
 
   private Object labelFor(ExtendMessage e) {

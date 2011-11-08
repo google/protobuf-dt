@@ -20,7 +20,8 @@ import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.util.*;
 
 import com.google.common.base.Function;
-import com.google.eclipse.protobuf.model.util.ModelFinder;
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.protobuf.Field;
 import com.google.inject.*;
 
 /**
@@ -60,6 +61,7 @@ class LocalNamesProvider {
   @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
 
   @Inject private ModelFinder finder;
+  @Inject private Options options;
   @Inject private QualifiedNames qualifiedNames;
 
   private final Function<EObject, String> resolver = newResolver(String.class, "name");
@@ -70,8 +72,9 @@ class LocalNamesProvider {
       @Override public List<QualifiedName> get() {
         List<QualifiedName> allNames = new ArrayList<QualifiedName>();
         EObject current = obj;
-        String name = resolver.apply(current);
+        String name = (obj instanceof Field) ? options.nameForOption((Field) current) : resolver.apply(current);
         if (isEmpty(name)) return emptyList();
+        
         QualifiedName qualifiedName = converter.toQualifiedName(name);
         allNames.add(qualifiedName);
         while (current.eContainer() != null) {

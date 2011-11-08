@@ -108,12 +108,8 @@ class CustomOptionFieldScopeFinder {
 
     private IEObjectDescription describe(EObject e) {
       if (!(e instanceof Field)) return null;
-      Field f = (Field) e;
-      String name = f.getName();
-      if (name != null && f instanceof Group) {
-        name = name.toLowerCase();
-      }
-      return create(name, f);
+      String name = options.nameForOption((Field) e);
+      return create(name, e);
     }
   }
 

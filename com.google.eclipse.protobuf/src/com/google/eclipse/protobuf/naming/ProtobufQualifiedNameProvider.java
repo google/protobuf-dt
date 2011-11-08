@@ -17,7 +17,7 @@ import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.util.*;
 
 import com.google.common.base.Function;
-import com.google.eclipse.protobuf.model.util.ModelFinder;
+import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.inject.*;
@@ -33,6 +33,7 @@ public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.Abstra
   @Inject private final IResourceScopeCache cache = IResourceScopeCache.NullImpl.INSTANCE;
 
   @Inject private ModelFinder finder;
+  @Inject private Options options;
 
   private final Function<EObject, String> resolver = newResolver(String.class, "name");
 
@@ -41,9 +42,8 @@ public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.Abstra
     return cache.get(key, obj.eResource(), new Provider<QualifiedName>() {
       @Override public QualifiedName get() {
         EObject current = obj;
-        String name = resolver.apply(current);
+        String name = (obj instanceof Field) ? options.nameForOption((Field) current) : resolver.apply(current);
         if (isEmpty(name)) return null;
-        if (obj instanceof Group) name = name.toLowerCase();
         QualifiedName qualifiedName = converter.toQualifiedName(name);
         while (current.eContainer() != null) {
           current = current.eContainer();

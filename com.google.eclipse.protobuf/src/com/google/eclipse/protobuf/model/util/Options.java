@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
+import static org.eclipse.xtext.util.Strings.isEmpty;
+
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.*;
 
@@ -54,5 +56,12 @@ public class Options {
     if (fields.isEmpty()) return null;
     OptionFieldSource last = fields.get(fields.size() - 1);
     return optionFields.sourceOf(last);
+  }
+  
+  public String nameForOption(Field f) {
+    String name = f.getName();
+    if (isEmpty(name)) return name;
+    if (f instanceof Group) name = name.toLowerCase();
+    return name;
   }
 }
