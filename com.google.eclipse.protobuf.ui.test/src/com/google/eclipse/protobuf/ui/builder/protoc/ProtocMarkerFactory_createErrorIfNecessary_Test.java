@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.builder;
+package com.google.eclipse.protobuf.ui.builder.protoc;
 
 import static com.google.eclipse.protobuf.junit.stubs.resources.MarkerStub.error;
 import static org.eclipse.xtext.ui.MarkerTypes.FAST_VALIDATION;
@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.*;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.stubs.resources.*;
+import com.google.eclipse.protobuf.ui.builder.protoc.ProtocMarkerFactory;
 
 /**
  * Tests for <code>{@link ProtocMarkerFactory#createErrorIfNecessary(String, String, int)}</code>.

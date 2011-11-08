@@ -13,22 +13,22 @@ import static com.google.eclipse.protobuf.validation.Messages.*;
 import static java.lang.String.format;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.*;
-import org.eclipse.xtext.naming.*;
-import org.eclipse.xtext.scoping.impl.ImportUriResolver;
-import org.eclipse.xtext.validation.Check;
-
 import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.parser.NonProto2;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.inject.Inject;
 
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.naming.*;
+import org.eclipse.xtext.scoping.impl.ImportUriResolver;
+import org.eclipse.xtext.validation.*;
+
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
+@ComposedChecks(validators = { ImportValidator.class })
 public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
 
   public static final String SYNTAX_IS_NOT_PROTO2_ERROR = "syntaxIsNotProto2";
@@ -36,11 +36,9 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
   public static final String MORE_THAN_ONE_PACKAGE_ERROR = "moreThanOnePackage";
 
   @Inject private FieldOptions fieldOptions;
-  @Inject private ModelFinder finder;
   @Inject private ImportUriResolver uriResolver;
   @Inject private IQualifiedNameProvider qualifiedNameProvider;
   @Inject private Properties properties;
-  @Inject private Resources resources;
 
   @Check public void checkIsProto2(Protobuf protobuf) {
     if (protobuf instanceof NonProto2) {
@@ -62,25 +60,6 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
     }
   }
   
-  @Check public void checkIsImportingNonProto2File(Import anImport) {
-    if (!retryUntilItIsResolved(anImport)) return;
-    Resource imported = importedResource(anImport);
-    Protobuf root = finder.rootOf(imported);
-    if (root instanceof NonProto2) {
-      warning(importingNonProto2, IMPORT__IMPORT_URI);
-    }
-  }
-  
-  private Resource importedResource(Import anImport) {
-    ResourceSet resourceSet = resourceSet(anImport);
-    return resources.importedResource(anImport, resourceSet);
-  }
-  
-  private ResourceSet resourceSet(EObject e) {
-    Protobuf root = finder.rootOf(e);
-    return root.eResource().getResourceSet();
-  }
-
   @Check public void checkImportIsResolved(Import anImport) {
     if (retryUntilItIsResolved(anImport)) return;
     error(format(importNotFound, anImport.getImportURI()), IMPORT__IMPORT_URI);

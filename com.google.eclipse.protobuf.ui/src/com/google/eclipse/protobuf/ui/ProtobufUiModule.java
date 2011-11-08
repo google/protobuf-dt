@@ -26,7 +26,7 @@ import org.eclipse.xtext.ui.editor.quickfix.XtextQuickAssistProcessor;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.*;
 
 import com.google.eclipse.protobuf.scoping.IFileUriResolver;
-import com.google.eclipse.protobuf.ui.builder.AutoAddNatureEditorCallback;
+import com.google.eclipse.protobuf.ui.builder.nature.AutoAddNatureEditorCallback;
 import com.google.eclipse.protobuf.ui.documentation.ProtobufDocumentationProvider;
 import com.google.eclipse.protobuf.ui.editor.ProtobufUriEditorOpener;
 import com.google.eclipse.protobuf.ui.editor.hyperlinking.ProtobufHyperlinkDetector;

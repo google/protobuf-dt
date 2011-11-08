@@ -6,9 +6,9 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.builder;
+package com.google.eclipse.protobuf.ui.builder.protoc;
 
-import static com.google.eclipse.protobuf.ui.builder.OutputDirectories.findOrCreateOutputDirectories;
+import static com.google.eclipse.protobuf.ui.builder.protoc.OutputDirectories.findOrCreateOutputDirectories;
 import static com.google.eclipse.protobuf.ui.exception.CoreExceptions.error;
 import static com.google.eclipse.protobuf.ui.preferences.pages.compiler.PostCompilationRefreshTarget.PROJECT;
 import static com.google.eclipse.protobuf.ui.preferences.pages.paths.PathResolutionType.MULTIPLE_DIRECTORIES;

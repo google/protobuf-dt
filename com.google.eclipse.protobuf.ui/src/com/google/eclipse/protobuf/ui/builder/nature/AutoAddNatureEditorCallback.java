@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.builder;
+package com.google.eclipse.protobuf.ui.builder.nature;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;

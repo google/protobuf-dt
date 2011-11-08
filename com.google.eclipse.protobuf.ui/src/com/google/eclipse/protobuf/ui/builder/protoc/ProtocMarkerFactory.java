@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.builder;
+package com.google.eclipse.protobuf.ui.builder.protoc;
 
 import static org.eclipse.core.resources.IMarker.*;
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;

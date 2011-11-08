@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.builder;
+package com.google.eclipse.protobuf.ui.builder.protoc;
 
 import static com.google.eclipse.protobuf.util.CommonWords.space;
 
