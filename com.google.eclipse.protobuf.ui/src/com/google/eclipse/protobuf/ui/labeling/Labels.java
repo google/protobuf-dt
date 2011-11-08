@@ -69,7 +69,10 @@ import com.google.inject.*;
     Field f = options.sourceOf(o);
     String name = options.nameForOption(f);
     StringBuilder b = new StringBuilder();
+    boolean isCustomOption = o instanceof CustomOption || o instanceof CustomFieldOption;
+    if (isCustomOption) b.append("(");
     b.append(name);
+    if (isCustomOption) b.append(")");
     if (o instanceof CustomOption) {
       appendFields(b, ((CustomOption) o).getOptionFields());
     }
