@@ -11,8 +11,6 @@ package com.google.eclipse.protobuf.scoping;
 import java.util.*;
 import java.util.Map.Entry;
 
-import org.eclipse.emf.ecore.EObject;
-
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 
@@ -31,6 +29,7 @@ enum OptionType {
   static {
     OPTION_TYPES_BY_CONTAINER.put(Protobuf.class, FILE);
     OPTION_TYPES_BY_CONTAINER.put(Enum.class, ENUM);
+    OPTION_TYPES_BY_CONTAINER.put(Literal.class, LITERAL);
     OPTION_TYPES_BY_CONTAINER.put(Message.class, MESSAGE);
     OPTION_TYPES_BY_CONTAINER.put(Field.class, FIELD);
     OPTION_TYPES_BY_CONTAINER.put(Service.class, SERVICE);
@@ -70,7 +69,7 @@ enum OptionType {
     return findOptionTypeForLevelOf(option.eContainer());
   }
 
-  static OptionType findOptionTypeForLevelOf(EObject container) {
+  static OptionType findOptionTypeForLevelOf(Object container) {
     for (Entry<Class<?>, OptionType> optionTypeByContainer : OPTION_TYPES_BY_CONTAINER.entrySet()) {
       if (optionTypeByContainer.getKey().isInstance(container)) {
         return optionTypeByContainer.getValue();

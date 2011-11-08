@@ -28,21 +28,21 @@ import com.google.eclipse.protobuf.protobuf.*;
 
 /**
  * Tests fix for <a href="http://code.google.com/p/protobuf-dt/issues/detail?id=147">Issue 147</a>.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Issue147_AddSupportForGroupOptions_Test {
 
   private static EReference reference;
-  
+
   @BeforeClass public static void setUpOnce() {
     reference = mock(EReference.class);
   }
-  
+
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
-  
+
   private ProtobufScopeProvider provider;
-  
+
   @Before public void setUp() {
     provider = xtext.getInstanceOf(ProtobufScopeProvider.class);
   }
@@ -52,37 +52,37 @@ public class Issue147_AddSupportForGroupOptions_Test {
   //     required int64 groupId = 2;
   //   }
   // }
-  @Test public void should_provide_Property_fields_for_native_option() {
+  @Test public void should_provide_fields_for_native_option() {
     NativeFieldOption option = xtext.find("deprecated", NativeFieldOption.class);
     IScope scope = provider.scope_OptionSource_optionField(option.getSource(), reference);
     Collection<Property> fieldOptions = descriptor().optionsOfType(FIELD);
     assertThat(descriptionsIn(scope), containAll(fieldOptions));
   }
-  
+
   private ProtoDescriptor descriptor() {
     ProtoDescriptorProvider descriptorProvider = xtext.getInstanceOf(ProtoDescriptorProvider.class);
     return descriptorProvider.primaryDescriptor();
   }
-  
+
   // package com.google.proto;
   // import 'google/protobuf/descriptor.proto';
-  //  
+  //
   // extend google.protobuf.FieldOptions {
   //   optional int32 code = 1000;
   //   optional int32 info = 1001;
   // }
-  //  
+  //
   // message Person {
   //   repeated group membership = 1 [(code) = 68] {
   //     required int64 groupId = 2;
   //   }
   // }
-  @Test public void should_provide_Property_fields_for_custom_option() {
+  @Test public void should_provide_fields_for_custom_option() {
     CustomFieldOption option = xtext.find("code", ")", CustomFieldOption.class);
     IScope scope = provider.scope_OptionSource_optionField(option.getSource(), reference);
-    assertThat(descriptionsIn(scope), containAll("code", "proto.code", "google.proto.code", "com.google.proto.code", 
+    assertThat(descriptionsIn(scope), containAll("code", "proto.code", "google.proto.code", "com.google.proto.code",
                                                  ".com.google.proto.code",
-                                                 "info", "proto.info", "google.proto.info", "com.google.proto.info", 
+                                                 "info", "proto.info", "google.proto.info", "com.google.proto.info",
                                                  ".com.google.proto.info"));
   }
 }
