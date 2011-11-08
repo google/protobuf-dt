@@ -8,10 +8,10 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
+import java.util.List;
+
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.*;
-
-import java.util.List;
 
 /**
  * Utility methods related to field options.
@@ -42,7 +42,7 @@ public class FieldOptions {
     if (f instanceof Property) return ((Property) f).getName();
     return null;
   }
-  
+
   /**
    * Returns the <code>{@link Property}</code> the given <code>{@link FieldOption}</code> is referring to. In the
    * following example
@@ -63,6 +63,7 @@ public class FieldOptions {
       CustomFieldOption customOption = (CustomFieldOption) option;
       source = customOption.getSource();
     }
+    // TODO add support for default
     return (source == null) ? null : source.getOptionField();
   }
 
@@ -74,7 +75,7 @@ public class FieldOptions {
    * </pre>
    * this method will return the field that "foo" is pointing to.
    * @param option the given {@code CustomFieldOption}.
-   * @return the last field of the given {@code CustomFieldOption} is referring to, or {@code null} if one cannot be 
+   * @return the last field of the given {@code CustomFieldOption} is referring to, or {@code null} if one cannot be
    * found.
    */
   public Field lastFieldSourceFrom(CustomFieldOption option) {

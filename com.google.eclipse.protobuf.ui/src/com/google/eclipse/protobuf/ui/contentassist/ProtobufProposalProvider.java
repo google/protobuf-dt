@@ -26,7 +26,6 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.xtext.*;
 import org.eclipse.xtext.naming.QualifiedName;
-import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.ui.PluginImageHelper;
 import org.eclipse.xtext.ui.editor.contentassist.*;
@@ -447,8 +446,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void complete_OptionMessageFieldSource(EObject model, RuleCall ruleCall,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    INode node = context.getCurrentNode();
-    EObject e = findActualSemanticObjectFor(node);
+    EObject e = findActualSemanticObjectFor(context.getCurrentNode());
+    if (e instanceof Protobuf) e = model;
     Collection<IEObjectDescription> scope = emptySet();
     if (e instanceof CustomOption) {
       CustomOption option = (CustomOption) e;
@@ -470,8 +469,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void complete_OptionExtendMessageFieldSource(EObject model, RuleCall ruleCall,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    INode node = context.getCurrentNode();
-    EObject e = findActualSemanticObjectFor(node);
+    EObject e = findActualSemanticObjectFor(context.getCurrentNode());
+    if (e instanceof Protobuf) e = model;
     Collection<IEObjectDescription> scope = emptySet();
     if (e instanceof CustomOption) {
       CustomOption option = (CustomOption) e;
