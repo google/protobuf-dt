@@ -8,7 +8,6 @@
  */
 package com.google.eclipse.protobuf.naming;
 
-import static org.eclipse.xtext.util.SimpleAttributeResolver.newResolver;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 import static org.eclipse.xtext.util.Tuples.pair;
 
@@ -16,9 +15,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.util.*;
 
-import com.google.common.base.Function;
 import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.naming.Naming.NameTarget;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.inject.*;
 
@@ -33,16 +31,18 @@ public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.Abstra
   @Inject private final IResourceScopeCache cache = IResourceScopeCache.NullImpl.INSTANCE;
 
   @Inject private ModelFinder finder;
-  @Inject private Options options;
+  @Inject private Naming naming;
 
-  private final Function<EObject, String> resolver = newResolver(String.class, "name");
+  @Override public QualifiedName getFullyQualifiedName(EObject e) {
+    return getFullyQualifiedName(e, NameTarget.TYPE);
+  }
 
-  @Override public QualifiedName getFullyQualifiedName(final EObject obj) {
-    Pair<EObject, String> key = pair(obj, "fqn");
-    return cache.get(key, obj.eResource(), new Provider<QualifiedName>() {
+  public QualifiedName getFullyQualifiedName(final EObject e, final NameTarget target) {
+    Pair<EObject, String> key = pair(e, "fqn");
+    return cache.get(key, e.eResource(), new Provider<QualifiedName>() {
       @Override public QualifiedName get() {
-        EObject current = obj;
-        String name = (obj instanceof Field) ? options.nameForOption((Field) current) : resolver.apply(current);
+        EObject current = e;
+        String name = naming.nameOf(e, target);
         if (isEmpty(name)) return null;
         QualifiedName qualifiedName = converter.toQualifiedName(name);
         while (current.eContainer() != null) {
@@ -51,7 +51,7 @@ public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.Abstra
           if (parentsQualifiedName != null)
             return parentsQualifiedName.append(qualifiedName);
         }
-        return addPackage(obj, qualifiedName);
+        return addPackage(e, qualifiedName);
       }
     });
   }

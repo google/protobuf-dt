@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static com.google.eclipse.protobuf.naming.Naming.NameTarget.OPTION;
 import static java.util.Collections.emptySet;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
@@ -17,6 +18,7 @@ import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
 import com.google.eclipse.protobuf.model.util.ModelFinder;
+import com.google.eclipse.protobuf.naming.Naming.NameTarget;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.Inject;
 
@@ -24,6 +26,8 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class CustomOptionScopeFinder implements ScopeFinder {
+
+  private static final NameTarget NAME_TARGET = OPTION;
 
   @Inject private LocalNamesProvider localNamesProvider;
   @Inject private ModelFinder modelFinder;
@@ -39,7 +43,7 @@ class CustomOptionScopeFinder implements ScopeFinder {
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     ExtendMessage extend = (ExtendMessage) target;
     for (MessageElement e : extend.getElements()) {
-      descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(e));
+      descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(e, NAME_TARGET));
     }
     return descriptions;
   }
@@ -50,12 +54,12 @@ class CustomOptionScopeFinder implements ScopeFinder {
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     ExtendMessage extend = (ExtendMessage) target;
     for (MessageElement e : extend.getElements()) {
-      List<QualifiedName> names = localNamesProvider.namesOf(e);
+      List<QualifiedName> names = localNamesProvider.namesOf(e, NAME_TARGET);
       int nameCount = names.size();
       for (int i = level; i < nameCount; i++) {
         descriptions.add(create(names.get(i), e));
       }
-      descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(e));
+      descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(e, NAME_TARGET));
     }
     return descriptions;
   }

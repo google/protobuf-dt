@@ -59,12 +59,12 @@ public class SLCommentDocumentationProvider implements IEObjectDocumentationProv
 
   private EObject findRealTarget(EObject o) {
     if (o instanceof Option) {
-      Field p = options.sourceOf((Option) o);
-      return p != null ? p : o;
+      IndexedElement e = options.sourceOf((Option) o);
+      return e != null ? e : o;
     }
     if (o instanceof FieldOption) {
-      Field p = fieldOptions.sourceOf((FieldOption) o);
-      return p != null ? p : o;
+      IndexedElement e = fieldOptions.sourceOf((FieldOption) o);
+      return e != null ? e : o;
     }
     return o;
   }

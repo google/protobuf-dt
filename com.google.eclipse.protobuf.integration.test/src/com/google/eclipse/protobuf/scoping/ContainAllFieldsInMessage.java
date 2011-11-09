@@ -39,25 +39,30 @@ class ContainAllFieldsInMessage extends BaseMatcher<IEObjectDescriptions> {
   @Override public boolean matches(Object arg) {
     if (!(arg instanceof IEObjectDescriptions)) return false;
     IEObjectDescriptions descriptions = (IEObjectDescriptions) arg;
-    List<Field> fields = allFields();
-    if (descriptions.size() != fields.size()) return false;
-    for (Field field : fields) {
-      String name = field.getName();
+    List<IndexedElement> elements = allIndexedElements();
+    if (descriptions.size() != elements.size()) return false;
+    for (IndexedElement e : elements) {
+      String name = nameOf(e);
       EObject described = descriptions.objectDescribedAs(name);
-      if (described != field) return false;
+      if (described != e) return false;
     }
     return true;
   }
 
   @Override public void describeTo(Description description) {
     List<String> names = new ArrayList<String>();
-    for (Field field : allFields()) {
-      names.add(field.getName());
+    for (IndexedElement e : allIndexedElements()) {
+      names.add(nameOf(e));
     }
     description.appendValue(names);
   }
 
-  private List<Field> allFields() {
-    return getAllContentsOfType(container, Field.class);
+  private List<IndexedElement> allIndexedElements() {
+    return getAllContentsOfType(container, IndexedElement.class);
+  }
+
+  private String nameOf(IndexedElement e) {
+    if (e == null) return null;
+    return (e instanceof Group) ? ((Group) e).getName() : ((Property) e).getName(); 
   }
 }

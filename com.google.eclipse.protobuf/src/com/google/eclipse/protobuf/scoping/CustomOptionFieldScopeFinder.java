@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static com.google.eclipse.protobuf.naming.Naming.NameTarget.OPTION;
 import static java.util.Collections.*;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
@@ -37,12 +38,12 @@ class CustomOptionFieldScopeFinder {
 
   private Collection<IEObjectDescription> findScope(final CustomOption option, EObject source,
       IEObjectDescriptionsProvider provider) {
-    Field f = referredField(source, option.getOptionFields(), new Provider<Field>() {
-      @Override public Field get() {
+    IndexedElement e = referredField(source, option.getOptionFields(), new Provider<IndexedElement>() {
+      @Override public IndexedElement get() {
         return options.sourceOf(option);
       }
     });
-    if (f != null) return provider.fieldsInType(f);
+    if (e != null) return provider.fieldsInType(e);
     return emptySet();
   }
 
@@ -52,12 +53,12 @@ class CustomOptionFieldScopeFinder {
 
   private Collection<IEObjectDescription> findScope(final CustomFieldOption option, EObject source,
       IEObjectDescriptionsProvider provider) {
-    Field f = referredField(source, option.getOptionFields(), new Provider<Field>() {
-      @Override public Field get() {
+    IndexedElement e = referredField(source, option.getOptionFields(), new Provider<IndexedElement>() {
+      @Override public IndexedElement get() {
         return fieldOptions.sourceOf(option);
       }
     });
-    if (f != null) return provider.fieldsInType(f);
+    if (e != null) return provider.fieldsInType(e);
     return emptySet();
   }
 
@@ -69,8 +70,8 @@ class CustomOptionFieldScopeFinder {
     return findScope(option, source, new ExtendMessageFieldDescriptorProvider());
   }
 
-  private Field referredField(EObject source, List<OptionFieldSource> allFieldSources,
-      Provider<Field> provider) {
+  private IndexedElement referredField(EObject source, List<OptionFieldSource> allFieldSources,
+      Provider<IndexedElement> provider) {
     OptionFieldSource previous = null;
     boolean isFirstField = true;
     for (OptionFieldSource s : allFieldSources) {
@@ -88,18 +89,18 @@ class CustomOptionFieldScopeFinder {
   }
 
   private class MessageFieldDescriptorProvider implements IEObjectDescriptionsProvider {
-    @Override public Collection<IEObjectDescription> fieldsInType(Field f) {
+    @Override public Collection<IEObjectDescription> fieldsInType(IndexedElement e) {
       Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
-      if (f instanceof Property) {
-        Message propertyType = modelFinder.messageTypeOf((Property) f);
-        for (MessageElement e : propertyType.getElements()) {
-          IEObjectDescription d = describe(e);
+      if (e instanceof Property) {
+        Message propertyType = modelFinder.messageTypeOf((Property) e);
+        for (MessageElement element : propertyType.getElements()) {
+          IEObjectDescription d = describe(element);
           if (d != null) descriptions.add(d);
         }
       }
-      if (f instanceof Group) {
-        for (GroupElement e : ((Group) f).getElements()) {
-          IEObjectDescription d = describe(e);
+      if (e instanceof Group) {
+        for (GroupElement element : ((Group) e).getElements()) {
+          IEObjectDescription d = describe(element);
           if (d != null) descriptions.add(d);
         }
       }
@@ -107,23 +108,23 @@ class CustomOptionFieldScopeFinder {
     }
 
     private IEObjectDescription describe(EObject e) {
-      if (!(e instanceof Field)) return null;
-      String name = options.nameForOption((Field) e);
+      if (!(e instanceof IndexedElement)) return null;
+      String name = options.nameForOption((IndexedElement) e);
       return create(name, e);
     }
   }
 
   private class ExtendMessageFieldDescriptorProvider implements IEObjectDescriptionsProvider {
-    @Override public Collection<IEObjectDescription> fieldsInType(Field f) {
-      if (!(f instanceof Property)) return emptyList();
-      Message propertyType = modelFinder.messageTypeOf((Property) f);
+    @Override public Collection<IEObjectDescription> fieldsInType(IndexedElement e) {
+      if (!(e instanceof Property)) return emptyList();
+      Message propertyType = modelFinder.messageTypeOf((Property) e);
       if (propertyType == null) return emptyList();
       Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
       for (ExtendMessage extend : modelFinder.extensionsOf(propertyType)) {
-        for (MessageElement e : extend.getElements()) {
-          if (!(e instanceof Property)) continue;
-          Property current = (Property) e;
-          descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(current));
+        for (MessageElement element : extend.getElements()) {
+          if (!(element instanceof Property)) continue;
+          Property current = (Property) element;
+          descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(current, OPTION));
           descriptions.add(create(current.getName(), current));
         }
       }
@@ -132,6 +133,6 @@ class CustomOptionFieldScopeFinder {
   }
 
   private static interface IEObjectDescriptionsProvider {
-    Collection<IEObjectDescription> fieldsInType(Field f);
+    Collection<IEObjectDescription> fieldsInType(IndexedElement e);
   }
 }

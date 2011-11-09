@@ -31,7 +31,7 @@ enum OptionType {
     OPTION_TYPES_BY_CONTAINER.put(Enum.class, ENUM);
     OPTION_TYPES_BY_CONTAINER.put(Literal.class, LITERAL);
     OPTION_TYPES_BY_CONTAINER.put(Message.class, MESSAGE);
-    OPTION_TYPES_BY_CONTAINER.put(Field.class, FIELD);
+    OPTION_TYPES_BY_CONTAINER.put(IndexedElement.class, FIELD);
     OPTION_TYPES_BY_CONTAINER.put(Service.class, SERVICE);
     OPTION_TYPES_BY_CONTAINER.put(Rpc.class, RPC);
   }

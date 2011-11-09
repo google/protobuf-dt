@@ -50,7 +50,8 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     EObject c = typeRef.eContainer();
     if (c instanceof Property) {
       Property property = (Property) c;
-      return createScope(astWalker.traverseAst(property, typeScopeFinder, Type.class));
+      Class<?>[] types = { Type.class, Group.class };
+      return createScope(astWalker.traverseAst(property, typeScopeFinder, types));
     }
     Set<IEObjectDescription> descriptions = emptySet();
     return createScope(descriptions);
@@ -59,39 +60,40 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   @SuppressWarnings("unused")
   public IScope scope_MessageRef_type(MessageRef messageRef, EReference reference) {
     Protobuf root = modelFinder.rootOf(messageRef);
-    return createScope(astWalker.traverseAst(root, typeScopeFinder, Message.class));
+    Class<?>[] types = { Message.class };
+    return createScope(astWalker.traverseAst(root, typeScopeFinder, types));
   }
 
   @SuppressWarnings("unused")
   public IScope scope_LiteralRef_literal(LiteralRef literalRef, EReference reference) {
-    EObject c = literalRef.eContainer();
+    EObject container = literalRef.eContainer();
     Enum anEnum = null;
-    if (c instanceof DefaultValueFieldOption) {
-      EObject optionContainer = c.eContainer();
+    if (container instanceof DefaultValueFieldOption) {
+      EObject optionContainer = container.eContainer();
       if (optionContainer instanceof Property) anEnum = modelFinder.enumTypeOf((Property) optionContainer);
     }
-    if (c instanceof NativeOption) {
+    if (container instanceof NativeOption) {
       ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
-      Field f = options.sourceOf((Option) c);
-      anEnum = descriptor.enumTypeOf((Property) f);
+      IndexedElement e = options.sourceOf((Option) container);
+      anEnum = descriptor.enumTypeOf((Property) e);
     }
-    if (c instanceof CustomOption) {
-      CustomOption option = (CustomOption) c;
-      c = options.lastFieldSourceFrom(option);
-      if (c == null) c = options.sourceOf(option);
+    if (container instanceof CustomOption) {
+      CustomOption option = (CustomOption) container;
+      container = options.lastFieldSourceFrom(option);
+      if (container == null) container = options.sourceOf(option);
     }
-    if (c instanceof NativeFieldOption) {
+    if (container instanceof NativeFieldOption) {
       ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
-      Field f = fieldOptions.sourceOf((FieldOption) c);
-      anEnum = descriptor.enumTypeOf((Property) f);
+      IndexedElement c = fieldOptions.sourceOf((FieldOption) container);
+      anEnum = descriptor.enumTypeOf((Property) c);
     }
-    if (c instanceof CustomFieldOption) {
-      CustomFieldOption option = (CustomFieldOption) c;
-      c = fieldOptions.lastFieldSourceFrom(option);
-      if (c == null) c = fieldOptions.sourceOf(option);
+    if (container instanceof CustomFieldOption) {
+      CustomFieldOption option = (CustomFieldOption) container;
+      container = fieldOptions.lastFieldSourceFrom(option);
+      if (container == null) container = fieldOptions.sourceOf(option);
     }
-    if (c instanceof Property) {
-      anEnum = modelFinder.enumTypeOf((Property) c);
+    if (container instanceof Property) {
+      anEnum = modelFinder.enumTypeOf((Property) container);
     }
     return createScope(literalDescriptions.literalsOf(anEnum));
   }

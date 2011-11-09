@@ -39,7 +39,7 @@ QualifiedName:
   '.'? Name ('.' Name)*;
 
 Type:
-  Message | Enum;
+  Message | Enum | Group;
 
 Message:
   'message' name=Name '{'
@@ -47,7 +47,7 @@ Message:
   '}' (';')?;
 
 MessageElement:
-  Option | Extensions | Type | Field | ExtendMessage;
+  Option | Extensions | Type | Property | ExtendMessage;
 
 Extensions:
   'extensions' ranges+=Range (',' ranges+=Range)* ';';
@@ -58,9 +58,6 @@ Range:
 RangeMax:
   LONG | 'max';
 
-Field:
-  Property | Group;
-
 Group:
   modifier=Modifier 'group' name=Name '=' index=(LONG | HEX)
   ('[' (fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)*) ']')? '{'
@@ -68,7 +65,7 @@ Group:
   '}' (';')?;
 
 GroupElement:
-  Option | Field | Enum | ExtendMessage;
+  Option | Property | Group | Enum | ExtendMessage;
 
 Property:
   modifier=Modifier type=AbstractTypeRef name=Name '=' index=(LONG | HEX)
@@ -98,7 +95,7 @@ ValueRef:
 // { foo: 1, bar: 2 }
 MessageNotation:
   '{' 
-  fields+=FieldNotation (',' fields+=FieldNotation)*    
+  fields+=FieldNotation ((',')? fields+=FieldNotation)*
   '}' 
 ;
 
@@ -106,7 +103,7 @@ FieldNotation:
   name=Name ':' value=SimpleRef;
 
 SimpleRef:
-	LiteralRef | BooleanRef | NumberRef | StringRef;
+  LiteralRef | BooleanRef | NumberRef | StringRef;
 
 LiteralRef:
   literal=[Literal];
@@ -217,14 +214,16 @@ CustomFieldOption:
   ('.' optionFields+=OptionFieldSource ('.' optionFields+=OptionFieldSource)*)? '=' value=ValueRef;
 
 OptionSource:
-  optionField=[Field|QualifiedName];
+  optionField=[IndexedElement|QualifiedName];
 
 OptionFieldSource:
   OptionMessageFieldSource | OptionExtendMessageFieldSource;
 
 OptionMessageFieldSource:
-  optionMessageField=[Field];  
+  optionMessageField=[IndexedElement];  
 
 OptionExtendMessageFieldSource:
-  '(' optionExtendMessageField=[Field|QualifiedName] ')';  
-  
+  '(' optionExtendMessageField=[IndexedElement|QualifiedName] ')';  
+
+IndexedElement:
+  Property | Group;

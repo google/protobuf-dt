@@ -29,6 +29,7 @@ import com.google.inject.Inject;
  */
 public class ProtobufSemanticHighlightingCalculator implements ISemanticHighlightingCalculator {
 
+  @Inject private IndexedElements indexedElements;
   @Inject private INodes nodes;
   @Inject private Options options;
 
@@ -93,8 +94,8 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
       highlight((Option) element, acceptor);
       return;
     }
-    if (element instanceof Field) {
-      highlight((Field) element, acceptor);
+    if (element instanceof IndexedElement) {
+      highlight((IndexedElement) element, acceptor);
       return;
     }
     if (element instanceof Type) {
@@ -106,21 +107,21 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
     }
   }
 
-  private void highlight(Field field, IHighlightedPositionAcceptor acceptor) {
-    highlightName(field, acceptor, DEFAULT_ID);
-    highlightFirstFeature(field, FIELD__INDEX, acceptor, MESSAGE_FIELD_INDEX_ID);
-    highlightOptions(field, acceptor);
-    if (field instanceof Group) {
-      highlight((Group) field, acceptor);
+  private void highlight(IndexedElement element, IHighlightedPositionAcceptor acceptor) {
+    highlightName(element, acceptor, DEFAULT_ID);
+    highlightFirstFeature(element, indexedElements.indexFeatureOf(element), acceptor, MESSAGE_FIELD_INDEX_ID);
+    highlightOptions(element, acceptor);
+    if (element instanceof Group) {
+      highlight((Group) element, acceptor);
       return;
     }
-    if (field instanceof Property) {
-      highlight((Property) field, acceptor);
+    if (element instanceof Property) {
+      highlight((Property) element, acceptor);
     }
   }
 
-  private void highlightOptions(Field field, IHighlightedPositionAcceptor acceptor) {
-    for (FieldOption option : field.getFieldOptions()) {
+  private void highlightOptions(IndexedElement element, IHighlightedPositionAcceptor acceptor) {
+    for (FieldOption option : indexedElements.fieldOptionsOf(element)) {
       ValueRef ref = option.getValue();
       if (ref instanceof LiteralRef) {
         highlightFirstFeature(option, FIELD_OPTION__VALUE, acceptor, ENUM_LITERAL_ID);
@@ -134,8 +135,8 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
 
   private void highlight(Group group, IHighlightedPositionAcceptor acceptor) {
     for (GroupElement e : group.getElements()) {
-      if (e instanceof Field) {
-        highlight((Field) e, acceptor);
+      if (e instanceof IndexedElement) {
+        highlight((IndexedElement) e, acceptor);
         continue;
       }
       if (e instanceof Enum) {
@@ -203,8 +204,8 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
   }
 
   private void highlight(Option option, IHighlightedPositionAcceptor acceptor) {
-    Field field = options.sourceOf(option);
-    if (field != null) {
+    IndexedElement element = options.sourceOf(option);
+    if (element != null) {
       highlightFirstFeature(option, OPTION__SOURCE, acceptor, DEFAULT_ID);
     }
     ValueRef ref = option.getValue();

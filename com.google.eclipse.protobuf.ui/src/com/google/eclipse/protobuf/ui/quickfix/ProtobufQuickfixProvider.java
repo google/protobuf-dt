@@ -18,10 +18,10 @@ import org.eclipse.xtext.ui.editor.model.edit.*;
 import org.eclipse.xtext.ui.editor.quickfix.*;
 import org.eclipse.xtext.validation.Issue;
 
+import com.google.eclipse.protobuf.model.util.IndexedElements;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.eclipse.protobuf.ui.labeling.Images;
-import com.google.eclipse.protobuf.ui.util.Fields;
 import com.google.inject.Inject;
 
 /**
@@ -29,7 +29,7 @@ import com.google.inject.Inject;
  */
 public class ProtobufQuickfixProvider extends DefaultQuickfixProvider {
 
-  @Inject private Fields fields;
+  @Inject private IndexedElements indexedElements;
   @Inject private Images images;
 
   @Fix(SYNTAX_IS_NOT_PROTO2_ERROR)
@@ -48,10 +48,10 @@ public class ProtobufQuickfixProvider extends DefaultQuickfixProvider {
   public void regenerateTagNumber(Issue issue, IssueResolutionAcceptor acceptor) {
     acceptor.accept(issue, regenerateTagNumberLabel, regenerateTagNumber, "property.gif", new ISemanticModification() {
       @Override public void apply(EObject element, IModificationContext context) throws Exception {
-        if (!(element instanceof Field)) return;
-        Field field = (Field) element;
-        long tagNumber = fields.calculateTagNumberOf(field);
-        field.setIndex(tagNumber);
+        if (!(element instanceof IndexedElement)) return;
+        IndexedElement e = (IndexedElement) element;
+        long tagNumber = indexedElements.calculateTagNumberOf(e);
+        indexedElements.setIndexTo(e, tagNumber);
       }
     });
   }

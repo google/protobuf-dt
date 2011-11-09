@@ -28,7 +28,7 @@ import org.eclipse.xtext.util.Pair;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
-import com.google.eclipse.protobuf.model.util.INodes;
+import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag.*;
 import com.google.eclipse.protobuf.ui.util.*;
@@ -48,7 +48,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
   private static Logger logger = Logger.getLogger(SmartSemicolonHandler.class);
 
   @Inject private CommentNodesFinder commentNodesFinder;
-  @Inject private Fields fields;
+  @Inject private IndexedElements indexedElements;
   @Inject private Literals literals;
   @Inject private INodes nodes;
   @Inject private NumericTagPreferencesFactory preferencesFactory;
@@ -112,7 +112,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
               Property property = (Property) model;
               ContentToInsert content = newContent(property);
               if (content.equals(ContentToInsert.INSERT_TAG_NUMBER)) {
-                long index = fields.calculateTagNumberOf(property);
+                long index = indexedElements.calculateTagNumberOf(property);
                 property.setIndex(index);
                 updateIndexInCommentOfParent(property, index, document);
               }
@@ -134,7 +134,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
   }
 
   private ContentToInsert newContent(Property property) {
-    INode indexNode = nodes.firstNodeForFeature(property, FIELD__INDEX);
+    INode indexNode = nodes.firstNodeForFeature(property, PROPERTY__INDEX);
     return newContent(indexNode);
   }
 

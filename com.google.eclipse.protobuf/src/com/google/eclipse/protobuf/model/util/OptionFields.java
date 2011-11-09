@@ -24,7 +24,7 @@ public class OptionFields {
    * @param fieldSource the given option field.
    * @return the field the given option field is referring to, or {@code null} if one cannot be found.
    */
-  public Field sourceOf(OptionFieldSource fieldSource) {
+  public IndexedElement sourceOf(OptionFieldSource fieldSource) {
     if (fieldSource instanceof OptionMessageFieldSource) {
       OptionMessageFieldSource source = (OptionMessageFieldSource) fieldSource;
       return source.getOptionMessageField();

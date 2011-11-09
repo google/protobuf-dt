@@ -21,7 +21,7 @@ import org.eclipse.xtext.util.*;
 
 import com.google.common.base.Function;
 import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.protobuf.Field;
+import com.google.eclipse.protobuf.naming.Naming;
 import com.google.inject.*;
 
 /**
@@ -61,18 +61,18 @@ class LocalNamesProvider {
   @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
 
   @Inject private ModelFinder finder;
-  @Inject private Options options;
+  @Inject private Naming naming;
   @Inject private QualifiedNames qualifiedNames;
 
   private final Function<EObject, String> resolver = newResolver(String.class, "name");
 
-  List<QualifiedName> namesOf(final EObject obj) {
-    Pair<EObject, String> key = pair(obj, "localFqns");
-    return cache.get(key, obj.eResource(), new Provider<List<QualifiedName>>() {
+  List<QualifiedName> namesOf(final EObject e, final Naming.NameTarget target) {
+    Pair<EObject, String> key = pair(e, "localFqns");
+    return cache.get(key, e.eResource(), new Provider<List<QualifiedName>>() {
       @Override public List<QualifiedName> get() {
         List<QualifiedName> allNames = new ArrayList<QualifiedName>();
-        EObject current = obj;
-        String name = (obj instanceof Field) ? options.nameForOption((Field) current) : resolver.apply(current);
+        EObject current = e;
+        String name = naming.nameOf(e, target);
         if (isEmpty(name)) return emptyList();
         
         QualifiedName qualifiedName = converter.toQualifiedName(name);
@@ -84,7 +84,7 @@ class LocalNamesProvider {
           qualifiedName = converter.toQualifiedName(containerName).append(qualifiedName);
           allNames.add(qualifiedName);
         }
-        allNames.addAll(qualifiedNames.addPackageNameSegments(qualifiedName, finder.packageOf(obj)));
+        allNames.addAll(qualifiedNames.addPackageNameSegments(qualifiedName, finder.packageOf(e)));
         return unmodifiableList(allNames);
       }
     });

@@ -52,8 +52,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private FieldOptions fieldOptions;
   @Inject private ModelFinder finder;
-  @Inject private Fields fields;
   @Inject private Images images;
+  @Inject private IndexedElements indexedElements;
   @Inject private PluginImageHelper imageHelper;
   @Inject private Literals literals;
   @Inject private Options options;
@@ -166,12 +166,12 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (model instanceof Property) return (Property) model;
     if (model instanceof Option) {
       Option option = (Option) model;
-      Field source = options.sourceOf(option);
+      IndexedElement source = options.sourceOf(option);
       if (source instanceof Property) return (Property) source;
     }
     if (model instanceof FieldOption) {
       FieldOption option = (FieldOption) model;
-      Field source = fieldOptions.sourceOf(option);
+      IndexedElement source = fieldOptions.sourceOf(option);
       if (source instanceof Property) return (Property) source;
     }
     return null;
@@ -229,7 +229,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeProperty_Index(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    long index = fields.calculateTagNumberOf((Property) model);
+    long index = indexedElements.calculateTagNumberOf((Property) model);
     proposeIndex(index, context, acceptor);
   }
 
@@ -283,8 +283,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     }
   }
 
-  private List<String> existingFieldOptionNames(Field field) {
-    List<FieldOption> allFieldOptions = field.getFieldOptions();
+  private List<String> existingFieldOptionNames(IndexedElement e) {
+    List<FieldOption> allFieldOptions = indexedElements.fieldOptionsOf(e);
     if (allFieldOptions.isEmpty()) return emptyList();
     List<String> optionNames = new ArrayList<String>();
     for (FieldOption option : allFieldOptions)
@@ -292,11 +292,11 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     return optionNames;
   }
 
-  private void proposeDefaultKeyword(Field field, List<String> existingFieldOptionNames, ContentAssistContext context,
+  private void proposeDefaultKeyword(IndexedElement e, List<String> existingOptionNames, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    if (!(field instanceof Property)) return;
-    Property property = (Property) field;
-    if (!properties.isOptional(property) || existingFieldOptionNames.contains(DEFAULT.toString())) return;
+    if (!(e instanceof Property)) return;
+    Property property = (Property) e;
+    if (!properties.isOptional(property) || existingOptionNames.contains(DEFAULT.toString())) return;
     CompoundElement display = DEFAULT_EQUAL;
     int cursorPosition = display.charCount();
     if (properties.isString(property)) {
@@ -306,9 +306,9 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     createAndAccept(display, cursorPosition, context, acceptor);
   }
 
-  private boolean canBePacked(Field field) {
-    if (!(field instanceof Property)) return false;
-    Property property = (Property) field;
+  private boolean canBePacked(IndexedElement e) {
+    if (!(e instanceof Property)) return false;
+    Property property = (Property) e;
     return properties.isPrimitive(property) && REPEATED.equals(property.getModifier());
   }
 
@@ -502,10 +502,10 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ICompletionProposalAcceptor acceptor) {
     if (!(model instanceof CustomOption)) return;
     CustomOption option = (CustomOption) model;
-    Field f = options.lastFieldSourceFrom(option);
-    if (f == null) f = options.sourceOf(option);
-    if (f instanceof Property) {
-      proposeAndAcceptOptionFieldValue((Property) f, context, acceptor);
+    IndexedElement e = options.lastFieldSourceFrom(option);
+    if (e == null) e = options.sourceOf(option);
+    if (e instanceof Property) {
+      proposeAndAcceptOptionFieldValue((Property) e, context, acceptor);
     }
   }
 
@@ -514,10 +514,10 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     // TODO content assist returns "{"
     if (!(model instanceof CustomFieldOption)) return;
     CustomFieldOption option = (CustomFieldOption) model;
-    Field field = fieldOptions.lastFieldSourceFrom(option);
-    if (field == null) field = fieldOptions.sourceOf(option);
-    if (field instanceof Property) {
-      proposeAndAcceptOptionFieldValue((Property) field, context, acceptor);
+    IndexedElement e = fieldOptions.lastFieldSourceFrom(option);
+    if (e == null) e = fieldOptions.sourceOf(option);
+    if (e instanceof Property) {
+      proposeAndAcceptOptionFieldValue((Property) e, context, acceptor);
     }
   }
 

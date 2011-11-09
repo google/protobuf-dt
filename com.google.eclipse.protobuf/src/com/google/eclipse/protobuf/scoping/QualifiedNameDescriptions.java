@@ -16,6 +16,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
+import com.google.eclipse.protobuf.naming.Naming.NameTarget;
+import com.google.eclipse.protobuf.naming.*;
 import com.google.inject.Inject;
 
 /**
@@ -23,14 +25,14 @@ import com.google.inject.Inject;
  */
 class QualifiedNameDescriptions {
 
-  @Inject private IQualifiedNameProvider nameProvider;
+  @Inject private ProtobufQualifiedNameProvider nameProvider;
   @Inject private QualifiedNames qualifiedNames;
 
-  Collection<IEObjectDescription> qualifiedNames(EObject obj) {
+  Collection<IEObjectDescription> qualifiedNames(EObject e, NameTarget target) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
-    QualifiedName fqn = nameProvider.getFullyQualifiedName(obj);
-    descriptions.add(create(fqn, obj));
-    descriptions.add(create(qualifiedNames.addLeadingDot(fqn), obj));
+    QualifiedName fqn = nameProvider.getFullyQualifiedName(e, target);
+    descriptions.add(create(fqn, e));
+    descriptions.add(create(qualifiedNames.addLeadingDot(fqn), e));
     return descriptions;
   }
 }

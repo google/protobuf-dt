@@ -36,6 +36,7 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
   public static final String MORE_THAN_ONE_PACKAGE_ERROR = "moreThanOnePackage";
 
   @Inject private FieldOptions fieldOptions;
+  @Inject private IndexedElements indexedElements;
   @Inject private ImportUriResolver uriResolver;
   @Inject private IQualifiedNameProvider qualifiedNameProvider;
   @Inject private Properties properties;
@@ -87,31 +88,35 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
     error(msg, syntax, SYNTAX__NAME, SYNTAX_IS_NOT_PROTO2_ERROR);
   }
 
-  @Check public void checkTagNumberIsUnique(Field field) {
-    if (isNameNull(field)) return; // we already show an error if name is null, no need to go further.
-    long index = field.getIndex();
-    EObject container = field.eContainer();
+  @Check public void checkTagNumberIsUnique(IndexedElement e) {
+    if (isNameNull(e)) return; // we already show an error if name is null, no need to go further.
+    long index = indexedElements.indexOf(e);
+    EObject container = e.eContainer();
     if (container instanceof Message) {
       Message message = (Message) container;
       for (MessageElement element : message.getElements()) {
-        if (!(element instanceof Field)) continue;
-        Field other = (Field) element;
-        if (other == field) break;
-        if (other.getIndex() != index) continue;
+        if (!(element instanceof IndexedElement)) continue;
+        IndexedElement other = (IndexedElement) element;
+        if (other == e) break;
+        if (indexedElements.indexOf(other) != index) continue;
         QualifiedName messageName = qualifiedNameProvider.getFullyQualifiedName(message);
-        String msg = format(fieldNumberAlreadyUsed, index, messageName.toString(), other.getName());
-        error(msg, field, FIELD__INDEX, INVALID_FIELD_TAG_NUMBER_ERROR);
+        String msg = format(fieldNumberAlreadyUsed, index, messageName.toString(), indexedElements.nameOf(other));
+        invalidTagNumberError(msg, e);
         break;
       }
     }
   }
 
-  @Check public void checkTagNumberIsGreaterThanZero(Field field) {
-    if (isNameNull(field)) return; // we already show an error if name is null, no need to go further.
-    long index = field.getIndex();
+  @Check public void checkTagNumberIsGreaterThanZero(IndexedElement e) {
+    if (isNameNull(e)) return; // we already show an error if name is null, no need to go further.
+    long index = indexedElements.indexOf(e);
     if (index > 0) return;
     String msg = (index == 0) ? fieldNumbersMustBePositive : expectedFieldNumber;
-    error(msg, field, FIELD__INDEX, INVALID_FIELD_TAG_NUMBER_ERROR);
+    invalidTagNumberError(msg, e);
+  }
+
+  private void invalidTagNumberError(String message, IndexedElement e) {
+    error(message, e, indexedElements.indexFeatureOf(e), INVALID_FIELD_TAG_NUMBER_ERROR);
   }
 
   @Check public void checkOnlyOnePackageDefinition(Package aPackage) {
@@ -126,7 +131,7 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
     }
   }
 
-  private boolean isNameNull(Field field) {
-    return field.getName() == null;
+  private boolean isNameNull(IndexedElement e) {
+    return indexedElements.nameOf(e) == null;
   }
 }

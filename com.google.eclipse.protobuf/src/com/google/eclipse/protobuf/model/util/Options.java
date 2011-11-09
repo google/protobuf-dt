@@ -26,17 +26,17 @@ public class Options {
   private @Inject OptionFields optionFields;
   
   /**
-   * Returns the <code>{@link Field}</code> the given <code>{@link Option}</code> is referring to. In the
+   * Returns the <code>{@link IndexedElement}</code> the given <code>{@link Option}</code> is referring to. In the
    * following example
    * <pre>
    * option (myOption) = true;
    * </pre>
-   * this method will return the <code>{@link Field}</code> "myOption" is pointing to.
+   * this method will return the <code>{@link IndexedElement}</code> "myOption" is pointing to.
    * @param option the given {@code Option}.
-   * @return the {@code Field} the given {@code Option} is referring to, or {@code null} if it cannot be
+   * @return the {@code IndexedElement} the given {@code Option} is referring to, or {@code null} if it cannot be
    * found.
    */
-  public Field sourceOf(Option option) {
+  public IndexedElement sourceOf(Option option) {
     OptionSource source = option.getSource();
     return (source == null) ? null : source.getOptionField();
   }
@@ -51,17 +51,24 @@ public class Options {
    * @param option the given {@code CustomOption}.
    * @return the last field of the given {@code CustomOption} is referring to, or {@code null} if one cannot be found.
    */
-  public Field lastFieldSourceFrom(CustomOption option) {
+  public IndexedElement lastFieldSourceFrom(CustomOption option) {
     List<OptionFieldSource> fields = option.getOptionFields();
     if (fields.isEmpty()) return null;
     OptionFieldSource last = fields.get(fields.size() - 1);
     return optionFields.sourceOf(last);
   }
   
-  public String nameForOption(Field f) {
-    String name = f.getName();
-    if (isEmpty(name)) return name;
-    if (f instanceof Group) name = name.toLowerCase();
-    return name;
+  /**
+   * Returns the name of the given <code>{@link IndexedElement}</code>.
+   * @param e the given {@code IndexedElement}.
+   * @return the name of the given <code>{@link IndexedElement}</code>.
+   */
+  public String nameForOption(IndexedElement e) {
+    if (e instanceof Property) return ((Property) e).getName();
+    if (e instanceof Group) {
+      String name = ((Group) e).getName();
+      if (!isEmpty(name)) return name.toLowerCase();
+    }
+    return null;
   }
 }

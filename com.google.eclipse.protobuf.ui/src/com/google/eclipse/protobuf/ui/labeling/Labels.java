@@ -66,8 +66,8 @@ import com.google.inject.*;
   }
 
   private Object labelFor(Option o) {
-    Field f = options.sourceOf(o);
-    String name = options.nameForOption(f);
+    IndexedElement e = options.sourceOf(o);
+    String name = options.nameForOption(e);
     StringBuilder b = new StringBuilder();
     boolean isCustomOption = o instanceof CustomOption || o instanceof CustomFieldOption;
     if (isCustomOption) b.append("(");
@@ -86,11 +86,11 @@ import com.google.inject.*;
     for (OptionFieldSource field : fields) {
       b.append(".");
       if (field instanceof OptionMessageFieldSource) {
-        Field source = ((OptionMessageFieldSource) field).getOptionMessageField();
+        IndexedElement source = ((OptionMessageFieldSource) field).getOptionMessageField();
         b.append(options.nameForOption(source));
       }
       if (field instanceof OptionExtendMessageFieldSource) {
-        Field source = ((OptionExtendMessageFieldSource) field).getOptionExtendMessageField();
+        IndexedElement source = ((OptionExtendMessageFieldSource) field).getOptionExtendMessageField();
         b.append("(")
          .append(options.nameForOption(source))
          .append(")");

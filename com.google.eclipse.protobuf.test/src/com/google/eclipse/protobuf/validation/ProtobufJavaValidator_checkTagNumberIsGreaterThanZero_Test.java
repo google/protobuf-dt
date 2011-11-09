@@ -10,7 +10,7 @@ package com.google.eclipse.protobuf.validation;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.FIELD__INDEX;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
 import static com.google.eclipse.protobuf.validation.ProtobufJavaValidator.INVALID_FIELD_TAG_NUMBER_ERROR;
 import static org.eclipse.xtext.validation.ValidationMessageAcceptor.INSIGNIFICANT_INDEX;
 import static org.mockito.Mockito.*;
@@ -22,7 +22,7 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link ProtobufJavaValidator#checkTagNumberIsGreaterThanZero(Field)}</code>
+ * Tests for <code>{@link ProtobufJavaValidator#checkTagNumberIsGreaterThanZero(IndexedElement)}</code>
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
@@ -48,7 +48,7 @@ public class ProtobufJavaValidator_checkTagNumberIsGreaterThanZero_Test {
     Property id = xtext.find("id", Property.class);
     validator.checkTagNumberIsGreaterThanZero(id);
     String message = "Field numbers must be positive integers.";
-    verify(messageAcceptor).acceptError(message, id, FIELD__INDEX, INSIGNIFICANT_INDEX, INVALID_FIELD_TAG_NUMBER_ERROR);
+    verify(messageAcceptor).acceptError(message, id, PROPERTY__INDEX, INSIGNIFICANT_INDEX, INVALID_FIELD_TAG_NUMBER_ERROR);
   }
 
   // syntax = "proto2";
@@ -60,7 +60,7 @@ public class ProtobufJavaValidator_checkTagNumberIsGreaterThanZero_Test {
     Property id = xtext.find("id", Property.class);
     validator.checkTagNumberIsGreaterThanZero(id);
     String message = "Expected field number.";
-    verify(messageAcceptor).acceptError(message, id, FIELD__INDEX, INSIGNIFICANT_INDEX, INVALID_FIELD_TAG_NUMBER_ERROR);
+    verify(messageAcceptor).acceptError(message, id, PROPERTY__INDEX, INSIGNIFICANT_INDEX, INVALID_FIELD_TAG_NUMBER_ERROR);
   }
 
   // syntax = "proto2";

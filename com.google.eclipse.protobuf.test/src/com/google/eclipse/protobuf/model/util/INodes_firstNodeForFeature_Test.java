@@ -10,16 +10,16 @@ package com.google.eclipse.protobuf.model.util;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.FIELD__NAME;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.PROPERTY__NAME;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.Property;
 
 import org.eclipse.emf.ecore.*;
 import org.eclipse.xtext.nodemodel.INode;
 import org.junit.*;
-
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.Property;
 
 /**
  * Tests for <code>{@link INodes#firstNodeForFeature(EObject, EStructuralFeature)}</code>
@@ -43,7 +43,7 @@ public class INodes_firstNodeForFeature_Test {
   // }
   @Test public void should_return_first_node_for_feature() {
     Property active = xtext.find("active", Property.class);
-    INode node = nodes.firstNodeForFeature(active, FIELD__NAME);
+    INode node = nodes.firstNodeForFeature(active, PROPERTY__NAME);
     assertThat(node.getText().trim(), equalTo("active"));
   }
 }

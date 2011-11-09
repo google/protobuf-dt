@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.util;
+package com.google.eclipse.protobuf.model.util;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
@@ -19,18 +19,18 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link Fields#calculateTagNumberOf(Field)}</code>.
+ * Tests for <code>{@link IndexedElements#calculateTagNumberOf(IndexedElement)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Fields_calculateTagNumberOf_Test {
+public class IndexedElements_calculateTagNumberOf_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
-  private Fields fields;
+  private IndexedElements indexedElements;
 
   @Before public void setUp() {
-    fields = xtext.getInstanceOf(Fields.class);
+    indexedElements = xtext.getInstanceOf(IndexedElements.class);
   }
 
   // syntax = "proto2";
@@ -40,7 +40,7 @@ public class Fields_calculateTagNumberOf_Test {
   // }
   @Test public void should_return_one_for_first_and_only_property() {
     Property name = xtext.find("name", Property.class);
-    long index = fields.calculateTagNumberOf(name);
+    long index = indexedElements.calculateTagNumberOf(name);
     assertThat(index, equalTo(1L));
   }
 
@@ -52,7 +52,7 @@ public class Fields_calculateTagNumberOf_Test {
   // }
   @Test public void should_return_max_tag_number_value_plus_one_for_new_property() {
     Property id = xtext.find("id", Property.class);
-    long index = fields.calculateTagNumberOf(id);
+    long index = indexedElements.calculateTagNumberOf(id);
     assertThat(index, equalTo(7L));
   }
 }

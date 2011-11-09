@@ -38,22 +38,22 @@ public class FieldOptions {
    * @return the name of the given option.
    */
   public String nameOf(FieldOption option) {
-    Field f = sourceOf(option);
-    if (f instanceof Property) return ((Property) f).getName();
+    IndexedElement e = sourceOf(option);
+    if (e instanceof Property) return ((Property) e).getName();
     return null;
   }
 
   /**
-   * Returns the <code>{@link Property}</code> the given <code>{@link FieldOption}</code> is referring to. In the
+   * Returns the <code>{@link IndexedElement}</code> the given <code>{@link FieldOption}</code> is referring to. In the
    * following example
    * <pre>
    * [(myFieldOption) = true]
    * </pre>
-   * this method will return the <code>{@link Field}</code> "myFieldOption" is pointing to.
+   * this method will return the <code>{@link IndexedElement}</code> "myFieldOption" is pointing to.
    * @param option the given {@code FieldOption}.
    * @return the {@code Property} the given {@code FieldOption} is referring to, or {@code null} if it cannot be found.
    */
-  public Field sourceOf(FieldOption option) {
+  public IndexedElement sourceOf(FieldOption option) {
     OptionSource source = null;
     if (option instanceof NativeFieldOption) {
       NativeFieldOption nativeOption = (NativeFieldOption) option;
@@ -78,7 +78,7 @@ public class FieldOptions {
    * @return the last field of the given {@code CustomFieldOption} is referring to, or {@code null} if one cannot be
    * found.
    */
-  public Field lastFieldSourceFrom(CustomFieldOption option) {
+  public IndexedElement lastFieldSourceFrom(CustomFieldOption option) {
     List<OptionFieldSource> fields = option.getOptionFields();
     if (fields.isEmpty()) return null;
     OptionFieldSource last = fields.get(fields.size() - 1);
