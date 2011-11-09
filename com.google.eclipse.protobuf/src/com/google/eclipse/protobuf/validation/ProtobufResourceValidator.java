@@ -18,7 +18,7 @@ import static org.eclipse.xtext.validation.CheckMode.KEY;
 import static org.eclipse.xtext.validation.CheckType.FAST;
 import static org.eclipse.xtext.validation.impl.ConcreteSyntaxEValidator.DISABLE_CONCRETE_SYNTAX_EVALIDATOR;
 
-import com.google.eclipse.protobuf.linking.ProtobufLinkingDiagnostic;
+import java.util.*;
 
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.Diagnostic;
@@ -29,7 +29,7 @@ import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.util.*;
 import org.eclipse.xtext.validation.*;
 
-import java.util.*;
+import com.google.eclipse.protobuf.linking.ProtobufLinkingDiagnostic;
 
 /**
  * Adds support for converting scoping errors into warnings if non-proto2 files are imported.
@@ -39,7 +39,7 @@ import java.util.*;
 public class ProtobufResourceValidator extends ResourceValidatorImpl {
 
   private static final Logger log = Logger.getLogger(ProtobufResourceValidator.class);
-  
+
   @Override public List<Issue> validate(Resource resource, CheckMode mode, CancelIndicator indicator) {
     CancelIndicator monitor = indicator == null ? CancelIndicator.NullImpl : indicator;
     resolveProxies(resource, monitor);
@@ -71,9 +71,11 @@ public class ProtobufResourceValidator extends ResourceValidatorImpl {
           if (hasNonProto2Import && isUnresolveReferenceError(error)) {
             severity = WARNING;
             ProtobufLinkingDiagnostic d = (ProtobufLinkingDiagnostic) error;
-            if (!d.getMessage().endsWith(".")) d.appendToMessage(".");
-            d.appendToMessage(" ");
-            d.appendToMessage(scopingError);
+            if (!d.getMessage().endsWith(scopingError)) {
+              if (!d.getMessage().endsWith(".")) d.appendToMessage(".");
+              d.appendToMessage(" ");
+              d.appendToMessage(scopingError);
+            }
           }
           issueFromXtextResourceDiagnostic(error, severity, acceptor);
         }
