@@ -23,8 +23,6 @@ import static java.util.Collections.emptyList;
  * Utility methods related to <code>{@link IndexedElement}</code>s.
  * 
  * @author alruiz@google.com (Alex Ruiz)
- * 
- * TODO test
  */
 @Singleton
 public class IndexedElements {
@@ -43,11 +41,11 @@ public class IndexedElements {
   /**
    * Returns the name of the given <code>{@link IndexedElement}</code>.
    * @param e the given {@code IndexedElement}.
-   * @return the name of the given {@code IndexedElement}, or -1 if the given {@code IndexedElement} is 
-   * {@code null}..
+   * @return the name of the given {@code IndexedElement}, or {@code Long.MIN_VALUE} if the given {@code IndexedElement} 
+   * is {@code null}..
    */
   public long indexOf(IndexedElement e) {
-    if (e == null) return -1;
+    if (e == null) return Long.MIN_VALUE;
     return (e instanceof Group) ? ((Group) e).getIndex() : ((Property) e).getIndex(); 
   }
   
