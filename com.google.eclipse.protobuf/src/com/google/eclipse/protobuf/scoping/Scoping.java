@@ -10,6 +10,7 @@ package com.google.eclipse.protobuf.scoping;
 
 import com.google.eclipse.protobuf.protobuf.*;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
 import java.util.Collection;
@@ -19,20 +20,23 @@ import java.util.Collection;
  */
 public interface Scoping {
 
-  Collection<IEObjectDescription> findSources(CustomOption option);
+  Collection<IEObjectDescription> findScope(CustomOption o);
 
-  Collection<IEObjectDescription> findSources(CustomFieldOption option);
+  Collection<IEObjectDescription> findScope(CustomFieldOption o);
 
-  Collection<IEObjectDescription> findSources(OptionMessageFieldSource source);
+  Collection<IEObjectDescription> findScope(OptionMessageFieldSource s);
 
-  Collection<IEObjectDescription> findSources(OptionExtendMessageFieldSource source);
+  Collection<IEObjectDescription> findScope(OptionExtendMessageFieldSource s);
 
-  Collection<IEObjectDescription> findNextMessageFieldSources(CustomOption option);
+  Collection<IEObjectDescription> findMessageFieldScope(CustomOption o);
 
-  Collection<IEObjectDescription> findNextMessageFieldSources(CustomFieldOption option);
+  Collection<IEObjectDescription> findMessageFieldScope(CustomFieldOption o);
 
-  Collection<IEObjectDescription> findNextExtendMessageFieldSources(CustomOption option);
+  Collection<IEObjectDescription> findExtendMessageFieldScope(CustomOption o);
 
-  Collection<IEObjectDescription> findNextExtendMessageFieldSources(CustomFieldOption option);
+  Collection<IEObjectDescription> findExtendMessageFieldScope(CustomFieldOption o);
 
+  Collection<IEObjectDescription> findTypeScope(EObject o);
+
+  Collection<IEObjectDescription> findMessageScope(EObject o);
 }

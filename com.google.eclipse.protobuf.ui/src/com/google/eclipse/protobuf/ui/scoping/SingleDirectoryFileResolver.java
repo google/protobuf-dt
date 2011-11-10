@@ -34,7 +34,9 @@ class SingleDirectoryFileResolver implements FileResolverStrategy {
 
   private String resolveUri(URI importUri, URI declaringResourceUri) {
     StringBuilder pathBuilder = new StringBuilder();
-    String firstSegment = importUri.segments()[0];
+    String[] segments = importUri.segments();
+    if (segments.length == 0) return null;
+    String firstSegment = segments[0];
     for (String segment : removeFirstAndLast(declaringResourceUri)) {
       if (segment.equals(firstSegment)) break;
       pathBuilder.append(segment).append(SEPARATOR);

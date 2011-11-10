@@ -73,11 +73,24 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     proposeAndAccept(proposal, imageHelper.getImage(images.imageFor(Syntax.class)), context, acceptor);
   }
 
-  @Override public void complete_TypeRef(EObject model, RuleCall ruleCall, ContentAssistContext context,
+  @Override public void completeTypeRef_Type(EObject model, Assignment assignment, ContentAssistContext context, 
       ICompletionProposalAcceptor acceptor) {
-    System.out.println("Hello");
+    Collection<IEObjectDescription> scope = scoping().findMessageScope(model);
+    for (IEObjectDescription d : descriptionChooser.shortestQualifiedNamesIn(scope)) {
+      Image image = imageHelper.getImage(images.imageFor(d.getEObjectOrProxy()));
+      proposeAndAccept(d, image, context, acceptor);
+    }
   }
 
+  @Override public void completeMessageRef_Type(EObject model, Assignment assignment, ContentAssistContext context, 
+      ICompletionProposalAcceptor acceptor) {
+    Collection<IEObjectDescription> scope = scoping().findTypeScope(model);
+    for (IEObjectDescription d : descriptionChooser.shortestQualifiedNamesIn(scope)) {
+      Image image = imageHelper.getImage(images.imageFor(d.getEObjectOrProxy()));
+      proposeAndAccept(d, image, context, acceptor);
+    }
+  }
+  
   @Override public void completeNativeOption_Source(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
@@ -411,7 +424,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     if (!(model instanceof CustomOption)) return;
     CustomOption option = (CustomOption) model;
-    Collection<IEObjectDescription> scope = scoping().findSources(option);
+    Collection<IEObjectDescription> scope = scoping().findScope(option);
     proposeAndAcceptOptions(scope, context, acceptor);
   }
 
@@ -419,7 +432,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     if (!(model instanceof CustomFieldOption)) return;
     CustomFieldOption option = (CustomFieldOption) model;
-    Collection<IEObjectDescription> scope = scoping().findSources(option);
+    Collection<IEObjectDescription> scope = scoping().findScope(option);
     proposeAndAcceptOptions(scope, context, acceptor);
   }
 
@@ -456,15 +469,15 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     Collection<IEObjectDescription> scope = emptySet();
     if (e instanceof CustomOption) {
       CustomOption option = (CustomOption) e;
-      scope = scoping().findNextMessageFieldSources(option);
+      scope = scoping().findMessageFieldScope(option);
     }
     if (e instanceof CustomFieldOption) {
       CustomFieldOption option = (CustomFieldOption) e;
-      scope = scoping().findNextMessageFieldSources(option);
+      scope = scoping().findMessageFieldScope(option);
     }
     if (e instanceof OptionMessageFieldSource) {
       OptionMessageFieldSource source = (OptionMessageFieldSource) e;
-      scope = scoping().findSources(source);
+      scope = scoping().findScope(source);
     }
     for (IEObjectDescription d : descriptionChooser.shortestQualifiedNamesIn(scope)) {
       Image image = imageHelper.getImage(images.imageFor(d.getEObjectOrProxy()));
@@ -479,15 +492,15 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     Collection<IEObjectDescription> scope = emptySet();
     if (e instanceof CustomOption) {
       CustomOption option = (CustomOption) e;
-      scope = scoping().findNextExtendMessageFieldSources(option);
+      scope = scoping().findExtendMessageFieldScope(option);
     }
     if (e instanceof CustomFieldOption) {
       CustomFieldOption option = (CustomFieldOption) e;
-      scope = scoping().findNextExtendMessageFieldSources(option);
+      scope = scoping().findExtendMessageFieldScope(option);
     }
     if (e instanceof OptionExtendMessageFieldSource) {
       OptionExtendMessageFieldSource source = (OptionExtendMessageFieldSource) e;
-      scope = scoping().findSources(source);
+      scope = scoping().findScope(source);
     }
     for (IEObjectDescription d : descriptionChooser.shortestQualifiedNamesIn(scope)) {
       Image image = imageHelper.getImage(images.imageFor(d.getEObjectOrProxy()));
