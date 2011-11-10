@@ -8,7 +8,7 @@
  * 
  * Author: alruiz@google.com (Alex Ruiz)
  */
-grammar com.google.eclipse.protobuf.Protobuf with org.eclipse.xtext.common.Terminals
+grammar com.google.eclipse.protobuf.Protobuf hidden(WS, ML_COMMENT, SL_COMMENT)
 
 import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 generate protobuf "http://www.google.com/eclipse/protobuf/Protobuf"
@@ -140,11 +140,8 @@ terminal STRING:
   SL_STRING (SL_STRING)*;
 
 terminal SL_STRING:
-  '"' ('\\' ('"' | "'" | '\\' | UNICODE_OCTAL | NUMBER | !('\\' | '"')) | !('\\' | '"'))* '"' (WS)* |
-  "'" ('\\' ('"' | "'" | '\\' | UNICODE_OCTAL | NUMBER | !('\\' | "'")) | !('\\' | "'"))* "'" (WS)*;
-
-terminal UNICODE_OCTAL:
-  ('0'..'3')('0'..'7')('0'..'7');
+  '"' ('\\' ('"' | "'" | '\\' | !('\\' | '"')) | !('\\' | '"'))* '"' (WS)* |
+  "'" ('\\' ('"' | "'" | '\\' | !('\\' | "'")) | !('\\' | "'"))* "'" (WS)*;
 
 Enum:
   'enum' name=Name '{'
@@ -227,3 +224,9 @@ OptionExtendMessageFieldSource:
 
 IndexedElement:
   Property | Group;
+
+terminal ID: '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
+terminal ML_COMMENT: '/*' -> '*/';
+terminal SL_COMMENT: '//' !('\n'|'\r')* ('\r'? '\n')?;
+terminal WS: (' '|'\t'|'\r'|'\n')+;
+terminal ANY_OTHER: .;
