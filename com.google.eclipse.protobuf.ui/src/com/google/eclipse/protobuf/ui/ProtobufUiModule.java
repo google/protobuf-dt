@@ -28,6 +28,7 @@ import org.eclipse.xtext.ui.editor.syntaxcoloring.*;
 import com.google.eclipse.protobuf.scoping.IFileUriResolver;
 import com.google.eclipse.protobuf.ui.builder.nature.AutoAddNatureEditorCallback;
 import com.google.eclipse.protobuf.ui.documentation.ProtobufDocumentationProvider;
+import com.google.eclipse.protobuf.ui.editor.FileOutsideWorkspaceIconUpdater;
 import com.google.eclipse.protobuf.ui.editor.ProtobufUriEditorOpener;
 import com.google.eclipse.protobuf.ui.editor.hyperlinking.ProtobufHyperlinkDetector;
 import com.google.eclipse.protobuf.ui.editor.model.ProtobufDocumentProvider;
@@ -68,7 +69,7 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
   public Class<? extends IFileUriResolver> bindFileUriResolver() {
     return FileUriResolver.class;
   }
-
+  
   public Class<? extends IHighlightingConfiguration> bindHighlightingConfiguration() {
     return HighlightingConfiguration.class;
   }
@@ -109,6 +110,12 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
     return ProtobufQuickAssistProcessor.class;
   }
 
+  public void configureFileOutsideWorkspaceIconUpdater(Binder binder) {
+    binder.bind(IXtextEditorCallback.class)
+          .annotatedWith(named("FileOutsideWorkspaceIconUpdater"))
+          .to(FileOutsideWorkspaceIconUpdater.class);
+  }
+  
   @Override public void configureLanguageSpecificURIEditorOpener(Binder binder) {
     if (!isWorkbenchRunning())return;
     binder.bind(IURIEditorOpener.class)
