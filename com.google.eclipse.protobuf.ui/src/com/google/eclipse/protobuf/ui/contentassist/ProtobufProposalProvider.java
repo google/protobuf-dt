@@ -22,6 +22,7 @@ import java.util.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.xtext.*;
@@ -165,6 +166,11 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     proposeAndAccept(EQUAL_PROTO2_IN_QUOTES, context, acceptor);
   }
 
+  private void proposeAndAccept(CompoundElement proposalText, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+    proposeAndAccept(proposalText.toString(), context, acceptor);
+  }
+
   private boolean isKeyword(EObject object, CommonKeyword keyword) {
     return object instanceof Keyword && keyword.hasValue(((Keyword) object).getValue());
   }
@@ -210,11 +216,6 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       createAndAccept(display, cursorPosition, context, acceptor);
     }
     return true;
-  }
-
-  private void proposeAndAccept(CompoundElement proposalText, ContentAssistContext context,
-      ICompletionProposalAcceptor acceptor) {
-    proposeAndAccept(proposalText.toString(), context, acceptor);
   }
 
   private void createAndAccept(CompoundElement display, int cursorPosition, ContentAssistContext context,
@@ -333,19 +334,42 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   private void proposeOption(Property option, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     String displayString = option.getName();
     String proposalText = displayString + space() + EQUAL + space();
-    boolean isStringOption = properties.isString(option);
-    if (isStringOption) {
-      proposalText = proposalText + EMPTY_STRING;
-    } else if (properties.isBool(option)) {
-      proposalText = proposalText + TRUE;
-    }
-    ICompletionProposal proposal = createCompletionProposal(proposalText, displayString, imageForOption(), context);
-    if (isStringOption && proposal instanceof ConfigurableCompletionProposal) {
+    proposePropertyValue(option, proposalText, displayString, imageForOption(), context, acceptor);
+  }
+  
+  @Override public void completeDefaultValueFieldOption_Value(EObject model, Assignment assignment, 
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    if (!(model instanceof Property)) return;
+    Property p = (Property) model;
+    proposePropertyValue(p, "", null, defaultImage(), context, acceptor);
+  }
+  
+  private void proposePropertyValue(Property p, String proposalText, String displayString, Image image, 
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    Object value = defaultValueOf(p);
+    if (value == null) return;
+    String text = proposalText + value;
+    ICompletionProposal proposal = createCompletionProposal(text, displayString, image, context);
+    if (value == EMPTY_STRING && proposal instanceof ConfigurableCompletionProposal) {
       // set cursor between the proposal's quotes
       ConfigurableCompletionProposal configurable = (ConfigurableCompletionProposal) proposal;
-      configurable.setCursorPosition(proposalText.length() - 1);
+      configurable.setCursorPosition(text.length() - 1);
     }
     acceptor.accept(proposal);
+  }
+  
+  private Object defaultValueOf(Property p) {
+    if (properties.isBool(p)) return TRUE;
+    if (properties.isString(p)) return EMPTY_STRING;
+    return null;
+  }
+  
+  @Override public ICompletionProposal createCompletionProposal(String proposal, String displayString, Image image,
+      ContentAssistContext contentAssistContext) {
+    StyledString styled = null;
+    if (displayString != null) styled = new StyledString(displayString);
+    return createCompletionProposal(proposal, styled, image, getPriorityHelper().getDefaultPriority(), 
+        contentAssistContext.getPrefix(), contentAssistContext);
   }
 
   @Override public void completeNativeFieldOption_Value(EObject model, Assignment assignment,
