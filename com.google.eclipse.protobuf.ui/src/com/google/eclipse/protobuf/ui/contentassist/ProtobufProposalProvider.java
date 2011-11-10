@@ -162,6 +162,19 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     return context.getCurrentNode().getText().equals(CLOSING_BRACKET.toString());
   }
 
+  private boolean isLastWordFromCaretPositionEqualTo(String word, ContentAssistContext context) {
+    StyledText styledText = context.getViewer().getTextWidget();
+    int valueLength = word.length();
+    int start = styledText.getCaretOffset() - valueLength;
+    if (start < 0) return false;
+    String previousWord = styledText.getTextRange(start, valueLength);
+    return word.equals(previousWord);
+  }
+
+  private boolean isKeyword(EObject object, CommonKeyword keyword) {
+    return object instanceof Keyword && keyword.hasValue(((Keyword) object).getValue());
+  }
+  
   private void proposeEqualProto2(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     proposeAndAccept(EQUAL_PROTO2_IN_QUOTES, context, acceptor);
   }
@@ -169,10 +182,6 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   private void proposeAndAccept(CompoundElement proposalText, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     proposeAndAccept(proposalText.toString(), context, acceptor);
-  }
-
-  private boolean isKeyword(EObject object, CommonKeyword keyword) {
-    return object instanceof Keyword && keyword.hasValue(((Keyword) object).getValue());
   }
 
   private boolean isBoolProposalValid(ContentAssistContext context) {
@@ -216,16 +225,6 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       createAndAccept(display, cursorPosition, context, acceptor);
     }
     return true;
-  }
-
-  private void createAndAccept(CompoundElement display, int cursorPosition, ContentAssistContext context,
-      ICompletionProposalAcceptor acceptor) {
-    ICompletionProposal proposal = createCompletionProposal(display, context);
-    if (proposal instanceof ConfigurableCompletionProposal) {
-      ConfigurableCompletionProposal configurable = (ConfigurableCompletionProposal) proposal;
-      configurable.setCursorPosition(cursorPosition);
-    }
-    acceptor.accept(proposal);
   }
 
   private <T> T extractElementFromContext(ContentAssistContext context, Class<T> type) {
@@ -334,26 +333,13 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   private void proposeOption(Property option, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     String displayString = option.getName();
     String proposalText = displayString + space() + EQUAL + space();
-    proposePropertyValue(option, proposalText, displayString, imageForOption(), context, acceptor);
-  }
-  
-  @Override public void completeDefaultValueFieldOption_Value(EObject model, Assignment assignment, 
-      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    if (!(model instanceof Property)) return;
-    Property p = (Property) model;
-    proposePropertyValue(p, "", null, defaultImage(), context, acceptor);
-  }
-  
-  private void proposePropertyValue(Property p, String proposalText, String displayString, Image image, 
-      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    Object value = defaultValueOf(p);
-    if (value == null) return;
-    String text = proposalText + value;
-    ICompletionProposal proposal = createCompletionProposal(text, displayString, image, context);
+    Object value = defaultValueOf(option);
+    if (value != null) proposalText = proposalText + value;
+    ICompletionProposal proposal = createCompletionProposal(proposalText, displayString, imageForOption(), context);
     if (value == EMPTY_STRING && proposal instanceof ConfigurableCompletionProposal) {
       // set cursor between the proposal's quotes
       ConfigurableCompletionProposal configurable = (ConfigurableCompletionProposal) proposal;
-      configurable.setCursorPosition(text.length() - 1);
+      configurable.setCursorPosition(proposalText.length() - 1);
     }
     acceptor.accept(proposal);
   }
@@ -362,6 +348,14 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (properties.isBool(p)) return TRUE;
     if (properties.isString(p)) return EMPTY_STRING;
     return null;
+  }
+  
+  @Override public void completeDefaultValueFieldOption_Value(EObject model, Assignment assignment, 
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    if (!(model instanceof Property)) return;
+    Property p = (Property) model;
+    if (!properties.isOptional(p)) return;
+    proposeDefaultValue(p, context, acceptor);
   }
   
   @Override public ICompletionProposal createCompletionProposal(String proposal, String displayString, Image image,
@@ -376,10 +370,6 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     if (!(model instanceof NativeFieldOption)) return;
     NativeFieldOption option = (NativeFieldOption) model;
-    if (fieldOptions.isDefaultValueOption(option)) {
-      proposeDefaultValue(option, context, acceptor);
-      return;
-    }
     ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
     Property property = (Property) fieldOptions.sourceOf(option);
     Enum enumType = descriptor.enumTypeOf(property);
@@ -388,17 +378,6 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       return;
     }
     proposePrimitiveValues(property, context, acceptor);
-  }
-
-  private void proposeDefaultValue(FieldOption option, ContentAssistContext context,
-      ICompletionProposalAcceptor acceptor) {
-    Property property = (Property) option.eContainer();
-    if (!properties.isOptional(property)) return;
-    if (proposePrimitiveValues(property, context, acceptor)) return;
-    Enum enumType = finder.enumTypeOf(property);
-    if (enumType != null) {
-      proposeAndAccept(enumType, context, acceptor);
-    }
   }
 
   private boolean proposePrimitiveValues(Property property, ContentAssistContext context,
@@ -419,29 +398,24 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     proposeAndAccept(keywords, context, acceptor);
   }
 
-  private void proposeEmptyString(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    createAndAccept(EMPTY_STRING, 1, context, acceptor);
-  }
-
   private void proposeAndAccept(CommonKeyword[] keywords, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     for (CommonKeyword keyword : keywords)
       proposeAndAccept(keyword.toString(), context, acceptor);
   }
 
-  private void proposeAndAccept(Enum enumType, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    Image image = imageHelper.getImage(images.imageFor(Literal.class));
-    for (Literal literal : getAllContentsOfType(enumType, Literal.class))
-      proposeAndAccept(literal.getName(), image, context, acceptor);
+  private void proposeEmptyString(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    createAndAccept(EMPTY_STRING, 1, context, acceptor);
   }
 
-  private boolean isLastWordFromCaretPositionEqualTo(String word, ContentAssistContext context) {
-    StyledText styledText = context.getViewer().getTextWidget();
-    int valueLength = word.length();
-    int start = styledText.getCaretOffset() - valueLength;
-    if (start < 0) return false;
-    String previousWord = styledText.getTextRange(start, valueLength);
-    return word.equals(previousWord);
+  private void createAndAccept(CompoundElement display, int cursorPosition, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+    ICompletionProposal proposal = createCompletionProposal(display, context);
+    if (proposal instanceof ConfigurableCompletionProposal) {
+      ConfigurableCompletionProposal configurable = (ConfigurableCompletionProposal) proposal;
+      configurable.setCursorPosition(cursorPosition);
+    }
+    acceptor.accept(proposal);
   }
 
   @Override public void completeCustomOption_Source(EObject model, Assignment assignment,
@@ -547,7 +521,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     IndexedElement e = options.lastFieldSourceFrom(option);
     if (e == null) e = options.sourceOf(option);
     if (e instanceof Property) {
-      proposeAndAcceptOptionFieldValue((Property) e, context, acceptor);
+      proposeDefaultValue((Property) e, context, acceptor);
     }
   }
 
@@ -559,11 +533,11 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     IndexedElement e = fieldOptions.lastFieldSourceFrom(option);
     if (e == null) e = fieldOptions.sourceOf(option);
     if (e instanceof Property) {
-      proposeAndAcceptOptionFieldValue((Property) e, context, acceptor);
+      proposeDefaultValue((Property) e, context, acceptor);
     }
   }
 
-  private void proposeAndAcceptOptionFieldValue(Property property, ContentAssistContext context,
+  private void proposeDefaultValue(Property property, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     if (property == null) return;
     if (proposePrimitiveValues(property, context, acceptor)) return;
@@ -571,6 +545,12 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (enumType != null) {
       proposeAndAccept(enumType, context, acceptor);
     }
+  }
+
+  private void proposeAndAccept(Enum enumType, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    Image image = imageHelper.getImage(images.imageFor(Literal.class));
+    for (Literal literal : getAllContentsOfType(enumType, Literal.class))
+      proposeAndAccept(literal.getName(), image, context, acceptor);
   }
 
   private void proposeAndAccept(String proposalText, Image image, ContentAssistContext context,
