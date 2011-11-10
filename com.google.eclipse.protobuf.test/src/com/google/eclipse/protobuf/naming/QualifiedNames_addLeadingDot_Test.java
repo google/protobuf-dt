@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.scoping;
+package com.google.eclipse.protobuf.naming;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
@@ -17,6 +17,7 @@ import org.eclipse.xtext.naming.QualifiedName;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.naming.QualifiedNames;
 
 /**
  * Tests for <code>{@link QualifiedNames#addLeadingDot(QualifiedName)}</code>.

@@ -73,6 +73,11 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     proposeAndAccept(proposal, imageHelper.getImage(images.imageFor(Syntax.class)), context, acceptor);
   }
 
+  @Override public void complete_TypeRef(EObject model, RuleCall ruleCall, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+    System.out.println("Hello");
+  }
+
   @Override public void completeNativeOption_Source(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();

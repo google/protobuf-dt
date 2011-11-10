@@ -30,23 +30,23 @@ public class Naming {
   private final Function<EObject, String> resolver = newResolver(String.class, "name");
 
   /**
-   * Returns the name of the given object. If the name target is an option and the given object is a 
+   * Returns the name of the given object. If the name will be used for an option and if the given object is a 
    * <code>{@link Group}</code>, this method will return the name of the group in lower case.
    * @param e the given object.
-   * @param target the name target.
+   * @param usage indicates how the returned name will be used.
    * @return the name of the given object.
    */
-  public String nameOf(EObject e, NameTarget target) {
-    if (NameTarget.TYPE.equals(target)) return resolver.apply(e);
+  String nameOf(EObject e, NamingUsage usage) {
+    if (NamingUsage.DEFAULT.equals(usage)) return resolver.apply(e);
     return (e instanceof IndexedElement) ? options.nameForOption((IndexedElement) e) : resolver.apply(e);
   }
 
   /**
-   * Indicates if the name to obtain will be used by a type or an option.
+   * Indicates if the name to obtain will be used by a type (default) or an option.
    * 
    * @author alruiz@google.com (Alex Ruiz)
    */
-  public static enum NameTarget {
-    TYPE, OPTION;
+  static enum NamingUsage {
+    DEFAULT, OPTION;
   }
 }

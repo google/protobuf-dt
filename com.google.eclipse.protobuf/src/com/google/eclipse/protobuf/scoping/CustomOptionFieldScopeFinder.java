@@ -8,18 +8,17 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.eclipse.protobuf.naming.Naming.NameTarget.OPTION;
 import static java.util.Collections.*;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
-
-import java.util.*;
-
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.resource.IEObjectDescription;
 
 import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.*;
+
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.resource.IEObjectDescription;
+
+import java.util.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -124,7 +123,7 @@ class CustomOptionFieldScopeFinder {
         for (MessageElement element : extend.getElements()) {
           if (!(element instanceof Property)) continue;
           Property current = (Property) element;
-          descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(current, OPTION));
+          descriptions.addAll(qualifiedNamesDescriptions.qualifiedNamesForOption(current));
           descriptions.add(create(current.getName(), current));
         }
       }

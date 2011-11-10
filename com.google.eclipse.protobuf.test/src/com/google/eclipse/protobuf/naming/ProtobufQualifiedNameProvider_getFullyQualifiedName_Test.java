@@ -28,10 +28,10 @@ public class ProtobufQualifiedNameProvider_getFullyQualifiedName_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
-  private ProtobufQualifiedNameProvider provider;
+  private IProtobufQualifiedNameProvider provider;
 
   @Before public void setUp() {
-    provider = (ProtobufQualifiedNameProvider) xtext.getInstanceOf(IQualifiedNameProvider.class);
+    provider = (IProtobufQualifiedNameProvider) xtext.getInstanceOf(IQualifiedNameProvider.class);
   }
 
   // syntax = "proto2";

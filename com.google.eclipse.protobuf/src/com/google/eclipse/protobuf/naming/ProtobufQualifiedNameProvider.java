@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.naming;
 
+import static com.google.eclipse.protobuf.naming.Naming.NamingUsage.*;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 import static org.eclipse.xtext.util.Tuples.pair;
 
@@ -16,7 +17,7 @@ import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.util.*;
 
 import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.naming.Naming.NameTarget;
+import com.google.eclipse.protobuf.naming.Naming.NamingUsage;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.inject.*;
 
@@ -25,7 +26,8 @@ import com.google.inject.*;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.AbstractImpl {
+public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.AbstractImpl 
+    implements IProtobufQualifiedNameProvider {
 
   @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
   @Inject private final IResourceScopeCache cache = IResourceScopeCache.NullImpl.INSTANCE;
@@ -34,22 +36,27 @@ public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.Abstra
   @Inject private Naming naming;
 
   @Override public QualifiedName getFullyQualifiedName(EObject e) {
-    return getFullyQualifiedName(e, NameTarget.TYPE);
+    return getFullyQualifiedName(e, DEFAULT);
   }
 
-  public QualifiedName getFullyQualifiedName(final EObject e, final NameTarget target) {
+  @Override public QualifiedName getFullyQualifiedNameForOption(EObject e) {
+    return getFullyQualifiedName(e, OPTION);
+  }
+  
+  private QualifiedName getFullyQualifiedName(final EObject e, final NamingUsage usage) {
     Pair<EObject, String> key = pair(e, "fqn");
     return cache.get(key, e.eResource(), new Provider<QualifiedName>() {
       @Override public QualifiedName get() {
         EObject current = e;
-        String name = naming.nameOf(e, target);
+        String name = naming.nameOf(e, usage);
         if (isEmpty(name)) return null;
         QualifiedName qualifiedName = converter.toQualifiedName(name);
         while (current.eContainer() != null) {
           current = current.eContainer();
-          QualifiedName parentsQualifiedName = getFullyQualifiedName(current);
-          if (parentsQualifiedName != null)
+          QualifiedName parentsQualifiedName = getFullyQualifiedName(current, usage);
+          if (parentsQualifiedName != null) {
             return parentsQualifiedName.append(qualifiedName);
+          }
         }
         return addPackage(e, qualifiedName);
       }

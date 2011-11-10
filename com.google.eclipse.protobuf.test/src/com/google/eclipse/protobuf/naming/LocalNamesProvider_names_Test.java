@@ -6,11 +6,10 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.scoping;
+package com.google.eclipse.protobuf.naming;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.naming.Naming.NameTarget.TYPE;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -21,15 +20,15 @@ import org.eclipse.xtext.naming.QualifiedName;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.naming.Naming.NameTarget;
+import com.google.eclipse.protobuf.naming.LocalNamesProvider;
 import com.google.eclipse.protobuf.protobuf.Enum;
 
 /**
- * Tests for <code>{@link LocalNamesProvider#namesOf(EObject, NameTarget)}</code>.
+ * Tests for <code>{@link LocalNamesProvider#names(EObject)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class LocalNamesProvider_namesOf_Test {
+public class LocalNamesProvider_names_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
@@ -53,7 +52,7 @@ public class LocalNamesProvider_namesOf_Test {
   // }
   @Test public void should_return_all_possible_local_names() {
     Enum phoneType = xtext.find("PhoneType", " {", Enum.class);
-    List<QualifiedName> names = namesProvider.namesOf(phoneType, TYPE);
+    List<QualifiedName> names = namesProvider.names(phoneType);
     assertThat(names.get(0).toString(), equalTo("PhoneType"));
     assertThat(names.get(1).toString(), equalTo("PhoneNumber.PhoneType"));
     assertThat(names.get(2).toString(), equalTo("Person.PhoneNumber.PhoneType"));

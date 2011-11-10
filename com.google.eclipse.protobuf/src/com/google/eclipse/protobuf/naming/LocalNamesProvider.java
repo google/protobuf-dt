@@ -6,23 +6,24 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.scoping;
+package com.google.eclipse.protobuf.naming;
 
+import static com.google.eclipse.protobuf.naming.Naming.NamingUsage.*;
 import static java.util.Collections.*;
 import static org.eclipse.xtext.util.SimpleAttributeResolver.newResolver;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 import static org.eclipse.xtext.util.Tuples.pair;
 
-import java.util.*;
+import com.google.common.base.Function;
+import com.google.eclipse.protobuf.model.util.ModelFinder;
+import com.google.eclipse.protobuf.naming.Naming.NamingUsage;
+import com.google.inject.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.util.*;
 
-import com.google.common.base.Function;
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.naming.Naming;
-import com.google.inject.*;
+import java.util.*;
 
 /**
  * Provides alternative qualified names for protobuf elements.
@@ -55,7 +56,7 @@ import com.google.inject.*;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-class LocalNamesProvider {
+public class LocalNamesProvider {
 
   @Inject private final IResourceScopeCache cache = IResourceScopeCache.NullImpl.INSTANCE;
   @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
@@ -65,16 +66,23 @@ class LocalNamesProvider {
   @Inject private QualifiedNames qualifiedNames;
 
   private final Function<EObject, String> resolver = newResolver(String.class, "name");
-
-  List<QualifiedName> namesOf(final EObject e, final Naming.NameTarget target) {
+  
+  public List<QualifiedName> names(EObject e) {
+    return allNames(e, DEFAULT);
+  }
+  
+  public List<QualifiedName> namesForOption(EObject e) {
+    return allNames(e, OPTION);
+  }
+  
+  private List<QualifiedName> allNames(final EObject e, final NamingUsage usage) {
     Pair<EObject, String> key = pair(e, "localFqns");
     return cache.get(key, e.eResource(), new Provider<List<QualifiedName>>() {
       @Override public List<QualifiedName> get() {
         List<QualifiedName> allNames = new ArrayList<QualifiedName>();
         EObject current = e;
-        String name = naming.nameOf(e, target);
+        String name = naming.nameOf(e, usage);
         if (isEmpty(name)) return emptyList();
-        
         QualifiedName qualifiedName = converter.toQualifiedName(name);
         allNames.add(qualifiedName);
         while (current.eContainer() != null) {

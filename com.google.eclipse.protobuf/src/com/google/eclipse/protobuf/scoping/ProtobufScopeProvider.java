@@ -50,8 +50,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     EObject c = typeRef.eContainer();
     if (c instanceof Property) {
       Property property = (Property) c;
-      Class<?>[] types = { Type.class, Group.class };
-      return createScope(astWalker.traverseAst(property, typeScopeFinder, types));
+      return createScope(astWalker.traverseAst(property, typeScopeFinder, Type.class));
     }
     Set<IEObjectDescription> descriptions = emptySet();
     return createScope(descriptions);
@@ -60,8 +59,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   @SuppressWarnings("unused")
   public IScope scope_MessageRef_type(MessageRef messageRef, EReference reference) {
     Protobuf root = modelFinder.rootOf(messageRef);
-    Class<?>[] types = { Message.class };
-    return createScope(astWalker.traverseAst(root, typeScopeFinder, types));
+    return createScope(astWalker.traverseAst(root, typeScopeFinder, Message.class));
   }
 
   @SuppressWarnings("unused")

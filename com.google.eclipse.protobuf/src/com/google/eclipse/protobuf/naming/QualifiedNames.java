@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.scoping;
+package com.google.eclipse.protobuf.naming;
 
 import static java.util.Collections.*;
 import static org.eclipse.xtext.util.Strings.isEmpty;
@@ -21,11 +21,11 @@ import com.google.inject.Inject;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class QualifiedNames {
+public class QualifiedNames {
 
   @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
 
-  QualifiedName addLeadingDot(QualifiedName name) {
+  public QualifiedName addLeadingDot(QualifiedName name) {
     if (name.getFirstSegment().equals("")) return name;
     List<String> segments = new ArrayList<String>();
     segments.addAll(name.getSegments());
@@ -33,7 +33,7 @@ class QualifiedNames {
     return QualifiedName.create(segments.toArray(new String[segments.size()]));
   }
 
-  Collection<QualifiedName> addPackageNameSegments(QualifiedName name, Package p) {
+  public Collection<QualifiedName> addPackageNameSegments(QualifiedName name, Package p) {
     QualifiedName current = name;
     List<String> segments = fqnSegments(p);
     int segmentCount = segments.size();
