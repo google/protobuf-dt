@@ -38,6 +38,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   @Inject private CustomOptionFieldScopeFinder customOptionFieldScopeFinder;
   @Inject private CustomOptionScopeFinder customOptionScopeFinder;
   @Inject private ProtoDescriptorProvider descriptorProvider;
+  @Inject private FieldNotationScopeFinder fieldNotationScopeFinder;
   @Inject private FieldOptions fieldOptions;
   @Inject private ModelFinder modelFinder;
   @Inject private LiteralDescriptions literalDescriptions;
@@ -74,35 +75,32 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     EObject container = l.eContainer();
     Enum anEnum = null;
     if (container instanceof DefaultValueFieldOption) {
-      EObject optionContainer = container.eContainer();
-      if (optionContainer instanceof Property) anEnum = modelFinder.enumTypeOf((Property) optionContainer);
+      container = container.eContainer();
     }
     if (container instanceof NativeOption) {
       ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
-      IndexedElement e = options.sourceOf((Option) container);
+      IndexedElement e = options.rootSourceOf((Option) container);
       anEnum = descriptor.enumTypeOf((Property) e);
     }
     if (container instanceof CustomOption) {
       CustomOption option = (CustomOption) container;
-      container = options.lastFieldSourceFrom(option);
-      if (container == null) container = options.sourceOf(option);
+      container = options.sourceOf(option);
     }
     if (container instanceof NativeFieldOption) {
       ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
-      IndexedElement c = fieldOptions.sourceOf((FieldOption) container);
+      IndexedElement c = fieldOptions.rootSourceOf((FieldOption) container);
       anEnum = descriptor.enumTypeOf((Property) c);
     }
     if (container instanceof CustomFieldOption) {
       CustomFieldOption option = (CustomFieldOption) container;
-      container = fieldOptions.lastFieldSourceFrom(option);
-      if (container == null) container = fieldOptions.sourceOf(option);
+      container = fieldOptions.sourceOf(option);
     }
     if (container instanceof Property) {
       anEnum = modelFinder.enumTypeOf((Property) container);
     }
     return createScope(literalDescriptions.literalsOf(anEnum));
   }
-
+  
   @SuppressWarnings("unused")
   public IScope scope_OptionSource_optionField(OptionSource s, EReference r) {
     EObject c = s.eContainer();
@@ -209,6 +207,17 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     return customOptionFieldScopeFinder.findScope(option, o);
   }
   
+  @SuppressWarnings("unused") 
+  public IScope scope_NormalFieldNotationNameSource_property(NormalFieldNotationNameSource s, EReference r) {
+    EObject container = s.eContainer();
+    if (container instanceof FieldNotation) {
+      FieldNotation fieldNotation = (FieldNotation) container;
+      return createScope(fieldNotationScopeFinder.sourceOf(fieldNotation));
+    }
+    Set<IEObjectDescription> descriptions = emptySet();
+    return createScope(descriptions);
+  }
+
   private static IScope createScope(Iterable<IEObjectDescription> descriptions) {
     return new SimpleScope(descriptions, DO_NOT_IGNORE_CASE);
   }

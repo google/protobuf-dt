@@ -66,7 +66,7 @@ import com.google.inject.*;
   }
 
   private Object labelFor(Option o) {
-    IndexedElement e = options.sourceOf(o);
+    IndexedElement e = options.rootSourceOf(o);
     String name = options.nameForOption(e);
     StringBuilder b = new StringBuilder();
     boolean isCustomOption = o instanceof CustomOption || o instanceof CustomFieldOption;

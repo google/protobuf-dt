@@ -77,7 +77,12 @@ public class ModelFinder {
     return (type instanceof Enum) ? (Enum) type : null;
   }
   
-  private Type typeOf(Property p) {
+  /**
+   * Returns the type of the given property.
+   * @param p the given property.
+   * @return the type of the given property.
+   */
+  public Type typeOf(Property p) {
     AbstractTypeRef r = p.getType();
     if (!(r instanceof TypeRef)) return null;
     return ((TypeRef) r).getType();

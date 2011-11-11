@@ -204,7 +204,7 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
   }
 
   private void highlight(Option option, IHighlightedPositionAcceptor acceptor) {
-    IndexedElement element = options.sourceOf(option);
+    IndexedElement element = options.rootSourceOf(option);
     if (element != null) {
       highlightFirstFeature(option, OPTION__SOURCE, acceptor, DEFAULT_ID);
     }

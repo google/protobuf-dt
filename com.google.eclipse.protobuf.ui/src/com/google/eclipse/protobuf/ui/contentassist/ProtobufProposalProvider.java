@@ -107,7 +107,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Override public void completeNativeOption_Value(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     NativeOption option = (NativeOption) model;
-    Property property = (Property) options.sourceOf(option);
+    Property property = (Property) options.rootSourceOf(option);
     if (property == null) return;
     ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
     Enum enumType = descriptor.enumTypeOf(property);
@@ -199,12 +199,12 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (model instanceof Property) return (Property) model;
     if (model instanceof Option) {
       Option option = (Option) model;
-      IndexedElement source = options.sourceOf(option);
+      IndexedElement source = options.rootSourceOf(option);
       if (source instanceof Property) return (Property) source;
     }
     if (model instanceof FieldOption) {
       FieldOption option = (FieldOption) model;
-      IndexedElement source = fieldOptions.sourceOf(option);
+      IndexedElement source = fieldOptions.rootSourceOf(option);
       if (source instanceof Property) return (Property) source;
     }
     return null;
@@ -371,7 +371,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (!(model instanceof NativeFieldOption)) return;
     NativeFieldOption option = (NativeFieldOption) model;
     ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
-    Property property = (Property) fieldOptions.sourceOf(option);
+    Property property = (Property) fieldOptions.rootSourceOf(option);
     Enum enumType = descriptor.enumTypeOf(property);
     if (enumType != null) {
       proposeAndAccept(enumType, context, acceptor);
@@ -519,7 +519,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (!(model instanceof CustomOption)) return;
     CustomOption option = (CustomOption) model;
     IndexedElement e = options.lastFieldSourceFrom(option);
-    if (e == null) e = options.sourceOf(option);
+    if (e == null) e = options.rootSourceOf(option);
     if (e instanceof Property) {
       proposeDefaultValue((Property) e, context, acceptor);
     }
@@ -531,7 +531,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (!(model instanceof CustomFieldOption)) return;
     CustomFieldOption option = (CustomFieldOption) model;
     IndexedElement e = fieldOptions.lastFieldSourceFrom(option);
-    if (e == null) e = fieldOptions.sourceOf(option);
+    if (e == null) e = fieldOptions.rootSourceOf(option);
     if (e instanceof Property) {
       proposeDefaultValue((Property) e, context, acceptor);
     }

@@ -94,13 +94,28 @@ ValueRef:
 
 // { foo: 1, bar: 2 }
 MessageNotation:
-  '{' 
+  '{'
   fields+=FieldNotation ((',')? fields+=FieldNotation)*
-  '}' 
+  '}'
 ;
 
 FieldNotation:
-  name=Name ':' value=SimpleRef;
+  SimpleFieldNotation | ComplexFieldNotation;
+
+SimpleFieldNotation:
+  name=FieldNotationNameSource ':' value=SimpleRef;
+
+ComplexFieldNotation:
+  name=FieldNotationNameSource ':'? values=MessageNotation;
+
+FieldNotationNameSource:
+  NormalFieldNotationNameSource | ExtensionFieldNotationNameSource;
+
+NormalFieldNotationNameSource:
+  property=[Property];
+
+ExtensionFieldNotationNameSource:
+  '[' extension=[Property|QualifiedName] ']';
 
 SimpleRef:
   LiteralRef | BooleanRef | NumberRef | StringRef;

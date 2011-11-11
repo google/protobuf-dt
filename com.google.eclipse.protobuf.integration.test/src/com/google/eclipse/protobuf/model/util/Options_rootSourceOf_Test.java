@@ -13,17 +13,17 @@ import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
+import org.junit.*;
+
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
-import org.junit.*;
-
 /**
- * Tests for <code>{@link Options#sourceOf(CustomOption)}</code>
- * 
+ * Tests for <code>{@link Options#rootSourceOf(Option)}</code>.
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Options_sourceOf_Test {
+public class Options_rootSourceOf_Test {
 
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
@@ -31,6 +31,15 @@ public class Options_sourceOf_Test {
 
   @Before public void setUp() {
     options = xtext.getInstanceOf(Options.class);
+  }
+
+  // syntax = "proto2";
+  //
+  // option java_package = 'com.google.eclipse.protobuf.tests';
+  @Test public void should_return_property_of_native_option() {
+    Option option = xtext.find("java_package", Option.class);
+    Property p = (Property) options.rootSourceOf(option);
+    assertThat(p.getName(), equalTo("java_package"));
   }
 
   // syntax = "proto2";
@@ -43,27 +52,8 @@ public class Options_sourceOf_Test {
   //
   // option (encoding) = 'UTF-8';
   @Test public void should_return_property_of_custom_option() {
-    CustomOption option = xtext.find("encoding", ")", CustomOption.class);
-    Property p = (Property) options.sourceOf(option);
+    Option option = xtext.find("encoding", ")", Option.class);
+    Property p = (Property) options.rootSourceOf(option);
     assertThat(p.getName(), equalTo("encoding"));
-  }
-
-  // syntax = "proto2";
-  //
-  // import 'google/protobuf/descriptor.proto';
-  //
-  // message Custom {
-  //   optional int32 count = 1;
-  // }
-  //
-  // extend google.protobuf.FileOptions {
-  //   optional Custom custom = 1000;
-  // }
-  //
-  // option (custom).count = 6;
-  @Test public void should_return_property_field() {
-    CustomOption option = xtext.find("custom", ")", CustomOption.class);
-    Property p = (Property) options.sourceOf(option);
-    assertThat(p.getName(), equalTo("count"));
   }
 }

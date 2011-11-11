@@ -26,17 +26,45 @@ public class Options {
   private @Inject OptionFields optionFields;
   
   /**
+   * Returns the <code>{@link IndexedElement}</code> the given <code>{@link CustomOption}</code> is referring to. This 
+   * method will check first the source of the last field of the given option (if any.) If the option does not have any 
+   * fields, this method will return the root source of the option. 
+   * <p>
+   * Example #1
+   * <pre>
+   * option (myOption) = true;
+   * </pre>
+   * this method will return the <code>{@link IndexedElement}</code> "myOption" is pointing to.
+   * </p>
+   * <p>
+   * Example #2
+   * <pre>
+   * option (myOption).foo = true;
+   * </pre>
+   * this method will return the <code>{@link IndexedElement}</code> "foo" is pointing to.
+   * </p>
+   * @param option the given {@code CustomOption}.
+   * @return the {@code IndexedElement} the given {@code CustomOption} is referring to, or {@code null} if it cannot be
+   * found.
+   */
+  public IndexedElement sourceOf(CustomOption option) {
+    IndexedElement e = lastFieldSourceFrom(option);
+    if (e == null) e = rootSourceOf(option);
+    return e;
+  }
+  
+  /**
    * Returns the <code>{@link IndexedElement}</code> the given <code>{@link Option}</code> is referring to. In the
    * following example
    * <pre>
-   * option (myOption) = true;
+   * option (myOption).foo = true;
    * </pre>
    * this method will return the <code>{@link IndexedElement}</code> "myOption" is pointing to.
    * @param option the given {@code Option}.
    * @return the {@code IndexedElement} the given {@code Option} is referring to, or {@code null} if it cannot be
    * found.
    */
-  public IndexedElement sourceOf(Option option) {
+  public IndexedElement rootSourceOf(Option option) {
     OptionSource source = option.getSource();
     return (source == null) ? null : source.getOptionField();
   }
@@ -59,7 +87,8 @@ public class Options {
   }
   
   /**
-   * Returns the name of the given <code>{@link IndexedElement}</code>.
+   * Returns the name of the given <code>{@link IndexedElement}</code> used as a source of an option. If the given
+   * element is a <code>{@link Group}</code>, this method will return its name in lower case.
    * @param e the given {@code IndexedElement}.
    * @return the name of the given <code>{@link IndexedElement}</code>.
    */

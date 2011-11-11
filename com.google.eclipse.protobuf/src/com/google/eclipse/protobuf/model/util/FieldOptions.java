@@ -38,11 +38,39 @@ public class FieldOptions {
    * @return the name of the given option.
    */
   public String nameOf(FieldOption option) {
-    IndexedElement e = sourceOf(option);
+    IndexedElement e = rootSourceOf(option);
     if (e instanceof Property) return ((Property) e).getName();
     return null;
   }
 
+  /**
+   * Returns the <code>{@link IndexedElement}</code> the given <code>{@link CustomFieldOption}</code> is referring to. 
+   * This method will check first the source of the last field of the given option (if any.) If the option does not have 
+   * any fields, this method will return the root source of the option. 
+   * <p>
+   * Example #1
+   * <pre>
+   * [(myFieldOption) = true];
+   * </pre>
+   * this method will return the <code>{@link IndexedElement}</code> "myFieldOption" is pointing to.
+   * </p>
+   * <p>
+   * Example #2
+   * <pre>
+   * [(myOption).foo = true];
+   * </pre>
+   * this method will return the <code>{@link IndexedElement}</code> "foo" is pointing to.
+   * </p>
+   * @param option the given {@code CustomFieldOption}.
+   * @return the {@code IndexedElement} the given {@code CustomFieldOption} is referring to, or {@code null} if it 
+   * cannot be found.
+   */
+  public IndexedElement sourceOf(CustomFieldOption option) {
+    IndexedElement e = lastFieldSourceFrom(option);
+    if (e == null) e = rootSourceOf(option);
+    return e;
+  }
+  
   /**
    * Returns the <code>{@link IndexedElement}</code> the given <code>{@link FieldOption}</code> is referring to. In the
    * following example
@@ -53,7 +81,7 @@ public class FieldOptions {
    * @param option the given {@code FieldOption}.
    * @return the {@code Property} the given {@code FieldOption} is referring to, or {@code null} if it cannot be found.
    */
-  public IndexedElement sourceOf(FieldOption option) {
+  public IndexedElement rootSourceOf(FieldOption option) {
     OptionSource source = null;
     if (option instanceof NativeFieldOption) {
       NativeFieldOption nativeOption = (NativeFieldOption) option;
@@ -63,7 +91,6 @@ public class FieldOptions {
       CustomFieldOption customOption = (CustomFieldOption) option;
       source = customOption.getSource();
     }
-    // TODO add support for default
     return (source == null) ? null : source.getOptionField();
   }
 

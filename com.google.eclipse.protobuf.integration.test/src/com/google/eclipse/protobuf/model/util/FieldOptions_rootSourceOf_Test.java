@@ -19,11 +19,11 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link FieldOptions#sourceOf(CustomFieldOption)}</code>.
+ * Tests for <code>{@link FieldOptions#rootSourceOf(FieldOption)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class FieldOptions_sourceOf_Test {
+public class FieldOptions_rootSourceOf_Test {
 
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
@@ -31,6 +31,17 @@ public class FieldOptions_sourceOf_Test {
 
   @Before public void setUp() {
     fieldOptions = xtext.getInstanceOf(FieldOptions.class);
+  }
+
+  // syntax = "proto2";
+  //
+  // message Person {
+  //   optional boolean active = 1 [deprecated = false];
+  // }
+  @Test public void should_return_property_of_native_field_option() {
+    FieldOption option = xtext.find("deprecated", FieldOption.class);
+    Property p = (Property) fieldOptions.rootSourceOf(option);
+    assertThat(p.getName(), equalTo("deprecated"));
   }
 
   // syntax = "proto2";
@@ -45,29 +56,8 @@ public class FieldOptions_sourceOf_Test {
   //   optional boolean active = 1 [(encoding) = 'UTF-8'];
   // }
   @Test public void should_return_property_of_custom_field_option() {
-    CustomFieldOption option = xtext.find("encoding", ")", CustomFieldOption.class);
-    Property p = (Property) fieldOptions.sourceOf(option);
+    FieldOption option = xtext.find("encoding", ")", FieldOption.class);
+    Property p = (Property) fieldOptions.rootSourceOf(option);
     assertThat(p.getName(), equalTo("encoding"));
-  }
-
-  // syntax = "proto2";
-  //
-  // import 'google/protobuf/descriptor.proto';
-  //
-  // message Custom {
-  //   optional int32 count = 1;
-  // }
-  //
-  // extend google.protobuf.FieldOptions {
-  //   optional Custom custom = 1000;
-  // }
-  //
-  // message Person {
-  //   optional boolean active = 1 [(custom).count = 6];
-  // }
-  @Test public void should_return_property_field() {
-    CustomFieldOption option = xtext.find("custom", ").", CustomFieldOption.class);
-    Property p = (Property) fieldOptions.sourceOf(option);
-    assertThat(p.getName(), equalTo("count"));
   }
 }

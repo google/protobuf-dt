@@ -39,26 +39,15 @@ class CustomOptionFieldScopeFinder {
       IEObjectDescriptionsProvider provider) {
     IndexedElement e = referredField(source, option.getOptionFields(), new Provider<IndexedElement>() {
       @Override public IndexedElement get() {
-        return options.sourceOf(option);
+        return options.rootSourceOf(option);
       }
     });
-    if (e != null) return provider.fieldsInType(e);
+    if (e != null) return provider.fieldsInTypeOf(e);
     return emptySet();
   }
 
   Collection<IEObjectDescription> findScope(CustomFieldOption option, OptionMessageFieldSource source) {
     return findScope(option, source, new MessageFieldDescriptorProvider());
-  }
-
-  private Collection<IEObjectDescription> findScope(final CustomFieldOption option, EObject source,
-      IEObjectDescriptionsProvider provider) {
-    IndexedElement e = referredField(source, option.getOptionFields(), new Provider<IndexedElement>() {
-      @Override public IndexedElement get() {
-        return fieldOptions.sourceOf(option);
-      }
-    });
-    if (e != null) return provider.fieldsInType(e);
-    return emptySet();
   }
 
   Collection<IEObjectDescription> findScope(CustomOption option, OptionExtendMessageFieldSource source) {
@@ -67,6 +56,17 @@ class CustomOptionFieldScopeFinder {
 
   Collection<IEObjectDescription> findScope(CustomFieldOption option, OptionExtendMessageFieldSource source) {
     return findScope(option, source, new ExtendMessageFieldDescriptorProvider());
+  }
+
+  private Collection<IEObjectDescription> findScope(final CustomFieldOption option, EObject source,
+      IEObjectDescriptionsProvider provider) {
+    IndexedElement e = referredField(source, option.getOptionFields(), new Provider<IndexedElement>() {
+      @Override public IndexedElement get() {
+        return fieldOptions.rootSourceOf(option);
+      }
+    });
+    if (e != null) return provider.fieldsInTypeOf(e);
+    return emptySet();
   }
 
   private IndexedElement referredField(EObject source, List<OptionFieldSource> allFieldSources,
@@ -88,7 +88,7 @@ class CustomOptionFieldScopeFinder {
   }
 
   private class MessageFieldDescriptorProvider implements IEObjectDescriptionsProvider {
-    @Override public Collection<IEObjectDescription> fieldsInType(IndexedElement e) {
+    @Override public Collection<IEObjectDescription> fieldsInTypeOf(IndexedElement e) {
       Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
       if (e instanceof Property) {
         Message propertyType = modelFinder.messageTypeOf((Property) e);
@@ -114,17 +114,18 @@ class CustomOptionFieldScopeFinder {
   }
 
   private class ExtendMessageFieldDescriptorProvider implements IEObjectDescriptionsProvider {
-    @Override public Collection<IEObjectDescription> fieldsInType(IndexedElement e) {
+    @Override public Collection<IEObjectDescription> fieldsInTypeOf(IndexedElement e) {
       if (!(e instanceof Property)) return emptyList();
       Message propertyType = modelFinder.messageTypeOf((Property) e);
       if (propertyType == null) return emptyList();
       Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
       for (ExtendMessage extend : modelFinder.extensionsOf(propertyType)) {
         for (MessageElement element : extend.getElements()) {
-          if (!(element instanceof Property)) continue;
-          Property current = (Property) element;
+          if (!(element instanceof IndexedElement)) continue;
+          IndexedElement current = (IndexedElement) element;
           descriptions.addAll(qualifiedNamesDescriptions.qualifiedNamesForOption(current));
-          descriptions.add(create(current.getName(), current));
+          String name = options.nameForOption(current);
+          descriptions.add(create(name, current));
         }
       }
       return descriptions;
@@ -132,6 +133,6 @@ class CustomOptionFieldScopeFinder {
   }
 
   private static interface IEObjectDescriptionsProvider {
-    Collection<IEObjectDescription> fieldsInType(IndexedElement e);
+    Collection<IEObjectDescription> fieldsInTypeOf(IndexedElement e);
   }
 }
