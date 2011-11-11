@@ -209,15 +209,18 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   
   @SuppressWarnings("unused") 
   public IScope scope_NormalFieldNotationNameSource_property(NormalFieldNotationNameSource s, EReference r) {
-    EObject container = s.eContainer();
-    if (container instanceof FieldNotation) {
-      FieldNotation fieldNotation = (FieldNotation) container;
-      return createScope(fieldNotationScopeFinder.sourceOf(fieldNotation));
-    }
-    Set<IEObjectDescription> descriptions = emptySet();
-    return createScope(descriptions);
+    return findScope(s);
   }
 
+  @SuppressWarnings("unused") 
+  public IScope scope_ExtensionFieldNotationNameSource_extension(ExtensionFieldNotationNameSource s, EReference r) {
+    return findScope(s);
+  }
+
+  private IScope findScope(FieldNotationNameSource s) {
+    return createScope(fieldNotationScopeFinder.sourceOf(s));
+  }
+  
   private static IScope createScope(Iterable<IEObjectDescription> descriptions) {
     return new SimpleScope(descriptions, DO_NOT_IGNORE_CASE);
   }

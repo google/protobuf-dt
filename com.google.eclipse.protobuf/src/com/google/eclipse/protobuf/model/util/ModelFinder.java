@@ -31,15 +31,18 @@ import java.util.*;
  */
 @Singleton
 public class ModelFinder {
-
+  
   /**
    * Returns all the <strong>local</strong> extensions of the given message.
    * @param m the given message.
    * @return all the <strong>local</strong> extensions of the given message, or an empty collection if none is found.
    */
-  public Collection<ExtendMessage> extensionsOf(Message m) {
+  public Collection<ExtendMessage> localExtensionsOf(Message m) {
+    return extensionsOf(m, rootOf(m));
+  }
+  
+  public Collection<ExtendMessage> extensionsOf(Message m, Protobuf root) {
     Set<ExtendMessage> extensions = new HashSet<ExtendMessage>();
-    Protobuf root = rootOf(m);
     for (ExtendMessage extension : getAllContentsOfType(root, ExtendMessage.class)) {
       Message referred = messageFrom(extension);
       if (m.equals(referred)) extensions.add(extension);

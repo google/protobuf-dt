@@ -29,7 +29,7 @@ class CustomOptionFieldScopeFinder {
   @Inject private ModelFinder modelFinder;
   @Inject private OptionFields optionFields;
   @Inject private Options options;
-  @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
+  @Inject private QualifiedNameDescriptions qualifiedNameDescriptions;
 
   Collection<IEObjectDescription> findScope(CustomOption option, OptionMessageFieldSource source) {
     return findScope(option, source, new MessageFieldDescriptorProvider());
@@ -119,11 +119,11 @@ class CustomOptionFieldScopeFinder {
       Message propertyType = modelFinder.messageTypeOf((Property) e);
       if (propertyType == null) return emptyList();
       Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
-      for (ExtendMessage extend : modelFinder.extensionsOf(propertyType)) {
+      for (ExtendMessage extend : modelFinder.localExtensionsOf(propertyType)) {
         for (MessageElement element : extend.getElements()) {
           if (!(element instanceof IndexedElement)) continue;
           IndexedElement current = (IndexedElement) element;
-          descriptions.addAll(qualifiedNamesDescriptions.qualifiedNamesForOption(current));
+          descriptions.addAll(qualifiedNameDescriptions.qualifiedNamesForOption(current));
           String name = options.nameForOption(current);
           descriptions.add(create(name, current));
         }

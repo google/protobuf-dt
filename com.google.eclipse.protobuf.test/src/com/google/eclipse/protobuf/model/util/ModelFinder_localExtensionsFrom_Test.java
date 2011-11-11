@@ -20,11 +20,11 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link ModelFinder#extensionsOf(Message)}</code>.
+ * Tests for <code>{@link ModelFinder#localExtensionsOf(Message)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ModelFinder_extensionsFrom_Test {
+public class ModelFinder_localExtensionsFrom_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
@@ -43,7 +43,7 @@ public class ModelFinder_extensionsFrom_Test {
   // extend Person {}
   @Test public void should_return_extensions_of_message() {
     Message m = xtext.find("Person", " {", Message.class);
-    List<ExtendMessage> extensions = new ArrayList<ExtendMessage>(finder.extensionsOf(m));
+    List<ExtendMessage> extensions = new ArrayList<ExtendMessage>(finder.localExtensionsOf(m));
     Message referred = extensions.get(0).getMessage().getType();
     assertSame(m, referred);
   }
