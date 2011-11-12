@@ -74,6 +74,9 @@ public class XtextRule implements MethodRule {
     IParseResult parseResult = resource.getParseResult();
     if (!parseResult.hasSyntaxErrors()) {
       root = (Protobuf) parseResult.getRootASTElement();
+      if (root.getSyntax() == null) {
+        throw new IllegalStateException("Please specify 'proto2' syntax");
+      }
       return;
     }
     StringBuilder builder = new StringBuilder();
