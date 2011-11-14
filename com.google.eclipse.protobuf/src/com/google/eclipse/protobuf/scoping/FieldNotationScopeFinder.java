@@ -92,7 +92,7 @@ class FieldNotationScopeFinder {
     Message propertyType = modelFinder.messageTypeOf(p);
     // check first in descriptor.proto
     
-    for (ExtendMessage extend : modelFinder.extensionsOf(propertyType, modelFinder.rootOf(p))) {
+    for (Extend extend : modelFinder.extensionsOf(propertyType, modelFinder.rootOf(p))) {
       for (MessageElement element : extend.getElements()) {
         if (!(element instanceof Property)) continue;
         descriptions.addAll(qualifiedNameDescriptions.qualifiedNames(element));

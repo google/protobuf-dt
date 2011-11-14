@@ -21,7 +21,7 @@ Syntax:
   'syntax' '=' name=STRING ';';
 
 ProtobufElement:
-  Package | Import | Option | ComplexType | ExtendMessage | Service;
+  Package | Import | Option | ComplexType | Extend | Service;
 
 Package:
   'package' name=QualifiedName ';';
@@ -47,7 +47,7 @@ Message:
   '}' (';')?;
 
 MessageElement:
-  Option | Extensions | ComplexType | Property | ExtendMessage;
+  Option | Extensions | ComplexType | Property | Extend;
 
 Extensions:
   'extensions' ranges+=Range (',' ranges+=Range)* ';';
@@ -65,7 +65,7 @@ Group:
   '}' (';')?;
 
 GroupElement:
-  Option | Property | Group | Enum | ExtendMessage;
+  Option | Property | Group | Enum | Extend;
 
 Property:
   modifier=Modifier type=AbstractTypeRef name=Name '=' index=(LONG | HEX)
@@ -176,7 +176,7 @@ terminal HEX returns ecore::ELong:
 terminal NUMBER:
   '0'..'9';
 
-ExtendMessage:
+Extend:
   'extend' message=MessageRef '{'
   elements+=MessageElement*
   '}' (';')?;
