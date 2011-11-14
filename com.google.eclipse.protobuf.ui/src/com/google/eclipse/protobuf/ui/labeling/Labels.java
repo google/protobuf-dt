@@ -149,7 +149,7 @@ import com.google.inject.*;
     return text;
   }
 
-  private String messageName(MessageRef r) {
-    return r.getType().getName();
+  private String messageName(MessageLink r) {
+    return r.getTarget().getName();
   }
 }

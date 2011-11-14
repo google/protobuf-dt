@@ -56,8 +56,8 @@ public class ModelFinder {
    * @return the message from the given extension, or {@code null} if the extension is not referring to a message.
    */
   public Message messageFrom(MessageExtension e) {
-    MessageRef ref = e.getMessage();
-    return ref == null ? null : ref.getType();
+    MessageLink ref = e.getMessage();
+    return ref == null ? null : ref.getTarget();
   }
 
   /**

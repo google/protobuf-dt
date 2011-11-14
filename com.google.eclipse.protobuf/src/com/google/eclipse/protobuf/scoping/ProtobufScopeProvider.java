@@ -11,17 +11,17 @@ package com.google.eclipse.protobuf.scoping;
 import static com.google.eclipse.protobuf.scoping.OptionType.typeOf;
 import static java.util.Collections.emptySet;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.inject.Inject;
+import java.util.*;
 
 import org.eclipse.emf.ecore.*;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.impl.*;
 
-import java.util.*;
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.inject.Inject;
 
 /**
  * Custom scoping description.
@@ -61,7 +61,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   }
 
   @SuppressWarnings("unused")
-  public IScope scope_MessageRef_type(MessageRef m, EReference r) {
+  public IScope scope_MessageLink_target(MessageLink m, EReference r) {
     return createScope(findMessageScope(m));
   }
 

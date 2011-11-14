@@ -11,7 +11,6 @@ package com.google.eclipse.protobuf.ui.editor.syntaxcoloring;
 
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
 import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.HighlightingConfiguration.*;
-import static org.eclipse.xtext.ui.editor.syntaxcoloring.DefaultHighlightingConfiguration.*;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.*;

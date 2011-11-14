@@ -177,7 +177,7 @@ terminal NUMBER:
   '0'..'9';
 
 MessageExtension:
-  'extend' message=MessageRef '{'
+  'extend' message=MessageLink '{'
   elements+=MessageElement*
   '}' (';')?;
 
@@ -190,7 +190,7 @@ ServiceElement:
   Option | Rpc;
 
 Rpc:
-  'rpc' name=Name '(' argType=MessageRef ')' 'returns' '(' returnType=MessageRef ')'
+  'rpc' name=Name '(' argType=MessageLink ')' 'returns' '(' returnType=MessageLink ')'
   (('{' options+=Option* '}') (';')? | ';');
 
 Name:
@@ -199,8 +199,8 @@ Name:
   'double' | 'float' | 'int32' | 'int64' | 'uint32' | 'uint64' | 'sint32' | 'sint64' | 'fixed32' | 'fixed64' |
   'sfixed32' | 'sfixed64' | 'bool' | 'string' | 'bytes';
 
-MessageRef:
-  type=[Message|QualifiedName];
+MessageLink:
+  target=[Message|QualifiedName];
 
 Option:
   NativeOption | CustomOption;
