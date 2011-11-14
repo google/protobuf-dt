@@ -28,7 +28,7 @@ public class ProtobufOutlineTreeProvider extends DefaultOutlineTreeProvider {
   private static final List<Class<? extends EObject>> IGNORED_ELEMENT_TYPES = new ArrayList<Class<? extends EObject>>();
 
   static {
-    IGNORED_ELEMENT_TYPES.add(BooleanRef.class);
+    IGNORED_ELEMENT_TYPES.add(BooleanLink.class);
     IGNORED_ELEMENT_TYPES.add(FieldOption.class);
     IGNORED_ELEMENT_TYPES.add(MessageLink.class);
   }
