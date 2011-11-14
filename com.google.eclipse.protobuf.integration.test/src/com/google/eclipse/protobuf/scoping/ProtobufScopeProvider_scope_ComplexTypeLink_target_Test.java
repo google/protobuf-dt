@@ -23,11 +23,11 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link ProtobufScopeProvider#scope_TypeRef_type(TypeRef, EReference)}</code>
+ * Tests for <code>{@link ProtobufScopeProvider#scope_ComplexTypeLink_target(ComplexTypeLink, EReference)}</code>
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ProtobufScopeProvider_scope_TypeRef_type_Test {
+public class ProtobufScopeProvider_scope_ComplexTypeLink_target_Test {
 
   private static EReference reference;
 
@@ -63,7 +63,7 @@ public class ProtobufScopeProvider_scope_TypeRef_type_Test {
   // }
   @Test public void should_provide_Types() {
     Property p = xtext.find("type", Property.class);
-    IScope scope = provider.scope_TypeRef_type(typeOf(p), reference);
+    IScope scope = provider.scope_ComplexTypeLink_target(typeOf(p), reference);
     assertThat(descriptionsIn(scope), containAll("Type", "proto.Type", "google.proto.Type", "com.google.proto.Type",
                                                  ".com.google.proto.Type",
                                                  "Address", "proto.Address", "google.proto.Address",
@@ -99,7 +99,7 @@ public class ProtobufScopeProvider_scope_TypeRef_type_Test {
   // }
   @Test public void should_provide_imported_Types() {
     Property p = xtext.find("type", " =", Property.class);
-    IScope scope = provider.scope_TypeRef_type(typeOf(p), reference);
+    IScope scope = provider.scope_ComplexTypeLink_target(typeOf(p), reference);
     assertThat(descriptionsIn(scope), containAll("test.proto.Type", ".test.proto.Type",
                                                  "test.proto.Address", ".test.proto.Address",
                                                  "Contact", "proto.Contact", "google.proto.Contact",
@@ -133,7 +133,7 @@ public class ProtobufScopeProvider_scope_TypeRef_type_Test {
   // }
   @Test public void should_provide_imported_Types_with_equal_package() {
     Property p = xtext.find("type", " =", Property.class);
-    IScope scope = provider.scope_TypeRef_type(typeOf(p), reference);
+    IScope scope = provider.scope_ComplexTypeLink_target(typeOf(p), reference);
     assertThat(descriptionsIn(scope), containAll("Type", "proto.Type", "google.proto.Type", "com.google.proto.Type",
                                                  ".com.google.proto.Type",
                                                  "Address", "proto.Address", "google.proto.Address",
@@ -169,7 +169,7 @@ public class ProtobufScopeProvider_scope_TypeRef_type_Test {
   // }
   @Test public void should_provide_public_imported_Types() {
     Property p = xtext.find("type", " =", Property.class);
-    IScope scope = provider.scope_TypeRef_type(typeOf(p), reference);
+    IScope scope = provider.scope_ComplexTypeLink_target(typeOf(p), reference);
     assertThat(descriptionsIn(scope), containAll("test.proto.Type", ".test.proto.Type",
                                                  "test.proto.Address", ".test.proto.Address",
                                                  "Contact", "proto.Contact", "google.proto.Contact",
@@ -210,14 +210,14 @@ public class ProtobufScopeProvider_scope_TypeRef_type_Test {
   // }
   @Test public void should_provide_public_imported_Types_with_more_than_one_level() {
     Property p = xtext.find("type", " =", Property.class);
-    IScope scope = provider.scope_TypeRef_type(typeOf(p), reference);
+    IScope scope = provider.scope_ComplexTypeLink_target(typeOf(p), reference);
     assertThat(descriptionsIn(scope), containAll("test.proto.Type", ".test.proto.Type",
                                                  "test.proto.Address", ".test.proto.Address",
                                                  "Contact", "proto.Contact", "google.proto.Contact",
                                                  "com.google.proto.Contact", ".com.google.proto.Contact"));
   }
 
-  private static TypeRef typeOf(Property p) {
-    return (TypeRef) p.getType();
+  private static ComplexTypeLink typeOf(Property p) {
+    return (ComplexTypeLink) p.getType();
   }
 }

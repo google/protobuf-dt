@@ -74,8 +74,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     proposeAndAccept(proposal, imageHelper.getImage(images.imageFor(Syntax.class)), context, acceptor);
   }
 
-  @Override public void completeTypeRef_Type(EObject model, Assignment assignment, ContentAssistContext context, 
-      ICompletionProposalAcceptor acceptor) {
+  @Override public void completeComplexTypeLink_Target(EObject model, Assignment assignment,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     Collection<IEObjectDescription> scope = scoping().findMessageScope(model);
     for (IEObjectDescription d : descriptionChooser.shortestQualifiedNamesIn(scope)) {
       Image image = imageHelper.getImage(images.imageFor(d.getEObjectOrProxy()));

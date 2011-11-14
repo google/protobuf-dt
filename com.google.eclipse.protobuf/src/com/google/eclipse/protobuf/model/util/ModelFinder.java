@@ -87,8 +87,8 @@ public class ModelFinder {
    */
   public ComplexType typeOf(Property p) {
     AbstractTypeRef r = p.getType();
-    if (!(r instanceof TypeRef)) return null;
-    return ((TypeRef) r).getType();
+    if (!(r instanceof ComplexTypeLink)) return null;
+    return ((ComplexTypeLink) r).getTarget();
   }
 
   /**

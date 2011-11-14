@@ -44,8 +44,8 @@ public class PropertyHasType extends BaseMatcher<Property> {
   private String typeNameOf(Property property) {
     AbstractTypeRef r = property.getType();
     if (r instanceof ScalarTypeRef) return ((ScalarTypeRef) r).getScalar().getName();
-    if (r instanceof TypeRef) {
-      ComplexType type = ((TypeRef) r).getType();
+    if (r instanceof ComplexTypeLink) {
+      ComplexType type = ((ComplexTypeLink) r).getTarget();
       return type == null ? null : type.getName();
     }
     return r.toString();

@@ -47,7 +47,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   @Inject private TypeScopeFinder typeScopeFinder;
 
   @SuppressWarnings("unused")
-  public IScope scope_TypeRef_type(TypeRef t, EReference r) {
+  public IScope scope_ComplexTypeLink_target(ComplexTypeLink t, EReference r) {
     EObject c = t.eContainer();
     if (c instanceof Property) {
       return createScope(findTypeScope(c));

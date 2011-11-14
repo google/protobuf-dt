@@ -77,7 +77,7 @@ enum Modifier:
   | repeated;
 
 AbstractTypeRef:
-  ScalarTypeRef | TypeRef;
+  ScalarTypeRef | ComplexTypeLink;
 
 ScalarTypeRef:
   scalar=ScalarType;
@@ -86,8 +86,8 @@ enum ScalarType:
   double | float | int32 | int64 | uint32 | uint64 | sint32 | sint64 | fixed32 | fixed64 | sfixed32 | sfixed64 | bool |
   string | bytes;
 
-TypeRef:
-  type=[ComplexType|QualifiedName];
+ComplexTypeLink:
+  target=[ComplexType|QualifiedName];
 
 ValueRef:
   MessageNotation | SimpleRef;
