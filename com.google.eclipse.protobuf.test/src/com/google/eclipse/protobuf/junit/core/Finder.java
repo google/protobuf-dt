@@ -27,7 +27,7 @@ import com.google.eclipse.protobuf.protobuf.Package;
  */
 class Finder {
 
-  private static final String[] FEATURE_NAMES = { "extension", "message", "name", "optionField", "property", "source", "type" };
+  private static final String[] FEATURE_NAMES = { "extension", "target", "message", "name", "optionField", "property", "source", "type" };
 
   private final String protoAsText;
   private final AbstractNode root;

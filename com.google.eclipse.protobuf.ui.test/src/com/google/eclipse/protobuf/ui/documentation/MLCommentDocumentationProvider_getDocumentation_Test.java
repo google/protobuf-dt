@@ -53,6 +53,8 @@ public class MLCommentDocumentationProvider_getDocumentation_Test {
     assertThat(lines[1], equalTo("(Optional.)"));
   }
 
+  // syntax = "proto2";
+  //
   // message Person {
   //   optional bool active = 1;
   // }

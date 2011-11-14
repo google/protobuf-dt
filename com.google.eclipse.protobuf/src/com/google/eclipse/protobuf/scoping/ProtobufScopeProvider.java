@@ -71,7 +71,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   }
 
   @SuppressWarnings("unused")
-  public IScope scope_LiteralRef_literal(LiteralRef l, EReference r) {
+  public IScope scope_LiteralLink_target(LiteralLink l, EReference r) {
     EObject container = l.eContainer();
     Enum anEnum = null;
     if (container instanceof DefaultValueFieldOption) {

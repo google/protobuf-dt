@@ -11,7 +11,6 @@ package com.google.eclipse.protobuf.ui.editor.syntaxcoloring;
 
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
 import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.HighlightingConfiguration.*;
-import static org.eclipse.xtext.ui.editor.syntaxcoloring.DefaultHighlightingConfiguration.*;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.*;
@@ -124,7 +123,7 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
   private void highlightOptions(IndexedElement element, IHighlightedPositionAcceptor acceptor) {
     for (FieldOption option : indexedElements.fieldOptionsOf(element)) {
       ValueLink link = option.getValue();
-      if (link instanceof LiteralRef) {
+      if (link instanceof LiteralLink) {
         highlightFirstFeature(option, FIELD_OPTION__VALUE, acceptor, ENUM_LITERAL_ID);
         return;
       }
@@ -210,7 +209,7 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
       highlightFirstFeature(option, OPTION__SOURCE, acceptor, DEFAULT_ID);
     }
     ValueLink link = option.getValue();
-    if (link instanceof LiteralRef) {
+    if (link instanceof LiteralLink) {
       highlightFirstFeature(option, OPTION__VALUE, acceptor, ENUM_LITERAL_ID);
       return;
     }

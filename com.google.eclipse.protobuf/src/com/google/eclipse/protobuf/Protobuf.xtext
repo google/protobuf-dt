@@ -196,10 +196,10 @@ ExtensionFieldNotationNameSource:
   '[' extension=[MessageField|QualifiedName] ']';
 
 SimpleValueLink:
-  LiteralRef | BooleanLink | NumberLink | StringLink;
+  LiteralLink | BooleanLink | NumberLink | StringLink;
 
-LiteralRef:
-  literal=[Literal];
+LiteralLink:
+  target=[Literal];
 
 BooleanLink:
   target=BOOL;
