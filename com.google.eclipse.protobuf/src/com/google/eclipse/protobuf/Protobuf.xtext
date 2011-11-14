@@ -47,7 +47,7 @@ Message:
   '}' (';')?;
 
 MessageElement:
-  Option | Extensions | ComplexType | Property | MessageExtension;
+  Option | Extensions | ComplexType | MessageField | MessageExtension;
 
 Extensions:
   'extensions' ranges+=Range (',' ranges+=Range)* ';';
@@ -65,9 +65,9 @@ Group:
   '}' (';')?;
 
 GroupElement:
-  Option | Property | Group | Enum | MessageExtension;
+  Option | MessageField | Group | Enum | MessageExtension;
 
-Property:
+MessageField:
   modifier=Modifier type=TypeLink name=Name '=' index=(LONG | HEX)
   ('[' fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)* ']')? (';')+;
 
@@ -112,10 +112,10 @@ FieldNotationNameSource:
   NormalFieldNotationNameSource | ExtensionFieldNotationNameSource;
 
 NormalFieldNotationNameSource:
-  property=[Property];
+  property=[MessageField];
 
 ExtensionFieldNotationNameSource:
-  '[' extension=[Property|QualifiedName] ']';
+  '[' extension=[MessageField|QualifiedName] ']';
 
 SimpleRef:
   LiteralRef | BooleanRef | NumberRef | StringRef;
@@ -238,7 +238,7 @@ OptionExtendMessageFieldSource:
   '(' optionExtendMessageField=[IndexedElement|QualifiedName] ')';  
 
 IndexedElement:
-  Property | Group;
+  MessageField | Group;
 
 terminal ID: '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
 terminal ML_COMMENT: '/*' -> '*/';

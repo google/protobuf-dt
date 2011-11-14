@@ -30,17 +30,17 @@ public class IndexedElements_indexOf_Test {
   }
   
   @Test public void should_return_name_of_Property() {
-    Property p = mock(Property.class);
-    when(p.getIndex()).thenReturn(6L);
-    assertThat(indexedElements.indexOf(p), equalTo(6L));
-    verify(p).getIndex();
+    MessageField field = mock(MessageField.class);
+    when(field.getIndex()).thenReturn(6L);
+    assertThat(indexedElements.indexOf(field), equalTo(6L));
+    verify(field).getIndex();
   }
 
   @Test public void should_return_name_of_Group() {
-    Group g = mock(Group.class);
-    when(g.getIndex()).thenReturn(8L);
-    assertThat(indexedElements.indexOf(g), equalTo(8L));
-    verify(g).getIndex();
+    Group group = mock(Group.class);
+    when(group.getIndex()).thenReturn(8L);
+    assertThat(indexedElements.indexOf(group), equalTo(8L));
+    verify(group).getIndex();
   }
   
   @Test public void should_return_MIN_VALUE_if_IndexedElement_is_null() {

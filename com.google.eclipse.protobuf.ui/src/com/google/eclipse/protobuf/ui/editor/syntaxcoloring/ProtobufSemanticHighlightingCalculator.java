@@ -116,8 +116,8 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
       highlight((Group) element, acceptor);
       return;
     }
-    if (element instanceof Property) {
-      highlight((Property) element, acceptor);
+    if (element instanceof MessageField) {
+      highlight((MessageField) element, acceptor);
     }
   }
 
@@ -146,20 +146,20 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
     }
   }
 
-  private void highlight(Property property, IHighlightedPositionAcceptor acceptor) {
-    highlightPropertyType(property, acceptor);
+  private void highlight(MessageField field, IHighlightedPositionAcceptor acceptor) {
+    highlightPropertyType(field, acceptor);
   }
 
-  private void highlightPropertyType(Property property, IHighlightedPositionAcceptor acceptor) {
-    TypeLink link = property.getType();
+  private void highlightPropertyType(MessageField field, IHighlightedPositionAcceptor acceptor) {
+    TypeLink link = field.getType();
     if (!(link instanceof ComplexTypeLink)) return;
     ComplexType type = ((ComplexTypeLink) link).getTarget();
     if (type instanceof Message) {
-      highlightFirstFeature(property, PROPERTY__TYPE, acceptor, MESSAGE_ID);
+      highlightFirstFeature(field, MESSAGE_FIELD__TYPE, acceptor, MESSAGE_ID);
       return;
     }
     if (type instanceof Enum) {
-      highlightFirstFeature(property, PROPERTY__TYPE, acceptor, ENUM_ID);
+      highlightFirstFeature(field, MESSAGE_FIELD__TYPE, acceptor, ENUM_ID);
       return;
     }
   }

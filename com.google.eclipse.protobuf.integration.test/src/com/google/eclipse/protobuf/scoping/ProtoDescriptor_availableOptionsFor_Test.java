@@ -10,7 +10,7 @@ package com.google.eclipse.protobuf.scoping;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.integrationTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.junit.matchers.PropertyHasType.*;
+import static com.google.eclipse.protobuf.junit.matchers.FieldHasType.*;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
@@ -62,7 +62,7 @@ public class ProtoDescriptor_availableOptionsFor_Test {
   }
 
   @Test public void should_return_all_field_options() {
-    Property optionContainer = mock(Property.class);
+    MessageField optionContainer = mock(MessageField.class);
     options.mapByName(descriptor.availableOptionsFor(optionContainer));
     assertNotNull(options.option("ctype"));
     assertThat(options.option("packed"), isBool());
@@ -72,21 +72,21 @@ public class ProtoDescriptor_availableOptionsFor_Test {
 
   @Test public void should_return_empty_List_if_given_model_does_not_have_options() {
     Import optionContainer = mock(Import.class);
-    Collection<Property> foundOptions = descriptor.availableOptionsFor(optionContainer);
+    Collection<MessageField> foundOptions = descriptor.availableOptionsFor(optionContainer);
     assertThat(foundOptions.size(), equalTo(0));
   }
 
   private static class Options {
-    private final Map<String, Property> optionsByName = new HashMap<String, Property>();
+    private final Map<String, MessageField> optionsByName = new HashMap<String, MessageField>();
 
-    void mapByName(Collection<Property> options) {
+    void mapByName(Collection<MessageField> options) {
       optionsByName.clear();
-      for (Property option : options) {
+      for (MessageField option : options) {
         optionsByName.put(option.getName(), option);
       }
     }
 
-    Property option(String name) {
+    MessageField option(String name) {
       return optionsByName.get(name);
     }
   }

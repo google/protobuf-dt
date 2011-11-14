@@ -33,9 +33,9 @@ public class Images {
 
   private static final Map<Modifier, String> IMAGES_BY_MODIFIER = new HashMap<Modifier, String>();
   static {
-    IMAGES_BY_MODIFIER.put(OPTIONAL, "property-opt.gif");
-    IMAGES_BY_MODIFIER.put(REPEATED, "property-rep.gif");
-    IMAGES_BY_MODIFIER.put(REQUIRED, "property-req.gif");
+    IMAGES_BY_MODIFIER.put(OPTIONAL, "field-opt.gif");
+    IMAGES_BY_MODIFIER.put(REPEATED, "field-rep.gif");
+    IMAGES_BY_MODIFIER.put(REQUIRED, "field-req.gif");
   }
 
   private static final Map<Class<?>, String> IMAGES_BY_TYPE = new HashMap<Class<?>, String>();
@@ -61,9 +61,9 @@ public class Images {
       Keyword k = (Keyword) o;
       return imageFor(k);
     }
-    if (o instanceof Property) {
-      Property p = (Property) o;
-      return imageFor(p.getModifier());
+    if (o instanceof MessageField) {
+      MessageField f = (MessageField) o;
+      return imageFor(f.getModifier());
     }
     if (o instanceof String) {
       return o + GIF_EXTENSION;
@@ -79,8 +79,8 @@ public class Images {
     return imageFor(interfaces[0]);
   }
 
-  private String imageFor(Keyword k) {
-    String value = k.getValue();
+  private String imageFor(Keyword keyword) {
+    String value = keyword.getValue();
     Modifier m = Modifier.getByName(value);
     String image = IMAGES_BY_MODIFIER.get(m);
     if (image != null) return image;
@@ -89,10 +89,10 @@ public class Images {
     return DEFAULT_IMAGE;
   }
 
-  private String imageFor(Modifier m) {
-    String image = IMAGES_BY_MODIFIER.get(m);
+  private String imageFor(Modifier modifier) {
+    String image = IMAGES_BY_MODIFIER.get(modifier);
     if (image != null) return image;
-    return "property.gif";
+    return "field.gif";
   }
 
   public String defaultImage() {

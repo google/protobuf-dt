@@ -43,8 +43,8 @@ public class ModelFinder_packageOf_Test {
   //   optional int32 id = 1;
   // }
   @Test public void should_return_package_if_proto_has_one() {
-    Property id = xtext.find("id", Property.class);
-    Package aPackage = finder.packageOf(id);
+    MessageField field = xtext.find("id", MessageField.class);
+    Package aPackage = finder.packageOf(field);
     assertThat(aPackage.getName(), equalTo("person.test"));
   }
 
@@ -54,7 +54,7 @@ public class ModelFinder_packageOf_Test {
   //   optional int32 id = 1;
   // }
   @Test public void should_return_null_if_proto_does_not_have_package() {
-    Property id = xtext.find("id", Property.class);
-    assertNull(finder.packageOf(id));
+    MessageField field = xtext.find("id", MessageField.class);
+    assertNull(finder.packageOf(field));
   }
 }

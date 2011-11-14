@@ -29,7 +29,7 @@ public class FieldOptions {
    * @return {@code true} if the given option is the "default value" one, {@code false} otherwise.
    */
   public boolean isDefaultValueOption(FieldOption option) {
-    return option instanceof DefaultValueFieldOption && option.eContainer() instanceof Property;
+    return option instanceof DefaultValueFieldOption && option.eContainer() instanceof MessageField;
   }
 
   /**
@@ -39,7 +39,7 @@ public class FieldOptions {
    */
   public String nameOf(FieldOption option) {
     IndexedElement e = rootSourceOf(option);
-    if (e instanceof Property) return ((Property) e).getName();
+    if (e instanceof MessageField) return ((MessageField) e).getName();
     return null;
   }
 

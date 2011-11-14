@@ -20,7 +20,7 @@ import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 
 /**
- * Tests for <code>{@link ModelFinder#enumTypeOf(Property)}</code>.
+ * Tests for <code>{@link ModelFinder#enumTypeOf(MessageField)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
@@ -45,10 +45,10 @@ public class ModelFinder_enumTypeOf_Test {
   // message PhoneNumber {
   //   optional PhoneType type = 1;
   // }
-  @Test public void should_return_enum_if_property_type_is_enum() {
-    Property type = xtext.find("type", Property.class);
-    Enum phoneType = finder.enumTypeOf(type);
-    assertThat(phoneType.getName(), equalTo("PhoneType"));
+  @Test public void should_return_enum_if_field_type_is_enum() {
+    MessageField field = xtext.find("type", MessageField.class);
+    Enum anEnum = finder.enumTypeOf(field);
+    assertThat(anEnum.getName(), equalTo("PhoneType"));
   }
 
   // syntax = "proto2";
@@ -56,8 +56,8 @@ public class ModelFinder_enumTypeOf_Test {
   // message Person {
   //   optional string name = 1;
   // }
-  @Test public void should_return_null_if_property_type_is_not_enum() {
-    Property name = xtext.find("name", Property.class);
-    assertNull(finder.enumTypeOf(name));
+  @Test public void should_return_null_if_field_type_is_not_enum() {
+    MessageField field = xtext.find("name", MessageField.class);
+    assertNull(finder.enumTypeOf(field));
   }
 }

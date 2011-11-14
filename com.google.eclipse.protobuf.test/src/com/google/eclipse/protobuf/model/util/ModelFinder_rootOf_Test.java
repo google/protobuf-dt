@@ -17,7 +17,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.Property;
+import com.google.eclipse.protobuf.protobuf.MessageField;
 
 /**
  * Tests for <code>{@link ModelFinder#rootOf(EObject)}</code>.
@@ -40,7 +40,7 @@ public class ModelFinder_rootOf_Test {
   //   optional string name = 1;
   // }
   @Test public void should_return_root_of_proto() {
-    Property name = xtext.find("name", Property.class);
-    assertThat(finder.rootOf(name), sameInstance(xtext.root()));
+    MessageField field = xtext.find("name", MessageField.class);
+    assertThat(finder.rootOf(field), sameInstance(xtext.root()));
   }
 }

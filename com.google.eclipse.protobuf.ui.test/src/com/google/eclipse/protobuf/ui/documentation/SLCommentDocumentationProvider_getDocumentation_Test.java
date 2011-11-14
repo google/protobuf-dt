@@ -17,7 +17,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.Property;
+import com.google.eclipse.protobuf.protobuf.MessageField;
 
 /**
  * Tests for <code>{@link SLCommentDocumentationProvider#getDocumentation(EObject)}</code>
@@ -42,8 +42,8 @@ public class SLCommentDocumentationProvider_getDocumentation_Test {
   //   optional bool active = 1;
   // }
   @Test public void should_return_single_line_comment_of_element() {
-    Property active = xtext.find("active", Property.class);
-    String documentation = provider.getDocumentation(active);
+    MessageField field = xtext.find("active", MessageField.class);
+    String documentation = provider.getDocumentation(field);
     assertThat(documentation, equalTo("Indicates whether the person is active or not. (Optional.)"));
   }
 
@@ -53,8 +53,8 @@ public class SLCommentDocumentationProvider_getDocumentation_Test {
   //   optional bool active = 1;
   // }
   @Test public void should_return_empty_String_if_element_does_not_have_single_line_comment() {
-    Property active = xtext.find("active", Property.class);
-    String documentation = provider.getDocumentation(active);
+    MessageField field = xtext.find("active", MessageField.class);
+    String documentation = provider.getDocumentation(field);
     assertThat(documentation, equalTo(""));
   }
 }

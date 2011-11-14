@@ -34,69 +34,69 @@ public class ModelFinder {
   
   /**
    * Returns all the <strong>local</strong> extensions of the given message.
-   * @param m the given message.
+   * @param message the given message.
    * @return all the <strong>local</strong> extensions of the given message, or an empty collection if none is found.
    */
-  public Collection<MessageExtension> localExtensionsOf(Message m) {
-    return extensionsOf(m, rootOf(m));
+  public Collection<MessageExtension> localExtensionsOf(Message message) {
+    return extensionsOf(message, rootOf(message));
   }
   
-  public Collection<MessageExtension> extensionsOf(Message m, Protobuf root) {
+  public Collection<MessageExtension> extensionsOf(Message message, Protobuf root) {
     Set<MessageExtension> extensions = new HashSet<MessageExtension>();
     for (MessageExtension extension : getAllContentsOfType(root, MessageExtension.class)) {
       Message referred = messageFrom(extension);
-      if (m.equals(referred)) extensions.add(extension);
+      if (message.equals(referred)) extensions.add(extension);
     }
     return extensions;
   }
   
   /**
    * Returns the message from the given extension.
-   * @param e the given extension.
+   * @param extension the given extension.
    * @return the message from the given extension, or {@code null} if the extension is not referring to a message.
    */
-  public Message messageFrom(MessageExtension e) {
-    MessageLink ref = e.getMessage();
+  public Message messageFrom(MessageExtension extension) {
+    MessageLink ref = extension.getMessage();
     return ref == null ? null : ref.getTarget();
   }
 
   /**
-   * Returns the message type of the given property, only if the type of the given property is a message.
-   * @param p the given property.
-   * @return the message type of the given property or {@code null} if the type of the given property is not message.
+   * Returns the message type of the given field, only if the type of the given field is a message.
+   * @param field the given field.
+   * @return the message type of the given field or {@code null} if the type of the given field is not message.
    */
-  public Message messageTypeOf(Property p) {
-    ComplexType type = typeOf(p);
+  public Message messageTypeOf(MessageField field) {
+    ComplexType type = typeOf(field);
     return (type instanceof Message) ? (Message) type : null;
   }
   
   /**
-   * Returns the enum type of the given property, only if the type of the given property is an enum.
-   * @param p the given property.
-   * @return the enum type of the given property or {@code null} if the type of the given property is not enum.
+   * Returns the enum type of the given field, only if the type of the given field is an enum.
+   * @param field the given field.
+   * @return the enum type of the given field or {@code null} if the type of the given field is not enum.
    */
-  public Enum enumTypeOf(Property p) {
-    ComplexType type = typeOf(p);
+  public Enum enumTypeOf(MessageField field) {
+    ComplexType type = typeOf(field);
     return (type instanceof Enum) ? (Enum) type : null;
   }
   
   /**
-   * Returns the type of the given property.
-   * @param p the given property.
-   * @return the type of the given property.
+   * Returns the type of the given field.
+   * @param field the given field.
+   * @return the type of the given field.
    */
-  public ComplexType typeOf(Property p) {
-    TypeLink link = p.getType();
+  public ComplexType typeOf(MessageField field) {
+    TypeLink link = field.getType();
     if (!(link instanceof ComplexTypeLink)) return null;
     return ((ComplexTypeLink) link).getTarget();
   }
 
   /**
-   * Returns the scalar type of the given property, only if the type of the given property is a scalar.
-   * @param p the given property.
-   * @return the scalar type of the given property or {@code null} if the type of the given property is not a scalar.
+   * Returns the scalar type of the given field, only if the type of the given field is a scalar.
+   * @param p the given field.
+   * @return the scalar type of the given field or {@code null} if the type of the given field is not a scalar.
    */
-  public ScalarType scalarTypeOf(Property p) {
+  public ScalarType scalarTypeOf(MessageField p) {
     TypeLink link = (p).getType();
     if (link instanceof ScalarTypeLink)
       return ((ScalarTypeLink) link).getTarget();
@@ -172,10 +172,10 @@ public class ModelFinder {
     return null;
   }
 
-  public Collection<Property> propertiesOf(Message message) {
-    List<Property> properties = new ArrayList<Property>();
+  public Collection<MessageField> propertiesOf(Message message) {
+    List<MessageField> properties = new ArrayList<MessageField>();
     for (MessageElement e :message.getElements()) {
-      if (e instanceof Property) properties.add((Property) e);
+      if (e instanceof MessageField) properties.add((MessageField) e);
     }
     return unmodifiableList(properties);
   }

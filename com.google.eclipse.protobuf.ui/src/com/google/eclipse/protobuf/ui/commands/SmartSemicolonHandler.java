@@ -36,7 +36,7 @@ import com.google.inject.Inject;
 
 /**
  * Inserts a semicolon at the end of a line, regardless of the current position of the caret in the editor. If the
- * line of code being edited is a property or enum literal and if it does not have an index yet, this handler will
+ * line of code being edited is a field or enum literal and if it does not have an index yet, this handler will
  * insert an index with a proper value as well.
  *
  * @author alruiz@google.com (Alex Ruiz)
@@ -108,13 +108,13 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
               }
               return content;
             }
-            if (model instanceof Property) {
-              Property property = (Property) model;
-              ContentToInsert content = newContent(property);
+            if (model instanceof MessageField) {
+              MessageField field = (MessageField) model;
+              ContentToInsert content = newContent(field);
               if (content.equals(ContentToInsert.INSERT_TAG_NUMBER)) {
-                long index = indexedElements.calculateTagNumberOf(property);
-                property.setIndex(index);
-                updateIndexInCommentOfParent(property, index, document);
+                long index = indexedElements.calculateTagNumberOf(field);
+                field.setIndex(index);
+                updateIndexInCommentOfParent(field, index, document);
               }
               return content;
             }
@@ -133,8 +133,8 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
     return newContent(indexNode);
   }
 
-  private ContentToInsert newContent(Property property) {
-    INode indexNode = nodes.firstNodeForFeature(property, PROPERTY__INDEX);
+  private ContentToInsert newContent(MessageField field) {
+    INode indexNode = nodes.firstNodeForFeature(field, MESSAGE_FIELD__INDEX);
     return newContent(indexNode);
   }
 

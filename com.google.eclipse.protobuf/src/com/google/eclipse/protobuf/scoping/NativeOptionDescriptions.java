@@ -36,15 +36,15 @@ class NativeOptionDescriptions {
 
   private Collection <IEObjectDescription> allProperties(EObject option) {
     ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
-    Collection<Property> properties = descriptor.availableOptionsFor(option.eContainer());
-    if (properties.isEmpty()) return emptyList();
-    return describe(properties);
+    Collection<MessageField> fields = descriptor.availableOptionsFor(option.eContainer());
+    if (fields.isEmpty()) return emptyList();
+    return describe(fields);
   }
 
-  private Collection<IEObjectDescription> describe(Collection<Property> properties) {
+  private Collection<IEObjectDescription> describe(Collection<MessageField> fields) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
-    for (Property p : properties) {
-      descriptions.add(create(p.getName(), p));
+    for (MessageField field : fields) {
+      descriptions.add(create(field.getName(), field));
     }
     return descriptions;
   }

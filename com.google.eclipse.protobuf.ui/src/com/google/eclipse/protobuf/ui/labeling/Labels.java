@@ -31,7 +31,7 @@ import com.google.inject.*;
 
   @Inject private INodes nodes;
   @Inject private Options options;
-  @Inject private Properties properties;
+  @Inject private Fields properties;
 
   public Object labelFor(Object o) {
     if (o instanceof Option) {
@@ -47,37 +47,37 @@ import com.google.inject.*;
       return labelFor(extensions);
     }
     if (o instanceof Import) {
-      Import i = (Import) o;
-      return labelFor(i);
+      Import anImport = (Import) o;
+      return labelFor(anImport);
     }
     if (o instanceof Literal) {
-      Literal l = (Literal) o;
-      return labelFor(l);
+      Literal literal = (Literal) o;
+      return labelFor(literal);
     }
-    if (o instanceof Property) {
-      Property p = (Property) o;
-      return labelFor(p);
+    if (o instanceof MessageField) {
+      MessageField field = (MessageField) o;
+      return labelFor(field);
     }
     if (o instanceof Rpc) {
-      Rpc r = (Rpc) o;
-      return labelFor(r);
+      Rpc rpc = (Rpc) o;
+      return labelFor(rpc);
     }
     return null;
   }
 
-  private Object labelFor(Option o) {
-    IndexedElement e = options.rootSourceOf(o);
+  private Object labelFor(Option option) {
+    IndexedElement e = options.rootSourceOf(option);
     String name = options.nameForOption(e);
     StringBuilder b = new StringBuilder();
-    boolean isCustomOption = o instanceof CustomOption || o instanceof CustomFieldOption;
+    boolean isCustomOption = option instanceof CustomOption || option instanceof CustomFieldOption;
     if (isCustomOption) b.append("(");
     b.append(name);
     if (isCustomOption) b.append(")");
-    if (o instanceof CustomOption) {
-      appendFields(b, ((CustomOption) o).getOptionFields());
+    if (option instanceof CustomOption) {
+      appendFields(b, ((CustomOption) option).getOptionFields());
     }
-    if (o instanceof CustomFieldOption) {
-      appendFields(b, ((CustomFieldOption) o).getOptionFields());
+    if (option instanceof CustomFieldOption) {
+      appendFields(b, ((CustomFieldOption) option).getOptionFields());
     }
     return b.toString();
   }
@@ -98,13 +98,13 @@ import com.google.inject.*;
     }
   }
 
-  private Object labelFor(MessageExtension e) {
-    return messageName(e.getMessage());
+  private Object labelFor(MessageExtension extension) {
+    return messageName(extension.getMessage());
   }
 
-  private Object labelFor(Extensions e) {
+  private Object labelFor(Extensions extensions) {
     StringBuilder builder = new StringBuilder();
-    EList<Range> ranges = e.getRanges();
+    EList<Range> ranges = extensions.getRanges();
     int rangeCount = ranges.size();
     for (int i = 0; i < rangeCount; i++) {
       if (i > 0) builder.append(", ");
@@ -118,38 +118,38 @@ import com.google.inject.*;
     return builder.toString();
   }
 
-  private Object labelFor(Import i) {
-    INode node = nodes.firstNodeForFeature(i, IMPORT__IMPORT_URI);
-    if (node == null) return i.getImportURI();
+  private Object labelFor(Import anImport) {
+    INode node = nodes.firstNodeForFeature(anImport, IMPORT__IMPORT_URI);
+    if (node == null) return anImport.getImportURI();
     return node.getText();
   }
 
-  private Object labelFor(Literal l) {
-    StyledString text = new StyledString(l.getName());
-    String index = String.format(" [%d]", l.getIndex());
+  private Object labelFor(Literal literal) {
+    StyledString text = new StyledString(literal.getName());
+    String index = String.format(" [%d]", literal.getIndex());
     text.append(index, DECORATIONS_STYLER);
     return text;
   }
 
-  private Object labelFor(Property p) {
-    StyledString text = new StyledString(p.getName());
-    String typeName = properties.typeNameOf(p);
+  private Object labelFor(MessageField field) {
+    StyledString text = new StyledString(field.getName());
+    String typeName = properties.typeNameOf(field);
     if (typeName == null) typeName = "<unresolved reference>"; // TODO move to
                                                                // properties
                                                                // file
-    String indexAndType = String.format(" [%d] : %s", p.getIndex(), typeName);
+    String indexAndType = String.format(" [%d] : %s", field.getIndex(), typeName);
     text.append(indexAndType, DECORATIONS_STYLER);
     return text;
   }
 
-  private Object labelFor(Rpc r) {
-    StyledString text = new StyledString(r.getName());
-    String types = String.format(" : %s > %s", messageName(r.getArgType()), messageName(r.getReturnType()));
+  private Object labelFor(Rpc rpc) {
+    StyledString text = new StyledString(rpc.getName());
+    String types = String.format(" : %s > %s", messageName(rpc.getArgType()), messageName(rpc.getReturnType()));
     text.append(types, DECORATIONS_STYLER);
     return text;
   }
 
-  private String messageName(MessageLink r) {
-    return r.getTarget().getName();
+  private String messageName(MessageLink link) {
+    return link.getTarget().getName();
   }
 }

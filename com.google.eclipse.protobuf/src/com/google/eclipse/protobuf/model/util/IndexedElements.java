@@ -35,7 +35,7 @@ public class IndexedElements {
    */
   public String nameOf(IndexedElement e) {
     if (e == null) return null;
-    return (e instanceof Group) ? ((Group) e).getName() : ((Property) e).getName(); 
+    return (e instanceof Group) ? ((Group) e).getName() : ((MessageField) e).getName(); 
   }
 
   /**
@@ -46,7 +46,7 @@ public class IndexedElements {
    */
   public long indexOf(IndexedElement e) {
     if (e == null) return Long.MIN_VALUE;
-    return (e instanceof Group) ? ((Group) e).getIndex() : ((Property) e).getIndex(); 
+    return (e instanceof Group) ? ((Group) e).getIndex() : ((MessageField) e).getIndex(); 
   }
   
   /**
@@ -57,7 +57,7 @@ public class IndexedElements {
    */
   public EStructuralFeature indexFeatureOf(IndexedElement e) {
     if (e == null) return null;
-    return (e instanceof Group) ? GROUP__INDEX : PROPERTY__INDEX; 
+    return (e instanceof Group) ? GROUP__INDEX : MESSAGE_FIELD__INDEX; 
   }
   
   /**
@@ -68,7 +68,7 @@ public class IndexedElements {
    */
   public List<FieldOption> fieldOptionsOf(IndexedElement e) {
     if (e == null) return emptyList();
-    return (e instanceof Group) ? ((Group) e).getFieldOptions() : ((Property) e).getFieldOptions();
+    return (e instanceof Group) ? ((Group) e).getFieldOptions() : ((MessageField) e).getFieldOptions();
   }
 
   /**
@@ -82,7 +82,7 @@ public class IndexedElements {
       ((Group) e).setIndex(newIndex);
       return;
     }
-    ((Property) e).setIndex(newIndex);
+    ((MessageField) e).setIndex(newIndex);
   }
 
   /**

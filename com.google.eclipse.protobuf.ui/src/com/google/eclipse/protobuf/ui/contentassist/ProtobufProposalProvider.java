@@ -33,7 +33,7 @@ import org.eclipse.xtext.ui.editor.contentassist.*;
 
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.model.util.Properties;
+import com.google.eclipse.protobuf.model.util.Fields;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.scoping.*;
@@ -58,7 +58,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Inject private PluginImageHelper imageHelper;
   @Inject private Literals literals;
   @Inject private Options options;
-  @Inject private Properties properties;
+  @Inject private Fields properties;
 
   @Override public void completeProtobuf_Syntax(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {}
@@ -95,27 +95,27 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Override public void completeNativeOption_Source(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
-    Collection<Property> optionProperties = descriptor.availableOptionsFor(model);
+    Collection<MessageField> optionProperties = descriptor.availableOptionsFor(model);
     if (!optionProperties.isEmpty()) proposeOptions(optionProperties, context, acceptor);
   }
 
-  private void proposeOptions(Collection<Property> optionProperties, ContentAssistContext context,
+  private void proposeOptions(Collection<MessageField> optionSources, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    for (Property p : optionProperties) proposeOption(p, context, acceptor);
+    for (MessageField source : optionSources) proposeOption(source, context, acceptor);
   }
 
   @Override public void completeNativeOption_Value(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     NativeOption option = (NativeOption) model;
-    Property property = (Property) options.rootSourceOf(option);
-    if (property == null) return;
+    MessageField optionSource = (MessageField) options.rootSourceOf(option);
+    if (optionSource == null) return;
     ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
-    Enum enumType = descriptor.enumTypeOf(property);
+    Enum enumType = descriptor.enumTypeOf(optionSource);
     if (enumType != null) {
       proposeAndAccept(enumType, context, acceptor);
       return;
     }
-    proposePrimitiveValues(property, context, acceptor);
+    proposePrimitiveValues(optionSource, context, acceptor);
   }
 
   @Override public void complete_ID(EObject model, RuleCall ruleCall, ContentAssistContext context,
@@ -185,40 +185,40 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   }
 
   private boolean isBoolProposalValid(ContentAssistContext context) {
-    Property p = propertyFrom(context);
-    return p != null && properties.isBool(p);
+    MessageField field = fieldFrom(context);
+    return field != null && properties.isBool(field);
   }
 
   private boolean isNanProposalValid(ContentAssistContext context) {
-    Property p = propertyFrom(context);
-    return p != null && properties.mayBeNan(p);
+    MessageField field = fieldFrom(context);
+    return field != null && properties.mayBeNan(field);
   }
 
-  private Property propertyFrom(ContentAssistContext context) {
+  private MessageField fieldFrom(ContentAssistContext context) {
     EObject model = context.getCurrentModel();
-    if (model instanceof Property) return (Property) model;
+    if (model instanceof MessageField) return (MessageField) model;
     if (model instanceof Option) {
       Option option = (Option) model;
       IndexedElement source = options.rootSourceOf(option);
-      if (source instanceof Property) return (Property) source;
+      if (source instanceof MessageField) return (MessageField) source;
     }
     if (model instanceof FieldOption) {
       FieldOption option = (FieldOption) model;
       IndexedElement source = fieldOptions.rootSourceOf(option);
-      if (source instanceof Property) return (Property) source;
+      if (source instanceof MessageField) return (MessageField) source;
     }
     return null;
   }
 
   private boolean proposeOpeningBracket(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     EObject model = context.getCurrentModel();
-    if (!(model instanceof Property)) return false;
-    Property p = (Property) model;
-    Modifier modifier = p.getModifier();
+    if (!(model instanceof MessageField)) return false;
+    MessageField field = (MessageField) model;
+    Modifier modifier = field.getModifier();
     if (OPTIONAL.equals(modifier)) {
       CompoundElement display = DEFAULT_EQUAL_IN_BRACKETS;
       int cursorPosition = display.indexOf(CLOSING_BRACKET);
-      if (properties.isString(p)) {
+      if (properties.isString(field)) {
         display = DEFAULT_EQUAL_STRING_IN_BRACKETS;
         cursorPosition++;
       }
@@ -245,9 +245,9 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     proposeIndex(index, context, acceptor);
   }
 
-  @Override public void completeProperty_Index(EObject model, Assignment assignment, ContentAssistContext context,
+  @Override public void completeMessageField_Index(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    long index = indexedElements.calculateTagNumberOf((Property) model);
+    long index = indexedElements.calculateTagNumberOf((MessageField) model);
     proposeIndex(index, context, acceptor);
   }
 
@@ -255,15 +255,15 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     proposeAndAccept(valueOf(index), context, acceptor);
   }
 
-  @Override public void completeProperty_Name(EObject model, Assignment assignment, ContentAssistContext context,
+  @Override public void completeMessageField_Name(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    String typeName = toFirstLower(properties.typeNameOf((Property) model));
+    String typeName = toFirstLower(properties.typeNameOf((MessageField) model));
     int index = 1;
     String name = typeName + index;
     for (EObject o : model.eContainer().eContents()) {
-      if (o == model || !(o instanceof Property)) continue;
-      Property p = (Property) o;
-      if (!name.equals(p.getName())) continue;
+      if (o == model || !(o instanceof MessageField)) continue;
+      MessageField field = (MessageField) o;
+      if (!name.equals(field.getName())) continue;
       name = typeName + (++index);
     }
     proposeAndAccept(name, context, acceptor);
@@ -284,20 +284,21 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeNativeFieldOption_Source(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    Property p = extractElementFromContext(context, Property.class);
-    if (p != null) {
-      proposeNativeOptions(p, context, acceptor);
+    MessageField field = extractElementFromContext(context, MessageField.class);
+    if (field != null) {
+      proposeNativeOptions(field, context, acceptor);
     }
   }
 
-  private void proposeNativeOptions(Property p, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    List<String> optionNames = existingFieldOptionNames(p);
-    proposeDefaultKeyword(p, optionNames, context, acceptor);
+  private void proposeNativeOptions(MessageField field, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+    List<String> optionNames = existingFieldOptionNames(field);
+    proposeDefaultKeyword(field, optionNames, context, acceptor);
     ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
-    for (Property option : descriptor.availableOptionsFor(p)) {
-      String optionName = option.getName();
-      if (optionNames.contains(optionName) || ("packed".equals(optionName) && !canBePacked(p))) continue;
-      proposeOption(option, context, acceptor);
+    for (MessageField optionSource : descriptor.availableOptionsFor(field)) {
+      String optionName = optionSource.getName();
+      if (optionNames.contains(optionName) || ("packed".equals(optionName) && !canBePacked(field))) continue;
+      proposeOption(optionSource, context, acceptor);
     }
   }
 
@@ -312,12 +313,12 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   private void proposeDefaultKeyword(IndexedElement e, List<String> existingOptionNames, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    if (!(e instanceof Property)) return;
-    Property property = (Property) e;
-    if (!properties.isOptional(property) || existingOptionNames.contains(DEFAULT.toString())) return;
+    if (!(e instanceof MessageField)) return;
+    MessageField field = (MessageField) e;
+    if (!properties.isOptional(field) || existingOptionNames.contains(DEFAULT.toString())) return;
     CompoundElement display = DEFAULT_EQUAL;
     int cursorPosition = display.charCount();
-    if (properties.isString(property)) {
+    if (properties.isString(field)) {
       display = DEFAULT_EQUAL_STRING;
       cursorPosition++;
     }
@@ -325,15 +326,16 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   }
 
   private boolean canBePacked(IndexedElement e) {
-    if (!(e instanceof Property)) return false;
-    Property property = (Property) e;
-    return properties.isPrimitive(property) && REPEATED.equals(property.getModifier());
+    if (!(e instanceof MessageField)) return false;
+    MessageField field = (MessageField) e;
+    return properties.isPrimitive(field) && REPEATED.equals(field.getModifier());
   }
 
-  private void proposeOption(Property option, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    String displayString = option.getName();
+  private void proposeOption(MessageField optionSource, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+    String displayString = optionSource.getName();
     String proposalText = displayString + space() + EQUAL + space();
-    Object value = defaultValueOf(option);
+    Object value = defaultValueOf(optionSource);
     if (value != null) proposalText = proposalText + value;
     ICompletionProposal proposal = createCompletionProposal(proposalText, displayString, imageForOption(), context);
     if (value == EMPTY_STRING && proposal instanceof ConfigurableCompletionProposal) {
@@ -344,18 +346,18 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     acceptor.accept(proposal);
   }
   
-  private Object defaultValueOf(Property p) {
-    if (properties.isBool(p)) return TRUE;
-    if (properties.isString(p)) return EMPTY_STRING;
+  private Object defaultValueOf(MessageField field) {
+    if (properties.isBool(field)) return TRUE;
+    if (properties.isString(field)) return EMPTY_STRING;
     return null;
   }
   
   @Override public void completeDefaultValueFieldOption_Value(EObject model, Assignment assignment, 
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    if (!(model instanceof Property)) return;
-    Property p = (Property) model;
-    if (!properties.isOptional(p)) return;
-    proposeDefaultValue(p, context, acceptor);
+    if (!(model instanceof MessageField)) return;
+    MessageField field = (MessageField) model;
+    if (!properties.isOptional(field)) return;
+    proposeDefaultValue(field, context, acceptor);
   }
   
   @Override public ICompletionProposal createCompletionProposal(String proposal, String displayString, Image image,
@@ -371,22 +373,22 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (!(model instanceof NativeFieldOption)) return;
     NativeFieldOption option = (NativeFieldOption) model;
     ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
-    Property property = (Property) fieldOptions.rootSourceOf(option);
-    Enum enumType = descriptor.enumTypeOf(property);
+    MessageField field = (MessageField) fieldOptions.rootSourceOf(option);
+    Enum enumType = descriptor.enumTypeOf(field);
     if (enumType != null) {
       proposeAndAccept(enumType, context, acceptor);
       return;
     }
-    proposePrimitiveValues(property, context, acceptor);
+    proposePrimitiveValues(field, context, acceptor);
   }
 
-  private boolean proposePrimitiveValues(Property property, ContentAssistContext context,
+  private boolean proposePrimitiveValues(MessageField field, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    if (properties.isBool(property)) {
+    if (properties.isBool(field)) {
       proposeBooleanValues(context, acceptor);
       return true;
     }
-    if (properties.isString(property)) {
+    if (properties.isString(field)) {
       proposeEmptyString(context, acceptor);
       return true;
     }
@@ -520,8 +522,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     CustomOption option = (CustomOption) model;
     IndexedElement e = options.lastFieldSourceFrom(option);
     if (e == null) e = options.rootSourceOf(option);
-    if (e instanceof Property) {
-      proposeDefaultValue((Property) e, context, acceptor);
+    if (e instanceof MessageField) {
+      proposeDefaultValue((MessageField) e, context, acceptor);
     }
   }
 
@@ -532,16 +534,16 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     CustomFieldOption option = (CustomFieldOption) model;
     IndexedElement e = fieldOptions.lastFieldSourceFrom(option);
     if (e == null) e = fieldOptions.rootSourceOf(option);
-    if (e instanceof Property) {
-      proposeDefaultValue((Property) e, context, acceptor);
+    if (e instanceof MessageField) {
+      proposeDefaultValue((MessageField) e, context, acceptor);
     }
   }
 
-  private void proposeDefaultValue(Property property, ContentAssistContext context,
+  private void proposeDefaultValue(MessageField field, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    if (property == null) return;
-    if (proposePrimitiveValues(property, context, acceptor)) return;
-    Enum enumType = finder.enumTypeOf(property);
+    if (field == null) return;
+    if (proposePrimitiveValues(field, context, acceptor)) return;
+    Enum enumType = finder.enumTypeOf(field);
     if (enumType != null) {
       proposeAndAccept(enumType, context, acceptor);
     }

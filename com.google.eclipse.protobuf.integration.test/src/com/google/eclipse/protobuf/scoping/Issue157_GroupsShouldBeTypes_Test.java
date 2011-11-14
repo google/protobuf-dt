@@ -53,8 +53,8 @@ public class Issue157_GroupsShouldBeTypes_Test {
   //   }
   // }
   @Test public void should_treat_groups_as_types() {
-    Property p = xtext.find("mygroup", Property.class);
-    IScope scope = provider.scope_ComplexTypeLink_target((ComplexTypeLink) p.getType(), reference);
+    MessageField field = xtext.find("mygroup", MessageField.class);
+    IScope scope = provider.scope_ComplexTypeLink_target((ComplexTypeLink) field.getType(), reference);
     assertThat(descriptionsIn(scope), contain("Root.MyGroup", "MyGroup"));
   }
 }

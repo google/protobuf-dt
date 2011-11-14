@@ -13,39 +13,39 @@ import java.util.*;
 import org.eclipse.emf.ecore.EObject;
 import org.hamcrest.*;
 
-import com.google.eclipse.protobuf.protobuf.Property;
+import com.google.eclipse.protobuf.protobuf.MessageField;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class ContainAllProperties extends BaseMatcher<IEObjectDescriptions> {
+class ContainAllFields extends BaseMatcher<IEObjectDescriptions> {
 
-  private final Collection<Property> properties = new ArrayList<Property>();
+  private final Collection<MessageField> fields = new ArrayList<MessageField>();
 
-  static ContainAllProperties containAll(Collection<Property> properties) {
-    return new ContainAllProperties(properties);
+  static ContainAllFields containAll(Collection<MessageField> fields) {
+    return new ContainAllFields(fields);
   }
   
-  private ContainAllProperties(Collection<Property> properties) {
-    this.properties.addAll(properties);
+  private ContainAllFields(Collection<MessageField> fields) {
+    this.fields.addAll(fields);
   }
 
   @Override public boolean matches(Object arg) {
     if (!(arg instanceof IEObjectDescriptions)) return false;
     IEObjectDescriptions descriptions = (IEObjectDescriptions) arg;
-    if (descriptions.size() != properties.size()) return false;
-    for (Property property : properties) {
-      String name = property.getName();
+    if (descriptions.size() != fields.size()) return false;
+    for (MessageField field : fields) {
+      String name = field.getName();
       EObject described = descriptions.objectDescribedAs(name);
-      if (described != property) return false;
+      if (described != field) return false;
     }
     return true;
   }
 
   @Override public void describeTo(Description description) {
     List<String> names = new ArrayList<String>();
-    for (Property property : properties) {
-      names.add(property.getName());
+    for (MessageField field : fields) {
+      names.add(field.getName());
     }
     description.appendValue(names);
   }

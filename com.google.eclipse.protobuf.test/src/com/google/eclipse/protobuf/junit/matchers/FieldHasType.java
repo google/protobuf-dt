@@ -15,34 +15,34 @@ import com.google.eclipse.protobuf.protobuf.*;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class PropertyHasType extends BaseMatcher<Property> {
+public class FieldHasType extends BaseMatcher<MessageField> {
 
   private final String typeName;
 
-  public static PropertyHasType isBool() {
+  public static FieldHasType isBool() {
     return hasType("bool");
   }
 
-  public static PropertyHasType isString() {
+  public static FieldHasType isString() {
     return hasType("string");
   }
 
-  public static PropertyHasType hasType(String typeName) {
-    return new PropertyHasType(typeName);
+  public static FieldHasType hasType(String typeName) {
+    return new FieldHasType(typeName);
   }
 
-  private PropertyHasType(String typeName) {
+  private FieldHasType(String typeName) {
     this.typeName = typeName;
   }
 
   @Override public boolean matches(Object arg) {
-    if (!(arg instanceof Property)) return false;
-    Property property = (Property) arg;
-    return typeName.equals(typeNameOf(property));
+    if (!(arg instanceof MessageField)) return false;
+    MessageField field = (MessageField) arg;
+    return typeName.equals(typeNameOf(field));
   }
 
-  private String typeNameOf(Property property) {
-    TypeLink link = property.getType();
+  private String typeNameOf(MessageField field) {
+    TypeLink link = field.getType();
     if (link instanceof ScalarTypeLink) return ((ScalarTypeLink) link).getTarget().getName();
     if (link instanceof ComplexTypeLink) {
       ComplexType type = ((ComplexTypeLink) link).getTarget();

@@ -62,8 +62,8 @@ public class ProtobufScopeProvider_scope_ComplexTypeLink_target_Test {
   //   optional Type type = 1;
   // }
   @Test public void should_provide_Types() {
-    Property p = xtext.find("type", Property.class);
-    IScope scope = provider.scope_ComplexTypeLink_target(typeOf(p), reference);
+    MessageField field = xtext.find("type", MessageField.class);
+    IScope scope = provider.scope_ComplexTypeLink_target(typeOf(field), reference);
     assertThat(descriptionsIn(scope), containAll("Type", "proto.Type", "google.proto.Type", "com.google.proto.Type",
                                                  ".com.google.proto.Type",
                                                  "Address", "proto.Address", "google.proto.Address",
@@ -98,8 +98,8 @@ public class ProtobufScopeProvider_scope_ComplexTypeLink_target_Test {
   //   optional com.google.test.Type type = 1;
   // }
   @Test public void should_provide_imported_Types() {
-    Property p = xtext.find("type", " =", Property.class);
-    IScope scope = provider.scope_ComplexTypeLink_target(typeOf(p), reference);
+    MessageField field = xtext.find("type", " =", MessageField.class);
+    IScope scope = provider.scope_ComplexTypeLink_target(typeOf(field), reference);
     assertThat(descriptionsIn(scope), containAll("test.proto.Type", ".test.proto.Type",
                                                  "test.proto.Address", ".test.proto.Address",
                                                  "Contact", "proto.Contact", "google.proto.Contact",
@@ -132,8 +132,8 @@ public class ProtobufScopeProvider_scope_ComplexTypeLink_target_Test {
   //   optional com.google.test.Type type = 1;
   // }
   @Test public void should_provide_imported_Types_with_equal_package() {
-    Property p = xtext.find("type", " =", Property.class);
-    IScope scope = provider.scope_ComplexTypeLink_target(typeOf(p), reference);
+    MessageField field = xtext.find("type", " =", MessageField.class);
+    IScope scope = provider.scope_ComplexTypeLink_target(typeOf(field), reference);
     assertThat(descriptionsIn(scope), containAll("Type", "proto.Type", "google.proto.Type", "com.google.proto.Type",
                                                  ".com.google.proto.Type",
                                                  "Address", "proto.Address", "google.proto.Address",
@@ -168,8 +168,8 @@ public class ProtobufScopeProvider_scope_ComplexTypeLink_target_Test {
   //   optional test.proto.Type type = 1;
   // }
   @Test public void should_provide_public_imported_Types() {
-    Property p = xtext.find("type", " =", Property.class);
-    IScope scope = provider.scope_ComplexTypeLink_target(typeOf(p), reference);
+    MessageField field = xtext.find("type", " =", MessageField.class);
+    IScope scope = provider.scope_ComplexTypeLink_target(typeOf(field), reference);
     assertThat(descriptionsIn(scope), containAll("test.proto.Type", ".test.proto.Type",
                                                  "test.proto.Address", ".test.proto.Address",
                                                  "Contact", "proto.Contact", "google.proto.Contact",
@@ -209,15 +209,15 @@ public class ProtobufScopeProvider_scope_ComplexTypeLink_target_Test {
   //   optional test.proto.Type type = 1;
   // }
   @Test public void should_provide_public_imported_Types_with_more_than_one_level() {
-    Property p = xtext.find("type", " =", Property.class);
-    IScope scope = provider.scope_ComplexTypeLink_target(typeOf(p), reference);
+    MessageField field = xtext.find("type", " =", MessageField.class);
+    IScope scope = provider.scope_ComplexTypeLink_target(typeOf(field), reference);
     assertThat(descriptionsIn(scope), containAll("test.proto.Type", ".test.proto.Type",
                                                  "test.proto.Address", ".test.proto.Address",
                                                  "Contact", "proto.Contact", "google.proto.Contact",
                                                  "com.google.proto.Contact", ".com.google.proto.Contact"));
   }
 
-  private static ComplexTypeLink typeOf(Property p) {
-    return (ComplexTypeLink) p.getType();
+  private static ComplexTypeLink typeOf(MessageField field) {
+    return (ComplexTypeLink) field.getType();
   }
 }

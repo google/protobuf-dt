@@ -15,7 +15,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.nodemodel.SyntaxErrorMessage;
 import org.eclipse.xtext.parser.antlr.SyntaxErrorMessageProvider;
 
-import com.google.eclipse.protobuf.protobuf.Property;
+import com.google.eclipse.protobuf.protobuf.MessageField;
 
 /**
  * Messages for syntax errors.
@@ -27,15 +27,15 @@ public class ProtobufSyntaxErrorMessageProvider extends SyntaxErrorMessageProvid
   @Override public SyntaxErrorMessage getSyntaxErrorMessage(IParserErrorContext context) {
     String message = context.getDefaultMessage();
     EObject currentContext = context.getCurrentContext();
-    if (currentContext instanceof Property) message =  mapToProtocMessage(message, (Property) currentContext);
+    if (currentContext instanceof MessageField) message =  mapToProtocMessage(message, (MessageField) currentContext);
     if (currentContext == null && message.contains("RULE_STRING")) return null;
     return new SyntaxErrorMessage(message, SYNTAX_DIAGNOSITC);
   }
 
-  private String mapToProtocMessage(String message, Property property) {
-    if (message.contains("RULE_ID") && property.getName() == null)
+  private String mapToProtocMessage(String message, MessageField field) {
+    if (message.contains("RULE_ID") && field.getName() == null)
       return expectedFieldName;
-    if (message.equals("mismatched input ';' expecting '='") && property.getIndex() == 0)
+    if (message.equals("mismatched input ';' expecting '='") && field.getIndex() == 0)
       return missingFieldNumber;
     return message;
   }

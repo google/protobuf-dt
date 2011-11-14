@@ -33,15 +33,15 @@ public class ProtobufOutlineTreeProvider extends DefaultOutlineTreeProvider {
     IGNORED_ELEMENT_TYPES.add(MessageLink.class);
   }
 
-  boolean _isLeaf(Extensions e) {
+  boolean _isLeaf(Extensions extensions) {
     return true;
   }
 
-  boolean _isLeaf(Option o) {
+  boolean _isLeaf(Option option) {
     return true;
   }
 
-  boolean _isLeaf(Property p) {
+  boolean _isLeaf(MessageField field) {
     return true;
   }
 

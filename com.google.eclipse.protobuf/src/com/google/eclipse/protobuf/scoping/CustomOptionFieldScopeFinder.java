@@ -90,9 +90,9 @@ class CustomOptionFieldScopeFinder {
   private class MessageFieldDescriptorProvider implements IEObjectDescriptionsProvider {
     @Override public Collection<IEObjectDescription> fieldsInTypeOf(IndexedElement e) {
       Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
-      if (e instanceof Property) {
-        Message propertyType = modelFinder.messageTypeOf((Property) e);
-        for (MessageElement element : propertyType.getElements()) {
+      if (e instanceof MessageField) {
+        Message fieldType = modelFinder.messageTypeOf((MessageField) e);
+        for (MessageElement element : fieldType.getElements()) {
           IEObjectDescription d = describe(element);
           if (d != null) descriptions.add(d);
         }
@@ -115,11 +115,11 @@ class CustomOptionFieldScopeFinder {
 
   private class ExtendMessageFieldDescriptorProvider implements IEObjectDescriptionsProvider {
     @Override public Collection<IEObjectDescription> fieldsInTypeOf(IndexedElement e) {
-      if (!(e instanceof Property)) return emptyList();
-      Message propertyType = modelFinder.messageTypeOf((Property) e);
-      if (propertyType == null) return emptyList();
+      if (!(e instanceof MessageField)) return emptyList();
+      Message fieldType = modelFinder.messageTypeOf((MessageField) e);
+      if (fieldType == null) return emptyList();
       Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
-      for (MessageExtension extension : modelFinder.localExtensionsOf(propertyType)) {
+      for (MessageExtension extension : modelFinder.localExtensionsOf(fieldType)) {
         for (MessageElement element : extension.getElements()) {
           if (!(element instanceof IndexedElement)) continue;
           IndexedElement current = (IndexedElement) element;

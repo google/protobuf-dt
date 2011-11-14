@@ -93,7 +93,7 @@ public class Options {
    * @return the name of the given <code>{@link IndexedElement}</code>.
    */
   public String nameForOption(IndexedElement e) {
-    if (e instanceof Property) return ((Property) e).getName();
+    if (e instanceof MessageField) return ((MessageField) e).getName();
     if (e instanceof Group) {
       String name = ((Group) e).getName();
       if (!isEmpty(name)) return name.toLowerCase();

@@ -16,10 +16,10 @@ import static org.junit.Assert.assertThat;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.Property;
+import com.google.eclipse.protobuf.protobuf.MessageField;
 
 /**
- * Tests for <code>{@link Properties#typeNameOf(Property)}</code>.
+ * Tests for <code>{@link Fields#typeNameOf(MessageField)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
@@ -27,10 +27,10 @@ public class Properties_typeNameOf_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
-  private Properties properties;
+  private Fields properties;
 
   @Before public void setUp() {
-    properties = xtext.getInstanceOf(Properties.class);
+    properties = xtext.getInstanceOf(Fields.class);
   }
 
   // syntax = "proto2";
@@ -39,8 +39,8 @@ public class Properties_typeNameOf_Test {
   //   optional string name = 1;
   // }
   @Test public void should_return_name_of_scalar() {
-    Property name = xtext.find("name", Property.class);
-    assertThat(properties.typeNameOf(name), equalTo("string"));
+    MessageField field = xtext.find("name", MessageField.class);
+    assertThat(properties.typeNameOf(field), equalTo("string"));
   }
 
   // syntax = "proto2";
@@ -54,7 +54,7 @@ public class Properties_typeNameOf_Test {
   //   }
   // }
   @Test public void should_return_name_of_type() {
-    Property number = xtext.find("number", Property.class);
-    assertThat(properties.typeNameOf(number), equalTo("PhoneNumber"));
+    MessageField field = xtext.find("number", MessageField.class);
+    assertThat(properties.typeNameOf(field), equalTo("PhoneNumber"));
   }
 }

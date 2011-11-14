@@ -46,9 +46,9 @@ public class Options_lastFieldSourceFrom_Test {
   // }
   //
   // option (custom).count = 6;
-  @Test public void should_return_property_field() {
+  @Test public void should_return_option_field() {
     CustomOption option = xtext.find("custom", ")", CustomOption.class);
-    Property p = (Property) options.lastFieldSourceFrom(option);
-    assertThat(p.getName(), equalTo("count"));
+    MessageField field = (MessageField) options.lastFieldSourceFrom(option);
+    assertThat(field.getName(), equalTo("count"));
   }
 }

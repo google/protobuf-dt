@@ -15,11 +15,13 @@ import static org.junit.Assert.*;
 
 import org.junit.*;
 
+import java.util.List;
+
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.Property;
+import com.google.eclipse.protobuf.protobuf.MessageField;
 
 /**
- * Tests for <code>{@link Properties#isPrimitive(Property)}</code>.
+ * Tests for <code>{@link Fields#isPrimitive(MessageField)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
@@ -27,10 +29,10 @@ public class Properties_isPrimitive_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
-  private Properties properties;
+  private Fields properties;
 
   @Before public void setUp() {
-    properties = xtext.getInstanceOf(Properties.class);
+    properties = xtext.getInstanceOf(Fields.class);
   }
 
   // syntax = "proto2";
@@ -47,9 +49,10 @@ public class Properties_isPrimitive_Test {
   //   optional fixed64 fixed64_1 = 9;
   //   optional bool bool_1 = 10;
   // }
-  @Test public void should_return_true_if_property_is_primitive() {
-    for (Property p : getAllContentsOfType(xtext.root(), Property.class))
-      assertTrue(properties.isPrimitive(p));
+  @Test public void should_return_true_if_field_is_primitive() {
+    List<MessageField> fields = getAllContentsOfType(xtext.root(), MessageField.class);
+    for (MessageField field : fields)
+      assertTrue(properties.isPrimitive(field));
   }
 
   // syntax = "proto2";
@@ -63,8 +66,9 @@ public class Properties_isPrimitive_Test {
   // message Person {
   //   optional string name = 1;
   // }
-  @Test public void should_return_false_if_property_is_not_primitive() {
-    for (Property p : getAllContentsOfType(xtext.root(), Property.class))
+  @Test public void should_return_false_if_field_is_not_primitive() {
+    List<MessageField> fields = getAllContentsOfType(xtext.root(), MessageField.class);
+    for (MessageField p : fields)
       assertFalse(properties.isPrimitive(p));
   }
 }

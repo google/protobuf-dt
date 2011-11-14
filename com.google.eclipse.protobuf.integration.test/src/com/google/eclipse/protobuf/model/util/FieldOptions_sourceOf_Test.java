@@ -44,10 +44,10 @@ public class FieldOptions_sourceOf_Test {
   // message Person {
   //   optional boolean active = 1 [(encoding) = 'UTF-8'];
   // }
-  @Test public void should_return_property_of_custom_field_option() {
+  @Test public void should_return_source_of_field_option() {
     CustomFieldOption option = xtext.find("encoding", ")", CustomFieldOption.class);
-    Property p = (Property) fieldOptions.sourceOf(option);
-    assertThat(p.getName(), equalTo("encoding"));
+    MessageField field = (MessageField) fieldOptions.sourceOf(option);
+    assertThat(field.getName(), equalTo("encoding"));
   }
 
   // syntax = "proto2";
@@ -65,9 +65,9 @@ public class FieldOptions_sourceOf_Test {
   // message Person {
   //   optional boolean active = 1 [(custom).count = 6];
   // }
-  @Test public void should_return_property_field() {
+  @Test public void should_return_source_of_field_in_field_option() {
     CustomFieldOption option = xtext.find("custom", ").", CustomFieldOption.class);
-    Property p = (Property) fieldOptions.sourceOf(option);
-    assertThat(p.getName(), equalTo("count"));
+    MessageField field = (MessageField) fieldOptions.sourceOf(option);
+    assertThat(field.getName(), equalTo("count"));
   }
 }

@@ -36,10 +36,10 @@ public class Options_rootSourceOf_Test {
   // syntax = "proto2";
   //
   // option java_package = 'com.google.eclipse.protobuf.tests';
-  @Test public void should_return_property_of_native_option() {
+  @Test public void should_return_source_of_native_option() {
     Option option = xtext.find("java_package", Option.class);
-    Property p = (Property) options.rootSourceOf(option);
-    assertThat(p.getName(), equalTo("java_package"));
+    MessageField field = (MessageField) options.rootSourceOf(option);
+    assertThat(field.getName(), equalTo("java_package"));
   }
 
   // syntax = "proto2";
@@ -51,9 +51,9 @@ public class Options_rootSourceOf_Test {
   // }
   //
   // option (encoding) = 'UTF-8';
-  @Test public void should_return_property_of_custom_option() {
+  @Test public void should_return_source_of_custom_option() {
     Option option = xtext.find("encoding", ")", Option.class);
-    Property p = (Property) options.rootSourceOf(option);
-    assertThat(p.getName(), equalTo("encoding"));
+    MessageField field = (MessageField) options.rootSourceOf(option);
+    assertThat(field.getName(), equalTo("encoding"));
   }
 }

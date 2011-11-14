@@ -21,7 +21,7 @@ import org.eclipse.xtext.util.Pair;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.Property;
+import com.google.eclipse.protobuf.protobuf.MessageField;
 
 /**
  * Tests for <code>{@link CommentNodesFinder#matchingCommentNode(EObject, String...)}</code>.
@@ -45,8 +45,8 @@ public class CommentNodesFinder_matchingCommentNode_Test {
   //   optional bool active = 1;
   // }
   @Test public void should_return_matching_single_line_comment_of_element() {
-    Property active = xtext.find("active", Property.class);
-    Pair<INode, Matcher> match = finder.matchingCommentNode(active, "next id: [\\d]+");
+    MessageField field = xtext.find("active", MessageField.class);
+    Pair<INode, Matcher> match = finder.matchingCommentNode(field, "next id: [\\d]+");
     INode node = match.getFirst();
     assertThat(node.getText().trim(), equalTo("// Next Id: 6"));
   }
@@ -60,8 +60,8 @@ public class CommentNodesFinder_matchingCommentNode_Test {
   //   optional bool active = 1;
   // }
   @Test public void should_return_matching_multi_line_comment_of_element() {
-    Property active = xtext.find("active", Property.class);
-    Pair<INode, Matcher> match = finder.matchingCommentNode(active, "NEXT ID: [\\d]+");
+    MessageField field = xtext.find("active", MessageField.class);
+    Pair<INode, Matcher> match = finder.matchingCommentNode(field, "NEXT ID: [\\d]+");
     assertNotNull(match.getFirst());
   }
 
@@ -72,7 +72,7 @@ public class CommentNodesFinder_matchingCommentNode_Test {
   //   optional bool active = 1;
   // }
   @Test public void should_return_null_if_no_matching_node_found() {
-    Property active = xtext.find("active", Property.class);
+    MessageField active = xtext.find("active", MessageField.class);
     Pair<INode, Matcher> match = finder.matchingCommentNode(active, "Hello");
     assertNull(match);
   }

@@ -42,8 +42,8 @@ public class ProtobufQualifiedNameProvider_getFullyQualifiedName_Test {
   //   optional string name = 1;
   // }
   @Test public void should_include_existing_package_name_as_part_of_message_FQN() {
-    Message person = xtext.find("Person", Message.class);
-    QualifiedName fqn = provider.getFullyQualifiedName(person);
+    Message message = xtext.find("Person", Message.class);
+    QualifiedName fqn = provider.getFullyQualifiedName(message);
     assertThat(fqn.toString(), equalTo("fqn.test.Person"));
   }
 
@@ -54,9 +54,9 @@ public class ProtobufQualifiedNameProvider_getFullyQualifiedName_Test {
   // message Person {
   //   optional string name = 1;
   // }
-  @Test public void should_include_existing_package_name_as_part_of_property_FQN() {
-    Property name = xtext.find("name", Property.class);
-    QualifiedName fqn = provider.getFullyQualifiedName(name);
+  @Test public void should_include_existing_package_name_as_part_of_field_FQN() {
+    MessageField field = xtext.find("name", MessageField.class);
+    QualifiedName fqn = provider.getFullyQualifiedName(field);
     assertThat(fqn.toString(), equalTo("fqn.test.Person.name"));
   }
 
@@ -66,17 +66,17 @@ public class ProtobufQualifiedNameProvider_getFullyQualifiedName_Test {
   //   optional string name = 1;
   // }
   @Test public void should_not_include_package_name_as_part_of_message_FQN_if_package_is_not_specified() {
-    Message person = xtext.find("Person", Message.class);
-    QualifiedName fqn = provider.getFullyQualifiedName(person);
+    Message message = xtext.find("Person", Message.class);
+    QualifiedName fqn = provider.getFullyQualifiedName(message);
     assertThat(fqn.toString(), equalTo("Person"));
   }
 
   // message Person {
   //   optional string name = 1;
   // }
-  @Test public void should_not_include_package_name_as_part_of_property_FQN_if_package_is_not_specified() {
-    Property name = xtext.find("name", Property.class);
-    QualifiedName fqn = provider.getFullyQualifiedName(name);
+  @Test public void should_not_include_package_name_as_part_of_field_FQN_if_package_is_not_specified() {
+    MessageField field = xtext.find("name", MessageField.class);
+    QualifiedName fqn = provider.getFullyQualifiedName(field);
     assertThat(fqn.toString(), equalTo("Person.name"));
   }
 }

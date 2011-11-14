@@ -48,9 +48,9 @@ public class FieldOptions_lastFieldSourceFrom_Test {
   // message Person {
   //   optional boolean active = 1 [(custom).count = 6];
   // }
-  @Test public void should_return_property_field() {
+  @Test public void should_return_option_field() {
     CustomFieldOption option = xtext.find("custom", ").", CustomFieldOption.class);
-    Property p = (Property) fieldOptions.lastFieldSourceFrom(option);
-    assertThat(p.getName(), equalTo("count"));
+    MessageField field = (MessageField) fieldOptions.lastFieldSourceFrom(option);
+    assertThat(field.getName(), equalTo("count"));
   }
 }

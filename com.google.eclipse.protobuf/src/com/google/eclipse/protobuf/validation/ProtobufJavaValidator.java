@@ -39,7 +39,7 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
   @Inject private IndexedElements indexedElements;
   @Inject private ImportUriResolver uriResolver;
   @Inject private IQualifiedNameProvider qualifiedNameProvider;
-  @Inject private Properties properties;
+  @Inject private Fields properties;
 
   @Check public void checkIsProto2(Protobuf protobuf) {
     if (protobuf instanceof NonProto2) {
@@ -49,13 +49,13 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
   
   @Check public void checkDefaultValueType(FieldOption option) {
     if (!fieldOptions.isDefaultValueOption(option)) return;
-    Property property = (Property) option.eContainer();
+    MessageField field = (MessageField) option.eContainer();
     ValueRef defaultValue = option.getValue();
-    if (properties.isString(property)) {
+    if (properties.isString(field)) {
       if (defaultValue instanceof StringRef) return;
       error(expectedString, FIELD_OPTION__VALUE);
     }
-    if (properties.isBool(property)) {
+    if (properties.isBool(field)) {
       if (defaultValue instanceof BooleanRef) return;
       error(expectedTrueOrFalse, FIELD_OPTION__VALUE);
     }

@@ -49,7 +49,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   @SuppressWarnings("unused")
   public IScope scope_ComplexTypeLink_target(ComplexTypeLink t, EReference r) {
     EObject c = t.eContainer();
-    if (c instanceof Property) {
+    if (c instanceof MessageField) {
       return createScope(findTypeScope(c));
     }
     Set<IEObjectDescription> descriptions = emptySet();
@@ -80,7 +80,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     if (container instanceof NativeOption) {
       ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
       IndexedElement e = options.rootSourceOf((Option) container);
-      anEnum = descriptor.enumTypeOf((Property) e);
+      anEnum = descriptor.enumTypeOf((MessageField) e);
     }
     if (container instanceof CustomOption) {
       CustomOption option = (CustomOption) container;
@@ -89,14 +89,14 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     if (container instanceof NativeFieldOption) {
       ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
       IndexedElement c = fieldOptions.rootSourceOf((FieldOption) container);
-      anEnum = descriptor.enumTypeOf((Property) c);
+      anEnum = descriptor.enumTypeOf((MessageField) c);
     }
     if (container instanceof CustomFieldOption) {
       CustomFieldOption option = (CustomFieldOption) container;
       container = fieldOptions.sourceOf(option);
     }
-    if (container instanceof Property) {
-      anEnum = modelFinder.enumTypeOf((Property) container);
+    if (container instanceof MessageField) {
+      anEnum = modelFinder.enumTypeOf((MessageField) container);
     }
     return createScope(literalDescriptions.literalsOf(anEnum));
   }

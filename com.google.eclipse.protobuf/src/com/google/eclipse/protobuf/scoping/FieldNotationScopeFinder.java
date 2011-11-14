@@ -33,15 +33,15 @@ class FieldNotationScopeFinder {
   Collection<IEObjectDescription> sourceOf(FieldNotationNameSource s) {
     EObject container = s.eContainer();
     if (!(container instanceof FieldNotation)) return emptySet();
-    Property p = sourceOf((FieldNotation) container);
-    if (p == null) return emptySet();
+    MessageField field = sourceOf((FieldNotation) container);
+    if (field == null) return emptySet();
     if (s instanceof NormalFieldNotationNameSource) {
-      return propertiesInTypeOf(p);
+      return propertiesInTypeOf(field);
     }
-    return propertiesInExtendMessageOf(p);
+    return propertiesInExtendMessageOf(field);
   }
   
-  private Property sourceOf(FieldNotation notation) {
+  private MessageField sourceOf(FieldNotation notation) {
     EObject container = notation.eContainer();
     IndexedElement source = null;
     if (container instanceof MessageNotation) {
@@ -59,10 +59,10 @@ class FieldNotationScopeFinder {
         return sourceOf(complex);
       }
     }
-    return ((source instanceof Property) ? (Property) source : null);
+    return ((source instanceof MessageField) ? (MessageField) source : null);
   }
 
-  private Property sourceOf(ComplexFieldNotation n) {
+  private MessageField sourceOf(ComplexFieldNotation n) {
     FieldNotationNameSource s = n.getName();
     if (s instanceof NormalFieldNotationNameSource) {
       NormalFieldNotationNameSource normal = (NormalFieldNotationNameSource) s;
@@ -75,25 +75,25 @@ class FieldNotationScopeFinder {
     return null;
   }
   
-  private Collection<IEObjectDescription> propertiesInTypeOf(Property p) {
+  private Collection<IEObjectDescription> propertiesInTypeOf(MessageField field) {
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
-    Message propertyType = modelFinder.messageTypeOf(p);
-    for (MessageElement element : propertyType.getElements()) {
-      if (element instanceof Property) {
-        String name = ((Property) element).getName();
+    Message fieldType = modelFinder.messageTypeOf(field);
+    for (MessageElement element : fieldType.getElements()) {
+      if (element instanceof MessageField) {
+        String name = ((MessageField) element).getName();
         descriptions.add(create(name, element));
       }
     }
     return descriptions;
   }
 
-  private Collection<IEObjectDescription> propertiesInExtendMessageOf(Property p) {
+  private Collection<IEObjectDescription> propertiesInExtendMessageOf(MessageField field) {
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
-    Message propertyType = modelFinder.messageTypeOf(p);
+    Message fieldType = modelFinder.messageTypeOf(field);
     // check first in descriptor.proto
-    for (MessageExtension extension : modelFinder.extensionsOf(propertyType, modelFinder.rootOf(p))) {
+    for (MessageExtension extension : modelFinder.extensionsOf(fieldType, modelFinder.rootOf(field))) {
       for (MessageElement element : extension.getElements()) {
-        if (!(element instanceof Property)) continue;
+        if (!(element instanceof MessageField)) continue;
         descriptions.addAll(qualifiedNameDescriptions.qualifiedNames(element));
       }
     }

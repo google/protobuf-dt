@@ -32,15 +32,15 @@ public class IndexedElements_indexFeatureOf_Test {
   }
   
   @Test public void should_return_name_of_Property() {
-    Property p = mock(Property.class);
-    EStructuralFeature expected = PROPERTY__INDEX;
-    assertThat(indexedElements.indexFeatureOf(p), equalTo(expected));
+    MessageField field = mock(MessageField.class);
+    EStructuralFeature expected = MESSAGE_FIELD__INDEX;
+    assertThat(indexedElements.indexFeatureOf(field), equalTo(expected));
   }
 
   @Test public void should_return_name_of_Group() {
-    Group g = mock(Group.class);
+    Group group = mock(Group.class);
     EStructuralFeature expected = GROUP__INDEX;
-    assertThat(indexedElements.indexFeatureOf(g), equalTo(expected));
+    assertThat(indexedElements.indexFeatureOf(group), equalTo(expected));
   }
   
   @Test public void should_return_null_if_IndexedElement_is_null() {

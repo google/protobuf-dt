@@ -10,12 +10,12 @@ package com.google.eclipse.protobuf.model.util;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.PROPERTY__NAME;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MESSAGE_FIELD__NAME;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.Property;
+import com.google.eclipse.protobuf.protobuf.MessageField;
 
 import org.eclipse.emf.ecore.*;
 import org.eclipse.xtext.nodemodel.INode;
@@ -42,8 +42,8 @@ public class INodes_firstNodeForFeature_Test {
   //   optional bool active = 1;
   // }
   @Test public void should_return_first_node_for_feature() {
-    Property active = xtext.find("active", Property.class);
-    INode node = nodes.firstNodeForFeature(active, PROPERTY__NAME);
+    MessageField field = xtext.find("active", MessageField.class);
+    INode node = nodes.firstNodeForFeature(field, MESSAGE_FIELD__NAME);
     assertThat(node.getText().trim(), equalTo("active"));
   }
 }

@@ -28,14 +28,14 @@ public class IndexedElements_setIndexOf_Test {
   }
   
   @Test public void should_return_name_of_Property() {
-    Property p = mock(Property.class);
-    indexedElements.setIndexTo(p, 6L);
-    verify(p).setIndex(6L);
+    MessageField field = mock(MessageField.class);
+    indexedElements.setIndexTo(field, 6L);
+    verify(field).setIndex(6L);
   }
 
   @Test public void should_return_name_of_Group() {
-    Group g = mock(Group.class);
-    indexedElements.setIndexTo(g, 8L);
-    verify(g).setIndex(8L);
+    Group group = mock(Group.class);
+    indexedElements.setIndexTo(group, 8L);
+    verify(group).setIndex(8L);
   }
 }

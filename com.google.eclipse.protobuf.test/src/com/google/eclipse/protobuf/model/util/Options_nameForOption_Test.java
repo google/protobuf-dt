@@ -28,18 +28,18 @@ public class Options_nameForOption_Test {
     options = new Options();
   }
   
-  @Test public void should_return_unchanged_name_if_element_is_Property() {
-    Property p = mock(Property.class);
-    when(p.getName()).thenReturn("active");
-    assertThat(options.nameForOption(p), equalTo("active"));
-    verify(p).getName();
+  @Test public void should_return_unchanged_name_if_element_is_Field() {
+    MessageField field = mock(MessageField.class);
+    when(field.getName()).thenReturn("active");
+    assertThat(options.nameForOption(field), equalTo("active"));
+    verify(field).getName();
   }
   
   @Test public void should_return_name_in_lower_case_if_element_is_Group() {
-    Group g = mock(Group.class);
-    when(g.getName()).thenReturn("Person");
-    assertThat(options.nameForOption(g), equalTo("person"));
-    verify(g).getName();
+    Group group = mock(Group.class);
+    when(group.getName()).thenReturn("Person");
+    assertThat(options.nameForOption(group), equalTo("person"));
+    verify(group).getName();
   }
   
   @Test public void should_return_null_if_element_is_null() {

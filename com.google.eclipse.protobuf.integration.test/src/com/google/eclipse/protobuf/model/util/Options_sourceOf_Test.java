@@ -42,9 +42,9 @@ public class Options_sourceOf_Test {
   // }
   //
   // option (encoding) = 'UTF-8';
-  @Test public void should_return_property_of_custom_option() {
+  @Test public void should_return_source_of_custom_option() {
     CustomOption option = xtext.find("encoding", ")", CustomOption.class);
-    Property p = (Property) options.sourceOf(option);
+    MessageField p = (MessageField) options.sourceOf(option);
     assertThat(p.getName(), equalTo("encoding"));
   }
 
@@ -61,9 +61,9 @@ public class Options_sourceOf_Test {
   // }
   //
   // option (custom).count = 6;
-  @Test public void should_return_property_field() {
+  @Test public void should_return_source_of_field_in_option() {
     CustomOption option = xtext.find("custom", ")", CustomOption.class);
-    Property p = (Property) options.sourceOf(option);
+    MessageField p = (MessageField) options.sourceOf(option);
     assertThat(p.getName(), equalTo("count"));
   }
 }

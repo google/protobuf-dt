@@ -45,10 +45,10 @@ public class ProtobufJavaValidator_checkTagNumberIsGreaterThanZero_Test {
   //   optional long id = 0;
   // }
   @Test public void should_create_error_if_field_index_is_zero() {
-    Property id = xtext.find("id", Property.class);
-    validator.checkTagNumberIsGreaterThanZero(id);
+    MessageField field = xtext.find("id", MessageField.class);
+    validator.checkTagNumberIsGreaterThanZero(field);
     String message = "Field numbers must be positive integers.";
-    verify(messageAcceptor).acceptError(message, id, PROPERTY__INDEX, INSIGNIFICANT_INDEX, INVALID_FIELD_TAG_NUMBER_ERROR);
+    verify(messageAcceptor).acceptError(message, field, MESSAGE_FIELD__INDEX, INSIGNIFICANT_INDEX, INVALID_FIELD_TAG_NUMBER_ERROR);
   }
 
   // syntax = "proto2";
@@ -57,10 +57,10 @@ public class ProtobufJavaValidator_checkTagNumberIsGreaterThanZero_Test {
   //   optional long id = -1;
   // }
   @Test public void should_create_error_if_field_index_is_negative() {
-    Property id = xtext.find("id", Property.class);
-    validator.checkTagNumberIsGreaterThanZero(id);
+    MessageField field = xtext.find("id", MessageField.class);
+    validator.checkTagNumberIsGreaterThanZero(field);
     String message = "Expected field number.";
-    verify(messageAcceptor).acceptError(message, id, PROPERTY__INDEX, INSIGNIFICANT_INDEX, INVALID_FIELD_TAG_NUMBER_ERROR);
+    verify(messageAcceptor).acceptError(message, field, MESSAGE_FIELD__INDEX, INSIGNIFICANT_INDEX, INVALID_FIELD_TAG_NUMBER_ERROR);
   }
 
   // syntax = "proto2";
@@ -69,8 +69,8 @@ public class ProtobufJavaValidator_checkTagNumberIsGreaterThanZero_Test {
   //   optional long id = 1;
   // }
   @Test public void should_not_create_error_if_field_index_is_greater_than_zero() {
-    Property id = xtext.find("id", Property.class);
-    validator.checkTagNumberIsGreaterThanZero(id);
+    MessageField field = xtext.find("id", MessageField.class);
+    validator.checkTagNumberIsGreaterThanZero(field);
     verifyZeroInteractions(messageAcceptor);
   }
 }

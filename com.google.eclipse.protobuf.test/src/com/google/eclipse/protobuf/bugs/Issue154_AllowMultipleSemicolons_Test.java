@@ -30,7 +30,7 @@ public class Issue154_AllowMultipleSemicolons_Test {
   // message Foo {
   //   optional double bar = 1 [deprecated = true];;
   // }
-  @Test public void should_allow_multiple_semicolons_at_the_end_of_property() {
+  @Test public void should_allow_multiple_semicolons_at_the_end_of_field() {
     assertNotNull(xtext.root());
   }   
 }

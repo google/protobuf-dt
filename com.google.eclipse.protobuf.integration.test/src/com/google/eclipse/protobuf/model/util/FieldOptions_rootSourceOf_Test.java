@@ -38,10 +38,10 @@ public class FieldOptions_rootSourceOf_Test {
   // message Person {
   //   optional boolean active = 1 [deprecated = false];
   // }
-  @Test public void should_return_property_of_native_field_option() {
+  @Test public void should_return_field_of_native_field_option() {
     FieldOption option = xtext.find("deprecated", FieldOption.class);
-    Property p = (Property) fieldOptions.rootSourceOf(option);
-    assertThat(p.getName(), equalTo("deprecated"));
+    MessageField field = (MessageField) fieldOptions.rootSourceOf(option);
+    assertThat(field.getName(), equalTo("deprecated"));
   }
 
   // syntax = "proto2";
@@ -55,9 +55,9 @@ public class FieldOptions_rootSourceOf_Test {
   // message Person {
   //   optional boolean active = 1 [(encoding) = 'UTF-8'];
   // }
-  @Test public void should_return_property_of_custom_field_option() {
+  @Test public void should_return_field_of_custom_field_option() {
     FieldOption option = xtext.find("encoding", ")", FieldOption.class);
-    Property p = (Property) fieldOptions.rootSourceOf(option);
-    assertThat(p.getName(), equalTo("encoding"));
+    MessageField field = (MessageField) fieldOptions.rootSourceOf(option);
+    assertThat(field.getName(), equalTo("encoding"));
   }
 }

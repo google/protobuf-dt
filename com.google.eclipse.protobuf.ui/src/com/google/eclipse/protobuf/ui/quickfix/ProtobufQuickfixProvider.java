@@ -46,7 +46,7 @@ public class ProtobufQuickfixProvider extends DefaultQuickfixProvider {
 
   @Fix(INVALID_FIELD_TAG_NUMBER_ERROR)
   public void regenerateTagNumber(Issue issue, IssueResolutionAcceptor acceptor) {
-    acceptor.accept(issue, regenerateTagNumberLabel, regenerateTagNumber, "property.gif", new ISemanticModification() {
+    acceptor.accept(issue, regenerateTagNumberLabel, regenerateTagNumber, "field.gif", new ISemanticModification() {
       @Override public void apply(EObject element, IModificationContext context) throws Exception {
         if (!(element instanceof IndexedElement)) return;
         IndexedElement e = (IndexedElement) element;

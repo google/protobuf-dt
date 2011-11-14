@@ -11,7 +11,7 @@ package com.google.eclipse.protobuf.scoping;
 import static com.google.eclipse.protobuf.junit.core.Setups.integrationTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static com.google.eclipse.protobuf.scoping.ContainAllNames.containAll;
-import static com.google.eclipse.protobuf.scoping.ContainAllProperties.containAll;
+import static com.google.eclipse.protobuf.scoping.ContainAllFields.containAll;
 import static com.google.eclipse.protobuf.scoping.IEObjectDescriptions.descriptionsIn;
 import static com.google.eclipse.protobuf.scoping.OptionType.*;
 import static org.junit.Assert.assertThat;
@@ -53,8 +53,8 @@ public class ProtobufScopeProvider_scope_OptionSource_optionField_Test {
   @Test public void should_provide_Property_fields_for_native_option() {
     Option option = xtext.find("optimize_for", Option.class);
     IScope scope = provider.scope_OptionSource_optionField(option.getSource(), reference);
-    Collection<Property> fileOptions = descriptor().optionsOfType(FILE);
-    assertThat(descriptionsIn(scope), containAll(fileOptions));
+    Collection<MessageField> optionSources = descriptor().optionsOfType(FILE);
+    assertThat(descriptionsIn(scope), containAll(optionSources));
   }
 
   // syntax = "proto2";
@@ -65,8 +65,8 @@ public class ProtobufScopeProvider_scope_OptionSource_optionField_Test {
   @Test public void should_provide_Property_fields_for_native_field_option() {
     NativeFieldOption option = xtext.find("ctype", NativeFieldOption.class);
     IScope scope = provider.scope_OptionSource_optionField(option.getSource(), reference);
-    Collection<Property> fieldOptions = descriptor().optionsOfType(FIELD);
-    assertThat(descriptionsIn(scope), containAll(fieldOptions));
+    Collection<MessageField> optionSources = descriptor().optionsOfType(FIELD);
+    assertThat(descriptionsIn(scope), containAll(optionSources));
   }
 
   private ProtoDescriptor descriptor() {

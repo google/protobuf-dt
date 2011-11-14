@@ -11,7 +11,7 @@ package com.google.eclipse.protobuf.scoping;
 import static com.google.eclipse.protobuf.junit.core.Setups.integrationTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static com.google.eclipse.protobuf.scoping.ContainAllNames.containAll;
-import static com.google.eclipse.protobuf.scoping.ContainAllProperties.containAll;
+import static com.google.eclipse.protobuf.scoping.ContainAllFields.containAll;
 import static com.google.eclipse.protobuf.scoping.IEObjectDescriptions.descriptionsIn;
 import static com.google.eclipse.protobuf.scoping.OptionType.FIELD;
 import static org.junit.Assert.assertThat;
@@ -57,8 +57,8 @@ public class Issue147_AddSupportForGroupOptions_Test {
   @Test public void should_provide_fields_for_native_option() {
     NativeFieldOption option = xtext.find("deprecated", NativeFieldOption.class);
     IScope scope = provider.scope_OptionSource_optionField(option.getSource(), reference);
-    Collection<Property> fieldOptions = descriptor().optionsOfType(FIELD);
-    assertThat(descriptionsIn(scope), containAll(fieldOptions));
+    Collection<MessageField> optionSources = descriptor().optionsOfType(FIELD);
+    assertThat(descriptionsIn(scope), containAll(optionSources));
   }
 
   private ProtoDescriptor descriptor() {

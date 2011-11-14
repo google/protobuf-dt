@@ -19,7 +19,7 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link ModelFinder#scalarTypeOf(Property)}</code>.
+ * Tests for <code>{@link ModelFinder#scalarTypeOf(MessageField)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
@@ -38,10 +38,10 @@ public class ModelFinder_scalarTypeOf_Test {
   // message Person {
   //   optional int32 id = 1;
   // }
-  @Test public void should_return_scalar_if_property_type_is_scalar() {
-    Property id = xtext.find("id", Property.class);
-    ScalarType int32 = finder.scalarTypeOf(id);
-    assertThat(int32.getName(), equalTo("int32"));
+  @Test public void should_return_scalar_if_field_type_is_scalar() {
+    MessageField field = xtext.find("id", MessageField.class);
+    ScalarType type = finder.scalarTypeOf(field);
+    assertThat(type.getName(), equalTo("int32"));
   }
 
   // syntax = "proto2";
@@ -55,8 +55,8 @@ public class ModelFinder_scalarTypeOf_Test {
   // message PhoneNumber {
   //   optional PhoneType type = 1;
   // }
-  @Test public void should_return_null_if_property_type_is_not_scalar() {
-    Property type = xtext.find("type", Property.class);
-    assertNull(finder.scalarTypeOf(type));
+  @Test public void should_return_null_if_field_type_is_not_scalar() {
+    MessageField field = xtext.find("type", MessageField.class);
+    assertNull(finder.scalarTypeOf(field));
   }
 }

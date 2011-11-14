@@ -21,7 +21,7 @@ import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 
 /**
- * Tests for <code>{@link ProtoDescriptor#enumTypeOf(Property)}</code>.
+ * Tests for <code>{@link ProtoDescriptor#enumTypeOf(MessageField)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
@@ -36,13 +36,13 @@ public class ProtoDescriptor_enumTypeOf_Test {
     descriptor = descriptorProvider.primaryDescriptor();
   }
 
-  @Test public void should_return_Enum_if_property_type_is_enum() {
-    Property option = descriptor.option("optimize_for", FILE);
+  @Test public void should_return_Enum_if_field_type_is_enum() {
+    MessageField option = descriptor.option("optimize_for", FILE);
     Enum anEnum = descriptor.enumTypeOf(option);
     assertThat(anEnum.getName(), equalTo("OptimizeMode"));
   }
 
-  @Test public void should_return_null_if_property_is_null() {
+  @Test public void should_return_null_if_field_is_null() {
     assertNull(descriptor.enumTypeOf(null));
   }
 }

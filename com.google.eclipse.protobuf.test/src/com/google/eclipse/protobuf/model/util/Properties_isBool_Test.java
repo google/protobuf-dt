@@ -15,10 +15,10 @@ import static org.junit.Assert.*;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.Property;
+import com.google.eclipse.protobuf.protobuf.MessageField;
 
 /**
- * Tests for <code>{@link Properties#isBool(Property)}</code>.
+ * Tests for <code>{@link Fields#isBool(MessageField)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
@@ -26,10 +26,10 @@ public class Properties_isBool_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
-  private Properties properties;
+  private Fields properties;
 
   @Before public void setUp() {
-    properties = xtext.getInstanceOf(Properties.class);
+    properties = xtext.getInstanceOf(Fields.class);
   }
 
   // syntax = "proto2";
@@ -37,9 +37,9 @@ public class Properties_isBool_Test {
   // message Person {
   //   optional bool code = 1;
   // }
-  @Test public void should_return_true_if_property_is_bool() {
-    Property p = xtext.find("code", Property.class);
-    assertTrue(properties.isBool(p));
+  @Test public void should_return_true_if_field_is_bool() {
+    MessageField field = xtext.find("code", MessageField.class);
+    assertTrue(properties.isBool(field));
   }
 
   // syntax = "proto2";
@@ -48,7 +48,7 @@ public class Properties_isBool_Test {
   //   optional string name = 1;
   // }
   @Test public void should_return_false_if_property_is_not_bool() {
-    Property p = xtext.find("name", Property.class);
-    assertFalse(properties.isBool(p));
+    MessageField field = xtext.find("name", MessageField.class);
+    assertFalse(properties.isBool(field));
   }
 }

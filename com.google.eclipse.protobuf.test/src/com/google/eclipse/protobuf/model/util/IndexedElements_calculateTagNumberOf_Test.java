@@ -38,9 +38,9 @@ public class IndexedElements_calculateTagNumberOf_Test {
   // message Person {
   //   required string name = 2;
   // }
-  @Test public void should_return_one_for_first_and_only_property() {
-    Property name = xtext.find("name", Property.class);
-    long index = indexedElements.calculateTagNumberOf(name);
+  @Test public void should_return_one_for_first_and_only_field() {
+    MessageField field = xtext.find("name", MessageField.class);
+    long index = indexedElements.calculateTagNumberOf(field);
     assertThat(index, equalTo(1L));
   }
 
@@ -50,9 +50,9 @@ public class IndexedElements_calculateTagNumberOf_Test {
   //   required string name = 6;
   //   required int32 id = 8;
   // }
-  @Test public void should_return_max_tag_number_value_plus_one_for_new_property() {
-    Property id = xtext.find("id", Property.class);
-    long index = indexedElements.calculateTagNumberOf(id);
+  @Test public void should_return_max_tag_number_value_plus_one_for_new_field() {
+    MessageField field = xtext.find("id", MessageField.class);
+    long index = indexedElements.calculateTagNumberOf(field);
     assertThat(index, equalTo(7L));
   }
 }

@@ -30,17 +30,17 @@ public class IndexedElements_nameOf_Test {
   }
   
   @Test public void should_return_name_of_Property() {
-    Property p = mock(Property.class);
-    when(p.getName()).thenReturn("foo");
-    assertThat(indexedElements.nameOf(p), equalTo("foo"));
-    verify(p).getName();
+    MessageField field = mock(MessageField.class);
+    when(field.getName()).thenReturn("foo");
+    assertThat(indexedElements.nameOf(field), equalTo("foo"));
+    verify(field).getName();
   }
 
   @Test public void should_return_name_of_Group() {
-    Group g = mock(Group.class);
-    when(g.getName()).thenReturn("foo");
-    assertThat(indexedElements.nameOf(g), equalTo("foo"));
-    verify(g).getName();
+    Group group = mock(Group.class);
+    when(group.getName()).thenReturn("foo");
+    assertThat(indexedElements.nameOf(group), equalTo("foo"));
+    verify(group).getName();
   }
   
   @Test public void should_return_null_if_IndexedElement_is_null() {

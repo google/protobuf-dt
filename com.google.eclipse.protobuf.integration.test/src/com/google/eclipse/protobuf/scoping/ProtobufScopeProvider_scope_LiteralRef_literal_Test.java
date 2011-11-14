@@ -85,7 +85,7 @@ public class ProtobufScopeProvider_scope_LiteralRef_literal_Test {
   // }
   //
   // option (type) = ONE;
-  @Test public void should_provide_Literals_for_custom_option() {
+  @Test public void should_provide_Literals_for_source_of_custom_option() {
     Option option = xtext.find("type", ")", Option.class);
     IScope scope = provider.scope_LiteralRef_literal(valueOf(option), reference);
     Enum typeEnum = xtext.find("Type", " {", Enum.class);
@@ -110,7 +110,7 @@ public class ProtobufScopeProvider_scope_LiteralRef_literal_Test {
   // }
   //
   // option (info).type = ONE;
-  @Test public void should_provide_Literals_for_property_of_custom_option() {
+  @Test public void should_provide_Literals_for_source_of_field_of_custom_option() {
     Option option = xtext.find("info", ")", Option.class);
     IScope scope = provider.scope_LiteralRef_literal(valueOf(option), reference);
     Enum typeEnum = xtext.find("Type", " {", Enum.class);
@@ -126,7 +126,7 @@ public class ProtobufScopeProvider_scope_LiteralRef_literal_Test {
   //  message Person {
   //    optional Type type = 1 [ctype = STRING];
   //  }
-  @Test public void should_provide_Literals_for_native_field_option() {
+  @Test public void should_provide_Literals_for_source_of_native_field_option() {
     FieldOption option = xtext.find("ctype", FieldOption.class);
     IScope scope = provider.scope_LiteralRef_literal(valueOf(option), reference);
     Enum cTypeEnum = descriptor().enumByName("CType");
@@ -154,7 +154,7 @@ public class ProtobufScopeProvider_scope_LiteralRef_literal_Test {
   // message Person {
   //   optional boolean active = 1 [(type) = ONE];
   // }
-  @Test public void should_provide_Literals_for_custom_field_option() {
+  @Test public void should_provide_Literals_for_source_of_custom_field_option() {
     FieldOption option = xtext.find("type", ")", FieldOption.class);
     IScope scope = provider.scope_LiteralRef_literal(valueOf(option), reference);
     Enum typeEnum = xtext.find("Type", " {", Enum.class);
@@ -181,7 +181,7 @@ public class ProtobufScopeProvider_scope_LiteralRef_literal_Test {
   // message Person {
   //   optional boolean active = 1 [(info).type = ONE];
   // }
-  @Test public void should_provide_Literals_for_property_of_custom_field_option() {
+  @Test public void should_provide_Literals_for_source_of_field_in_custom_field_option() {
     FieldOption option = xtext.find("info", ")", FieldOption.class);
     IScope scope = provider.scope_LiteralRef_literal(valueOf(option), reference);
     Enum typeEnum = xtext.find("Type", " {", Enum.class);

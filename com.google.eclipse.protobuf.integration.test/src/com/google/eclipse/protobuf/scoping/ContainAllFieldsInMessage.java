@@ -24,12 +24,12 @@ class ContainAllFieldsInMessage extends BaseMatcher<IEObjectDescriptions> {
 
   private final EObject container;
 
-  static ContainAllFieldsInMessage containAllFieldsIn(Group g) {
-    return new ContainAllFieldsInMessage(g);
+  static ContainAllFieldsInMessage containAllFieldsIn(Group group) {
+    return new ContainAllFieldsInMessage(group);
   }
 
-  static ContainAllFieldsInMessage containAllFieldsIn(Message m) {
-    return new ContainAllFieldsInMessage(m);
+  static ContainAllFieldsInMessage containAllFieldsIn(Message message) {
+    return new ContainAllFieldsInMessage(message);
   }
 
   private ContainAllFieldsInMessage(EObject container) {
@@ -63,6 +63,6 @@ class ContainAllFieldsInMessage extends BaseMatcher<IEObjectDescriptions> {
 
   private String nameOf(IndexedElement e) {
     if (e == null) return null;
-    return (e instanceof Group) ? ((Group) e).getName() : ((Property) e).getName(); 
+    return (e instanceof Group) ? ((Group) e).getName() : ((MessageField) e).getName(); 
   }
 }

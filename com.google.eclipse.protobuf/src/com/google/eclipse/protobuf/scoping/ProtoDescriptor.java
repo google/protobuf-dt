@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.PROPERTY__TYPE;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MESSAGE_FIELD__TYPE;
 import static com.google.eclipse.protobuf.scoping.OptionType.findOptionTypeForLevelOf;
 import static com.google.eclipse.protobuf.util.Closeables.closeQuietly;
 import static com.google.eclipse.protobuf.util.Encodings.UTF_8;
@@ -52,7 +52,7 @@ public class ProtoDescriptor {
   }
 
   private final List<ComplexType> allTypes = new ArrayList<ComplexType>();
-  private final Map<OptionType, Map<String, Property>> optionsByType = new HashMap<OptionType, Map<String, Property>>();
+  private final Map<OptionType, Map<String, MessageField>> optionsByType = new HashMap<OptionType, Map<String, MessageField>>();
   private final Map<String, Enum> enumsByName = new HashMap<String, Enum>();
 
   private Protobuf root;
@@ -94,7 +94,7 @@ public class ProtoDescriptor {
 
   private void addOptionTypes() {
     for (OptionType type : OptionType.values())
-      optionsByType.put(type, new LinkedHashMap<String, Property>());
+      optionsByType.put(type, new LinkedHashMap<String, MessageField>());
   }
 
   private void initContents() {
@@ -110,8 +110,8 @@ public class ProtoDescriptor {
 
   private void initOptions(Message optionGroup, OptionType type) {
     for (MessageElement e : optionGroup.getElements()) {
-      if (e instanceof Property) {
-        addOption((Property) e, type);
+      if (e instanceof MessageField) {
+        addOption((MessageField) e, type);
         continue;
       }
       if (e instanceof Enum) {
@@ -121,13 +121,13 @@ public class ProtoDescriptor {
     }
   }
 
-  private void addOption(Property optionDefinition, OptionType type) {
-    if (shouldIgnore(optionDefinition)) return;
-    optionsByType.get(type).put(optionDefinition.getName(), optionDefinition);
+  private void addOption(MessageField optionSource, OptionType type) {
+    if (shouldIgnore(optionSource)) return;
+    optionsByType.get(type).put(optionSource.getName(), optionSource);
   }
 
-  private boolean shouldIgnore(Property property) {
-    return "uninterpreted_option".equals(property.getName());
+  private boolean shouldIgnore(MessageField field) {
+    return "uninterpreted_option".equals(field.getName());
   }
 
   /**
@@ -138,7 +138,7 @@ public class ProtoDescriptor {
    * @return the options available for the given option or option container, or an empty collection if the are not any
    * options available.
    */
-  public Collection<Property> availableOptionsFor(EObject o) {
+  public Collection<MessageField> availableOptionsFor(EObject o) {
     EObject target = o;
     if (target instanceof NativeOption) target = target.eContainer();
     OptionType type = findOptionTypeForLevelOf(target);
@@ -147,20 +147,20 @@ public class ProtoDescriptor {
   }
 
   @VisibleForTesting
-  Collection<Property> optionsOfType(OptionType type) {
+  Collection<MessageField> optionsOfType(OptionType type) {
     return unmodifiableCollection(optionsByType.get(type).values());
   }
 
   /**
-   * Returns the enum type of the given property, only if the given property is defined in
+   * Returns the enum type of the given field, only if the given field is defined in
    * {@code google/protobuf/descriptor.proto} and its type is enum (more details can be found <a
    * href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
-   * @param p the given property.
-   * @return the enum type of the given property or {@code null} if the type of the given property is not enum.
+   * @param field the given field.
+   * @return the enum type of the given field or {@code null} if the type of the given field is not enum.
    */
-  public Enum enumTypeOf(Property p) {
-    if (p == null) return null;
-    INode node = nodes.firstNodeForFeature(p, PROPERTY__TYPE);
+  public Enum enumTypeOf(MessageField field) {
+    if (field == null) return null;
+    INode node = nodes.firstNodeForFeature(field, MESSAGE_FIELD__TYPE);
     if (node == null) return null;
     String typeName = node.getText();
     return (isEmpty(typeName)) ? null : enumByName(typeName.trim());
@@ -192,8 +192,8 @@ public class ProtoDescriptor {
   }
 
   @VisibleForTesting
-  Property option(String name, OptionType type) {
-    Map<String, Property> optionByName = optionsByType.get(type);
+  MessageField option(String name, OptionType type) {
+    Map<String, MessageField> optionByName = optionsByType.get(type);
     return (optionByName != null) ? optionByName.get(name) : null;
   }
 }
