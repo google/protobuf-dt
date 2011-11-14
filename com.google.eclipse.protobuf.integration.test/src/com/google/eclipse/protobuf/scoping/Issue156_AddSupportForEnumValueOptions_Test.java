@@ -56,7 +56,7 @@ public class Issue156_AddSupportForEnumValueOptions_Test {
   // }
   @Test public void should_provide_fields_for_custom_field_option() {
     CustomFieldOption option = xtext.find("active", ")", CustomFieldOption.class);
-    IScope scope = provider.scope_OptionSource_optionField(option.getSource(), reference);
+    IScope scope = provider.scope_OptionSource_target(option.getSource(), reference);
     assertThat(descriptionsIn(scope), containAll("active", ".active"));
   }
 }

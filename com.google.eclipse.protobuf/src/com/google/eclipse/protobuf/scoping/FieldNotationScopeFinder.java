@@ -32,8 +32,8 @@ class FieldNotationScopeFinder {
 
   Collection<IEObjectDescription> sourceOf(FieldNotationNameSource s) {
     EObject container = s.eContainer();
-    if (!(container instanceof FieldNotation)) return emptySet();
-    MessageField field = sourceOf((FieldNotation) container);
+    if (!(container instanceof AggregateField)) return emptySet();
+    MessageField field = sourceOf((AggregateField) container);
     if (field == null) return emptySet();
     if (s instanceof NormalFieldNotationNameSource) {
       return propertiesInTypeOf(field);
@@ -41,10 +41,10 @@ class FieldNotationScopeFinder {
     return propertiesInExtendMessageOf(field);
   }
   
-  private MessageField sourceOf(FieldNotation notation) {
-    EObject container = notation.eContainer();
+  private MessageField sourceOf(AggregateField field) {
+    EObject container = field.eContainer();
     IndexedElement source = null;
-    if (container instanceof MessageNotation) {
+    if (container instanceof AggregateValue) {
       container = container.eContainer();
       if (container instanceof CustomOption) {
         CustomOption option = (CustomOption) container;

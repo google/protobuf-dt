@@ -50,7 +50,7 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
   @Check public void checkDefaultValueType(FieldOption option) {
     if (!fieldOptions.isDefaultValueOption(option)) return;
     MessageField field = (MessageField) option.eContainer();
-    ValueLink defaultValue = option.getValue();
+    Value defaultValue = option.getValue();
     if (properties.isString(field)) {
       if (defaultValue instanceof StringLink) return;
       error(expectedString, FIELD_OPTION__VALUE);

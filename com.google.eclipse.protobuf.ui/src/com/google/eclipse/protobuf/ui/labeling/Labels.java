@@ -74,23 +74,23 @@ import com.google.inject.*;
     b.append(name);
     if (isCustomOption) b.append(")");
     if (option instanceof CustomOption) {
-      appendFields(b, ((CustomOption) option).getOptionFields());
+      appendFields(b, ((CustomOption) option).getFields());
     }
     if (option instanceof CustomFieldOption) {
-      appendFields(b, ((CustomFieldOption) option).getOptionFields());
+      appendFields(b, ((CustomFieldOption) option).getFields());
     }
     return b.toString();
   }
   
-  private void appendFields(StringBuilder b, List<OptionFieldSource> fields) {
-    for (OptionFieldSource field : fields) {
+  private void appendFields(StringBuilder b, List<OptionField> fields) {
+    for (OptionField field : fields) {
       b.append(".");
-      if (field instanceof OptionMessageFieldSource) {
-        IndexedElement source = ((OptionMessageFieldSource) field).getOptionMessageField();
+      if (field instanceof MessageOptionField) {
+        IndexedElement source = ((MessageOptionField) field).getTarget();
         b.append(options.nameForOption(source));
       }
-      if (field instanceof OptionExtendMessageFieldSource) {
-        IndexedElement source = ((OptionExtendMessageFieldSource) field).getOptionExtendMessageField();
+      if (field instanceof ExtensionOptionField) {
+        IndexedElement source = ((ExtensionOptionField) field).getTarget();
         b.append("(")
          .append(options.nameForOption(source))
          .append(")");

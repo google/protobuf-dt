@@ -59,7 +59,7 @@ public class Issue131_AddOptionsForService_Test {
   // }
   @Test public void should_support_Service_options() {
     Option option = xtext.find("code", ")", Option.class);
-    IScope scope = provider.scope_OptionSource_optionField(option.getSource(), reference);
+    IScope scope = provider.scope_OptionSource_target(option.getSource(), reference);
     assertThat(descriptionsIn(scope), containAll("code", "proto.code", "google.proto.code", "com.google.proto.code",
                                                  ".com.google.proto.code",
                                                  "info", "proto.info", "google.proto.info", "com.google.proto.info",

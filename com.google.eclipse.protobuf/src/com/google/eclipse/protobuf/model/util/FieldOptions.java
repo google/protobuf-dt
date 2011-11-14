@@ -66,7 +66,7 @@ public class FieldOptions {
    * cannot be found.
    */
   public IndexedElement sourceOf(CustomFieldOption option) {
-    IndexedElement e = lastFieldSourceFrom(option);
+    IndexedElement e = sourceOfLastFieldIn(option);
     if (e == null) e = rootSourceOf(option);
     return e;
   }
@@ -91,7 +91,7 @@ public class FieldOptions {
       CustomFieldOption customOption = (CustomFieldOption) option;
       source = customOption.getSource();
     }
-    return (source == null) ? null : source.getOptionField();
+    return (source == null) ? null : source.getTarget();
   }
 
   /**
@@ -105,10 +105,10 @@ public class FieldOptions {
    * @return the last field of the given {@code CustomFieldOption} is referring to, or {@code null} if one cannot be
    * found.
    */
-  public IndexedElement lastFieldSourceFrom(CustomFieldOption option) {
-    List<OptionFieldSource> fields = option.getOptionFields();
+  public IndexedElement sourceOfLastFieldIn(CustomFieldOption option) {
+    List<OptionField> fields = option.getFields();
     if (fields.isEmpty()) return null;
-    OptionFieldSource last = fields.get(fields.size() - 1);
+    OptionField last = fields.get(fields.size() - 1);
     return optionFields.sourceOf(last);
   }
 }

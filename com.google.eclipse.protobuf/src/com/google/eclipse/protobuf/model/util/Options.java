@@ -66,7 +66,7 @@ public class Options {
    */
   public IndexedElement rootSourceOf(Option option) {
     OptionSource source = option.getSource();
-    return (source == null) ? null : source.getOptionField();
+    return (source == null) ? null : source.getTarget();
   }
 
   /**
@@ -80,9 +80,9 @@ public class Options {
    * @return the last field of the given {@code CustomOption} is referring to, or {@code null} if one cannot be found.
    */
   public IndexedElement lastFieldSourceFrom(CustomOption option) {
-    List<OptionFieldSource> fields = option.getOptionFields();
+    List<OptionField> fields = option.getFields();
     if (fields.isEmpty()) return null;
-    OptionFieldSource last = fields.get(fields.size() - 1);
+    OptionField last = fields.get(fields.size() - 1);
     return optionFields.sourceOf(last);
   }
   

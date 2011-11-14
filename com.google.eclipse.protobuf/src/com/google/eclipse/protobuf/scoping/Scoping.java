@@ -20,21 +20,15 @@ import java.util.Collection;
  */
 public interface Scoping {
 
-  Collection<IEObjectDescription> findScope(CustomOption o);
+  Collection<IEObjectDescription> findScope(CustomOption option);
 
-  Collection<IEObjectDescription> findScope(CustomFieldOption o);
+  Collection<IEObjectDescription> findScope(CustomFieldOption option);
 
-  Collection<IEObjectDescription> findScope(OptionMessageFieldSource s);
+  Collection<IEObjectDescription> findScope(OptionField field);
 
-  Collection<IEObjectDescription> findScope(OptionExtendMessageFieldSource s);
+  Collection<IEObjectDescription> findFieldScope(CustomOption option);
 
-  Collection<IEObjectDescription> findMessageFieldScope(CustomOption o);
-
-  Collection<IEObjectDescription> findMessageFieldScope(CustomFieldOption o);
-
-  Collection<IEObjectDescription> findExtendMessageFieldScope(CustomOption o);
-
-  Collection<IEObjectDescription> findExtendMessageFieldScope(CustomFieldOption o);
+  Collection<IEObjectDescription> findFieldScope(CustomFieldOption option);
 
   Collection<IEObjectDescription> findTypeScope(EObject o);
 

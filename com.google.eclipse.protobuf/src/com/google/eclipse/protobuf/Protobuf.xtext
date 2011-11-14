@@ -134,57 +134,57 @@ Option:
   NativeOption | CustomOption;
 
 NativeOption:
-  'option' source=OptionSource '=' value=ValueLink ';';
+  'option' source=OptionSource '=' value=Value ';';
 
 CustomOption:
   'option' '(' source=OptionSource ')'
-  ('.' optionFields+=OptionFieldSource ('.' optionFields+=OptionFieldSource)*)? '=' value=ValueLink ';';
+  ('.' fields+=OptionField ('.' fields+=OptionField)*)? '=' value=Value ';';
  
 FieldOption:
   DefaultValueFieldOption | NativeFieldOption | CustomFieldOption;
 
 DefaultValueFieldOption:
-  'default' '=' value=ValueLink;
+  'default' '=' value=Value;
 
 NativeFieldOption:
-  source=OptionSource '=' value=ValueLink;
+  source=OptionSource '=' value=Value;
 
 CustomFieldOption:
   '(' source=OptionSource ')'
-  ('.' optionFields+=OptionFieldSource ('.' optionFields+=OptionFieldSource)*)? '=' value=ValueLink;
+  ('.' fields+=OptionField ('.' fields+=OptionField)*)? '=' value=Value;
 
 OptionSource:
-  optionField=[IndexedElement|QualifiedName];
+  target=[IndexedElement|QualifiedName];
 
-OptionFieldSource:
-  OptionMessageFieldSource | OptionExtendMessageFieldSource;
+OptionField:
+  MessageOptionField | ExtensionOptionField;
 
-OptionMessageFieldSource:
-  optionMessageField=[IndexedElement];  
+MessageOptionField:
+  target=[IndexedElement];  
 
-OptionExtendMessageFieldSource:
-  '(' optionExtendMessageField=[IndexedElement|QualifiedName] ')';  
+ExtensionOptionField:
+  '(' target=[IndexedElement|QualifiedName] ')';  
 
 IndexedElement:
   MessageField | Group;
 
-ValueLink:
-  MessageNotation | SimpleValueLink;
+Value:
+  AggregateValue | SimpleValueLink;
 
 // { foo: 1, bar: 2 }
-MessageNotation:
+AggregateValue:
   '{'
-  fields+=FieldNotation ((',')? fields+=FieldNotation)*
+  fields+=AggregateField ((',')? fields+=AggregateField)*
   '}';
 
-FieldNotation:
+AggregateField:
   SimpleFieldNotation | ComplexFieldNotation;
 
 SimpleFieldNotation:
   name=FieldNotationNameSource ':' value=SimpleValueLink;
 
 ComplexFieldNotation:
-  name=FieldNotationNameSource ':'? values=MessageNotation;
+  name=FieldNotationNameSource ':'? values=AggregateValue;
 
 FieldNotationNameSource:
   NormalFieldNotationNameSource | ExtensionFieldNotationNameSource;

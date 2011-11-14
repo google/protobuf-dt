@@ -447,37 +447,37 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     return imageHelper.getImage(images.imageFor(Option.class));
   }
 
-  @Override public void completeCustomOption_OptionFields(EObject model, Assignment assignment,
+  @Override public void completeCustomOption_Fields(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {}
 
-  @Override public void completeCustomFieldOption_OptionFields(EObject model, Assignment assignment,
+  @Override public void completeCustomFieldOption_Fields(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {}
 
-  @Override public void completeOptionSource_OptionField(EObject model, Assignment assignment,
+  @Override public void completeOptionSource_Target(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {}
 
-  @Override public void completeOptionMessageFieldSource_OptionMessageField(EObject model, Assignment assignment,
+  @Override public void completeMessageOptionField_Target(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {}
 
-  @Override public void completeOptionExtendMessageFieldSource_OptionExtendMessageField(EObject model,
-      Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {}
+  @Override public void completeExtensionOptionField_Target(EObject model, Assignment assignment,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {}
 
-  @Override public void complete_OptionMessageFieldSource(EObject model, RuleCall ruleCall,
+  @Override public void complete_MessageOptionField(EObject model, RuleCall ruleCall,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     EObject e = findActualSemanticObjectFor(context.getCurrentNode());
     if (e instanceof Protobuf) e = model;
     Collection<IEObjectDescription> scope = emptySet();
     if (e instanceof CustomOption) {
       CustomOption option = (CustomOption) e;
-      scope = scoping().findMessageFieldScope(option);
+      scope = scoping().findFieldScope(option);
     }
     if (e instanceof CustomFieldOption) {
       CustomFieldOption option = (CustomFieldOption) e;
-      scope = scoping().findMessageFieldScope(option);
+      scope = scoping().findFieldScope(option);
     }
-    if (e instanceof OptionMessageFieldSource) {
-      OptionMessageFieldSource source = (OptionMessageFieldSource) e;
-      scope = scoping().findScope(source);
+    if (e instanceof MessageOptionField) {
+      MessageOptionField field = (MessageOptionField) e;
+      scope = scoping().findScope(field);
     }
     for (IEObjectDescription d : descriptionChooser.shortestQualifiedNamesIn(scope)) {
       Image image = imageHelper.getImage(images.imageFor(d.getEObjectOrProxy()));
@@ -485,21 +485,22 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     }
   }
 
-  @Override public void complete_OptionExtendMessageFieldSource(EObject model, RuleCall ruleCall,
+  // TODO fix parenthesis
+  @Override public void complete_ExtensionOptionField(EObject model, RuleCall ruleCall,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     EObject e = findActualSemanticObjectFor(context.getCurrentNode());
     if (e instanceof Protobuf) e = model;
     Collection<IEObjectDescription> scope = emptySet();
     if (e instanceof CustomOption) {
       CustomOption option = (CustomOption) e;
-      scope = scoping().findExtendMessageFieldScope(option);
+      scope = scoping().findFieldScope(option);
     }
     if (e instanceof CustomFieldOption) {
       CustomFieldOption option = (CustomFieldOption) e;
-      scope = scoping().findExtendMessageFieldScope(option);
+      scope = scoping().findFieldScope(option);
     }
-    if (e instanceof OptionExtendMessageFieldSource) {
-      OptionExtendMessageFieldSource source = (OptionExtendMessageFieldSource) e;
+    if (e instanceof ExtensionOptionField) {
+      ExtensionOptionField source = (ExtensionOptionField) e;
       scope = scoping().findScope(source);
     }
     for (IEObjectDescription d : descriptionChooser.shortestQualifiedNamesIn(scope)) {
@@ -532,7 +533,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     // TODO content assist returns "{"
     if (!(model instanceof CustomFieldOption)) return;
     CustomFieldOption option = (CustomFieldOption) model;
-    IndexedElement e = fieldOptions.lastFieldSourceFrom(option);
+    IndexedElement e = fieldOptions.sourceOfLastFieldIn(option);
     if (e == null) e = fieldOptions.rootSourceOf(option);
     if (e instanceof MessageField) {
       proposeDefaultValue((MessageField) e, context, acceptor);

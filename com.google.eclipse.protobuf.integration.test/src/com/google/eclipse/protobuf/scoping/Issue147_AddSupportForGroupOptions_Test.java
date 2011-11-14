@@ -56,7 +56,7 @@ public class Issue147_AddSupportForGroupOptions_Test {
   // }
   @Test public void should_provide_fields_for_native_option() {
     NativeFieldOption option = xtext.find("deprecated", NativeFieldOption.class);
-    IScope scope = provider.scope_OptionSource_optionField(option.getSource(), reference);
+    IScope scope = provider.scope_OptionSource_target(option.getSource(), reference);
     Collection<MessageField> optionSources = descriptor().optionsOfType(FIELD);
     assertThat(descriptionsIn(scope), containAll(optionSources));
   }
@@ -83,7 +83,7 @@ public class Issue147_AddSupportForGroupOptions_Test {
   // }
   @Test public void should_provide_fields_for_custom_option() {
     CustomFieldOption option = xtext.find("code", ")", CustomFieldOption.class);
-    IScope scope = provider.scope_OptionSource_optionField(option.getSource(), reference);
+    IScope scope = provider.scope_OptionSource_target(option.getSource(), reference);
     assertThat(descriptionsIn(scope), containAll("code", "proto.code", "google.proto.code", "com.google.proto.code",
                                                  ".com.google.proto.code",
                                                  "info", "proto.info", "google.proto.info", "com.google.proto.info",

@@ -23,11 +23,11 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link ProtobufScopeProvider#scope_OptionExtendMessageFieldSource_optionExtendMessageField(OptionExtendMessageFieldSource, EReference)}</code>.
+ * Tests for <code>{@link ProtobufScopeProvider#scope_OptionField_target(OptionField, EReference)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ProtobufScopeProvider_scope_OptionExtendMessageFieldSource_optionExtendMessageField_Test {
+public class ProtobufScopeProvider_scope_OptionField_target_with_ExtensionOptionField_Test {
 
   private static EReference reference;
 
@@ -66,8 +66,8 @@ public class ProtobufScopeProvider_scope_OptionExtendMessageFieldSource_optionEx
   // option (type).(active) = true;
   @Test public void should_provide_extend_message_fields_for_first_field_in_custom_option() {
     CustomOption option = xtext.find("type", ")", CustomOption.class);
-    OptionExtendMessageFieldSource codeOptionField = (OptionExtendMessageFieldSource) option.getOptionFields().get(0);
-    IScope scope = provider.scope_OptionExtendMessageFieldSource_optionExtendMessageField(codeOptionField, reference);
+    ExtensionOptionField codeOptionField = (ExtensionOptionField) option.getFields().get(0);
+    IScope scope = provider.scope_OptionField_target(codeOptionField, reference);
     assertThat(descriptionsIn(scope), containAll("active", "com.google.proto.active", ".com.google.proto.active"));
   }
 
@@ -96,8 +96,8 @@ public class ProtobufScopeProvider_scope_OptionExtendMessageFieldSource_optionEx
   // }
   @Test public void should_provide_message_fields_for_first_field_in_field_custom_option() {
     CustomFieldOption option = xtext.find("type", ")", CustomFieldOption.class);
-    OptionExtendMessageFieldSource codeOptionField = (OptionExtendMessageFieldSource) option.getOptionFields().get(0);
-    IScope scope = provider.scope_OptionExtendMessageFieldSource_optionExtendMessageField(codeOptionField, reference);
+    ExtensionOptionField codeOptionField = (ExtensionOptionField) option.getFields().get(0);
+    IScope scope = provider.scope_OptionField_target(codeOptionField, reference);
     assertThat(descriptionsIn(scope), containAll("active", "com.google.proto.active", ".com.google.proto.active"));
   }
 }

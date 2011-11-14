@@ -31,13 +31,13 @@ class CustomOptionFieldScopeFinder {
   @Inject private Options options;
   @Inject private QualifiedNameDescriptions qualifiedNameDescriptions;
 
-  Collection<IEObjectDescription> findScope(CustomOption option, OptionMessageFieldSource source) {
-    return findScope(option, source, new MessageFieldDescriptorProvider());
+  Collection<IEObjectDescription> findScope(CustomOption option, OptionField field) {
+    return findScope(option, field, descriptionsProvider(field));
   }
 
-  private Collection<IEObjectDescription> findScope(final CustomOption option, EObject source,
+  private Collection<IEObjectDescription> findScope(final CustomOption option, OptionField field,
       IEObjectDescriptionsProvider provider) {
-    IndexedElement e = referredField(source, option.getOptionFields(), new Provider<IndexedElement>() {
+    IndexedElement e = referredField(field, option.getFields(), new Provider<IndexedElement>() {
       @Override public IndexedElement get() {
         return options.rootSourceOf(option);
       }
@@ -46,21 +46,18 @@ class CustomOptionFieldScopeFinder {
     return emptySet();
   }
 
-  Collection<IEObjectDescription> findScope(CustomFieldOption option, OptionMessageFieldSource source) {
-    return findScope(option, source, new MessageFieldDescriptorProvider());
+  Collection<IEObjectDescription> findScope(CustomFieldOption option, OptionField field) {
+    return findScope(option, field, descriptionsProvider(field));
+  }
+  
+  private IEObjectDescriptionsProvider descriptionsProvider(OptionField field) {
+    if (field instanceof MessageOptionField) return new MessageFieldDescriptorProvider();
+    return new ExtensionFieldDescriptorProvider();
   }
 
-  Collection<IEObjectDescription> findScope(CustomOption option, OptionExtendMessageFieldSource source) {
-    return findScope(option, source, new ExtendMessageFieldDescriptorProvider());
-  }
-
-  Collection<IEObjectDescription> findScope(CustomFieldOption option, OptionExtendMessageFieldSource source) {
-    return findScope(option, source, new ExtendMessageFieldDescriptorProvider());
-  }
-
-  private Collection<IEObjectDescription> findScope(final CustomFieldOption option, EObject source,
+  private Collection<IEObjectDescription> findScope(final CustomFieldOption option, OptionField field,
       IEObjectDescriptionsProvider provider) {
-    IndexedElement e = referredField(source, option.getOptionFields(), new Provider<IndexedElement>() {
+    IndexedElement e = referredField(field, option.getFields(), new Provider<IndexedElement>() {
       @Override public IndexedElement get() {
         return fieldOptions.rootSourceOf(option);
       }
@@ -69,18 +66,18 @@ class CustomOptionFieldScopeFinder {
     return emptySet();
   }
 
-  private IndexedElement referredField(EObject source, List<OptionFieldSource> allFieldSources,
+  private IndexedElement referredField(OptionField field, List<OptionField> allFields, 
       Provider<IndexedElement> provider) {
-    OptionFieldSource previous = null;
+    OptionField previous = null;
     boolean isFirstField = true;
-    for (OptionFieldSource s : allFieldSources) {
-      if (s == source) {
+    for (OptionField current : allFields) {
+      if (current == field) {
         return (isFirstField) ? provider.get() : optionFields.sourceOf(previous);
       }
-      previous = s;
+      previous = current;
       isFirstField = false;
     }
-    if (source == null) {
+    if (field == null) {
       if (previous == null) return provider.get();
       return optionFields.sourceOf(previous);
     }
@@ -113,7 +110,7 @@ class CustomOptionFieldScopeFinder {
     }
   }
 
-  private class ExtendMessageFieldDescriptorProvider implements IEObjectDescriptionsProvider {
+  private class ExtensionFieldDescriptorProvider implements IEObjectDescriptionsProvider {
     @Override public Collection<IEObjectDescription> fieldsInTypeOf(IndexedElement e) {
       if (!(e instanceof MessageField)) return emptyList();
       Message fieldType = modelFinder.messageTypeOf((MessageField) e);

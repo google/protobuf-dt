@@ -65,9 +65,9 @@ public class ProtobufScopeProvider_scope_ExtensionFieldNotationNameSource_extens
   //     }
   //   }
   // };
-  @Test public void should_provide_sources_for_field_notation_in_option() {
-    FieldNotation notation = xtext.find("google.proto.test.fileopt", "]", FieldNotation.class);
-    ExtensionFieldNotationNameSource s = (ExtensionFieldNotationNameSource) notation.getName();
+  @Test public void should_provide_sources_for_aggregate_field() {
+    AggregateField field = xtext.find("google.proto.test.fileopt", "]", AggregateField.class);
+    ExtensionFieldNotationNameSource s = (ExtensionFieldNotationNameSource) field.getName();
     IScope scope = provider.scope_ExtensionFieldNotationNameSource_extension(s, reference);
     assertThat(descriptionsIn(scope), containAll("google.proto.test.fileopt", ".google.proto.test.fileopt"));
   }

@@ -21,17 +21,15 @@ public class OptionFields {
 
   /**
    * Returns the field the given option field is referring to.
-   * @param fieldSource the given option field.
+   * @param field the given option field.
    * @return the field the given option field is referring to, or {@code null} if one cannot be found.
    */
-  public IndexedElement sourceOf(OptionFieldSource fieldSource) {
-    if (fieldSource instanceof OptionMessageFieldSource) {
-      OptionMessageFieldSource source = (OptionMessageFieldSource) fieldSource;
-      return source.getOptionMessageField();
+  public IndexedElement sourceOf(OptionField field) {
+    if (field instanceof MessageOptionField) {
+      return ((MessageOptionField) field).getTarget();
     }
-    if (fieldSource instanceof OptionExtendMessageFieldSource) {
-      OptionExtendMessageFieldSource source = (OptionExtendMessageFieldSource) fieldSource;
-      return source.getOptionExtendMessageField();
+    if (field instanceof ExtensionOptionField) {
+      return ((ExtensionOptionField) field).getTarget();
     }
     return null;
   }
