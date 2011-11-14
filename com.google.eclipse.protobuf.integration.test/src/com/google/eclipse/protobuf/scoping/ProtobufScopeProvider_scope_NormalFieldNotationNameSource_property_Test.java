@@ -58,7 +58,7 @@ public class ProtobufScopeProvider_scope_NormalFieldNotationNameSource_property_
   // option (type) = {
   //   code: 68
   // };
-  @Test public void should_provide_property_if_container_is_CustomOption() {
+  @Test public void should_provide_sources_for_field_notation_in_option() {
     FieldNotation notation = xtext.find("code", ":", FieldNotation.class);
     NormalFieldNotationNameSource s = (NormalFieldNotationNameSource) notation.getName();
     IScope scope = provider.scope_NormalFieldNotationNameSource_property(s, reference);
@@ -86,7 +86,58 @@ public class ProtobufScopeProvider_scope_NormalFieldNotationNameSource_property_
   // option (type) = {
   //   name { value: 'Address' }
   // };
-  @Test public void should_provide_property_if_notation_is_nested() {
+  @Test public void should_provide_sources_for_nested_field_notation_in_option() {
+    FieldNotation notation = xtext.find("value", ":", FieldNotation.class);
+    NormalFieldNotationNameSource s = (NormalFieldNotationNameSource) notation.getName();
+    IScope scope = provider.scope_NormalFieldNotationNameSource_property(s, reference);
+    Message message = xtext.find("Names", " {", Message.class);
+    assertThat(descriptionsIn(scope), containAllFieldsIn(message));
+  }
+
+  // syntax = "proto2";
+  //
+  // import "google/protobuf/descriptor.proto";
+  //
+  // message Type {
+  //   optional int32 code = 1;
+  // }
+  //
+  // extend google.protobuf.FieldOptions {
+  //   optional Type type = 15478479;
+  // }
+  // 
+  // message Address {
+  //   optional int target = 1 [(type) = { code: 68 }];
+  // }
+  @Test public void should_provide_sources_for_field_notation_in_field_option() {
+    FieldNotation notation = xtext.find("code", ":", FieldNotation.class);
+    NormalFieldNotationNameSource s = (NormalFieldNotationNameSource) notation.getName();
+    IScope scope = provider.scope_NormalFieldNotationNameSource_property(s, reference);
+    Message message = xtext.find("Type", " {", Message.class);
+    assertThat(descriptionsIn(scope), containAllFieldsIn(message));
+  }
+
+  // syntax = "proto2";
+  //
+  // import "google/protobuf/descriptor.proto";
+  //
+  // message Type {
+  //   optional int32 code = 1;
+  //   optional Names name = 2;
+  // }
+  //
+  // message Names {
+  //   optional string value = 1;
+  // }
+  //
+  // extend google.protobuf.FieldOptions {
+  //   optional Type type = 15478479;
+  // }
+  // 
+  // message Address {
+  //   optional int target = 1 [(type) = { name: { value: 'Address' } }];
+  // }
+  @Test public void should_provide_sources_for_nested_field_notation_in_field_option() {
     FieldNotation notation = xtext.find("value", ":", FieldNotation.class);
     NormalFieldNotationNameSource s = (NormalFieldNotationNameSource) notation.getName();
     IScope scope = provider.scope_NormalFieldNotationNameSource_property(s, reference);

@@ -24,12 +24,12 @@ class ContainAllFieldsInMessage extends BaseMatcher<IEObjectDescriptions> {
 
   private final EObject container;
 
-  static ContainAllFieldsInMessage containAllFieldsIn(Group group) {
-    return new ContainAllFieldsInMessage(group);
+  static ContainAllFieldsInMessage containAllFieldsIn(Group g) {
+    return new ContainAllFieldsInMessage(g);
   }
 
-  static ContainAllFieldsInMessage containAllFieldsIn(Message message) {
-    return new ContainAllFieldsInMessage(message);
+  static ContainAllFieldsInMessage containAllFieldsIn(Message m) {
+    return new ContainAllFieldsInMessage(m);
   }
 
   private ContainAllFieldsInMessage(EObject container) {
