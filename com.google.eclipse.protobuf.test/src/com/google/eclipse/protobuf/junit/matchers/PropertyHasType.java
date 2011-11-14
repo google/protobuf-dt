@@ -42,13 +42,13 @@ public class PropertyHasType extends BaseMatcher<Property> {
   }
 
   private String typeNameOf(Property property) {
-    AbstractTypeRef r = property.getType();
-    if (r instanceof ScalarTypeRef) return ((ScalarTypeRef) r).getScalar().getName();
-    if (r instanceof ComplexTypeLink) {
-      ComplexType type = ((ComplexTypeLink) r).getTarget();
+    TypeLink link = property.getType();
+    if (link instanceof ScalarTypeLink) return ((ScalarTypeLink) link).getTarget().getName();
+    if (link instanceof ComplexTypeLink) {
+      ComplexType type = ((ComplexTypeLink) link).getTarget();
       return type == null ? null : type.getName();
     }
-    return r.toString();
+    return link.toString();
   }
 
   @Override public void describeTo(Description description) {

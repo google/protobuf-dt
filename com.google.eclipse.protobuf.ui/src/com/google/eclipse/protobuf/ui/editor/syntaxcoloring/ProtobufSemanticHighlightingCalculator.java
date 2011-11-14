@@ -11,6 +11,7 @@ package com.google.eclipse.protobuf.ui.editor.syntaxcoloring;
 
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
 import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.HighlightingConfiguration.*;
+import static org.eclipse.xtext.ui.editor.syntaxcoloring.DefaultHighlightingConfiguration.*;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.*;
@@ -150,9 +151,9 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
   }
 
   private void highlightPropertyType(Property property, IHighlightedPositionAcceptor acceptor) {
-    AbstractTypeRef ref = property.getType();
-    if (!(ref instanceof ComplexTypeLink)) return;
-    ComplexType type = ((ComplexTypeLink) ref).getTarget();
+    TypeLink link = property.getType();
+    if (!(link instanceof ComplexTypeLink)) return;
+    ComplexType type = ((ComplexTypeLink) link).getTarget();
     if (type instanceof Message) {
       highlightFirstFeature(property, PROPERTY__TYPE, acceptor, MESSAGE_ID);
       return;

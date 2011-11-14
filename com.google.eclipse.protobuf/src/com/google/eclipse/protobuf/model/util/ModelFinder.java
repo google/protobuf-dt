@@ -86,9 +86,9 @@ public class ModelFinder {
    * @return the type of the given property.
    */
   public ComplexType typeOf(Property p) {
-    AbstractTypeRef r = p.getType();
-    if (!(r instanceof ComplexTypeLink)) return null;
-    return ((ComplexTypeLink) r).getTarget();
+    TypeLink link = p.getType();
+    if (!(link instanceof ComplexTypeLink)) return null;
+    return ((ComplexTypeLink) link).getTarget();
   }
 
   /**
@@ -97,9 +97,9 @@ public class ModelFinder {
    * @return the scalar type of the given property or {@code null} if the type of the given property is not a scalar.
    */
   public ScalarType scalarTypeOf(Property p) {
-    AbstractTypeRef aTypeRef = (p).getType();
-    if (aTypeRef instanceof ScalarTypeRef)
-      return ((ScalarTypeRef) aTypeRef).getScalar();
+    TypeLink link = (p).getType();
+    if (link instanceof ScalarTypeLink)
+      return ((ScalarTypeLink) link).getTarget();
     return null;
   }
 

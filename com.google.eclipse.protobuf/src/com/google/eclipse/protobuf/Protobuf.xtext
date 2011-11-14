@@ -68,7 +68,7 @@ GroupElement:
   Option | Property | Group | Enum | MessageExtension;
 
 Property:
-  modifier=Modifier type=AbstractTypeRef name=Name '=' index=(LONG | HEX)
+  modifier=Modifier type=TypeLink name=Name '=' index=(LONG | HEX)
   ('[' fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)* ']')? (';')+;
 
 enum Modifier:
@@ -76,11 +76,11 @@ enum Modifier:
   | optional
   | repeated;
 
-AbstractTypeRef:
-  ScalarTypeRef | ComplexTypeLink;
+TypeLink:
+  ScalarTypeLink | ComplexTypeLink;
 
-ScalarTypeRef:
-  scalar=ScalarType;
+ScalarTypeLink:
+  target=ScalarType;
 
 enum ScalarType:
   double | float | int32 | int64 | uint32 | uint64 | sint32 | sint64 | fixed32 | fixed64 | sfixed32 | sfixed64 | bool |
