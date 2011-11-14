@@ -50,14 +50,14 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   public IScope scope_ComplexTypeLink_target(ComplexTypeLink link, EReference r) {
     EObject c = link.eContainer();
     if (c instanceof MessageField) {
-      return createScope(findTypeScope(c));
+      return createScope(findScope((MessageField) c));
     }
     Set<IEObjectDescription> descriptions = emptySet();
     return createScope(descriptions);
   }
   
-  @Override public Collection<IEObjectDescription> findTypeScope(EObject o) {
-    return astWalker.traverseAst(o, typeScopeFinder, ComplexType.class);
+  @Override public Collection<IEObjectDescription> findScope(MessageField field) {
+    return astWalker.traverseAst(field, typeScopeFinder, ComplexType.class);
   }
 
   @SuppressWarnings("unused")
@@ -102,8 +102,8 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   }
   
   @SuppressWarnings("unused")
-  public IScope scope_OptionSource_target(OptionSource s, EReference r) {
-    EObject c = s.eContainer();
+  public IScope scope_OptionSource_target(OptionSource source, EReference r) {
+    EObject c = source.eContainer();
     if (c instanceof NativeOption) {
       NativeOption option = (NativeOption) c;
       return createScope(nativeOptionDescriptions.properties(option));
@@ -175,17 +175,12 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   }
   
   @SuppressWarnings("unused") 
-  public IScope scope_NormalFieldNotationNameSource_property(NormalFieldNotationNameSource s, EReference r) {
-    return findScope(s);
+  public IScope scope_FieldName_target(FieldName name, EReference r) {
+    return findScope(name);
   }
 
-  @SuppressWarnings("unused") 
-  public IScope scope_ExtensionFieldNotationNameSource_extension(ExtensionFieldNotationNameSource s, EReference r) {
-    return findScope(s);
-  }
-
-  private IScope findScope(FieldNotationNameSource s) {
-    return createScope(fieldNotationScopeFinder.sourceOf(s));
+  private IScope findScope(FieldName name) {
+    return createScope(fieldNotationScopeFinder.sourceOf(name));
   }
   
   private static IScope createScope(Iterable<IEObjectDescription> descriptions) {

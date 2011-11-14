@@ -169,31 +169,31 @@ IndexedElement:
   MessageField | Group;
 
 Value:
-  AggregateValue | SimpleValueLink;
+  ComplexValue | SimpleValueLink;
 
 // { foo: 1, bar: 2 }
-AggregateValue:
+ComplexValue:
   '{'
-  fields+=AggregateField ((',')? fields+=AggregateField)*
+  fields+=ValueField ((',')? fields+=ValueField)*
   '}';
 
-AggregateField:
+ValueField:
   SimpleFieldNotation | ComplexFieldNotation;
 
 SimpleFieldNotation:
-  name=FieldNotationNameSource ':' value=SimpleValueLink;
+  name=FieldName ':' value=SimpleValueLink;
 
 ComplexFieldNotation:
-  name=FieldNotationNameSource ':'? values=AggregateValue;
+  name=FieldName ':'? values=ComplexValue;
 
-FieldNotationNameSource:
-  NormalFieldNotationNameSource | ExtensionFieldNotationNameSource;
+FieldName:
+  NormalFieldName | ExtensionFieldName;
 
-NormalFieldNotationNameSource:
-  property=[MessageField];
+NormalFieldName:
+  target=[MessageField];
 
-ExtensionFieldNotationNameSource:
-  '[' extension=[MessageField|QualifiedName] ']';
+ExtensionFieldName:
+  '[' target=[MessageField|QualifiedName] ']';
 
 SimpleValueLink:
   LiteralLink | BooleanLink | NumberLink | StringLink;

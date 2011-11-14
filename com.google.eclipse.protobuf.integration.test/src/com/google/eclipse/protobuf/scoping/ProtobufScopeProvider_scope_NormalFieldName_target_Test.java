@@ -23,11 +23,11 @@ import org.eclipse.xtext.scoping.IScope;
 import org.junit.*;
 
 /**
- * Tests for <code>{@link ProtobufScopeProvider#scope_NormalFieldNotationNameSource_property(NormalFieldNotationNameSource, EReference)}</code>
+ * Tests for <code>{@link ProtobufScopeProvider#scope_FieldName_target(FieldName, EReference)}</code>
  * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ProtobufScopeProvider_scope_NormalFieldNotationNameSource_property_Test {
+public class ProtobufScopeProvider_scope_NormalFieldName_target_Test {
 
   private static EReference reference;
 
@@ -59,9 +59,9 @@ public class ProtobufScopeProvider_scope_NormalFieldNotationNameSource_property_
   //   code: 68
   // };
   @Test public void should_provide_sources_for_aggregate_field() {
-    AggregateField field = xtext.find("code", ":", AggregateField.class);
-    NormalFieldNotationNameSource s = (NormalFieldNotationNameSource) field.getName();
-    IScope scope = provider.scope_NormalFieldNotationNameSource_property(s, reference);
+    ValueField field = xtext.find("code", ":", ValueField.class);
+    NormalFieldName name = (NormalFieldName) field.getName();
+    IScope scope = provider.scope_FieldName_target(name, reference);
     Message message = xtext.find("Type", " {", Message.class);
     assertThat(descriptionsIn(scope), containAllFieldsIn(message));
   }
@@ -87,9 +87,9 @@ public class ProtobufScopeProvider_scope_NormalFieldNotationNameSource_property_
   //   name { value: 'Address' }
   // };
   @Test public void should_provide_sources_for_nested_field_notation_in_option() {
-    AggregateField field = xtext.find("value", ":", AggregateField.class);
-    NormalFieldNotationNameSource s = (NormalFieldNotationNameSource) field.getName();
-    IScope scope = provider.scope_NormalFieldNotationNameSource_property(s, reference);
+    ValueField field = xtext.find("value", ":", ValueField.class);
+    NormalFieldName name = (NormalFieldName) field.getName();
+    IScope scope = provider.scope_FieldName_target(name, reference);
     Message message = xtext.find("Names", " {", Message.class);
     assertThat(descriptionsIn(scope), containAllFieldsIn(message));
   }
@@ -110,9 +110,9 @@ public class ProtobufScopeProvider_scope_NormalFieldNotationNameSource_property_
   //   optional int target = 1 [(type) = { code: 68 }];
   // }
   @Test public void should_provide_sources_for_field_notation_in_field_option() {
-    AggregateField field = xtext.find("code", ":", AggregateField.class);
-    NormalFieldNotationNameSource s = (NormalFieldNotationNameSource) field.getName();
-    IScope scope = provider.scope_NormalFieldNotationNameSource_property(s, reference);
+    ValueField field = xtext.find("code", ":", ValueField.class);
+    NormalFieldName name = (NormalFieldName) field.getName();
+    IScope scope = provider.scope_FieldName_target(name, reference);
     Message message = xtext.find("Type", " {", Message.class);
     assertThat(descriptionsIn(scope), containAllFieldsIn(message));
   }
@@ -138,9 +138,9 @@ public class ProtobufScopeProvider_scope_NormalFieldNotationNameSource_property_
   //   optional int target = 1 [(type) = { name: { value: 'Address' } }];
   // }
   @Test public void should_provide_sources_for_nested_field_notation_in_field_option() {
-    AggregateField field = xtext.find("value", ":", AggregateField.class);
-    NormalFieldNotationNameSource s = (NormalFieldNotationNameSource) field.getName();
-    IScope scope = provider.scope_NormalFieldNotationNameSource_property(s, reference);
+    ValueField field = xtext.find("value", ":", ValueField.class);
+    NormalFieldName name = (NormalFieldName) field.getName();
+    IScope scope = provider.scope_FieldName_target(name, reference);
     Message message = xtext.find("Names", " {", Message.class);
     assertThat(descriptionsIn(scope), containAllFieldsIn(message));
   }

@@ -23,11 +23,11 @@ import org.eclipse.xtext.scoping.IScope;
 import org.junit.*;
 
 /**
- * Tests for <code>{@link ProtobufScopeProvider#scope_ExtensionFieldNotationNameSource_extension(ExtensionFieldNotationNameSource, EReference)}</code>.
+ * Tests for <code>{@link ProtobufScopeProvider#scope_FieldName_target(FieldName, EReference)}</code>.
  * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ProtobufScopeProvider_scope_ExtensionFieldNotationNameSource_extension_Test {
+public class ProtobufScopeProvider_scope_ExtensionFieldName_target_Test {
 
   private static EReference reference;
 
@@ -66,9 +66,9 @@ public class ProtobufScopeProvider_scope_ExtensionFieldNotationNameSource_extens
   //   }
   // };
   @Test public void should_provide_sources_for_aggregate_field() {
-    AggregateField field = xtext.find("google.proto.test.fileopt", "]", AggregateField.class);
-    ExtensionFieldNotationNameSource s = (ExtensionFieldNotationNameSource) field.getName();
-    IScope scope = provider.scope_ExtensionFieldNotationNameSource_extension(s, reference);
+    ValueField field = xtext.find("google.proto.test.fileopt", "]", ValueField.class);
+    ExtensionFieldName name = (ExtensionFieldName) field.getName();
+    IScope scope = provider.scope_FieldName_target(name, reference);
     assertThat(descriptionsIn(scope), containAll("google.proto.test.fileopt", ".google.proto.test.fileopt"));
   }
 }

@@ -30,21 +30,21 @@ class FieldNotationScopeFinder {
   @Inject private ModelFinder modelFinder;
   @Inject private QualifiedNameDescriptions qualifiedNameDescriptions;
 
-  Collection<IEObjectDescription> sourceOf(FieldNotationNameSource s) {
-    EObject container = s.eContainer();
-    if (!(container instanceof AggregateField)) return emptySet();
-    MessageField field = sourceOf((AggregateField) container);
+  Collection<IEObjectDescription> sourceOf(FieldName name) {
+    EObject container = name.eContainer();
+    if (!(container instanceof ValueField)) return emptySet();
+    MessageField field = sourceOf((ValueField) container);
     if (field == null) return emptySet();
-    if (s instanceof NormalFieldNotationNameSource) {
+    if (name instanceof NormalFieldName) {
       return propertiesInTypeOf(field);
     }
     return propertiesInExtendMessageOf(field);
   }
   
-  private MessageField sourceOf(AggregateField field) {
+  private MessageField sourceOf(ValueField field) {
     EObject container = field.eContainer();
     IndexedElement source = null;
-    if (container instanceof AggregateValue) {
+    if (container instanceof ComplexValue) {
       container = container.eContainer();
       if (container instanceof CustomOption) {
         CustomOption option = (CustomOption) container;
@@ -63,16 +63,8 @@ class FieldNotationScopeFinder {
   }
 
   private MessageField sourceOf(ComplexFieldNotation n) {
-    FieldNotationNameSource s = n.getName();
-    if (s instanceof NormalFieldNotationNameSource) {
-      NormalFieldNotationNameSource normal = (NormalFieldNotationNameSource) s;
-      return normal.getProperty();
-    }
-    if (s instanceof ExtensionFieldNotationNameSource) {
-      ExtensionFieldNotationNameSource normal = (ExtensionFieldNotationNameSource) s;
-      return normal.getExtension();
-    }
-    return null;
+    FieldName name = n.getName();
+    return (name == null) ? null : name.getTarget();
   }
   
   private Collection<IEObjectDescription> propertiesInTypeOf(MessageField field) {

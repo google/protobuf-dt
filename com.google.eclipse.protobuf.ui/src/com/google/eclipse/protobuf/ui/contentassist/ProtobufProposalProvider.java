@@ -33,7 +33,6 @@ import org.eclipse.xtext.ui.editor.contentassist.*;
 
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.model.util.Fields;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.scoping.*;
@@ -85,7 +84,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeMessageLink_Target(EObject model, Assignment assignment, ContentAssistContext context, 
       ICompletionProposalAcceptor acceptor) {
-    Collection<IEObjectDescription> scope = scoping().findTypeScope(model);
+    if (!(model instanceof MessageField)) return;
+    Collection<IEObjectDescription> scope = scoping().findScope((MessageField) model);
     for (IEObjectDescription d : descriptionChooser.shortestQualifiedNamesIn(scope)) {
       Image image = imageHelper.getImage(images.imageFor(d.getEObjectOrProxy()));
       proposeAndAccept(d, image, context, acceptor);

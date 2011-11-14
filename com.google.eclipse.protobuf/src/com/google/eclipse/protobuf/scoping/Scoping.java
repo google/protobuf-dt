@@ -20,17 +20,18 @@ import java.util.Collection;
  */
 public interface Scoping {
 
-  Collection<IEObjectDescription> findScope(CustomOption option);
-
-  Collection<IEObjectDescription> findScope(CustomFieldOption option);
-
-  Collection<IEObjectDescription> findScope(OptionField field);
+  // TODO redo this interface taking same parameters as ProtobufScopeProvider
+  Collection<IEObjectDescription> findFieldScope(CustomFieldOption option);
 
   Collection<IEObjectDescription> findFieldScope(CustomOption option);
 
-  Collection<IEObjectDescription> findFieldScope(CustomFieldOption option);
-
-  Collection<IEObjectDescription> findTypeScope(EObject o);
-
   Collection<IEObjectDescription> findMessageScope(EObject o);
+
+  Collection<IEObjectDescription> findScope(CustomFieldOption option);
+
+  Collection<IEObjectDescription> findScope(CustomOption option);
+
+  Collection<IEObjectDescription> findScope(MessageField o);
+
+  Collection<IEObjectDescription> findScope(OptionField field);
 }
