@@ -20,7 +20,7 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link ModelFinder#messageFrom(Extend)}</code>.
+ * Tests for <code>{@link ModelFinder#messageFrom(MessageExtension)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
@@ -42,13 +42,13 @@ public class ModelFinder_messageFrom_Test {
   //
   // extend Person {}
   @Test public void should_return_message_from_extension() {
-    Extend extension = xtext.find("Person", " {}", Extend.class);
+    MessageExtension extension = xtext.find("Person", " {}", MessageExtension.class);
     Message message = finder.messageFrom(extension);
     assertThat(message.getName(), equalTo("Person"));
   }
 
   @Test public void should_return_null_if_extension_is_not_referring_to_message() {
-    Extend extension = mock(Extend.class);
+    MessageExtension extension = mock(MessageExtension.class);
     when(extension.getMessage()).thenReturn(null);
     assertNull(finder.messageFrom(extension));
   }

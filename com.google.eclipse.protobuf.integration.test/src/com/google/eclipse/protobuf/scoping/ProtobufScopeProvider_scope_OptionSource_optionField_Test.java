@@ -96,7 +96,6 @@ public class ProtobufScopeProvider_scope_OptionSource_optionField_Test {
 
   // // Create file custom-options.proto
   // syntax = "proto2";
-  //
   // package test.proto;
   //
   // import "google/protobuf/descriptor.proto";
@@ -106,6 +105,7 @@ public class ProtobufScopeProvider_scope_OptionSource_optionField_Test {
   //   optional int32 info = 1002;
   // }
 
+  // syntax = "proto2";
   // package com.google.proto;
   //
   // import 'custom-options.proto';
@@ -120,7 +120,6 @@ public class ProtobufScopeProvider_scope_OptionSource_optionField_Test {
 
   // // Create file custom-options.proto
   // syntax = "proto2";
-  //
   // package com.google.proto;
   //
   // import "google/protobuf/descriptor.proto";
@@ -130,6 +129,7 @@ public class ProtobufScopeProvider_scope_OptionSource_optionField_Test {
   //   optional int32 info = 1002;
   // }
 
+  // syntax = "proto2";
   // package com.google.proto;
   //
   // import 'custom-options.proto';
@@ -144,6 +144,7 @@ public class ProtobufScopeProvider_scope_OptionSource_optionField_Test {
                                                  ".com.google.proto.info"));
   }
 
+  // syntax = "proto2";
   // package com.google.proto;
   // import 'google/protobuf/descriptor.proto';
   //

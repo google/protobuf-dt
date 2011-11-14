@@ -38,8 +38,8 @@ class CustomOptionScopeFinder implements ScopeFinder {
     OptionType optionType = optionTypeFrom(criteria);
     if (!isExtendingOptionMessage(target, optionType)) return emptySet();
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
-    Extend extend = (Extend) target;
-    for (MessageElement e : extend.getElements()) {
+    MessageExtension extension = (MessageExtension) target;
+    for (MessageElement e : extension.getElements()) {
       descriptions.addAll(qualifiedNamesDescriptions.qualifiedNamesForOption(e));
     }
     return descriptions;
@@ -49,8 +49,8 @@ class CustomOptionScopeFinder implements ScopeFinder {
     OptionType optionType = optionTypeFrom(criteria);
     if (!isExtendingOptionMessage(target, optionType)) return emptySet();
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
-    Extend extend = (Extend) target;
-    for (MessageElement e : extend.getElements()) {
+    MessageExtension extension = (MessageExtension) target;
+    for (MessageElement e : extension.getElements()) {
       List<QualifiedName> names = localNamesProvider.namesForOption(e);
       int nameCount = names.size();
       for (int i = level; i < nameCount; i++) {
@@ -68,8 +68,8 @@ class CustomOptionScopeFinder implements ScopeFinder {
   }
 
   private boolean isExtendingOptionMessage(Object o, OptionType optionType) {
-    if (!(o instanceof Extend)) return false;
-    Message message = modelFinder.messageFrom((Extend) o);
+    if (!(o instanceof MessageExtension)) return false;
+    Message message = modelFinder.messageFrom((MessageExtension) o);
     if (message == null) return false;
     return optionType.messageName().equals(message.getName());
   }

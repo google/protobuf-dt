@@ -119,8 +119,8 @@ class CustomOptionFieldScopeFinder {
       Message propertyType = modelFinder.messageTypeOf((Property) e);
       if (propertyType == null) return emptyList();
       Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
-      for (Extend extend : modelFinder.localExtensionsOf(propertyType)) {
-        for (MessageElement element : extend.getElements()) {
+      for (MessageExtension extension : modelFinder.localExtensionsOf(propertyType)) {
+        for (MessageElement element : extension.getElements()) {
           if (!(element instanceof IndexedElement)) continue;
           IndexedElement current = (IndexedElement) element;
           descriptions.addAll(qualifiedNameDescriptions.qualifiedNamesForOption(current));

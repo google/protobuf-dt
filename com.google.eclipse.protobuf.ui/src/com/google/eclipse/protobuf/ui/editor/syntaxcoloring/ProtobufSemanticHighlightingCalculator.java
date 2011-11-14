@@ -11,6 +11,7 @@ package com.google.eclipse.protobuf.ui.editor.syntaxcoloring;
 
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
 import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.HighlightingConfiguration.*;
+import static org.eclipse.xtext.ui.editor.syntaxcoloring.DefaultHighlightingConfiguration.*;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.*;
@@ -55,8 +56,8 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
         highlight((ComplexType) element, acceptor);
         continue;
       }
-      if (element instanceof Extend) {
-        highlight((Extend) element, acceptor);
+      if (element instanceof MessageExtension) {
+        highlight((MessageExtension) element, acceptor);
         continue;
       }
       if (element instanceof Service) {
@@ -65,9 +66,9 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
     }
   }
 
-  private void highlight(Extend extend, IHighlightedPositionAcceptor acceptor) {
-    highlightFirstFeature(extend, EXTEND_MESSAGE__MESSAGE, acceptor, MESSAGE_ID);
-    for (MessageElement element : extend.getElements()) {
+  private void highlight(MessageExtension extension, IHighlightedPositionAcceptor acceptor) {
+    highlightFirstFeature(extension, MESSAGE_EXTENSION__MESSAGE, acceptor, MESSAGE_ID);
+    for (MessageElement element : extension.getElements()) {
       highlight(element, acceptor);
     }
   }
@@ -102,8 +103,8 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
       highlight((ComplexType) element, acceptor);
       return;
     }
-    if (element instanceof Extend) {
-      highlight((Extend) element, acceptor);
+    if (element instanceof MessageExtension) {
+      highlight((MessageExtension) element, acceptor);
     }
   }
 

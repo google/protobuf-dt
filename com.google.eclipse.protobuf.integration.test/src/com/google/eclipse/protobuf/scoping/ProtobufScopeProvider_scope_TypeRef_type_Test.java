@@ -44,7 +44,6 @@ public class ProtobufScopeProvider_scope_TypeRef_type_Test {
   }
 
   // syntax = "proto2";
-  //
   // package com.google.proto;
   //
   // enum Type {
@@ -75,6 +74,7 @@ public class ProtobufScopeProvider_scope_TypeRef_type_Test {
 
   // // Create file types.proto
   //
+  // syntax = "proto2";
   // package test.proto;
   //
   // enum Type {
@@ -89,6 +89,7 @@ public class ProtobufScopeProvider_scope_TypeRef_type_Test {
   //   optional int32 zipCode = 4;
   // }
 
+  // syntax = "proto2";
   // package com.google.proto;
   //
   // import "types.proto";
@@ -107,6 +108,7 @@ public class ProtobufScopeProvider_scope_TypeRef_type_Test {
 
   // // Create file types.proto
   //
+  // syntax = "proto2";
   // package com.google.proto;
   //
   // enum Type {
@@ -121,6 +123,7 @@ public class ProtobufScopeProvider_scope_TypeRef_type_Test {
   //   optional int32 zipCode = 4;
   // }
 
+  // syntax = "proto2";
   // package com.google.proto;
   //
   // import "types.proto";
@@ -141,6 +144,7 @@ public class ProtobufScopeProvider_scope_TypeRef_type_Test {
 
   // // Create file types.proto
   //
+  // syntax = "proto2";
   // package test.proto;
   //
   // enum Type {
@@ -155,6 +159,7 @@ public class ProtobufScopeProvider_scope_TypeRef_type_Test {
   //   optional int32 zipCode = 4;
   // }
 
+  // syntax = "proto2";
   // package com.google.proto;
   //
   // import public "types.proto";
@@ -173,6 +178,7 @@ public class ProtobufScopeProvider_scope_TypeRef_type_Test {
 
   // // Create file public-types.proto
   //
+  // syntax = "proto2";
   // package test.proto;
   //
   // enum Type {
@@ -189,10 +195,12 @@ public class ProtobufScopeProvider_scope_TypeRef_type_Test {
 
   // // Create file types.proto
   //
+  // syntax = "proto2";
   // package com.google.proto;
   //
   // import public "public-types.proto";
 
+  // syntax = "proto2";
   // package com.google.proto;
   //
   // import "types.proto";

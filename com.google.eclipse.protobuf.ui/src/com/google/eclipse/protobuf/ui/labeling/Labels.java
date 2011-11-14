@@ -38,8 +38,8 @@ import com.google.inject.*;
       Option option = (Option) o;
       return labelFor(option);
     }
-    if (o instanceof Extend) {
-      Extend extend = (Extend) o;
+    if (o instanceof MessageExtension) {
+      MessageExtension extend = (MessageExtension) o;
       return labelFor(extend);
     }
     if (o instanceof Extensions) {
@@ -98,7 +98,7 @@ import com.google.inject.*;
     }
   }
 
-  private Object labelFor(Extend e) {
+  private Object labelFor(MessageExtension e) {
     return messageName(e.getMessage());
   }
 

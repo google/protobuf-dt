@@ -11,14 +11,14 @@ package com.google.eclipse.protobuf.scoping;
 import static java.util.Collections.emptySet;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.inject.*;
+import java.util.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
-import java.util.*;
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.inject.Inject;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -91,9 +91,8 @@ class FieldNotationScopeFinder {
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     Message propertyType = modelFinder.messageTypeOf(p);
     // check first in descriptor.proto
-    
-    for (Extend extend : modelFinder.extensionsOf(propertyType, modelFinder.rootOf(p))) {
-      for (MessageElement element : extend.getElements()) {
+    for (MessageExtension extension : modelFinder.extensionsOf(propertyType, modelFinder.rootOf(p))) {
+      for (MessageElement element : extension.getElements()) {
         if (!(element instanceof Property)) continue;
         descriptions.addAll(qualifiedNameDescriptions.qualifiedNames(element));
       }

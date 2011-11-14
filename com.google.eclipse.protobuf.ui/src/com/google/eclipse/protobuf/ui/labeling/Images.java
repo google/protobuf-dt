@@ -41,7 +41,7 @@ public class Images {
   private static final Map<Class<?>, String> IMAGES_BY_TYPE = new HashMap<Class<?>, String>();
   static {
     IMAGES_BY_TYPE.put(Enum.class, "enum.gif");
-    IMAGES_BY_TYPE.put(Extend.class, "extend.gif");
+    IMAGES_BY_TYPE.put(MessageExtension.class, "extend.gif");
     IMAGES_BY_TYPE.put(Extensions.class, "extensions.gif");
     IMAGES_BY_TYPE.put(Group.class, "group.gif");
     IMAGES_BY_TYPE.put(Import.class, "import.gif");
