@@ -21,15 +21,15 @@ Syntax:
   'syntax' '=' name=STRING ';';
 
 ProtobufElement:
-  Package | Import | Option | Type | ExtendMessage | Service;
+  Package | Import | Option | ComplexType | ExtendMessage | Service;
 
 Package:
   'package' name=QualifiedName ';';
 
 Import:
-  RegularImport | PublicImport;
+  NormalImport | PublicImport;
 
-RegularImport:
+NormalImport:
   'import' importURI=STRING ';';
 
 PublicImport:
@@ -38,7 +38,7 @@ PublicImport:
 QualifiedName:
   '.'? Name ('.' Name)*;
 
-Type:
+ComplexType:
   Message | Enum | Group;
 
 Message:
@@ -47,7 +47,7 @@ Message:
   '}' (';')?;
 
 MessageElement:
-  Option | Extensions | Type | Property | ExtendMessage;
+  Option | Extensions | ComplexType | Property | ExtendMessage;
 
 Extensions:
   'extensions' ranges+=Range (',' ranges+=Range)* ';';
@@ -87,7 +87,7 @@ enum ScalarType:
   string | bytes;
 
 TypeRef:
-  type=[Type|QualifiedName];
+  type=[ComplexType|QualifiedName];
 
 ValueRef:
   MessageNotation | SimpleRef;

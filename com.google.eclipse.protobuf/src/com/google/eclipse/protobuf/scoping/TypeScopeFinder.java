@@ -33,7 +33,7 @@ class TypeScopeFinder implements ScopeFinder {
   @Override public Collection<IEObjectDescription> fromProtoDescriptor(Import anImport, Object criteria) {
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     ProtoDescriptor descriptor = descriptorProvider.descriptor(anImport.getImportURI());
-    for (Type type : descriptor.allTypes()) {
+    for (ComplexType type : descriptor.allTypes()) {
       if (!isInstance(type, criteria)) continue;
       descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(type));
     }

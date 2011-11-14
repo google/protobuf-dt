@@ -87,7 +87,7 @@ public class Properties {
     AbstractTypeRef r = p.getType();
     if (r instanceof ScalarTypeRef) return ((ScalarTypeRef) r).getScalar().getName();
     if (r instanceof TypeRef) {
-      Type type = ((TypeRef) r).getType();
+      ComplexType type = ((TypeRef) r).getType();
       return type == null ? null : type.getName();
     }
     return r.toString();

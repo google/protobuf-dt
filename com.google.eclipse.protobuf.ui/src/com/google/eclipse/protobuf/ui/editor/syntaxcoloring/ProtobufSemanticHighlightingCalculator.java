@@ -51,8 +51,8 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
         highlight((Option) element, acceptor);
         continue;
       }
-      if (element instanceof Type) {
-        highlight((Type) element, acceptor);
+      if (element instanceof ComplexType) {
+        highlight((ComplexType) element, acceptor);
         continue;
       }
       if (element instanceof ExtendMessage) {
@@ -72,7 +72,7 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
     }
   }
 
-  private void highlight(Type type, IHighlightedPositionAcceptor acceptor) {
+  private void highlight(ComplexType type, IHighlightedPositionAcceptor acceptor) {
     if (type instanceof Message) {
       highlight((Message) type, acceptor);
       return;
@@ -98,8 +98,8 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
       highlight((IndexedElement) element, acceptor);
       return;
     }
-    if (element instanceof Type) {
-      highlight((Type) element, acceptor);
+    if (element instanceof ComplexType) {
+      highlight((ComplexType) element, acceptor);
       return;
     }
     if (element instanceof ExtendMessage) {
@@ -152,7 +152,7 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
   private void highlightPropertyType(Property property, IHighlightedPositionAcceptor acceptor) {
     AbstractTypeRef ref = property.getType();
     if (!(ref instanceof TypeRef)) return;
-    Type type = ((TypeRef) ref).getType();
+    ComplexType type = ((TypeRef) ref).getType();
     if (type instanceof Message) {
       highlightFirstFeature(property, PROPERTY__TYPE, acceptor, MESSAGE_ID);
       return;

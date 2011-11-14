@@ -66,7 +66,7 @@ public class ModelFinder {
    * @return the message type of the given property or {@code null} if the type of the given property is not message.
    */
   public Message messageTypeOf(Property p) {
-    Type type = typeOf(p);
+    ComplexType type = typeOf(p);
     return (type instanceof Message) ? (Message) type : null;
   }
   
@@ -76,7 +76,7 @@ public class ModelFinder {
    * @return the enum type of the given property or {@code null} if the type of the given property is not enum.
    */
   public Enum enumTypeOf(Property p) {
-    Type type = typeOf(p);
+    ComplexType type = typeOf(p);
     return (type instanceof Enum) ? (Enum) type : null;
   }
   
@@ -85,7 +85,7 @@ public class ModelFinder {
    * @param p the given property.
    * @return the type of the given property.
    */
-  public Type typeOf(Property p) {
+  public ComplexType typeOf(Property p) {
     AbstractTypeRef r = p.getType();
     if (!(r instanceof TypeRef)) return null;
     return ((TypeRef) r).getType();

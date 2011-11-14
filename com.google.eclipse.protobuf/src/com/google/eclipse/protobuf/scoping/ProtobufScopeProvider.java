@@ -57,7 +57,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   }
   
   @Override public Collection<IEObjectDescription> findTypeScope(EObject o) {
-    return astWalker.traverseAst(o, typeScopeFinder, Type.class);
+    return astWalker.traverseAst(o, typeScopeFinder, ComplexType.class);
   }
 
   @SuppressWarnings("unused")

@@ -51,7 +51,7 @@ public class ProtoDescriptor {
     }
   }
 
-  private final List<Type> allTypes = new ArrayList<Type>();
+  private final List<ComplexType> allTypes = new ArrayList<ComplexType>();
   private final Map<OptionType, Map<String, Property>> optionsByType = new HashMap<OptionType, Map<String, Property>>();
   private final Map<String, Enum> enumsByName = new HashMap<String, Enum>();
 
@@ -98,8 +98,8 @@ public class ProtoDescriptor {
   }
 
   private void initContents() {
-    allTypes.addAll(getAllContentsOfType(root, Type.class));
-    for (Type t : allTypes) {
+    allTypes.addAll(getAllContentsOfType(root, ComplexType.class));
+    for (ComplexType t : allTypes) {
       if (!(t instanceof Message)) continue;
       Message m = (Message) t;
       OptionType type = OPTION_DEFINITION_BY_NAME.get(m.getName());
@@ -175,7 +175,7 @@ public class ProtoDescriptor {
    * Returns all types in descriptor.proto.
    * @return all types in descriptor.proto.
    */
-  public List<Type> allTypes() {
+  public List<ComplexType> allTypes() {
     return unmodifiableList(allTypes);
   }
 
