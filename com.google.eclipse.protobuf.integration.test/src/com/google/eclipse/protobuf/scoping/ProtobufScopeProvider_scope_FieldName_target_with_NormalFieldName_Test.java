@@ -27,7 +27,7 @@ import org.junit.*;
  * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ProtobufScopeProvider_scope_NormalFieldName_target_Test {
+public class ProtobufScopeProvider_scope_FieldName_target_with_NormalFieldName_Test {
 
   private static EReference reference;
 
