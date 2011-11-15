@@ -25,7 +25,7 @@ class PackageIntersection {
   @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
 
   List<String> intersection(Package p1, Package p2) {
-    if (p2 == null) return null;
+    if (p1 == null || p2 == null) return emptyList();
     return intersection(converter.toQualifiedName(p1.getName()), converter.toQualifiedName(p2.getName()));
   }
 
@@ -37,12 +37,16 @@ class PackageIntersection {
     List<String> intersection = new ArrayList<String>();
     int n1Count = n1.size();
     int n2Count = n2.size();
-    boolean differenceFound = false;
+    int start = -1;
     for (int i = 0; (i < n1Count && i < n2Count); i++) {
-      String n2Segment = n2.get(i);
-      if (differenceFound || !n1.get(i).equals(n2Segment)) {
-        differenceFound = true;
-        intersection.add(n2Segment);
+      if (!n1.get(i).equals(n2.get(i))) {
+        start = i;
+        break;
+      }
+    }
+    if (start >= 0) {
+      for (int i = start; i < n2Count; i++) {
+        intersection.add(n2.get(i));
       }
     }
     if (intersection.equals(n2)) return emptyList();

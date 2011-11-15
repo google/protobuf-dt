@@ -84,6 +84,7 @@ class AstWalker {
         continue;
       }
       Resource imported = resources.importedResource(anImport, resourceSet);
+      if (imported == null) continue;
       Protobuf rootOfImported = modelFinder.rootOf(imported);
       if (rootOfImported instanceof NonProto2) continue;
       if (rootOfImported != null) {

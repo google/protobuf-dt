@@ -61,4 +61,11 @@ public class PackageIntersection_intersection_Test {
     List<String> segments = intersection.intersection(p1, p2);
     assertTrue(segments.isEmpty());
   }
+
+  @Test public void should_return_empty_list_when_packages_are_different_and_first_name_of_first_package_is_shorter() {
+    when(p1.getName()).thenReturn("proto");
+    when(p2.getName()).thenReturn("project.shared");
+    List<String> segments = intersection.intersection(p1, p2);
+    assertTrue(segments.isEmpty());
+  }
 }

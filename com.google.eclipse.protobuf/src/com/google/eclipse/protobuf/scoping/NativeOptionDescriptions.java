@@ -26,19 +26,19 @@ class NativeOptionDescriptions {
 
   @Inject private ProtoDescriptorProvider descriptorProvider;
   
-  Collection <IEObjectDescription> properties(NativeOption option) {
-    return allProperties(option);
+  Collection <IEObjectDescription> sources(NativeOption option) {
+    return allSources(option);
   }
 
-  Collection <IEObjectDescription> properties(NativeFieldOption option) {
-    return allProperties(option);
+  Collection <IEObjectDescription> sources(NativeFieldOption option) {
+    return allSources(option);
   }
 
-  private Collection <IEObjectDescription> allProperties(EObject option) {
+  private Collection <IEObjectDescription> allSources(EObject option) {
     ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
-    Collection<MessageField> fields = descriptor.availableOptionsFor(option.eContainer());
-    if (fields.isEmpty()) return emptyList();
-    return describe(fields);
+    Collection<MessageField> optionSources = descriptor.availableOptionsFor(option.eContainer());
+    if (optionSources.isEmpty()) return emptyList();
+    return describe(optionSources);
   }
 
   private Collection<IEObjectDescription> describe(Collection<MessageField> fields) {

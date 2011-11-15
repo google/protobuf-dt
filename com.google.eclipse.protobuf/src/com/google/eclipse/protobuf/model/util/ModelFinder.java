@@ -20,6 +20,7 @@ import com.google.inject.Singleton;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.resource.XtextResource;
 
 import java.util.*;
@@ -161,8 +162,11 @@ public class ModelFinder {
    */
   public Protobuf rootOf(Resource resource) {
     if (resource instanceof XtextResource) {
-      EObject root = ((XtextResource) resource).getParseResult().getRootASTElement();
-      return (Protobuf) root;
+      IParseResult parseResult = ((XtextResource) resource).getParseResult();
+      if (parseResult != null) {
+        EObject root = parseResult.getRootASTElement();
+        return (Protobuf) root;
+      }
     }
     TreeIterator<Object> contents = getAllContents(resource, true);
     if (contents.hasNext()) {

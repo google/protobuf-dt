@@ -48,9 +48,13 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
 
   @SuppressWarnings("unused")
   public IScope scope_ComplexTypeLink_target(ComplexTypeLink link, EReference r) {
-    EObject c = link.eContainer();
-    if (c instanceof MessageField) {
-      return createScope(findScope((MessageField) c));
+    try {
+      EObject c = link.eContainer();
+      if (c instanceof MessageField) {
+        return createScope(findScope((MessageField) c));
+      }
+    } catch (Throwable t) {
+      t.printStackTrace();
     }
     Set<IEObjectDescription> descriptions = emptySet();
     return createScope(descriptions);
@@ -106,11 +110,11 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     EObject c = source.eContainer();
     if (c instanceof NativeOption) {
       NativeOption option = (NativeOption) c;
-      return createScope(nativeOptionDescriptions.properties(option));
+      return createScope(nativeOptionDescriptions.sources(option));
     }
     if (c instanceof NativeFieldOption) {
       NativeFieldOption option = (NativeFieldOption) c;
-      return createScope(nativeOptionDescriptions.properties(option));
+      return createScope(nativeOptionDescriptions.sources(option));
     }
     if (c instanceof CustomOption) {
       CustomOption option = (CustomOption) c;
