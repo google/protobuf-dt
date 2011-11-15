@@ -14,6 +14,7 @@ import static org.eclipse.xtext.resource.EObjectDescription.create;
 import com.google.eclipse.protobuf.model.util.ModelFinder;
 import com.google.eclipse.protobuf.naming.LocalNamesProvider;
 import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.inject.Inject;
 
 import org.eclipse.xtext.naming.QualifiedName;
@@ -30,11 +31,7 @@ class CustomOptionScopeFinder implements ScopeFinder {
   @Inject private ModelFinder modelFinder;
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
 
-  @Override public Collection<IEObjectDescription> fromProtoDescriptor(Import anImport, Object criteria) {
-    return emptySet();
-  }
-
-  @Override public Collection<IEObjectDescription> descriptions(Object target, Object criteria) {
+  @Override public Collection<IEObjectDescription> imported(Package fromImporter, Object target, Object criteria) {
     OptionType optionType = optionTypeFrom(criteria);
     if (!isExtendingOptionMessage(target, optionType)) return emptySet();
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
@@ -45,7 +42,11 @@ class CustomOptionScopeFinder implements ScopeFinder {
     return descriptions;
   }
 
-  @Override public Collection<IEObjectDescription> descriptions(Object target, Object criteria, int level) {
+  @Override public Collection<IEObjectDescription> inDescriptor(Import anImport, Object criteria) {
+    return emptySet();
+  }
+
+  @Override public Collection<IEObjectDescription> local(Object target, Object criteria, int level) {
     OptionType optionType = optionTypeFrom(criteria);
     if (!isExtendingOptionMessage(target, optionType)) return emptySet();
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();

@@ -9,6 +9,7 @@
 package com.google.eclipse.protobuf.scoping;
 
 import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.protobuf.Package;
 
 import org.eclipse.xtext.resource.IEObjectDescription;
 
@@ -19,9 +20,9 @@ import java.util.Collection;
  */
 interface ScopeFinder {
 
-  Collection<IEObjectDescription> fromProtoDescriptor(Import anImport, Object criteria);
+  Collection<IEObjectDescription> imported(Package fromImporter, Object target, Object criteria);
 
-  Collection<IEObjectDescription> descriptions(Object target, Object criteria);
+  Collection<IEObjectDescription> inDescriptor(Import anImport, Object criteria);
 
-  Collection<IEObjectDescription> descriptions(Object target, Object criteria, int level);
+  Collection<IEObjectDescription> local(Object target, Object criteria, int level);
 }

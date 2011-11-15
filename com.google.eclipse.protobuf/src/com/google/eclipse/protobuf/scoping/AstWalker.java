@@ -60,7 +60,7 @@ class AstWalker {
   private Collection<IEObjectDescription> local(EObject start, ScopeFinder scopeFinder, Object criteria, int level) {
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     for (EObject element : start.eContents()) {
-      descriptions.addAll(scopeFinder.descriptions(element, criteria, level));
+      descriptions.addAll(scopeFinder.local(element, criteria, level));
       if (element instanceof Message) {
         descriptions.addAll(local(element, scopeFinder, criteria, level + 1));
       }
@@ -75,12 +75,12 @@ class AstWalker {
     return imported(allImports, modelFinder.packageOf(start), resourceSet, scopeFinder, criteria);
   }
 
-  private Collection<IEObjectDescription> imported(List<Import> allImports, Package aPackage,
+  private Collection<IEObjectDescription> imported(List<Import> allImports, Package fromImporter,
       ResourceSet resourceSet, ScopeFinder scopeFinder, Object criteria) {
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     for (Import anImport : allImports) {
       if (imports.isImportingDescriptor(anImport)) {
-        descriptions.addAll(scopeFinder.fromProtoDescriptor(anImport, criteria));
+        descriptions.addAll(scopeFinder.inDescriptor(anImport, criteria));
         continue;
       }
       Resource imported = resources.importedResource(anImport, resourceSet);
@@ -88,12 +88,12 @@ class AstWalker {
       if (rootOfImported instanceof NonProto2) continue;
       if (rootOfImported != null) {
         descriptions.addAll(publicImported(rootOfImported, scopeFinder, criteria));
-        if (arePackagesRelated(aPackage, rootOfImported)) {
+        if (arePackagesRelated(fromImporter, rootOfImported)) {
           descriptions.addAll(local(rootOfImported, scopeFinder, criteria));
           continue;
         }
+        descriptions.addAll(imported(fromImporter, imported, scopeFinder, criteria));
       }
-      descriptions.addAll(local(imported, scopeFinder, criteria));
     }
     return descriptions;
   }
@@ -111,12 +111,13 @@ class AstWalker {
     return packages.areRelated(aPackage, p);
   }
 
-  private Collection<IEObjectDescription> local(Resource resource, ScopeFinder scopeFinder, Object criteria) {
+  private Collection<IEObjectDescription> imported(Package fromImporter, Resource resource,
+      ScopeFinder scopeFinder, Object criteria) {
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     TreeIterator<Object> contents = getAllContents(resource, true);
     while (contents.hasNext()) {
       Object next = contents.next();
-      descriptions.addAll(scopeFinder.descriptions(next, criteria));
+      descriptions.addAll(scopeFinder.imported(fromImporter, next, criteria));
       // TODO verify that call to 'importedNamesProvider.namesOf' is not necessary
     }
     return descriptions;

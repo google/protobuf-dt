@@ -13,6 +13,7 @@ import static org.eclipse.xtext.resource.EObjectDescription.create;
 
 import com.google.eclipse.protobuf.naming.LocalNamesProvider;
 import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.inject.Inject;
 
 import org.eclipse.emf.ecore.EObject;
@@ -29,8 +30,14 @@ class TypeScopeFinder implements ScopeFinder {
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private LocalNamesProvider localNamesProvider;
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
+  
+  @Override public Collection<IEObjectDescription> imported(Package fromImporter, Object target, Object criteria) {
+    if (!isInstance(target, criteria)) return emptySet();
+    EObject e = (EObject) target;
+    return qualifiedNamesDescriptions.qualifiedNames(e);
+  }
 
-  @Override public Collection<IEObjectDescription> fromProtoDescriptor(Import anImport, Object criteria) {
+  @Override public Collection<IEObjectDescription> inDescriptor(Import anImport, Object criteria) {
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     ProtoDescriptor descriptor = descriptorProvider.descriptor(anImport.getImportURI());
     for (ComplexType type : descriptor.allTypes()) {
@@ -39,14 +46,8 @@ class TypeScopeFinder implements ScopeFinder {
     }
     return descriptions;
   }
-  
-  @Override public Collection<IEObjectDescription> descriptions(Object target, Object criteria) {
-    if (!isInstance(target, criteria)) return emptySet();
-    EObject e = (EObject) target;
-    return qualifiedNamesDescriptions.qualifiedNames(e);
-  }
 
-  @Override public Collection<IEObjectDescription> descriptions(Object target, Object criteria, int level) {
+  @Override public Collection<IEObjectDescription> local(Object target, Object criteria, int level) {
     if (!isInstance(target, criteria)) return emptySet();
     EObject e = (EObject) target;
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
