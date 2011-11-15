@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.scoping;
+package com.google.eclipse.protobuf.junit.matchers;
 
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
@@ -15,17 +15,18 @@ import java.util.*;
 import org.eclipse.emf.ecore.EObject;
 import org.hamcrest.*;
 
+import com.google.eclipse.protobuf.junit.IEObjectDescriptions;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class ContainAllLiteralsInEnum extends BaseMatcher<IEObjectDescriptions> {
+public class ContainAllLiteralsInEnum extends BaseMatcher<IEObjectDescriptions> {
 
   private final Enum anEnum;
 
-  static ContainAllLiteralsInEnum containAllLiteralsIn(Enum anEnum) {
+  public static ContainAllLiteralsInEnum containAllLiteralsIn(Enum anEnum) {
     return new ContainAllLiteralsInEnum(anEnum);
   }
   

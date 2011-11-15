@@ -32,6 +32,7 @@ class PackageIntersectionDescriptions {
 
   private final Function<EObject, String> resolver = newResolver(String.class, "name");
 
+  // See issue 161
   Collection<IEObjectDescription> intersection(Package fromImporter, Package fromImported, EObject e) {
     if (fromImporter == null || fromImported == null) return emptySet();
     return intersection(segmentNames(fromImporter), segmentNames(fromImported), e);

@@ -6,20 +6,22 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.scoping;
+package com.google.eclipse.protobuf.junit.matchers;
 
 import java.util.*;
 
 import org.hamcrest.*;
 
+import com.google.eclipse.protobuf.junit.IEObjectDescriptions;
+
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class ContainAllNames extends BaseMatcher<IEObjectDescriptions> {
+public class ContainAllNames extends BaseMatcher<IEObjectDescriptions> {
 
   private final String[] expectedNames;
 
-  static ContainAllNames containAll(String... names) {
+  public static ContainAllNames containAll(String... names) {
     return new ContainAllNames(names);
   }
   

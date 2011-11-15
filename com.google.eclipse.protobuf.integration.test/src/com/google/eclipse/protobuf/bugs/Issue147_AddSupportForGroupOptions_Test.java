@@ -6,14 +6,13 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.scoping;
+package com.google.eclipse.protobuf.bugs;
 
+import static com.google.eclipse.protobuf.junit.IEObjectDescriptions.descriptionsIn;
 import static com.google.eclipse.protobuf.junit.core.Setups.integrationTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.scoping.ContainAllNames.containAll;
-import static com.google.eclipse.protobuf.scoping.ContainAllFields.containAll;
-import static com.google.eclipse.protobuf.scoping.IEObjectDescriptions.descriptionsIn;
-import static com.google.eclipse.protobuf.scoping.OptionType.FIELD;
+import static com.google.eclipse.protobuf.junit.matchers.ContainAllFields.containAll;
+import static com.google.eclipse.protobuf.junit.matchers.ContainAllNames.containAll;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -25,6 +24,7 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.scoping.*;
 
 /**
  * Tests fix for <a href="http://code.google.com/p/protobuf-dt/issues/detail?id=147">Issue 147</a>.
@@ -57,7 +57,8 @@ public class Issue147_AddSupportForGroupOptions_Test {
   @Test public void should_provide_fields_for_native_option() {
     NativeFieldOption option = xtext.find("deprecated", NativeFieldOption.class);
     IScope scope = provider.scope_OptionSource_target(option.getSource(), reference);
-    Collection<MessageField> optionSources = descriptor().optionsOfType(FIELD);
+    Group group = xtext.find("membership", Group.class);
+    Collection<MessageField> optionSources = descriptor().availableOptionsFor(group);
     assertThat(descriptionsIn(scope), containAll(optionSources));
   }
 

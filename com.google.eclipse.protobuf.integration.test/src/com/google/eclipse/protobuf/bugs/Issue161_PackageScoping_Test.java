@@ -6,17 +6,18 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.scoping;
+package com.google.eclipse.protobuf.bugs;
 
+import static com.google.eclipse.protobuf.junit.IEObjectDescriptions.descriptionsIn;
 import static com.google.eclipse.protobuf.junit.core.Setups.integrationTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.scoping.ContainNames.contain;
-import static com.google.eclipse.protobuf.scoping.IEObjectDescriptions.descriptionsIn;
+import static com.google.eclipse.protobuf.junit.matchers.ContainNames.contain;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.scoping.ProtobufScopeProvider;
 
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.xtext.scoping.IScope;

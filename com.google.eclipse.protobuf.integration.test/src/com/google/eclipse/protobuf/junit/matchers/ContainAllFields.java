@@ -6,23 +6,24 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.scoping;
+package com.google.eclipse.protobuf.junit.matchers;
 
 import java.util.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.hamcrest.*;
 
+import com.google.eclipse.protobuf.junit.IEObjectDescriptions;
 import com.google.eclipse.protobuf.protobuf.MessageField;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class ContainAllFields extends BaseMatcher<IEObjectDescriptions> {
+public class ContainAllFields extends BaseMatcher<IEObjectDescriptions> {
 
   private final Collection<MessageField> fields = new ArrayList<MessageField>();
 
-  static ContainAllFields containAll(Collection<MessageField> fields) {
+  public static ContainAllFields containAll(Collection<MessageField> fields) {
     return new ContainAllFields(fields);
   }
   

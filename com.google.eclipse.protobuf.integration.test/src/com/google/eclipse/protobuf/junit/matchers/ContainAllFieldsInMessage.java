@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.scoping;
+package com.google.eclipse.protobuf.junit.matchers;
 
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
@@ -15,20 +15,21 @@ import java.util.*;
 import org.eclipse.emf.ecore.EObject;
 import org.hamcrest.*;
 
+import com.google.eclipse.protobuf.junit.IEObjectDescriptions;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class ContainAllFieldsInMessage extends BaseMatcher<IEObjectDescriptions> {
+public class ContainAllFieldsInMessage extends BaseMatcher<IEObjectDescriptions> {
 
   private final EObject container;
 
-  static ContainAllFieldsInMessage containAllFieldsIn(Group group) {
+  public static ContainAllFieldsInMessage containAllFieldsIn(Group group) {
     return new ContainAllFieldsInMessage(group);
   }
 
-  static ContainAllFieldsInMessage containAllFieldsIn(Message message) {
+  public static ContainAllFieldsInMessage containAllFieldsIn(Message message) {
     return new ContainAllFieldsInMessage(message);
   }
 

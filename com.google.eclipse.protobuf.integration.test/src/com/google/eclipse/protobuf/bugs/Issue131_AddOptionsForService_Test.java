@@ -6,12 +6,12 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.scoping;
+package com.google.eclipse.protobuf.bugs;
 
+import static com.google.eclipse.protobuf.junit.IEObjectDescriptions.descriptionsIn;
 import static com.google.eclipse.protobuf.junit.core.Setups.integrationTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.scoping.ContainAllNames.containAll;
-import static com.google.eclipse.protobuf.scoping.IEObjectDescriptions.descriptionsIn;
+import static com.google.eclipse.protobuf.junit.matchers.ContainAllNames.containAll;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -21,6 +21,7 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.Option;
+import com.google.eclipse.protobuf.scoping.ProtobufScopeProvider;
 
 /**
  * Tests fix for <a href="http://code.google.com/p/protobuf-dt/issues/detail?id=131">Issue 131</a>.

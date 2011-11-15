@@ -8,11 +8,11 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static com.google.eclipse.protobuf.junit.IEObjectDescriptions.descriptionsIn;
 import static com.google.eclipse.protobuf.junit.core.SearchOption.IGNORE_CASE;
 import static com.google.eclipse.protobuf.junit.core.Setups.integrationTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.scoping.ContainAllFieldsInMessage.containAllFieldsIn;
-import static com.google.eclipse.protobuf.scoping.IEObjectDescriptions.descriptionsIn;
+import static com.google.eclipse.protobuf.junit.matchers.ContainAllFieldsInMessage.containAllFieldsIn;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
