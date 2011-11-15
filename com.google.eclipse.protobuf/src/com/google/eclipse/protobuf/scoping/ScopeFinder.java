@@ -20,7 +20,7 @@ import java.util.Collection;
  */
 interface ScopeFinder {
 
-  Collection<IEObjectDescription> imported(Package fromImporter, Object target, Object criteria);
+  Collection<IEObjectDescription> imported(Package fromImporter, Package fromImported, Object target, Object criteria);
 
   Collection<IEObjectDescription> inDescriptor(Import anImport, Object criteria);
 

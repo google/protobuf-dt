@@ -92,7 +92,8 @@ class AstWalker {
           descriptions.addAll(local(rootOfImported, scopeFinder, criteria));
           continue;
         }
-        descriptions.addAll(imported(fromImporter, imported, scopeFinder, criteria));
+        Package packageOfImported = modelFinder.packageOf(rootOfImported);
+        descriptions.addAll(imported(fromImporter, packageOfImported, imported, scopeFinder, criteria));
       }
     }
     return descriptions;
@@ -111,14 +112,15 @@ class AstWalker {
     return packages.areRelated(aPackage, p);
   }
 
-  private Collection<IEObjectDescription> imported(Package fromImporter, Resource resource,
-      ScopeFinder scopeFinder, Object criteria) {
+  private Collection<IEObjectDescription> imported(Package fromImporter, Package fromImported,
+      Resource resource, ScopeFinder scopeFinder, Object criteria) {
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     TreeIterator<Object> contents = getAllContents(resource, true);
     while (contents.hasNext()) {
       Object next = contents.next();
-      descriptions.addAll(scopeFinder.imported(fromImporter, next, criteria));
+      descriptions.addAll(scopeFinder.imported(fromImporter, fromImported, next, criteria));
       // TODO verify that call to 'importedNamesProvider.namesOf' is not necessary
+      
     }
     return descriptions;
   }

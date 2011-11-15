@@ -31,7 +31,7 @@ class CustomOptionScopeFinder implements ScopeFinder {
   @Inject private ModelFinder modelFinder;
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
 
-  @Override public Collection<IEObjectDescription> imported(Package fromImporter, Object target, Object criteria) {
+  @Override public Collection<IEObjectDescription> imported(Package fromImporter, Package fromImported, Object target, Object criteria) {
     OptionType optionType = optionTypeFrom(criteria);
     if (!isExtendingOptionMessage(target, optionType)) return emptySet();
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();

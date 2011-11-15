@@ -27,11 +27,12 @@ import java.util.*;
  */
 class TypeScopeFinder implements ScopeFinder {
 
+  @Inject private PackageIntersection packageIntersection;
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private LocalNamesProvider localNamesProvider;
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
   
-  @Override public Collection<IEObjectDescription> imported(Package fromImporter, Object target, Object criteria) {
+  @Override public Collection<IEObjectDescription> imported(Package fromImporter, Package fromImported, Object target, Object criteria) {
     if (!isInstance(target, criteria)) return emptySet();
     EObject e = (EObject) target;
     return qualifiedNamesDescriptions.qualifiedNames(e);
