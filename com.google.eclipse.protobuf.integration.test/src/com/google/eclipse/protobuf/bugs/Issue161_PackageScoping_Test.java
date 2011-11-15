@@ -24,7 +24,7 @@ import org.eclipse.xtext.scoping.IScope;
 import org.junit.*;
 
 /**
- * Tests fix for <a href="http://code.google.com/p/protobuf-dt/issues/detail?id=157">Issue 157</a>.
+ * Tests fix for <a href="http://code.google.com/p/protobuf-dt/issues/detail?id=161">Issue 161</a>.
  * 
  * @author alruiz@google.com (Alex Ruiz)
  */
