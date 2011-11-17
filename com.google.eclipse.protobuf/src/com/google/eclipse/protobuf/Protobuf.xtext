@@ -38,9 +38,6 @@ NormalImport:
 PublicImport:
   'import' 'public' importURI=STRING ';';
 
-QualifiedName:
-  '.'? ID ('.' ID)*;
-
 ComplexType:
   Message | Enum | Group;
 
@@ -75,9 +72,7 @@ MessageField:
   ('[' (fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)*)? ']')? (';')+;
 
 enum Modifier:
-  required
-  | optional
-  | repeated;
+  required | optional | repeated;
 
 TypeLink:
   ScalarTypeLink | ComplexTypeLink;
@@ -203,6 +198,12 @@ NormalFieldName:
 
 ExtensionFieldName:
   '[' target=[MessageField|QualifiedName] ']';
+
+QualifiedName:
+  '.'? ReducedId ('.' ReducedId)*;
+
+ReducedId:
+  ID | 'rpc';
 
 SimpleValueLink:
   LiteralLink | BooleanLink | NumberLink | StringLink;

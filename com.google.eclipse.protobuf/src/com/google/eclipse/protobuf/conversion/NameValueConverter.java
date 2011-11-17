@@ -1,31 +1,33 @@
-// Copyright 2011 Google Inc. All Rights Reserved.
-
+/*
+ * Copyright (c) 2011 Google Inc.
+ *
+ * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License v1.0 which accompanies this distribution, and is available at
+ *
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package com.google.eclipse.protobuf.conversion;
-
-import static org.eclipse.xtext.GrammarUtil.getAllKeywords;
 
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.Inject;
 
-import org.eclipse.xtext.*;
-import org.eclipse.xtext.conversion.impl.*;
+import org.eclipse.xtext.conversion.impl.AbstractLexerBasedConverter;
 import org.eclipse.xtext.nodemodel.INode;
 
-import java.util.*;
-
 /**
- * @author alruiz@google.com (Alex Ruiz)
+ * Converts names to <code>{@link Name}</code>s.
  * 
+ * @author alruiz@google.com (Alex Ruiz)
  */
 public class NameValueConverter extends AbstractLexerBasedConverter<Name> {
 
-  @Inject
-  private IGrammarAccess grammarAccess;
-
+  private ProtobufFactory factory = ProtobufFactory.eINSTANCE;
+  @Inject private Keywords keywords;
+  
   @Override public Name toValue(String string, INode node) {
     String value = value(string, node);
     if (value == null) return null;
-    Name name = ProtobufFactory.eINSTANCE.createName();
+    Name name = factory.createName();
     name.setValue(value);
     return name;
   }
@@ -35,7 +37,6 @@ public class NameValueConverter extends AbstractLexerBasedConverter<Name> {
     String text = node.getText();
     if (text == null) return text;
     text = text.trim();
-    Set<String> allKeywords = getAllKeywords(grammarAccess.getGrammar());
-    return allKeywords.contains(text) ? text : null;
+    return keywords.isKeyword(text) ? text : null;
   }
 }

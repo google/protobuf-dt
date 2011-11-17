@@ -15,7 +15,7 @@ import org.eclipse.xtext.conversion.impl.AbstractLexerBasedConverter;
 import org.eclipse.xtext.nodemodel.INode;
 
 /**
- * Converts integer numbers to {@code long}s.
+ * Converts numbers to {@code long}s.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
