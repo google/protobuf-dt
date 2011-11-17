@@ -17,7 +17,7 @@ import org.eclipse.xtext.resource.*;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 import org.eclipse.xtext.validation.IResourceValidator;
 
-import com.google.eclipse.protobuf.conversion.ProtobufTerminalConverters;
+import com.google.eclipse.protobuf.conversion.*;
 import com.google.eclipse.protobuf.linking.ProtobufResource;
 import com.google.eclipse.protobuf.naming.ProtobufQualifiedNameProvider;
 import com.google.eclipse.protobuf.parser.Proto2OnlyParser;

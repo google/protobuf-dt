@@ -13,6 +13,7 @@ import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPO
 import static org.eclipse.jface.viewers.StyledString.DECORATIONS_STYLER;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.xtext.nodemodel.INode;
 
@@ -36,10 +37,6 @@ import com.google.inject.*;
   @Inject private Fields properties;
 
   public Object labelFor(Object o) {
-    if (o instanceof ComplexType) {
-      ComplexType type = (ComplexType) o;
-      return labelFor(type);
-    }
     if (o instanceof Extensions) {
       Extensions extensions = (Extensions) o;
       return labelFor(extensions);
@@ -68,11 +65,10 @@ import com.google.inject.*;
       Rpc rpc = (Rpc) o;
       return labelFor(rpc);
     }
+    if (o instanceof EObject) {
+      return nameResolver.nameOf((EObject) o);
+    }
     return null;
-  }
-
-  private Object labelFor(ComplexType type) {
-    return nameResolver.nameOf(type);
   }
   
   private Object labelFor(Extensions extensions) {

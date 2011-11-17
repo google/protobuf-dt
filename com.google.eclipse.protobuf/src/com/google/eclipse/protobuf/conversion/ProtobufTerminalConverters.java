@@ -10,6 +10,7 @@ package com.google.eclipse.protobuf.conversion;
 
 import org.eclipse.xtext.common.services.DefaultTerminalConverters;
 import org.eclipse.xtext.conversion.*;
+import com.google.eclipse.protobuf.protobuf.Name;
 
 import com.google.inject.Inject;
 
@@ -21,6 +22,7 @@ public class ProtobufTerminalConverters extends DefaultTerminalConverters {
   @Inject private DOUBLEValueConverter doubleValueConverter;
   @Inject private HEXValueConverter hexValueConverter;
   @Inject private LONGValueConverter longValueConverter;
+  @Inject private NameValueConverter nameValueConverter;
   @Inject private STRINGValueConverter stringValueConverter;
   
   @ValueConverter(rule = "DOUBLE")
@@ -41,5 +43,10 @@ public class ProtobufTerminalConverters extends DefaultTerminalConverters {
   @ValueConverter(rule = "STRING")
   @Override public IValueConverter<String> STRING() {
     return stringValueConverter;
+  }
+
+  @ValueConverter(rule = "Name")
+  public IValueConverter<Name> Name() {
+    return nameValueConverter;
   }
 }
