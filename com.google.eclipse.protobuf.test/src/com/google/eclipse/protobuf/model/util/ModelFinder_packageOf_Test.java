@@ -16,6 +16,8 @@ import static org.junit.Assert.*;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.*;
 
+import java.util.List;
+
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
@@ -45,7 +47,9 @@ public class ModelFinder_packageOf_Test {
   @Test public void should_return_package_if_proto_has_one() {
     MessageField field = xtext.find("id", MessageField.class);
     Package aPackage = finder.packageOf(field);
-    assertThat(aPackage.getName(), equalTo("person.test"));
+    List<Name> segments = aPackage.getSegments();
+    assertThat(segments.get(0).getValue(), equalTo("person"));
+    assertThat(segments.get(1).getValue(), equalTo("test"));
   }
 
   // syntax = "proto2";

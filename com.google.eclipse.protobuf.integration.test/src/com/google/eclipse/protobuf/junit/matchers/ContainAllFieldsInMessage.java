@@ -64,6 +64,7 @@ public class ContainAllFieldsInMessage extends BaseMatcher<IEObjectDescriptions>
 
   private String nameOf(IndexedElement e) {
     if (e == null) return null;
-    return (e instanceof Group) ? ((Group) e).getName() : ((MessageField) e).getName(); 
+    Name name = (e instanceof Group) ? ((Group) e).getName() : ((MessageField) e).getName();
+    return name.getValue();
   }
 }

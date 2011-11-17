@@ -98,11 +98,11 @@ public class ProtoDescriptor {
   }
 
   private void initContents() {
-    allTypes.addAll(getAllContentsOfType(root, ComplexType.class));
+    allTypes.addAll(getAllContentsOfType(root, Message.class));
     for (ComplexType t : allTypes) {
       if (!(t instanceof Message)) continue;
       Message m = (Message) t;
-      OptionType type = OPTION_DEFINITION_BY_NAME.get(m.getName());
+      OptionType type = OPTION_DEFINITION_BY_NAME.get(m.getName().getValue());
       if (type == null) continue;
       initOptions(m, type);
     }
@@ -116,14 +116,16 @@ public class ProtoDescriptor {
       }
       if (e instanceof Enum) {
         Enum anEnum = (Enum) e;
-        enumsByName.put(anEnum.getName(), anEnum);
+        Name name = anEnum.getName();
+        enumsByName.put(name.getValue(), anEnum);
       }
     }
   }
 
   private void addOption(MessageField optionSource, OptionType type) {
     if (shouldIgnore(optionSource)) return;
-    optionsByType.get(type).put(optionSource.getName(), optionSource);
+    Name name = optionSource.getName();
+    optionsByType.get(type).put(name.getValue(), optionSource);
   }
 
   private boolean shouldIgnore(MessageField field) {

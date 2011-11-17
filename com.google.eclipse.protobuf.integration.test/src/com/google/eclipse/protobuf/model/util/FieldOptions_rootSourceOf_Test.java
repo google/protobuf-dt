@@ -41,7 +41,7 @@ public class FieldOptions_rootSourceOf_Test {
   @Test public void should_return_field_of_native_field_option() {
     FieldOption option = xtext.find("deprecated", FieldOption.class);
     MessageField field = (MessageField) fieldOptions.rootSourceOf(option);
-    assertThat(field.getName(), equalTo("deprecated"));
+    assertThat(field.getName().getValue(), equalTo("deprecated"));
   }
 
   // syntax = "proto2";
@@ -58,6 +58,6 @@ public class FieldOptions_rootSourceOf_Test {
   @Test public void should_return_field_of_custom_field_option() {
     FieldOption option = xtext.find("encoding", ")", FieldOption.class);
     MessageField field = (MessageField) fieldOptions.rootSourceOf(option);
-    assertThat(field.getName(), equalTo("encoding"));
+    assertThat(field.getName().getValue(), equalTo("encoding"));
   }
 }

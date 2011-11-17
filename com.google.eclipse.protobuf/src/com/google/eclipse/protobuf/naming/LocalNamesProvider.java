@@ -10,12 +10,10 @@ package com.google.eclipse.protobuf.naming;
 
 import static com.google.eclipse.protobuf.naming.Naming.NamingUsage.*;
 import static java.util.Collections.*;
-import static org.eclipse.xtext.util.SimpleAttributeResolver.newResolver;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 import static org.eclipse.xtext.util.Tuples.pair;
 
-import com.google.common.base.Function;
-import com.google.eclipse.protobuf.model.util.ModelFinder;
+import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.naming.Naming.NamingUsage;
 import com.google.inject.*;
 
@@ -62,11 +60,10 @@ public class LocalNamesProvider {
   @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
 
   @Inject private ModelFinder finder;
+  @Inject private NameResolver nameResolver;
   @Inject private Naming naming;
-  @Inject private QualifiedNames qualifiedNames;
+  @Inject private Packages packages;
 
-  private final Function<EObject, String> resolver = newResolver(String.class, "name");
-  
   public List<QualifiedName> names(EObject e) {
     return allNames(e, DEFAULT);
   }
@@ -87,12 +84,12 @@ public class LocalNamesProvider {
         allNames.add(qualifiedName);
         while (current.eContainer() != null) {
           current = current.eContainer();
-          String containerName = resolver.apply(current);
+          String containerName = nameResolver.nameOf(current);
           if (isEmpty(containerName)) continue;
           qualifiedName = converter.toQualifiedName(containerName).append(qualifiedName);
           allNames.add(qualifiedName);
         }
-        allNames.addAll(qualifiedNames.addPackageNameSegments(qualifiedName, finder.packageOf(e)));
+        allNames.addAll(packages.addPackageNameSegments(finder.packageOf(e), qualifiedName));
         return unmodifiableList(allNames);
       }
     });

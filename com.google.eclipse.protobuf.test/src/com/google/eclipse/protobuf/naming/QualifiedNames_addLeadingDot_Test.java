@@ -17,7 +17,7 @@ import org.eclipse.xtext.naming.QualifiedName;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.naming.QualifiedNames;
+import com.google.eclipse.protobuf.model.util.QualifiedNames;
 
 /**
  * Tests for <code>{@link QualifiedNames#addLeadingDot(QualifiedName)}</code>.

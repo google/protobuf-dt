@@ -8,21 +8,26 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
-import static org.eclipse.xtext.util.Strings.isEmpty;
+import static java.util.Collections.*;
 
-import java.util.List;
-
-import org.eclipse.xtext.naming.*;
-
+import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.inject.Inject;
+import com.google.inject.*;
+
+import org.eclipse.xtext.naming.QualifiedName;
+
+import java.util.*;
 
 /**
+ * Utility methods related to <code>{@link Package}</code>s.
+ * 
  * @author alruiz@google.com (Alex Ruiz)
  */
+@Singleton
 public class Packages {
 
-  @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
+  @Inject private Names names;
+  @Inject private QualifiedNames qualifiedNames;
 
   /**
    * Indicates whether the given packages are "related." "Related" means that the names of the packages are equal or one 
@@ -41,19 +46,42 @@ public class Packages {
   }
 
   private QualifiedName nameOf(Package p) {
-    String name = p.getName();
-    if (isEmpty(name)) return null;
-    return converter.toQualifiedName(name);
+    List<String> segments = segmentsOf(p);
+    if (segments.isEmpty()) return null;
+    return qualifiedNames.createFqn(segments);
   }
 
   private boolean isSubPackage(QualifiedName name1, QualifiedName name2) {
-    List<String> segments2 = name2.getSegments();
-    int segment2Count = segments2.size();
+    List<String> segments = name2.getSegments();
+    int segment2Count = segments.size();
     int counter = 0;
     for (String segment1 : name1.getSegments()) {
-      if (!segment1.equals(segments2.get(counter++))) return false;
+      if (!segment1.equals(segments.get(counter++))) return false;
       if (counter == segment2Count) break;
     }
     return true;
+  }
+
+  public Collection<QualifiedName> addPackageNameSegments(Package p, QualifiedName name) {
+    QualifiedName current = name;
+    List<String> segments = segmentsOf(p);
+    int segmentCount = segments.size();
+    if (segmentCount <= 1) return emptyList();
+    List<QualifiedName> allNames = new ArrayList<QualifiedName>();
+    for (int i = segmentCount - 1; i > 0; i--) {
+      current = QualifiedName.create(segments.get(i)).append(current);
+      allNames.add(current);
+    }
+    return unmodifiableList(allNames);
+  }
+
+  public List<String> segmentsOf(Package p) {
+    if (p == null) return emptyList();
+    List<String> segments = new ArrayList<String>();
+    for (Name segment : p.getSegments()) {
+      String value = names.valueOf(segment);
+      if (value != null) segments.add(value);
+    }
+    return unmodifiableList(segments);
   }
 }

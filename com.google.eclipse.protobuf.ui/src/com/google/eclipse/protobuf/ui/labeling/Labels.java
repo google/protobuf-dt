@@ -19,6 +19,7 @@ import org.eclipse.xtext.nodemodel.INode;
 import java.util.List;
 
 import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.naming.NameResolver;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.*;
 
@@ -29,18 +30,15 @@ import com.google.inject.*;
  */
 @Singleton public class Labels {
 
+  @Inject private NameResolver nameResolver;
   @Inject private INodes nodes;
   @Inject private Options options;
   @Inject private Fields properties;
 
   public Object labelFor(Object o) {
-    if (o instanceof Option) {
-      Option option = (Option) o;
-      return labelFor(option);
-    }
-    if (o instanceof MessageExtension) {
-      MessageExtension extend = (MessageExtension) o;
-      return labelFor(extend);
+    if (o instanceof ComplexType) {
+      ComplexType type = (ComplexType) o;
+      return labelFor(type);
     }
     if (o instanceof Extensions) {
       Extensions extensions = (Extensions) o;
@@ -54,15 +52,71 @@ import com.google.inject.*;
       Literal literal = (Literal) o;
       return labelFor(literal);
     }
+    if (o instanceof MessageExtension) {
+      MessageExtension extend = (MessageExtension) o;
+      return labelFor(extend);
+    }
     if (o instanceof MessageField) {
       MessageField field = (MessageField) o;
       return labelFor(field);
+    }
+    if (o instanceof Option) {
+      Option option = (Option) o;
+      return labelFor(option);
     }
     if (o instanceof Rpc) {
       Rpc rpc = (Rpc) o;
       return labelFor(rpc);
     }
     return null;
+  }
+
+  private Object labelFor(ComplexType type) {
+    return nameResolver.nameOf(type);
+  }
+  
+  private Object labelFor(Extensions extensions) {
+    StringBuilder builder = new StringBuilder();
+    EList<Range> ranges = extensions.getRanges();
+    int rangeCount = ranges.size();
+    for (int i = 0; i < rangeCount; i++) {
+      if (i > 0) builder.append(", ");
+      Range range = ranges.get(i);
+      builder.append(range.getFrom());
+      String to = range.getTo();
+      if (to != null) {
+        builder.append(" > ").append(to);
+      }
+    }
+    return builder.toString();
+  }
+  
+  private Object labelFor(Import anImport) {
+    INode node = nodes.firstNodeForFeature(anImport, IMPORT__IMPORT_URI);
+    if (node == null) return anImport.getImportURI();
+    return node.getText();
+  }
+
+  private Object labelFor(Literal literal) {
+    StyledString text = new StyledString(nameResolver.nameOf(literal));
+    String index = String.format(" [%d]", literal.getIndex());
+    text.append(index, DECORATIONS_STYLER);
+    return text;
+  }
+
+  private Object labelFor(MessageExtension extension) {
+    return messageName(extension.getMessage());
+  }
+
+  private Object labelFor(MessageField field) {
+    StyledString text = new StyledString(nameResolver.nameOf(field));
+    String typeName = properties.typeNameOf(field);
+    if (typeName == null) typeName = "<unresolved reference>"; // TODO move to
+                                                               // properties
+                                                               // file
+    String indexAndType = String.format(" [%d] : %s", field.getIndex(), typeName);
+    text.append(indexAndType, DECORATIONS_STYLER);
+    return text;
   }
 
   private Object labelFor(Option option) {
@@ -81,7 +135,7 @@ import com.google.inject.*;
     }
     return b.toString();
   }
-  
+
   private void appendFields(StringBuilder b, List<OptionField> fields) {
     for (OptionField field : fields) {
       b.append(".");
@@ -97,59 +151,16 @@ import com.google.inject.*;
       }
     }
   }
-
-  private Object labelFor(MessageExtension extension) {
-    return messageName(extension.getMessage());
-  }
-
-  private Object labelFor(Extensions extensions) {
-    StringBuilder builder = new StringBuilder();
-    EList<Range> ranges = extensions.getRanges();
-    int rangeCount = ranges.size();
-    for (int i = 0; i < rangeCount; i++) {
-      if (i > 0) builder.append(", ");
-      Range range = ranges.get(i);
-      builder.append(range.getFrom());
-      String to = range.getTo();
-      if (to != null) {
-        builder.append(" > ").append(to);
-      }
-    }
-    return builder.toString();
-  }
-
-  private Object labelFor(Import anImport) {
-    INode node = nodes.firstNodeForFeature(anImport, IMPORT__IMPORT_URI);
-    if (node == null) return anImport.getImportURI();
-    return node.getText();
-  }
-
-  private Object labelFor(Literal literal) {
-    StyledString text = new StyledString(literal.getName());
-    String index = String.format(" [%d]", literal.getIndex());
-    text.append(index, DECORATIONS_STYLER);
-    return text;
-  }
-
-  private Object labelFor(MessageField field) {
-    StyledString text = new StyledString(field.getName());
-    String typeName = properties.typeNameOf(field);
-    if (typeName == null) typeName = "<unresolved reference>"; // TODO move to
-                                                               // properties
-                                                               // file
-    String indexAndType = String.format(" [%d] : %s", field.getIndex(), typeName);
-    text.append(indexAndType, DECORATIONS_STYLER);
-    return text;
-  }
-
   private Object labelFor(Rpc rpc) {
-    StyledString text = new StyledString(rpc.getName());
+    StyledString text = new StyledString(nameResolver.nameOf(rpc));
     String types = String.format(" : %s > %s", messageName(rpc.getArgType()), messageName(rpc.getReturnType()));
     text.append(types, DECORATIONS_STYLER);
     return text;
   }
 
   private String messageName(MessageLink link) {
-    return link.getTarget().getName();
+    Message m = link.getTarget();
+    if (m == null) return null;
+    return nameResolver.nameOf(m);
   }
 }

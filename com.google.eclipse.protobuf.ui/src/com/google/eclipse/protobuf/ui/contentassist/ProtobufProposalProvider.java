@@ -56,6 +56,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Inject private IndexedElements indexedElements;
   @Inject private PluginImageHelper imageHelper;
   @Inject private Literals literals;
+  @Inject private Names names;
   @Inject private Options options;
   @Inject private Fields properties;
 
@@ -296,7 +297,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     proposeDefaultKeyword(field, optionNames, context, acceptor);
     ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
     for (MessageField optionSource : descriptor.availableOptionsFor(field)) {
-      String optionName = optionSource.getName();
+      String optionName = names.valueOf(optionSource.getName());
       if (optionNames.contains(optionName) || ("packed".equals(optionName) && !canBePacked(field))) continue;
       proposeOption(optionSource, context, acceptor);
     }
@@ -333,7 +334,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   private void proposeOption(MessageField optionSource, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    String displayString = optionSource.getName();
+    String displayString = names.valueOf(optionSource.getName());
     String proposalText = displayString + space() + EQUAL + space();
     Object value = defaultValueOf(optionSource);
     if (value != null) proposalText = proposalText + value;
@@ -553,7 +554,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   private void proposeAndAccept(Enum enumType, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     Image image = imageHelper.getImage(images.imageFor(Literal.class));
     for (Literal literal : getAllContentsOfType(enumType, Literal.class))
-      proposeAndAccept(literal.getName(), image, context, acceptor);
+      proposeAndAccept(names.valueOf(literal.getName()), image, context, acceptor);
   }
 
   private void proposeAndAccept(String proposalText, Image image, ContentAssistContext context,

@@ -28,6 +28,7 @@ class FieldNotationScopeFinder {
   @Inject private FieldOptions fieldOptions;
   @Inject private Options options;
   @Inject private ModelFinder modelFinder;
+  @Inject private Names names;
   @Inject private QualifiedNameDescriptions qualifiedNameDescriptions;
 
   Collection<IEObjectDescription> sourceOf(FieldName name) {
@@ -72,8 +73,9 @@ class FieldNotationScopeFinder {
     Message fieldType = modelFinder.messageTypeOf(field);
     for (MessageElement element : fieldType.getElements()) {
       if (element instanceof MessageField) {
-        String name = ((MessageField) element).getName();
-        descriptions.add(create(name, element));
+        Name name = ((MessageField) element).getName();
+        String nameValue = names.valueOf(name);
+        descriptions.add(create(nameValue, element));
       }
     }
     return descriptions;

@@ -8,18 +8,17 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static java.util.Collections.*;
+import static java.util.Collections.emptySet;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
-import static org.eclipse.xtext.util.SimpleAttributeResolver.newResolver;
 
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.naming.NameResolver;
+import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.inject.Inject;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.naming.*;
-import org.eclipse.xtext.resource.*;
-
-import com.google.common.base.Function;
-import com.google.eclipse.protobuf.protobuf.Package;
+import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.resource.IEObjectDescription;
 
 import java.util.*;
 
@@ -28,9 +27,9 @@ import java.util.*;
  */
 class PackageIntersectionDescriptions {
 
-  @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
-
-  private final Function<EObject, String> resolver = newResolver(String.class, "name");
+  @Inject private Packages packages;
+  @Inject private QualifiedNames qualifiedNames;
+  @Inject private NameResolver nameResolver;
 
   // See issue 161
   Collection<IEObjectDescription> intersection(Package fromImporter, Package fromImported, EObject e) {
@@ -39,7 +38,7 @@ class PackageIntersectionDescriptions {
   }
   
   private List<String> segmentNames(Package aPackage) {
-    return converter.toQualifiedName(aPackage.getName()).getSegments();
+    return packages.segmentsOf(aPackage);
   }
   
   private Collection<IEObjectDescription> intersection(List<String> packageInImporter, List<String> packageInImported,
@@ -55,7 +54,7 @@ class PackageIntersectionDescriptions {
     }
     if (start == 0) return emptySet(); // no intersection found.
     List<String> intersection = new ArrayList<String>();
-    intersection.add(resolver.apply(e));
+    intersection.add(nameResolver.nameOf(e));
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     for (int i = n2Count - 1; i >= 0; i--) {
       if (i >= start) {
@@ -72,6 +71,6 @@ class PackageIntersectionDescriptions {
   }
   
   private QualifiedName fqn(List<String> segments) {
-    return QualifiedName.create(segments.toArray(new String[segments.size()]));
+    return qualifiedNames.createFqn(segments);
   }
 }

@@ -39,7 +39,7 @@ public class Options_rootSourceOf_Test {
   @Test public void should_return_source_of_native_option() {
     Option option = xtext.find("java_package", Option.class);
     MessageField field = (MessageField) options.rootSourceOf(option);
-    assertThat(field.getName(), equalTo("java_package"));
+    assertThat(field.getName().getValue(), equalTo("java_package"));
   }
 
   // syntax = "proto2";
@@ -54,6 +54,6 @@ public class Options_rootSourceOf_Test {
   @Test public void should_return_source_of_custom_option() {
     Option option = xtext.find("encoding", ")", Option.class);
     MessageField field = (MessageField) options.rootSourceOf(option);
-    assertThat(field.getName(), equalTo("encoding"));
+    assertThat(field.getName().getValue(), equalTo("encoding"));
   }
 }

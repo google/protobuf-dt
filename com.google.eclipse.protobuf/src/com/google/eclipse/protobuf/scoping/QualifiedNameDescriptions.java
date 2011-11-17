@@ -10,6 +10,7 @@ package com.google.eclipse.protobuf.scoping;
 
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
+import com.google.eclipse.protobuf.model.util.QualifiedNames;
 import com.google.eclipse.protobuf.naming.*;
 import com.google.inject.Inject;
 

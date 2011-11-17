@@ -14,7 +14,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.hamcrest.*;
 
 import com.google.eclipse.protobuf.junit.IEObjectDescriptions;
-import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.eclipse.protobuf.protobuf.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -36,8 +36,8 @@ public class ContainAllFields extends BaseMatcher<IEObjectDescriptions> {
     IEObjectDescriptions descriptions = (IEObjectDescriptions) arg;
     if (descriptions.size() != fields.size()) return false;
     for (MessageField field : fields) {
-      String name = field.getName();
-      EObject described = descriptions.objectDescribedAs(name);
+      Name name = field.getName();
+      EObject described = descriptions.objectDescribedAs(name.getValue());
       if (described != field) return false;
     }
     return true;
@@ -46,7 +46,7 @@ public class ContainAllFields extends BaseMatcher<IEObjectDescriptions> {
   @Override public void describeTo(Description description) {
     List<String> names = new ArrayList<String>();
     for (MessageField field : fields) {
-      names.add(field.getName());
+      names.add(field.getName().getValue());
     }
     description.appendValue(names);
   }

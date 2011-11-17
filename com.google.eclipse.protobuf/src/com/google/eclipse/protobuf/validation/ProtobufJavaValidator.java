@@ -124,7 +124,7 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
     Protobuf root = (Protobuf) aPackage.eContainer();
     for (ProtobufElement e : root.getElements()) {
       if (e == aPackage) {
-        if (firstFound) error(multiplePackages, aPackage, PACKAGE__NAME, MORE_THAN_ONE_PACKAGE_ERROR);
+        if (firstFound) error(multiplePackages, aPackage, PACKAGE__SEGMENTS, MORE_THAN_ONE_PACKAGE_ERROR);
         return;
       }
       if (e instanceof Package && !firstFound) firstFound = true;

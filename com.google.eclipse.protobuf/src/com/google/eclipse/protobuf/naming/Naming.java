@@ -8,9 +8,6 @@
  */
 package com.google.eclipse.protobuf.naming;
 
-import static org.eclipse.xtext.util.SimpleAttributeResolver.newResolver;
-
-import com.google.common.base.Function;
 import com.google.eclipse.protobuf.model.util.Options;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.*;
@@ -25,9 +22,8 @@ import org.eclipse.emf.ecore.EObject;
 @Singleton
 public class Naming {
 
+  @Inject private NameResolver nameResolver;
   @Inject private Options options;
-
-  private final Function<EObject, String> resolver = newResolver(String.class, "name");
 
   /**
    * Returns the name of the given object. If the name will be used for an option and if the given object is a 
@@ -37,8 +33,9 @@ public class Naming {
    * @return the name of the given object.
    */
   String nameOf(EObject e, NamingUsage usage) {
-    if (NamingUsage.DEFAULT.equals(usage)) return resolver.apply(e);
-    return (e instanceof IndexedElement) ? options.nameForOption((IndexedElement) e) : resolver.apply(e);
+    if (NamingUsage.DEFAULT.equals(usage)) return nameResolver.nameOf(e);
+    if (e instanceof IndexedElement) return options.nameForOption((IndexedElement) e);
+    return nameResolver.nameOf(e);
   }
 
   /**

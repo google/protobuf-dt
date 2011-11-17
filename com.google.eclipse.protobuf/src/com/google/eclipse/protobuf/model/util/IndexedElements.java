@@ -9,7 +9,7 @@
 package com.google.eclipse.protobuf.model.util;
 
 import com.google.eclipse.protobuf.protobuf.*;
-import com.google.inject.Singleton;
+import com.google.inject.*;
 
 import org.eclipse.emf.ecore.*;
 
@@ -27,6 +27,8 @@ import static java.util.Collections.emptyList;
 @Singleton
 public class IndexedElements {
 
+  private @Inject Names names;
+
   /**
    * Returns the name of the given <code>{@link IndexedElement}</code>.
    * @param e the given {@code IndexedElement}.
@@ -34,8 +36,15 @@ public class IndexedElements {
    * {@code null}.
    */
   public String nameOf(IndexedElement e) {
-    if (e == null) return null;
-    return (e instanceof Group) ? ((Group) e).getName() : ((MessageField) e).getName(); 
+    if (e instanceof MessageField) {
+      Name name = ((MessageField) e).getName();
+      return names.valueOf(name);
+    }
+    if (e instanceof Group) {
+      Name name = ((Group) e).getName();
+      return names.valueOf(name);
+    }
+    return null;
   }
 
   /**

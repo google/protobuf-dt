@@ -48,7 +48,7 @@ public class ModelFinder_enumTypeOf_Test {
   @Test public void should_return_enum_if_field_type_is_enum() {
     MessageField field = xtext.find("type", MessageField.class);
     Enum anEnum = finder.enumTypeOf(field);
-    assertThat(anEnum.getName(), equalTo("PhoneType"));
+    assertThat(anEnum.getName().getValue(), equalTo("PhoneType"));
   }
 
   // syntax = "proto2";

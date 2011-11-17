@@ -13,7 +13,7 @@ import static com.google.eclipse.protobuf.protobuf.Modifier.OPTIONAL;
 
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.protobuf.*;
-import com.google.inject.Singleton;
+import com.google.inject.*;
 
 /**
  * Utility methods related to <code>{@link MessageField}</code>.
@@ -22,6 +22,8 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class Fields {
+
+  private @Inject Names names;
 
   /**
    * Indicates whether the modifier of the given field is <code>{@link Modifier#OPTIONAL}</code>.
@@ -88,7 +90,8 @@ public class Fields {
     if (link instanceof ScalarTypeLink) return ((ScalarTypeLink) link).getTarget().getName();
     if (link instanceof ComplexTypeLink) {
       ComplexType type = ((ComplexTypeLink) link).getTarget();
-      return type == null ? null : type.getName();
+      if (type == null) return null;
+      return names.valueOf(type.getName());
     }
     return link.toString();
   }

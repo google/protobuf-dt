@@ -21,6 +21,7 @@ import com.google.inject.*;
 @Singleton
 public class FieldOptions {
 
+  private @Inject Names names;
   private @Inject OptionFields optionFields;
 
   /**
@@ -39,7 +40,10 @@ public class FieldOptions {
    */
   public String nameOf(FieldOption option) {
     IndexedElement e = rootSourceOf(option);
-    if (e instanceof MessageField) return ((MessageField) e).getName();
+    if (e instanceof MessageField) {
+      Name name = ((MessageField) e).getName();
+      return names.valueOf(name);
+    }
     return null;
   }
 

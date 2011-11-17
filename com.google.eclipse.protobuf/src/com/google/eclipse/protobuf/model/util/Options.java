@@ -23,6 +23,7 @@ import java.util.List;
 @Singleton
 public class Options {
 
+  private @Inject Names names;
   private @Inject OptionFields optionFields;
   
   /**
@@ -93,10 +94,14 @@ public class Options {
    * @return the name of the given <code>{@link IndexedElement}</code>.
    */
   public String nameForOption(IndexedElement e) {
-    if (e instanceof MessageField) return ((MessageField) e).getName();
+    if (e instanceof MessageField) {
+      Name name = ((MessageField) e).getName();
+      return names.valueOf(name);
+    }
     if (e instanceof Group) {
-      String name = ((Group) e).getName();
-      if (!isEmpty(name)) return name.toLowerCase();
+      Name name = ((Group) e).getName();
+      String value = names.valueOf(name);
+      if (!isEmpty(value)) return value.toLowerCase();
     }
     return null;
   }

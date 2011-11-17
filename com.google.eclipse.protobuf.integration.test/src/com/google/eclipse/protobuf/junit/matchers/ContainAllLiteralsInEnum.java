@@ -40,8 +40,8 @@ public class ContainAllLiteralsInEnum extends BaseMatcher<IEObjectDescriptions> 
     List<Literal> literals = allLiterals();
     if (descriptions.size() != literals.size()) return false;
     for (Literal literal : literals) {
-      String name = literal.getName();
-      EObject described = descriptions.objectDescribedAs(name);
+      Name name = literal.getName();
+      EObject described = descriptions.objectDescribedAs(name.getValue());
       if (described != literal) return false;
     }
     return true;
@@ -50,7 +50,8 @@ public class ContainAllLiteralsInEnum extends BaseMatcher<IEObjectDescriptions> 
   @Override public void describeTo(Description description) {
     List<String> names = new ArrayList<String>();
     for (Literal literal : allLiterals()) {
-      names.add(literal.getName());
+      Name name = literal.getName();
+      names.add(name.getValue());
     }
     description.appendValue(names);
   }

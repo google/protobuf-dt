@@ -31,17 +31,18 @@ public class ProtobufOutlineTreeProvider extends DefaultOutlineTreeProvider {
     IGNORED_ELEMENT_TYPES.add(BooleanLink.class);
     IGNORED_ELEMENT_TYPES.add(FieldOption.class);
     IGNORED_ELEMENT_TYPES.add(MessageLink.class);
+    IGNORED_ELEMENT_TYPES.add(Name.class);
   }
 
   boolean _isLeaf(Extensions extensions) {
     return true;
   }
 
-  boolean _isLeaf(Option option) {
+  boolean _isLeaf(MessageField field) {
     return true;
   }
 
-  boolean _isLeaf(MessageField field) {
+  boolean _isLeaf(Option option) {
     return true;
   }
 

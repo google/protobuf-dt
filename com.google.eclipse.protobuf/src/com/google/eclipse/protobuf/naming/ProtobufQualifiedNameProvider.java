@@ -16,6 +16,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.util.*;
 
+import java.util.List;
+
 import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.naming.Naming.NamingUsage;
 import com.google.eclipse.protobuf.protobuf.Package;
@@ -34,6 +36,8 @@ public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.Abstra
 
   @Inject private ModelFinder finder;
   @Inject private Naming naming;
+  @Inject private Packages packages;
+  @Inject private QualifiedNames qualifiedNames;
 
   @Override public QualifiedName getFullyQualifiedName(EObject e) {
     return getFullyQualifiedName(e, DEFAULT);
@@ -68,9 +72,9 @@ public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.Abstra
       return qualifiedName;
     Package p = finder.packageOf(obj);
     if (p == null) return qualifiedName;
-    String packageName = p.getName();
-    if (isEmpty(packageName)) return qualifiedName;
-    QualifiedName packageQualifiedName = converter.toQualifiedName(packageName);
+    List<String> segments = packages.segmentsOf(p);
+    if (segments.isEmpty()) return qualifiedName;
+    QualifiedName packageQualifiedName = qualifiedNames.createFqn(segments);
     if (qualifiedName.startsWith(packageQualifiedName)) return qualifiedName;
     return packageQualifiedName.append(qualifiedName);
   }

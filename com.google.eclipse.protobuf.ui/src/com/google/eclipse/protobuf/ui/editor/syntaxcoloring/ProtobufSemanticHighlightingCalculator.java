@@ -44,7 +44,7 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
   private void highlight(Protobuf protobuf, IHighlightedPositionAcceptor acceptor) {
     for (ProtobufElement element : protobuf.getElements()) {
       if (element instanceof Package) {
-        highlightName(element, acceptor, DEFAULT_ID);
+        // highlightName(element, acceptor, DEFAULT_ID);
         continue;
       }
       if (element instanceof Option) {
@@ -226,10 +226,6 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
       IHighlightedPositionAcceptor acceptor, String highlightId) {
     INode node = nodes.firstNodeForFeature(semantic, feature);
     if (node == null) return;
-    try {
-      acceptor.addPosition(node.getOffset(), node.getLength(), highlightId);
-    } catch (Throwable t) {
-      t.printStackTrace();
-    }
+    acceptor.addPosition(node.getOffset(), node.getLength(), highlightId);
   }
 }

@@ -27,7 +27,9 @@ import com.google.eclipse.protobuf.protobuf.Package;
  */
 class Finder {
 
-  private static final String[] FEATURE_NAMES = { "extension", "target", "message", "name", "optionField", "property", "source", "type" };
+  // TODO remove feature names that are not used or don't exist any more.
+  private static final String[] FEATURE_NAMES = {"extension", "target", "message", "name", "optionField", "property",
+      "source", "type", "value"};
 
   private final String protoAsText;
   private final AbstractNode root;
@@ -68,11 +70,6 @@ class Finder {
     return "default".equals(name) && type.isInstance(element) && element instanceof DefaultValueFieldOption;
   }
 
-  private Object feature(EObject e, String featureName) {
-    EStructuralFeature f = e.eClass().getEStructuralFeature(featureName);
-    return (f != null) ? e.eGet(f) : null;
-  }
-
   private boolean areNamesEqual(String expected, Object e, List<SearchOption> options) {
     String realExpected = expected;
     if (realExpected.indexOf(".") != -1 && !(e instanceof Package)) {
@@ -84,8 +81,9 @@ class Finder {
     if (options.contains(IGNORE_CASE)) return realExpected.equalsIgnoreCase(actual);
     return realExpected.equals(actual);
   }
-
+  
   private String nameOf(Object o) {
+    if (o instanceof Package) return nameOf((Package) o);
     if (!(o instanceof EObject)) return null;
     EObject e = (EObject) o;
     for (String name : FEATURE_NAMES) {
@@ -94,6 +92,23 @@ class Finder {
       if (value != null) return nameOf(value);
     }
     return null;
+  }
+
+  private String nameOf(Package p) {
+    List<Name> segments = p.getSegments();
+    int segmentCount = segments.size();
+    if (segmentCount == 0) return null;
+    StringBuilder b = new StringBuilder();
+    for (int i = 0; i < segmentCount; i++) {
+      b.append(segments.get(i).getValue());
+      if (i < segmentCount - 1) b.append(".");
+    }
+    return b.toString();
+  }
+
+  private Object feature(EObject e, String featureName) {
+    EStructuralFeature f = e.eClass().getEStructuralFeature(featureName);
+    return (f != null) ? e.eGet(f) : null;
   }
 
   ILeafNode find(String text) {

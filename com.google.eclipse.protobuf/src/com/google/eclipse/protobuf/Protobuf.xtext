@@ -24,7 +24,7 @@ ProtobufElement:
   Package | Import | Option | ComplexType | MessageExtension | Service;
 
 Package:
-  'package' name=QualifiedName ';';
+  'package' segments+=Name ('.' segments+=Name)* ';';
 
 Import:
   NormalImport | PublicImport;
@@ -36,7 +36,7 @@ PublicImport:
   'import' 'public' importURI=STRING ';';
 
 QualifiedName:
-  '.'? Name ('.' Name)*;
+  '.'? ID ('.' ID)*;
 
 ComplexType:
   Message | Enum | Group;
@@ -69,7 +69,7 @@ GroupElement:
 
 MessageField:
   modifier=Modifier type=TypeLink name=Name '=' index=(LONG | HEX)
-  ('[' fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)* ']')? (';')+;
+  ('[' (fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)*)? ']')? (';')+;
 
 enum Modifier:
   required
@@ -122,7 +122,10 @@ Rpc:
   (('{' options+=Option* '}') (';')? | ';');
 
 Name:
-  ID | 'package' | 'import' | 'public' | 'option' | 'extend' | 'message' | 'optional' | 'required' | 'repeated' |
+  value=ID|ReservedWord;
+  
+ReservedWord:  
+  'package' | 'import' | 'public' | 'option' | 'extend' | 'message' | 'optional' | 'required' | 'repeated' |
   'group' | 'enum' | 'service' | 'rpc' | 'returns' | 'true' | 'false' | 'default' | 'extensions' | 'to' | 'max' |
   'double' | 'float' | 'int32' | 'int64' | 'uint32' | 'uint64' | 'sint32' | 'sint64' | 'fixed32' | 'fixed64' |
   'sfixed32' | 'sfixed64' | 'bool' | 'string' | 'bytes';
