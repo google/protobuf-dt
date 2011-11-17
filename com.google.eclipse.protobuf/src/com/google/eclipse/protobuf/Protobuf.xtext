@@ -24,7 +24,10 @@ ProtobufElement:
   Package | Import | Option | ComplexType | MessageExtension | Service;
 
 Package:
-  'package' segments+=Name ('.' segments+=Name)* ';';
+  'package' name=PackageName ';';
+
+PackageName:
+  IdOrReservedWord ('.' IdOrReservedWord)*;
 
 Import:
   NormalImport | PublicImport;
@@ -65,7 +68,7 @@ Group:
   '}' (';')?;
 
 GroupElement:
-  Option | MessageField | Group | Enum | MessageExtension;
+  Option | IndexedElement | Enum | MessageExtension;
 
 MessageField:
   modifier=Modifier type=TypeLink name=Name '=' index=(LONG | HEX)
@@ -122,7 +125,10 @@ Rpc:
   (('{' options+=Option* '}') (';')? | ';');
 
 Name:
-  value=ID|ReservedWord;
+  value=IdOrReservedWord;
+
+IdOrReservedWord: 
+  ID | ReservedWord;
   
 ReservedWord:  
   'package' | 'import' | 'public' | 'option' | 'extend' | 'message' | 'optional' | 'required' | 'repeated' |

@@ -83,7 +83,6 @@ class Finder {
   }
   
   private String nameOf(Object o) {
-    if (o instanceof Package) return nameOf((Package) o);
     if (!(o instanceof EObject)) return null;
     EObject e = (EObject) o;
     for (String name : FEATURE_NAMES) {
@@ -92,18 +91,6 @@ class Finder {
       if (value != null) return nameOf(value);
     }
     return null;
-  }
-
-  private String nameOf(Package p) {
-    List<Name> segments = p.getSegments();
-    int segmentCount = segments.size();
-    if (segmentCount == 0) return null;
-    StringBuilder b = new StringBuilder();
-    for (int i = 0; i < segmentCount; i++) {
-      b.append(segments.get(i).getValue());
-      if (i < segmentCount - 1) b.append(".");
-    }
-    return b.toString();
   }
 
   private Object feature(EObject e, String featureName) {

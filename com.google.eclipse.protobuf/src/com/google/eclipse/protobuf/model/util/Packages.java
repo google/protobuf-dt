@@ -9,25 +9,23 @@
 package com.google.eclipse.protobuf.model.util;
 
 import static java.util.Collections.*;
-
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.inject.*;
-
-import org.eclipse.xtext.naming.QualifiedName;
+import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import java.util.*;
+
+import org.eclipse.xtext.naming.*;
+
+import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.inject.Inject;
 
 /**
  * Utility methods related to <code>{@link Package}</code>s.
  * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
 public class Packages {
 
-  @Inject private Names names;
-  @Inject private QualifiedNames qualifiedNames;
+  @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
 
   /**
    * Indicates whether the given packages are "related." "Related" means that the names of the packages are equal or one 
@@ -45,11 +43,6 @@ public class Packages {
     return (isSubPackage(name1, name2));
   }
 
-  private QualifiedName nameOf(Package p) {
-    List<String> segments = segmentsOf(p);
-    if (segments.isEmpty()) return null;
-    return qualifiedNames.createFqn(segments);
-  }
 
   private boolean isSubPackage(QualifiedName name1, QualifiedName name2) {
     List<String> segments = name2.getSegments();
@@ -76,12 +69,14 @@ public class Packages {
   }
 
   public List<String> segmentsOf(Package p) {
-    if (p == null) return emptyList();
-    List<String> segments = new ArrayList<String>();
-    for (Name segment : p.getSegments()) {
-      String value = names.valueOf(segment);
-      if (value != null) segments.add(value);
-    }
-    return unmodifiableList(segments);
+    QualifiedName name = (p == null) ? null : nameOf(p);
+    if (name == null) return emptyList();
+    return name.getSegments();
+  }
+
+  private QualifiedName nameOf(Package p) {
+    String name = p.getName();
+    if (isEmpty(name)) return null;
+    return converter.toQualifiedName(name);
   }
 }

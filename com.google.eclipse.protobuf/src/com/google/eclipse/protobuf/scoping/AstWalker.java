@@ -120,8 +120,6 @@ class AstWalker {
     while (contents.hasNext()) {
       Object next = contents.next();
       descriptions.addAll(scopeFinder.imported(fromImporter, fromImported, next, criteria));
-      // TODO verify that call to 'importedNamesProvider.namesOf' is not necessary
-      
     }
     return descriptions;
   }

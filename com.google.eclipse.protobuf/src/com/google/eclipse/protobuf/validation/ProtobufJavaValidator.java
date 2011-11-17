@@ -13,17 +13,17 @@ import static com.google.eclipse.protobuf.validation.Messages.*;
 import static java.lang.String.format;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.parser.NonProto2;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.inject.Inject;
-
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 import org.eclipse.xtext.validation.*;
+
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.parser.NonProto2;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.inject.Inject;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -124,7 +124,7 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
     Protobuf root = (Protobuf) aPackage.eContainer();
     for (ProtobufElement e : root.getElements()) {
       if (e == aPackage) {
-        if (firstFound) error(multiplePackages, aPackage, PACKAGE__SEGMENTS, MORE_THAN_ONE_PACKAGE_ERROR);
+        if (firstFound) error(multiplePackages, aPackage, PACKAGE__NAME, MORE_THAN_ONE_PACKAGE_ERROR);
         return;
       }
       if (e instanceof Package && !firstFound) firstFound = true;

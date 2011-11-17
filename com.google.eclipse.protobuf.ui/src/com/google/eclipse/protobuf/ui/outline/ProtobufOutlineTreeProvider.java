@@ -17,6 +17,7 @@ import org.eclipse.xtext.ui.editor.outline.IOutlineNode;
 import org.eclipse.xtext.ui.editor.outline.impl.*;
 
 import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Package;
 
 /**
  * Customization of the default outline structure.
@@ -46,6 +47,10 @@ public class ProtobufOutlineTreeProvider extends DefaultOutlineTreeProvider {
     return true;
   }
 
+  boolean _isLeaf(Package aPackage) {
+    return true;
+  }
+  
   protected void _createChildren(DocumentRootNode parent, Protobuf protobuf) {
     OutlineViewModel model = new OutlineViewModel(protobuf);
     for (EObject aPackage : model.packages()) createNode(parent, aPackage);

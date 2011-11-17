@@ -13,11 +13,12 @@ import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.Message;
-
 import org.eclipse.emf.ecore.EObject;
 import org.junit.*;
+
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Package;
 
 /**
  * Tests for <code>{@link NameResolver#nameOf(EObject)}</code>.
@@ -41,5 +42,14 @@ public class NameResolver_nameOf_Test {
     Message message = xtext.find("Person", Message.class);
     String name = resolver.nameOf(message);
     assertThat(name, equalTo("Person"));
+  }
+  
+  // syntax = "proto2";
+  //
+  // package com.google.proto.test;
+  @Test public void should_return_name_of_Package() {
+    Package aPackage = xtext.find("com.google.proto.test", Package.class);
+    String name = resolver.nameOf(aPackage);
+    assertThat(name, equalTo("com.google.proto.test"));    
   }
 }

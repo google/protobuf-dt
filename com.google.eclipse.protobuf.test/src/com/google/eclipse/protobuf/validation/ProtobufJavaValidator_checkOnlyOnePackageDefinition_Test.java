@@ -10,7 +10,7 @@ package com.google.eclipse.protobuf.validation;
 
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.PACKAGE__SEGMENTS;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.PACKAGE__NAME;
 import static com.google.eclipse.protobuf.validation.ProtobufJavaValidator.MORE_THAN_ONE_PACKAGE_ERROR;
 import static org.eclipse.xtext.validation.ValidationMessageAcceptor.INSIGNIFICANT_INDEX;
 import static org.mockito.Mockito.*;
@@ -47,7 +47,7 @@ public class ProtobufJavaValidator_checkOnlyOnePackageDefinition_Test {
     Package p = xtext.find("com.google.eclipse", Package.class);
     validator.checkOnlyOnePackageDefinition(p);
     String message = "Multiple package definitions.";
-    verify(messageAcceptor).acceptError(message, p, PACKAGE__SEGMENTS, INSIGNIFICANT_INDEX, MORE_THAN_ONE_PACKAGE_ERROR);
+    verify(messageAcceptor).acceptError(message, p, PACKAGE__NAME, INSIGNIFICANT_INDEX, MORE_THAN_ONE_PACKAGE_ERROR);
   }
 
   // syntax = "proto2";

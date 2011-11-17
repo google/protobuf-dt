@@ -44,7 +44,7 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
   private void highlight(Protobuf protobuf, IHighlightedPositionAcceptor acceptor) {
     for (ProtobufElement element : protobuf.getElements()) {
       if (element instanceof Package) {
-        // highlightName(element, acceptor, DEFAULT_ID);
+        highlightName(element, acceptor, DEFAULT_ID);
         continue;
       }
       if (element instanceof Option) {
