@@ -76,7 +76,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeComplexTypeLink_Target(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    Collection<IEObjectDescription> scope = scoping().findMessageScope(model);
+    if (!(model instanceof MessageField)) return;
+    Collection<IEObjectDescription> scope = scoping().allPossibleTypesFor((MessageField) model);
     for (IEObjectDescription d : descriptionChooser.shortestQualifiedNamesIn(scope)) {
       Image image = imageHelper.getImage(images.imageFor(d.getEObjectOrProxy()));
       proposeAndAccept(d, image, context, acceptor);
@@ -85,8 +86,15 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeMessageLink_Target(EObject model, Assignment assignment, ContentAssistContext context, 
       ICompletionProposalAcceptor acceptor) {
-    if (!(model instanceof MessageField)) return;
-    Collection<IEObjectDescription> scope = scoping().findScope((MessageField) model);
+    Collection<IEObjectDescription> scope = emptySet();
+    if (model instanceof MessageExtension) {
+      MessageExtension extension = (MessageExtension) model;
+      scope = scoping().allPossibleMessagesFor(extension);
+    }
+    if (model instanceof Rpc) {
+      Rpc rpc = (Rpc) model;
+      scope = scoping().allPossibleMessagesFor(rpc);
+    }
     for (IEObjectDescription d : descriptionChooser.shortestQualifiedNamesIn(scope)) {
       Image image = imageHelper.getImage(images.imageFor(d.getEObjectOrProxy()));
       proposeAndAccept(d, image, context, acceptor);
@@ -246,6 +254,20 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     proposeIndex(index, context, acceptor);
   }
 
+  @Override public void completeLiteralLink_Target(EObject model, Assignment assignment, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+    MessageField field = null;
+    if (model instanceof DefaultValueFieldOption) {
+      field = (MessageField) model.eContainer();
+    }
+    if (field == null) return;
+    if (!properties.isOptional(field)) return;
+    Enum enumType = finder.enumTypeOf(field);
+    if (enumType != null) {
+      proposeAndAccept(enumType, context, acceptor);
+    }
+  }
+  
   @Override public void completeMessageField_Index(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     long index = indexedElements.calculateTagNumberOf((MessageField) model);
@@ -355,18 +377,16 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   
   @Override public void completeDefaultValueFieldOption_Value(EObject model, Assignment assignment, 
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    if (!(model instanceof MessageField)) return;
-    MessageField field = (MessageField) model;
+    MessageField field = null;
+    if (model instanceof DefaultValueFieldOption) {
+      field = (MessageField) model.eContainer();
+    }
+    if (model instanceof MessageField) {
+      field = (MessageField) model;
+    }
+    if (field == null) return;
     if (!properties.isOptional(field)) return;
     proposeDefaultValue(field, context, acceptor);
-  }
-  
-  @Override public ICompletionProposal createCompletionProposal(String proposal, String displayString, Image image,
-      ContentAssistContext contentAssistContext) {
-    StyledString styled = null;
-    if (displayString != null) styled = new StyledString(displayString);
-    return createCompletionProposal(proposal, styled, image, getPriorityHelper().getDefaultPriority(), 
-        contentAssistContext.getPrefix(), contentAssistContext);
   }
 
   @Override public void completeNativeFieldOption_Value(EObject model, Assignment assignment,
@@ -425,7 +445,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     if (!(model instanceof CustomOption)) return;
     CustomOption option = (CustomOption) model;
-    Collection<IEObjectDescription> scope = scoping().findScope(option);
+    Collection<IEObjectDescription> scope = scoping().allPossibleSourcesOf(option);
     proposeAndAcceptOptions(scope, context, acceptor);
   }
 
@@ -433,7 +453,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     if (!(model instanceof CustomFieldOption)) return;
     CustomFieldOption option = (CustomFieldOption) model;
-    Collection<IEObjectDescription> scope = scoping().findScope(option);
+    Collection<IEObjectDescription> scope = scoping().allPossibleSourcesOf(option);
     proposeAndAcceptOptions(scope, context, acceptor);
   }
 
@@ -470,15 +490,15 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     Collection<IEObjectDescription> scope = emptySet();
     if (e instanceof CustomOption) {
       CustomOption option = (CustomOption) e;
-      scope = scoping().findFieldScope(option);
+      scope = scoping().allPossibleSourcesOfFieldOf(option);
     }
     if (e instanceof CustomFieldOption) {
       CustomFieldOption option = (CustomFieldOption) e;
-      scope = scoping().findFieldScope(option);
+      scope = scoping().allPossibleSourcesOfFieldOf(option);
     }
     if (e instanceof MessageOptionField) {
       MessageOptionField field = (MessageOptionField) e;
-      scope = scoping().findScope(field);
+      scope = scoping().allPossibleSourcesOf(field);
     }
     for (IEObjectDescription d : descriptionChooser.shortestQualifiedNamesIn(scope)) {
       Image image = imageHelper.getImage(images.imageFor(d.getEObjectOrProxy()));
@@ -494,15 +514,15 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     Collection<IEObjectDescription> scope = emptySet();
     if (e instanceof CustomOption) {
       CustomOption option = (CustomOption) e;
-      scope = scoping().findFieldScope(option);
+      scope = scoping().allPossibleSourcesOfFieldOf(option);
     }
     if (e instanceof CustomFieldOption) {
       CustomFieldOption option = (CustomFieldOption) e;
-      scope = scoping().findFieldScope(option);
+      scope = scoping().allPossibleSourcesOfFieldOf(option);
     }
     if (e instanceof ExtensionOptionField) {
-      ExtensionOptionField source = (ExtensionOptionField) e;
-      scope = scoping().findScope(source);
+      ExtensionOptionField field = (ExtensionOptionField) e;
+      scope = scoping().allPossibleSourcesOf(field);
     }
     for (IEObjectDescription d : descriptionChooser.shortestQualifiedNamesIn(scope)) {
       Image image = imageHelper.getImage(images.imageFor(d.getEObjectOrProxy()));
@@ -565,5 +585,13 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   private Scoping scoping() {
     return (ProtobufScopeProvider) super.getScopeProvider();
+  }
+  
+  @Override public ICompletionProposal createCompletionProposal(String proposal, String displayString, Image image,
+      ContentAssistContext contentAssistContext) {
+    StyledString styled = null;
+    if (displayString != null) styled = new StyledString(displayString);
+    return createCompletionProposal(proposal, styled, image, getPriorityHelper().getDefaultPriority(), 
+        contentAssistContext.getPrefix(), contentAssistContext);
   }
 }

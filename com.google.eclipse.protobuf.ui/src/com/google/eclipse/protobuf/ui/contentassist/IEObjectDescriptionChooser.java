@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.contentassist;
 
-import static java.util.Collections.unmodifiableCollection;
+import static java.util.Collections.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.QualifiedName;
@@ -22,6 +22,7 @@ import java.util.*;
 class IEObjectDescriptionChooser {
 
   Collection<IEObjectDescription> shortestQualifiedNamesIn(Collection<IEObjectDescription> descriptions) {
+    if (descriptions.isEmpty()) return emptySet();
     Map<EObject, IEObjectDescription> shortestOnes = new HashMap<EObject, IEObjectDescription>();
     for (IEObjectDescription d : descriptions) {
       EObject e = d.getEObjectOrProxy();

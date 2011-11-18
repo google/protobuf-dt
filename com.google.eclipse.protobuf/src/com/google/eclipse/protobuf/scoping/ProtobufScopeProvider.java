@@ -48,28 +48,32 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
 
   @SuppressWarnings("unused")
   public IScope scope_ComplexTypeLink_target(ComplexTypeLink link, EReference r) {
-    try {
-      EObject c = link.eContainer();
-      if (c instanceof MessageField) {
-        return createScope(findScope((MessageField) c));
-      }
-    } catch (Throwable t) {
-      t.printStackTrace();
+    EObject c = link.eContainer();
+    if (c instanceof MessageField) {
+      return createScope(allPossibleTypesFor((MessageField) c));
     }
     Set<IEObjectDescription> descriptions = emptySet();
     return createScope(descriptions);
   }
   
-  @Override public Collection<IEObjectDescription> findScope(MessageField field) {
+  @Override public Collection<IEObjectDescription> allPossibleTypesFor(MessageField field) {
     return astWalker.traverseAst(field, typeScopeFinder, ComplexType.class);
   }
 
   @SuppressWarnings("unused")
   public IScope scope_MessageLink_target(MessageLink link, EReference r) {
-    return createScope(findMessageScope(link));
+    return createScope(messagesFor(link));
   }
 
-  @Override public Collection<IEObjectDescription> findMessageScope(EObject o) {
+  @Override public Collection<IEObjectDescription> allPossibleMessagesFor(MessageExtension extension) {
+    return messagesFor(extension);
+  }
+
+  @Override public Collection<IEObjectDescription> allPossibleMessagesFor(Rpc rpc) {
+    return messagesFor(rpc);
+  }
+
+  private Collection<IEObjectDescription> messagesFor(EObject o) {
     Protobuf root = modelFinder.rootOf(o);
     return astWalker.traverseAst(root, typeScopeFinder, Message.class);
   }
@@ -118,17 +122,17 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     }
     if (c instanceof CustomOption) {
       CustomOption option = (CustomOption) c;
-      return createScope(findScope(option));
+      return createScope(allPossibleSourcesOf(option));
     }
     if (c instanceof CustomFieldOption) {
       CustomFieldOption option = (CustomFieldOption) c;
-      return createScope(findScope(option));
+      return createScope(allPossibleSourcesOf(option));
     }
     Set<IEObjectDescription> descriptions = emptySet();
     return createScope(descriptions);
   }
   
-  @Override public Collection<IEObjectDescription> findScope(CustomOption option) {
+  @Override public Collection<IEObjectDescription> allPossibleSourcesOf(CustomOption option) {
     OptionType optionType = typeOf(option);
     Collection<IEObjectDescription> descriptions = emptySet();
     if (optionType != null) {
@@ -137,7 +141,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     return descriptions;
   }
 
-  @Override public Collection<IEObjectDescription> findScope(CustomFieldOption option) {
+  @Override public Collection<IEObjectDescription> allPossibleSourcesOf(CustomFieldOption option) {
     OptionType optionType = typeOf(option);
     Collection<IEObjectDescription> descriptions = emptySet();
     if (optionType != null) {
@@ -148,10 +152,10 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
 
   @SuppressWarnings("unused") 
   public IScope scope_OptionField_target(OptionField field, EReference r) {
-    return createScope(findScope(field));
+    return createScope(allPossibleSourcesOf(field));
   }
   
-  @Override public Collection<IEObjectDescription> findScope(OptionField field) {
+  @Override public Collection<IEObjectDescription> allPossibleSourcesOf(OptionField field) {
     EObject container = field.eContainer();
     if (container instanceof CustomOption) {
       return findSources((CustomOption) container, field);
@@ -162,11 +166,11 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     return emptySet();
   }
   
-  @Override public Collection<IEObjectDescription> findFieldScope(CustomOption option) {
+  @Override public Collection<IEObjectDescription> allPossibleSourcesOfFieldOf(CustomOption option) {
     return findSources(option, (MessageOptionField) null);
   }
 
-  @Override public Collection<IEObjectDescription> findFieldScope(CustomFieldOption option) {
+  @Override public Collection<IEObjectDescription> allPossibleSourcesOfFieldOf(CustomFieldOption option) {
     return findSources(option, (MessageOptionField) null);
   }
 
