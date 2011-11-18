@@ -55,16 +55,15 @@ class FieldNotationScopeFinder {
         CustomFieldOption option = (CustomFieldOption) container;
         source = fieldOptions.sourceOf(option);
       }
-      if (container instanceof ComplexFieldNotation) {
-        ComplexFieldNotation complex = (ComplexFieldNotation) container;
-        return sourceOf(complex);
+      if (container instanceof ComplexValueField) {
+        return sourceOf((ComplexValueField) container);
       }
     }
     return ((source instanceof MessageField) ? (MessageField) source : null);
   }
 
-  private MessageField sourceOf(ComplexFieldNotation n) {
-    FieldName name = n.getName();
+  private MessageField sourceOf(ComplexValueField field) {
+    FieldName name = field.getName();
     return (name == null) ? null : name.getTarget();
   }
   

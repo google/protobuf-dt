@@ -182,12 +182,12 @@ ComplexValue:
   '}';
 
 ValueField:
-  SimpleFieldNotation | ComplexFieldNotation;
+  SimpleValueField | ComplexValueField;
 
-SimpleFieldNotation:
+SimpleValueField:
   name=FieldName ':' value=SimpleValueLink;
 
-ComplexFieldNotation:
+ComplexValueField:
   name=FieldName ':'? values=ComplexValue;
 
 FieldName:

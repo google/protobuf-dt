@@ -103,6 +103,10 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
       CustomFieldOption option = (CustomFieldOption) container;
       container = fieldOptions.sourceOf(option);
     }
+    if (container instanceof SimpleValueField) {
+      SimpleValueField field = (SimpleValueField) container;
+      container = field.getName().getTarget();
+    }
     if (container instanceof MessageField) {
       anEnum = modelFinder.enumTypeOf((MessageField) container);
     }
