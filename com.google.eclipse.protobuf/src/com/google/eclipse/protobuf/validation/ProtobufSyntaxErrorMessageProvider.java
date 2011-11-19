@@ -9,7 +9,7 @@
 package com.google.eclipse.protobuf.validation;
 
 import static com.google.eclipse.protobuf.validation.Messages.*;
-import static org.eclipse.xtext.diagnostics.Diagnostic.SYNTAX_DIAGNOSITC;
+import static org.eclipse.xtext.diagnostics.Diagnostic.SYNTAX_DIAGNOSTIC;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.nodemodel.SyntaxErrorMessage;
@@ -29,7 +29,7 @@ public class ProtobufSyntaxErrorMessageProvider extends SyntaxErrorMessageProvid
     EObject currentContext = context.getCurrentContext();
     if (currentContext instanceof MessageField) message =  mapToProtocMessage(message, (MessageField) currentContext);
     if (currentContext == null && message.contains("RULE_STRING")) return null;
-    return new SyntaxErrorMessage(message, SYNTAX_DIAGNOSITC);
+    return new SyntaxErrorMessage(message, SYNTAX_DIAGNOSTIC);
   }
 
   private String mapToProtocMessage(String message, MessageField field) {
