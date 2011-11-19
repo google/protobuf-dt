@@ -68,7 +68,7 @@ GroupElement:
   Option | IndexedElement | Enum | MessageExtension;
 
 MessageField:
-  modifier=Modifier type=TypeLink name=Name '=' index=(LONG | HEX)
+  =>modifier=Modifier type=TypeLink name=Name '=' index=(LONG | HEX)
   ('[' (fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)*)? ']')? (';')+;
 
 enum Modifier:
@@ -103,7 +103,7 @@ terminal HEX returns ecore::ELong:
   ('-')? '0x' (NUMBER | 'a'..'f' | 'A'..'F')+;
 
 MessageExtension:
-  'extend' message=MessageLink '{'
+  =>'extend' message=MessageLink '{'
   elements+=MessageElement*
   '}' (';')?;
 
@@ -124,12 +124,6 @@ Name:
 
 IdOrReservedWord: 
   ID | ReservedWord;
-  
-ReservedWord:  
-  'package' | 'import' | 'public' | 'option' | 'extend' | 'message' | 'optional' | 'required' | 'repeated' |
-  'group' | 'enum' | 'service' | 'rpc' | 'returns' | 'true' | 'false' | 'default' | 'extensions' | 'to' | 'max' |
-  'double' | 'float' | 'int32' | 'int64' | 'uint32' | 'uint64' | 'sint32' | 'sint64' | 'fixed32' | 'fixed64' |
-  'sfixed32' | 'sfixed64' | 'bool' | 'string' | 'bytes';
 
 MessageLink:
   target=[Message|QualifiedName];
@@ -148,7 +142,7 @@ FieldOption:
   DefaultValueFieldOption | NativeFieldOption | CustomFieldOption;
 
 DefaultValueFieldOption:
-  'default' '=' value=Value;
+  =>'default' '=' value=Value;
 
 NativeFieldOption:
   source=OptionSource '=' value=Value;
@@ -170,7 +164,7 @@ ExtensionOptionField:
   '(' target=[IndexedElement|QualifiedName] ')';  
 
 IndexedElement:
-  MessageField | Group;
+  =>MessageField | Group;
 
 Value:
   ComplexValue | SimpleValueLink;
@@ -200,10 +194,19 @@ ExtensionFieldName:
   '[' target=[MessageField|QualifiedName] ']';
 
 QualifiedName:
-  '.'? ReducedId ('.' ReducedId)*;
+  '.'? SafeId ('.' SafeId)*;
 
-ReducedId:
-  ID | 'rpc';
+SafeId:
+  ID | SafeReservedWord;
+  
+ReservedWord:  
+  SafeReservedWord | 'group';
+
+SafeReservedWord:
+  'package' | 'import' | 'public' | 'option' | 'extend' | 'message' | 'optional' | 'required' | 'repeated' |
+  'enum' | 'service' | 'rpc' | 'returns' | 'default' | 'extensions' | 'to' | 'max' | 'true' | 'false' |
+  'double' | 'float' | 'int32' | 'int64' | 'uint32' | 'uint64' | 'sint32' | 'sint64' | 'fixed32' | 'fixed64' |
+  'sfixed32' | 'sfixed64' | 'bool' | 'string' | 'bytes';
 
 SimpleValueLink:
   LiteralLink | BooleanLink | NumberLink | StringLink;
@@ -215,8 +218,7 @@ BooleanLink:
   target=BOOL;
 
 enum BOOL:
-  true
-  | false;
+  true | false;
 
 NumberLink:
   HexNumberLink | LongLink | DoubleLink;
