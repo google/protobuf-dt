@@ -39,7 +39,7 @@ public class ProtoDescriptor_enumTypeOf_Test {
   @Test public void should_return_Enum_if_field_type_is_enum() {
     MessageField option = descriptor.option("optimize_for", FILE);
     Enum anEnum = descriptor.enumTypeOf(option);
-    assertThat(anEnum.getName().getValue(), equalTo("OptimizeMode"));
+    assertThat(anEnum.getName(), equalTo("OptimizeMode"));
   }
 
   @Test public void should_return_null_if_field_is_null() {

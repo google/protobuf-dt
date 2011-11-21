@@ -46,7 +46,7 @@ public class FieldHasType extends BaseMatcher<MessageField> {
     if (link instanceof ScalarTypeLink) return ((ScalarTypeLink) link).getTarget().getName();
     if (link instanceof ComplexTypeLink) {
       ComplexType type = ((ComplexTypeLink) link).getTarget();
-      return type == null ? null : type.getName().getValue();
+      return type == null ? null : type.getName();
     }
     return link.toString();
   }

@@ -44,7 +44,7 @@ public class EnumHasLiterals extends BaseMatcher<Enum> {
   private List<String> literalNames(Enum anEnum) {
     List<String> names = new ArrayList<String>();
     for (Literal literal : getAllContentsOfType(anEnum, Literal.class)) {
-      names.add(literal.getName().getValue());
+      names.add(literal.getName());
     }
     return names;
   }

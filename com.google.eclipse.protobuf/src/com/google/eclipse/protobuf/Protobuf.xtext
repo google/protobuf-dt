@@ -120,7 +120,7 @@ Rpc:
   (('{' options+=Option* '}') (';')? | ';');
 
 Name:
-  value=IdOrReservedWord;
+  IdOrReservedWord;
 
 IdOrReservedWord: 
   ID | ReservedWord;

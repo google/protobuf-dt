@@ -12,10 +12,8 @@ import static java.util.Collections.emptyList;
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
-import com.google.eclipse.protobuf.model.util.Names;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.inject.Inject;
 
 import org.eclipse.xtext.resource.IEObjectDescription;
 
@@ -26,14 +24,12 @@ import java.util.*;
  */
 class LiteralDescriptions {
 
-  @Inject private Names names;
-  
   Collection<IEObjectDescription> literalsOf(Enum anEnum) {
     if (anEnum == null) return emptyList();
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     for (Literal literal : getAllContentsOfType(anEnum, Literal.class)) {
-      String nameValue = names.valueOf(literal.getName());
-      descriptions.add(create(nameValue, literal));
+      String name = literal.getName();
+      descriptions.add(create(name, literal));
     }
     return descriptions;
   }

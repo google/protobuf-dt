@@ -82,8 +82,8 @@ public class ProtoDescriptor_availableOptionsFor_Test {
     void mapByName(Collection<MessageField> options) {
       optionsByName.clear();
       for (MessageField option : options) {
-        Name name = option.getName();
-        optionsByName.put(name.getValue(), option);
+        String name = option.getName();
+        optionsByName.put(name, option);
       }
     }
 

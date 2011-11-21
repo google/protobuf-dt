@@ -27,8 +27,6 @@ import static java.util.Collections.emptyList;
 @Singleton
 public class IndexedElements {
 
-  private @Inject Names names;
-
   /**
    * Returns the name of the given <code>{@link IndexedElement}</code>.
    * @param e the given {@code IndexedElement}.
@@ -37,12 +35,12 @@ public class IndexedElements {
    */
   public String nameOf(IndexedElement e) {
     if (e instanceof MessageField) {
-      Name name = ((MessageField) e).getName();
-      return names.valueOf(name);
+      MessageField field = (MessageField) e;
+      return field.getName();
     }
     if (e instanceof Group) {
-      Name name = ((Group) e).getName();
-      return names.valueOf(name);
+      Group group = (Group) e;
+      return group.getName();
     }
     return null;
   }

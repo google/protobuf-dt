@@ -23,7 +23,6 @@ import java.util.List;
 @Singleton
 public class Options {
 
-  private @Inject Names names;
   private @Inject OptionFields optionFields;
   
   /**
@@ -95,13 +94,13 @@ public class Options {
    */
   public String nameForOption(IndexedElement e) {
     if (e instanceof MessageField) {
-      Name name = ((MessageField) e).getName();
-      return names.valueOf(name);
+      MessageField field = (MessageField) e;
+      return field.getName();
     }
     if (e instanceof Group) {
-      Name name = ((Group) e).getName();
-      String value = names.valueOf(name);
-      if (!isEmpty(value)) return value.toLowerCase();
+      String name = ((Group) e).getName();
+      // TODO check where toLowerCase is being used and remove duplication
+      return (isEmpty(name)) ? name : name.toLowerCase();
     }
     return null;
   }

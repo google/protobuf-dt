@@ -27,26 +27,22 @@ public class Options_nameForOption_Test {
   
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
-  private Name name;
   private Options options;
   
   @Before public void setUp() {
-    name = mock(Name.class);
     options = xtext.getInstanceOf(Options.class);
   }
   
   @Test public void should_return_unchanged_name_if_element_is_Field() {
     MessageField field = mock(MessageField.class);
-    when(field.getName()).thenReturn(name);
-    when(name.getValue()).thenReturn("active");
+    when(field.getName()).thenReturn("active");
     assertThat(options.nameForOption(field), equalTo("active"));
     verify(field).getName();
   }
   
   @Test public void should_return_name_in_lower_case_if_element_is_Group() {
     Group group = mock(Group.class);
-    when(group.getName()).thenReturn(name);
-    when(name.getValue()).thenReturn("Person");
+    when(group.getName()).thenReturn("Person");
     assertThat(options.nameForOption(group), equalTo("person"));
     verify(group).getName();
   }

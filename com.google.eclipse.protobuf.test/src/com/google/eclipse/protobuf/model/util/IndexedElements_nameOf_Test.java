@@ -28,26 +28,22 @@ public class IndexedElements_nameOf_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
   
-  private Name name;
   private IndexedElements indexedElements;
   
   @Before public void setUp() {
-    name = mock(Name.class);
     indexedElements = xtext.getInstanceOf(IndexedElements.class);
   }
   
   @Test public void should_return_name_of_Property() {
     MessageField field = mock(MessageField.class);
-    when(field.getName()).thenReturn(name);
-    when(name.getValue()).thenReturn("foo");
+    when(field.getName()).thenReturn("foo");
     assertThat(indexedElements.nameOf(field), equalTo("foo"));
     verify(field).getName();
   }
 
   @Test public void should_return_name_of_Group() {
     Group group = mock(Group.class);
-    when(group.getName()).thenReturn(name);
-    when(name.getValue()).thenReturn("foo");
+    when(group.getName()).thenReturn("foo");
     assertThat(indexedElements.nameOf(group), equalTo("foo"));
     verify(group).getName();
   }

@@ -36,8 +36,8 @@ public class ContainAllFields extends BaseMatcher<IEObjectDescriptions> {
     IEObjectDescriptions descriptions = (IEObjectDescriptions) arg;
     if (descriptions.size() != fields.size()) return false;
     for (MessageField field : fields) {
-      Name name = field.getName();
-      EObject described = descriptions.objectDescribedAs(name.getValue());
+      String name = field.getName();
+      EObject described = descriptions.objectDescribedAs(name);
       if (described != field) return false;
     }
     return true;
@@ -46,7 +46,7 @@ public class ContainAllFields extends BaseMatcher<IEObjectDescriptions> {
   @Override public void describeTo(Description description) {
     List<String> names = new ArrayList<String>();
     for (MessageField field : fields) {
-      names.add(field.getName().getValue());
+      names.add(field.getName());
     }
     description.appendValue(names);
   }

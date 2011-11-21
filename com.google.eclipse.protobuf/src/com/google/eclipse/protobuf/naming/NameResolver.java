@@ -8,10 +8,11 @@
  */
 package com.google.eclipse.protobuf.naming;
 
-import org.eclipse.emf.ecore.*;
+import static org.eclipse.xtext.util.SimpleAttributeResolver.NAME_RESOLVER;
 
-import com.google.eclipse.protobuf.protobuf.Name;
 import com.google.inject.Singleton;
+
+import org.eclipse.emf.ecore.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -22,12 +23,11 @@ public class NameResolver {
   public String nameOf(EObject o) {
     Object value = nameFeatureOf(o);
     if (value instanceof String) return (String) value;
-    if (value instanceof Name) return ((Name) value).getValue();
     return null;
   }
   
   private Object nameFeatureOf(EObject e) {
-    EStructuralFeature f = e.eClass().getEStructuralFeature("name");
+    EStructuralFeature f = NAME_RESOLVER.getAttribute(e);
     return (f != null) ? e.eGet(f) : null;
   }
 }

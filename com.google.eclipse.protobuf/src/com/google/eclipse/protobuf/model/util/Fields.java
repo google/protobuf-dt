@@ -23,8 +23,6 @@ import com.google.inject.*;
 @Singleton
 public class Fields {
 
-  private @Inject Names names;
-
   /**
    * Indicates whether the modifier of the given field is <code>{@link Modifier#OPTIONAL}</code>.
    * @param field the given field.
@@ -90,8 +88,7 @@ public class Fields {
     if (link instanceof ScalarTypeLink) return ((ScalarTypeLink) link).getTarget().getName();
     if (link instanceof ComplexTypeLink) {
       ComplexType type = ((ComplexTypeLink) link).getTarget();
-      if (type == null) return null;
-      return names.valueOf(type.getName());
+      return (type == null) ? null : type.getName();
     }
     return link.toString();
   }

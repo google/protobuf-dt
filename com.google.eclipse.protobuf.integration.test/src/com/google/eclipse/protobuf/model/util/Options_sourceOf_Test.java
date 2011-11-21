@@ -45,7 +45,7 @@ public class Options_sourceOf_Test {
   @Test public void should_return_source_of_custom_option() {
     CustomOption option = xtext.find("encoding", ")", CustomOption.class);
     MessageField p = (MessageField) options.sourceOf(option);
-    assertThat(p.getName().getValue(), equalTo("encoding"));
+    assertThat(p.getName(), equalTo("encoding"));
   }
 
   // syntax = "proto2";
@@ -64,6 +64,6 @@ public class Options_sourceOf_Test {
   @Test public void should_return_source_of_field_in_option() {
     CustomOption option = xtext.find("custom", ")", CustomOption.class);
     MessageField p = (MessageField) options.sourceOf(option);
-    assertThat(p.getName().getValue(), equalTo("count"));
+    assertThat(p.getName(), equalTo("count"));
   }
 }

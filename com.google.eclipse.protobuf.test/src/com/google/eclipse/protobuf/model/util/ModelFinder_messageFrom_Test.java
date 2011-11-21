@@ -44,7 +44,7 @@ public class ModelFinder_messageFrom_Test {
   @Test public void should_return_message_from_extension() {
     MessageExtension extension = xtext.find("Person", " {}", MessageExtension.class);
     Message message = finder.messageFrom(extension);
-    assertThat(message.getName().getValue(), equalTo("Person"));
+    assertThat(message.getName(), equalTo("Person"));
   }
 
   @Test public void should_return_null_if_extension_is_not_referring_to_message() {

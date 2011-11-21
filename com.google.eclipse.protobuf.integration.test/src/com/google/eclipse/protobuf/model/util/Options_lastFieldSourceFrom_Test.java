@@ -49,6 +49,6 @@ public class Options_lastFieldSourceFrom_Test {
   @Test public void should_return_option_field() {
     CustomOption option = xtext.find("custom", ")", CustomOption.class);
     MessageField field = (MessageField) options.lastFieldSourceFrom(option);
-    assertThat(field.getName().getValue(), equalTo("count"));
+    assertThat(field.getName(), equalTo("count"));
   }
 }

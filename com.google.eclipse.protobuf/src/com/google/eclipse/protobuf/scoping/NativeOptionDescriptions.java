@@ -11,7 +11,6 @@ package com.google.eclipse.protobuf.scoping;
 import static java.util.Collections.emptyList;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
-import com.google.eclipse.protobuf.model.util.Names;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.Inject;
 
@@ -26,7 +25,6 @@ import java.util.*;
 class NativeOptionDescriptions {
 
   @Inject private ProtoDescriptorProvider descriptorProvider;
-  @Inject private Names names;
   
   Collection <IEObjectDescription> sources(NativeOption option) {
     return allSources(option);
@@ -46,8 +44,8 @@ class NativeOptionDescriptions {
   private Collection<IEObjectDescription> describe(Collection<MessageField> fields) {
     List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
     for (MessageField field : fields) {
-      String nameValue = names.valueOf(field.getName());
-      descriptions.add(create(nameValue, field));
+      String name = field.getName();
+      descriptions.add(create(name, field));
     }
     return descriptions;
   }

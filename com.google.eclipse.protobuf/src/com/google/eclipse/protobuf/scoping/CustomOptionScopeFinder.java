@@ -73,11 +73,7 @@ class CustomOptionScopeFinder implements ScopeFinder {
     if (!(o instanceof MessageExtension)) return false;
     Message message = modelFinder.messageFrom((MessageExtension) o);
     if (message == null) return false;
-    Name name = message.getName();
-    if (name != null) {
-      String nameValue = name.getValue();
-      return optionType.messageName().equals(nameValue);
-    }
-    return false;
+    String name = message.getName();
+    return optionType.messageName().equals(name);
   }
 }
