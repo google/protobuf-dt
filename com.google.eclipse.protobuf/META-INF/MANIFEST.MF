@@ -6,7 +6,7 @@ Bundle-Vendor: %Bundle-Vendor
 Bundle-Version: 1.0.11.qualifier
 Bundle-SymbolicName: com.google.eclipse.protobuf; singleton:=true
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.xtext,
+Require-Bundle: org.eclipse.xtext;bundle-version="2.1.1",
  org.eclipse.xtext.generator;resolution:=optional,
  org.eclipse.emf.codegen.ecore;resolution:=optional,
  org.eclipse.emf.mwe.utils;resolution:=optional,
@@ -25,7 +25,6 @@ Export-Package: com.google.eclipse.protobuf,
  com.google.eclipse.protobuf.grammar,
  com.google.eclipse.protobuf.model.util,
  com.google.eclipse.protobuf.naming,
- com.google.eclipse.protobuf.parseTreeConstruction,
  com.google.eclipse.protobuf.parser.antlr,
  com.google.eclipse.protobuf.parser.antlr.internal,
  com.google.eclipse.protobuf.protobuf,
@@ -35,5 +34,6 @@ Export-Package: com.google.eclipse.protobuf,
  com.google.eclipse.protobuf.services,
  com.google.eclipse.protobuf.util,
  com.google.eclipse.protobuf.validation,
- com.google.eclipse.protobuf.formatting
+ com.google.eclipse.protobuf.formatting,
+ com.google.eclipse.protobuf.serializer
 

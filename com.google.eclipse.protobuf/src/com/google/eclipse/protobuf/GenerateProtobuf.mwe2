@@ -48,9 +48,14 @@ Workflow {
       fragment = ecore.EcoreGeneratorFragment {
       // referencedGenModels = "uri to genmodel, uri to next genmodel"
       }
+      
+      // Serializer 2.0
+      fragment = serializer.SerializerFragment {
+        generateStub = false
+      }
 
       // the serialization component
-      fragment = parseTreeConstructor.ParseTreeConstructorFragment {}
+      // fragment = parseTreeConstructor.ParseTreeConstructorFragment {}
 
       // a custom ResourceFactory for use with EMF 
       fragment = resourceFactory.ResourceFactoryFragment {
