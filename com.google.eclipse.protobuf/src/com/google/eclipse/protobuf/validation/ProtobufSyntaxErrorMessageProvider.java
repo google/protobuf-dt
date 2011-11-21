@@ -33,11 +33,12 @@ public class ProtobufSyntaxErrorMessageProvider extends SyntaxErrorMessageProvid
   }
 
   private String mapToProtocMessage(String message, MessageField field) {
-    if (message.contains("RULE_ID") && field.getName() == null)
+    if (message.contains("RULE_ID") && field.getName() == null) {
       return expectedFieldName;
-    if (message.equals("mismatched input ';' expecting '='") && field.getIndex() == 0)
+    }
+    if (message.equals("mismatched input ';' expecting '='") && field.getIndex() == 0) {
       return missingFieldNumber;
+    }
     return message;
   }
-
 }

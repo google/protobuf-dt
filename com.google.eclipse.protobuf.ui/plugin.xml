@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
-
 <plugin>
-
   <extension point="org.eclipse.ui.editors">
-    <editor class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
-      contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor" default="true" extensions="proto,protodevel"
-      icon="icons/pb.gif" id="com.google.eclipse.protobuf.Protobuf" name="%editor.name">
+    <editor
+      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
+      contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
+      default="true"
+      extensions="proto,protodevel"
+      icon="icons/pb.gif"
+      id="com.google.eclipse.protobuf.Protobuf"
+      name="%editor.name">
     </editor>
   </extension>
   <extension point="org.eclipse.ui.handlers">
@@ -40,7 +43,9 @@
       <and>
         <reference definitionId="isActiveEditorAnInstanceOfXtextEditor" />
         <with variable="activeEditor">
-          <test property="org.eclipse.xtext.ui.editor.XtextEditor.languageName" value="com.google.eclipse.protobuf.Protobuf"
+          <test
+            property="org.eclipse.xtext.ui.editor.XtextEditor.languageName"
+            value="com.google.eclipse.protobuf.Protobuf"
             forcePluginActivation="true" />
         </with>
       </and>
@@ -49,50 +54,67 @@
   <extension point="org.eclipse.ui.preferencePages">
     <page
       class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.pages.general.GeneralPreferencePage"
-      id="com.google.eclipse.protobuf.Protobuf" name="%page.name">
+      id="com.google.eclipse.protobuf.Protobuf"
+      name="%page.name">
       <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
     </page>
-    <page category="com.google.eclipse.protobuf.ui.preferences.pages.editor"
+    <page
+      category="com.google.eclipse.protobuf.ui.preferences.pages.editor"
       class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:org.eclipse.xtext.ui.editor.syntaxcoloring.SyntaxColoringPreferencePage"
-      id="com.google.eclipse.protobuf.Protobuf.coloring" name="%page.name.0">
+      id="com.google.eclipse.protobuf.Protobuf.coloring"
+      name="%page.name.0">
       <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
     </page>
-    <!--page category="com.google.eclipse.protobuf.Protobuf"
-      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:org.eclipse.xtext.ui.editor.templates.XtextTemplatePreferencePage"
-      id="com.google.eclipse.protobuf.Protobuf.templates" name="%page.name.1">
-      <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
-    </page-->
-    <page category="com.google.eclipse.protobuf.Protobuf"
+    <!--page category="com.google.eclipse.protobuf.Protobuf" class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:org.eclipse.xtext.ui.editor.templates.XtextTemplatePreferencePage" 
+      id="com.google.eclipse.protobuf.Protobuf.templates" name="%page.name.1"> <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" 
+      /> </page -->
+    <page
+      category="com.google.eclipse.protobuf.Protobuf"
       class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.pages.compiler.CompilerPreferencePage"
-      id="com.google.eclipse.protobuf.ui.preferences.pages.compiler.CompilerPreferencePage" name="%page.name.2">
+      id="com.google.eclipse.protobuf.ui.preferences.pages.compiler.CompilerPreferencePage"
+      name="%page.name.2">
       <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
     </page>
-    <page category="com.google.eclipse.protobuf.Protobuf"
+    <page
+      category="com.google.eclipse.protobuf.Protobuf"
       class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.pages.editor.EditorPreferencePage"
-      id="com.google.eclipse.protobuf.ui.preferences.pages.editor" name="%page.name.4">
+      id="com.google.eclipse.protobuf.ui.preferences.pages.editor"
+      name="%page.name.4">
       <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
     </page>
-    <page category="com.google.eclipse.protobuf.ui.preferences.pages.editor"
+    <page
+      category="com.google.eclipse.protobuf.ui.preferences.pages.editor"
       class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.pages.editor.save.SaveActionsPreferencePage"
-      id="com.google.eclipse.protobuf.ui.preferences.pages.editor.save.SaveActionsPreferencePage" name="%page.name.5">
+      id="com.google.eclipse.protobuf.ui.preferences.pages.editor.save.SaveActionsPreferencePage"
+      name="%page.name.5">
       <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
     </page>
-    <page category="com.google.eclipse.protobuf.ui.preferences.pages.editor"
+    <page
+      category="com.google.eclipse.protobuf.ui.preferences.pages.editor"
       class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag.NumericTagPreferencePage"
-      id="com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag.NumericTagPreferencePage" name="%page.name.6">
+      id="com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag.NumericTagPreferencePage"
+      name="%page.name.6">
       <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
     </page>
   </extension>
   <extension point="org.eclipse.ui.keywords">
-    <keyword id="com.google.eclipse.protobuf.ui.keyword_Protobuf" label="%keyword.label" />
+    <keyword
+      id="com.google.eclipse.protobuf.ui.keyword_Protobuf"
+      label="%keyword.label" />
   </extension>
   <extension point="org.eclipse.ui.commands">
-    <command description="%command.description" id="com.google.eclipse.protobuf.Protobuf.validate" name="%command.name">
+    <command
+      description="%command.description"
+      id="com.google.eclipse.protobuf.Protobuf.validate"
+      name="%command.name">
     </command>
   </extension>
   <extension point="org.eclipse.ui.menus">
     <menuContribution locationURI="popup:#TextEditorContext?after=group.edit">
-      <command commandId="com.google.eclipse.protobuf.Protobuf.validate" style="push" tooltip="%command.tooltip">
+      <command
+        commandId="com.google.eclipse.protobuf.Protobuf.validate"
+        style="push"
+        tooltip="%command.tooltip">
         <visibleWhen checkEnabled="false">
           <reference definitionId="com.google.eclipse.protobuf.Protobuf.Editor.opened">
           </reference>
@@ -120,7 +142,6 @@
       </activeWhen>
     </handler>
   </extension>
-
   <!-- adding resource factories -->
   <extension point="org.eclipse.emf.ecore.extension_parser">
     <parser
@@ -134,21 +155,18 @@
       uriExtension="proto">
     </resourceServiceProvider>
   </extension>
-
-  <extension
-    point="org.eclipse.emf.ecore.extension_parser">
+  <extension point="org.eclipse.emf.ecore.extension_parser">
     <parser
       class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:org.eclipse.xtext.resource.IResourceFactory"
       type="protodevel">
     </parser>
   </extension>
   <extension point="org.eclipse.xtext.extension_resourceServiceProvider">
-        <resourceServiceProvider
-            class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:org.eclipse.xtext.ui.resource.IResourceUIServiceProvider"
-            uriExtension="protodevel">
-        </resourceServiceProvider>
-    </extension>
-
+    <resourceServiceProvider
+      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:org.eclipse.xtext.ui.resource.IResourceUIServiceProvider"
+      uriExtension="protodevel">
+    </resourceServiceProvider>
+  </extension>
   <!-- Quick Outline -->
   <extension point="org.eclipse.ui.handlers">
     <handler
@@ -161,22 +179,30 @@
     </handler>
   </extension>
   <extension point="org.eclipse.ui.commands">
-    <command description="%command.description.0" id="org.eclipse.xtext.ui.editor.outline.QuickOutline" name="%command.name.0">
+    <command
+      description="%command.description.0"
+      id="org.eclipse.xtext.ui.editor.outline.QuickOutline"
+      name="%command.name.0">
     </command>
-    <command categoryId="org.eclipse.ui.category.textEditor" description="%command.description.1"
-      id="com.google.eclipse.protobuf.ui.smartSemicolon" name="%command.name.1">
+    <command
+      categoryId="org.eclipse.ui.category.textEditor"
+      description="%command.description.1"
+      id="com.google.eclipse.protobuf.ui.smartSemicolon"
+      name="%command.name.1">
     </command>
   </extension>
   <extension point="org.eclipse.ui.menus">
     <menuContribution locationURI="popup:#TextEditorContext?after=group.open">
-      <command commandId="org.eclipse.xtext.ui.editor.outline.QuickOutline" style="push" tooltip="%command.tooltip.0">
+      <command
+        commandId="org.eclipse.xtext.ui.editor.outline.QuickOutline"
+        style="push"
+        tooltip="%command.tooltip.0">
         <visibleWhen checkEnabled="false">
           <reference definitionId="com.google.eclipse.protobuf.Protobuf.Editor.opened" />
         </visibleWhen>
       </command>
     </menuContribution>
   </extension>
-
   <!-- quickfix marker resolution generator -->
   <extension point="org.eclipse.ui.ide.markerResolution">
     <markerResolutionGenerator
@@ -184,38 +210,43 @@
     </markerResolutionGenerator>
   </extension>
   <extension point="org.eclipse.ui.bindings">
-    <key commandId="com.google.eclipse.protobuf.ui.smartSemicolon" contextId="org.eclipse.xtext.ui.XtextEditorScope"
-      schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" sequence=";">
+    <key
+      commandId="com.google.eclipse.protobuf.ui.smartSemicolon"
+      contextId="org.eclipse.xtext.ui.XtextEditorScope"
+      schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+      sequence=";">
     </key>
   </extension>
   <extension point="org.eclipse.ui.propertyPages">
     <page
       class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.pages.general.GeneralPreferencePage"
       id="com.google.eclipse.protobuf.Protobuf"
-      name="%page.name" selectionFilter="single">
-       <enabledWhen>
-          <adapt
-                type="org.eclipse.core.resources.IProject">
-          </adapt>
-       </enabledWhen>
+      name="%page.name"
+      selectionFilter="single">
+      <enabledWhen>
+        <adapt type="org.eclipse.core.resources.IProject">
+        </adapt>
+      </enabledWhen>
     </page>
-    <page category="com.google.eclipse.protobuf.Protobuf"
-          class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.pages.compiler.CompilerPreferencePage"
-          id="com.google.eclipse.protobuf.ui.properties.compiler.PropertyPage"
-          name="%page.name.2"
-          selectionFilter="single">
-       <enabledWhen>
-          <adapt type="org.eclipse.core.resources.IProject" />
-       </enabledWhen>
+    <page
+      category="com.google.eclipse.protobuf.Protobuf"
+      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.pages.compiler.CompilerPreferencePage"
+      id="com.google.eclipse.protobuf.ui.properties.compiler.PropertyPage"
+      name="%page.name.2"
+      selectionFilter="single">
+      <enabledWhen>
+        <adapt type="org.eclipse.core.resources.IProject" />
+      </enabledWhen>
     </page>
-    <page category="com.google.eclipse.protobuf.Protobuf"
-          class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.pages.paths.PathsPreferencePage"
-          id="com.google.eclipse.protobuf.ui.properties.paths.PropertyPage"
-          name="%page.name.3"
-          selectionFilter="single">
-       <enabledWhen>
-          <adapt type="org.eclipse.core.resources.IProject" />
-       </enabledWhen>
+    <page
+      category="com.google.eclipse.protobuf.Protobuf"
+      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.pages.paths.PathsPreferencePage"
+      id="com.google.eclipse.protobuf.ui.properties.paths.PropertyPage"
+      name="%page.name.3"
+      selectionFilter="single">
+      <enabledWhen>
+        <adapt type="org.eclipse.core.resources.IProject" />
+      </enabledWhen>
     </page>
   </extension>
   <extension point="org.eclipse.xtext.builder.participant">
@@ -223,7 +254,10 @@
       class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.builder.protoc.ProtobufBuildParticipant">
     </participant>
   </extension>
-  <extension id="protocMarker" name="%protoc.marker.name" point="org.eclipse.core.resources.markers">
+  <extension
+    id="protocMarker"
+    name="%protoc.marker.name"
+    point="org.eclipse.core.resources.markers">
     <super type="org.eclipse.core.resources.problemmarker">
     </super>
     <super type="org.eclipse.core.resources.textmarker">
@@ -231,11 +265,10 @@
     <persistent value="true">
     </persistent>
   </extension>
-  
   <!-- Rename Refactoring -->
   <extension point="org.eclipse.ui.handlers">
     <handler
-      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.RenameElementHandler"
+      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:org.eclipse.xtext.ui.refactoring.ui.IRenameElementHandler"
       commandId="org.eclipse.xtext.ui.refactoring.RenameElement">
       <activeWhen>
         <reference definitionId="com.google.eclipse.protobuf.Protobuf.Editor.opened">
@@ -245,7 +278,9 @@
   </extension>
   <extension point="org.eclipse.ui.menus">
     <menuContribution locationURI="popup:#TextEditorContext?after=group.edit">
-      <command commandId="org.eclipse.xtext.ui.refactoring.RenameElement" style="push">
+      <command
+        commandId="org.eclipse.xtext.ui.refactoring.RenameElement"
+        style="push">
         <visibleWhen checkEnabled="false">
           <reference definitionId="com.google.eclipse.protobuf.Protobuf.Editor.opened">
           </reference>
