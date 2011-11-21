@@ -25,6 +25,8 @@ import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.Inject;
 
 /**
+ * Verifies that imports only refer to "proto2" files.
+ * 
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ImportValidator extends AbstractDeclarativeValidator {
@@ -34,6 +36,11 @@ public class ImportValidator extends AbstractDeclarativeValidator {
 
   @Override public void register(EValidatorRegistrar registrar) {}
 
+  /**
+   * Verifies that the imports in the given root only refer to "proto2" files. If non-proto2 imports are found, this 
+   * validator creates warning markers for such imports.
+   * @param root the root containing the imports to check.
+   */
   @Check
   public void checkNonProto2Imports(Protobuf root) {
     warnIfNonProto2ImportsFound(root.eResource());

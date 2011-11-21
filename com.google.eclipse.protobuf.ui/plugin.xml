@@ -262,6 +262,17 @@
     <persistent value="true">
     </persistent>
   </extension>
+  <extension
+    id="editorMarker"
+    name="%editor.marker.name"
+    point="org.eclipse.core.resources.markers">
+    <super type="org.eclipse.core.resources.problemmarker">
+    </super>
+    <super type="org.eclipse.core.resources.textmarker">
+    </super>
+    <persistent value="true">
+    </persistent>
+  </extension>
   <!-- Rename Refactoring -->
   <extension point="org.eclipse.ui.handlers">
     <handler
