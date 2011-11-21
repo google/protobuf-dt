@@ -65,9 +65,6 @@
       name="%page.name.0">
       <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
     </page>
-    <!--page category="com.google.eclipse.protobuf.Protobuf" class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:org.eclipse.xtext.ui.editor.templates.XtextTemplatePreferencePage" 
-      id="com.google.eclipse.protobuf.Protobuf.templates" name="%page.name.1"> <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" 
-      /> </page -->
     <page
       category="com.google.eclipse.protobuf.Protobuf"
       class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.pages.compiler.CompilerPreferencePage"
