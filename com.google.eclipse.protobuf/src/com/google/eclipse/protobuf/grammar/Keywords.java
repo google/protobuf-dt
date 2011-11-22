@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.conversion;
+package com.google.eclipse.protobuf.grammar;
 
 import static org.eclipse.xtext.GrammarUtil.getAllKeywords;
 

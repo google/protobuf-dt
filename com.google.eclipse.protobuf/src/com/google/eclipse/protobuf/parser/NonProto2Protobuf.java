@@ -12,11 +12,11 @@ package com.google.eclipse.protobuf.parser;
 import com.google.eclipse.protobuf.protobuf.impl.ProtobufImpl;
 
 /**
- * Represents a non-proto2 protocol buffer.
+ * Represents a non-proto2 protocol buffer, which is ignored by the editor.
  * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class NonProto2 extends ProtobufImpl {
+public class NonProto2Protobuf extends ProtobufImpl {
   
-  NonProto2() {}
+  NonProto2Protobuf() {}
 }

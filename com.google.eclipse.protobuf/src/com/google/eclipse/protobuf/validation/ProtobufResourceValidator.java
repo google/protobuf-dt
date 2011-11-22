@@ -29,7 +29,7 @@ import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.util.*;
 import org.eclipse.xtext.validation.*;
 
-import com.google.eclipse.protobuf.linking.ProtobufLinkingDiagnostic;
+import com.google.eclipse.protobuf.linking.ProtobufDiagnostic;
 
 /**
  * Adds support for converting scoping errors into warnings if non-proto2 files are imported.
@@ -70,7 +70,7 @@ public class ProtobufResourceValidator extends ResourceValidatorImpl {
           Severity severity = ERROR;
           if (hasNonProto2Import && isUnresolveReferenceError(error)) {
             severity = WARNING;
-            ProtobufLinkingDiagnostic d = (ProtobufLinkingDiagnostic) error;
+            ProtobufDiagnostic d = (ProtobufDiagnostic) error;
             if (!d.getMessage().endsWith(scopingError)) {
               if (!d.getMessage().endsWith(".")) d.appendToMessage(".");
               d.appendToMessage(" ");
@@ -103,8 +103,8 @@ public class ProtobufResourceValidator extends ResourceValidatorImpl {
   }
 
   private boolean isUnresolveReferenceError(Resource.Diagnostic error) {
-    if (!(error instanceof ProtobufLinkingDiagnostic)) return false;
-    ProtobufLinkingDiagnostic d = (ProtobufLinkingDiagnostic) error;
+    if (!(error instanceof ProtobufDiagnostic)) return false;
+    ProtobufDiagnostic d = (ProtobufDiagnostic) error;
     if (!"org.eclipse.xtext.diagnostics.Diagnostic.Linking".equals(d.getCode())) return false;
     return error.getMessage().startsWith("Couldn't resolve");
   }

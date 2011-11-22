@@ -24,7 +24,7 @@ import com.google.eclipse.protobuf.protobuf.Protobuf;
  */
 public class Proto2OnlyParser extends ProtobufParser {
 
-  private static final String[] ERRORS_TO_IGNORE = {
+  private static final String[] ERRORS_TO_LOOK_FOR = {
     "missing EOF at 'c'", "missing EOF at 'parsed'", "missing EOF at 'python'", "no viable alternative at input '<'" };
 
   @Override
@@ -32,7 +32,7 @@ public class Proto2OnlyParser extends ProtobufParser {
     IParseResult result = super.doParse(ruleName, in, builder, initialLookAhead);
     // TODO ignore this check via preferences in open source version.
     if (isNonProto2(result)) {
-      return new ParseResult(new NonProto2(), result.getRootNode(), false);
+      return new ParseResult(new NonProto2Protobuf(), result.getRootNode(), false);
     }
     return result;
   }
@@ -52,7 +52,7 @@ public class Proto2OnlyParser extends ProtobufParser {
   private boolean isNonProto2(SyntaxErrorMessage syntaxErrorMessage) {
     if (syntaxErrorMessage == null) return false;
     String message = syntaxErrorMessage.getMessage();
-    for (String nonProto2Keyword : ERRORS_TO_IGNORE) {
+    for (String nonProto2Keyword : ERRORS_TO_LOOK_FOR) {
       if (message.contains(nonProto2Keyword)) return true;
     }
     return false;

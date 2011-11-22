@@ -12,29 +12,38 @@ package com.google.eclipse.protobuf.linking;
 import static java.util.Arrays.copyOf;
 import static org.eclipse.xtext.util.Arrays.contains;
 
-import org.eclipse.xtext.diagnostics.AbstractDiagnostic;
+import org.eclipse.xtext.diagnostics.*;
 import org.eclipse.xtext.nodemodel.INode;
 
 /**
+ * <code>{@link Diagnostic}</code> that supports appending text to its message.
+ * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ProtobufLinkingDiagnostic extends AbstractDiagnostic {
+public class ProtobufDiagnostic extends AbstractDiagnostic {
 
   private final String code;
   private final String[] data;
   private final StringBuilder message;
   private final INode node;
 
-  public ProtobufLinkingDiagnostic(String code, String[] data, String message, INode node) {
-    if (contains(data, null)) {
-      throw new NullPointerException("data may not contain null");
-    }
-    if (node == null) throw new NullPointerException("node may not be null");
+  public ProtobufDiagnostic(String code, String[] data, String message, INode node) {
+    validate(data);
+    if (node == null) throw new NullPointerException("node should not be null");
     this.code = code;
     this.data = copyOf(data, data.length);
     this.message = new StringBuilder();
     this.message.append(message);
     this.node = node;
+  }
+
+  private static void validate(String[] data) {
+    if (data == null) {
+      throw new NullPointerException("data should not be a null array");
+    }
+    if (contains(data, null)) {
+      throw new NullPointerException("data should not contain null");
+    }
   }
 
   @Override public String getCode() {
@@ -53,6 +62,10 @@ public class ProtobufLinkingDiagnostic extends AbstractDiagnostic {
     return node;
   }
 
+  /**
+   * Appends the given text to the message of this diagnostic.
+   * @param s the text to append.
+   */
   public void appendToMessage(String s) {
     message.append(s);
   }
@@ -69,7 +82,7 @@ public class ProtobufLinkingDiagnostic extends AbstractDiagnostic {
     if (this == obj) return true;
     if (obj == null) return false;
     if (getClass() != obj.getClass()) return false;
-    ProtobufLinkingDiagnostic other = (ProtobufLinkingDiagnostic) obj;
+    ProtobufDiagnostic other = (ProtobufDiagnostic) obj;
     if (message == null) {
       if (other.message != null) return false;
     } else if (!message.equals(other.message)) return false;

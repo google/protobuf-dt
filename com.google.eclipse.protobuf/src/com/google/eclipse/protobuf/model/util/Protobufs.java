@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
-import com.google.eclipse.protobuf.parser.NonProto2;
+import com.google.eclipse.protobuf.parser.NonProto2Protobuf;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.inject.Singleton;
 
@@ -27,6 +27,6 @@ public class Protobufs {
    * {@code false} otherwise.
    */
   public boolean isProto2(Protobuf protobuf) {
-    return protobuf != null && !(protobuf instanceof NonProto2);
+    return protobuf != null && !(protobuf instanceof NonProto2Protobuf);
   }
 }
