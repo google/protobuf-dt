@@ -55,7 +55,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     Set<IEObjectDescription> descriptions = emptySet();
     return createScope(descriptions);
   }
-  
+
   @Override public Collection<IEObjectDescription> allPossibleTypesFor(MessageField field) {
     return astWalker.traverseAst(field, typeScopeFinder, ComplexType.class);
   }
@@ -112,7 +112,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     }
     return createScope(literalDescriptions.literalsOf(anEnum));
   }
-  
+
   @SuppressWarnings("unused")
   public IScope scope_OptionSource_target(OptionSource source, EReference r) {
     EObject c = source.eContainer();
@@ -135,7 +135,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     Set<IEObjectDescription> descriptions = emptySet();
     return createScope(descriptions);
   }
-  
+
   @Override public Collection<IEObjectDescription> allPossibleSourcesOf(CustomOption option) {
     OptionType optionType = typeOf(option);
     Collection<IEObjectDescription> descriptions = emptySet();
@@ -158,43 +158,92 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   public IScope scope_OptionField_target(OptionField field, EReference r) {
     return createScope(allPossibleSourcesOf(field));
   }
-  
-  @Override public Collection<IEObjectDescription> allPossibleSourcesOf(OptionField field) {
+
+  private Collection<IEObjectDescription> allPossibleSourcesOf(OptionField field) {
+    if (field == null) return emptySet();
     EObject container = field.eContainer();
     if (container instanceof CustomOption) {
-      return findSources((CustomOption) container, field);
+      CustomOption option = (CustomOption) container;
+      if (field instanceof MessageOptionField) {
+        return findSources(option, (MessageOptionField) field);
+      }
+      return findSources(option, (ExtensionOptionField) field);
     }
     if (container instanceof CustomFieldOption) {
-      return findSources((CustomFieldOption) container, field);
+      CustomFieldOption option = (CustomFieldOption) container;
+      if (field instanceof MessageOptionField) {
+        return findSources(option, (MessageOptionField) field);
+      }
+      return findSources(option, (ExtensionOptionField) field);
     }
     return emptySet();
   }
-  
-  @Override public Collection<IEObjectDescription> allPossibleSourcesOfFieldOf(CustomOption option) {
+
+  @Override public Collection<IEObjectDescription> allPossibleNormalFieldsOf(CustomOption option) {
     return findSources(option, (MessageOptionField) null);
   }
 
-  @Override public Collection<IEObjectDescription> allPossibleSourcesOfFieldOf(CustomFieldOption option) {
+  @Override public Collection<IEObjectDescription> allPossibleNormalFieldsOf(CustomFieldOption option) {
     return findSources(option, (MessageOptionField) null);
   }
-
-  private Collection<IEObjectDescription> findSources(CustomOption option,OptionField field) {
-    return customOptionFieldScopeFinder.findScope(option, field);
-  }
-
-  private Collection<IEObjectDescription> findSources(CustomFieldOption option, OptionField field) {
-    return customOptionFieldScopeFinder.findScope(option, field);
-  }
   
+  @Override public Collection<IEObjectDescription> allPossibleExtensionFieldsOf(CustomOption option) {
+    return findSources(option, (ExtensionOptionField) null);
+  }
+
+  @Override public Collection<IEObjectDescription> allPossibleExtensionFieldsOf(CustomFieldOption option) {
+    return findSources(option, (ExtensionOptionField) null);
+  }
+
+  private Collection<IEObjectDescription> findSources(CustomOption option, MessageOptionField field) {
+    return customOptionFieldScopeFinder.findScope(option, field);
+  }
+
+  private Collection<IEObjectDescription> findSources(CustomOption option, ExtensionOptionField field) {
+    return customOptionFieldScopeFinder.findScope(option, field);
+  }
+
+  private Collection<IEObjectDescription> findSources(CustomFieldOption option, MessageOptionField field) {
+    return customOptionFieldScopeFinder.findScope(option, field);
+  }
+
+  private Collection<IEObjectDescription> findSources(CustomFieldOption option, ExtensionOptionField field) {
+    return customOptionFieldScopeFinder.findScope(option, field);
+  }
+
   @SuppressWarnings("unused") 
   public IScope scope_FieldName_target(FieldName name, EReference r) {
-    return findScope(name);
+    return createScope(findSources(name));
   }
 
-  private IScope findScope(FieldName name) {
-    return createScope(fieldNotationScopeFinder.sourceOf(name));
+  private Collection<IEObjectDescription> findSources(FieldName name) {
+    ComplexValue value = container(name);
+    if (value == null) return emptySet();
+    if (name instanceof NormalFieldName) {
+      return allPossibleNamesOfNormalFieldsOf(value);
+    }
+    return allPossibleNamesOfExtensionFieldsOf(value);
   }
-  
+
+  private ComplexValue container(FieldName name) {
+    EObject container = name;
+    while (container != null) {
+      if (container instanceof ComplexValue) {
+        return (ComplexValue) container;
+      }
+      container = container.eContainer();
+    }
+    return null;
+  }
+
+  @Override public Collection<IEObjectDescription> allPossibleNamesOfNormalFieldsOf(ComplexValue value) {
+    return fieldNotationScopeFinder.sourceOfNormalFieldNamesOf(value);
+  }
+
+  @Override public Collection<IEObjectDescription> allPossibleNamesOfExtensionFieldsOf(ComplexValue value) {
+    return fieldNotationScopeFinder.sourceOfExtensionFieldNamesOf(value);
+  }
+
   private static IScope createScope(Iterable<IEObjectDescription> descriptions) {
     return new SimpleScope(descriptions, DO_NOT_IGNORE_CASE);
   }

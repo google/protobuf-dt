@@ -15,8 +15,7 @@ import static com.google.eclipse.protobuf.util.CommonWords.space;
 import static java.lang.String.valueOf;
 import static java.util.Collections.*;
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
-import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.findActualSemanticObjectFor;
-import static org.eclipse.xtext.util.Strings.toFirstLower;
+import static org.eclipse.xtext.util.Strings.*;
 
 import java.util.*;
 
@@ -47,6 +46,7 @@ import com.google.inject.Inject;
  * @see <a href="http://www.eclipse.org/Xtext/documentation/latest/xtext.html#contentAssist">Xtext Content Assist</a>
  */
 public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
+
 
   @Inject private IEObjectDescriptionChooser descriptionChooser;
   @Inject private ProtoDescriptorProvider descriptorProvider;
@@ -385,7 +385,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     }
     if (field == null) return;
     if (!properties.isOptional(field)) return;
-    proposeDefaultValue(field, context, acceptor);
+    proposeFieldValue(field, context, acceptor);
   }
 
   @Override public void completeNativeFieldOption_Value(EObject model, Assignment assignment,
@@ -467,75 +467,55 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     return imageHelper.getImage(images.imageFor(Option.class));
   }
 
-  @Override public void completeCustomOption_Fields(EObject model, Assignment assignment,
-      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {}
-
-  @Override public void completeCustomFieldOption_Fields(EObject model, Assignment assignment,
-      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {}
-
-  @Override public void completeOptionSource_Target(EObject model, Assignment assignment,
-      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {}
-
-  @Override public void completeMessageOptionField_Target(EObject model, Assignment assignment,
-      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {}
-
-  @Override public void completeExtensionOptionField_Target(EObject model, Assignment assignment,
-      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {}
-
-  @Override public void complete_MessageOptionField(EObject model, RuleCall ruleCall,
-      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    EObject e = findActualSemanticObjectFor(context.getCurrentNode());
-    if (e instanceof Protobuf) e = model;
-    Collection<IEObjectDescription> scope = emptySet();
-    if (e instanceof CustomOption) {
-      CustomOption option = (CustomOption) e;
-      scope = scoping().allPossibleSourcesOfFieldOf(option);
-    }
-    if (e instanceof CustomFieldOption) {
-      CustomFieldOption option = (CustomFieldOption) e;
-      scope = scoping().allPossibleSourcesOfFieldOf(option);
-    }
-    if (e instanceof MessageOptionField) {
-      MessageOptionField field = (MessageOptionField) e;
-      scope = scoping().allPossibleSourcesOf(field);
-    }
-    for (IEObjectDescription d : descriptionChooser.shortestQualifiedNamesIn(scope)) {
-      Image image = imageHelper.getImage(images.imageFor(d.getEObjectOrProxy()));
-      proposeAndAccept(d, image, context, acceptor);
-    }
-  }
-
-  // TODO fix parenthesis
-  @Override public void complete_ExtensionOptionField(EObject model, RuleCall ruleCall,
-      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    EObject e = findActualSemanticObjectFor(context.getCurrentNode());
-    if (e instanceof Protobuf) e = model;
-    Collection<IEObjectDescription> scope = emptySet();
-    if (e instanceof CustomOption) {
-      CustomOption option = (CustomOption) e;
-      scope = scoping().allPossibleSourcesOfFieldOf(option);
-    }
-    if (e instanceof CustomFieldOption) {
-      CustomFieldOption option = (CustomFieldOption) e;
-      scope = scoping().allPossibleSourcesOfFieldOf(option);
-    }
-    if (e instanceof ExtensionOptionField) {
-      ExtensionOptionField field = (ExtensionOptionField) e;
-      scope = scoping().allPossibleSourcesOf(field);
-    }
-    for (IEObjectDescription d : descriptionChooser.shortestQualifiedNamesIn(scope)) {
-      Image image = imageHelper.getImage(images.imageFor(d.getEObjectOrProxy()));
-      proposeAndAccept(d, image, context, acceptor);
-    }
-  }
-
   private void proposeAndAccept(IEObjectDescription d, Image image, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    QualifiedName name = d.getName();
-    String display = name.getLastSegment()  + " - " + name.toString();
-    ICompletionProposal proposal = createCompletionProposal(name.toString(), display, image, context);
-    acceptor.accept(proposal);
+    proposeAndAccept(d, null, null, image, context, acceptor);
   }
+
+  @Override public void completeCustomOption_Fields(EObject model, Assignment assignment,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    if (!(model instanceof CustomOption)) return;
+    CustomOption option = (CustomOption) model;
+    proposeAndAccept(scoping().allPossibleNormalFieldsOf(option), context, acceptor);
+    proposeAndAccept(scoping().allPossibleExtensionFieldsOf(option), "(%s)", "(%s)", context, acceptor);
+  }
+
+  @Override public void completeCustomFieldOption_Fields(EObject model, Assignment assignment,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    if (!(model instanceof CustomFieldOption)) return;
+    CustomFieldOption option = (CustomFieldOption) model;
+    proposeAndAccept(scoping().allPossibleNormalFieldsOf(option), context, acceptor);
+    proposeExtensionFields(scoping().allPossibleExtensionFieldsOf(option), context, acceptor);
+  }
+  
+  private void proposeExtensionFields(Collection<IEObjectDescription> scope, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+    String format = "(%s)";
+    proposeAndAccept(scope, format, format, context, acceptor);
+  }
+
+  private void proposeAndAccept(Collection<IEObjectDescription> scope, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+    proposeAndAccept(scope, null, null, context, acceptor);
+  }
+
+  @Override public void completeOptionSource_Target(EObject model, Assignment assignment,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+  }
+
+  @Override public void completeMessageOptionField_Target(EObject model, Assignment assignment,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+  }
+
+  @Override public void completeExtensionOptionField_Target(EObject model, Assignment assignment,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+  }
+
+  @Override public void complete_MessageOptionField(EObject model, RuleCall ruleCall,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {}
+
+  @Override public void complete_ExtensionOptionField(EObject model, RuleCall ruleCall,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {}
 
   @Override public void completeCustomOption_Value(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
@@ -544,7 +524,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     IndexedElement e = options.lastFieldSourceFrom(option);
     if (e == null) e = options.rootSourceOf(option);
     if (e instanceof MessageField) {
-      proposeDefaultValue((MessageField) e, context, acceptor);
+      proposeFieldValue((MessageField) e, context, acceptor);
     }
   }
 
@@ -556,11 +536,11 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     IndexedElement e = fieldOptions.sourceOfLastFieldIn(option);
     if (e == null) e = fieldOptions.rootSourceOf(option);
     if (e instanceof MessageField) {
-      proposeDefaultValue((MessageField) e, context, acceptor);
+      proposeFieldValue((MessageField) e, context, acceptor);
     }
   }
 
-  private void proposeDefaultValue(MessageField field, ContentAssistContext context,
+  private void proposeFieldValue(MessageField field, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     if (field == null) return;
     if (proposePrimitiveValues(field, context, acceptor)) return;
@@ -569,11 +549,51 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       proposeAndAccept(enumType, context, acceptor);
     }
   }
-
+  
   private void proposeAndAccept(Enum enumType, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     Image image = imageHelper.getImage(images.imageFor(Literal.class));
     for (Literal literal : getAllContentsOfType(enumType, Literal.class))
       proposeAndAccept(literal.getName(), image, context, acceptor);
+  }
+
+  @Override public void completeNormalFieldName_Target(EObject model, Assignment assignment,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+  }
+
+  @Override public void completeExtensionFieldName_Target(EObject model, Assignment assignment,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+  }
+
+  @Override public void completeSimpleValueField_Name(EObject model, Assignment assignment,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    if (!(model instanceof ComplexValue)) return;
+    ComplexValue value = (ComplexValue) model;
+    proposeAndAccept(scoping().allPossibleNamesOfNormalFieldsOf(value), "%s:", null, context, acceptor);
+    proposeAndAccept(scoping().allPossibleNamesOfExtensionFieldsOf(value), "[%s]:", "[%s]", context, acceptor);
+  }
+
+  private void proposeAndAccept(Collection<IEObjectDescription> scope, String proposalFormat, String displayFormat,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    for (IEObjectDescription d : descriptionChooser.shortestQualifiedNamesIn(scope)) {
+      Image image = imageHelper.getImage(images.imageFor(d.getEObjectOrProxy()));
+      proposeAndAccept(d, proposalFormat, displayFormat, image, context, acceptor);
+    }
+  }
+
+  private void proposeAndAccept(IEObjectDescription d, String proposalFormat, String displayFormat, Image image,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    QualifiedName name = d.getName();
+    String proposalText = name.toString();
+    if (!isEmpty(proposalFormat)) {
+      proposalText = String.format(proposalFormat, proposalText);
+    }
+    String lastSegment = name.getLastSegment();
+    if (!isEmpty(displayFormat)) {
+      lastSegment = String.format(displayFormat, lastSegment);
+    }
+    String display = String.format("%s - %s", lastSegment, name.toString());
+    ICompletionProposal proposal = createCompletionProposal(proposalText, display, image, context);
+    acceptor.accept(proposal);
   }
 
   private void proposeAndAccept(String proposalText, Image image, ContentAssistContext context,
@@ -590,7 +610,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ContentAssistContext contentAssistContext) {
     StyledString styled = null;
     if (displayString != null) styled = new StyledString(displayString);
-    return createCompletionProposal(proposal, styled, image, getPriorityHelper().getDefaultPriority(), 
-        contentAssistContext.getPrefix(), contentAssistContext);
+    int priority = getPriorityHelper().getDefaultPriority();
+    String prefix = contentAssistContext.getPrefix();
+    return createCompletionProposal(proposal, styled, image, priority, prefix, contentAssistContext);
   }
 }

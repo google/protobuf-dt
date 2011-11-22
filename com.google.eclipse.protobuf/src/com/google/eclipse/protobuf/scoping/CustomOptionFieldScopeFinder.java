@@ -31,8 +31,12 @@ class CustomOptionFieldScopeFinder {
   @Inject private Options options;
   @Inject private QualifiedNameDescriptions qualifiedNameDescriptions;
 
-  Collection<IEObjectDescription> findScope(CustomOption option, OptionField field) {
-    return findScope(option, field, descriptionsProvider(field));
+  Collection<IEObjectDescription> findScope(CustomOption option, MessageOptionField field) {
+    return findScope(option, field, new MessageFieldDescriptorProvider());
+  }
+
+  Collection<IEObjectDescription> findScope(CustomOption option, ExtensionOptionField field) {
+    return findScope(option, field, new ExtensionFieldDescriptorProvider());
   }
 
   private Collection<IEObjectDescription> findScope(final CustomOption option, OptionField field,
@@ -46,13 +50,12 @@ class CustomOptionFieldScopeFinder {
     return emptySet();
   }
 
-  Collection<IEObjectDescription> findScope(CustomFieldOption option, OptionField field) {
-    return findScope(option, field, descriptionsProvider(field));
+  Collection<IEObjectDescription> findScope(CustomFieldOption option, MessageOptionField field) {
+    return findScope(option, field, new MessageFieldDescriptorProvider());
   }
-  
-  private IEObjectDescriptionsProvider descriptionsProvider(OptionField field) {
-    if (field instanceof MessageOptionField) return new MessageFieldDescriptorProvider();
-    return new ExtensionFieldDescriptorProvider();
+
+  Collection<IEObjectDescription> findScope(CustomFieldOption option, ExtensionOptionField field) {
+    return findScope(option, field, new ExtensionFieldDescriptorProvider());
   }
 
   private Collection<IEObjectDescription> findScope(final CustomFieldOption option, OptionField field,

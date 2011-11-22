@@ -155,13 +155,13 @@ OptionSource:
   target=[IndexedElement|QualifiedName];
 
 OptionField:
-  MessageOptionField | ExtensionOptionField;
+  MessageOptionField | '(' ExtensionOptionField ')';
 
 MessageOptionField:
   target=[IndexedElement];  
 
 ExtensionOptionField:
-  '(' target=[IndexedElement|QualifiedName] ')';  
+  target=[IndexedElement|QualifiedName];
 
 IndexedElement:
   =>MessageField | Group;

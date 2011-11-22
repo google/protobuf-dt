@@ -30,35 +30,34 @@ class FieldNotationScopeFinder {
   @Inject private ModelFinder modelFinder;
   @Inject private QualifiedNameDescriptions qualifiedNameDescriptions;
 
-  Collection<IEObjectDescription> sourceOf(FieldName name) {
-    EObject container = name.eContainer();
-    if (!(container instanceof ValueField)) return emptySet();
-    MessageField field = sourceOf((ValueField) container);
-    if (field == null) return emptySet();
-    if (name instanceof NormalFieldName) {
-      return propertiesInTypeOf(field);
-    }
-    return propertiesInExtendMessageOf(field);
+  Collection<IEObjectDescription> sourceOfNormalFieldNamesOf(ComplexValue value) {
+    MessageField source = sourceOf(value);
+    if (source == null) return emptySet();
+    return propertiesInTypeOf(source);
   }
-  
-  private MessageField sourceOf(ValueField field) {
-    EObject container = field.eContainer();
+
+  Collection<IEObjectDescription> sourceOfExtensionFieldNamesOf(ComplexValue value) {
+    MessageField source = sourceOf(value);
+    if (source == null) return emptySet();
+    return propertiesInExtendMessageOf(source);
+  }
+
+  private MessageField sourceOf(ComplexValue value) {
     IndexedElement source = null;
-    if (container instanceof ComplexValue) {
-      container = container.eContainer();
-      if (container instanceof CustomOption) {
-        CustomOption option = (CustomOption) container;
-        source = options.sourceOf(option);
-      }
-      if (container instanceof CustomFieldOption) {
-        CustomFieldOption option = (CustomFieldOption) container;
-        source = fieldOptions.sourceOf(option);
-      }
-      if (container instanceof ComplexValueField) {
-        return sourceOf((ComplexValueField) container);
-      }
+    EObject container = value.eContainer();
+    if (container instanceof CustomOption) {
+      CustomOption option = (CustomOption) container;
+      source = options.sourceOf(option);
     }
-    return ((source instanceof MessageField) ? (MessageField) source : null);
+    if (container instanceof CustomFieldOption) {
+      CustomFieldOption option = (CustomFieldOption) container;
+      source = fieldOptions.sourceOf(option);
+    }
+    if (container instanceof ComplexValueField) {
+      source = sourceOf((ComplexValueField) container);
+    }
+    if (source instanceof MessageField) return (MessageField) source;
+    return null;
   }
 
   private MessageField sourceOf(ComplexValueField field) {

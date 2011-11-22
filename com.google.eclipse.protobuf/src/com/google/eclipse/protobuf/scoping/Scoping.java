@@ -18,20 +18,26 @@ import java.util.Collection;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public interface Scoping {
-  
+
+  Collection<IEObjectDescription> allPossibleTypesFor(MessageField field);
+
   Collection<IEObjectDescription> allPossibleMessagesFor(MessageExtension extension);
-  
+
   Collection<IEObjectDescription> allPossibleMessagesFor(Rpc rpc);
-  
+
   Collection<IEObjectDescription> allPossibleSourcesOf(CustomOption option);
 
   Collection<IEObjectDescription> allPossibleSourcesOf(CustomFieldOption option);
 
-  Collection<IEObjectDescription> allPossibleSourcesOf(OptionField field);
-  
-  Collection<IEObjectDescription> allPossibleSourcesOfFieldOf(CustomOption option);
-  
-  Collection<IEObjectDescription> allPossibleSourcesOfFieldOf(CustomFieldOption option);
+  Collection<IEObjectDescription> allPossibleNormalFieldsOf(CustomOption option);
 
-  Collection<IEObjectDescription> allPossibleTypesFor(MessageField field);
+  Collection<IEObjectDescription> allPossibleNormalFieldsOf(CustomFieldOption option);
+
+  Collection<IEObjectDescription> allPossibleExtensionFieldsOf(CustomOption option);
+
+  Collection<IEObjectDescription> allPossibleExtensionFieldsOf(CustomFieldOption option);
+
+  Collection<IEObjectDescription> allPossibleNamesOfNormalFieldsOf(ComplexValue value);
+
+  Collection<IEObjectDescription> allPossibleNamesOfExtensionFieldsOf(ComplexValue value);
 }
