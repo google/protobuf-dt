@@ -20,7 +20,6 @@ import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 import org.eclipse.xtext.validation.*;
 
 import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.parser.NonProto2;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.inject.Inject;
@@ -37,16 +36,17 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
 
   @Inject private FieldOptions fieldOptions;
   @Inject private IndexedElements indexedElements;
-  @Inject private ImportUriResolver uriResolver;
-  @Inject private IQualifiedNameProvider qualifiedNameProvider;
   @Inject private Fields properties;
+  @Inject private Protobufs protobufs;
+  @Inject private IQualifiedNameProvider qualifiedNameProvider;
+  @Inject private ImportUriResolver uriResolver;
 
   @Check public void checkIsProto2(Protobuf protobuf) {
-    if (protobuf instanceof NonProto2) {
+    if (!protobufs.isProto2(protobuf)) {
       warning(nonProto2, null);
     }
   }
-  
+
   @Check public void checkDefaultValueType(FieldOption option) {
     if (!fieldOptions.isDefaultValueOption(option)) return;
     MessageField field = (MessageField) option.eContainer();
@@ -60,12 +60,12 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
       error(expectedTrueOrFalse, FIELD_OPTION__VALUE);
     }
   }
-  
+
   @Check public void checkImportIsResolved(Import anImport) {
     if (retryUntilItIsResolved(anImport)) return;
     error(format(importNotFound, anImport.getImportURI()), IMPORT__IMPORT_URI);
   }
-  
+
   private boolean retryUntilItIsResolved(Import anImport) {
     if (isResolved(anImport)) return true;
     uriResolver.apply(anImport);

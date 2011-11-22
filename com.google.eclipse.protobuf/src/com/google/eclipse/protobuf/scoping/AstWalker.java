@@ -19,7 +19,6 @@ import org.eclipse.emf.ecore.resource.*;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
 import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.parser.NonProto2;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.inject.Inject;
@@ -32,6 +31,7 @@ class AstWalker {
   @Inject private ModelFinder modelFinder;
   @Inject private Imports imports;
   @Inject private Packages packages;
+  @Inject private Protobufs protobufs;
   @Inject private Resources resources;
 
   Collection<IEObjectDescription> traverseAst(EObject start, ScopeFinder scopeFinder, Object criteria) {
@@ -86,7 +86,7 @@ class AstWalker {
       Resource imported = resources.importedResource(anImport, resourceSet);
       if (imported == null) continue;
       Protobuf rootOfImported = modelFinder.rootOf(imported);
-      if (rootOfImported instanceof NonProto2) continue;
+      if (!protobufs.isProto2(rootOfImported)) continue;
       if (rootOfImported != null) {
         descriptions.addAll(publicImported(rootOfImported, scopeFinder, criteria));
         if (arePackagesRelated(fromImporter, rootOfImported)) {
@@ -101,7 +101,7 @@ class AstWalker {
   }
 
   private Collection<IEObjectDescription> publicImported(Protobuf start, ScopeFinder scopeFinder, Object criteria) {
-    if (start instanceof NonProto2) return emptySet();
+    if (!protobufs.isProto2(start)) return emptySet();
     List<Import> allImports = modelFinder.publicImportsIn(start);
     if (allImports.isEmpty()) return emptyList();
     ResourceSet resourceSet = start.eResource().getResourceSet();

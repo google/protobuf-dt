@@ -20,24 +20,24 @@ import org.eclipse.xtext.util.Pair;
 import org.eclipse.xtext.validation.*;
 
 import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.parser.NonProto2;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.Inject;
 
 /**
  * Verifies that imports only refer to "proto2" files.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ImportValidator extends AbstractDeclarativeValidator {
 
   @Inject private ModelFinder finder;
+  @Inject private Protobufs protobufs;
   @Inject private Resources resources;
 
   @Override public void register(EValidatorRegistrar registrar) {}
 
   /**
-   * Verifies that the imports in the given root only refer to "proto2" files. If non-proto2 imports are found, this 
+   * Verifies that the imports in the given root only refer to "proto2" files. If non-proto2 imports are found, this
    * validator creates warning markers for such imports.
    * @param root the root containing the imports to check.
    */
@@ -48,7 +48,7 @@ public class ImportValidator extends AbstractDeclarativeValidator {
 
   private void warnIfNonProto2ImportsFound(Resource resource) {
     Protobuf root = finder.rootOf(resource);
-    if (isNotProto2(root)) return;
+    if (!protobufs.isProto2(root)) return;
     ResourceSet resourceSet = resource.getResourceSet();
     boolean hasNonProto2 = false;
     List<Pair<Import, Resource>> resourcesToCheck = new ArrayList<Pair<Import, Resource>>();
@@ -57,7 +57,7 @@ public class ImportValidator extends AbstractDeclarativeValidator {
     for (Import anImport : finder.importsIn(root)) {
       Resource imported = resources.importedResource(anImport, resourceSet);
       checked.add(imported.getURI());
-      if (isNotProto2(finder.rootOf(imported))) {
+      if (!isProto2(imported)) {
         hasNonProto2 = true;
         warnNonProto2ImportFoundIn(anImport);
         continue;
@@ -75,14 +75,12 @@ public class ImportValidator extends AbstractDeclarativeValidator {
 
   private boolean hasNonProto2(Pair<Import, Resource> toCheck, Set<URI> checked, ResourceSet resourceSet) {
     Protobuf root = finder.rootOf(toCheck.getSecond());
-    if (isNotProto2(root)) return false;
+    if (!protobufs.isProto2(root)) return false;
     List<Pair<Import, Resource>> resourcesToCheck = new ArrayList<Pair<Import, Resource>>();
     for (Import anImport : finder.importsIn(root)) {
       Resource imported = resources.importedResource(anImport, resourceSet);
       if (checked.contains(imported.getURI())) continue;
-      if (isNotProto2(finder.rootOf(imported))) {
-        return true;
-      }
+      if (!isProto2(imported)) return true;
       resourcesToCheck.add(pair(toCheck.getFirst(), imported));
     }
     for (Pair<Import, Resource> p : resourcesToCheck) {
@@ -91,8 +89,8 @@ public class ImportValidator extends AbstractDeclarativeValidator {
     return false;
   }
 
-  private boolean isNotProto2(Protobuf root) {
-    return root instanceof NonProto2;
+  private boolean isProto2(Resource r) {
+    return protobufs.isProto2(finder.rootOf(r));
   }
 
   private void warnNonProto2ImportFoundIn(Import anImport) {
