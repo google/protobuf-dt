@@ -149,9 +149,12 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       }
       return true;
     }
-    if (OPENING_BRACKET.hasValue(keyword)) return proposeOpeningBracket(context, acceptor);
+    if (OPENING_BRACKET.hasValue(keyword)) {
+      return proposeOpeningBracket(context, acceptor);
+    }
     if (OPENING_CURLY_BRACKET.hasValue(keyword)) {
-      return context.getCurrentModel() instanceof Option;
+      EObject model = context.getCurrentModel();
+      return model instanceof Option || model instanceof ComplexValue;
     }
     if (TRUE.hasValue(keyword) || FALSE.hasValue(keyword)) {
       if (isBoolProposalValid(context)) {
@@ -220,19 +223,22 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   private boolean proposeOpeningBracket(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     EObject model = context.getCurrentModel();
-    if (!(model instanceof MessageField)) return false;
-    MessageField field = (MessageField) model;
-    Modifier modifier = field.getModifier();
-    if (OPTIONAL.equals(modifier)) {
-      CompoundElement display = DEFAULT_EQUAL_IN_BRACKETS;
-      int cursorPosition = display.indexOf(CLOSING_BRACKET);
-      if (properties.isString(field)) {
-        display = DEFAULT_EQUAL_STRING_IN_BRACKETS;
-        cursorPosition++;
+    if (model instanceof ComplexValue) return true;
+    if (model instanceof MessageField) {
+      MessageField field = (MessageField) model;
+      Modifier modifier = field.getModifier();
+      if (OPTIONAL.equals(modifier)) {
+        CompoundElement display = DEFAULT_EQUAL_IN_BRACKETS;
+        int cursorPosition = display.indexOf(CLOSING_BRACKET);
+        if (properties.isString(field)) {
+          display = DEFAULT_EQUAL_STRING_IN_BRACKETS;
+          cursorPosition++;
+        }
+        createAndAccept(display, cursorPosition, context, acceptor);
       }
-      createAndAccept(display, cursorPosition, context, acceptor);
+      return true;
     }
-    return true;
+    return false;
   }
 
   private <T> T extractElementFromContext(ContentAssistContext context, Class<T> type) {
@@ -562,6 +568,16 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeExtensionFieldName_Target(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+  }
+
+  @Override public void completeSimpleValueField_Value(EObject model, Assignment assignment,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    if (!(model instanceof SimpleValueField)) return;
+    SimpleValueField field = (SimpleValueField) model;
+    FieldName name = field.getName();
+    if (name != null) {
+      proposeFieldValue(name.getTarget(), context, acceptor);
+    }
   }
 
   @Override public void completeSimpleValueField_Name(EObject model, Assignment assignment,
