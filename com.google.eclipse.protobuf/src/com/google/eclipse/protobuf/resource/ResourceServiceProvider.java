@@ -12,6 +12,7 @@ package com.google.eclipse.protobuf.resource;
 import com.google.inject.Inject;
 
 import org.eclipse.emf.ecore.*;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.resource.*;
 import org.eclipse.xtext.resource.IGlobalServiceProvider.ResourceServiceProviderImpl;
 
@@ -28,7 +29,8 @@ public class ResourceServiceProvider extends ResourceServiceProviderImpl {
     if (e.eIsProxy()) {
       return findService(((InternalEObject) e).eProxyURI(), serviceType);
     }
-    if (e.eResource() == null) return null;
-    return findService(e.eResource().getURI(), serviceType);
+    Resource resource = e.eResource();
+    if (resource == null) return null;
+    return findService(resource.getURI(), serviceType);
   }
 }

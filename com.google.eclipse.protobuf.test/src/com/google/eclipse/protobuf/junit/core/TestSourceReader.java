@@ -65,7 +65,7 @@ class TestSourceReader {
       while (scanner.hasNextLine()) {
         line = scanner.nextLine().replaceFirst("^\\s*", "");
         if (line.startsWith(COMMENT_START)) {
-          comment.append(line.substring(COMMENT_START.length()));
+          comment.append(line.substring(COMMENT_START.length()).trim());
           continue;
         }
         if (comment.isEmpty()) continue;

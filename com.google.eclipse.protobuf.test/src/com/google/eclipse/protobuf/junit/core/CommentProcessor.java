@@ -26,7 +26,7 @@ class CommentProcessor {
     Scanner scanner = new Scanner(comment);
     String fileName = null;
     while (scanner.hasNextLine()) {
-      String line = scanner.nextLine().trim();
+      String line = scanner.nextLine();
       Matcher matcher = CREATE_FILE_PATTERN.matcher(line);
       if (!matcher.matches()) return comment;
       fileName = matcher.group(1);
