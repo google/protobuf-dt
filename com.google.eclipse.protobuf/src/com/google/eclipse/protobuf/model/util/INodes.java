@@ -97,7 +97,7 @@ public class INodes {
     TerminalRule terminalRule = (TerminalRule) rule;
     return "STRING".equals(terminalRule.getName());
   }
-  
+
   /**
    * Indicates whether the given node is a hidden leaf node.
    * @param node the node to check.
@@ -106,5 +106,15 @@ public class INodes {
   public boolean isHiddenLeafNode(INode node) {
     if (!(node instanceof ILeafNode)) return false;
     return ((ILeafNode) node).isHidden();
+  }
+
+  /**
+   * Returns the text of the given node, with leading and trailing whitespace omitted.
+   * @param node the given node.
+   * @return  the text of the given node, with leading and trailing whitespace omitted.
+   */
+  public String textOf(INode node) {
+    String text = node.getText();
+    return (text == null) ? null : text.trim();
   }
 }

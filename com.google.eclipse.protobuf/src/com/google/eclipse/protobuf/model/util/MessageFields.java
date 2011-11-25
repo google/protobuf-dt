@@ -16,12 +16,12 @@ import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.*;
 
 /**
- * Utility methods related to <code>{@link MessageField}</code>.
+ * Utility methods related to <code>{@link MessageField}</code>s.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton
-public class Fields {
+public class MessageFields {
 
   /**
    * Indicates whether the modifier of the given field is <code>{@link Modifier#OPTIONAL}</code>.

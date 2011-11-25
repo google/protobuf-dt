@@ -27,16 +27,14 @@ import com.google.inject.Inject;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-@ComposedChecks(validators = { ImportValidator.class })
+@ComposedChecks(validators = { DataTypeValidator.class, ImportValidator.class })
 public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
 
   public static final String SYNTAX_IS_NOT_PROTO2_ERROR = "syntaxIsNotProto2";
   public static final String INVALID_FIELD_TAG_NUMBER_ERROR = "invalidFieldTagNumber";
   public static final String MORE_THAN_ONE_PACKAGE_ERROR = "moreThanOnePackage";
 
-  @Inject private FieldOptions fieldOptions;
   @Inject private IndexedElements indexedElements;
-  @Inject private Fields properties;
   @Inject private Protobufs protobufs;
   @Inject private IQualifiedNameProvider qualifiedNameProvider;
   @Inject private ImportUriResolver uriResolver;
@@ -44,20 +42,6 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
   @Check public void checkIsProto2(Protobuf protobuf) {
     if (!protobufs.isProto2(protobuf)) {
       warning(nonProto2, null);
-    }
-  }
-
-  @Check public void checkDefaultValueType(FieldOption option) {
-    if (!fieldOptions.isDefaultValueOption(option)) return;
-    MessageField field = (MessageField) option.eContainer();
-    Value defaultValue = option.getValue();
-    if (properties.isString(field)) {
-      if (defaultValue instanceof StringLink) return;
-      error(expectedString, FIELD_OPTION__VALUE);
-    }
-    if (properties.isBool(field)) {
-      if (defaultValue instanceof BooleanLink) return;
-      error(expectedTrueOrFalse, FIELD_OPTION__VALUE);
     }
   }
 

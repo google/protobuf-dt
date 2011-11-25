@@ -17,6 +17,7 @@ public class Messages extends NLS {
 
   public static String expectedFieldName;
   public static String expectedFieldNumber;
+  public static String expectedIdentifier;
   public static String expectedString;
   public static String expectedSyntaxIdentifier;
   public static String expectedTrueOrFalse;
@@ -24,6 +25,7 @@ public class Messages extends NLS {
   public static String fieldNumbersMustBePositive;
   public static String importingNonProto2;
   public static String importNotFound;
+  public static String literalNotInEnum;
   public static String missingFieldNumber;
   public static String multiplePackages;
   public static String nonProto2;

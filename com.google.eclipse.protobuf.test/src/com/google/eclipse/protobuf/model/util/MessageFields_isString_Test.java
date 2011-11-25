@@ -18,28 +18,18 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.MessageField;
 
 /**
- * Tests for <code>{@link Fields#isBool(MessageField)}</code>.
+ * Tests for <code>{@link MessageFields#isString(MessageField)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Properties_isBool_Test {
+public class MessageFields_isString_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
-  private Fields properties;
+  private MessageFields fields;
 
   @Before public void setUp() {
-    properties = xtext.getInstanceOf(Fields.class);
-  }
-
-  // syntax = "proto2";
-  //
-  // message Person {
-  //   optional bool code = 1;
-  // }
-  @Test public void should_return_true_if_field_is_bool() {
-    MessageField field = xtext.find("code", MessageField.class);
-    assertTrue(properties.isBool(field));
+    fields = xtext.getInstanceOf(MessageFields.class);
   }
 
   // syntax = "proto2";
@@ -47,8 +37,18 @@ public class Properties_isBool_Test {
   // message Person {
   //   optional string name = 1;
   // }
-  @Test public void should_return_false_if_property_is_not_bool() {
+  @Test public void should_return_true_if_field_is_string() {
     MessageField field = xtext.find("name", MessageField.class);
-    assertFalse(properties.isBool(field));
+    assertTrue(fields.isString(field));
+  }
+
+  // syntax = "proto2";
+  //
+  // message Person {
+  //   optional double code = 1;
+  // }
+  @Test public void should_return_false_if_field_is_not_string() {
+    MessageField field = xtext.find("code", MessageField.class);
+    assertFalse(fields.isString(field));
   }
 }

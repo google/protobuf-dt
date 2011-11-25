@@ -12,12 +12,12 @@ package com.google.eclipse.protobuf.ui.labeling;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
 import static org.eclipse.jface.viewers.StyledString.DECORATIONS_STYLER;
 
+import java.util.List;
+
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.xtext.nodemodel.INode;
-
-import java.util.List;
 
 import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.naming.NameResolver;
@@ -32,9 +32,9 @@ import com.google.inject.*;
 @Singleton public class Labels {
 
   @Inject private NameResolver nameResolver;
+  @Inject private MessageFields messageFields;
   @Inject private INodes nodes;
   @Inject private Options options;
-  @Inject private Fields properties;
 
   public Object labelFor(Object o) {
     if (o instanceof Extensions) {
@@ -70,7 +70,7 @@ import com.google.inject.*;
     }
     return null;
   }
-  
+
   private Object labelFor(Extensions extensions) {
     StringBuilder builder = new StringBuilder();
     EList<Range> ranges = extensions.getRanges();
@@ -86,7 +86,7 @@ import com.google.inject.*;
     }
     return builder.toString();
   }
-  
+
   private Object labelFor(Import anImport) {
     INode node = nodes.firstNodeForFeature(anImport, IMPORT__IMPORT_URI);
     if (node == null) return anImport.getImportURI();
@@ -106,7 +106,7 @@ import com.google.inject.*;
 
   private Object labelFor(MessageField field) {
     StyledString text = new StyledString(nameResolver.nameOf(field));
-    String typeName = properties.typeNameOf(field);
+    String typeName = messageFields.typeNameOf(field);
     if (typeName == null) typeName = "<unresolved reference>"; // TODO move to
                                                                // properties
                                                                // file

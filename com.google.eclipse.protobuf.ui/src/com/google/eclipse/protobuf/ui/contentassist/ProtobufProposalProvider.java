@@ -47,7 +47,6 @@ import com.google.inject.Inject;
  */
 public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
-
   @Inject private IEObjectDescriptionChooser descriptionChooser;
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private FieldOptions fieldOptions;
@@ -56,8 +55,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Inject private IndexedElements indexedElements;
   @Inject private PluginImageHelper imageHelper;
   @Inject private Literals literals;
+  @Inject private MessageFields messageFields;
   @Inject private Options options;
-  @Inject private Fields properties;
 
   @Override public void completeProtobuf_Syntax(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {}
@@ -83,7 +82,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     }
   }
 
-  @Override public void completeMessageLink_Target(EObject model, Assignment assignment, ContentAssistContext context, 
+  @Override public void completeMessageLink_Target(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     Collection<IEObjectDescription> scope = emptySet();
     if (model instanceof MessageExtension) {
@@ -99,7 +98,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       proposeAndAccept(d, image, context, acceptor);
     }
   }
-  
+
   @Override public void completeNativeOption_Source(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
@@ -185,7 +184,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   private boolean isKeyword(EObject object, CommonKeyword keyword) {
     return object instanceof Keyword && keyword.hasValue(((Keyword) object).getValue());
   }
-  
+
   private void proposeEqualProto2(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     proposeAndAccept(EQUAL_PROTO2_IN_QUOTES, context, acceptor);
   }
@@ -197,12 +196,12 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   private boolean isBoolProposalValid(ContentAssistContext context) {
     MessageField field = fieldFrom(context);
-    return field != null && properties.isBool(field);
+    return field != null && messageFields.isBool(field);
   }
 
   private boolean isNanProposalValid(ContentAssistContext context) {
     MessageField field = fieldFrom(context);
-    return field != null && properties.mayBeNan(field);
+    return field != null && messageFields.mayBeNan(field);
   }
 
   private MessageField fieldFrom(ContentAssistContext context) {
@@ -230,7 +229,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       if (OPTIONAL.equals(modifier)) {
         CompoundElement display = DEFAULT_EQUAL_IN_BRACKETS;
         int cursorPosition = display.indexOf(CLOSING_BRACKET);
-        if (properties.isString(field)) {
+        if (messageFields.isString(field)) {
           display = DEFAULT_EQUAL_STRING_IN_BRACKETS;
           cursorPosition++;
         }
@@ -266,13 +265,13 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       field = (MessageField) model.eContainer();
     }
     if (field == null) return;
-    if (!properties.isOptional(field)) return;
+    if (!messageFields.isOptional(field)) return;
     Enum enumType = finder.enumTypeOf(field);
     if (enumType != null) {
       proposeAndAccept(enumType, context, acceptor);
     }
   }
-  
+
   @Override public void completeMessageField_Index(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     long index = indexedElements.calculateTagNumberOf((MessageField) model);
@@ -285,7 +284,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeMessageField_Name(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    String typeName = toFirstLower(properties.typeNameOf((MessageField) model));
+    String typeName = toFirstLower(messageFields.typeNameOf((MessageField) model));
     int index = 1;
     String name = typeName + index;
     for (EObject o : model.eContainer().eContents()) {
@@ -343,10 +342,10 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ICompletionProposalAcceptor acceptor) {
     if (!(e instanceof MessageField)) return;
     MessageField field = (MessageField) e;
-    if (!properties.isOptional(field) || existingOptionNames.contains(DEFAULT.toString())) return;
+    if (!messageFields.isOptional(field) || existingOptionNames.contains(DEFAULT.toString())) return;
     CompoundElement display = DEFAULT_EQUAL;
     int cursorPosition = display.charCount();
-    if (properties.isString(field)) {
+    if (messageFields.isString(field)) {
       display = DEFAULT_EQUAL_STRING;
       cursorPosition++;
     }
@@ -356,7 +355,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   private boolean canBePacked(IndexedElement e) {
     if (!(e instanceof MessageField)) return false;
     MessageField field = (MessageField) e;
-    return properties.isPrimitive(field) && REPEATED.equals(field.getModifier());
+    return messageFields.isPrimitive(field) && REPEATED.equals(field.getModifier());
   }
 
   private void proposeOption(MessageField optionSource, ContentAssistContext context,
@@ -373,14 +372,14 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     }
     acceptor.accept(proposal);
   }
-  
+
   private Object defaultValueOf(MessageField field) {
-    if (properties.isBool(field)) return TRUE;
-    if (properties.isString(field)) return EMPTY_STRING;
+    if (messageFields.isBool(field)) return TRUE;
+    if (messageFields.isString(field)) return EMPTY_STRING;
     return null;
   }
-  
-  @Override public void completeDefaultValueFieldOption_Value(EObject model, Assignment assignment, 
+
+  @Override public void completeDefaultValueFieldOption_Value(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     MessageField field = null;
     if (model instanceof DefaultValueFieldOption) {
@@ -390,7 +389,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       field = (MessageField) model;
     }
     if (field == null) return;
-    if (!properties.isOptional(field)) return;
+    if (!messageFields.isOptional(field)) return;
     proposeFieldValue(field, context, acceptor);
   }
 
@@ -410,11 +409,11 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   private boolean proposePrimitiveValues(MessageField field, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    if (properties.isBool(field)) {
+    if (messageFields.isBool(field)) {
       proposeBooleanValues(context, acceptor);
       return true;
     }
-    if (properties.isString(field)) {
+    if (messageFields.isString(field)) {
       proposeEmptyString(context, acceptor);
       return true;
     }
@@ -493,7 +492,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     proposeAndAccept(scoping().allPossibleNormalFieldsOf(option), context, acceptor);
     proposeExtensionFields(scoping().allPossibleExtensionFieldsOf(option), context, acceptor);
   }
-  
+
   private void proposeExtensionFields(Collection<IEObjectDescription> scope, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     String format = "(%s)";
@@ -555,7 +554,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       proposeAndAccept(enumType, context, acceptor);
     }
   }
-  
+
   private void proposeAndAccept(Enum enumType, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     Image image = imageHelper.getImage(images.imageFor(Literal.class));
     for (Literal literal : getAllContentsOfType(enumType, Literal.class))
@@ -621,7 +620,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   private Scoping scoping() {
     return (ProtobufScopeProvider) super.getScopeProvider();
   }
-  
+
   @Override public ICompletionProposal createCompletionProposal(String proposal, String displayString, Image image,
       ContentAssistContext contentAssistContext) {
     StyledString styled = null;

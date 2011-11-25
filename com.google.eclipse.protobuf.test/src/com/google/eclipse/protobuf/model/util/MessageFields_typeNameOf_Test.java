@@ -19,18 +19,18 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.MessageField;
 
 /**
- * Tests for <code>{@link Fields#typeNameOf(MessageField)}</code>.
+ * Tests for <code>{@link MessageFields#typeNameOf(MessageField)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Properties_typeNameOf_Test {
+public class MessageFields_typeNameOf_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
-  private Fields properties;
+  private MessageFields fields;
 
   @Before public void setUp() {
-    properties = xtext.getInstanceOf(Fields.class);
+    fields = xtext.getInstanceOf(MessageFields.class);
   }
 
   // syntax = "proto2";
@@ -40,7 +40,7 @@ public class Properties_typeNameOf_Test {
   // }
   @Test public void should_return_name_of_scalar() {
     MessageField field = xtext.find("name", MessageField.class);
-    assertThat(properties.typeNameOf(field), equalTo("string"));
+    assertThat(fields.typeNameOf(field), equalTo("string"));
   }
 
   // syntax = "proto2";
@@ -55,6 +55,6 @@ public class Properties_typeNameOf_Test {
   // }
   @Test public void should_return_name_of_type() {
     MessageField field = xtext.find("number", MessageField.class);
-    assertThat(properties.typeNameOf(field), equalTo("PhoneNumber"));
+    assertThat(fields.typeNameOf(field), equalTo("PhoneNumber"));
   }
 }
