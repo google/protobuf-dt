@@ -10,8 +10,7 @@ package com.google.eclipse.protobuf.ui.validation;
 
 import static org.eclipse.core.resources.IResource.DEPTH_ZERO;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.inject.Inject;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.*;
@@ -19,17 +18,18 @@ import org.eclipse.xtext.ui.editor.validation.MarkerCreator;
 import org.eclipse.xtext.ui.validation.DefaultResourceUIValidatorExtension;
 import org.eclipse.xtext.validation.*;
 
-import java.util.List;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.inject.Inject;
 
 /**
  * Creates/deletes markers of type "Protocol Buffer Problem" instead of the default "Xtext Check."
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufResourceUIValidatorExtension extends DefaultResourceUIValidatorExtension {
 
-  static final String EDITOR_CHECK = "com.google.eclipse.protobuf.ui.editorMarker";
-  
+  public static final String EDITOR_CHECK = "com.google.eclipse.protobuf.ui.editorMarker";
+
   @VisibleForTesting
   @Inject MarkerCreator markerCreator;
 

@@ -36,37 +36,80 @@ public class DataTypeValidator extends AbstractDeclarativeValidator {
   @Check public void checkValueOfDefaultTypeMatchesFieldType(FieldOption option) {
     if (fieldOptions.isDefaultValueOption(option)) {
       MessageField field = (MessageField) option.eContainer();
-      INode nodeForValueFeature = nodes.firstNodeForFeature(option, FIELD_OPTION__VALUE);
-      checkValueTypeMatchesFieldType(option.getValue(), nodeForValueFeature, field);
+      checkValueTypeMatchesFieldType(option, field);
     }
   }
 
-  private  void checkValueTypeMatchesFieldType(Value value, INode nodeForValueFeature, MessageField field) {
-    if (messageFields.isString(field)) {
-      if (!(value instanceof StringLink)) {
-        error(expectedString, FIELD_OPTION__VALUE);
-      }
-      return;
+  private  void checkValueTypeMatchesFieldType(FieldOption option, MessageField field) {
+    if (validateBool(option, field)) return;
+    if (validateFloatingPointNumber(option, field)) return;
+    if (validateInteger(option, field)) return;
+    if (validateString(option, field)) return;
+    validateEnumLiteral(option, field);
+  }
+
+  private boolean validateBool(FieldOption option, MessageField field) {
+    if (!messageFields.isBool(field)) return false;
+    Value value = option.getValue();
+    if (!(value instanceof BooleanLink)) {
+      error(expectedTrueOrFalse, FIELD_OPTION__VALUE);
     }
-    if (messageFields.isBool(field)) {
-      if (!(value instanceof BooleanLink)) {
-        error(expectedTrueOrFalse, FIELD_OPTION__VALUE);
-      }
-      return;
+    return true;
+  }
+
+  private boolean validateFloatingPointNumber(FieldOption option, MessageField field) {
+    if (!messageFields.isFloatingPointNumber(field)) return false;
+    Value value = option.getValue();
+    if (!(value instanceof DoubleLink) && !(value instanceof LongLink)) {
+      error(expectedNumber, FIELD_OPTION__VALUE);
     }
+    return true;
+  }
+
+  private boolean validateInteger(FieldOption option, MessageField field) {
+    if (!messageFields.isInteger(field)) return false;
+    Value value = option.getValue();
+    if (!(value instanceof LongLink)) {
+      error(expectedInteger, FIELD_OPTION__VALUE);
+      return true;
+    }
+    if (messageFields.isUnsignedInteger(field)) {
+      Long longValue = ((LongLink) value).getTarget();
+      if (longValue < 0) {
+        error(expectedPositiveNumber, FIELD_OPTION__VALUE);
+      }
+    }
+    return true;
+  }
+
+  private boolean validateString(FieldOption option, MessageField field) {
+    if (!messageFields.isString(field)) return false;
+    Value value = option.getValue();
+    if (!(value instanceof StringLink)) {
+      error(expectedString, FIELD_OPTION__VALUE);
+    }
+    return true;
+  }
+
+  private boolean validateEnumLiteral(FieldOption option, MessageField field) {
+    Value value = option.getValue();
     Enum anEnum = modelFinder.enumTypeOf(field);
-    if (anEnum != null) {
-      if (!(value instanceof LiteralLink)) {
-        error(expectedIdentifier, FIELD_OPTION__VALUE);
-      }
-      Literal literal = ((LiteralLink) value).getTarget();
-      if (!anEnum.equals(literal.eContainer())) {
-        QualifiedName enumFqn = fqnProvider.getFullyQualifiedName(anEnum);
-        String literalName = nodes.textOf(nodeForValueFeature);
-        String msg = String.format(literalNotInEnum, enumFqn, literalName);
-        error(msg, FIELD_OPTION__VALUE);
-      }
-      return;
+    if (anEnum == null) return false;
+    if (!(value instanceof LiteralLink)) {
+      error(expectedIdentifier, FIELD_OPTION__VALUE);
+      return true;
     }
+    Literal literal = ((LiteralLink) value).getTarget();
+    if (!anEnum.equals(literal.eContainer())) {
+      QualifiedName enumFqn = fqnProvider.getFullyQualifiedName(anEnum);
+      String literalName = nodes.textOf(nodeForValueFeatureIn(option));
+      String msg = String.format(literalNotInEnum, enumFqn, literalName);
+      error(msg, FIELD_OPTION__VALUE);
+    }
+    return true;
+  }
+
+  private INode nodeForValueFeatureIn(FieldOption option) {
+    return nodes.firstNodeForFeature(option, FIELD_OPTION__VALUE);
   }
 }

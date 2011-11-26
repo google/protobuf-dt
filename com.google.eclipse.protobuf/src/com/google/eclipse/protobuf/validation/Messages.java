@@ -18,6 +18,9 @@ public class Messages extends NLS {
   public static String expectedFieldName;
   public static String expectedFieldNumber;
   public static String expectedIdentifier;
+  public static String expectedInteger;
+  public static String expectedNumber;
+  public static String expectedPositiveNumber;
   public static String expectedString;
   public static String expectedSyntaxIdentifier;
   public static String expectedTrueOrFalse;

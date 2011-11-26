@@ -13,7 +13,7 @@ import static com.google.eclipse.protobuf.protobuf.Modifier.OPTIONAL;
 
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.protobuf.*;
-import com.google.inject.*;
+import com.google.inject.Singleton;
 
 /**
  * Utility methods related to <code>{@link MessageField}</code>s.
@@ -56,13 +56,22 @@ public class MessageFields {
   }
 
   /**
-   * Indicates whether the given field can accept "nan" as its default value.
+   * Indicates whether the given field is of type {@code float} or {@code double}.
    * @param field the given field.
-   * @return {@code true} if the given field can accept "nan" as its default value, {@code false} otherwise.
+   * @return {@code true} if the given field is a floating point number, {@code false} otherwise.
    */
-  public boolean mayBeNan(MessageField field) {
-    String typeName = typeNameOf(field);
-    return FLOAT.hasValue(typeName) || DOUBLE.hasValue(typeName);
+  public boolean isFloatingPointNumber(MessageField field) {
+    return isScalarType(field, FLOAT, DOUBLE);
+  }
+
+  /**
+   * Indicates whether the given field is of type {@code fixed32}, {@code fixed64}, {@code int32}, {@code int64},
+   * {@code sfixed32}, {@code sfixed64}, {@code sint32}, {@code sint64}, {@code uint32} or {@code uint64}.
+   * @param field the given field.
+   * @return {@code true} if the given field is an integer, {@code false} otherwise.
+   */
+  public boolean isInteger(MessageField field) {
+    return isScalarType(field, FIXED32, FIXED64, INT32, INT64, SFIXED32, SFIXED64, SINT32, SINT64, UINT32, UINT64);
   }
 
   /**
@@ -74,8 +83,24 @@ public class MessageFields {
     return isScalarType(field, STRING);
   }
 
-  private boolean isScalarType(MessageField field, CommonKeyword typeKeyword) {
-    return typeKeyword.hasValue(typeNameOf(field));
+  /**
+   * Indicates whether the given field is of type {@code fixed32}, {@code fixed64}, {@code uint32} or {@code uint64}.
+   * @param field the given field.
+   * @return {@code true} if the given field is an unsigned integer, {@code false} otherwise.
+   */
+  public boolean isUnsignedInteger(MessageField field) {
+    return isScalarType(field, FIXED32, FIXED64, UINT32, UINT64);
+  }
+
+  private boolean isScalarType(MessageField field, CommonKeyword...scalarNames) {
+    TypeLink link = field.getType();
+    if (link instanceof ScalarTypeLink) {
+      String typeName = ((ScalarTypeLink) link).getTarget().getName();
+      for (CommonKeyword scalarName : scalarNames) {
+        if (scalarName.hasValue(typeName)) return true;
+      }
+    }
+    return false;
   }
 
   /**

@@ -201,7 +201,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   private boolean isNanProposalValid(ContentAssistContext context) {
     MessageField field = fieldFrom(context);
-    return field != null && messageFields.mayBeNan(field);
+    return field != null && messageFields.isFloatingPointNumber(field);
   }
 
   private MessageField fieldFrom(ContentAssistContext context) {

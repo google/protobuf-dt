@@ -8,9 +8,9 @@
  */
 package com.google.eclipse.protobuf.ui.builder.protoc;
 
+import static com.google.eclipse.protobuf.ui.validation.ProtobufResourceUIValidatorExtension.EDITOR_CHECK;
 import static org.eclipse.core.resources.IMarker.*;
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
-import static org.eclipse.xtext.ui.MarkerTypes.FAST_VALIDATION;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
@@ -30,7 +30,7 @@ class ProtocMarkerFactory {
   ProtocMarkerFactory(IFile file) throws CoreException {
     this.file = file;
     file.deleteMarkers(PROTOC_CHECK, true, DEPTH_INFINITE);
-    markers = file.findMarkers(FAST_VALIDATION, true, DEPTH_INFINITE);
+    markers = file.findMarkers(EDITOR_CHECK, true, DEPTH_INFINITE);
   }
 
   void createErrorIfNecessary(String fileName, String message, int lineNumber) throws CoreException {
