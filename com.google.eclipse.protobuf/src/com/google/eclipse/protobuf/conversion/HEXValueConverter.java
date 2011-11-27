@@ -39,7 +39,8 @@ public class HEXValueConverter extends AbstractLexerBasedConverter<Long> {
     String withoutZeroX = removeZeroX(string);
     try {
       BigInteger value = new BigInteger(withoutZeroX, 16);
-      return value.longValue();
+      long longValue = value.longValue();
+      return longValue != -1 ? longValue : 1L;
     } catch (NumberFormatException e) {
       throw parsingError(string, node, e);
     }

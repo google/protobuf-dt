@@ -77,7 +77,7 @@ public class DataTypeValidator extends AbstractDeclarativeValidator {
       return true;
     }
     if (messageFields.isUnsignedInteger(field)) {
-      Long longValue = ((LongLink) value).getTarget();
+      long longValue = longValueIn(value);
       if (longValue < 0) {
         error(expectedPositiveNumber, FIELD_OPTION__VALUE);
       }
@@ -89,6 +89,18 @@ public class DataTypeValidator extends AbstractDeclarativeValidator {
     return value instanceof LongLink || value instanceof HexNumberLink;
   }
 
+  private long longValueIn(Value value) {
+    if (value instanceof LongLink) {
+      LongLink link = (LongLink) value;
+      return link.getTarget();
+    }
+    if (value instanceof HexNumberLink) {
+      HexNumberLink link = (HexNumberLink) value;
+      return link.getTarget();
+    }
+    throw new IllegalArgumentException(value + " does not belong to an integer type");
+  }
+  
   private boolean validateString(FieldOption option, MessageField field) {
     if (!messageFields.isBytes(field) && !messageFields.isString(field)) return false;
     Value value = option.getValue();
