@@ -110,10 +110,11 @@ public class INodes {
 
   /**
    * Returns the text of the given node, with leading and trailing whitespace omitted.
-   * @param node the given node.
-   * @return  the text of the given node, with leading and trailing whitespace omitted.
+   * @param node the given node, may be {@code null}.
+   * @return the text of the given node, with leading and trailing whitespace omitted.
    */
   public String textOf(INode node) {
+    if (node == null) return null;
     String text = node.getText();
     return (text == null) ? null : text.trim();
   }

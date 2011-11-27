@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.validation;
 
+import static com.google.eclipse.protobuf.grammar.ValidSyntax.isProto2Syntax;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
 import static com.google.eclipse.protobuf.validation.Messages.*;
 import static java.lang.String.format;
@@ -67,7 +68,7 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
 
   @Check public void checkSyntaxIsProto2(Syntax syntax) {
     String name = syntax.getName();
-    if ("proto2".equals(name)) return;
+    if (isProto2Syntax(name)) return;
     String msg = (name == null) ? expectedSyntaxIdentifier : format(unrecognizedSyntaxIdentifier, name);
     error(msg, syntax, SYNTAX__NAME, SYNTAX_IS_NOT_PROTO2_ERROR);
   }

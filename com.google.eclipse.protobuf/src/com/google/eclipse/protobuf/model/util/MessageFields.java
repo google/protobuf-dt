@@ -56,6 +56,15 @@ public class MessageFields {
   }
 
   /**
+   * Indicates whether the given field is of type {@code bytes}.
+   * @param field the given field.
+   * @return {@code true} if the given field is of type {@code bytes}, {@code false} otherwise.
+   */
+  public boolean isBytes(MessageField field) {
+    return isScalarType(field, BYTES);
+  }
+
+  /**
    * Indicates whether the given field is of type {@code float} or {@code double}.
    * @param field the given field.
    * @return {@code true} if the given field is a floating point number, {@code false} otherwise.

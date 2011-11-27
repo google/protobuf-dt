@@ -25,6 +25,9 @@ import com.google.inject.Inject;
  */
 public class DataTypeValidator extends AbstractDeclarativeValidator {
 
+  public static final String EXPECTED_BOOL_ERROR = "expectedBool";
+  public static final String EXPECTED_STRING_ERROR = "expectedString";
+
   @Override public void register(EValidatorRegistrar registrar) {}
 
   @Inject private FieldOptions fieldOptions;
@@ -52,7 +55,7 @@ public class DataTypeValidator extends AbstractDeclarativeValidator {
     if (!messageFields.isBool(field)) return false;
     Value value = option.getValue();
     if (!(value instanceof BooleanLink)) {
-      error(expectedTrueOrFalse, FIELD_OPTION__VALUE);
+      error(expectedTrueOrFalse, option, FIELD_OPTION__VALUE, EXPECTED_BOOL_ERROR);
     }
     return true;
   }
@@ -83,10 +86,10 @@ public class DataTypeValidator extends AbstractDeclarativeValidator {
   }
 
   private boolean validateString(FieldOption option, MessageField field) {
-    if (!messageFields.isString(field)) return false;
+    if (!messageFields.isBytes(field) && !messageFields.isString(field)) return false;
     Value value = option.getValue();
     if (!(value instanceof StringLink)) {
-      error(expectedString, FIELD_OPTION__VALUE);
+      error(expectedString, option, FIELD_OPTION__VALUE, EXPECTED_STRING_ERROR);
     }
     return true;
   }

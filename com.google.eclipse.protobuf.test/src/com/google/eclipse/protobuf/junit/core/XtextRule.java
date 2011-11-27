@@ -73,10 +73,8 @@ public class XtextRule implements MethodRule {
     boolean ignoreSyntaxErrors = shouldIgnoreSyntaxErrorsIn(text);
     resource = resourceFrom(new StringInputStream(text));
     IParseResult parseResult = resource.getParseResult();
-    if (ignoreSyntaxErrors) {
-      root = (Protobuf) parseResult.getRootASTElement();
-      return;
-    }
+    root = (Protobuf) parseResult.getRootASTElement();
+    if (ignoreSyntaxErrors) return;
     if (!parseResult.hasSyntaxErrors()) {
       if (root.getSyntax() == null) {
         throw new IllegalStateException("Please specify 'proto2' syntax");

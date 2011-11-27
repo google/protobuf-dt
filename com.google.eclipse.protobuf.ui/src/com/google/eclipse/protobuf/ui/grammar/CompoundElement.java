@@ -9,6 +9,7 @@
 package com.google.eclipse.protobuf.ui.grammar;
 
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.*;
+import static com.google.eclipse.protobuf.grammar.ValidSyntax.proto2;
 import static com.google.eclipse.protobuf.util.CommonWords.space;
 
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
@@ -26,7 +27,7 @@ public enum CompoundElement {
   EMPTY_STRING(join(QUOTE, QUOTE)),
   DEFAULT_EQUAL_STRING(joinWithWhitespace(DEFAULT_EQUAL, EMPTY_STRING)),
   DEFAULT_EQUAL_STRING_IN_BRACKETS(inBrackets(DEFAULT_EQUAL_STRING)),
-  PROTO2_IN_QUOTES(join(QUOTE, "proto2", QUOTE, SEMICOLON)),
+  PROTO2_IN_QUOTES(join(QUOTE, proto2(), QUOTE, SEMICOLON)),
   EQUAL_PROTO2_IN_QUOTES(joinWithWhitespace(EQUAL, PROTO2_IN_QUOTES));
 
   private final String value;

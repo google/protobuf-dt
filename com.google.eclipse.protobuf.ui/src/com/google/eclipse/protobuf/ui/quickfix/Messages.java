@@ -16,11 +16,10 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
 
-  public static String changeToProto2;
-  public static String changeToProto2Label;
-  public static String regenerateTagNumber;
+  public static String changeValueDescription;
+  public static String changeValueLabel;
   public static String regenerateTagNumberLabel;
-  public static String removeDuplicatePackage;
+  public static String regenerateTagNumberDescription;
   public static String removeDuplicatePackageLabel;
 
   static {
