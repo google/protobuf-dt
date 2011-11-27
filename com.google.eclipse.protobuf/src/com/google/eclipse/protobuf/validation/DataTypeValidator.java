@@ -63,7 +63,7 @@ public class DataTypeValidator extends AbstractDeclarativeValidator {
   private boolean validateFloatingPointNumber(FieldOption option, MessageField field) {
     if (!messageFields.isFloatingPointNumber(field)) return false;
     Value value = option.getValue();
-    if (!(value instanceof DoubleLink) && !(value instanceof LongLink)) {
+    if (!(value instanceof DoubleLink) && !isInteger(value)) {
       error(expectedNumber, FIELD_OPTION__VALUE);
     }
     return true;
@@ -72,7 +72,7 @@ public class DataTypeValidator extends AbstractDeclarativeValidator {
   private boolean validateInteger(FieldOption option, MessageField field) {
     if (!messageFields.isInteger(field)) return false;
     Value value = option.getValue();
-    if (!(value instanceof LongLink)) {
+    if (!isInteger(value)) {
       error(expectedInteger, FIELD_OPTION__VALUE);
       return true;
     }
@@ -83,6 +83,10 @@ public class DataTypeValidator extends AbstractDeclarativeValidator {
       }
     }
     return true;
+  }
+
+  private boolean isInteger(Value value) {
+    return value instanceof LongLink || value instanceof HexNumberLink;
   }
 
   private boolean validateString(FieldOption option, MessageField field) {
