@@ -9,7 +9,7 @@
 package com.google.eclipse.protobuf.ui.builder.protoc;
 
 import static com.google.eclipse.protobuf.junit.stubs.resources.MarkerStub.error;
-import static org.eclipse.xtext.ui.MarkerTypes.FAST_VALIDATION;
+import static com.google.eclipse.protobuf.ui.validation.ProtobufResourceUIValidatorExtension.EDITOR_CHECK;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -38,7 +38,7 @@ public class ProtocMarkerFactory_createErrorIfNecessary_Test {
     file = new FileStub();
     file.setLocation(new Path("home/alex/protos/test1.proto"));
     file.createMarker(PROTOC);
-    fastValidationMarker = error(FAST_VALIDATION, "Expected field name.", 68);
+    fastValidationMarker = error(EDITOR_CHECK, "Expected field name.", 68);
     file.addMarker(fastValidationMarker);
     markerFactory = new ProtocMarkerFactory(file);
   }

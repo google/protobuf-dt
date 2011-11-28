@@ -236,7 +236,9 @@ DoubleLink:
   target=DOUBLE;
 
 terminal DOUBLE returns ecore::EDouble:
-  (('-')? (NUMBER)* ('.' (NUMBER)+)? (('e'|'E')('-')? (NUMBER)+)?) | 'nan' | 'inf' | '-inf';
+  ('-')? (NUMBER)* ('.' (NUMBER)+)? |
+  ('-')? (NUMBER)+ (('e'|'E')('-')? (NUMBER)+) | 
+  'nan' | 'inf' | '-inf';
 
 terminal NUMBER:
   '0'..'9';

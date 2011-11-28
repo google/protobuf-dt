@@ -33,6 +33,15 @@ public class LONGValueConverter extends AbstractLexerBasedConverter<Long> {
   @Override public Long toValue(String string, INode node) throws ValueConverterException {
     if (isEmpty(string)) throw new ValueConverterException("Couldn't convert empty string to long.", node, null);
     try {
+      return Long.parseLong(string, 10);
+    } catch (NumberFormatException e) {
+      return parseAgain(string, node);
+    }
+  }
+  
+  private Long parseAgain(String string, INode node) {
+    // error could be overflow, parse again with BigInteger.
+    try {
       BigInteger value = new BigInteger(string, 10);
       long longValue = value.longValue();
       return longValue != -1 ? longValue : 1L;
