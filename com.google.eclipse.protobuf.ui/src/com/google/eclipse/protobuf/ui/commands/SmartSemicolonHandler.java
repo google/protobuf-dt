@@ -64,16 +64,10 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
     int lineAtOffset = styledText.getLineAtOffset(offset);
     int offsetAtLine = styledText.getOffsetAtLine(lineAtOffset);
     String line = styledText.getLine(lineAtOffset);
-    ContentToInsert newContent = ContentToInsert.RETRY;
-    int retryCount = 2;
-    for (int i = 0; i < retryCount; i++) {
-      if (!newContent.equals(ContentToInsert.RETRY)) break;
-      newContent = newContent(editor, styledText, line);
-      if (newContent.equals(ContentToInsert.NONE)) return;
-      if (newContent.equals(ContentToInsert.INSERT_TAG_NUMBER)) {
-        refreshHighlighting(editor);
-        return;
-      }
+    ContentToInsert newContent = newContent(editor, styledText, line);
+    if (newContent.equals(ContentToInsert.TAG_NUMBER_INSERTED)) {
+      refreshHighlighting(editor);
+      return;
     }
     if (newContent.location.equals(Location.END)) {
       offset = offsetAtLine + line.length();
@@ -93,7 +87,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
           ContentAssistContext[] context = contextFactory.create(editor.getInternalSourceViewer(), offset, resource);
           for (ContentAssistContext c : context) {
             if (nodes.belongsToCommentOrString(c.getCurrentNode())) continue;
-            EObject model = c.getCurrentModel();
+            EObject model = modelFrom(c);
             if (model instanceof FieldOption) {
               FieldOption option = (FieldOption) model;
               model = option.eContainer();
@@ -101,7 +95,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
             if (model instanceof Literal) {
               Literal literal = (Literal) model;
               ContentToInsert content = newContent(literal);
-              if (content.equals(ContentToInsert.INSERT_TAG_NUMBER)) {
+              if (content.equals(ContentToInsert.TAG_NUMBER_INSERTED)) {
                 long index = literals.calculateIndexOf(literal);
                 literal.setIndex(index);
                 updateIndexInCommentOfParent(literal, index, document);
@@ -111,7 +105,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
             if (model instanceof MessageField) {
               MessageField field = (MessageField) model;
               ContentToInsert content = newContent(field);
-              if (content.equals(ContentToInsert.INSERT_TAG_NUMBER)) {
+              if (content.equals(ContentToInsert.TAG_NUMBER_INSERTED)) {
                 long index = indexedElements.calculateTagNumberOf(field);
                 field.setIndex(index);
                 updateIndexInCommentOfParent(field, index, document);
@@ -128,9 +122,23 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
     }
   }
 
+  private EObject modelFrom(ContentAssistContext c) {
+    EObject current = c.getCurrentModel();
+    if (isIndexed(current)) return current;
+    return c.getPreviousModel();
+  }
+
+  private boolean isIndexed(EObject e) {
+    return e instanceof MessageField || e instanceof Literal;
+  }
+  
   private ContentToInsert newContent(Literal literal) {
     INode indexNode = nodes.firstNodeForFeature(literal, LITERAL__INDEX);
-    return newContent(indexNode);
+    ContentToInsert content = newContent(indexNode);
+    if (content.equals(ContentToInsert.TAG_NUMBER_INSERTED)) {
+      literal.setIndex(-1); // reset to make at semicolon work when new index is zero (TODO fix bug.)
+    }
+    return content;
   }
 
   private ContentToInsert newContent(MessageField field) {
@@ -140,7 +148,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
 
   private ContentToInsert newContent(INode indexNode) {
     boolean hasIndex = indexNode != null && !isEmpty(indexNode.getText());
-    return hasIndex ? new ContentToInsert(SEMICOLON, Location.END) : ContentToInsert.INSERT_TAG_NUMBER;
+    return hasIndex ? new ContentToInsert(SEMICOLON, Location.END) : ContentToInsert.TAG_NUMBER_INSERTED;
   }
 
   private void updateIndexInCommentOfParent(EObject o, long index, IXtextDocument document) {
@@ -175,9 +183,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
     final String value;
     final Location location;
 
-    static final ContentToInsert NONE = new ContentToInsert();
-    static final ContentToInsert INSERT_TAG_NUMBER = new ContentToInsert();
-    static final ContentToInsert RETRY = new ContentToInsert();
+    static final ContentToInsert TAG_NUMBER_INSERTED = new ContentToInsert();
 
     ContentToInsert() {
       this("", Location.NONE);
