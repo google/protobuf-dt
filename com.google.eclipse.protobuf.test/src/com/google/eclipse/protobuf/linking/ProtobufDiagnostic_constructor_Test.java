@@ -19,7 +19,7 @@ import org.eclipse.xtext.nodemodel.INode;
 import org.junit.*;
 
 /**
- * Tests for <code>{@link ProtobufDiagnostic#ProtobufLinkingDiagnostic(String, String[], String, INode)}</code>
+ * Tests for <code>{@link ProtobufDiagnostic#ProtobufDiagnostic(String, String[], String, INode)}</code>
  * 
  * @author alruiz@google.com (Alex Ruiz)
  */
