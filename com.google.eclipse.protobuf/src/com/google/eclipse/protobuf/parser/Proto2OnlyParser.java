@@ -25,7 +25,8 @@ import com.google.eclipse.protobuf.protobuf.Protobuf;
 public class Proto2OnlyParser extends ProtobufParser {
 
   private static final String[] ERRORS_TO_LOOK_FOR = {
-    "missing EOF at 'c'", "missing EOF at 'parsed'", "missing EOF at 'python'", "no viable alternative at input '<'" };
+    "missing EOF at 'c'", "missing EOF at 'java'", "missing EOF at 'parsed'", "missing EOF at 'python'", 
+    "no viable alternative at input '<'" };
 
   @Override
   protected IParseResult doParse(String ruleName, CharStream in, NodeModelBuilder builder, int initialLookAhead) {
