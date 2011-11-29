@@ -49,9 +49,6 @@ Message:
 MessageElement:
   Option | Extensions | ComplexType | MessageField | MessageExtension;
 
-Extensions:
-  'extensions' ranges+=Range (',' ranges+=Range)* ';';
-
 Range:
   from=LONG ('to' to=RangeMax)?;
 
@@ -65,7 +62,10 @@ Group:
   '}' (';')?;
 
 GroupElement:
-  Option | IndexedElement | Enum | MessageExtension;
+  Option | IndexedElement | ComplexType | MessageExtension | Extensions;
+
+Extensions:
+  'extensions' ranges+=Range (',' ranges+=Range)* ';';
 
 MessageField:
   =>modifier=Modifier type=TypeLink name=Name '=' index=(LONG | HEX)
