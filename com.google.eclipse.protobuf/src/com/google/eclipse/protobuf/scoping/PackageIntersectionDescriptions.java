@@ -1,9 +1,10 @@
 /*
  * Copyright (c) 2011 Google Inc.
- *
- * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License v1.0 which accompanies this distribution, and is available at
- *
+ * 
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
+ * 
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.scoping;
@@ -12,12 +13,11 @@ import static java.util.Collections.emptySet;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
 import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.naming.NameResolver;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.inject.Inject;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
 import java.util.*;
@@ -29,19 +29,19 @@ class PackageIntersectionDescriptions {
 
   @Inject private Packages packages;
   @Inject private QualifiedNames qualifiedNames;
-  @Inject private NameResolver nameResolver;
+  @Inject private IQualifiedNameProvider nameProvider;
 
   // See issue 161
   Collection<IEObjectDescription> intersection(Package fromImporter, Package fromImported, EObject e) {
     if (fromImporter == null || fromImported == null) return emptySet();
-    return intersection(segmentNames(fromImporter), segmentNames(fromImported), e);
+    return intersection2(segmentNames(fromImporter), segmentNames(fromImported), e);
   }
-  
+
   private List<String> segmentNames(Package aPackage) {
     return packages.segmentsOf(aPackage);
   }
-  
-  private Collection<IEObjectDescription> intersection(List<String> packageInImporter, List<String> packageInImported,
+
+  private Collection<IEObjectDescription> intersection2(List<String> packageInImporter, List<String> packageInImported,
       EObject e) {
     int n1Count = packageInImporter.size();
     int n2Count = packageInImported.size();
@@ -53,23 +53,16 @@ class PackageIntersectionDescriptions {
       }
     }
     if (start == 0) return emptySet(); // no intersection found.
-    List<String> intersection = new ArrayList<String>();
-    intersection.add(nameResolver.nameOf(e));
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
-    for (int i = n2Count - 1; i >= 0; i--) {
-      if (i >= start) {
-        intersection.add(0, packageInImported.get(i));
-        continue;
-      }
-      if (i == start - 1) {
-        descriptions.add(create(fqn(intersection), e));
-      }
-      intersection.add(0, packageInImported.get(i));
-      descriptions.add(create(fqn(intersection), e));
+    QualifiedName fqn = nameProvider.getFullyQualifiedName(e);
+    List<String> segments = new ArrayList<String>(fqn.getSegments());
+    for (int i = 0; i < start; i++) {
+      segments.remove(0);
+      descriptions.add(create(fqn(segments), e));
     }
     return descriptions;
   }
-  
+
   private QualifiedName fqn(List<String> segments) {
     return qualifiedNames.createFqn(segments);
   }
