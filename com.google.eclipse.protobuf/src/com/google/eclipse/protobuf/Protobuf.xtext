@@ -21,7 +21,7 @@ Syntax:
   'syntax' '=' name=STRING ';';
 
 ProtobufElement:
-  Package | Import | Option | ComplexType | MessageExtension | Service;
+  Package | Import | Option | ComplexType | TypeExtension | Service;
 
 Package:
   'package' name=PackageName ';';
@@ -39,7 +39,7 @@ PublicImport:
   'import' 'public' importURI=STRING ';';
 
 ComplexType:
-  Message | Enum | Group;
+  Enum | ExtensibleType;
 
 Message:
   'message' name=Name '{'
@@ -47,7 +47,7 @@ Message:
   '}' (';')?;
 
 MessageElement:
-  Option | Extensions | ComplexType | MessageField | MessageExtension;
+  Option | Extensions | ComplexType | MessageField | TypeExtension;
 
 Range:
   from=LONG ('to' to=RangeMax)?;
@@ -62,7 +62,7 @@ Group:
   '}' (';')?;
 
 GroupElement:
-  Option | IndexedElement | ComplexType | MessageExtension | Extensions;
+  Option | IndexedElement | ComplexType | TypeExtension | Extensions;
 
 Extensions:
   'extensions' ranges+=Range (',' ranges+=Range)* ';';
@@ -102,10 +102,16 @@ Literal:
 terminal HEX returns ecore::ELong:
   ('-')? '0x' (NUMBER | 'a'..'f' | 'A'..'F')+;
 
-MessageExtension:
-  =>'extend' message=MessageLink '{'
+TypeExtension:
+  =>'extend' type=ExtensibleTypeLink '{'
   elements+=MessageElement*
   '}' (';')?;
+
+ExtensibleTypeLink:
+  target=[ExtensibleType|QualifiedName];
+
+ExtensibleType:
+  Message | Group;
 
 Service:
   'service' name=Name '{'

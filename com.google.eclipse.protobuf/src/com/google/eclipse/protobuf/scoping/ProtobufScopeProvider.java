@@ -61,12 +61,22 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   }
 
   @SuppressWarnings("unused")
-  public IScope scope_MessageLink_target(MessageLink link, EReference r) {
-    return createScope(messagesFor(link));
+  public IScope scope_ExtensibleTypeLink_target(ExtensibleTypeLink link, EReference r) {
+    return createScope(extensibleTypesFor(link));
   }
 
-  @Override public Collection<IEObjectDescription> allPossibleMessagesFor(MessageExtension extension) {
-    return messagesFor(extension);
+  @Override public Collection<IEObjectDescription> allPossibleTypesFor(TypeExtension extension) {
+    return extensibleTypesFor(extension);
+  }
+
+  private Collection<IEObjectDescription> extensibleTypesFor(EObject o) {
+    Protobuf root = modelFinder.rootOf(o);
+    return astWalker.traverseAst(root, typeScopeFinder, ExtensibleType.class);
+  }
+
+  @SuppressWarnings("unused")
+  public IScope scope_MessageLink_target(MessageLink link, EReference r) {
+    return createScope(messagesFor(link));
   }
 
   @Override public Collection<IEObjectDescription> allPossibleMessagesFor(Rpc rpc) {

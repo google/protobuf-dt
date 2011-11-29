@@ -82,13 +82,22 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     }
   }
 
+  @Override public void completeExtensibleTypeLink_Target(EObject model, Assignment assignment,
+      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    Collection<IEObjectDescription> scope = emptySet();
+    if (model instanceof TypeExtension) {
+      TypeExtension extension = (TypeExtension) model;
+      scope = scoping().allPossibleTypesFor(extension);
+    }
+    for (IEObjectDescription d : descriptionChooser.shortestQualifiedNamesIn(scope)) {
+      Image image = imageHelper.getImage(images.imageFor(d.getEObjectOrProxy()));
+      proposeAndAccept(d, image, context, acceptor);
+    }
+  }
+  
   @Override public void completeMessageLink_Target(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     Collection<IEObjectDescription> scope = emptySet();
-    if (model instanceof MessageExtension) {
-      MessageExtension extension = (MessageExtension) model;
-      scope = scoping().allPossibleMessagesFor(extension);
-    }
     if (model instanceof Rpc) {
       Rpc rpc = (Rpc) model;
       scope = scoping().allPossibleMessagesFor(rpc);

@@ -43,8 +43,8 @@ public class ModelFinder_localExtensionsFrom_Test {
   // extend Person {}
   @Test public void should_return_extensions_of_message() {
     Message m = xtext.find("Person", " {", Message.class);
-    List<MessageExtension> extensions = new ArrayList<MessageExtension>(finder.localExtensionsOf(m));
-    Message referred = extensions.get(0).getMessage().getTarget();
+    List<TypeExtension> extensions = new ArrayList<TypeExtension>(finder.localExtensionsOf(m));
+    Message referred = (Message) extensions.get(0).getType().getTarget();
     assertSame(m, referred);
   }
 }

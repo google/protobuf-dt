@@ -49,8 +49,8 @@ import com.google.inject.*;
       Literal literal = (Literal) o;
       return labelFor(literal);
     }
-    if (o instanceof MessageExtension) {
-      MessageExtension extend = (MessageExtension) o;
+    if (o instanceof TypeExtension) {
+      TypeExtension extend = (TypeExtension) o;
       return labelFor(extend);
     }
     if (o instanceof MessageField) {
@@ -100,8 +100,14 @@ import com.google.inject.*;
     return text;
   }
 
-  private Object labelFor(MessageExtension extension) {
-    return messageName(extension.getMessage());
+  private Object labelFor(TypeExtension extension) {
+    return typeName(extension.getType());
+  }
+
+  private String typeName(ExtensibleTypeLink link) {
+    ExtensibleType type = link.getTarget();
+    if (type == null) return null;
+    return nameResolver.nameOf(type);
   }
 
   private Object labelFor(MessageField field) {

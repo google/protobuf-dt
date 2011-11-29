@@ -61,7 +61,7 @@ class AstWalker {
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     for (EObject element : start.eContents()) {
       descriptions.addAll(scopeFinder.local(element, criteria, level));
-      if (element instanceof Message) {
+      if (element instanceof Message || element instanceof Group) {
         descriptions.addAll(local(element, scopeFinder, criteria, level + 1));
       }
     }

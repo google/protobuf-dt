@@ -21,7 +21,7 @@ public interface Scoping {
 
   Collection<IEObjectDescription> allPossibleTypesFor(MessageField field);
 
-  Collection<IEObjectDescription> allPossibleMessagesFor(MessageExtension extension);
+  Collection<IEObjectDescription> allPossibleTypesFor(TypeExtension extension);
 
   Collection<IEObjectDescription> allPossibleMessagesFor(Rpc rpc);
 

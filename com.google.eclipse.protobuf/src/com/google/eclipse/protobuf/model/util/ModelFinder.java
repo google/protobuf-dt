@@ -38,13 +38,13 @@ public class ModelFinder {
    * @param message the given message.
    * @return all the <strong>local</strong> extensions of the given message, or an empty collection if none is found.
    */
-  public Collection<MessageExtension> localExtensionsOf(Message message) {
+  public Collection<TypeExtension> localExtensionsOf(Message message) {
     return extensionsOf(message, rootOf(message));
   }
   
-  public Collection<MessageExtension> extensionsOf(Message message, Protobuf root) {
-    Set<MessageExtension> extensions = new HashSet<MessageExtension>();
-    for (MessageExtension extension : getAllContentsOfType(root, MessageExtension.class)) {
+  public Collection<TypeExtension> extensionsOf(Message message, Protobuf root) {
+    Set<TypeExtension> extensions = new HashSet<TypeExtension>();
+    for (TypeExtension extension : getAllContentsOfType(root, TypeExtension.class)) {
       Message referred = messageFrom(extension);
       if (message.equals(referred)) extensions.add(extension);
     }
@@ -56,9 +56,11 @@ public class ModelFinder {
    * @param extension the given extension.
    * @return the message from the given extension, or {@code null} if the extension is not referring to a message.
    */
-  public Message messageFrom(MessageExtension extension) {
-    MessageLink link = extension.getMessage();
-    return link == null ? null : link.getTarget();
+  public Message messageFrom(TypeExtension extension) {
+    ExtensibleTypeLink link = extension.getType();
+    if (link == null) return null;
+    ExtensibleType type = link.getTarget();
+    return (type instanceof Message) ? (Message) type : null;
   }
 
   /**

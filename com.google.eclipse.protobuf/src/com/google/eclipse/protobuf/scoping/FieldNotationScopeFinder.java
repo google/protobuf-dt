@@ -81,7 +81,7 @@ class FieldNotationScopeFinder {
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     Message fieldType = modelFinder.messageTypeOf(field);
     // check first in descriptor.proto
-    for (MessageExtension extension : modelFinder.extensionsOf(fieldType, modelFinder.rootOf(field))) {
+    for (TypeExtension extension : modelFinder.extensionsOf(fieldType, modelFinder.rootOf(field))) {
       for (MessageElement element : extension.getElements()) {
         if (!(element instanceof MessageField)) continue;
         descriptions.addAll(qualifiedNameDescriptions.qualifiedNames(element));

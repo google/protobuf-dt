@@ -55,8 +55,8 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
         highlight((ComplexType) element, acceptor);
         continue;
       }
-      if (element instanceof MessageExtension) {
-        highlight((MessageExtension) element, acceptor);
+      if (element instanceof TypeExtension) {
+        highlight((TypeExtension) element, acceptor);
         continue;
       }
       if (element instanceof Service) {
@@ -65,8 +65,8 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
     }
   }
 
-  private void highlight(MessageExtension extension, IHighlightedPositionAcceptor acceptor) {
-    highlightFirstFeature(extension, MESSAGE_EXTENSION__MESSAGE, acceptor, MESSAGE_ID);
+  private void highlight(TypeExtension extension, IHighlightedPositionAcceptor acceptor) {
+    highlightFirstFeature(extension, TYPE_EXTENSION__TYPE, acceptor, MESSAGE_ID);
     for (MessageElement element : extension.getElements()) {
       highlight(element, acceptor);
     }
@@ -102,8 +102,8 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
       highlight((ComplexType) element, acceptor);
       return;
     }
-    if (element instanceof MessageExtension) {
-      highlight((MessageExtension) element, acceptor);
+    if (element instanceof TypeExtension) {
+      highlight((TypeExtension) element, acceptor);
     }
   }
 
