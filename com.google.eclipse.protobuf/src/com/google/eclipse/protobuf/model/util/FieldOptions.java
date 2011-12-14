@@ -18,8 +18,7 @@ import com.google.inject.*;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
-public class FieldOptions {
+@Singleton public class FieldOptions {
 
   private @Inject OptionFields optionFields;
 
@@ -46,39 +45,45 @@ public class FieldOptions {
   }
 
   /**
-   * Returns the <code>{@link IndexedElement}</code> the given <code>{@link CustomFieldOption}</code> is referring to. 
-   * This method will check first the source of the last field of the given option (if any.) If the option does not have 
-   * any fields, this method will return the root source of the option. 
+   * Returns the <code>{@link IndexedElement}</code> the given <code>{@link CustomFieldOption}</code> is referring to.
+   * This method will check first the source of the last field of the given option (if any.) If the option does not have
+   * any fields, this method will return the root source of the option.
    * <p>
    * Example #1
+   *
    * <pre>
    * [(myFieldOption) = true];
    * </pre>
+   *
    * this method will return the <code>{@link IndexedElement}</code> "myFieldOption" is pointing to.
    * </p>
    * <p>
    * Example #2
+   *
    * <pre>
    * [(myOption).foo = true];
    * </pre>
+   *
    * this method will return the <code>{@link IndexedElement}</code> "foo" is pointing to.
    * </p>
    * @param option the given {@code CustomFieldOption}.
-   * @return the {@code IndexedElement} the given {@code CustomFieldOption} is referring to, or {@code null} if it 
-   * cannot be found.
+   * @return the {@code IndexedElement} the given {@code CustomFieldOption} is referring to, or {@code null} if it
+   *         cannot be found.
    */
   public IndexedElement sourceOf(CustomFieldOption option) {
     IndexedElement e = sourceOfLastFieldIn(option);
     if (e == null) e = rootSourceOf(option);
     return e;
   }
-  
+
   /**
    * Returns the <code>{@link IndexedElement}</code> the given <code>{@link FieldOption}</code> is referring to. In the
    * following example
+   *
    * <pre>
    * [(myFieldOption) = true]
    * </pre>
+   *
    * this method will return the <code>{@link IndexedElement}</code> "myFieldOption" is pointing to.
    * @param option the given {@code FieldOption}.
    * @return the {@code Property} the given {@code FieldOption} is referring to, or {@code null} if it cannot be found.
@@ -97,15 +102,16 @@ public class FieldOptions {
   }
 
   /**
-   * Returns the last field of the given <code>{@link CustomFieldOption}</code>.
-   * In the following example
+   * Returns the last field of the given <code>{@link CustomFieldOption}</code>. In the following example
+   *
    * <pre>
    * [(myOption).foo = true];
    * </pre>
+   *
    * this method will return the field that "foo" is pointing to.
    * @param option the given {@code CustomFieldOption}.
    * @return the last field of the given {@code CustomFieldOption} is referring to, or {@code null} if one cannot be
-   * found.
+   *         found.
    */
   public IndexedElement sourceOfLastFieldIn(CustomFieldOption option) {
     List<OptionField> fields = option.getFields();

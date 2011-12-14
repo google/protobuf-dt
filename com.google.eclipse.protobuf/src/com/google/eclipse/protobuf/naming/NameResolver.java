@@ -20,8 +20,7 @@ import com.google.inject.Singleton;
  * TODO test
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
-public class NameResolver {
+@Singleton public class NameResolver {
 
   public String nameOf(EObject o) {
     if (o instanceof DefaultValueFieldOption) {

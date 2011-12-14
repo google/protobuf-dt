@@ -8,29 +8,28 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.inject.*;
-
-import org.eclipse.emf.ecore.*;
-
-import java.util.*;
-
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
 import static java.lang.Math.max;
 import static java.util.Collections.emptyList;
 
+import java.util.List;
+
+import org.eclipse.emf.ecore.*;
+
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.inject.Singleton;
+
 /**
  * Utility methods related to <code>{@link IndexedElement}</code>s.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
-public class IndexedElements {
+@Singleton public class IndexedElements {
 
   /**
    * Returns the name of the given <code>{@link IndexedElement}</code>.
    * @param e the given {@code IndexedElement}.
-   * @return the name of the given {@code IndexedElement}, or {@code null} if the given {@code IndexedElement} is 
+   * @return the name of the given {@code IndexedElement}, or {@code null} if the given {@code IndexedElement} is
    * {@code null}.
    */
   public String nameOf(IndexedElement e) {
@@ -48,29 +47,29 @@ public class IndexedElements {
   /**
    * Returns the name of the given <code>{@link IndexedElement}</code>.
    * @param e the given {@code IndexedElement}.
-   * @return the name of the given {@code IndexedElement}, or {@code Long.MIN_VALUE} if the given {@code IndexedElement} 
-   * is {@code null}..
+   * @return the name of the given {@code IndexedElement}, or {@code Long.MIN_VALUE} if the given {@code IndexedElement}
+   * is {@code null}.
    */
   public long indexOf(IndexedElement e) {
     if (e == null) return Long.MIN_VALUE;
-    return (e instanceof Group) ? ((Group) e).getIndex() : ((MessageField) e).getIndex(); 
+    return (e instanceof Group) ? ((Group) e).getIndex() : ((MessageField) e).getIndex();
   }
-  
+
   /**
    * Returns the "index" feature of the given <code>{@link IndexedElement}</code>.
    * @param e the given {@code IndexedElement}.
-   * @return the "index" feature of the given {@code IndexedElement}, or {@code null} if the given 
+   * @return the "index" feature of the given {@code IndexedElement}, or {@code null} if the given
    * {@code IndexedElement} is {@code null}.
    */
   public EStructuralFeature indexFeatureOf(IndexedElement e) {
     if (e == null) return null;
-    return (e instanceof Group) ? GROUP__INDEX : MESSAGE_FIELD__INDEX; 
+    return (e instanceof Group) ? GROUP__INDEX : MESSAGE_FIELD__INDEX;
   }
-  
+
   /**
    * Returns the options of the given <code>{@link IndexedElement}</code>.
    * @param e the given {@code IndexedElement}.
-   * @return the options of the given {@code IndexedElement}, or an empty list if the given {@code IndexedElement} is 
+   * @return the options of the given {@code IndexedElement}, or an empty list if the given {@code IndexedElement} is
    * {@code null}.
    */
   public List<FieldOption> fieldOptionsOf(IndexedElement e) {

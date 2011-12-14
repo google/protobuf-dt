@@ -1,10 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- *
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
- *
+ * 
+ * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License v1.0 which accompanies this distribution, and is available at
+ * 
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.parser;
@@ -19,22 +18,19 @@ import com.google.eclipse.protobuf.protobuf.Protobuf;
 
 /**
  * Parser that only parses protocol buffers with "proto2" syntax, older syntax is ignored completely.
- *
+ * 
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Proto2OnlyParser extends ProtobufParser {
 
-  private static final String[] ERRORS_TO_LOOK_FOR = {
-    "missing EOF at 'c'", "missing EOF at 'java'", "missing EOF at 'parsed'", "missing EOF at 'python'", 
-    "no viable alternative at input '<'" };
+  private static final String[] ERRORS_TO_LOOK_FOR = { "missing EOF at 'c'", "missing EOF at 'java'",
+      "missing EOF at 'parsed'", "missing EOF at 'python'", "no viable alternative at input '<'" };
 
-  @Override
-  protected IParseResult doParse(String ruleName, CharStream in, NodeModelBuilder builder, int initialLookAhead) {
+  @Override protected IParseResult doParse(String ruleName, CharStream in, NodeModelBuilder builder,
+      int initialLookAhead) {
     IParseResult result = super.doParse(ruleName, in, builder, initialLookAhead);
     // TODO ignore this check via preferences in open source version.
-    if (isNonProto2(result)) {
-      return new ParseResult(new NonProto2Protobuf(), result.getRootNode(), false);
-    }
+    if (isNonProto2(result)) { return new ParseResult(new NonProto2Protobuf(), result.getRootNode(), false); }
     return result;
   }
 

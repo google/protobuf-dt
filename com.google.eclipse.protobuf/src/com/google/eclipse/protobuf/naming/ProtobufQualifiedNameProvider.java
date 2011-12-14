@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- *
+ * 
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- *
+ * 
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.naming;
@@ -25,11 +25,11 @@ import com.google.inject.*;
 
 /**
  * Provides fully-qualified names for protobuf elements.
- *
+ * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.AbstractImpl 
-    implements IProtobufQualifiedNameProvider {
+public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.AbstractImpl implements
+    IProtobufQualifiedNameProvider {
 
   @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
   @Inject private final IResourceScopeCache cache = IResourceScopeCache.NullImpl.INSTANCE;
@@ -46,7 +46,7 @@ public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.Abstra
   @Override public QualifiedName getFullyQualifiedNameForOption(EObject e) {
     return getFullyQualifiedName(e, OPTION);
   }
-  
+
   private QualifiedName getFullyQualifiedName(final EObject e, final NamingUsage usage) {
     Pair<EObject, String> key = pair(e, "fqn");
     return cache.get(key, e.eResource(), new Provider<QualifiedName>() {
@@ -58,9 +58,7 @@ public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.Abstra
         while (current.eContainer() != null) {
           current = current.eContainer();
           QualifiedName parentsQualifiedName = getFullyQualifiedName(current, usage);
-          if (parentsQualifiedName != null) {
-            return parentsQualifiedName.append(qualifiedName);
-          }
+          if (parentsQualifiedName != null) { return parentsQualifiedName.append(qualifiedName); }
         }
         return addPackage(e, qualifiedName);
       }
@@ -68,8 +66,7 @@ public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.Abstra
   }
 
   private QualifiedName addPackage(EObject obj, QualifiedName qualifiedName) {
-    if (qualifiedName == null || obj instanceof Package)
-      return qualifiedName;
+    if (qualifiedName == null || obj instanceof Package) return qualifiedName;
     Package p = finder.packageOf(obj);
     if (p == null) return qualifiedName;
     List<String> segments = packages.segmentsOf(p);

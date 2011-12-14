@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- *
+ * 
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- *
+ * 
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.validation;
@@ -43,7 +43,7 @@ public class DataTypeValidator extends AbstractDeclarativeValidator {
     }
   }
 
-  private  void checkValueTypeMatchesFieldType(FieldOption option, MessageField field) {
+  private void checkValueTypeMatchesFieldType(FieldOption option, MessageField field) {
     if (validateBool(option, field)) return;
     if (validateFloatingPointNumber(option, field)) return;
     if (validateInteger(option, field)) return;
@@ -100,7 +100,7 @@ public class DataTypeValidator extends AbstractDeclarativeValidator {
     }
     throw new IllegalArgumentException(value + " does not belong to an integer type");
   }
-  
+
   private boolean validateString(FieldOption option, MessageField field) {
     if (!messageFields.isBytes(field) && !messageFields.isString(field)) return false;
     Value value = option.getValue();

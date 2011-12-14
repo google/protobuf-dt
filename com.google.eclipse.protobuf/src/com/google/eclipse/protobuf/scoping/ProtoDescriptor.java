@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- *
+ * 
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- *
+ * 
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.scoping;
@@ -34,7 +34,7 @@ import com.google.eclipse.protobuf.protobuf.Enum;
 
 /**
  * Contains the elements from descriptor.proto (provided with protobuf's library.)
- *
+ * 
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtoDescriptor {
@@ -134,11 +134,11 @@ public class ProtoDescriptor {
 
   /**
    * Returns the options available for the given option or option container. The returned options are defined in
-   * {@code google/protobuf/descriptor.proto} (more details can be found
-   * <a href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
+   * {@code google/protobuf/descriptor.proto} (more details can be found <a
+   * href=http://code.google.com/apis/protocolbuffers/docs/proto.html#options" target="_blank">here</a>.)
    * @param o the given option or option container.
    * @return the options available for the given option or option container, or an empty collection if the are not any
-   * options available.
+   *         options available.
    */
   public Collection<MessageField> availableOptionsFor(EObject o) {
     EObject target = o;
@@ -148,8 +148,7 @@ public class ProtoDescriptor {
     return optionsOfType(type);
   }
 
-  @VisibleForTesting
-  Collection<MessageField> optionsOfType(OptionType type) {
+  @VisibleForTesting Collection<MessageField> optionsOfType(OptionType type) {
     return unmodifiableCollection(optionsByType.get(type).values());
   }
 
@@ -168,11 +167,10 @@ public class ProtoDescriptor {
     return (isEmpty(typeName)) ? null : enumByName(typeName.trim());
   }
 
-  @VisibleForTesting
-  Enum enumByName(String name) {
+  @VisibleForTesting Enum enumByName(String name) {
     return enumsByName.get(name);
   }
-  
+
   /**
    * Returns all types in descriptor.proto.
    * @return all types in descriptor.proto.
@@ -193,8 +191,7 @@ public class ProtoDescriptor {
     return importUri;
   }
 
-  @VisibleForTesting
-  MessageField option(String name, OptionType type) {
+  @VisibleForTesting MessageField option(String name, OptionType type) {
     Map<String, MessageField> optionByName = optionsByType.get(type);
     return (optionByName != null) ? optionByName.get(name) : null;
   }

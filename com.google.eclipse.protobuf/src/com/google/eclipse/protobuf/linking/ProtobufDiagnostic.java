@@ -1,10 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
- * 
+ *
+ * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License v1.0 which accompanies this distribution, and is available at
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.linking;
@@ -17,7 +16,7 @@ import org.eclipse.xtext.nodemodel.INode;
 
 /**
  * <code>{@link Diagnostic}</code> that supports appending text to its message.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufDiagnostic extends AbstractDiagnostic {
@@ -29,7 +28,9 @@ public class ProtobufDiagnostic extends AbstractDiagnostic {
 
   public ProtobufDiagnostic(String code, String[] data, String message, INode node) {
     validate(data);
-    if (node == null) throw new NullPointerException("node should not be null");
+    if (node == null) {
+      throw new NullPointerException("node should not be null");
+    }
     this.code = code;
     this.data = copyOf(data, data.length);
     this.message = new StringBuilder();
@@ -69,7 +70,7 @@ public class ProtobufDiagnostic extends AbstractDiagnostic {
   public void appendToMessage(String s) {
     message.append(s);
   }
-  
+
   @Override public int hashCode() {
     final int prime = 31;
     int result = 1;

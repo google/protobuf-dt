@@ -13,8 +13,7 @@ package com.google.eclipse.protobuf;
  */
 public class ProtobufStandaloneSetup extends ProtobufStandaloneSetupGenerated {
 
-	public static void doSetup() {
-		new ProtobufStandaloneSetup().createInjectorAndDoEMFRegistration();
-	}
+  public static void doSetup() {
+    new ProtobufStandaloneSetup().createInjectorAndDoEMFRegistration();
+  }
 }
-

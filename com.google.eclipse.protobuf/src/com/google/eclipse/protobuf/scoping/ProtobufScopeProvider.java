@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- *
+ * 
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- *
+ * 
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.scoping;
@@ -25,9 +25,9 @@ import com.google.inject.Inject;
 
 /**
  * Custom scoping description.
- *
+ * 
  * @author alruiz@google.com (Alex Ruiz)
- *
+ * 
  * @see <a href="http://www.eclipse.org/Xtext/documentation/latest/xtext.html#scoping">Xtext Scoping</a>
  */
 public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider implements Scoping {
@@ -46,12 +46,9 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   @Inject private Options options;
   @Inject private TypeScopeFinder typeScopeFinder;
 
-  @SuppressWarnings("unused")
-  public IScope scope_ComplexTypeLink_target(ComplexTypeLink link, EReference r) {
+  @SuppressWarnings("unused") public IScope scope_ComplexTypeLink_target(ComplexTypeLink link, EReference r) {
     EObject c = link.eContainer();
-    if (c instanceof MessageField) {
-      return createScope(allPossibleTypesFor((MessageField) c));
-    }
+    if (c instanceof MessageField) { return createScope(allPossibleTypesFor((MessageField) c)); }
     Set<IEObjectDescription> descriptions = emptySet();
     return createScope(descriptions);
   }
@@ -60,8 +57,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     return astWalker.traverseAst(field, typeScopeFinder, ComplexType.class);
   }
 
-  @SuppressWarnings("unused")
-  public IScope scope_ExtensibleTypeLink_target(ExtensibleTypeLink link, EReference r) {
+  @SuppressWarnings("unused") public IScope scope_ExtensibleTypeLink_target(ExtensibleTypeLink link, EReference r) {
     return createScope(extensibleTypesFor(link));
   }
 
@@ -74,8 +70,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     return astWalker.traverseAst(root, typeScopeFinder, ExtensibleType.class);
   }
 
-  @SuppressWarnings("unused")
-  public IScope scope_MessageLink_target(MessageLink link, EReference r) {
+  @SuppressWarnings("unused") public IScope scope_MessageLink_target(MessageLink link, EReference r) {
     return createScope(messagesFor(link));
   }
 
@@ -88,8 +83,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     return astWalker.traverseAst(root, typeScopeFinder, Message.class);
   }
 
-  @SuppressWarnings("unused")
-  public IScope scope_LiteralLink_target(LiteralLink link, EReference r) {
+  @SuppressWarnings("unused") public IScope scope_LiteralLink_target(LiteralLink link, EReference r) {
     EObject container = link.eContainer();
     Enum anEnum = null;
     if (container instanceof DefaultValueFieldOption) {
@@ -123,8 +117,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     return createScope(literalDescriptions.literalsOf(anEnum));
   }
 
-  @SuppressWarnings("unused")
-  public IScope scope_OptionSource_target(OptionSource source, EReference r) {
+  @SuppressWarnings("unused") public IScope scope_OptionSource_target(OptionSource source, EReference r) {
     EObject c = source.eContainer();
     if (c instanceof NativeOption) {
       NativeOption option = (NativeOption) c;
@@ -164,8 +157,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     return descriptions;
   }
 
-  @SuppressWarnings("unused") 
-  public IScope scope_OptionField_target(OptionField field, EReference r) {
+  @SuppressWarnings("unused") public IScope scope_OptionField_target(OptionField field, EReference r) {
     return createScope(allPossibleSourcesOf(field));
   }
 
@@ -174,16 +166,12 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     EObject container = field.eContainer();
     if (container instanceof CustomOption) {
       CustomOption option = (CustomOption) container;
-      if (field instanceof MessageOptionField) {
-        return findSources(option, (MessageOptionField) field);
-      }
+      if (field instanceof MessageOptionField) { return findSources(option, (MessageOptionField) field); }
       return findSources(option, (ExtensionOptionField) field);
     }
     if (container instanceof CustomFieldOption) {
       CustomFieldOption option = (CustomFieldOption) container;
-      if (field instanceof MessageOptionField) {
-        return findSources(option, (MessageOptionField) field);
-      }
+      if (field instanceof MessageOptionField) { return findSources(option, (MessageOptionField) field); }
       return findSources(option, (ExtensionOptionField) field);
     }
     return emptySet();
@@ -196,7 +184,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   @Override public Collection<IEObjectDescription> allPossibleNormalFieldsOf(CustomFieldOption option) {
     return findSources(option, (MessageOptionField) null);
   }
-  
+
   @Override public Collection<IEObjectDescription> allPossibleExtensionFieldsOf(CustomOption option) {
     return findSources(option, (ExtensionOptionField) null);
   }
@@ -221,26 +209,21 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     return customOptionFieldScopeFinder.findScope(option, field);
   }
 
-  @SuppressWarnings("unused") 
-  public IScope scope_FieldName_target(FieldName name, EReference r) {
+  @SuppressWarnings("unused") public IScope scope_FieldName_target(FieldName name, EReference r) {
     return createScope(findSources(name));
   }
 
   private Collection<IEObjectDescription> findSources(FieldName name) {
     ComplexValue value = container(name);
     if (value == null) return emptySet();
-    if (name instanceof NormalFieldName) {
-      return allPossibleNamesOfNormalFieldsOf(value);
-    }
+    if (name instanceof NormalFieldName) { return allPossibleNamesOfNormalFieldsOf(value); }
     return allPossibleNamesOfExtensionFieldsOf(value);
   }
 
   private ComplexValue container(FieldName name) {
     EObject container = name;
     while (container != null) {
-      if (container instanceof ComplexValue) {
-        return (ComplexValue) container;
-      }
+      if (container instanceof ComplexValue) { return (ComplexValue) container; }
       container = container.eContainer();
     }
     return null;

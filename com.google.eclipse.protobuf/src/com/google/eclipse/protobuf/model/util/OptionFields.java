@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- *
+ * 
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- *
+ * 
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.model.util;
@@ -16,8 +16,7 @@ import com.google.inject.Singleton;
  * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
-public class OptionFields {
+@Singleton public class OptionFields {
 
   /**
    * Returns the field the given option field is referring to.
@@ -25,12 +24,8 @@ public class OptionFields {
    * @return the field the given option field is referring to, or {@code null} if one cannot be found.
    */
   public IndexedElement sourceOf(OptionField field) {
-    if (field instanceof MessageOptionField) {
-      return ((MessageOptionField) field).getTarget();
-    }
-    if (field instanceof ExtensionOptionField) {
-      return ((ExtensionOptionField) field).getTarget();
-    }
+    if (field instanceof MessageOptionField) { return ((MessageOptionField) field).getTarget(); }
+    if (field instanceof ExtensionOptionField) { return ((ExtensionOptionField) field).getTarget(); }
     return null;
   }
 }

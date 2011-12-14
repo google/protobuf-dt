@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- *
+ * 
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- *
+ * 
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.naming;
@@ -27,18 +27,20 @@ import java.util.*;
  * Provides alternative qualified names for protobuf elements.
  * <p>
  * For example, given the following proto element:
+ * 
  * <pre>
  * package test.alternative.names;
- *
+ * 
  * message Person {
  *   optional string name = 1;
- *
+ * 
  *   enum PhoneType {
  *     HOME = 0;
  *     WORK = 1;
  *   }
  * }
  * </pre>
+ * 
  * The default qualified name for {@code PhoneType} is {@code alternative.names.Person.PhoneType}. The problem is that
  * protoc also recognizes the following as qualified names:
  * <ul>
@@ -51,7 +53,7 @@ import java.util.*;
  * <p>
  * This class provides the non-default qualified names recognized by protoc.
  * </p>
- *
+ * 
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class LocalNamesProvider {
@@ -67,11 +69,11 @@ public class LocalNamesProvider {
   public List<QualifiedName> names(EObject e) {
     return allNames(e, DEFAULT);
   }
-  
+
   public List<QualifiedName> namesForOption(EObject e) {
     return allNames(e, OPTION);
   }
-  
+
   private List<QualifiedName> allNames(final EObject e, final NamingUsage usage) {
     Pair<EObject, String> key = pair(e, "localFqns");
     return cache.get(key, e.eResource(), new Provider<List<QualifiedName>>() {

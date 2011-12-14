@@ -11,14 +11,14 @@ package com.google.eclipse.protobuf.scoping;
 import static java.util.Collections.*;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.inject.*;
+import java.util.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
-import java.util.*;
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.inject.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -69,7 +69,7 @@ class CustomOptionFieldScopeFinder {
     return emptySet();
   }
 
-  private IndexedElement referredField(OptionField field, List<OptionField> allFields, 
+  private IndexedElement referredField(OptionField field, List<OptionField> allFields,
       Provider<IndexedElement> provider) {
     OptionField previous = null;
     boolean isFirstField = true;

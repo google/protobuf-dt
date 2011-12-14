@@ -8,19 +8,18 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
+import org.eclipse.emf.common.util.URI;
+
 import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider;
 import com.google.inject.*;
-
-import org.eclipse.emf.common.util.URI;
 
 /**
  * Utility methods related to imports.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
-public class Imports {
+@Singleton public class Imports {
 
   @Inject private ProtoDescriptorProvider descriptorProvider;
 

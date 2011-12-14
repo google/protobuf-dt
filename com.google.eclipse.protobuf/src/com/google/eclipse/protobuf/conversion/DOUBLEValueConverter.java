@@ -9,7 +9,6 @@
 package com.google.eclipse.protobuf.conversion;
 
 import static java.lang.Double.*;
-import static java.lang.Double.NaN;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import org.eclipse.xtext.conversion.ValueConverterException;
@@ -28,7 +27,7 @@ public class DOUBLEValueConverter extends AbstractLexerBasedConverter<Double> {
    * @param string the given input.
    * @param node the parsed node including hidden parts.
    * @return the new {@code float}.
-   * @throws ValueConverterException if the given input is {@code null}, empty or does not represent a floating-point 
+   * @throws ValueConverterException if the given input is {@code null}, empty or does not represent a floating-point
    * number.
    */
   @Override public Double toValue(String string, INode node) throws ValueConverterException {

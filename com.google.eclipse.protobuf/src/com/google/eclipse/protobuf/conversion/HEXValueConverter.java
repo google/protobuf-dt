@@ -10,11 +10,11 @@ package com.google.eclipse.protobuf.conversion;
 
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
+import java.math.BigInteger;
+
 import org.eclipse.xtext.conversion.ValueConverterException;
 import org.eclipse.xtext.conversion.impl.AbstractLexerBasedConverter;
 import org.eclipse.xtext.nodemodel.INode;
-
-import java.math.BigInteger;
 
 /**
  * Converts hexadecimal numbers to {@code long}s.
@@ -24,7 +24,7 @@ import java.math.BigInteger;
 public class HEXValueConverter extends AbstractLexerBasedConverter<Long> {
 
   private static final String[] VALID_PREFIXES = { "0x", "-0x", "0X", "-0x" };
-  
+
   /**
    * Creates an {@code int} from the given input, if the given input represents an hexadecimal number.
    * @param string the given input.
@@ -52,7 +52,7 @@ public class HEXValueConverter extends AbstractLexerBasedConverter<Long> {
     }
     return false;
   }
-  
+
   private String removeZeroX(String string) {
     if (string.startsWith("-")) {
       String withoutSign = string.substring(3, string.length());
@@ -60,7 +60,7 @@ public class HEXValueConverter extends AbstractLexerBasedConverter<Long> {
     }
     return string.substring(2, string.length());
   }
-  
+
   private ValueConverterException parsingError(String string, INode node) {
     return parsingError(string, node, null);
   }

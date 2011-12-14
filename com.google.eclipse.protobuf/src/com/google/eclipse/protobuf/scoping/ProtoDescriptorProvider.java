@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- *
+ * 
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- *
+ * 
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.scoping;
@@ -23,11 +23,10 @@ import com.google.inject.*;
 
 /**
  * Provider of <code>{@link ProtoDescriptor}</code>s.
- *
+ * 
  * @author Alex Ruiz
  */
-@Singleton
-public class ProtoDescriptorProvider {
+@Singleton public class ProtoDescriptorProvider {
 
   private static final String EXTENSION_ID = "com.google.eclipse.protobuf.descriptorSource";
 
@@ -123,9 +122,7 @@ public class ProtoDescriptorProvider {
     String path = e.getAttribute("path");
     if (isEmpty(path)) return null;
     StringBuilder uri = new StringBuilder();
-    uri.append("platform:/plugin/")
-       .append(e.getContributor().getName()).append("/")
-       .append(path);
+    uri.append("platform:/plugin/").append(e.getContributor().getName()).append("/").append(path);
     return URI.createURI(uri.toString());
   }
 

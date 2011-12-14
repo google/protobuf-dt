@@ -21,8 +21,8 @@ import com.google.eclipse.protobuf.protobuf.Enum;
  */
 enum OptionType {
 
-  FILE("FileOptions"), MESSAGE("MessageOptions"), FIELD("FieldOptions"), ENUM("EnumOptions"),
-      LITERAL("EnumValueOptions"), SERVICE("ServiceOptions"), RPC("MethodOptions");
+  FILE("FileOptions"), MESSAGE("MessageOptions"), FIELD("FieldOptions"), ENUM("EnumOptions"), LITERAL(
+      "EnumValueOptions"), SERVICE("ServiceOptions"), RPC("MethodOptions");
 
   private static final Map<Class<?>, OptionType> OPTION_TYPES_BY_CONTAINER = new HashMap<Class<?>, OptionType>();
 

@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- *
+ * 
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- *
+ * 
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.naming;
@@ -19,14 +19,13 @@ import org.eclipse.emf.ecore.EObject;
  * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
-public class Naming {
+@Singleton public class Naming {
 
   @Inject private NameResolver nameResolver;
   @Inject private Options options;
 
   /**
-   * Returns the name of the given object. If the name will be used for an option and if the given object is a 
+   * Returns the name of the given object. If the name will be used for an option and if the given object is a
    * <code>{@link Group}</code>, this method will return the name of the group in lower case.
    * @param e the given object.
    * @param usage indicates how the returned name will be used.

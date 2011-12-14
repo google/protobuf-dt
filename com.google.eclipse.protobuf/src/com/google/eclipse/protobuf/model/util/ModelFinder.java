@@ -12,10 +12,7 @@ import static java.util.Collections.unmodifiableList;
 import static org.eclipse.emf.ecore.util.EcoreUtil.getAllContents;
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.inject.Singleton;
+import java.util.*;
 
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
@@ -23,16 +20,18 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.resource.XtextResource;
 
-import java.util.*;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.inject.Singleton;
 
 /**
  * Utility methods to find elements in a parser proto file.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
-public class ModelFinder {
-  
+@Singleton public class ModelFinder {
+
   /**
    * Returns all the <strong>local</strong> extensions of the given message.
    * @param message the given message.
@@ -41,7 +40,7 @@ public class ModelFinder {
   public Collection<TypeExtension> localExtensionsOf(Message message) {
     return extensionsOf(message, rootOf(message));
   }
-  
+
   public Collection<TypeExtension> extensionsOf(Message message, Protobuf root) {
     Set<TypeExtension> extensions = new HashSet<TypeExtension>();
     for (TypeExtension extension : getAllContentsOfType(root, TypeExtension.class)) {
@@ -50,7 +49,7 @@ public class ModelFinder {
     }
     return extensions;
   }
-  
+
   /**
    * Returns the message from the given extension.
    * @param extension the given extension.
@@ -69,20 +68,24 @@ public class ModelFinder {
    * @return the message type of the given field or {@code null} if the type of the given field is not message.
    */
   public Message messageTypeOf(MessageField field) {
-    ComplexType type = typeOf(field);
-    return (type instanceof Message) ? (Message) type : null;
+    return fieldType(field, Message.class);
   }
-  
+
   /**
    * Returns the enum type of the given field, only if the type of the given field is an enum.
    * @param field the given field.
    * @return the enum type of the given field or {@code null} if the type of the given field is not enum.
    */
   public Enum enumTypeOf(MessageField field) {
-    ComplexType type = typeOf(field);
-    return (type instanceof Enum) ? (Enum) type : null;
+    return fieldType(field, Enum.class);
   }
-  
+
+  private <T extends ComplexType> T fieldType(MessageField field, Class<T> typeClazz) {
+    ComplexType type = typeOf(field);
+    if (typeClazz.isInstance(type)) return typeClazz.cast(type);
+    return null;
+  }
+
   /**
    * Returns the type of the given field.
    * @param field the given field.
@@ -90,8 +93,10 @@ public class ModelFinder {
    */
   public ComplexType typeOf(MessageField field) {
     TypeLink link = field.getType();
-    if (!(link instanceof ComplexTypeLink)) return null;
-    return ((ComplexTypeLink) link).getTarget();
+    if (link instanceof ComplexTypeLink) {
+      return ((ComplexTypeLink) link).getTarget();
+    }
+    return null;
   }
 
   /**
@@ -101,8 +106,7 @@ public class ModelFinder {
    */
   public ScalarType scalarTypeOf(MessageField p) {
     TypeLink link = (p).getType();
-    if (link instanceof ScalarTypeLink)
-      return ((ScalarTypeLink) link).getTarget();
+    if (link instanceof ScalarTypeLink) return ((ScalarTypeLink) link).getTarget();
     return null;
   }
 
@@ -110,12 +114,14 @@ public class ModelFinder {
    * Returns the package of the proto file containing the given object.
    * @param o the given object.
    * @return the package of the proto file containing the given object or {@code null} if the proto file does not have a
-   * package.
+   *         package.
    */
   public Package packageOf(EObject o) {
     Protobuf root = rootOf(o);
     for (ProtobufElement e : root.getElements()) {
-      if (e instanceof Package) return (Package) e;
+      if (e instanceof Package) {
+        return (Package) e;
+      }
     }
     return null;
   }
@@ -127,7 +133,9 @@ public class ModelFinder {
    */
   public Protobuf rootOf(EObject o) {
     EObject current = o;
-    while (!(current instanceof Protobuf)) current = current.eContainer();
+    while (!(current instanceof Protobuf)) {
+      current = current.eContainer();
+    }
     return (Protobuf) current;
   }
 
@@ -139,7 +147,9 @@ public class ModelFinder {
   public List<Import> importsIn(Protobuf root) {
     List<Import> imports = new ArrayList<Import>();
     for (ProtobufElement e : root.getElements()) {
-      if (e instanceof Import) imports.add((Import) e);
+      if (e instanceof Import) {
+        imports.add((Import) e);
+      }
     }
     return unmodifiableList(imports);
   }
@@ -152,7 +162,9 @@ public class ModelFinder {
   public List<Import> publicImportsIn(Protobuf root) {
     List<Import> imports = new ArrayList<Import>();
     for (ProtobufElement e : root.getElements()) {
-      if (e instanceof PublicImport) imports.add((Import) e);
+      if (e instanceof PublicImport) {
+        imports.add((Import) e);
+      }
     }
     return unmodifiableList(imports);
   }
@@ -180,8 +192,10 @@ public class ModelFinder {
 
   public Collection<MessageField> propertiesOf(Message message) {
     List<MessageField> properties = new ArrayList<MessageField>();
-    for (MessageElement e :message.getElements()) {
-      if (e instanceof MessageField) properties.add((MessageField) e);
+    for (MessageElement e : message.getElements()) {
+      if (e instanceof MessageField) {
+        properties.add((MessageField) e);
+      }
     }
     return unmodifiableList(properties);
   }

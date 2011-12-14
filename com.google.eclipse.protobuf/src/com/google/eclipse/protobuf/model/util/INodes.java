@@ -23,8 +23,7 @@ import com.google.inject.Singleton;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
-public class INodes {
+@Singleton public class INodes {
 
   /**
    * Returns the first node that was used to assign values to the given feature for the given object.

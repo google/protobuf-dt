@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- *
+ * 
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- *
+ * 
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.scoping;
@@ -31,7 +31,7 @@ class TypeScopeFinder implements ScopeFinder {
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private LocalNamesProvider localNamesProvider;
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
-  
+
   @Override public Collection<IEObjectDescription> imported(Package fromImporter, Package fromImported, Object target,
       Object criteria) {
     if (!isInstance(target, criteria)) return emptySet();
@@ -64,12 +64,12 @@ class TypeScopeFinder implements ScopeFinder {
     descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(e));
     return descriptions;
   }
-  
+
   private boolean isInstance(Object target, Object criteria) {
     Class<?> targetType = targetTypeFrom(criteria);
     return targetType.isInstance(target);
   }
-  
+
   private Class<?> targetTypeFrom(Object criteria) {
     if (criteria instanceof Class<?>) return (Class<?>) criteria;
     throw new IllegalArgumentException("Search criteria should be Class<?>");

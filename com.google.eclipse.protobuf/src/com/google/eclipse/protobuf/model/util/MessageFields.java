@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- *
+ * 
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- *
+ * 
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.model.util;
@@ -17,11 +17,10 @@ import com.google.inject.Singleton;
 
 /**
  * Utility methods related to <code>{@link MessageField}</code>s.
- *
+ * 
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
-public class MessageFields {
+@Singleton public class MessageFields {
 
   /**
    * Indicates whether the modifier of the given field is <code>{@link Modifier#OPTIONAL}</code>.
@@ -33,9 +32,9 @@ public class MessageFields {
   }
 
   /**
-   * Indicates whether the type of the given field is primitive. Primitive types include: {@code double},
-   * {@code float}, {@code int32}, {@code int64}, {@code uint32}, {@code uint64}, {@code sint32}, {@code sint64},
-   * {@code fixed32}, {@code fixed64}, {@code sfixed32}, {@code sfixed64} and {@code bool}.
+   * Indicates whether the type of the given field is primitive. Primitive types include: {@code double}, {@code float},
+   * {@code int32}, {@code int64}, {@code uint32}, {@code uint64}, {@code sint32}, {@code sint64}, {@code fixed32},
+   * {@code fixed64}, {@code sfixed32}, {@code sfixed64} and {@code bool}.
    * @param field the given field.
    * @return {@code true} if the type of the given field is primitive, {@code false} otherwise.
    */
@@ -101,7 +100,7 @@ public class MessageFields {
     return isScalarType(field, FIXED32, FIXED64, UINT32, UINT64);
   }
 
-  private boolean isScalarType(MessageField field, CommonKeyword...scalarNames) {
+  private boolean isScalarType(MessageField field, CommonKeyword... scalarNames) {
     TypeLink link = field.getType();
     if (link instanceof ScalarTypeLink) {
       String typeName = ((ScalarTypeLink) link).getTarget().getName();

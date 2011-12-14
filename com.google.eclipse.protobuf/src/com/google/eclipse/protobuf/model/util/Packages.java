@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- *
+ * 
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- *
+ * 
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.model.util;
@@ -28,7 +28,7 @@ public class Packages {
   @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
 
   /**
-   * Indicates whether the given packages are "related." "Related" means that the names of the packages are equal or one 
+   * Indicates whether the given packages are "related." "Related" means that the names of the packages are equal or one
    * package is a sub-package of the other one.
    * @param p1 package to verify against {@code p2}.
    * @param p2 package to verify against {@code p1}.
@@ -42,7 +42,6 @@ public class Packages {
     if (name1.equals(name2)) return true;
     return (isSubPackage(name1, name2));
   }
-
 
   private boolean isSubPackage(QualifiedName name1, QualifiedName name2) {
     List<String> segments = name2.getSegments();

@@ -1,10 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
- * 
+ *
+ * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License v1.0 which accompanies this distribution, and is available at
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf;
@@ -17,7 +16,7 @@ import org.eclipse.xtext.resource.*;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 import org.eclipse.xtext.validation.IResourceValidator;
 
-import com.google.eclipse.protobuf.conversion.*;
+import com.google.eclipse.protobuf.conversion.ProtobufTerminalConverters;
 import com.google.eclipse.protobuf.linking.ProtobufResource;
 import com.google.eclipse.protobuf.naming.ProtobufQualifiedNameProvider;
 import com.google.eclipse.protobuf.parser.Proto2OnlyParser;
@@ -27,8 +26,7 @@ import com.google.eclipse.protobuf.validation.*;
 import com.google.inject.Binder;
 
 /**
- * Use this class to register components to be used at runtime / without the
- * Equinox extension registry.
+ * Use this class to register components to be used at runtime / without the Equinox extension registry.
  */
 public class ProtobufRuntimeModule extends com.google.eclipse.protobuf.AbstractProtobufRuntimeModule {
 

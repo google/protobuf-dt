@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- *
+ * 
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- *
+ * 
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.scoping;
@@ -113,8 +113,8 @@ class AstWalker {
     return packages.areRelated(aPackage, p);
   }
 
-  private Collection<IEObjectDescription> imported(Package fromImporter, Package fromImported,
-      Resource resource, ScopeFinder scopeFinder, Object criteria) {
+  private Collection<IEObjectDescription> imported(Package fromImporter, Package fromImported, Resource resource,
+      ScopeFinder scopeFinder, Object criteria) {
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     TreeIterator<Object> contents = getAllContents(resource, true);
     while (contents.hasNext()) {
