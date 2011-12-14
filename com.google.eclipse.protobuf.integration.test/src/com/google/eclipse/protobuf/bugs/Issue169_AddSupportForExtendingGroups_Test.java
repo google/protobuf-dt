@@ -13,14 +13,14 @@ import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
+import org.junit.*;
+
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
-import org.junit.*;
-
 /**
  * Tests fix for <a href="http://code.google.com/p/protobuf-dt/issues/detail?id=169">Issue 169</a>.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Issue169_AddSupportForExtendingGroups_Test {
@@ -36,7 +36,7 @@ public class Issue169_AddSupportForExtendingGroups_Test {
   //   optional group MidGroup = 1 {
   //     optional group BottomGroup = 2 {}
   //   }
-  // }  
+  // }
 
   // syntax = "proto2";
   // package com.google.proto.project.shared;
@@ -59,7 +59,7 @@ public class Issue169_AddSupportForExtendingGroups_Test {
   //   message MidMessage {
   //     optional group BottomGroup = 1 {}
   //   }
-  // }  
+  // }
 
   // syntax = "proto2";
   // package com.google.proto.project.shared;
@@ -82,7 +82,7 @@ public class Issue169_AddSupportForExtendingGroups_Test {
   //   optional group MidGroup = 1 {
   //     message BottomMessage {}
   //   }
-  // }  
+  // }
 
   // syntax = "proto2";
   // package com.google.proto.project.shared;

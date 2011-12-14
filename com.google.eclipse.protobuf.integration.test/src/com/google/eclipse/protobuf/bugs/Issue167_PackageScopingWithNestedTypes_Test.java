@@ -63,7 +63,7 @@ public class Issue167_PackageScopingWithNestedTypes_Test {
   //
   // message Summary {
   //   repeated base.shared.Outer.Type type = 1;
-  // }  
+  // }
   @Test public void should_include_package_intersection() {
     MessageField field = xtext.find("type", " =", MessageField.class);
     IScope scope = provider.scope_ComplexTypeLink_target((ComplexTypeLink) field.getType(), reference);

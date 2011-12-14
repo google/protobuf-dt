@@ -15,16 +15,16 @@ import static com.google.eclipse.protobuf.junit.matchers.ContainAllFieldsInMessa
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.*;
-
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.xtext.scoping.IScope;
 import org.junit.*;
 
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.*;
+
 /**
  * Tests for <code>{@link ProtobufScopeProvider#scope_FieldName_target(FieldName, EReference)}</code>
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufScopeProvider_scope_FieldName_target_with_NormalFieldName_Test {
@@ -65,7 +65,7 @@ public class ProtobufScopeProvider_scope_FieldName_target_with_NormalFieldName_T
     Message message = xtext.find("Type", " {", Message.class);
     assertThat(descriptionsIn(scope), containAllFieldsIn(message));
   }
-  
+
   // syntax = "proto2";
   //
   // import "google/protobuf/descriptor.proto";
@@ -105,7 +105,7 @@ public class ProtobufScopeProvider_scope_FieldName_target_with_NormalFieldName_T
   // extend google.protobuf.FieldOptions {
   //   optional Type type = 15478479;
   // }
-  // 
+  //
   // message Address {
   //   optional int target = 1 [(type) = { code: 68 }];
   // }
@@ -133,7 +133,7 @@ public class ProtobufScopeProvider_scope_FieldName_target_with_NormalFieldName_T
   // extend google.protobuf.FieldOptions {
   //   optional Type type = 15478479;
   // }
-  // 
+  //
   // message Address {
   //   optional int target = 1 [(type) = { name: { value: 'Address' } }];
   // }
