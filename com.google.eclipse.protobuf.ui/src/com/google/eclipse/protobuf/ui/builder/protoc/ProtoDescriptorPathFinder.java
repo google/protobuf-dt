@@ -18,8 +18,7 @@ import com.google.inject.Singleton;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
-class ProtoDescriptorPathFinder {
+@Singleton class ProtoDescriptorPathFinder {
 
   private final String descriptorFqn;
 
@@ -27,8 +26,7 @@ class ProtoDescriptorPathFinder {
     this(separator);
   }
 
-  @VisibleForTesting
-  ProtoDescriptorPathFinder(String fileSeparator) {
+  @VisibleForTesting ProtoDescriptorPathFinder(String fileSeparator) {
     descriptorFqn = concat(fileSeparator, asList("", "google", "protobuf", "descriptor.proto"));
   }
 

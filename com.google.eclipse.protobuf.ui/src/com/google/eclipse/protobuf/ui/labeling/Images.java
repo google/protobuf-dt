@@ -25,8 +25,7 @@ import com.google.inject.Singleton;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
-public class Images {
+@Singleton public class Images {
 
   private static final String GIF_EXTENSION = ".gif";
   private static final String DEFAULT_IMAGE = "empty.gif";

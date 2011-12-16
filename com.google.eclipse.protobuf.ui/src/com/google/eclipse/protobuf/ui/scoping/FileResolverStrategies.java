@@ -19,8 +19,7 @@ import com.google.inject.*;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
-class FileResolverStrategies {
+@Singleton class FileResolverStrategies {
 
   private final Map<PathResolutionType, FileResolverStrategy> strategies =
       new HashMap<PathResolutionType, FileResolverStrategy>();

@@ -23,8 +23,7 @@ import com.google.inject.Singleton;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @SuppressWarnings("deprecation")
-@Singleton
-public class Resources {
+@Singleton public class Resources {
 
   private static final IViewReference[] NO_VIEW_REFERENCES = new IViewReference[0];
 
@@ -32,9 +31,12 @@ public class Resources {
 
   /**
    * Returns the project that contains the resource at the given URI.
-   * @param resourceUri the given URI.
-   * @return the project that contains the resource at the given URI, or {@code null} if the resource at the given URI
-   * is not in a workspace.
+   *
+   * @param resourceUri
+   *          the given URI.
+   * @return the project that contains the resource at the given URI, or
+   *         {@code null} if the resource at the given URI is not in a
+   *         workspace.
    */
   public IProject project(URI resourceUri) {
     IFile file = file(resourceUri);
@@ -75,8 +77,11 @@ public class Resources {
 
   /**
    * Indicates whether the given URI belongs to an existing file.
-   * @param fileUri the URI to check, as a {@code String}.
-   * @return {@code true} if the given URI belongs to an existing file, {@code false} otherwise.
+   *
+   * @param fileUri
+   *          the URI to check, as a {@code String}.
+   * @return {@code true} if the given URI belongs to an existing file,
+   *         {@code false} otherwise.
    */
   public boolean fileExists(URI fileUri) {
     IFile file = file(fileUri);
@@ -85,9 +90,11 @@ public class Resources {
 
   /**
    * Returns a handle to a workspace file identified by the given URI.
-   * @param uri the given URI.
-   * @return a handle to a workspace file identified by the given URI or {@code null} if the URI does not belong to a
-   * workspace file.
+   *
+   * @param uri
+   *          the given URI.
+   * @return a handle to a workspace file identified by the given URI or
+   *         {@code null} if the URI does not belong to a workspace file.
    */
   public IFile file(URI uri) {
     IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -97,7 +104,9 @@ public class Resources {
 
   /**
    * Returns the project owning the file displayed in the given editor.
-   * @param editor the given editor.
+   *
+   * @param editor
+   *          the given editor.
    * @return the project owning the file displayed in the given editor.
    */
   public IProject project(IEditorPart editor) {

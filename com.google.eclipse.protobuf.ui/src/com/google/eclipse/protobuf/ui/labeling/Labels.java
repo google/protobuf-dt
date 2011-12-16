@@ -119,12 +119,11 @@ import com.google.inject.*;
   private Object labelFor(MessageField field) {
     StyledString text = new StyledString(nameResolver.nameOf(field));
     String typeName = messageFields.typeNameOf(field);
-    if (typeName == null)
-     {
+    if (typeName == null) {
       typeName = "<unresolved reference>"; // TODO move to
     }
-                                                               // properties
-                                                               // file
+    // properties
+    // file
     String indexAndType = String.format(" [%d] : %s", field.getIndex(), typeName);
     text.append(indexAndType, DECORATIONS_STYLER);
     return text;
@@ -160,12 +159,11 @@ import com.google.inject.*;
       }
       if (field instanceof ExtensionOptionField) {
         IndexedElement source = ((ExtensionOptionField) field).getTarget();
-        b.append("(")
-         .append(options.nameForOption(source))
-         .append(")");
+        b.append("(").append(options.nameForOption(source)).append(")");
       }
     }
   }
+
   private Object labelFor(Rpc rpc) {
     StyledString text = new StyledString(nameResolver.nameOf(rpc));
     String types = String.format(" : %s > %s", messageName(rpc.getArgType()), messageName(rpc.getReturnType()));

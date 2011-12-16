@@ -30,18 +30,17 @@ import com.google.eclipse.protobuf.ui.util.SimpleReference;
 import com.google.inject.Singleton;
 
 /**
- * Utility methods related to editors. Adapted from CDT's {@code org.eclipse.cdt.internal.ui.util.EditorUtility}.
+ * Utility methods related to editors. Adapted from CDT's
+ * {@code org.eclipse.cdt.internal.ui.util.EditorUtility}.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
-public class Editors {
+@Singleton public class Editors {
 
   private static Logger logger = Logger.getLogger(Editors.class);
 
-  public IRegion[] calculateChangedLineRegions(final ITextFileBuffer buffer,
-      final IDocument current, final IProgressMonitor monitor)
-      throws CoreException {
+  public IRegion[] calculateChangedLineRegions(final ITextFileBuffer buffer, final IDocument current,
+      final IProgressMonitor monitor) throws CoreException {
     final SimpleReference<IRegion[]> result = new SimpleReference<IRegion[]>();
     final SimpleReference<IStatus> errorStatus = new SimpleReference<IStatus>(OK_STATUS);
     try {
@@ -67,8 +66,9 @@ public class Editors {
         }
 
         /*
-         * Returns regions of all lines which differ comparing {@code old}s content with {@code current}s content.
-         * Successive lines are merged into one region.
+         * Returns regions of all lines which differ comparing {@code old}s
+         * content with {@code current}s content. Successive lines are merged
+         * into one region.
          */
         private IRegion[] getChangedLineRegions(IDocument old) {
           RangeDifference[] differences = differencesWith(old);
@@ -82,7 +82,8 @@ public class Editors {
               try {
                 startLineRegion = current.getLineInformation(startLine);
                 if (startLine >= endLine) {
-                  // startLine > endLine indicates a deletion of one or more lines.
+                  // startLine > endLine indicates a deletion of one or more
+                  // lines.
                   // Deletions are ignored except at the end of the document.
                   if (startLine == endLine
                       || startLineRegion.getOffset() + startLineRegion.getLength() == current.getLength()) {

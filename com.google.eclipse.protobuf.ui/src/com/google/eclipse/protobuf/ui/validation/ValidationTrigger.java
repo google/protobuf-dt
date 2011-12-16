@@ -9,6 +9,7 @@
 package com.google.eclipse.protobuf.ui.validation;
 
 import static com.google.eclipse.protobuf.ui.validation.Validation.validate;
+import static com.google.eclipse.protobuf.util.Objects.areEqual;
 
 import java.net.URI;
 
@@ -23,16 +24,18 @@ import com.google.inject.*;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
-public class ValidationTrigger {
+@Singleton public class ValidationTrigger {
 
   private final String PROTO_EDITOR_ID = "com.google.eclipse.protobuf.Protobuf";
 
   @Inject private Resources resources;
 
   /**
-   * Triggers validation of all open .proto files belonging to the given project.
-   * @param project the given project.
+   * Triggers validation of all open .proto files belonging to the given
+   * project.
+   *
+   * @param project
+   *          the given project.
    */
   public void validateOpenEditors(IProject project) {
     for (IWorkbenchWindow window : PlatformUI.getWorkbench().getWorkbenchWindows()) {
@@ -63,12 +66,5 @@ public class ValidationTrigger {
     URI uri1 = p1.getLocationURI();
     URI uri2 = p2.getLocationURI();
     return areEqual(uri1, uri2);
-  }
-
-  private boolean areEqual(URI uri1, URI uri2) {
-    if (uri1 == null) {
-      return false;
-    }
-    return uri1.equals(uri2);
   }
 }

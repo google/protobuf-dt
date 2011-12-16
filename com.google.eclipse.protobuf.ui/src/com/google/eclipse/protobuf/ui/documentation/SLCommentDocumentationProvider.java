@@ -24,14 +24,14 @@ import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.*;
 
 /**
- * Provides single-line comments of a protobuf element as its documentation when hovered.
+ * Provides single-line comments of a protobuf element as its documentation when
+ * hovered.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
-public class SLCommentDocumentationProvider implements IEObjectDocumentationProvider {
+@Singleton public class SLCommentDocumentationProvider implements IEObjectDocumentationProvider {
 
-  private static final Pattern COMMENT_START = compile("//\\s*"); // "//" plus any whitespace
+  private static final Pattern COMMENT_START = compile("//\\s*"); // "//" plus whitespace
   private static final Patterns NEW_LINE = compileAll("\\r\\n", "\\n");
 
   @Inject private FieldOptions fieldOptions;

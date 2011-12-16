@@ -32,18 +32,21 @@ import com.google.inject.*;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
-public class XtextResourceFactory {
+@Singleton public class XtextResourceFactory {
 
   @Inject private IResourceSetProvider resourceSetProvider;
   @Inject private Resources resources;
 
   /**
    * Creates a new <code>{@link XtextResource}</code>.
-   * @param uri the URI of the file containing the EMF model.
-   * @param contents the contents of the file.
+   *
+   * @param uri
+   *          the URI of the file containing the EMF model.
+   * @param contents
+   *          the contents of the file.
    * @return the created {@code XtextResource}.
-   * @throws IOException if something goes wrong.
+   * @throws IOException
+   *           if something goes wrong.
    */
   public XtextResource createResource(String uri, String contents) throws IOException {
     return createResource(createURI(uri), contents);
@@ -51,10 +54,14 @@ public class XtextResourceFactory {
 
   /**
    * Creates a new <code>{@link XtextResource}</code>.
-   * @param uri the URI of the file containing the EMF model.
-   * @param contents the contents of the file.
+   *
+   * @param uri
+   *          the URI of the file containing the EMF model.
+   * @param contents
+   *          the contents of the file.
    * @return the created {@code XtextResource}.
-   * @throws IOException if something goes wrong.
+   * @throws IOException
+   *           if something goes wrong.
    */
   public XtextResource createResource(URI uri, String contents) throws IOException {
     ResourceSet resourceSet = resourceSetProvider.get(resources.activeProject());

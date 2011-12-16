@@ -21,12 +21,12 @@ import com.google.inject.Singleton;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
-public class Literals {
+@Singleton public class Literals {
 
   /**
-   * Calculates the index value for the given literal. The calculated index value is the maximum of all the index values
-   * of the given literal's siblings, plus one. The minimum index value is zero.
+   * Calculates the index value for the given literal. The calculated index
+   * value is the maximum of all the index values of the given literal's
+   * siblings, plus one. The minimum index value is zero.
    * <p>
    * For example, in the following message:
    *
@@ -39,7 +39,9 @@ public class Literals {
    *
    * The calculated index value for the literal {@code WORK} will be 2.
    * </p>
-   * @param l the given literal.
+   *
+   * @param l
+   *          the given literal.
    * @return the calculated index value.
    */
   public long calculateIndexOf(Literal l) {

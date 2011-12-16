@@ -22,15 +22,16 @@ import com.google.eclipse.protobuf.model.util.INodes;
 import com.google.inject.*;
 
 /**
- * Provides multiple-line comments of a protobuf element as its documentation when hovered.
+ * Provides multiple-line comments of a protobuf element as its documentation
+ * when hovered.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
-public class MLCommentDocumentationProvider implements IEObjectDocumentationProvider {
+@Singleton public class MLCommentDocumentationProvider implements IEObjectDocumentationProvider {
 
   private static final Pattern COMMENT = compile("(?s)/\\*\\*?.*");
-  private static final Patterns CLEAN_UP = compileAll("\\A/\\*\\*?", "\\*/\\z", "(?m)^( |\\t)*\\** ?", "(?m)( |\\t)*\\**( |\\t)*$");
+  private static final Patterns CLEAN_UP = compileAll("\\A/\\*\\*?", "\\*/\\z", "(?m)^( |\\t)*\\** ?",
+      "(?m)( |\\t)*\\**( |\\t)*$");
 
   @Inject private INodes nodes;
 
@@ -42,21 +43,19 @@ public class MLCommentDocumentationProvider implements IEObjectDocumentationProv
   private String findComment(EObject o) {
     String returnValue = null;
     ICompositeNode node = getNode(o);
-    if (node == null) {
-      return null;
-    }
+    if (node == null) { return null; }
     // get the last multiple-line comment before a non hidden leaf node
     for (INode currentNode : node.getAsTreeIterable()) {
-        if (!nodes.isHiddenLeafNode(currentNode)) {
-          continue;
-        }
-        if (!nodes.belongsToMultipleLineComment(currentNode)) {
-          continue;
-        }
-        String text = ((ILeafNode) currentNode).getText();
-        if (COMMENT.matcher(text).matches()) {
-          returnValue = cleanUp(text);
-        }
+      if (!nodes.isHiddenLeafNode(currentNode)) {
+        continue;
+      }
+      if (!nodes.belongsToMultipleLineComment(currentNode)) {
+        continue;
+      }
+      String text = ((ILeafNode) currentNode).getText();
+      if (COMMENT.matcher(text).matches()) {
+        returnValue = cleanUp(text);
+      }
     }
     return returnValue;
   }

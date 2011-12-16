@@ -18,24 +18,23 @@ import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
 import com.google.inject.*;
 
 /**
- * Provides single-line and multi-line comments as documentation of a protobuf element.
+ * Provides single-line and multi-line comments as documentation of a protobuf
+ * element.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
-public class ProtobufDocumentationProvider implements IEObjectDocumentationProvider {
+@Singleton public class ProtobufDocumentationProvider implements IEObjectDocumentationProvider {
 
   private final List<IEObjectDocumentationProvider> delegates = new ArrayList<IEObjectDocumentationProvider>();
 
-  @Inject
-  public ProtobufDocumentationProvider(SLCommentDocumentationProvider p1, MLCommentDocumentationProvider p2) {
+  @Inject public ProtobufDocumentationProvider(SLCommentDocumentationProvider p1, MLCommentDocumentationProvider p2) {
     delegates.add(p1);
     delegates.add(p2);
   }
 
   /** {@inheritDoc} */
   @Override public String getDocumentation(EObject o) {
-    for (IEObjectDocumentationProvider p: delegates) {
+    for (IEObjectDocumentationProvider p : delegates) {
       String documentation = p.getDocumentation(o);
       if (!(isEmpty(documentation))) {
         return documentation;
@@ -43,5 +42,4 @@ public class ProtobufDocumentationProvider implements IEObjectDocumentationProvi
     }
     return "";
   }
-
 }

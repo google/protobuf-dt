@@ -29,8 +29,7 @@ import com.google.inject.name.Named;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
-public class PreferenceStoreAccess implements IPreferenceStoreAccess {
+@Singleton public class PreferenceStoreAccess implements IPreferenceStoreAccess {
 
   private boolean initialized = false;
 
@@ -41,13 +40,13 @@ public class PreferenceStoreAccess implements IPreferenceStoreAccess {
   @Override public IPreferenceStore getContextPreferenceStore(Object context) {
     lazyInitialize();
     return new ChainedPreferenceStore(new IPreferenceStore[] { getWritablePreferenceStore(context),
-        ProtobufActivator.getInstance().getPreferenceStore(), EditorsUI.getPreferenceStore()});
+        ProtobufActivator.getInstance().getPreferenceStore(), EditorsUI.getPreferenceStore() });
   }
 
   @Override public IPreferenceStore getPreferenceStore() {
     lazyInitialize();
     return new ChainedPreferenceStore(new IPreferenceStore[] { getWritablePreferenceStore(),
-        ProtobufActivator.getInstance().getPreferenceStore(), EditorsUI.getPreferenceStore()});
+        ProtobufActivator.getInstance().getPreferenceStore(), EditorsUI.getPreferenceStore() });
   }
 
   protected String getQualifier() {
@@ -70,7 +69,8 @@ public class PreferenceStoreAccess implements IPreferenceStoreAccess {
     if (finalContext instanceof IProject) {
       ProjectScope projectScope = new ProjectScope((IProject) finalContext);
       ScopedPreferenceStore result = new ScopedPreferenceStore(projectScope, getQualifier());
-      result.setSearchContexts(new IScopeContext[] { projectScope, InstanceScope.INSTANCE, ConfigurationScope.INSTANCE });
+      result
+          .setSearchContexts(new IScopeContext[] { projectScope, InstanceScope.INSTANCE, ConfigurationScope.INSTANCE });
       return result;
     }
     return getWritablePreferenceStore();

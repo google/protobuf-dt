@@ -30,8 +30,7 @@ public class ProtobufResourceUIValidatorExtension extends DefaultResourceUIValid
 
   public static final String EDITOR_CHECK = "com.google.eclipse.protobuf.ui.editorMarker";
 
-  @VisibleForTesting
-  @Inject MarkerCreator markerCreator;
+  @VisibleForTesting @Inject MarkerCreator markerCreator;
 
   @Override protected void createMarkers(IFile file, List<Issue> list, IProgressMonitor monitor) throws CoreException {
     for (Issue issue : list) {

@@ -24,8 +24,7 @@ import com.google.inject.*;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
-public class FileOpener {
+@Singleton public class FileOpener {
 
   @Inject private Resources resources;
 
@@ -38,7 +37,7 @@ public class FileOpener {
   public IEditorPart openProtoFileInFileSystem(URI uri) throws PartInitException {
     IFileStore fileStore = EFS.getLocalFileSystem().getStore(new Path(uri.toFileString()));
     IEditorInput editorInput = new FileStoreEditorInput(fileStore);
-    return openFile(editorInput/*"org.eclipse.ui.DefaultTextEditor"*/);
+    return openFile(editorInput/* "org.eclipse.ui.DefaultTextEditor" */);
   }
 
   public IEditorPart openProtoFileInPlugin(URI uri) throws PartInitException {

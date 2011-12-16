@@ -18,8 +18,7 @@ import com.google.inject.Singleton;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
-class ContentReader {
+@Singleton class ContentReader {
 
   private static final int DEFAULT_FILE_SIZE = 15 * 1024;
 

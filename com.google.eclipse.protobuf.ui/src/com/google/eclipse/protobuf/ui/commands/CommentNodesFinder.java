@@ -27,15 +27,14 @@ import com.google.inject.*;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton
-class CommentNodesFinder {
+@Singleton class CommentNodesFinder {
 
   private static final String MATCH_ANYTHING = ".*";
 
   @Inject private INodes nodes;
   @Inject private final IResourceScopeCache cache = IResourceScopeCache.NullImpl.INSTANCE;
 
-  Pair<INode, Matcher> matchingCommentNode(EObject target, String...patternsToMatch) {
+  Pair<INode, Matcher> matchingCommentNode(EObject target, String... patternsToMatch) {
     ICompositeNode node = getNode(target);
     for (INode currentNode : node.getAsTreeIterable()) {
       if (!nodes.isHiddenLeafNode(currentNode)) {
@@ -52,9 +51,7 @@ class CommentNodesFinder {
       for (String line : comment) {
         for (Pattern pattern : compile(patternsToMatch, target)) {
           Matcher matcher = pattern.matcher(line);
-          if (matcher.matches()) {
-            return pair(currentNode, matcher);
-          }
+          if (matcher.matches()) { return pair(currentNode, matcher); }
         }
       }
     }
