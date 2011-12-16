@@ -18,17 +18,17 @@ import org.junit.*;
 
 /**
  * Tests for <code>{@link ContentReader#contentsOf(InputStream)}</code>.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ContentReader_contentsOf_Test {
 
   private ContentReader reader;
-  
+
   @Before public void setUp() {
     reader = new ContentReader();
   }
-  
+
   @Test public void should_read_InputStream() throws IOException {
     String contents = "Hello \r\n World";
     InputStream input = new StringInputStream(contents);

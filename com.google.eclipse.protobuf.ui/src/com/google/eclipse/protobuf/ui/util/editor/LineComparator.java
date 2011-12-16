@@ -1,26 +1,24 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
- * 
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.ui.util.editor;
 
 import org.apache.log4j.Logger;
 import org.eclipse.compare.rangedifferencer.IRangeComparator;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.*;
 
 /**
  * Adapted from CDT's {@code org.eclipse.cdt.internal.ui.text.LineSeparator}.
- * 
- * This implementation of <code>IRangeComparator</code> compares lines of a document. The lines are compared using a DJB 
+ *
+ * This implementation of <code>IRangeComparator</code> compares lines of a document. The lines are compared using a DJB
  * hash function.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 class LineComparator implements IRangeComparator {
@@ -28,7 +26,7 @@ class LineComparator implements IRangeComparator {
   private static final long UNKNOWN_HASH = Long.MIN_VALUE;
 
   private static Logger logger = Logger.getLogger(LineComparator.class);
-  
+
   private final IDocument document;
   private final long[] hashes;
 

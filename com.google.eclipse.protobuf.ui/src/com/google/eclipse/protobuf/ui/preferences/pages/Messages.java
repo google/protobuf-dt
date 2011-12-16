@@ -22,6 +22,6 @@ public class Messages extends NLS {
     Class<Messages> targetType = Messages.class;
     NLS.initializeMessages(targetType.getName(), targetType);
   }
-  
+
   private Messages() {}
 }

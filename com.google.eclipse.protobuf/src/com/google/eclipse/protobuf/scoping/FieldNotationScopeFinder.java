@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- * 
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.scoping;
@@ -32,13 +32,17 @@ class FieldNotationScopeFinder {
 
   Collection<IEObjectDescription> sourceOfNormalFieldNamesOf(ComplexValue value) {
     MessageField source = sourceOf(value);
-    if (source == null) return emptySet();
+    if (source == null) {
+      return emptySet();
+    }
     return propertiesInTypeOf(source);
   }
 
   Collection<IEObjectDescription> sourceOfExtensionFieldNamesOf(ComplexValue value) {
     MessageField source = sourceOf(value);
-    if (source == null) return emptySet();
+    if (source == null) {
+      return emptySet();
+    }
     return propertiesInExtendMessageOf(source);
   }
 
@@ -56,7 +60,9 @@ class FieldNotationScopeFinder {
     if (container instanceof ComplexValueField) {
       source = sourceOf((ComplexValueField) container);
     }
-    if (source instanceof MessageField) return (MessageField) source;
+    if (source instanceof MessageField) {
+      return (MessageField) source;
+    }
     return null;
   }
 
@@ -83,7 +89,9 @@ class FieldNotationScopeFinder {
     // check first in descriptor.proto
     for (TypeExtension extension : modelFinder.extensionsOf(fieldType, modelFinder.rootOf(field))) {
       for (MessageElement element : extension.getElements()) {
-        if (!(element instanceof MessageField)) continue;
+        if (!(element instanceof MessageField)) {
+          continue;
+        }
         descriptions.addAll(qualifiedNameDescriptions.qualifiedNames(element));
       }
     }

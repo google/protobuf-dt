@@ -72,7 +72,9 @@ import com.google.inject.*;
    */
   public IndexedElement sourceOf(CustomFieldOption option) {
     IndexedElement e = sourceOfLastFieldIn(option);
-    if (e == null) e = rootSourceOf(option);
+    if (e == null) {
+      e = rootSourceOf(option);
+    }
     return e;
   }
 
@@ -115,8 +117,11 @@ import com.google.inject.*;
    */
   public IndexedElement sourceOfLastFieldIn(CustomFieldOption option) {
     List<OptionField> fields = option.getFields();
-    if (fields.isEmpty()) return null;
-    OptionField last = fields.get(fields.size() - 1);
+    int fieldCount = fields.size();
+    if (fieldCount == 0) {
+      return null;
+    }
+    OptionField last = fields.get(fieldCount - 1);
     return optionFields.sourceOf(last);
   }
 }

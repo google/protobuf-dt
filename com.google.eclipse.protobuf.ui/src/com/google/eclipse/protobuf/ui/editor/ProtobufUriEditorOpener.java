@@ -13,8 +13,7 @@ import static org.eclipse.xtext.ui.editor.utils.EditorUtils.getXtextEditor;
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EReference;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.*;
 import org.eclipse.xtext.ui.editor.LanguageSpecificURIEditorOpener;
 
 import com.google.inject.Inject;
@@ -43,10 +42,12 @@ public class ProtobufUriEditorOpener extends LanguageSpecificURIEditorOpener {
   }
 
   private IEditorPart editorFor(URI uri) throws PartInitException {
-    if (uri.isFile())
+    if (uri.isFile()) {
       return fileOpener.openProtoFileInFileSystem(uri);
-    if (uri.isPlatformPlugin())
+    }
+    if (uri.isPlatformPlugin()) {
       return fileOpener.openProtoFileInPlugin(uri);
+    }
     return null;
   }
 }

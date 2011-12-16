@@ -64,7 +64,7 @@ class RawPreferences {
   StringPreference protocPath() {
     return protocPath;
   }
-  
+
   StringPreference descriptorPath() {
     return descriptorPath;
   }

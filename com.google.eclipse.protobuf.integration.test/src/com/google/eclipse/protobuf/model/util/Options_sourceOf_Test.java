@@ -13,14 +13,14 @@ import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
+import org.junit.*;
+
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
-import org.junit.*;
-
 /**
  * Tests for <code>{@link Options#sourceOf(CustomOption)}</code>
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Options_sourceOf_Test {

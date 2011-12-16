@@ -54,7 +54,9 @@ public class BindingToListItems implements Binding {
 
   private void apply(Collection<String> value) {
     list.removeAll();
-    for (String s : value) list.add(s);
+    for (String s : value) {
+      list.add(s);
+    }
   }
 
   /** {@inheritDoc} */

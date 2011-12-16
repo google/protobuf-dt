@@ -21,7 +21,7 @@ import org.eclipse.xtext.ui.editor.outline.impl.AbstractOutlineNode;
 class SimpleOutlineNode extends AbstractOutlineNode {
 
   private final URI ownerUri;
-  
+
   SimpleOutlineNode(IOutlineNode parent, EObject owner, Image image, Object text, boolean isLeaf) {
     super(parent, image, text, isLeaf);
     ownerUri = EcoreUtil.getURI(owner);

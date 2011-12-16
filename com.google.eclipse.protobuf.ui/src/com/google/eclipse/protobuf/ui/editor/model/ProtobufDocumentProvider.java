@@ -16,26 +16,17 @@ import static org.eclipse.core.filebuffers.FileBuffers.getTextFileBufferManager;
 import static org.eclipse.core.filebuffers.LocationKind.*;
 import static org.eclipse.text.undo.DocumentUndoManagerRegistry.getDocumentUndoManager;
 
-import org.eclipse.core.filebuffers.ITextFileBuffer;
-import org.eclipse.core.filebuffers.ITextFileBufferManager;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.Region;
+import org.eclipse.core.filebuffers.*;
+import org.eclipse.core.runtime.*;
+import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.undo.IDocumentUndoManager;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.xtext.ui.editor.model.XtextDocument;
-import org.eclipse.xtext.ui.editor.model.XtextDocumentProvider;
+import org.eclipse.ui.*;
+import org.eclipse.xtext.ui.editor.model.*;
 
-import com.google.eclipse.protobuf.ui.preferences.pages.editor.save.SaveActionsPreferences;
+import com.google.eclipse.protobuf.ui.preferences.pages.editor.save.*;
 import com.google.eclipse.protobuf.ui.preferences.pages.editor.save.SaveActionsPreferences.RemoveTrailingSpace;
-import com.google.eclipse.protobuf.ui.preferences.pages.editor.save.SaveActionsPreferencesFactory;
 import com.google.eclipse.protobuf.ui.util.editor.Editors;
 import com.google.inject.Inject;
 
@@ -45,14 +36,16 @@ import com.google.inject.Inject;
 public class ProtobufDocumentProvider extends XtextDocumentProvider {
 
   private static final IRegion[] NO_CHANGE = new IRegion[0];
-  
+
   @Inject private Editors editors;
   @Inject private DocumentContentsFactoryRegistry documentContentsFactories;
-  @Inject private SaveActionsPreferencesFactory preferencesFactory;  
+  @Inject private SaveActionsPreferencesFactory preferencesFactory;
   @Inject private SaveActions saveActions;
 
   @Override protected ElementInfo createElementInfo(Object element) throws CoreException {
-    if (documentContentsFactories.findFactory(element) != null) return createElementInfo((IEditorInput) element);
+    if (documentContentsFactories.findFactory(element) != null) {
+      return createElementInfo((IEditorInput) element);
+    }
     return super.createElementInfo(element);
   }
 
@@ -77,7 +70,9 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
 
   @Override protected IDocument createDocument(Object element) throws CoreException {
     DocumentContentsFactory factory = documentContentsFactories.findFactory(element);
-    if (factory != null) return createDocument(factory, element);
+    if (factory != null) {
+      return createDocument(factory, element);
+    }
     return super.createDocument(element);
   }
 
@@ -99,7 +94,9 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
       IFileEditorInput editorInput, IDocument document) throws CoreException {
     IRegion[] changedRegions = changedRegions(monitor, editorInput, document);
     TextEdit edit = saveActions.createSaveAction(document, changedRegions);
-    if (edit == null) return;
+    if (edit == null) {
+      return;
+    }
     try {
       IDocumentUndoManager manager = getDocumentUndoManager(document);
       manager.beginCompoundChange();
@@ -109,17 +106,19 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
       throw error(t);
     }
   }
-  
+
   private IRegion[] changedRegions(IProgressMonitor monitor, IFileEditorInput editorInput, IDocument document) throws CoreException {
     SaveActionsPreferences preferences = preferencesFactory.preferences();
     RemoveTrailingSpace removeTrailingSpace = preferences.removeTrailingSpace();
-    if (removeTrailingSpace.equals(NONE)) return NO_CHANGE;
+    if (removeTrailingSpace.equals(NONE)) {
+      return NO_CHANGE;
+    }
     if (removeTrailingSpace.equals(IN_EDITED_LINES)) {
       return editors.calculateChangedLineRegions(textFileBuffer(monitor, editorInput), document, monitor);
     }
     return new IRegion[] { new Region(0, document.getLength()) };
   }
-  
+
   private ITextFileBuffer textFileBuffer(IProgressMonitor monitor, IFileEditorInput editorInput) throws CoreException {
     IPath location = editorInput.getFile().getFullPath();
     ITextFileBufferManager textFileBufferManager = getTextFileBufferManager();

@@ -72,10 +72,14 @@ public class ProtobufQuickfixProvider extends DefaultQuickfixProvider {
   @Fix(MORE_THAN_ONE_PACKAGE_ERROR)
   public void removeDuplicatePackage(Issue issue, IssueResolutionAcceptor acceptor) {
     final Package aPackage = element(issue, Package.class);
-    if (aPackage == null) return;
+    if (aPackage == null) {
+      return;
+    }
     ISemanticModification modification = new ISemanticModification() {
       @Override public void apply(EObject element, IModificationContext context) throws Exception {
-        if (!(element instanceof Package)) return;
+        if (!(element instanceof Package)) {
+          return;
+        }
         remove(aPackage);
       }
     };

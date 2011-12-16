@@ -51,8 +51,13 @@ import com.google.inject.Singleton;
    * is {@code null}.
    */
   public long indexOf(IndexedElement e) {
-    if (e == null) return Long.MIN_VALUE;
-    return (e instanceof Group) ? ((Group) e).getIndex() : ((MessageField) e).getIndex();
+    if (e instanceof Group) {
+      return ((Group) e).getIndex();
+    }
+    if (e instanceof MessageField) {
+      return ((MessageField) e).getIndex();
+    }
+    return Long.MIN_VALUE;
   }
 
   /**
@@ -62,8 +67,13 @@ import com.google.inject.Singleton;
    * {@code IndexedElement} is {@code null}.
    */
   public EStructuralFeature indexFeatureOf(IndexedElement e) {
-    if (e == null) return null;
-    return (e instanceof Group) ? GROUP__INDEX : MESSAGE_FIELD__INDEX;
+    if (e instanceof Group) {
+      return GROUP__INDEX;
+    }
+    if (e instanceof MessageField) {
+      return MESSAGE_FIELD__INDEX;
+    }
+    return null;
   }
 
   /**
@@ -73,8 +83,13 @@ import com.google.inject.Singleton;
    * {@code null}.
    */
   public List<FieldOption> fieldOptionsOf(IndexedElement e) {
-    if (e == null) return emptyList();
-    return (e instanceof Group) ? ((Group) e).getFieldOptions() : ((MessageField) e).getFieldOptions();
+    if (e instanceof Group) {
+      return ((Group) e).getFieldOptions();
+    }
+    if (e instanceof MessageField) {
+      return ((MessageField) e).getFieldOptions();
+    }
+    return emptyList();
   }
 
   /**
@@ -83,12 +98,12 @@ import com.google.inject.Singleton;
    * @param newIndex the new index to set.
    */
   public void setIndexTo(IndexedElement e, long newIndex) {
-    if (e == null) return;
     if (e instanceof Group) {
       ((Group) e).setIndex(newIndex);
-      return;
     }
-    ((MessageField) e).setIndex(newIndex);
+    if (e instanceof MessageField) {
+      ((MessageField) e).setIndex(newIndex);
+    }
   }
 
   /**
@@ -112,7 +127,9 @@ import com.google.inject.Singleton;
   public long calculateTagNumberOf(IndexedElement e) {
     long index = 0;
     for (EObject o : e.eContainer().eContents()) {
-      if (o == e || !(o instanceof IndexedElement)) continue;
+      if (o == e || !(o instanceof IndexedElement)) {
+        continue;
+      }
       index = max(index, indexOf((IndexedElement) o));
     }
     return ++index;

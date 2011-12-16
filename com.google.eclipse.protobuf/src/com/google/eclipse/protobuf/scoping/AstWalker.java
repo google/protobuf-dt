@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- * 
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.scoping;
@@ -70,7 +70,9 @@ class AstWalker {
 
   private Collection<IEObjectDescription> imported(Protobuf start, ScopeFinder scopeFinder, Object criteria) {
     List<Import> allImports = modelFinder.importsIn(start);
-    if (allImports.isEmpty()) return emptyList();
+    if (allImports.isEmpty()) {
+      return emptyList();
+    }
     ResourceSet resourceSet = start.eResource().getResourceSet();
     return imported(allImports, modelFinder.packageOf(start), resourceSet, scopeFinder, criteria);
   }
@@ -84,9 +86,13 @@ class AstWalker {
         continue;
       }
       Resource imported = resources.importedResource(anImport, resourceSet);
-      if (imported == null) continue;
+      if (imported == null) {
+        continue;
+      }
       Protobuf rootOfImported = modelFinder.rootOf(imported);
-      if (!protobufs.isProto2(rootOfImported)) continue;
+      if (!protobufs.isProto2(rootOfImported)) {
+        continue;
+      }
       if (rootOfImported != null) {
         descriptions.addAll(publicImported(rootOfImported, scopeFinder, criteria));
         if (arePackagesRelated(fromImporter, rootOfImported)) {
@@ -101,9 +107,13 @@ class AstWalker {
   }
 
   private Collection<IEObjectDescription> publicImported(Protobuf start, ScopeFinder scopeFinder, Object criteria) {
-    if (!protobufs.isProto2(start)) return emptySet();
+    if (!protobufs.isProto2(start)) {
+      return emptySet();
+    }
     List<Import> allImports = modelFinder.publicImportsIn(start);
-    if (allImports.isEmpty()) return emptyList();
+    if (allImports.isEmpty()) {
+      return emptyList();
+    }
     ResourceSet resourceSet = start.eResource().getResourceSet();
     return imported(allImports, modelFinder.packageOf(start), resourceSet, scopeFinder, criteria);
   }

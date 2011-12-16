@@ -113,7 +113,9 @@ public class EditCodeGenerationDialog extends InputDialog {
     IWorkspace workspace = ResourcesPlugin.getWorkspace();
     for (String segment : segmentsOf(directoryName)) {
       IStatus isValid = workspace.validateName(segment, FOLDER);
-      if (isValid.getCode() == OK) continue;
+      if (isValid.getCode() == OK) {
+        continue;
+      }
       return isValid.getMessage();
     }
     return null;

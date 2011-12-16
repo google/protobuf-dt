@@ -46,7 +46,7 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
 
   private static Logger logger = Logger.getLogger(PathsPreferencePage.class);
 
-  private static final String COMMA_DELIMITER = ","; //$NON-NLS-1$
+  private static final String COMMA_DELIMITER = ",";
   private static final String PREFERENCE_PAGE_ID = PathsPreferencePage.class.getName();
 
   private Group grpResolutionOfImported;
@@ -136,7 +136,10 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
 
   private String directoryNames() {
     List<DirectoryPath> paths = directoryPathsEditor.directoryPaths();
-    if (paths.isEmpty()) return ""; //$NON-NLS-1$
+    if (paths.isEmpty())
+     {
+      return "";
+    }
     List<String> pathsAsText = new ArrayList<String>();
     for (DirectoryPath path : paths) {
       pathsAsText.add(path.toString());
@@ -147,7 +150,9 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
   private void setDirectoryPaths(String directoryPaths) {
     List<DirectoryPath> paths = new ArrayList<DirectoryPath>();
     for (String path : split(directoryPaths, COMMA_DELIMITER)) {
-      if (isEmpty(path)) continue;
+      if (isEmpty(path)) {
+        continue;
+      }
       paths.add(DirectoryPath.parse(path));
     }
     directoryPathsEditor.directoryPaths(unmodifiableList(paths));
@@ -175,7 +180,9 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
 
   @Override protected void okPerformed() {
     // TODO check threading
-    if (!stateChanged) return;
+    if (!stateChanged) {
+      return;
+    }
     stateChanged = false;
     if (shouldRebuild()) {
       rebuildProject();
@@ -192,13 +199,13 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
   }
 
   private void rebuildProject() {
-    Job job = new Job("Rebuilding project") { //$NON-NLS-1$
+    Job job = new Job("Rebuilding project") {
       @Override protected IStatus run(IProgressMonitor monitor) {
         try {
           project().build(FULL_BUILD, monitor);
         } catch (CoreException e) {
           logger.error(e.getMessage(), e);
-          return new Status(ERROR, PLUGIN_ID, ERROR, e.getMessage(), e); //$NON-NLS-1$
+          return new Status(ERROR, PLUGIN_ID, ERROR, e.getMessage(), e);
         }
         return OK_STATUS;
       }

@@ -8,11 +8,12 @@
  */
 package com.google.eclipse.protobuf.ui.editor;
 
+import static com.google.eclipse.protobuf.util.Objects.*;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IPersistableElement;
+import org.eclipse.ui.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -56,25 +57,25 @@ public class UriEditorInput implements IEditorInput {
     return fileUri;
   }
 
-  @Override public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((name == null) ? 0 : name.hashCode());
-    result = prime * result + ((fileUri == null) ? 0 : fileUri.hashCode());
-    return result;
+  @Override public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+    UriEditorInput other = (UriEditorInput) obj;
+    if (!areEqual(name, other.name)) {
+      return false;
+    }
+    return areEqual(fileUri, other.fileUri);
   }
 
-  @Override public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
-    UriEditorInput other = (UriEditorInput) obj;
-    if (name == null) {
-      if (other.name != null) return false;
-    } else if (!name.equals(other.name)) return false;
-    if (fileUri == null) {
-      if (other.fileUri != null) return false;
-    } else if (!fileUri.equals(other.fileUri)) return false;
-    return true;
+  @Override public int hashCode() {
+    final int prime = HASH_CODE_PRIME;
+    int result = 1;
+    result = prime * result + hashCodeOf(name);
+    result = prime * result + hashCodeOf(fileUri);
+    return result;
   }
 }

@@ -13,18 +13,18 @@ import static java.util.Collections.emptyMap;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
-import com.google.eclipse.protobuf.protobuf.Message;
+import java.util.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.*;
 import org.junit.*;
 
-import java.util.*;
+import com.google.eclipse.protobuf.protobuf.Message;
 
 /**
  * Tests for <code>{@link IEObjectDescriptionChooser#shortestQualifiedNamesIn(Collection)}</code>.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class IEObjectDescriptionChooser_shortestQualifiedNamesIn_Test {
@@ -32,7 +32,7 @@ public class IEObjectDescriptionChooser_shortestQualifiedNamesIn_Test {
   private List<IEObjectDescription> descriptions;
   private Map<String, String> userData;
   private IEObjectDescriptionChooser chooser;
-  
+
   @Before public void setUp() {
     userData = emptyMap();
     chooser = new IEObjectDescriptionChooser();
@@ -43,7 +43,7 @@ public class IEObjectDescriptionChooser_shortestQualifiedNamesIn_Test {
 
   /*
    * Creates IEObjectDescriptions for the given EObject, one per segment in the given qualified name.
-   * 
+   *
    * Example:
    * Given the qualified name "com.google.test.Phone", this method will use these qualified names to create
    * IEObjectDescriptions:
@@ -61,7 +61,7 @@ public class IEObjectDescriptionChooser_shortestQualifiedNamesIn_Test {
       descriptions.add(new EObjectDescription(newName, e, userData));
     }
   }
-  
+
   @Test public void should_return_descriptions_with_shortest_QualifiedName() {
     Collection<IEObjectDescription> chosen = chooser.shortestQualifiedNamesIn(descriptions);
     assertThat(chosen, containOnly("EMail", "Phone"));

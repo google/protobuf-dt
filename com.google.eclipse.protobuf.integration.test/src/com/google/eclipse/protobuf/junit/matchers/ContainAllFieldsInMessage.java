@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- * 
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.junit.matchers;
@@ -38,14 +38,20 @@ public class ContainAllFieldsInMessage extends BaseMatcher<IEObjectDescriptions>
   }
 
   @Override public boolean matches(Object arg) {
-    if (!(arg instanceof IEObjectDescriptions)) return false;
+    if (!(arg instanceof IEObjectDescriptions)) {
+      return false;
+    }
     IEObjectDescriptions descriptions = (IEObjectDescriptions) arg;
     List<IndexedElement> elements = allIndexedElements();
-    if (descriptions.size() != elements.size()) return false;
+    if (descriptions.size() != elements.size()) {
+      return false;
+    }
     for (IndexedElement e : elements) {
       String name = nameOf(e);
       EObject described = descriptions.objectDescribedAs(name);
-      if (described != e) return false;
+      if (described != e) {
+        return false;
+      }
     }
     return true;
   }
@@ -63,7 +69,9 @@ public class ContainAllFieldsInMessage extends BaseMatcher<IEObjectDescriptions>
   }
 
   private String nameOf(IndexedElement e) {
-    if (e == null) return null;
+    if (e == null) {
+      return null;
+    }
     return (e instanceof Group) ? ((Group) e).getName() : ((MessageField) e).getName();
   }
 }

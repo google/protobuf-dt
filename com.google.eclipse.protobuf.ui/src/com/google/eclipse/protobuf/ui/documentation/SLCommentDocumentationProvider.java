@@ -46,11 +46,17 @@ public class SLCommentDocumentationProvider implements IEObjectDocumentationProv
   private String findComment(EObject o) {
     EObject target = findRealTarget(o);
     ICompositeNode node = getNode(target);
-    if (node == null) return null;
+    if (node == null) {
+      return null;
+    }
     StringBuilder commentBuilder = new StringBuilder();
     for (INode currentNode : node.getAsTreeIterable()) {
-      if (!nodes.isHiddenLeafNode(currentNode)) continue;
-      if (!nodes.belongsToSingleLineComment(currentNode)) continue;
+      if (!nodes.isHiddenLeafNode(currentNode)) {
+        continue;
+      }
+      if (!nodes.belongsToSingleLineComment(currentNode)) {
+        continue;
+      }
       String comment = ((ILeafNode) currentNode).getText();
       commentBuilder.append(cleanUp(comment));
     }

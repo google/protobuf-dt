@@ -12,23 +12,20 @@ import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.junit.rules.ExpectedException.none;
 import static org.mockito.Mockito.mock;
 
 import org.eclipse.xtext.conversion.ValueConverterException;
 import org.eclipse.xtext.nodemodel.INode;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.ExpectedException;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 
 /**
  * Tests for <code>{@link LONGValueConverter#toString()}</code>.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class LONGValueConverter_toValue_Test {
@@ -43,7 +40,7 @@ public class LONGValueConverter_toValue_Test {
     node = mock(INode.class);
     converter = xtext.injector().getInstance(LONGValueConverter.class);
   }
-  
+
   @Test public void should_throw_error_if_input_is_null() {
     thrown.expect(ValueConverterException.class);
     thrown.expectMessage("Couldn't convert empty string to long.");

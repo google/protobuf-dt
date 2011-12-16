@@ -60,11 +60,11 @@ public class SingleDirectoryFileResolver_resolveUri_Test {
     String resolved = resolver.resolveUri("src/proto/read-only/address.proto", resourceUri, preferences);
     assertThat(resolved, equalTo("platform:/resource/src/proto/read-only/address.proto"));
   }
-  
+
   private void expectResolvedPathToBelongToExistingFile() {
     when(resources.fileExists(any(URI.class))).thenReturn(true);
   }
-  
+
   @Test public void should_return_null_if_URI_cannot_be_resolved() {
     when(resources.fileExists(any(URI.class))).thenReturn(false);
     String resolved = resolver.resolveUri("src/proto/read-only/person.proto", resourceUri, preferences);

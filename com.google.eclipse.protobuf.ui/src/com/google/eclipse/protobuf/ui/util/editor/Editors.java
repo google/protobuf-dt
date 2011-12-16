@@ -108,13 +108,17 @@ public class Editors {
       });
     } finally {
       IStatus status = errorStatus.get();
-      if (!status.isOK()) throw new CoreException(status);
+      if (!status.isOK()) {
+        throw new CoreException(status);
+      }
     }
     return result.get();
   }
 
   private static IProgressMonitor getSubProgressMonitor(IProgressMonitor monitor, int ticks) {
-    if (monitor != null) return new SubProgressMonitor(monitor, ticks, PREPEND_MAIN_LABEL_TO_SUBTASK);
+    if (monitor != null) {
+      return new SubProgressMonitor(monitor, ticks, PREPEND_MAIN_LABEL_TO_SUBTASK);
+    }
     return new NullProgressMonitor();
   }
 }

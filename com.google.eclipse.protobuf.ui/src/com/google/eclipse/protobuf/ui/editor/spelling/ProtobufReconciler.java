@@ -1,21 +1,21 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
- * 
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.ui.editor.spelling;
 
 import static org.eclipse.ui.editors.text.EditorsUI.getSpellingService;
 
-import com.google.inject.Inject;
-
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.xtext.ui.editor.reconciler.XtextReconciler;
+
+import com.google.inject.Inject;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -29,7 +29,9 @@ public class ProtobufReconciler extends XtextReconciler {
   }
 
   @Override public void install(ITextViewer textViewer) {
-    if (installed) return;
+    if (installed) {
+      return;
+    }
     super.install(textViewer);
     if (textViewer instanceof ISourceViewer) {
       ISourceViewer viewer = (ISourceViewer) textViewer;

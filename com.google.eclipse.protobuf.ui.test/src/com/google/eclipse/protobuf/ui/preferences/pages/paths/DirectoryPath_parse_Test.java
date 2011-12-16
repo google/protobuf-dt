@@ -15,7 +15,7 @@ import org.junit.Test;
 
 /**
  * Tests for <code>{@link DirectoryPath#parse(String)}</code>
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class DirectoryPath_parse_Test {

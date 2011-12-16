@@ -11,9 +11,9 @@ package com.google.eclipse.protobuf.bugs;
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 
-import com.google.eclipse.protobuf.junit.core.*;
-
 import org.junit.*;
+
+import com.google.eclipse.protobuf.junit.core.XtextRule;
 
 /**
  * Tests fix for <a href="http://code.google.com/p/protobuf-dt/issues/detail?id=168">Issue 168</a>.
@@ -23,7 +23,7 @@ import org.junit.*;
 public class Issue168_GroupsCanHaveMessagesAndExtensions_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
-  
+
   // syntax = "proto2";
   //
   // message TopMessage {

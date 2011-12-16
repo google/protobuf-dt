@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- * 
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.validation;
@@ -44,15 +44,25 @@ public class DataTypeValidator extends AbstractDeclarativeValidator {
   }
 
   private void checkValueTypeMatchesFieldType(FieldOption option, MessageField field) {
-    if (validateBool(option, field)) return;
-    if (validateFloatingPointNumber(option, field)) return;
-    if (validateInteger(option, field)) return;
-    if (validateString(option, field)) return;
+    if (validateBool(option, field)) {
+      return;
+    }
+    if (validateFloatingPointNumber(option, field)) {
+      return;
+    }
+    if (validateInteger(option, field)) {
+      return;
+    }
+    if (validateString(option, field)) {
+      return;
+    }
     validateEnumLiteral(option, field);
   }
 
   private boolean validateBool(FieldOption option, MessageField field) {
-    if (!messageFields.isBool(field)) return false;
+    if (!messageFields.isBool(field)) {
+      return false;
+    }
     Value value = option.getValue();
     if (!(value instanceof BooleanLink)) {
       error(expectedTrueOrFalse, option, FIELD_OPTION__VALUE, EXPECTED_BOOL_ERROR);
@@ -61,7 +71,9 @@ public class DataTypeValidator extends AbstractDeclarativeValidator {
   }
 
   private boolean validateFloatingPointNumber(FieldOption option, MessageField field) {
-    if (!messageFields.isFloatingPointNumber(field)) return false;
+    if (!messageFields.isFloatingPointNumber(field)) {
+      return false;
+    }
     Value value = option.getValue();
     if (!(value instanceof DoubleLink) && !isInteger(value)) {
       error(expectedNumber, FIELD_OPTION__VALUE);
@@ -70,7 +82,9 @@ public class DataTypeValidator extends AbstractDeclarativeValidator {
   }
 
   private boolean validateInteger(FieldOption option, MessageField field) {
-    if (!messageFields.isInteger(field)) return false;
+    if (!messageFields.isInteger(field)) {
+      return false;
+    }
     Value value = option.getValue();
     if (!isInteger(value)) {
       error(expectedInteger, FIELD_OPTION__VALUE);
@@ -102,7 +116,9 @@ public class DataTypeValidator extends AbstractDeclarativeValidator {
   }
 
   private boolean validateString(FieldOption option, MessageField field) {
-    if (!messageFields.isBytes(field) && !messageFields.isString(field)) return false;
+    if (!messageFields.isBytes(field) && !messageFields.isString(field)) {
+      return false;
+    }
     Value value = option.getValue();
     if (!(value instanceof StringLink)) {
       error(expectedString, option, FIELD_OPTION__VALUE, EXPECTED_STRING_ERROR);
@@ -113,7 +129,9 @@ public class DataTypeValidator extends AbstractDeclarativeValidator {
   private boolean validateEnumLiteral(FieldOption option, MessageField field) {
     Value value = option.getValue();
     Enum anEnum = modelFinder.enumTypeOf(field);
-    if (anEnum == null) return false;
+    if (anEnum == null) {
+      return false;
+    }
     if (!(value instanceof LiteralLink)) {
       error(expectedIdentifier, FIELD_OPTION__VALUE);
       return true;

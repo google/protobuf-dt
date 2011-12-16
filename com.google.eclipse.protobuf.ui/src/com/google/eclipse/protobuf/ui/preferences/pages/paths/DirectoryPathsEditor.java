@@ -60,7 +60,7 @@ public class DirectoryPathsEditor extends Composite {
     tblDirectoryPaths = tblVwrDirectoryPaths.getTable();
     tblDirectoryPaths.setLinesVisible(true);
     tblDirectoryPaths.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-    
+
     TableViewerColumn tblclmnVwrPath = new TableViewerColumn(tblVwrDirectoryPaths, SWT.NONE);
     TableColumn tblclmnPath = tblclmnVwrPath.getColumn();
     tblclmnPath.setWidth(200);
@@ -119,7 +119,9 @@ public class DirectoryPathsEditor extends Composite {
     btnRemove.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
         int index = tblDirectoryPaths.getSelectionIndex();
-        if (index < 0) return;
+        if (index < 0) {
+          return;
+        }
         importPaths.remove(index);
         updateTable();
         enableButtonsDependingOnTableSelection();
@@ -140,7 +142,9 @@ public class DirectoryPathsEditor extends Composite {
 
   private void swap(boolean goUp) {
     int index = tblDirectoryPaths.getSelectionIndex();
-    if (index < 0) return;
+    if (index < 0) {
+      return;
+    }
     int target = goUp ? index - 1 : index + 1;
     int[] selection = tblDirectoryPaths.getSelectionIndices();
     DirectoryPath path = importPaths.get(selection[0]);
@@ -187,8 +191,9 @@ public class DirectoryPathsEditor extends Composite {
 
   private void updateTable() {
     tblVwrDirectoryPaths.setInput(importPaths.toArray());
-    if (tblDirectoryPaths.getItemCount() > 0 && tblDirectoryPaths.getSelectionCount() == 0)
+    if (tblDirectoryPaths.getItemCount() > 0 && tblDirectoryPaths.getSelectionCount() == 0) {
       tblDirectoryPaths.setSelection(0);
+    }
   }
 
   public void setDataChangedListener(DataChangedListener listener) {
@@ -196,7 +201,9 @@ public class DirectoryPathsEditor extends Composite {
   }
 
   private void notifyDataHasChanged() {
-    if (dataChangedListener != null) dataChangedListener.dataChanged();
+    if (dataChangedListener != null) {
+      dataChangedListener.dataChanged();
+    }
   }
 
   private static class RichLabelProvider extends LabelProvider implements ITableLabelProvider {

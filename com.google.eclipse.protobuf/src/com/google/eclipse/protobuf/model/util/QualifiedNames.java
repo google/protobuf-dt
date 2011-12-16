@@ -1,22 +1,22 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- * 
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.model.util;
 
-import com.google.inject.Singleton;
+import java.util.*;
 
 import org.eclipse.xtext.naming.QualifiedName;
 
-import java.util.*;
+import com.google.inject.Singleton;
 
 /**
  * Utility methods related to <code>{@link QualifiedName}</code>s.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class QualifiedNames {
@@ -30,7 +30,9 @@ import java.util.*;
   }
 
   public QualifiedName addLeadingDot(QualifiedName name) {
-    if (name.getFirstSegment().equals("")) return name;
+    if (name.getFirstSegment().equals("")) {
+      return name;
+    }
     List<String> segments = new ArrayList<String>();
     segments.addAll(name.getSegments());
     segments.add(0, "");

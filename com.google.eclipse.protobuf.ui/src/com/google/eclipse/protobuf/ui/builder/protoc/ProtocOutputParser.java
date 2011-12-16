@@ -8,9 +8,9 @@
  */
 package com.google.eclipse.protobuf.ui.builder.protoc;
 
-import com.google.inject.ImplementedBy;
-
 import org.eclipse.core.runtime.CoreException;
+
+import com.google.inject.ImplementedBy;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

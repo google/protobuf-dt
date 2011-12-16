@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- * 
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.naming;
@@ -12,11 +12,11 @@ import static com.google.eclipse.protobuf.naming.Naming.NamingUsage.*;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 import static org.eclipse.xtext.util.Tuples.pair;
 
+import java.util.List;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.util.*;
-
-import java.util.List;
 
 import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.naming.Naming.NamingUsage;
@@ -25,7 +25,7 @@ import com.google.inject.*;
 
 /**
  * Provides fully-qualified names for protobuf elements.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.AbstractImpl implements
@@ -53,7 +53,9 @@ public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.Abstra
       @Override public QualifiedName get() {
         EObject current = e;
         String name = naming.nameOf(e, usage);
-        if (isEmpty(name)) return null;
+        if (isEmpty(name)) {
+          return null;
+        }
         QualifiedName qualifiedName = converter.toQualifiedName(name);
         while (current.eContainer() != null) {
           current = current.eContainer();
@@ -66,13 +68,21 @@ public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.Abstra
   }
 
   private QualifiedName addPackage(EObject obj, QualifiedName qualifiedName) {
-    if (qualifiedName == null || obj instanceof Package) return qualifiedName;
+    if (qualifiedName == null || obj instanceof Package) {
+      return qualifiedName;
+    }
     Package p = finder.packageOf(obj);
-    if (p == null) return qualifiedName;
+    if (p == null) {
+      return qualifiedName;
+    }
     List<String> segments = packages.segmentsOf(p);
-    if (segments.isEmpty()) return qualifiedName;
+    if (segments.isEmpty()) {
+      return qualifiedName;
+    }
     QualifiedName packageQualifiedName = qualifiedNames.createFqn(segments);
-    if (qualifiedName.startsWith(packageQualifiedName)) return qualifiedName;
+    if (qualifiedName.startsWith(packageQualifiedName)) {
+      return qualifiedName;
+    }
     return packageQualifiedName.append(qualifiedName);
   }
 }

@@ -12,8 +12,7 @@ import static com.google.eclipse.protobuf.util.CommonWords.space;
 
 import java.util.*;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.*;
 import org.eclipse.xtext.util.Strings;
 
 import com.google.eclipse.protobuf.ui.preferences.pages.compiler.SupportedLanguage;
@@ -26,8 +25,9 @@ class ProtocCommandFactory {
   private static final Map<SupportedLanguage, String> LANG_OUT_FLAG = new HashMap<SupportedLanguage, String>();
 
   static {
-    for (SupportedLanguage lang : SupportedLanguage.values())
+    for (SupportedLanguage lang : SupportedLanguage.values()) {
       LANG_OUT_FLAG.put(lang, "--" + lang.code() + "_out=");
+    }
   }
 
   String protocCommand(IFile protoFile, String protocPath, List<String> importRoots, String descriptorPath,
@@ -42,7 +42,9 @@ class ProtocCommandFactory {
     }
     for (SupportedLanguage language : SupportedLanguage.values()) {
       IFolder outputDirectory = outputDirectories.outputDirectoryFor(language);
-      if (outputDirectory == null) continue;
+      if (outputDirectory == null) {
+        continue;
+      }
       command.append(langOutFlag(language)).append(outputDirectory.getLocation().toOSString()).append(space());
     }
     command.append(protoFile.getLocation().toOSString());

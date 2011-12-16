@@ -49,10 +49,12 @@ public class ProtobufOutlineTreeProvider extends DefaultOutlineTreeProvider {
   boolean _isLeaf(Package aPackage) {
     return true;
   }
-  
+
   protected void _createChildren(DocumentRootNode parent, Protobuf protobuf) {
     OutlineViewModel model = new OutlineViewModel(protobuf);
-    for (EObject aPackage : model.packages()) createNode(parent, aPackage);
+    for (EObject aPackage : model.packages()) {
+      createNode(parent, aPackage);
+    }
     addGroup(parent, protobuf, model.imports(), "imports", importDeclarations);
     for (EObject e : model.remainingElements()) {
       createNode(parent, e);
@@ -61,7 +63,9 @@ public class ProtobufOutlineTreeProvider extends DefaultOutlineTreeProvider {
 
   private void addGroup(DocumentRootNode parent, Protobuf protobuf, List<? extends EObject> group, String imageKey,
       String text) {
-    if (group.isEmpty()) return;
+    if (group.isEmpty()) {
+      return;
+    }
     SimpleOutlineNode groupNode = new SimpleOutlineNode(parent, protobuf, labelProvider.getImage(imageKey), text, false);
     for (EObject o : group) {
       createNode(groupNode, o);
@@ -69,13 +73,18 @@ public class ProtobufOutlineTreeProvider extends DefaultOutlineTreeProvider {
   }
 
   @Override protected void createNode(IOutlineNode parent, EObject modelElement) {
-    if (isIgnored(modelElement)) return;
+    if (isIgnored(modelElement)) {
+      return;
+    }
     super.createNode(parent, modelElement);
   }
 
   private boolean isIgnored(EObject modelElement) {
-    for (Class<? extends EObject> ignoredType : IGNORED_ELEMENT_TYPES)
-      if (ignoredType.isInstance(modelElement)) return true;
+    for (Class<? extends EObject> ignoredType : IGNORED_ELEMENT_TYPES) {
+      if (ignoredType.isInstance(modelElement)) {
+        return true;
+      }
+    }
     return false;
   }
 }

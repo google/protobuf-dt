@@ -17,17 +17,17 @@ import org.junit.*;
 
 /**
  * Tests for <code>{@link ProtobufDiagnostic#appendToMessage(String)}</code>
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufDiagnostic_appendToMessage_Test {
 
   private ProtobufDiagnostic diagnostic;
-  
+
   @Before public void setUp() {
     diagnostic = new ProtobufDiagnostic("1000", new String[0], "Hello", mock(INode.class));
   }
-  
+
   @Test public void should_append_text_to_message() {
     diagnostic.appendToMessage(" ");
     diagnostic.appendToMessage("World");

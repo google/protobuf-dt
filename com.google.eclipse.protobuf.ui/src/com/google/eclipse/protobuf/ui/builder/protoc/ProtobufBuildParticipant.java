@@ -16,14 +16,13 @@ import static java.util.Collections.*;
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.builder.IXtextBuilderParticipant;
-import org.eclipse.xtext.resource.IResourceDescription;
+import org.eclipse.xtext.resource.*;
 import org.eclipse.xtext.resource.IResourceDescription.Delta;
 
 import com.google.eclipse.protobuf.ui.preferences.pages.compiler.*;
@@ -46,19 +45,29 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
   @Override public void build(IBuildContext context, IProgressMonitor monitor) throws CoreException {
     IProject project = context.getBuiltProject();
     CompilerPreferences preferences = compilerPreferencesFactory.preferences(project);
-    if (!preferences.shouldCompileProtoFiles()) return;
+    if (!preferences.shouldCompileProtoFiles()) {
+      return;
+    }
     List<Delta> deltas = context.getDeltas();
-    if (deltas.isEmpty()) return;
+    if (deltas.isEmpty()) {
+      return;
+    }
     OutputDirectories outputDirectories = findOrCreateOutputDirectories(project, preferences.codeGenerationSettings());
     String descriptorPath = descriptorPath(preferences);
     List<String> importRoots = importRoots(project);
     for (Delta d : deltas) {
       IFile source = protoFile(d.getNew(), project);
-      if (source == null) continue;
-      if (importRoots.isEmpty()) importRoots = singleImportRoot(source);
+      if (source == null) {
+        continue;
+      }
+      if (importRoots.isEmpty()) {
+        importRoots = singleImportRoot(source);
+      }
       generateSingleProto(source, preferences.protocPath(), importRoots, descriptorPath, outputDirectories);
     }
-    if (preferences.shouldRefreshResources()) refresh(project, outputDirectories, preferences.refreshTarget(), monitor);
+    if (preferences.shouldRefreshResources()) {
+      refresh(project, outputDirectories, preferences.refreshTarget(), monitor);
+    }
   }
 
   private String descriptorPath(CompilerPreferences preferences) {
@@ -72,7 +81,9 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
       List<DirectoryPath> directoryPaths = preferences.importRoots();
       for (DirectoryPath path : directoryPaths) {
         String location = path.location(project);
-        if (location != null) paths.add(location);
+        if (location != null) {
+          paths.add(location);
+        }
       }
       return unmodifiableList(paths);
     }
@@ -85,14 +96,23 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
   }
 
   private static String filePathIfIsProtoFile(IResourceDescription r) {
-    if (r == null) return null;
+    if (r == null) {
+      return null;
+    }
     URI uri = r.getURI();
-    if (!uri.fileExtension().equals("proto")) return null; //$NON-NLS-1$
-    if (uri.scheme() == null) return uri.toFileString();
+    if (!uri.fileExtension().equals("proto"))
+    {
+      return null;
+    }
+    if (uri.scheme() == null) {
+      return uri.toFileString();
+    }
     StringBuilder b = new StringBuilder();
     int segmentCount = uri.segmentCount();
     for (int i = 1; i < segmentCount; i++)
-      b.append("/").append(uri.segment(i)); //$NON-NLS-1$
+     {
+      b.append("/").append(uri.segment(i));
+    }
     return b.length() == 0 ? null : b.toString();
   }
 
@@ -128,7 +148,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
       ProtocMarkerFactory markerFactory = new ProtocMarkerFactory(source);
       while ((line = bufferedReader.readLine()) != null) {
         outputParser.parseAndAddMarkerIfNecessary(line, markerFactory);
-        System.out.println("[protoc] " + line); //$NON-NLS-1$
+        System.out.println("[protoc] " + line);
       }
     } finally {
       close(reader);
@@ -136,7 +156,9 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
   }
 
   private static void close(Reader reader) {
-    if (reader == null) return;
+    if (reader == null) {
+      return;
+    }
     try {
       reader.close();
     } catch (IOException ignored) {}
@@ -148,7 +170,9 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
       refresh(project, monitor);
       return;
     }
-    for (IFolder outputDirectory : outputDirectories.values()) refresh(outputDirectory, monitor);
+    for (IFolder outputDirectory : outputDirectories.values()) {
+      refresh(outputDirectory, monitor);
+    }
   }
 
   private static void refresh(IResource target, IProgressMonitor monitor) throws CoreException {

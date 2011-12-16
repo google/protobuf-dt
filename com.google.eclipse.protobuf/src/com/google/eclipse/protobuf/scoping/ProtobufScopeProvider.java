@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- * 
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.scoping;
@@ -25,9 +25,9 @@ import com.google.inject.Inject;
 
 /**
  * Custom scoping description.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
- * 
+ *
  * @see <a href="http://www.eclipse.org/Xtext/documentation/latest/xtext.html#scoping">Xtext Scoping</a>
  */
 public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider implements Scoping {
@@ -162,7 +162,9 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   }
 
   private Collection<IEObjectDescription> allPossibleSourcesOf(OptionField field) {
-    if (field == null) return emptySet();
+    if (field == null) {
+      return emptySet();
+    }
     EObject container = field.eContainer();
     if (container instanceof CustomOption) {
       CustomOption option = (CustomOption) container;
@@ -215,7 +217,9 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
 
   private Collection<IEObjectDescription> findSources(FieldName name) {
     ComplexValue value = container(name);
-    if (value == null) return emptySet();
+    if (value == null) {
+      return emptySet();
+    }
     if (name instanceof NormalFieldName) { return allPossibleNamesOfNormalFieldsOf(value); }
     return allPossibleNamesOfExtensionFieldsOf(value);
   }

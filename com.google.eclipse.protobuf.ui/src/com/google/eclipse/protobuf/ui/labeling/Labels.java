@@ -76,7 +76,9 @@ import com.google.inject.*;
     EList<Range> ranges = extensions.getRanges();
     int rangeCount = ranges.size();
     for (int i = 0; i < rangeCount; i++) {
-      if (i > 0) builder.append(", ");
+      if (i > 0) {
+        builder.append(", ");
+      }
       Range range = ranges.get(i);
       builder.append(range.getFrom());
       String to = range.getTo();
@@ -89,7 +91,9 @@ import com.google.inject.*;
 
   private Object labelFor(Import anImport) {
     INode node = nodes.firstNodeForFeature(anImport, IMPORT__IMPORT_URI);
-    if (node == null) return anImport.getImportURI();
+    if (node == null) {
+      return anImport.getImportURI();
+    }
     return node.getText();
   }
 
@@ -106,14 +110,19 @@ import com.google.inject.*;
 
   private String typeName(ExtensibleTypeLink link) {
     ExtensibleType type = link.getTarget();
-    if (type == null) return null;
+    if (type == null) {
+      return null;
+    }
     return nameResolver.nameOf(type);
   }
 
   private Object labelFor(MessageField field) {
     StyledString text = new StyledString(nameResolver.nameOf(field));
     String typeName = messageFields.typeNameOf(field);
-    if (typeName == null) typeName = "<unresolved reference>"; // TODO move to
+    if (typeName == null)
+     {
+      typeName = "<unresolved reference>"; // TODO move to
+    }
                                                                // properties
                                                                // file
     String indexAndType = String.format(" [%d] : %s", field.getIndex(), typeName);
@@ -126,9 +135,13 @@ import com.google.inject.*;
     String name = options.nameForOption(e);
     StringBuilder b = new StringBuilder();
     boolean isCustomOption = option instanceof CustomOption || option instanceof CustomFieldOption;
-    if (isCustomOption) b.append("(");
+    if (isCustomOption) {
+      b.append("(");
+    }
     b.append(name);
-    if (isCustomOption) b.append(")");
+    if (isCustomOption) {
+      b.append(")");
+    }
     if (option instanceof CustomOption) {
       appendFields(b, ((CustomOption) option).getFields());
     }
@@ -162,7 +175,9 @@ import com.google.inject.*;
 
   private String messageName(MessageLink link) {
     Message m = link.getTarget();
-    if (m == null) return null;
+    if (m == null) {
+      return null;
+    }
     return nameResolver.nameOf(m);
   }
 }

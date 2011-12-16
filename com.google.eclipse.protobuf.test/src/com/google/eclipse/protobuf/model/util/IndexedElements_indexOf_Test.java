@@ -9,26 +9,26 @@
 package com.google.eclipse.protobuf.model.util;
 
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
-
-import com.google.eclipse.protobuf.protobuf.*;
 
 import org.junit.*;
 
+import com.google.eclipse.protobuf.protobuf.*;
+
 /**
  * Tests for <code>{@link IndexedElements#indexOf(IndexedElement)}</code>
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class IndexedElements_indexOf_Test {
 
   private static IndexedElements indexedElements;
-  
+
   @BeforeClass public static void setUpOnce() {
     indexedElements = new IndexedElements();
   }
-  
+
   @Test public void should_return_name_of_Property() {
     MessageField field = mock(MessageField.class);
     when(field.getIndex()).thenReturn(6L);
@@ -42,7 +42,7 @@ public class IndexedElements_indexOf_Test {
     assertThat(indexedElements.indexOf(group), equalTo(8L));
     verify(group).getIndex();
   }
-  
+
   @Test public void should_return_MIN_VALUE_if_IndexedElement_is_null() {
     assertThat(indexedElements.indexOf(null), equalTo(Long.MIN_VALUE));
   }

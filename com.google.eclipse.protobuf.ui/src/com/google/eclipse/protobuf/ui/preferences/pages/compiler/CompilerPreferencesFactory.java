@@ -28,7 +28,9 @@ public class CompilerPreferencesFactory {
   public CompilerPreferences preferences(IProject project) {
     IPreferenceStore store = storeAccess.getWritablePreferenceStore(project);
     boolean useProjectPreferences = enableProjectSettings(store).value();
-    if (!useProjectPreferences) store = storeAccess.getWritablePreferenceStore();
+    if (!useProjectPreferences) {
+      store = storeAccess.getWritablePreferenceStore();
+    }
     return new CompilerPreferences(new RawPreferences(store));
   }
 }

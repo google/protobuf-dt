@@ -27,13 +27,19 @@ public class ProtobufSyntaxErrorMessageProvider extends SyntaxErrorMessageProvid
   @Override public SyntaxErrorMessage getSyntaxErrorMessage(IParserErrorContext context) {
     String message = context.getDefaultMessage();
     EObject currentContext = context.getCurrentContext();
-    if (currentContext instanceof MessageField) message = mapToProtocMessage(message, (MessageField) currentContext);
-    if (currentContext == null && message.contains("RULE_STRING")) return null;
+    if (currentContext instanceof MessageField) {
+      message = mapToProtocMessage(message, (MessageField) currentContext);
+    }
+    if (currentContext == null && message.contains("RULE_STRING")) {
+      return null;
+    }
     return new SyntaxErrorMessage(message, SYNTAX_DIAGNOSTIC);
   }
 
   private String mapToProtocMessage(String message, MessageField field) {
-    if (message.contains("RULE_ID") && field.getName() == null) return expectedFieldName;
+    if (message.contains("RULE_ID") && field.getName() == null) {
+      return expectedFieldName;
+    }
     if (message.equals("mismatched input ';' expecting '='") && field.getIndex() == 0) {
       return missingFieldNumber;
     }

@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.junit.stubs.resources;
 
+import static com.google.eclipse.protobuf.util.Objects.*;
 import static java.util.Collections.unmodifiableMap;
 
 import java.util.*;
@@ -59,21 +60,27 @@ public class MarkerStub implements IMarker {
   /** {@inheritDoc} */
   @Override public int getAttribute(String attributeName, int defaultValue) {
     Object attribute = attributes.get(attributeName);
-    if (attribute instanceof Integer) return (Integer) attribute;
+    if (attribute instanceof Integer) {
+      return (Integer) attribute;
+    }
     return defaultValue;
   }
 
   /** {@inheritDoc} */
   @Override public String getAttribute(String attributeName, String defaultValue) {
     Object attribute = attributes.get(attributeName);
-    if (attribute instanceof String) return (String) attribute;
+    if (attribute instanceof String) {
+      return (String) attribute;
+    }
     return defaultValue;
   }
 
   /** {@inheritDoc} */
   @Override public boolean getAttribute(String attributeName, boolean defaultValue) {
     Object attribute = attributes.get(attributeName);
-    if (attribute instanceof Boolean) return (Boolean) attribute;
+    if (attribute instanceof Boolean) {
+      return (Boolean) attribute;
+    }
     return defaultValue;
   }
 
@@ -85,8 +92,9 @@ public class MarkerStub implements IMarker {
   /** {@inheritDoc} */
   @Override public Object[] getAttributes(String[] attributeNames) {
     List<Object> values = new ArrayList<Object>();
-    for (String name : attributeNames)
+    for (String name : attributeNames) {
       values.add(attributes.get(name));
+    }
     return values.toArray();
   }
 
@@ -143,7 +151,7 @@ public class MarkerStub implements IMarker {
   public int severity() {
     return getAttribute(SEVERITY, -1);
   }
-  
+
   public String message() {
     return (String) getAttribute(MESSAGE);
   }
@@ -153,24 +161,24 @@ public class MarkerStub implements IMarker {
   }
 
   @Override public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
     MarkerStub other = (MarkerStub) obj;
-    if (attributes == null) {
-      if (other.attributes != null) return false;
-    } else if (!attributes.equals(other.attributes)) return false;
-    if (type == null) {
-      if (other.type != null) return false;
-    } else if (!type.equals(other.type)) return false;
-    return true;
+    if (!areEqual(attributes, other.attributes)) {
+      return false;
+    }
+    return areEqual(type, other.type);
   }
 
   @Override public int hashCode() {
-    final int prime = 31;
+    final int prime = HASH_CODE_PRIME;
     int result = 1;
-    result = prime * result + ((attributes == null) ? 0 : attributes.hashCode());
-    result = prime * result + ((type == null) ? 0 : type.hashCode());
+    result = prime * result + hashCodeOf(attributes);
+    result = prime * result + hashCodeOf(type);
     return result;
   }
 

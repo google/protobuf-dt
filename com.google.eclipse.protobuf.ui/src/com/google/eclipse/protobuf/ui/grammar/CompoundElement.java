@@ -47,7 +47,9 @@ public enum CompoundElement {
     for (int i = 0; i < count; i++) {
       String s = objects[i].toString();
       buffer.append(s);
-      if (i < count - 1 && !s.endsWith(space())) buffer.append(space());
+      if (i < count - 1 && !s.endsWith(space())) {
+        buffer.append(space());
+      }
     }
     return buffer.toString();
   }

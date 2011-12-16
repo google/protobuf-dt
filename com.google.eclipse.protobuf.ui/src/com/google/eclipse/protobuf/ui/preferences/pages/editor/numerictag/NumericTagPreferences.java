@@ -8,23 +8,23 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag;
 
-import org.eclipse.jface.preference.IPreferenceStore;
-
 import java.util.List;
+
+import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
  * "Numeric tag" preferences, retrieved from an <code>{@link IPreferenceStore}</code>.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class NumericTagPreferences {
 
   private final List<String> patterns;
-  
+
   NumericTagPreferences(RawPreferences preferences) {
     patterns = preferences.patterns().value();
   }
-  
+
   public List<String> patterns() {
     return patterns;
   }

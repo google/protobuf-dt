@@ -12,8 +12,6 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
 import static org.junit.rules.ExpectedException.none;
 
-import com.google.eclipse.protobuf.ui.builder.protoc.ProtoDescriptorPathFinder;
-
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 

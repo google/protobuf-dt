@@ -37,7 +37,9 @@ public class ProtobufDocumentationProvider implements IEObjectDocumentationProvi
   @Override public String getDocumentation(EObject o) {
     for (IEObjectDocumentationProvider p: delegates) {
       String documentation = p.getDocumentation(o);
-      if (!(isEmpty(documentation))) return documentation;
+      if (!(isEmpty(documentation))) {
+        return documentation;
+      }
     }
     return "";
   }

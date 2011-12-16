@@ -14,10 +14,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 
-import com.google.eclipse.protobuf.scoping.IFileUriResolver;
-import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider;
-import com.google.eclipse.protobuf.ui.preferences.pages.paths.PathsPreferences;
-import com.google.eclipse.protobuf.ui.preferences.pages.paths.PathsPreferencesFactory;
+import com.google.eclipse.protobuf.scoping.*;
+import com.google.eclipse.protobuf.ui.preferences.pages.paths.*;
 import com.google.eclipse.protobuf.ui.util.Resources;
 import com.google.inject.Inject;
 
@@ -49,7 +47,9 @@ public class FileUriResolver implements IFileUriResolver {
    * We need to have the import URI as "platform:/resource/protobuf-test/folder/proto2.proto" for the editor to see it.
    */
   @Override public String resolveUri(String importUri, Resource declaringResource) {
-    if (hasScheme(importUri)) return importUri;
+    if (hasScheme(importUri)) {
+      return importUri;
+    }
     String resolved = resolveUri(importUri, declaringResource.getURI());
     return (resolved == null) ? importUri : resolved;
   }
@@ -61,10 +61,16 @@ public class FileUriResolver implements IFileUriResolver {
 
   private String resolveUri(String importUri, URI resourceUri) {
     URI location = descriptorProvider.descriptorLocation(importUri);
-    if (location != null) return location.toString();
+    if (location != null) {
+      return location.toString();
+    }
     IProject project = resources.project(resourceUri);
-    if (project == null) project = resources.activeProject();
-    if (project == null) throw new IllegalStateException("Unable to find current project");
+    if (project == null) {
+      project = resources.activeProject();
+    }
+    if (project == null) {
+      throw new IllegalStateException("Unable to find current project");
+    }
     PathsPreferences preferences = preferencesFactory.preferences(project);
     return resolver(preferences).resolveUri(importUri, resourceUri, preferences);
   }

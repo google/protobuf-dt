@@ -14,11 +14,11 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
-import com.google.eclipse.protobuf.conversion.LONGValueConverter;
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-
 import org.eclipse.xtext.nodemodel.INode;
 import org.junit.*;
+
+import com.google.eclipse.protobuf.conversion.LONGValueConverter;
+import com.google.eclipse.protobuf.junit.core.XtextRule;
 
 /**
  * Tests fix for <a href="http://code.google.com/p/protobuf-dt/issues/detail?id=165">Issue 165</a>.

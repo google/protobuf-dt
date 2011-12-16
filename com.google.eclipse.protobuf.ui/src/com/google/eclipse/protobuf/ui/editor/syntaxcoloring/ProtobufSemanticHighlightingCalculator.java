@@ -11,6 +11,7 @@ package com.google.eclipse.protobuf.ui.editor.syntaxcoloring;
 
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
 import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.HighlightingConfiguration.*;
+import static org.eclipse.xtext.ui.editor.syntaxcoloring.DefaultHighlightingConfiguration.*;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.*;
@@ -34,9 +35,13 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
   @Inject private Options options;
 
   @Override public void provideHighlightingFor(XtextResource resource, IHighlightedPositionAcceptor acceptor) {
-    if (resource == null) return;
+    if (resource == null) {
+      return;
+    }
     EList<EObject> contents = resource.getContents();
-    if (contents == null || contents.isEmpty()) return;
+    if (contents == null || contents.isEmpty()) {
+      return;
+    }
     Protobuf protobuf = (Protobuf) contents.get(0);
     highlight(protobuf, acceptor);
   }
@@ -151,7 +156,9 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
 
   private void highlightPropertyType(MessageField field, IHighlightedPositionAcceptor acceptor) {
     TypeLink link = field.getType();
-    if (!(link instanceof ComplexTypeLink)) return;
+    if (!(link instanceof ComplexTypeLink)) {
+      return;
+    }
     ComplexType type = ((ComplexTypeLink) link).getTarget();
     if (type instanceof Message) {
       highlightFirstFeature(field, MESSAGE_FIELD__TYPE, acceptor, MESSAGE_ID);
@@ -225,7 +232,9 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
   private void highlightFirstFeature(EObject semantic, EStructuralFeature feature,
       IHighlightedPositionAcceptor acceptor, String highlightId) {
     INode node = nodes.firstNodeForFeature(semantic, feature);
-    if (node == null) return;
+    if (node == null) {
+      return;
+    }
     acceptor.addPosition(node.getOffset(), node.getLength(), highlightId);
   }
 }

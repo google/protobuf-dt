@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- * 
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.scoping;
@@ -34,7 +34,7 @@ import com.google.eclipse.protobuf.protobuf.Enum;
 
 /**
  * Contains the elements from descriptor.proto (provided with protobuf's library.)
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtoDescriptor {
@@ -93,17 +93,22 @@ public class ProtoDescriptor {
   }
 
   private void addOptionTypes() {
-    for (OptionType type : OptionType.values())
+    for (OptionType type : OptionType.values()) {
       optionsByType.put(type, new LinkedHashMap<String, MessageField>());
+    }
   }
 
   private void initContents() {
     allTypes.addAll(getAllContentsOfType(root, Message.class));
     for (ComplexType t : allTypes) {
-      if (!(t instanceof Message)) continue;
+      if (!(t instanceof Message)) {
+        continue;
+      }
       Message m = (Message) t;
       OptionType type = OPTION_DEFINITION_BY_NAME.get(m.getName());
-      if (type == null) continue;
+      if (type == null) {
+        continue;
+      }
       initOptions(m, type);
     }
   }
@@ -123,7 +128,9 @@ public class ProtoDescriptor {
   }
 
   private void addOption(MessageField optionSource, OptionType type) {
-    if (shouldIgnore(optionSource)) return;
+    if (shouldIgnore(optionSource)) {
+      return;
+    }
     String name = optionSource.getName();
     optionsByType.get(type).put(name, optionSource);
   }
@@ -142,9 +149,13 @@ public class ProtoDescriptor {
    */
   public Collection<MessageField> availableOptionsFor(EObject o) {
     EObject target = o;
-    if (target instanceof NativeOption) target = target.eContainer();
+    if (target instanceof NativeOption) {
+      target = target.eContainer();
+    }
     OptionType type = findOptionTypeForLevelOf(target);
-    if (type == null) return emptyList();
+    if (type == null) {
+      return emptyList();
+    }
     return optionsOfType(type);
   }
 
@@ -160,9 +171,13 @@ public class ProtoDescriptor {
    * @return the enum type of the given field or {@code null} if the type of the given field is not enum.
    */
   public Enum enumTypeOf(MessageField field) {
-    if (field == null) return null;
+    if (field == null) {
+      return null;
+    }
     INode node = nodes.firstNodeForFeature(field, MESSAGE_FIELD__TYPE);
-    if (node == null) return null;
+    if (node == null) {
+      return null;
+    }
     String typeName = node.getText();
     return (isEmpty(typeName)) ? null : enumByName(typeName.trim());
   }

@@ -27,7 +27,7 @@ public class PathsPreferences {
   private final List<DirectoryPath> importRoots;
 
   private static final String CSV_PATTERN = "[\\s]*,[\\s]*";
-  
+
   PathsPreferences(RawPreferences preferences, IProject project) {
     boolean filesInOneDirectoryOnly = preferences.filesInOneDirectoryOnly().value();
     pathResolutionType = filesInOneDirectoryOnly ? SINGLE_DIRECTORY : MULTIPLE_DIRECTORIES;
@@ -35,7 +35,9 @@ public class PathsPreferences {
   }
 
   private List<DirectoryPath> importRoots(RawPreferences preferences, IProject project) {
-    if (pathResolutionType.equals(SINGLE_DIRECTORY)) return emptyList();
+    if (pathResolutionType.equals(SINGLE_DIRECTORY)) {
+      return emptyList();
+    }
     List<DirectoryPath> roots = new ArrayList<DirectoryPath>();
     for (String root : preferences.directoryPaths().value().split(CSV_PATTERN)) {
       roots.add(DirectoryPath.parse(root, project));

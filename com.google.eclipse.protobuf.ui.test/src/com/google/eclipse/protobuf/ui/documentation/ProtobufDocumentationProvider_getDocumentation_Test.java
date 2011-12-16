@@ -17,28 +17,28 @@ import org.junit.*;
 
 /**
  * Tests for <code>{@link ProtobufDocumentationProvider#getDocumentation(EObject)}</code>
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufDocumentationProvider_getDocumentation_Test {
 
   private static EObject o;
-  
+
   @BeforeClass public static void setUpOnce() {
     o = mock(EObject.class);
   }
-  
+
   private SLCommentDocumentationProvider delegate1;
   private MLCommentDocumentationProvider delegate2;
-  
+
   private ProtobufDocumentationProvider provider;
-  
+
   @Before public void setUp() {
     delegate1 = mock(SLCommentDocumentationProvider.class);
     delegate2 = mock(MLCommentDocumentationProvider.class);
     provider = new ProtobufDocumentationProvider(delegate1, delegate2);
   }
-  
+
   @Test public void should_use_first_delegate_if_it_returns_comment() {
     String comment = "Hello World";
     when(delegate1.getDocumentation(o)).thenReturn(comment);
@@ -46,7 +46,7 @@ public class ProtobufDocumentationProvider_getDocumentation_Test {
     verify(delegate1).getDocumentation(o);
     verifyZeroInteractions(delegate2);
   }
-  
+
   @Test public void should_use_second_delegage_if_first_does_not_return_comment() {
     when(delegate1.getDocumentation(o)).thenReturn("");
     String comment = "Hello World";

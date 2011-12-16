@@ -31,7 +31,9 @@ import com.google.inject.*;
    * otherwise.
    */
   public boolean hasUnresolvedDescriptorUri(Import anImport) {
-    if (anImport == null) return false;
+    if (anImport == null) {
+      return false;
+    }
     return descriptorProvider.descriptorLocation(anImport.getImportURI()) != null;
   }
 
@@ -41,12 +43,18 @@ import com.google.inject.*;
    * @return {@code true} if the given import is pointing to descriptor.proto, {@code false} otherwise.
    */
   public boolean isImportingDescriptor(Import anImport) {
-    if (hasUnresolvedDescriptorUri(anImport)) return true;
-    if (anImport == null) return false;
+    if (hasUnresolvedDescriptorUri(anImport)) {
+      return true;
+    }
+    if (anImport == null) {
+      return false;
+    }
     String importUri = anImport.getImportURI();
     for (URI locationUri : descriptorProvider.allDescriptorLocations()) {
       String location = locationUri.toString();
-      if (location.equals(importUri)) return true;
+      if (location.equals(importUri)) {
+        return true;
+      }
     }
     return false;
   }

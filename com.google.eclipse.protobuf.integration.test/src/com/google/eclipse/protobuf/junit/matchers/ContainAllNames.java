@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- * 
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.junit.matchers;
@@ -30,13 +30,19 @@ public class ContainAllNames extends BaseMatcher<IEObjectDescriptions> {
   }
 
   @Override public boolean matches(Object arg) {
-    if (!(arg instanceof IEObjectDescriptions)) return false;
+    if (!(arg instanceof IEObjectDescriptions)) {
+      return false;
+    }
     IEObjectDescriptions descriptions = (IEObjectDescriptions) arg;
     List<String> names = new ArrayList<String>(descriptions.names());
-    if (names.size() != expectedNames.length) return false;
+    if (names.size() != expectedNames.length) {
+      return false;
+    }
     for (String name : expectedNames) {
       boolean removed = names.remove(name);
-      if (!removed) return false;
+      if (!removed) {
+        return false;
+      }
     }
     return names.isEmpty();
   }

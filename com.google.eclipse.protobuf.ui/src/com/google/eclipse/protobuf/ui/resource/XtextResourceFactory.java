@@ -25,8 +25,7 @@ import org.eclipse.xtext.ui.resource.IResourceSetProvider;
 import org.eclipse.xtext.util.StringInputStream;
 
 import com.google.eclipse.protobuf.ui.util.Resources;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import com.google.inject.*;
 
 /**
  * Factory of <code>{@link XtextResource}</code>s.

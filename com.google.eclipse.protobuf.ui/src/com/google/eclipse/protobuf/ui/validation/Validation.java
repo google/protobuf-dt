@@ -35,19 +35,27 @@ final class Validation {
 
   static void validate(IEditorPart editor) {
     XtextEditor protoEditor = asProtoEditor(editor);
-    if (protoEditor == null) return;
+    if (protoEditor == null) {
+      return;
+    }
     validate(protoEditor);
   }
 
   private static XtextEditor asProtoEditor(IEditorPart editor) {
     XtextEditor xtextEditor = asXtextEditor(editor);
-    if (xtextEditor == null) return null;
-    if (!languageName().equals(xtextEditor.getLanguageName())) return null;
+    if (xtextEditor == null) {
+      return null;
+    }
+    if (!languageName().equals(xtextEditor.getLanguageName())) {
+      return null;
+    }
     return xtextEditor;
   }
 
   private static XtextEditor asXtextEditor(IEditorPart editor) {
-    if (!isXtextEditorContainingWorkspaceFile(editor)) return null;
+    if (!isXtextEditorContainingWorkspaceFile(editor)) {
+      return null;
+    }
     return (XtextEditor) editor;
   }
 
@@ -57,11 +65,15 @@ final class Validation {
 
   private static void validate(XtextEditor editor) {
     final IXtextDocument document = editor.getDocument();
-    if (!(document instanceof XtextDocument)) return;
+    if (!(document instanceof XtextDocument)) {
+      return;
+    }
     document.readOnly(new IUnitOfWork.Void<XtextResource>() {
       @Override public void process(XtextResource resource) {
         EObject root = rootOf(resource);
-        if (root == null) return;
+        if (root == null) {
+          return;
+        }
         resetImports(root);
         resource.getLinker().linkModel(root, new ListBasedDiagnosticConsumer());
         ((XtextDocument) document).checkAndUpdateAnnotations();
@@ -70,26 +82,36 @@ final class Validation {
   }
 
   private static EObject rootOf(XtextResource resource) {
-    if (resource == null) return null;
+    if (resource == null) {
+      return null;
+    }
     return resource.getParseResult().getRootASTElement();
   }
 
   private static void resetImports(EObject root) {
     List<Import> imports = getAllContentsOfType(root, Import.class);
-    for (Import anImport : imports) resetUri(anImport);
+    for (Import anImport : imports) {
+      resetUri(anImport);
+    }
   }
 
   private static void resetUri(Import anImport) {
     String uri = uriAsEnteredInEditor(anImport);
-    if (uri == null) return;
+    if (uri == null) {
+      return;
+    }
     anImport.setImportURI(uri);
   }
 
   private static String uriAsEnteredInEditor(Import anImport) {
     INode node = nodes().firstNodeForFeature(anImport, IMPORT__IMPORT_URI);
-    if (node == null) return null;
+    if (node == null) {
+      return null;
+    }
     String text = node.getText();
-    if (text == null) return null;
+    if (text == null) {
+      return null;
+    }
     STRINGValueConverter converter = injector().getInstance(STRINGValueConverter.class);
     return converter.toValue(text, node);
   }

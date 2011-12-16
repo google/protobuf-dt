@@ -28,7 +28,9 @@ class CommentProcessor {
     while (scanner.hasNextLine()) {
       String line = scanner.nextLine();
       Matcher matcher = CREATE_FILE_PATTERN.matcher(line);
-      if (!matcher.matches()) return comment;
+      if (!matcher.matches()) {
+        return comment;
+      }
       fileName = matcher.group(1);
       break;
     }
@@ -38,7 +40,9 @@ class CommentProcessor {
   private File createFile(String fileName, String contents) {
     ensureParentDirectoryExists();
     File file = protoFile(fileName);
-    if (file.isFile()) file.delete();
+    if (file.isFile()) {
+      file.delete();
+    }
     Writer out = null;
     try {
       out = new OutputStreamWriter(new FileOutputStream(file));
@@ -52,7 +56,9 @@ class CommentProcessor {
   }
 
   private void closeQuietly(Writer out) {
-    if (out == null) return;
+    if (out == null) {
+      return;
+    }
     try {
       out.close();
     } catch (IOException e) {}

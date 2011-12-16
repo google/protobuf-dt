@@ -1,22 +1,22 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
- * 
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.junit.core;
 
 import static java.io.File.separator;
 
-import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
+import java.io.*;
+import java.util.*;
 
 import org.junit.runners.model.FrameworkMethod;
 
-import java.io.*;
-import java.util.*;
+import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -27,30 +27,36 @@ class TestSourceReader {
 
   private final Map<String, List<String>> comments = new HashMap<String, List<String>>();
   private final CommentProcessor processor = new CommentProcessor();
-  
+
   private boolean initialized;
-  
+
   private final Object lock = new Object();
- 
+
   String commentsIn(FrameworkMethod method) {
     synchronized (lock) {
       ensureCommentsAreRead(method.getMethod().getDeclaringClass());
       List<String> allComments = comments.get(method.getName());
-      if (allComments == null || allComments.isEmpty()) return null;
+      if (allComments == null || allComments.isEmpty()) {
+        return null;
+      }
       for (String comment : allComments) {
         Object processed = processor.processComment(comment);
-        if (processed instanceof String) return (String) processed;
+        if (processed instanceof String) {
+          return (String) processed;
+        }
       }
       return null;
     }
   }
-  
+
   private void ensureCommentsAreRead(Class<?> testClass) {
-    if (initialized) return;
+    if (initialized) {
+      return;
+    }
     doReadComments(testClass);
     initialized = true;
   }
-  
+
   private void doReadComments(Class<?> testClass) {
     String fqn = testClass.getName().replace('.', '/');
     fqn = fqn.indexOf("$") == -1 ? fqn : fqn.substring(0, fqn.indexOf("$"));
@@ -68,16 +74,20 @@ class TestSourceReader {
           comment.append(line.substring(COMMENT_START.length()).trim());
           continue;
         }
-        if (comment.isEmpty()) continue;
+        if (comment.isEmpty()) {
+          continue;
+        }
         line = line.trim();
         String testName = testName(line);
         if (line.length() == 0 || testName != null) {
-          if (!allComments.contains(comment)) allComments.add(comment.toString());
+          if (!allComments.contains(comment)) {
+            allComments.add(comment.toString());
+          }
           comment = new MultiLineTextBuilder();
         }
         if (testName != null) {
           comments.put(testName, allComments);
-          allComments = new ArrayList<String>(); 
+          allComments = new ArrayList<String>();
         }
       }
     } catch (IOException e) {
@@ -88,7 +98,9 @@ class TestSourceReader {
   }
 
   private static String testName(String line) {
-    if (!line.startsWith("@Test")) return null;
+    if (!line.startsWith("@Test")) {
+      return null;
+    }
     int indexOfShould = line.indexOf("should");
     return (indexOfShould == -1) ? null : line.substring(indexOfShould, line.indexOf("("));
   }

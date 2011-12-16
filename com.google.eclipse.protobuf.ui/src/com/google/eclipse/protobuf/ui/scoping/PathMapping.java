@@ -20,7 +20,7 @@ import com.google.common.base.Function;
 class PathMapping {
 
   private final SimpleCache<String, String> folderPathMapping = new SimpleCache<String, String>(new FolderPathMapper());
-  
+
   String folderLocation(String workspacePath) {
     return folderPathMapping.get(workspacePath);
   }

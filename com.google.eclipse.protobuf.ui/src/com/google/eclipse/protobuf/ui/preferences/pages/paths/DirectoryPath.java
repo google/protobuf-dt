@@ -37,7 +37,9 @@ public class DirectoryPath {
     Matcher matcher = WORKSPACE_PATH_PATTERN.matcher(path);
     if (matcher.matches()) {
       String actualPath = matcher.group(1);
-      if (project != null) actualPath = useProjectName(actualPath, project);
+      if (project != null) {
+        actualPath = useProjectName(actualPath, project);
+      }
       return new DirectoryPath(actualPath, true);
     }
     return new DirectoryPath(path, false);
@@ -50,7 +52,9 @@ public class DirectoryPath {
 
   /** {@inheritDoc} */
   @Override public String toString() {
-    if (!isWorkspacePath) return value;
+    if (!isWorkspacePath) {
+      return value;
+    }
     return "${workspace_loc:" + value + "}";
   }
 
@@ -76,7 +80,9 @@ public class DirectoryPath {
    * @return the absolute path in the local file system, or {@code null} if no path can be determined.
    */
   public String location(IProject project) {
-    if (isWorkspacePath()) return locationOfWorkspaceDirectory(project);
+    if (isWorkspacePath()) {
+      return locationOfWorkspaceDirectory(project);
+    }
     return locationOfFileSystemDirectory();
   }
 
@@ -89,7 +95,9 @@ public class DirectoryPath {
   private String locationOfFileSystemDirectory() {
     IFileSystem fileSystem = EFS.getLocalFileSystem();
     IFileInfo fileInfo = fileSystem.getStore(new Path(value())).fetchInfo();
-    if (!fileInfo.isDirectory()) return null;
+    if (!fileInfo.isDirectory()) {
+      return null;
+    }
     return value();
   }
 }

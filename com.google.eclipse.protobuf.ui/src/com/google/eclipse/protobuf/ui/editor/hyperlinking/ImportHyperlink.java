@@ -45,7 +45,9 @@ class ImportHyperlink implements IHyperlink {
         fileOpener.openProtoFileInPlugin(importUri);
         return;
       }
-      if (importUri.isFile()) fileOpener.openProtoFileInFileSystem(importUri);
+      if (importUri.isFile()) {
+        fileOpener.openProtoFileInFileSystem(importUri);
+      }
     } catch (PartInitException e) {
       logger.error("Unable to open " + importUri.toString(), e);
     }

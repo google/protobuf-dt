@@ -24,7 +24,9 @@ public class PreferenceBinder {
    * @param bindings the bindings to add.
    */
   public void addAll(Binding...bindings) {
-    for (Binding binding : bindings) add(binding);
+    for (Binding binding : bindings) {
+      add(binding);
+    }
   }
 
   /**

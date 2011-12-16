@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.linking;
 
+import static com.google.eclipse.protobuf.util.Objects.*;
 import static java.util.Arrays.copyOf;
 import static org.eclipse.xtext.util.Arrays.contains;
 
@@ -72,24 +73,24 @@ public class ProtobufDiagnostic extends AbstractDiagnostic {
   }
 
   @Override public int hashCode() {
-    final int prime = 31;
+    final int prime = HASH_CODE_PRIME;
     int result = 1;
-    result = prime * result + ((message == null) ? 0 : message.hashCode());
-    result = prime * result + ((node == null) ? 0 : node.hashCode());
+    result = prime * result + hashCodeOf(message);
+    result = prime * result + hashCodeOf(node);
     return result;
   }
 
   @Override public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
     ProtobufDiagnostic other = (ProtobufDiagnostic) obj;
-    if (message == null) {
-      if (other.message != null) return false;
-    } else if (!message.equals(other.message)) return false;
-    if (node == null) {
-      if (other.node != null) return false;
-    } else if (!node.equals(other.node)) return false;
-    return true;
+    if (!areEqual(message, other.message)) {
+      return false;
+    }
+    return areEqual(node, other.node);
   }
 }

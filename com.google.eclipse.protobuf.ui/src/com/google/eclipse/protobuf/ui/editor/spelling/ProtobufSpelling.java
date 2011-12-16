@@ -42,7 +42,9 @@ class ProtobufSpelling extends SpellingReconcileStrategy {
 
   @Override public void reconcile(IRegion region) {
     IAnnotationModel model = getAnnotationModel();
-    if (model == null) return;
+    if (model == null) {
+      return;
+    }
     super.reconcile(new Region(0, xtextDocument().getLength()));
     removeUnwantedAnnotations(model);
   }
@@ -59,17 +61,21 @@ class ProtobufSpelling extends SpellingReconcileStrategy {
     return (XtextDocument) super.getDocument();
   }
 
-  @SuppressWarnings("unchecked") 
+  @SuppressWarnings("unchecked")
   private void removeUnwantedAnnotations(INode rootNode, IAnnotationModel model) {
     Iterator<Annotation> iterator = model.getAnnotationIterator();
     while (iterator.hasNext()) {
       Annotation annotation = iterator.next();
-      if (shouldRemoveFromModel(annotation, model, rootNode)) model.removeAnnotation(annotation);
+      if (shouldRemoveFromModel(annotation, model, rootNode)) {
+        model.removeAnnotation(annotation);
+      }
     }
   }
 
   private boolean shouldRemoveFromModel(Annotation annotation, IAnnotationModel model, INode rootNode) {
-    if (!(annotation instanceof SpellingAnnotation)) return false;
+    if (!(annotation instanceof SpellingAnnotation)) {
+      return false;
+    }
     SpellingAnnotation spellingAnnotation = (SpellingAnnotation) annotation;
     Position position = model.getPosition(spellingAnnotation);
     ILeafNode node = findLeafNodeAtOffset(rootNode, position.getOffset());
@@ -77,8 +83,12 @@ class ProtobufSpelling extends SpellingReconcileStrategy {
   }
 
   private boolean shouldSpellCheck(INode node) {
-    if (node == null) return false;
-    if (nodes.belongsToComment(node)) return true;
+    if (node == null) {
+      return false;
+    }
+    if (nodes.belongsToComment(node)) {
+      return true;
+    }
     if (nodes.belongsToString(node)) {
       EObject o = findActualSemanticObjectFor(node);
       return !(o instanceof Import);

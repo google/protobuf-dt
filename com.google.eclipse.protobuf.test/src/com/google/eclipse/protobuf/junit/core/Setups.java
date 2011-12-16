@@ -18,10 +18,10 @@ public final class Setups {
   public static ISetup unitTestSetup() {
     return new UnitTestSetup();
   }
-  
+
   public static ISetup integrationTestSetup() {
     return new IntegrationTestSetup();
   }
-  
+
   private Setups() {}
 }

@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- * 
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.validation;
@@ -25,7 +25,7 @@ import com.google.inject.Inject;
 
 /**
  * Verifies that imports only refer to "proto2" files.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ImportValidator extends AbstractDeclarativeValidator {
@@ -47,7 +47,9 @@ public class ImportValidator extends AbstractDeclarativeValidator {
 
   private void warnIfNonProto2ImportsFound(Resource resource) {
     Protobuf root = finder.rootOf(resource);
-    if (!protobufs.isProto2(root)) return;
+    if (!protobufs.isProto2(root)) {
+      return;
+    }
     ResourceSet resourceSet = resource.getResourceSet();
     boolean hasNonProto2 = false;
     List<Pair<Import, Resource>> resourcesToCheck = new ArrayList<Pair<Import, Resource>>();
@@ -63,7 +65,9 @@ public class ImportValidator extends AbstractDeclarativeValidator {
       }
       resourcesToCheck.add(pair(anImport, imported));
     }
-    if (hasNonProto2) return;
+    if (hasNonProto2) {
+      return;
+    }
     for (Pair<Import, Resource> p : resourcesToCheck) {
       if (hasNonProto2(p, checked, resourceSet)) {
         warnNonProto2ImportFoundIn(p.getFirst());
@@ -74,16 +78,24 @@ public class ImportValidator extends AbstractDeclarativeValidator {
 
   private boolean hasNonProto2(Pair<Import, Resource> toCheck, Set<URI> checked, ResourceSet resourceSet) {
     Protobuf root = finder.rootOf(toCheck.getSecond());
-    if (!protobufs.isProto2(root)) return false;
+    if (!protobufs.isProto2(root)) {
+      return false;
+    }
     List<Pair<Import, Resource>> resourcesToCheck = new ArrayList<Pair<Import, Resource>>();
     for (Import anImport : finder.importsIn(root)) {
       Resource imported = resources.importedResource(anImport, resourceSet);
-      if (checked.contains(imported.getURI())) continue;
-      if (!isProto2(imported)) return true;
+      if (checked.contains(imported.getURI())) {
+        continue;
+      }
+      if (!isProto2(imported)) {
+        return true;
+      }
       resourcesToCheck.add(pair(toCheck.getFirst(), imported));
     }
     for (Pair<Import, Resource> p : resourcesToCheck) {
-      if (hasNonProto2(p, checked, resourceSet)) return true;
+      if (hasNonProto2(p, checked, resourceSet)) {
+        return true;
+      }
     }
     return false;
   }

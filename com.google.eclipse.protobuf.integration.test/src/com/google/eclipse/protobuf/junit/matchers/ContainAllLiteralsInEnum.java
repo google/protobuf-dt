@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- * 
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.junit.matchers;
@@ -35,14 +35,20 @@ public class ContainAllLiteralsInEnum extends BaseMatcher<IEObjectDescriptions> 
   }
 
   @Override public boolean matches(Object arg) {
-    if (!(arg instanceof IEObjectDescriptions)) return false;
+    if (!(arg instanceof IEObjectDescriptions)) {
+      return false;
+    }
     IEObjectDescriptions descriptions = (IEObjectDescriptions) arg;
     List<Literal> literals = allLiterals();
-    if (descriptions.size() != literals.size()) return false;
+    if (descriptions.size() != literals.size()) {
+      return false;
+    }
     for (Literal literal : literals) {
       String name = literal.getName();
       EObject described = descriptions.objectDescribedAs(name);
-      if (described != literal) return false;
+      if (described != literal) {
+        return false;
+      }
     }
     return true;
   }

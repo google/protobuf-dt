@@ -10,23 +10,23 @@ package com.google.eclipse.protobuf.model.util;
 
 import static org.mockito.Mockito.*;
 
-import com.google.eclipse.protobuf.protobuf.*;
-
 import org.junit.*;
+
+import com.google.eclipse.protobuf.protobuf.*;
 
 /**
  * Tests for <code>{@link IndexedElements#setIndexTo(IndexedElement, long)}</code>
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class IndexedElements_setIndexOf_Test {
 
   private static IndexedElements indexedElements;
-  
+
   @BeforeClass public static void setUpOnce() {
     indexedElements = new IndexedElements();
   }
-  
+
   @Test public void should_return_name_of_Property() {
     MessageField field = mock(MessageField.class);
     indexedElements.setIndexTo(field, 6L);

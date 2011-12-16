@@ -16,26 +16,26 @@ import static com.google.eclipse.protobuf.util.SystemProperties.lineSeparator;
 public class MultiLineTextBuilder {
 
   private final StringBuilder builder = new StringBuilder();
-  
+
   public MultiLineTextBuilder() {}
-  
+
   public MultiLineTextBuilder(String initialContent) {
     append(initialContent);
   }
-  
+
   public MultiLineTextBuilder append(String s) {
     builder.append(s).append(lineSeparator());
     return this;
   }
-  
+
   public boolean isEmpty() {
     return builder.length() == 0;
   }
-  
+
   public boolean hasContent(String s) {
     return toString().equals(s);
   }
-  
+
   @Override public String toString() {
     return builder.toString();
   }

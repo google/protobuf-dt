@@ -22,18 +22,20 @@ import com.google.inject.Singleton;
 class ProtoDescriptorPathFinder {
 
   private final String descriptorFqn;
-  
+
   ProtoDescriptorPathFinder() {
     this(separator);
   }
-  
+
   @VisibleForTesting
   ProtoDescriptorPathFinder(String fileSeparator) {
     descriptorFqn = concat(fileSeparator, asList("", "google", "protobuf", "descriptor.proto"));
   }
-    
+
   String findRootOf(String descriptorFilePath) {
-    if (isEmpty(descriptorFilePath)) return null;
+    if (isEmpty(descriptorFilePath)) {
+      return null;
+    }
     int indexOfDescriptorFqn = descriptorFilePath.indexOf(descriptorFqn);
     if (indexOfDescriptorFqn == -1) {
       String format = "Path '%s' does not contain '%s'";

@@ -29,14 +29,14 @@ public class Literals {
    * of the given literal's siblings, plus one. The minimum index value is zero.
    * <p>
    * For example, in the following message:
-   * 
+   *
    * <pre>
    * enum PhoneType {
    *   MOBILE = 0;
    *   HOME = 1;
    *   WORK =
    * </pre>
-   * 
+   *
    * The calculated index value for the literal {@code WORK} will be 2.
    * </p>
    * @param l the given literal.
@@ -46,7 +46,9 @@ public class Literals {
     long index = -1;
     List<Literal> allLiterals = getAllContentsOfType(l.eContainer(), Literal.class);
     for (Literal c : allLiterals) {
-      if (c == l) continue;
+      if (c == l) {
+        continue;
+      }
       index = max(index, c.getIndex());
     }
     return ++index;

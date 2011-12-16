@@ -32,7 +32,9 @@ class CodeGenerationErrorParser implements ProtocOutputParser {
   @Override
   public boolean parseAndAddMarkerIfNecessary(String line, ProtocMarkerFactory markerFactory) throws CoreException {
     Matcher errorMatcher = ERROR_PATTERN.matcher(line);
-    if (!errorMatcher.matches()) return false;
+    if (!errorMatcher.matches()) {
+      return false;
+    }
     markerFactory.createErrorIfNecessary(errorMatcher.group(1), errorMatcher.group(2), -1);
     return true;
   }

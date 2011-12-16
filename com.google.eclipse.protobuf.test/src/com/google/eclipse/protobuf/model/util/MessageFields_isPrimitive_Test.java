@@ -13,9 +13,9 @@ import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 import static org.junit.Assert.*;
 
-import org.junit.*;
-
 import java.util.List;
+
+import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.MessageField;
@@ -51,8 +51,9 @@ public class MessageFields_isPrimitive_Test {
   // }
   @Test public void should_return_true_if_field_is_primitive() {
     List<MessageField> allFields = getAllContentsOfType(xtext.root(), MessageField.class);
-    for (MessageField field : allFields)
+    for (MessageField field : allFields) {
       assertTrue(fields.isPrimitive(field));
+    }
   }
 
   // syntax = "proto2";
@@ -68,7 +69,8 @@ public class MessageFields_isPrimitive_Test {
   // }
   @Test public void should_return_false_if_field_is_not_primitive() {
     List<MessageField> allFields = getAllContentsOfType(xtext.root(), MessageField.class);
-    for (MessageField p : allFields)
+    for (MessageField p : allFields) {
       assertFalse(fields.isPrimitive(p));
+    }
   }
 }

@@ -15,17 +15,17 @@ import static com.google.eclipse.protobuf.junit.matchers.ContainNames.contain;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.scoping.ProtobufScopeProvider;
-
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.xtext.scoping.IScope;
 import org.junit.*;
 
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.scoping.ProtobufScopeProvider;
+
 /**
  * Tests fix for <a href="http://code.google.com/p/protobuf-dt/issues/detail?id=161">Issue 161</a>.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Issue161_PackageScoping_Test {
@@ -53,7 +53,7 @@ public class Issue161_PackageScoping_Test {
   //   ONE = 1;
   //   TWO = 2;
   // }
-  
+
   // syntax = "proto2";
   // package com.google.proto.project.shared;
   //
@@ -65,7 +65,7 @@ public class Issue161_PackageScoping_Test {
   @Test public void should_include_package_intersection() {
     MessageField field = xtext.find("type", " =", MessageField.class);
     IScope scope = provider.scope_ComplexTypeLink_target((ComplexTypeLink) field.getType(), reference);
-    assertThat(descriptionsIn(scope), contain("base.shared.Type", "proto.base.shared.Type", 
+    assertThat(descriptionsIn(scope), contain("base.shared.Type", "proto.base.shared.Type",
                                               "google.proto.base.shared.Type", "com.google.proto.base.shared.Type"));
   }
 }

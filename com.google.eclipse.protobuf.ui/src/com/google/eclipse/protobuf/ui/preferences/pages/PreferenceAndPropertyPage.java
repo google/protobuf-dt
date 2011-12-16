@@ -49,7 +49,9 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
   @Override protected Control createContents(Composite parent) {
     Composite contents = contentParent(parent);
     doCreateContents(contents);
-    if (isPropertyPage()) setupBindingOfBtnEnabledProjectSettings();
+    if (isPropertyPage()) {
+      setupBindingOfBtnEnabledProjectSettings();
+    }
     setupBinding(preferenceBinder);
     preferenceBinder.applyValues();
     updateContents();
@@ -122,7 +124,9 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
 
   private void setupBindingOfBtnEnabledProjectSettings() {
     BooleanPreference preference = enableProjectSettingsPreference(getPreferenceStore());
-    if (preference == null) return;
+    if (preference == null) {
+      return;
+    }
     preferenceBinder.add(bindSelectionOf(btnEnableProjectSettings).to(preference));
   }
 
@@ -168,7 +172,9 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
    * @return the preference store.
    */
   @Override protected final IPreferenceStore doGetPreferenceStore() {
-    if (isPropertyPage()) return preferenceStoreAccess.getWritablePreferenceStore(currentProject());
+    if (isPropertyPage()) {
+      return preferenceStoreAccess.getWritablePreferenceStore(currentProject());
+    }
     return preferenceStoreAccess.getWritablePreferenceStore();
   }
 
@@ -182,15 +188,18 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
   }
 
   private IProject currentProject() {
-    if (project == null)
+    if (project == null) {
       throw new IllegalStateException("Not a property page case, but current project was requested.");
+    }
     return project;
   }
 
   /** {@inheritDoc} */
   @SuppressWarnings("unchecked")
   @Override public final void applyData(Object data) {
-    if (data instanceof Map) this.dataMap = (Map<String, Object>) data;
+    if (data instanceof Map) {
+      this.dataMap = (Map<String, Object>) data;
+    }
   }
 
   /**

@@ -74,7 +74,9 @@ public class XtextRule implements MethodRule {
     resource = resourceFrom(new StringInputStream(text));
     IParseResult parseResult = resource.getParseResult();
     root = (Protobuf) parseResult.getRootASTElement();
-    if (ignoreSyntaxErrors) return;
+    if (ignoreSyntaxErrors) {
+      return;
+    }
     if (!parseResult.hasSyntaxErrors()) {
       if (root.getSyntax() == null) {
         throw new IllegalStateException("Please specify 'proto2' syntax");
@@ -83,8 +85,9 @@ public class XtextRule implements MethodRule {
     }
     StringBuilder builder = new StringBuilder();
     builder.append("Syntax errors:");
-    for (INode error : parseResult.getSyntaxErrors())
+    for (INode error : parseResult.getSyntaxErrors()) {
       builder.append(lineSeparator()).append("- ").append(error.getSyntaxErrorMessage());
+    }
     throw new IllegalStateException(builder.toString());
   }
 
@@ -93,7 +96,7 @@ public class XtextRule implements MethodRule {
   }
 
   private XtextResource resourceFrom(InputStream input) {
-    return resourceFrom(input, createURI("mytestmodel.proto")); //$NON-NLS-1$
+    return resourceFrom(input, createURI("mytestmodel.proto"));
   }
 
   private XtextResource resourceFrom(InputStream input, URI uri) {

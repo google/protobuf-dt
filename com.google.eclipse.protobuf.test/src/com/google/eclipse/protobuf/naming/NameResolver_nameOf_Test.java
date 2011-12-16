@@ -22,19 +22,19 @@ import com.google.eclipse.protobuf.protobuf.Package;
 
 /**
  * Tests for <code>{@link NameResolver#nameOf(EObject)}</code>.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class NameResolver_nameOf_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
-  
+
   private NameResolver resolver;
-  
+
   @Before public void setUp() {
     resolver = xtext.getInstanceOf(NameResolver.class);
   }
-  
+
   // syntax = "proto2";
   //
   // message Person {}
@@ -43,13 +43,13 @@ public class NameResolver_nameOf_Test {
     String name = resolver.nameOf(message);
     assertThat(name, equalTo("Person"));
   }
-  
+
   // syntax = "proto2";
   //
   // package com.google.proto.test;
   @Test public void should_return_name_of_Package() {
     Package aPackage = xtext.find("com.google.proto.test", Package.class);
     String name = resolver.nameOf(aPackage);
-    assertThat(name, equalTo("com.google.proto.test"));    
+    assertThat(name, equalTo("com.google.proto.test"));
   }
 }

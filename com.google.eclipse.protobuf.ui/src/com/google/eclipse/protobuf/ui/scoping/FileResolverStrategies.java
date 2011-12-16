@@ -10,13 +10,11 @@ package com.google.eclipse.protobuf.ui.scoping;
 
 import static com.google.eclipse.protobuf.ui.preferences.pages.paths.PathResolutionType.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import com.google.eclipse.protobuf.ui.preferences.pages.paths.PathResolutionType;
 import com.google.eclipse.protobuf.ui.util.Resources;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import com.google.inject.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -24,7 +22,7 @@ import com.google.inject.Singleton;
 @Singleton
 class FileResolverStrategies {
 
-  private final Map<PathResolutionType, FileResolverStrategy> strategies = 
+  private final Map<PathResolutionType, FileResolverStrategy> strategies =
       new HashMap<PathResolutionType, FileResolverStrategy>();
 
   @Inject FileResolverStrategies(PathMapping mapping, Resources resources) {

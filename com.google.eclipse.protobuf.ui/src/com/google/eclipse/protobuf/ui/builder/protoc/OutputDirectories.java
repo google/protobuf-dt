@@ -31,7 +31,9 @@ class OutputDirectories {
       throws CoreException {
     Map<SupportedLanguage, IFolder> outputDirectories = new HashMap<SupportedLanguage, IFolder>();
     for (CodeGenerationSetting preference : preferences.allSettings()) {
-      if (!preference.isEnabled()) continue;
+      if (!preference.isEnabled()) {
+        continue;
+      }
       outputDirectories.put(preference.language(), findOrCreateOutputDirectory(project, preference));
     }
     return new OutputDirectories(outputDirectories);
@@ -48,7 +50,9 @@ class OutputDirectories {
     for (String segment : segmentsOf(outputFolderName)) {
       path.append(segment);
       outputFolder = project.getFolder(path.toString());
-      if (!outputFolder.exists()) outputFolder.create(true, true, NO_MONITOR);
+      if (!outputFolder.exists()) {
+        outputFolder.create(true, true, NO_MONITOR);
+      }
       path.append(separator);
     }
     return outputFolder;

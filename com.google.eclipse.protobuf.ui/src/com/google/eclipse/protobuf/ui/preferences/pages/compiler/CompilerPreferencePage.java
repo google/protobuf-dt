@@ -166,7 +166,9 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
       @Override public void widgetSelected(SelectionEvent e) {
         FileDialog dialog = new FileDialog(getShell(), SWT.OPEN | SWT.SHEET);
         String file = dialog.open();
-        if (file != null) txtProtocFilePath.setText(file);
+        if (file != null) {
+          txtProtocFilePath.setText(file);
+        }
         checkState();
       }
     });
@@ -175,7 +177,9 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
         FileDialog dialog = new FileDialog(getShell(), SWT.OPEN | SWT.SHEET);
         dialog.setFilterExtensions(new String[] { "*.proto" });
         String file = dialog.open();
-        if (file != null) txtDescriptorFilePath.setText(file);
+        if (file != null) {
+          txtDescriptorFilePath.setText(file);
+        }
         checkState();
       }
     });
@@ -225,7 +229,9 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
 
   private boolean isFileWithName(String filePath, String expectedFileName) {
     File file = new File(filePath);
-    if (!file.isFile()) return false;
+    if (!file.isFile()) {
+      return false;
+    }
     String fileName = file.getName();
     return expectedFileName.equals(fileName);
   }

@@ -15,11 +15,11 @@ import static com.google.eclipse.protobuf.validation.ProtobufJavaValidator.INVAL
 import static org.eclipse.xtext.validation.ValidationMessageAcceptor.INSIGNIFICANT_INDEX;
 import static org.mockito.Mockito.*;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.*;
-
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
 import org.junit.*;
+
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.*;
 
 /**
  * Tests for <code>{@link ProtobufJavaValidator#checkTagNumberIsUnique(IndexedElement)}</code>

@@ -73,9 +73,13 @@ public class Images {
 
   public String imageFor(Class<?> type) {
     String image = IMAGES_BY_TYPE.get(type);
-    if (image != null) return image;
+    if (image != null) {
+      return image;
+    }
     Class<?>[] interfaces = type.getInterfaces();
-    if (interfaces == null || interfaces.length != 1) return DEFAULT_IMAGE;
+    if (interfaces == null || interfaces.length != 1) {
+      return DEFAULT_IMAGE;
+    }
     return imageFor(interfaces[0]);
   }
 
@@ -83,15 +87,21 @@ public class Images {
     String value = keyword.getValue();
     Modifier m = Modifier.getByName(value);
     String image = IMAGES_BY_MODIFIER.get(m);
-    if (image != null) return image;
+    if (image != null) {
+      return image;
+    }
     String imageName = value + GIF_EXTENSION;
-    if (IMAGES_BY_TYPE.containsValue(imageName) || STANDALONE_IMAGES.contains(imageName)) return imageName;
+    if (IMAGES_BY_TYPE.containsValue(imageName) || STANDALONE_IMAGES.contains(imageName)) {
+      return imageName;
+    }
     return DEFAULT_IMAGE;
   }
 
   private String imageFor(Modifier modifier) {
     String image = IMAGES_BY_MODIFIER.get(modifier);
-    if (image != null) return image;
+    if (image != null) {
+      return image;
+    }
     return "field.gif";
   }
 

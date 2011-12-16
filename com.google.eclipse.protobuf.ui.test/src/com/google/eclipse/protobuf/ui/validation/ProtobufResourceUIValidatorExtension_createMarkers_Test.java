@@ -12,17 +12,17 @@ import static com.google.eclipse.protobuf.ui.validation.ProtobufResourceUIValida
 import static java.util.Arrays.asList;
 import static org.mockito.Mockito.*;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.*;
 import org.eclipse.xtext.ui.editor.validation.MarkerCreator;
 import org.eclipse.xtext.validation.Issue;
 import org.junit.*;
 
-import java.util.List;
-
 /**
  * Tests for <code>{@link ProtobufResourceUIValidatorExtension#createMarkers(IFile, List, IProgressMonitor)}</code>
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufResourceUIValidatorExtension_createMarkers_Test {
@@ -39,13 +39,13 @@ public class ProtobufResourceUIValidatorExtension_createMarkers_Test {
 
   private MarkerCreator markerCreator;
   private ProtobufResourceUIValidatorExtension validator;
-  
+
   @Before public void setUp() {
     markerCreator = mock(MarkerCreator.class);
     validator = new ProtobufResourceUIValidatorExtension();
     validator.markerCreator = markerCreator;
   }
-  
+
   @Test public void should_create_markers_using_proto_editor_marker_type() throws CoreException {
     validator.createMarkers(file, issues, monitor);
     for (Issue issue : issues) {

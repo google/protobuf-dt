@@ -35,8 +35,13 @@ class LineSpecificErrorParser implements ProtocOutputParser {
   @Override
   public boolean parseAndAddMarkerIfNecessary(String line, ProtocMarkerFactory markerFactory) throws CoreException {
     Matcher errorMatcher = ERROR_PATTERN.matcher(line);
-    if (!errorMatcher.matches()) return false;
-    markerFactory.createErrorIfNecessary(errorMatcher.group(1), errorMatcher.group(4), parseInt(errorMatcher.group(2)));
+    if (!errorMatcher.matches()) {
+      return false;
+    }
+    String fileName = errorMatcher.group(1);
+    int lineNumber = parseInt(errorMatcher.group(2));
+    String description = errorMatcher.group(4);
+    markerFactory.createErrorIfNecessary(fileName, description, lineNumber);
     return true;
   }
 }

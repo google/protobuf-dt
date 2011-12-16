@@ -42,11 +42,17 @@ public class MLCommentDocumentationProvider implements IEObjectDocumentationProv
   private String findComment(EObject o) {
     String returnValue = null;
     ICompositeNode node = getNode(o);
-    if (node == null) return null;
+    if (node == null) {
+      return null;
+    }
     // get the last multiple-line comment before a non hidden leaf node
     for (INode currentNode : node.getAsTreeIterable()) {
-        if (!nodes.isHiddenLeafNode(currentNode)) continue;
-        if (!nodes.belongsToMultipleLineComment(currentNode)) continue;
+        if (!nodes.isHiddenLeafNode(currentNode)) {
+          continue;
+        }
+        if (!nodes.belongsToMultipleLineComment(currentNode)) {
+          continue;
+        }
         String text = ((ILeafNode) currentNode).getText();
         if (COMMENT.matcher(text).matches()) {
           returnValue = cleanUp(text);

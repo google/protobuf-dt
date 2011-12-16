@@ -13,7 +13,7 @@ import org.eclipse.core.runtime.*;
 
 /**
  * ${project} variable.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 class ProjectVariable {
@@ -23,17 +23,21 @@ class ProjectVariable {
   static IPath useProjectVariable(IPath path, IProject project) {
     return switchProjectSegments(path, project.getName(), VARIABLE_VALUE);
   }
-  
+
   static String useProjectName(String path, IProject project) {
     IPath newPath = switchProjectSegments(new Path(path), VARIABLE_VALUE, project.getName());
     return newPath.toString();
   }
-  
+
   private static IPath switchProjectSegments(IPath path, String currentSegment, String newSegment) {
-    if (!currentSegment.equals(path.segment(0))) return path;
+    if (!currentSegment.equals(path.segment(0))) {
+      return path;
+    }
     IPath newPath = new Path(newSegment);
     newPath = newPath.append(path.removeFirstSegments(1));
-    if (path.isAbsolute()) newPath = newPath.makeAbsolute();
+    if (path.isAbsolute()) {
+      newPath = newPath.makeAbsolute();
+    }
     return newPath;
   }
 }

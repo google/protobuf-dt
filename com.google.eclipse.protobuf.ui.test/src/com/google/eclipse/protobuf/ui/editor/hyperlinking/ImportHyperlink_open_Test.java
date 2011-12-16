@@ -19,7 +19,7 @@ import com.google.eclipse.protobuf.ui.editor.FileOpener;
 
 /**
  * Tests for <code>{@link ImportHyperlink#open()}</code>.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ImportHyperlink_open_Test {
@@ -29,14 +29,14 @@ public class ImportHyperlink_open_Test {
   @BeforeClass public static void setUpOnce() {
     region = mock(IRegion.class);
   }
-  
+
   private FileOpener fileOpener;
   private ImportHyperlink hyperlink;
-  
+
   @Before public void setUp() {
     fileOpener = mock(FileOpener.class);
   }
-  
+
   @Test public void should_open_file_in_workspace() throws Throwable {
     URI uri = createPlatformResourceURI("test.proto", false);
     hyperlink = new ImportHyperlink(uri, region, fileOpener);
@@ -50,7 +50,7 @@ public class ImportHyperlink_open_Test {
     hyperlink.open();
     verify(fileOpener).openProtoFileInPlugin(uri);
   }
-  
+
   @Test public void should_open_file_in_file_system() throws Throwable {
     URI uri = createFileURI("test.proto");
     hyperlink = new ImportHyperlink(uri, region, fileOpener);

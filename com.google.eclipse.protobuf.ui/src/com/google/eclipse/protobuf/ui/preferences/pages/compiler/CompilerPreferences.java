@@ -50,7 +50,7 @@ public class CompilerPreferences {
   public String protocPath() {
     return protocPath;
   }
-  
+
   public String descriptorPath() {
     return descriptorPath;
   }

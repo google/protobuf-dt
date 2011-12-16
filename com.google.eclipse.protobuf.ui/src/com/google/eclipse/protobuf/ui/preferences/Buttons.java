@@ -29,6 +29,8 @@ public final class Buttons {
   }
 
   public void add(SelectionListener l) {
-    for (Button b : buttons) b.addSelectionListener(l);
+    for (Button b : buttons) {
+      b.addSelectionListener(l);
+    }
   }
 }

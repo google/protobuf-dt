@@ -8,19 +8,16 @@
  */
 package com.google.eclipse.protobuf.ui.builder.nature;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.xtext.builder.nature.ToggleXtextNatureAction;
-import org.eclipse.xtext.builder.nature.XtextNature;
-import org.eclipse.xtext.ui.editor.AbstractDirtyStateAwareEditorCallback;
-import org.eclipse.xtext.ui.editor.XtextEditor;
+import org.eclipse.core.resources.*;
+import org.eclipse.xtext.builder.nature.*;
+import org.eclipse.xtext.ui.editor.*;
 
 import com.google.inject.Inject;
 
 /**
  * Automatically adds <code>{@link XtextNature}</code> to a project if needed (e.g. when opening a 'Protocol Buffer'
  * editor for the first time.)
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 @SuppressWarnings("restriction")
@@ -31,9 +28,15 @@ public class AutoAddNatureEditorCallback extends AbstractDirtyStateAwareEditorCa
   @Override public void afterCreatePartControl(XtextEditor editor) {
     super.afterCreatePartControl(editor);
     IResource resource = editor.getResource();
-    if (resource == null) return;
+    if (resource == null) {
+      return;
+    }
     IProject project = resource.getProject();
-    if (!project.isAccessible() || project.isHidden()) return;
-    if (!xtext.hasNature(project)) xtext.toggleNature(project);
+    if (!project.isAccessible() || project.isHidden()) {
+      return;
+    }
+    if (!xtext.hasNature(project)) {
+      xtext.toggleNature(project);
+    }
   }
 }

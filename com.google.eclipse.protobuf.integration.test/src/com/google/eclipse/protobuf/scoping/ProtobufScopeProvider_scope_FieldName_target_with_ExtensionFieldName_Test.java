@@ -15,16 +15,16 @@ import static com.google.eclipse.protobuf.junit.matchers.ContainAllNames.contain
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.*;
-
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.xtext.scoping.IScope;
 import org.junit.*;
 
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.*;
+
 /**
  * Tests for <code>{@link ProtobufScopeProvider#scope_FieldName_target(FieldName, EReference)}</code>.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufScopeProvider_scope_FieldName_target_with_ExtensionFieldName_Test {
@@ -54,7 +54,7 @@ public class ProtobufScopeProvider_scope_FieldName_target_with_ExtensionFieldNam
   //   optional google.protobuf.FileOptions file = 2;
   // }
   //
-  // extend google.protobuf.FileOptions { 
+  // extend google.protobuf.FileOptions {
   //   optional Aggregate fileopt = 15478479;
   // }
   //

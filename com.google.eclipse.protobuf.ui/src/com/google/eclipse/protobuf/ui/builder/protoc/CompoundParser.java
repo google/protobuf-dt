@@ -10,21 +10,25 @@ package com.google.eclipse.protobuf.ui.builder.protoc;
 
 import static java.util.Arrays.asList;
 
-import org.eclipse.core.runtime.CoreException;
+import java.util.List;
 
-import java.util.*;
+import org.eclipse.core.runtime.CoreException;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 class CompoundParser implements ProtocOutputParser {
 
-  private static final List<ProtocOutputParser> PARSERS = asList(new LineSpecificErrorParser(), new CodeGenerationErrorParser()); 
-  
-  @Override 
+  private static final List<ProtocOutputParser> PARSERS =
+      asList(new LineSpecificErrorParser(), new CodeGenerationErrorParser());
+
+  @Override
   public boolean parseAndAddMarkerIfNecessary(String line, ProtocMarkerFactory markerFactory) throws CoreException {
-    for (ProtocOutputParser parser: PARSERS)
-      if (parser.parseAndAddMarkerIfNecessary(line, markerFactory)) return true;
+    for (ProtocOutputParser parser: PARSERS) {
+      if (parser.parseAndAddMarkerIfNecessary(line, markerFactory)) {
+        return true;
+      }
+    }
     return false;
   }
 }

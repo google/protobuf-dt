@@ -32,7 +32,9 @@ public class ValidateOnActivation implements IPartListener2 {
   @Override public void partActivated(IWorkbenchPartReference partRef) {
     IEditorPart activeEditor = activeEditor(partRef);
     IProject project = projectFrom(activeEditor);
-    if (project == null || !shouldValidateEditor(project)) return;
+    if (project == null || !shouldValidateEditor(project)) {
+      return;
+    }
     validate(activeEditor);
   }
 
@@ -48,7 +50,9 @@ public class ValidateOnActivation implements IPartListener2 {
 
   private boolean shouldValidateEditor(IProject project) {
     GeneralPreferencesFactory factory = injector().getInstance(GeneralPreferencesFactory.class);
-    if (factory == null) return false;
+    if (factory == null) {
+      return false;
+    }
     GeneralPreferences preferences = factory.preferences(project);
     return preferences.validateFilesOnActivation();
   }

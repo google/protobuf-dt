@@ -10,11 +10,11 @@ package com.google.eclipse.protobuf.ui.contentassist;
 
 import static java.util.Collections.*;
 
+import java.util.*;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IEObjectDescription;
-
-import java.util.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -22,14 +22,18 @@ import java.util.*;
 class IEObjectDescriptionChooser {
 
   Collection<IEObjectDescription> shortestQualifiedNamesIn(Collection<IEObjectDescription> descriptions) {
-    if (descriptions.isEmpty()) return emptySet();
+    if (descriptions.isEmpty()) {
+      return emptySet();
+    }
     Map<EObject, IEObjectDescription> shortestOnes = new HashMap<EObject, IEObjectDescription>();
     for (IEObjectDescription d : descriptions) {
       EObject e = d.getEObjectOrProxy();
       IEObjectDescription stored = shortestOnes.get(e);
       if (stored != null) {
         QualifiedName currentName = d.getName();
-        if (currentName.getSegmentCount() >= stored.getName().getSegmentCount()) continue; 
+        if (currentName.getSegmentCount() >= stored.getName().getSegmentCount()) {
+          continue;
+        }
       }
       shortestOnes.put(e, d);
     }

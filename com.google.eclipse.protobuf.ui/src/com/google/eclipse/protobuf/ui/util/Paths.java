@@ -24,7 +24,9 @@ public final class Paths {
    * @throws NullPointerException if the given path is {@code null}.
    */
   public static String[] segmentsOf(String path) {
-    if (path == null) throw new NullPointerException("The given path should not be null");
+    if (path == null) {
+      throw new NullPointerException("The given path should not be null");
+    }
     return path.split("\\Q" + separator + "\\E");
   }
 

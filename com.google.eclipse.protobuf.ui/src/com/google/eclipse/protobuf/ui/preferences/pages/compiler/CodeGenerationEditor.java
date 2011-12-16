@@ -57,12 +57,12 @@ public class CodeGenerationEditor extends Composite {
     tblclmnEnabled.setWidth(27);
     tblclmnVwrEnabled.setLabelProvider(new ColumnLabelProvider() {
       @Override public String getText(Object element) {
-        return ""; //$NON-NLS-1$
+        return "";
       }
 
       @Override public Image getImage(Object element) {
         boolean optionEnabled = ((CodeGenerationSetting)element).isEnabled();
-        return imageHelper.getImage(optionEnabled ? "checked.gif" : "unchecked.gif"); //$NON-NLS-1$ //$NON-NLS-2$
+        return imageHelper.getImage(optionEnabled ? "checked.gif" : "unchecked.gif");
       }
     });
 
@@ -111,7 +111,9 @@ public class CodeGenerationEditor extends Composite {
         EditCodeGenerationDialog dialog = new EditCodeGenerationDialog(getShell(), option);
         if (dialog.open() == OK) {
           tblVwrCodeGenerationOptions.refresh();
-          if (dataChangedListener != null) dataChangedListener.dataChanged();
+          if (dataChangedListener != null) {
+            dataChangedListener.dataChanged();
+          }
         }
       }
     });
@@ -125,7 +127,9 @@ public class CodeGenerationEditor extends Composite {
 
   private void updateTable() {
     tblVwrCodeGenerationOptions.setInput(settings);
-    if (!settings.isEmpty()) tblCodeGenerationOptions.setSelection(0);
+    if (!settings.isEmpty()) {
+      tblCodeGenerationOptions.setSelection(0);
+    }
   }
 
   /** {@inheritDoc} */

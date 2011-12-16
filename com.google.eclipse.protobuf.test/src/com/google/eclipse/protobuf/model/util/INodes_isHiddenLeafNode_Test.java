@@ -16,17 +16,17 @@ import org.junit.*;
 
 /**
  * Tests for <code>{@link INodes#isHiddenLeafNode(INode)}</code>
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class INodes_isHiddenLeafNode_Test {
 
   private INodes nodes;
-  
+
   @Before public void setUp() {
     nodes = new INodes();
   }
-  
+
   @Test public void should_return_true_if_given_node_is_an_ILeafNode_and_is_hidden() {
     ILeafNode node = mock(ILeafNode.class);
     when(node.isHidden()).thenReturn(true);
@@ -38,7 +38,7 @@ public class INodes_isHiddenLeafNode_Test {
     when(node.isHidden()).thenReturn(false);
     assertFalse(nodes.isHiddenLeafNode(node));
   }
-  
+
   @Test public void should_return_false_if_given_node_is_not_an_ILeafNode() {
     INode node = mock(INode.class);
     assertFalse(nodes.isHiddenLeafNode(node));

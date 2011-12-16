@@ -25,13 +25,17 @@ public abstract class SmartInsertHandler extends AbstractHandler {
   /** {@inheritDoc} */
   @Override public final Object execute(ExecutionEvent event) {
     XtextEditor activeEditor = getActiveXtextEditor();
-    if (activeEditor != null) insertContent(activeEditor, styledTextFrom(activeEditor));
+    if (activeEditor != null) {
+      insertContent(activeEditor, styledTextFrom(activeEditor));
+    }
     return null;
   }
 
   private StyledText styledTextFrom(XtextEditor editor) {
     Object adapter = editor.getAdapter(Control.class);
-    if (adapter instanceof StyledText) return (StyledText) adapter;
+    if (adapter instanceof StyledText) {
+      return (StyledText) adapter;
+    }
     return null;
   }
 

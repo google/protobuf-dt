@@ -8,12 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.editor.hyperlinking;
 
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
 import static org.eclipse.emf.common.util.URI.createURI;
-
-import com.google.eclipse.protobuf.model.util.INodes;
-import com.google.eclipse.protobuf.protobuf.Import;
-import com.google.eclipse.protobuf.ui.editor.FileOpener;
-import com.google.inject.Inject;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.text.*;
@@ -24,7 +20,11 @@ import org.eclipse.xtext.resource.*;
 import org.eclipse.xtext.ui.editor.hyperlinking.DefaultHyperlinkDetector;
 import org.eclipse.xtext.ui.editor.model.IXtextDocument;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
+
+import com.google.eclipse.protobuf.model.util.INodes;
+import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.ui.editor.FileOpener;
+import com.google.inject.Inject;
 
 
 /**
@@ -45,7 +45,9 @@ public class ProtobufHyperlinkDetector extends DefaultHyperlinkDetector {
       final boolean canShowMultipleHyperlinks) {
     IXtextDocument document = (IXtextDocument)textViewer.getDocument();
     IHyperlink[] importHyperlinks = importHyperlinks(document, region);
-    if (importHyperlinks != NO_HYPERLINKS) return importHyperlinks;
+    if (importHyperlinks != NO_HYPERLINKS) {
+      return importHyperlinks;
+    }
     return document.readOnly(new IUnitOfWork<IHyperlink[], XtextResource>() {
       @Override public IHyperlink[] exec(XtextResource resource) {
         return getHelper().createHyperlinksByOffset(resource, region.getOffset(), canShowMultipleHyperlinks);
@@ -57,31 +59,41 @@ public class ProtobufHyperlinkDetector extends DefaultHyperlinkDetector {
     return document.readOnly(new IUnitOfWork<IHyperlink[], XtextResource>() {
       @Override public IHyperlink[] exec(XtextResource resource) {
         EObject resolved = eObjectAtOffsetHelper.resolveElementAt(resource, region.getOffset());
-        if (!(resolved instanceof Import)) return NO_HYPERLINKS;
+        if (!(resolved instanceof Import)) {
+          return NO_HYPERLINKS;
+        }
         Import anImport = (Import) resolved;
         String importUri = rawUriIn(anImport);
-        if (importUri == null) return NO_HYPERLINKS;
+        if (importUri == null) {
+          return NO_HYPERLINKS;
+        }
         IRegion importUriRegion;
         try {
           importUriRegion = importUriRegion(document, region.getOffset(), importUri);
         } catch (BadLocationException e) {
           return NO_HYPERLINKS;
         }
-        if (importUriRegion == null) return NO_HYPERLINKS;
+        if (importUriRegion == null) {
+          return NO_HYPERLINKS;
+        }
         IHyperlink hyperlink = new ImportHyperlink(createURI(anImport.getImportURI()), importUriRegion, fileOpener);
         return new IHyperlink[] { hyperlink };
       }
     });
   }
-  
+
   private String rawUriIn(Import anImport) {
     INode node = nodes.firstNodeForFeature(anImport, IMPORT__IMPORT_URI);
-    if (node == null) return null;
+    if (node == null) {
+      return null;
+    }
     String text = node.getText();
-    if (text == null || text.length() < 3) return null;
+    if (text == null || text.length() < 3) {
+      return null;
+    }
     return text.substring(1, text.length() - 1); // remove quotes
   }
-  
+
   private IRegion importUriRegion(IXtextDocument document, int offset, String importUri) throws BadLocationException {
     int lineNumber = document.getLineOfOffset(offset);
     int lineLength = document.getLineLength(lineNumber);

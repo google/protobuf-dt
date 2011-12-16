@@ -14,26 +14,26 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import com.google.eclipse.protobuf.junit.core.*;
-import com.google.eclipse.protobuf.protobuf.*;
-
 import org.junit.*;
+
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.*;
 
 /**
  * Tests for <code>{@link IndexedElements#nameOf(IndexedElement)}</code>
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class IndexedElements_nameOf_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
-  
+
   private IndexedElements indexedElements;
-  
+
   @Before public void setUp() {
     indexedElements = xtext.getInstanceOf(IndexedElements.class);
   }
-  
+
   @Test public void should_return_name_of_Property() {
     MessageField field = mock(MessageField.class);
     when(field.getName()).thenReturn("foo");
@@ -47,7 +47,7 @@ public class IndexedElements_nameOf_Test {
     assertThat(indexedElements.nameOf(group), equalTo("foo"));
     verify(group).getName();
   }
-  
+
   @Test public void should_return_null_if_IndexedElement_is_null() {
     assertNull(indexedElements.nameOf(null));
   }

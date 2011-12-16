@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- * 
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.validation;
@@ -33,7 +33,7 @@ import com.google.eclipse.protobuf.linking.ProtobufDiagnostic;
 
 /**
  * Adds support for converting scoping errors into warnings if non-proto2 files are imported.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufResourceValidator extends ResourceValidatorImpl {
@@ -43,18 +43,24 @@ public class ProtobufResourceValidator extends ResourceValidatorImpl {
   @Override public List<Issue> validate(Resource resource, CheckMode mode, CancelIndicator indicator) {
     CancelIndicator monitor = indicator == null ? CancelIndicator.NullImpl : indicator;
     resolveProxies(resource, monitor);
-    if (monitor.isCanceled()) return null;
+    if (monitor.isCanceled()) {
+      return null;
+    }
     List<Issue> result = newArrayListWithExpectedSize(resource.getErrors().size() + resource.getWarnings().size());
     try {
       IAcceptor<Issue> acceptor = createAcceptor(result);
       boolean hasNonProto2Import = false;
       for (EObject element : resource.getContents()) {
         try {
-          if (monitor.isCanceled()) return null;
+          if (monitor.isCanceled()) {
+            return null;
+          }
           Diagnostic diagnostic = getDiagnostician().validate(element, validationOptions(resource, mode, monitor));
           if (!diagnostic.getChildren().isEmpty()) {
             for (Diagnostic child : diagnostic.getChildren()) {
-              if (importingNonProto2.equals(child.getMessage())) hasNonProto2Import = true;
+              if (importingNonProto2.equals(child.getMessage())) {
+                hasNonProto2Import = true;
+              }
               issueFromEValidatorDiagnostic(child, acceptor);
             }
           } else {
@@ -66,13 +72,17 @@ public class ProtobufResourceValidator extends ResourceValidatorImpl {
       }
       if (mode.shouldCheck(FAST)) {
         for (Resource.Diagnostic error : resource.getErrors()) {
-          if (monitor.isCanceled()) return null;
+          if (monitor.isCanceled()) {
+            return null;
+          }
           Severity severity = ERROR;
           if (hasNonProto2Import && isUnresolveReferenceError(error)) {
             severity = WARNING;
             ProtobufDiagnostic d = (ProtobufDiagnostic) error;
             if (!d.getMessage().endsWith(scopingError)) {
-              if (!d.getMessage().endsWith(".")) d.appendToMessage(".");
+              if (!d.getMessage().endsWith(".")) {
+                d.appendToMessage(".");
+              }
               d.appendToMessage(" ");
               d.appendToMessage(scopingError);
             }
@@ -80,7 +90,9 @@ public class ProtobufResourceValidator extends ResourceValidatorImpl {
           issueFromXtextResourceDiagnostic(error, severity, acceptor);
         }
         for (Resource.Diagnostic warning : resource.getWarnings()) {
-          if (monitor.isCanceled()) return null;
+          if (monitor.isCanceled()) {
+            return null;
+          }
           issueFromXtextResourceDiagnostic(warning, WARNING, acceptor);
         }
       }
@@ -103,9 +115,13 @@ public class ProtobufResourceValidator extends ResourceValidatorImpl {
   }
 
   private boolean isUnresolveReferenceError(Resource.Diagnostic error) {
-    if (!(error instanceof ProtobufDiagnostic)) return false;
+    if (!(error instanceof ProtobufDiagnostic)) {
+      return false;
+    }
     ProtobufDiagnostic d = (ProtobufDiagnostic) error;
-    if (!"org.eclipse.xtext.diagnostics.Diagnostic.Linking".equals(d.getCode())) return false;
+    if (!"org.eclipse.xtext.diagnostics.Diagnostic.Linking".equals(d.getCode())) {
+      return false;
+    }
     return error.getMessage().startsWith("Couldn't resolve");
   }
 }

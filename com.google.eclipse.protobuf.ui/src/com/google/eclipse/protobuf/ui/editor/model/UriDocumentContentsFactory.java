@@ -11,8 +11,7 @@ package com.google.eclipse.protobuf.ui.editor.model;
 import static com.google.eclipse.protobuf.ui.exception.CoreExceptions.error;
 import static com.google.eclipse.protobuf.util.Closeables.closeQuietly;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 
 import org.eclipse.core.runtime.CoreException;

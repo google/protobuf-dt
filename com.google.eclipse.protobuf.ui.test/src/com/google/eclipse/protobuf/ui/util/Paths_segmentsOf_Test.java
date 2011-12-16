@@ -25,12 +25,12 @@ public class Paths_segmentsOf_Test {
   public void should_throw_error_if_path_is_null() {
     Paths.segmentsOf(null);
   }
-  
+
   @Test public void should_separate_segments_using_system_file_separator() {
     String path = "folder1" + separator + "folder1_1" + separator + "folder1_1_1";
     assertThat(Paths.segmentsOf(path), equalTo(new String[] { "folder1" , "folder1_1", "folder1_1_1" }));
   }
-  
+
   @Test public void should_separate_segments_for_path_ending_with_system_file_separator() {
     String path = "folder1" + separator + "folder1_1" + separator;
     assertThat(Paths.segmentsOf(path), equalTo(new String[] { "folder1" , "folder1_1" }));

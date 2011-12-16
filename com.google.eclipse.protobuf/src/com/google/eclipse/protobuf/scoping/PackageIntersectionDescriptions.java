@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- * 
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.scoping;
@@ -11,15 +11,15 @@ package com.google.eclipse.protobuf.scoping;
 import static java.util.Collections.emptySet;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.inject.Inject;
+import java.util.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
-import java.util.*;
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.inject.Inject;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -32,7 +32,9 @@ class PackageIntersectionDescriptions {
 
   // See issue 161
   Collection<IEObjectDescription> intersection(Package fromImporter, Package fromImported, EObject e) {
-    if (fromImporter == null || fromImported == null) return emptySet();
+    if (fromImporter == null || fromImported == null) {
+      return emptySet();
+    }
     return intersection2(segmentNames(fromImporter), segmentNames(fromImported), e);
   }
 
@@ -51,7 +53,10 @@ class PackageIntersectionDescriptions {
         break;
       }
     }
-    if (start == 0) return emptySet(); // no intersection found.
+    if (start == 0)
+     {
+      return emptySet(); // no intersection found.
+    }
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     QualifiedName fqn = nameProvider.getFullyQualifiedName(e);
     List<String> segments = new ArrayList<String>(fqn.getSegments());

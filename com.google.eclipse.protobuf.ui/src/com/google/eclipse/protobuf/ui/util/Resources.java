@@ -9,8 +9,7 @@
 package com.google.eclipse.protobuf.ui.util;
 
 import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.*;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.*;
@@ -23,12 +22,12 @@ import com.google.inject.Singleton;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@SuppressWarnings("deprecation") 
+@SuppressWarnings("deprecation")
 @Singleton
 public class Resources {
 
   private static final IViewReference[] NO_VIEW_REFERENCES = new IViewReference[0];
-  
+
   public static final String URI_SCHEME_FOR_FILES = "file";
 
   /**
@@ -45,7 +44,9 @@ public class Resources {
   public IProject activeProject() {
     for (IViewReference reference : viewReferencesInActivePage()) {
       IViewPart part = reference.getView(false);
-      if (!(part instanceof ResourceNavigator)) continue;
+      if (!(part instanceof ResourceNavigator)) {
+        continue;
+      }
       ResourceNavigator navigator = (ResourceNavigator) part;
       StructuredSelection selection = (StructuredSelection) navigator.getTreeViewer().getSelection();
       IResource resource = (IResource) selection.getFirstElement();
@@ -56,18 +57,22 @@ public class Resources {
 
   private IViewReference[] viewReferencesInActivePage() {
     IWorkbenchPage page = activeWorkbenchPage();
-    if (page == null) return NO_VIEW_REFERENCES;
+    if (page == null) {
+      return NO_VIEW_REFERENCES;
+    }
     IViewReference[] references = page.getViewReferences();
     return (references == null) ? NO_VIEW_REFERENCES : references;
   }
-  
+
   private IWorkbenchPage activeWorkbenchPage() {
     IWorkbench workbench = PlatformUI.getWorkbench();
-    if (workbench == null) return null;
+    if (workbench == null) {
+      return null;
+    }
     IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
     return (window == null) ? null : window.getActivePage();
   }
-  
+
   /**
    * Indicates whether the given URI belongs to an existing file.
    * @param fileUri the URI to check, as a {@code String}.
@@ -101,7 +106,9 @@ public class Resources {
   }
 
   private IResource resourceFrom(IEditorPart editor) {
-    if (editor == null) return null;
+    if (editor == null) {
+      return null;
+    }
     Object adapter = editor.getEditorInput().getAdapter(IResource.class);
     return (adapter == null) ? null : (IResource) adapter;
   }

@@ -14,8 +14,7 @@ import static com.google.eclipse.protobuf.ui.preferences.pages.editor.save.Messa
 
 import org.eclipse.jface.preference.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.*;
@@ -50,17 +49,17 @@ public class SaveActionsPreferencePage extends PreferencePage implements IWorkbe
     btnRemoveTrailingwhitespace = new Button(contents, SWT.CHECK);
     btnRemoveTrailingwhitespace.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false, 1, 1));
     btnRemoveTrailingwhitespace.setText(removeTrailingWhitespace);
-    
+
     Composite composite = new Composite(contents, SWT.NONE);
     composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
     composite.setLayout(new GridLayout(1, false));
-    
+
     btnInEditedLines = new Button(composite, SWT.RADIO);
     btnInEditedLines.setText("In edited lines");
-    
+
     btnInAllLines = new Button(composite, SWT.RADIO);
     btnInAllLines.setText("In all lines");
-    
+
     setUpBinding();
     preferenceBinder.applyValues();
     updateContents();
@@ -76,7 +75,7 @@ public class SaveActionsPreferencePage extends PreferencePage implements IWorkbe
         bindSelectionOf(btnInEditedLines).to(preferences.inEditedLines())
     );
   }
-  
+
   private void addEventListeners() {
     btnRemoveTrailingwhitespace.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
@@ -84,7 +83,7 @@ public class SaveActionsPreferencePage extends PreferencePage implements IWorkbe
       }
     });
   }
-  
+
   private void updateContents() {
     boolean enabled = btnRemoveTrailingwhitespace.getSelection();
     btnInEditedLines.setEnabled(enabled);

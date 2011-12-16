@@ -12,8 +12,7 @@ import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.singletonList;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import org.eclipse.xtext.ui.editor.outline.IOutlineNode;
 import org.eclipse.xtext.ui.editor.outline.impl.*;
@@ -35,7 +34,9 @@ public class ProtobufOutlinePage extends OutlinePage {
   }
 
   private void addChildrenToExpand(Collection<IOutlineNode> parents, List<IOutlineNode> nodes, int depth) {
-    if (depth < 1) return;
+    if (depth < 1) {
+      return;
+    }
     for (IOutlineNode parent : parents) {
       Collection<IOutlineNode> children = childrenToExpand(parent);
       nodes.addAll(children);

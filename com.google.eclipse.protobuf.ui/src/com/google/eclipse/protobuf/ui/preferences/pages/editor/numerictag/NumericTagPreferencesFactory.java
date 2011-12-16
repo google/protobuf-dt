@@ -8,10 +8,10 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag;
 
-import com.google.inject.Inject;
-
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
+
+import com.google.inject.Inject;
 
 /**
  * Factory of <code>{@link NumericTagPreferences}</code>.

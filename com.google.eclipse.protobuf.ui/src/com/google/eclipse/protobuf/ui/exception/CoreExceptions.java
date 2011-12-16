@@ -11,8 +11,7 @@ package com.google.eclipse.protobuf.ui.exception;
 import static com.google.eclipse.protobuf.ui.ProtobufUiModule.PLUGIN_ID;
 import static org.eclipse.core.runtime.IStatus.ERROR;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.*;
 
 /**
  * Factory of <code>{@link CoreException}</code>s.
@@ -23,7 +22,9 @@ public final class CoreExceptions {
 
   public static CoreException error(Throwable cause) {
     String message = cause.getMessage();
-    if (message == null) message = "";
+    if (message == null) {
+      message = "";
+    }
     return new CoreException(new Status(ERROR, PLUGIN_ID, message, cause));
   }
 

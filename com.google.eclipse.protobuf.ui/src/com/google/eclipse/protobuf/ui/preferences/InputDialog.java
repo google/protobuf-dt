@@ -34,6 +34,8 @@ public class InputDialog extends Dialog {
 
   @Override protected void configureShell(Shell shell) {
     super.configureShell(shell);
-    if (title != null) shell.setText(title);
+    if (title != null) {
+      shell.setText(title);
+    }
   }
 }

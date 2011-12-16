@@ -35,10 +35,14 @@ class SingleDirectoryFileResolver implements FileResolverStrategy {
   private String resolveUri(URI importUri, URI declaringResourceUri) {
     StringBuilder pathBuilder = new StringBuilder();
     String[] segments = importUri.segments();
-    if (segments.length == 0) return null;
+    if (segments.length == 0) {
+      return null;
+    }
     String firstSegment = segments[0];
     for (String segment : removeFirstAndLast(declaringResourceUri)) {
-      if (segment.equals(firstSegment)) break;
+      if (segment.equals(firstSegment)) {
+        break;
+      }
       pathBuilder.append(segment).append(SEPARATOR);
     }
     String resolved = createResolvedUri(pathBuilder.toString(), importUri);
@@ -53,15 +57,17 @@ class SingleDirectoryFileResolver implements FileResolverStrategy {
                      .append(importUri.toString())
                      .toString();
   }
-  
+
   private boolean fileExists(String uri) {
     return resources.fileExists(createURI(uri));
   }
-  
+
   // first is always "platform" and last is the file name (both unnecessary)
   private static List<String> removeFirstAndLast(URI declaringResourceUri) {
     List<String> segments = new ArrayList<String>(declaringResourceUri.segmentsList());
-    if (segments.isEmpty()) return segments;
+    if (segments.isEmpty()) {
+      return segments;
+    }
     segments.remove(0);
     segments.remove(segments.size() - 1);
     return segments;

@@ -27,7 +27,9 @@ import com.google.inject.Singleton;
       return CommonKeyword.DEFAULT.toString();
     }
     Object value = nameFeatureOf(o);
-    if (value instanceof String) return (String) value;
+    if (value instanceof String) {
+      return (String) value;
+    }
     return null;
   }
 

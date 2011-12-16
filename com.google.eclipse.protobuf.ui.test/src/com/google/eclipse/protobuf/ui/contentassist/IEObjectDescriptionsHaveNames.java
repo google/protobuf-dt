@@ -26,26 +26,34 @@ public class IEObjectDescriptionsHaveNames extends BaseMatcher<Collection<IEObje
   public static IEObjectDescriptionsHaveNames containOnly(String...names) {
     return new IEObjectDescriptionsHaveNames(names);
   }
-  
+
   private IEObjectDescriptionsHaveNames(String[] qualifiedNames) {
     this.qualifiedNames = new ArrayList<String>(asList(qualifiedNames));
   }
-  
+
   /** {@inheritDoc} */
-  @Override @SuppressWarnings("unchecked") 
+  @Override @SuppressWarnings("unchecked")
   public boolean matches(Object arg) {
-    if (!(arg instanceof Collection)) return false;
+    if (!(arg instanceof Collection)) {
+      return false;
+    }
     Collection<IEObjectDescription> descriptions = (Collection<IEObjectDescription>) arg;
     List<String> copyOfNames = new ArrayList<String>(qualifiedNames);
-    if (copyOfNames.size() != descriptions.size()) return false;
+    if (copyOfNames.size() != descriptions.size()) {
+      return false;
+    }
     for (IEObjectDescription description : descriptions) {
       QualifiedName qualifiedName = description.getName();
-      if (qualifiedName == null) continue;
-      if (!copyOfNames.remove(qualifiedName.toString())) return false;
+      if (qualifiedName == null) {
+        continue;
+      }
+      if (!copyOfNames.remove(qualifiedName.toString())) {
+        return false;
+      }
     }
     return copyOfNames.isEmpty();
   }
-  
+
   /** {@inheritDoc} */
   @Override public void describeTo(Description description) {
     description.appendValue(qualifiedNames);

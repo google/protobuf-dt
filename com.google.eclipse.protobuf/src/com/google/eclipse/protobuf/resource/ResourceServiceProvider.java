@@ -31,7 +31,9 @@ public class ResourceServiceProvider extends ResourceServiceProviderImpl {
       return findService(((InternalEObject) e).eProxyURI(), serviceType);
     }
     Resource resource = e.eResource();
-    if (resource == null) return null;
+    if (resource == null) {
+      return null;
+    }
     return findService(resource.getURI(), serviceType);
   }
 }

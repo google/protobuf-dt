@@ -138,7 +138,9 @@ public class FileStub implements IFile {
   /** {@inheritDoc} */
   @Override public void deleteMarkers(String type, boolean includeSubtypes, int depth) {
     List<MarkerStub> markers = markersByType.get(type);
-    if (markers != null) markers.clear();
+    if (markers != null) {
+      markers.clear();
+    }
   }
 
   /** {@inheritDoc} */
@@ -154,7 +156,9 @@ public class FileStub implements IFile {
   /** {@inheritDoc} */
   @Override public IMarker[] findMarkers(String type, boolean includeSubtypes, int depth) {
     List<MarkerStub> markers = markersByType.get(type);
-    if (markers == null) return new IMarker[0];
+    if (markers == null) {
+      return new IMarker[0];
+    }
     return markers.toArray(new IMarker[markers.size()]);
   }
 
@@ -523,7 +527,9 @@ public class FileStub implements IFile {
 
   public List<MarkerStub> markersOfType(String type) {
     List<MarkerStub> markers = markersByType.get(type);
-    if (markers == null) return emptyList();
+    if (markers == null) {
+      return emptyList();
+    }
     return unmodifiableList(markers);
   }
 

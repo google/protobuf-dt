@@ -36,14 +36,18 @@ public class FieldHasType extends BaseMatcher<MessageField> {
   }
 
   @Override public boolean matches(Object arg) {
-    if (!(arg instanceof MessageField)) return false;
+    if (!(arg instanceof MessageField)) {
+      return false;
+    }
     MessageField field = (MessageField) arg;
     return typeName.equals(typeNameOf(field));
   }
 
   private String typeNameOf(MessageField field) {
     TypeLink link = field.getType();
-    if (link instanceof ScalarTypeLink) return ((ScalarTypeLink) link).getTarget().getName();
+    if (link instanceof ScalarTypeLink) {
+      return ((ScalarTypeLink) link).getTarget().getName();
+    }
     if (link instanceof ComplexTypeLink) {
       ComplexType type = ((ComplexTypeLink) link).getTarget();
       return type == null ? null : type.getName();

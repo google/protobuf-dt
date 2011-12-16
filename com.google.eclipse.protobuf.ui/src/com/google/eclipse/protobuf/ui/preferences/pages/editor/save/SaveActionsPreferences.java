@@ -12,26 +12,28 @@ import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
  * "Save actions" preferences, retrieved from an <code>{@link IPreferenceStore}</code>.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class SaveActionsPreferences {
 
   private final RemoveTrailingSpace removeTrailingSpace;
-  
+
   SaveActionsPreferences(RawPreferences preferences) {
     removeTrailingSpace = RemoveTrailingSpace.valueFrom(preferences);
   }
-  
+
   public RemoveTrailingSpace removeTrailingSpace() {
     return removeTrailingSpace;
   }
-  
+
   public static enum RemoveTrailingSpace {
     NONE, IN_EDITED_LINES, IN_ALL_LINES;
-    
+
     static RemoveTrailingSpace valueFrom(RawPreferences preferences) {
-      if (!preferences.removeTrailingWhitespace().value()) return NONE;
+      if (!preferences.removeTrailingWhitespace().value()) {
+        return NONE;
+      }
       return preferences.inEditedLines().value() ? IN_EDITED_LINES : IN_ALL_LINES;
     }
   }

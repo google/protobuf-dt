@@ -29,7 +29,9 @@ public class ProtobufReconcileStrategy extends XtextDocumentReconcileStrategy {
 
   @Override public void reconcile(DirtyRegion dirtyRegion, IRegion subRegion) {
     super.reconcile(dirtyRegion, subRegion);
-    if (spellingStrategy == null) return;
+    if (spellingStrategy == null) {
+      return;
+    }
     spellingStrategy.reconcile(dirtyRegion, subRegion);
   }
 
@@ -40,18 +42,24 @@ public class ProtobufReconcileStrategy extends XtextDocumentReconcileStrategy {
 
   @Override public void setDocument(IDocument document) {
     super.setDocument(document);
-    if (spellingStrategy == null) return;
+    if (spellingStrategy == null) {
+      return;
+    }
     spellingStrategy.setDocument(document);
     initialReconcile();
   }
 
   private void initialReconcile() {
-    if (spellingStrategy == null) return;
+    if (spellingStrategy == null) {
+      return;
+    }
     spellingStrategy.initialReconcile();
   }
 
   void addSpellSupport(ISourceViewer viewer, SpellingService spellingService) {
-    if (spellingStrategy != null) return;
+    if (spellingStrategy != null) {
+      return;
+    }
     spellingStrategy = new ProtobufSpelling(viewer, spellingService, nodes);
   }
 }

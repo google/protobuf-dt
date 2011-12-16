@@ -13,11 +13,9 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
-import com.google.eclipse.protobuf.ui.preferences.pages.paths.DirectoryPath;
-
 /**
  * Tests for <code>{@link DirectoryPath#toString()}</code>
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class DirectoryPath_toString_Test {

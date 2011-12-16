@@ -31,7 +31,7 @@ import com.google.eclipse.protobuf.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag.*;
-import com.google.eclipse.protobuf.ui.util.*;
+import com.google.eclipse.protobuf.ui.util.Literals;
 import com.google.inject.Inject;
 
 /**
@@ -78,7 +78,9 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
   }
 
   private ContentToInsert newContent(final XtextEditor editor, final StyledText styledText, final String line) {
-    if (line.endsWith(SEMICOLON)) return INSERT_SEMICOLON_AT_CURRENT_LOCATION;
+    if (line.endsWith(SEMICOLON)) {
+      return INSERT_SEMICOLON_AT_CURRENT_LOCATION;
+    }
     final IXtextDocument document = editor.getDocument();
     try {
       return document.modify(new IUnitOfWork<ContentToInsert, XtextResource>() {
@@ -86,7 +88,9 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
           int offset = styledText.getCaretOffset();
           ContentAssistContext[] context = contextFactory.create(editor.getInternalSourceViewer(), offset, resource);
           for (ContentAssistContext c : context) {
-            if (nodes.belongsToCommentOrString(c.getCurrentNode())) continue;
+            if (nodes.belongsToCommentOrString(c.getCurrentNode())) {
+              continue;
+            }
             EObject model = modelFrom(c);
             if (model instanceof FieldOption) {
               FieldOption option = (FieldOption) model;
@@ -124,14 +128,16 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
 
   private EObject modelFrom(ContentAssistContext c) {
     EObject current = c.getCurrentModel();
-    if (isIndexed(current)) return current;
+    if (isIndexed(current)) {
+      return current;
+    }
     return c.getPreviousModel();
   }
 
   private boolean isIndexed(EObject e) {
     return e instanceof MessageField || e instanceof Literal;
   }
-  
+
   private ContentToInsert newContent(Literal literal) {
     INode indexNode = nodes.firstNodeForFeature(literal, LITERAL__INDEX);
     ContentToInsert content = newContent(indexNode);
@@ -153,11 +159,15 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
 
   private void updateIndexInCommentOfParent(EObject o, long index, IXtextDocument document) {
     EObject parent = o.eContainer();
-    if (parent == null) return;
+    if (parent == null) {
+      return;
+    }
     NumericTagPreferences preferences = preferencesFactory.preferences();
     for (String pattern : preferences.patterns()) {
       Pair<INode, Matcher> match = commentNodesFinder.matchingCommentNode(parent, pattern);
-      if (match == null) return;
+      if (match == null) {
+        return;
+      }
       String original = match.getSecond().group();
       String replacement = NUMBERS_PATTERN.matcher(original).replaceFirst(String.valueOf(index + 1));
       INode node = match.getFirst();

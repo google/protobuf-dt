@@ -28,7 +28,9 @@ public class GeneralPreferencesFactory {
   public GeneralPreferences preferences(IProject project) {
     IPreferenceStore store = storeAccess.getWritablePreferenceStore(project);
     boolean useProjectPreferences = enableProjectSettings(store).value();
-    if (!useProjectPreferences) store = storeAccess.getWritablePreferenceStore();
+    if (!useProjectPreferences) {
+      store = storeAccess.getWritablePreferenceStore();
+    }
     return new GeneralPreferences(new RawPreferences(store));
   }
 }

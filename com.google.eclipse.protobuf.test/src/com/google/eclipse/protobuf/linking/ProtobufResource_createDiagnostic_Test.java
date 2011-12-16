@@ -23,25 +23,25 @@ import org.junit.*;
 
 /**
  * Tests for <code>{@link ProtobufResource#createDiagnostic(Triple, DiagnosticMessage)}</code>
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufResource_createDiagnostic_Test {
 
   private static Triple<EObject, EReference, INode> triple;
-  
+
   @BeforeClass public static void setUpOnce() {
     triple = Tuples.create(mock(EObject.class), mock(EReference.class), mock(INode.class));
   }
-  
+
   private DiagnosticMessage message;
   private ProtobufResource resource;
-  
+
   @Before public void setUp() {
     message = new DiagnosticMessage("message", WARNING, "1000", new String[] { "abc.proto" });
     resource = new ProtobufResource();
   }
-  
+
   @Test public void should_create_dianostic() {
     Diagnostic diagnostic = resource.createDiagnostic(triple, message);
     assertThat(diagnostic, instanceOf(ProtobufDiagnostic.class));

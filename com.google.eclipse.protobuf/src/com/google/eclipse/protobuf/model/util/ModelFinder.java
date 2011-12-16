@@ -45,7 +45,9 @@ import com.google.inject.Singleton;
     Set<TypeExtension> extensions = new HashSet<TypeExtension>();
     for (TypeExtension extension : getAllContentsOfType(root, TypeExtension.class)) {
       Message referred = messageFrom(extension);
-      if (message.equals(referred)) extensions.add(extension);
+      if (message.equals(referred)) {
+        extensions.add(extension);
+      }
     }
     return extensions;
   }
@@ -57,7 +59,9 @@ import com.google.inject.Singleton;
    */
   public Message messageFrom(TypeExtension extension) {
     ExtensibleTypeLink link = extension.getType();
-    if (link == null) return null;
+    if (link == null) {
+      return null;
+    }
     ExtensibleType type = link.getTarget();
     return (type instanceof Message) ? (Message) type : null;
   }
@@ -82,7 +86,9 @@ import com.google.inject.Singleton;
 
   private <T extends ComplexType> T fieldType(MessageField field, Class<T> typeClazz) {
     ComplexType type = typeOf(field);
-    if (typeClazz.isInstance(type)) return typeClazz.cast(type);
+    if (typeClazz.isInstance(type)) {
+      return typeClazz.cast(type);
+    }
     return null;
   }
 
@@ -106,7 +112,9 @@ import com.google.inject.Singleton;
    */
   public ScalarType scalarTypeOf(MessageField p) {
     TypeLink link = (p).getType();
-    if (link instanceof ScalarTypeLink) return ((ScalarTypeLink) link).getTarget();
+    if (link instanceof ScalarTypeLink) {
+      return ((ScalarTypeLink) link).getTarget();
+    }
     return null;
   }
 
@@ -185,7 +193,9 @@ import com.google.inject.Singleton;
     TreeIterator<Object> contents = getAllContents(resource, true);
     if (contents.hasNext()) {
       Object next = contents.next();
-      if (next instanceof Protobuf) return (Protobuf) next;
+      if (next instanceof Protobuf) {
+        return (Protobuf) next;
+      }
     }
     return null;
   }

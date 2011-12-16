@@ -8,8 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.editor.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.eclipse.ui.IEditorInput;
 
@@ -29,10 +28,14 @@ class DocumentContentsFactoryRegistry {
   }
 
   DocumentContentsFactory findFactory(Object element) {
-    if (!(element instanceof IEditorInput)) return null;
+    if (!(element instanceof IEditorInput)) {
+      return null;
+    }
     IEditorInput input = (IEditorInput) element;
     for (DocumentContentsFactory factory : factories) {
-      if (factory.supportsEditorInputType(input)) return factory;
+      if (factory.supportsEditorInputType(input)) {
+        return factory;
+      }
     }
     return null;
   }

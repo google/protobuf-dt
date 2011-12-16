@@ -20,7 +20,7 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 
 /**
  * Tests for <code>{@link Keywords#isKeyword(String)}</code>.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Keywords_isKeyword_Test {
@@ -29,18 +29,18 @@ public class Keywords_isKeyword_Test {
 
   private IGrammarAccess grammarAccess;
   private Keywords keywords;
-  
+
   @Before public void setUp() {
     grammarAccess = xtext.getInstanceOf(IGrammarAccess.class);
     keywords = xtext.getInstanceOf(Keywords.class);
   }
-  
+
   @Test public void should_return_true_if_given_String_is_keyword() {
     for (String s : getAllKeywords(grammarAccess.getGrammar())) {
       assertTrue(keywords.isKeyword(s));
     }
   }
-  
+
   @Test public void should_return_false_if_given_String_is_not_keyword() {
     assertFalse(keywords.isKeyword("Google"));
   }

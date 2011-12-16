@@ -29,8 +29,7 @@ import org.eclipse.xtext.ui.validation.IResourceUIValidatorExtension;
 import com.google.eclipse.protobuf.scoping.IFileUriResolver;
 import com.google.eclipse.protobuf.ui.builder.nature.AutoAddNatureEditorCallback;
 import com.google.eclipse.protobuf.ui.documentation.ProtobufDocumentationProvider;
-import com.google.eclipse.protobuf.ui.editor.FileOutsideWorkspaceIconUpdater;
-import com.google.eclipse.protobuf.ui.editor.ProtobufUriEditorOpener;
+import com.google.eclipse.protobuf.ui.editor.*;
 import com.google.eclipse.protobuf.ui.editor.hyperlinking.ProtobufHyperlinkDetector;
 import com.google.eclipse.protobuf.ui.editor.model.ProtobufDocumentProvider;
 import com.google.eclipse.protobuf.ui.editor.spelling.ProtobufReconciler;
@@ -69,7 +68,7 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
   public Class<? extends IHighlightingConfiguration> bindHighlightingConfiguration() {
     return HighlightingConfiguration.class;
   }
-  
+
   @Override public Class<? extends IContentOutlinePage> bindIContentOutlinePage() {
     return ProtobufOutlinePage.class;
   }
@@ -77,19 +76,19 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
   public Class<? extends IEObjectDocumentationProvider> bindIEObjectDocumentationProvider() {
     return ProtobufDocumentationProvider.class;
   }
-  
+
   @Override public Class<? extends IHyperlinkDetector> bindIHyperlinkDetector() {
     return ProtobufHyperlinkDetector.class;
   }
-  
+
   public Class<? extends IPreferenceStoreAccess> bindIPreferenceStoreAccess() {
     return PreferenceStoreAccess.class;
   }
-  
+
   @Override public Class<? extends IReconciler> bindIReconciler() {
     return ProtobufReconciler.class;
   }
-  
+
   public Class<? extends IResourceUIValidatorExtension> bindIResourceUIValidatorExtension() {
     return ProtobufResourceUIValidatorExtension.class;
   }
@@ -101,7 +100,7 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
   @Override public Class<? extends IXtextEditorCallback> bindIXtextEditorCallback() {
     return AutoAddNatureEditorCallback.class;
   }
-  
+
   public Class<? extends XtextDocumentProvider> bindXtextDocumentProvider() {
     return ProtobufDocumentProvider.class;
   }
@@ -117,7 +116,9 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
   }
 
   @Override public void configureLanguageSpecificURIEditorOpener(Binder binder) {
-    if (!isWorkbenchRunning())return;
+    if (!isWorkbenchRunning()) {
+      return;
+    }
     binder.bind(IURIEditorOpener.class)
           .annotatedWith(LanguageSpecific.class)
           .to(ProtobufUriEditorOpener.class);
@@ -130,7 +131,7 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
     configurePreferenceInitializer(binder, "pathsPreferences", PathsPreferenceStoreInitializer.class);
     configurePreferenceInitializer(binder, "saveActionsPreferences", SaveActionsPreferenceStoreInitializer.class);
   }
-  
+
   private void configurePreferenceInitializer(Binder binder, String name,
       Class<? extends IPreferenceStoreInitializer> initializerType) {
     binder.bind(IPreferenceStoreInitializer.class).annotatedWith(named(name)).to(initializerType);
@@ -143,7 +144,9 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
   }
 
   private void setValidationTrigger(IWorkbenchWindow w, AbstractUIPlugin plugin) {
-    if (w == null || !(plugin instanceof ProtobufActivator)) return;
+    if (w == null || !(plugin instanceof ProtobufActivator)) {
+      return;
+    }
     w.getPartService().addPartListener(new ValidateOnActivation());
   }
 }

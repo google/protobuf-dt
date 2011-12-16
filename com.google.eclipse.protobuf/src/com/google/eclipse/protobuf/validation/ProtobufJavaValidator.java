@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- * 
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.validation;
@@ -47,12 +47,16 @@ import com.google.inject.Inject;
   }
 
   @Check public void checkImportIsResolved(Import anImport) {
-    if (retryUntilItIsResolved(anImport)) return;
+    if (retryUntilItIsResolved(anImport)) {
+      return;
+    }
     error(format(importNotFound, anImport.getImportURI()), IMPORT__IMPORT_URI);
   }
 
   private boolean retryUntilItIsResolved(Import anImport) {
-    if (isResolved(anImport)) return true;
+    if (isResolved(anImport)) {
+      return true;
+    }
     uriResolver.apply(anImport);
     return isResolved(anImport);
   }
@@ -61,29 +65,42 @@ import com.google.inject.Inject;
     String importUri = anImport.getImportURI();
     if (!isEmpty(importUri)) {
       URI uri = URI.createURI(importUri);
-      if (!isEmpty(uri.scheme())) return true;
+      if (!isEmpty(uri.scheme())) {
+        return true;
+      }
     }
     return false;
   }
 
   @Check public void checkSyntaxIsProto2(Syntax syntax) {
     String name = syntax.getName();
-    if (isProto2Syntax(name)) return;
+    if (isProto2Syntax(name)) {
+      return;
+    }
     String msg = (name == null) ? expectedSyntaxIdentifier : format(unrecognizedSyntaxIdentifier, name);
     error(msg, syntax, SYNTAX__NAME, SYNTAX_IS_NOT_PROTO2_ERROR);
   }
 
   @Check public void checkTagNumberIsUnique(IndexedElement e) {
-    if (isNameNull(e)) return; // we already show an error if name is null, no need to go further.
+    if (isNameNull(e))
+     {
+      return; // we already show an error if name is null, no need to go further.
+    }
     long index = indexedElements.indexOf(e);
     EObject container = e.eContainer();
     if (container instanceof Message) {
       Message message = (Message) container;
       for (MessageElement element : message.getElements()) {
-        if (!(element instanceof IndexedElement)) continue;
+        if (!(element instanceof IndexedElement)) {
+          continue;
+        }
         IndexedElement other = (IndexedElement) element;
-        if (other == e) break;
-        if (indexedElements.indexOf(other) != index) continue;
+        if (other == e) {
+          break;
+        }
+        if (indexedElements.indexOf(other) != index) {
+          continue;
+        }
         QualifiedName messageName = qualifiedNameProvider.getFullyQualifiedName(message);
         String msg = format(fieldNumberAlreadyUsed, index, messageName.toString(), indexedElements.nameOf(other));
         invalidTagNumberError(msg, e);
@@ -93,9 +110,14 @@ import com.google.inject.Inject;
   }
 
   @Check public void checkTagNumberIsGreaterThanZero(IndexedElement e) {
-    if (isNameNull(e)) return; // we already show an error if name is null, no need to go further.
+    if (isNameNull(e))
+     {
+      return; // we already show an error if name is null, no need to go further.
+    }
     long index = indexedElements.indexOf(e);
-    if (index > 0) return;
+    if (index > 0) {
+      return;
+    }
     String msg = (index == 0) ? fieldNumbersMustBePositive : expectedFieldNumber;
     invalidTagNumberError(msg, e);
   }
@@ -109,10 +131,14 @@ import com.google.inject.Inject;
     Protobuf root = (Protobuf) aPackage.eContainer();
     for (ProtobufElement e : root.getElements()) {
       if (e == aPackage) {
-        if (firstFound) error(multiplePackages, aPackage, PACKAGE__NAME, MORE_THAN_ONE_PACKAGE_ERROR);
+        if (firstFound) {
+          error(multiplePackages, aPackage, PACKAGE__NAME, MORE_THAN_ONE_PACKAGE_ERROR);
+        }
         return;
       }
-      if (e instanceof Package && !firstFound) firstFound = true;
+      if (e instanceof Package && !firstFound) {
+        firstFound = true;
+      }
     }
   }
 

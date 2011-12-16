@@ -19,17 +19,17 @@ import java.io.File;
 final class GeneratedProtoFiles {
 
   private static final String PARENT_DIRECTORY_NAME = "test-protos";
-  
+
   static File protoFile(String fileName) {
     return new File(PARENT_DIRECTORY_NAME + separator + fileName);
   }
-  
+
   static void ensureParentDirectoryExists() {
     File parent = new File(PARENT_DIRECTORY_NAME);
     if (!parent.isDirectory()) {
       assertTrue(parent.mkdir());
     }
   }
-  
+
   private GeneratedProtoFiles() {}
 }

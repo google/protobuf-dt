@@ -13,16 +13,16 @@ import static com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag
 import static com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag.Messages.*;
 import static org.eclipse.jface.window.Window.OK;
 
-import com.google.eclipse.protobuf.ui.preferences.*;
-import com.google.eclipse.protobuf.ui.preferences.binding.PreferenceBinder;
-import com.google.eclipse.protobuf.ui.preferences.pages.PreferenceAndPropertyPage;
-
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
+
+import com.google.eclipse.protobuf.ui.preferences.*;
+import com.google.eclipse.protobuf.ui.preferences.binding.PreferenceBinder;
+import com.google.eclipse.protobuf.ui.preferences.pages.PreferenceAndPropertyPage;
 
 /**
  * Preference page where users can specify the patterns to use to match comments where "the next id" is being tracked.
@@ -99,7 +99,9 @@ public class NumericTagPreferencePage extends PreferenceAndPropertyPage {
     btnRemove.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
         int index = lstPaths.getSelectionIndex();
-        if (index < 0) return;
+        if (index < 0) {
+          return;
+        }
         lstPaths.remove(index);
         enableButtonsDependingOnListSelection();
       }

@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- * 
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.junit.matchers;
@@ -32,13 +32,19 @@ public class ContainAllFields extends BaseMatcher<IEObjectDescriptions> {
   }
 
   @Override public boolean matches(Object arg) {
-    if (!(arg instanceof IEObjectDescriptions)) return false;
+    if (!(arg instanceof IEObjectDescriptions)) {
+      return false;
+    }
     IEObjectDescriptions descriptions = (IEObjectDescriptions) arg;
-    if (descriptions.size() != fields.size()) return false;
+    if (descriptions.size() != fields.size()) {
+      return false;
+    }
     for (MessageField field : fields) {
       String name = field.getName();
       EObject described = descriptions.objectDescribedAs(name);
-      if (described != field) return false;
+      if (described != field) {
+        return false;
+      }
     }
     return true;
   }

@@ -26,11 +26,11 @@ public class ResourceStub implements Resource {
   private URI uri;
 
   public ResourceStub() {}
-  
+
   public ResourceStub(String uri) {
     setURI(createURI(uri));
   }
-  
+
   /** {@inheritDoc} */
   @Override public EList<Adapter> eAdapters() {
     throw new UnsupportedOperationException();

@@ -154,7 +154,7 @@ public class AddOrEditPatternDialog extends InputDialog {
   }
 
   private void clearTestErrorText() {
-    txtTestError.setText(""); //$NON-NLS-1$
+    txtTestError.setText("");
   }
 
   /** {@inheritDoc} */

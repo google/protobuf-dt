@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- * 
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.model.util;
@@ -17,7 +17,7 @@ import com.google.inject.Singleton;
 
 /**
  * Utility methods related to <code>{@link MessageField}</code>s.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class MessageFields {
@@ -40,7 +40,9 @@ import com.google.inject.Singleton;
    */
   public boolean isPrimitive(MessageField field) {
     TypeLink link = field.getType();
-    if (!(link instanceof ScalarTypeLink)) return false;
+    if (!(link instanceof ScalarTypeLink)) {
+      return false;
+    }
     String typeName = ((ScalarTypeLink) link).getTarget().getName();
     return !STRING.hasValue(typeName) && !BYTES.hasValue(typeName);
   }
@@ -105,7 +107,9 @@ import com.google.inject.Singleton;
     if (link instanceof ScalarTypeLink) {
       String typeName = ((ScalarTypeLink) link).getTarget().getName();
       for (CommonKeyword scalarName : scalarNames) {
-        if (scalarName.hasValue(typeName)) return true;
+        if (scalarName.hasValue(typeName)) {
+          return true;
+        }
       }
     }
     return false;
@@ -118,7 +122,9 @@ import com.google.inject.Singleton;
    */
   public String typeNameOf(MessageField field) {
     TypeLink link = field.getType();
-    if (link instanceof ScalarTypeLink) return ((ScalarTypeLink) link).getTarget().getName();
+    if (link instanceof ScalarTypeLink) {
+      return ((ScalarTypeLink) link).getTarget().getName();
+    }
     if (link instanceof ComplexTypeLink) {
       ComplexType type = ((ComplexTypeLink) link).getTarget();
       return (type == null) ? null : type.getName();

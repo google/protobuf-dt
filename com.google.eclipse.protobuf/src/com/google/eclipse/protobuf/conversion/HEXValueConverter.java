@@ -34,8 +34,12 @@ public class HEXValueConverter extends AbstractLexerBasedConverter<Long> {
    * number.
    */
   @Override public Long toValue(String string, INode node) throws ValueConverterException {
-    if (isEmpty(string)) throw new ValueConverterException("Couldn't convert empty string to long.", node, null);
-    if (!startsWithValidPrefix(string)) throw parsingError(string, node);
+    if (isEmpty(string)) {
+      throw new ValueConverterException("Couldn't convert empty string to long.", node, null);
+    }
+    if (!startsWithValidPrefix(string)) {
+      throw parsingError(string, node);
+    }
     String withoutZeroX = removeZeroX(string);
     try {
       BigInteger value = new BigInteger(withoutZeroX, 16);
@@ -48,7 +52,9 @@ public class HEXValueConverter extends AbstractLexerBasedConverter<Long> {
 
   private boolean startsWithValidPrefix(String string) {
     for (String prefix : VALID_PREFIXES) {
-      if (string.startsWith(prefix)) return true;
+      if (string.startsWith(prefix)) {
+        return true;
+      }
     }
     return false;
   }

@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- * 
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.scoping;
@@ -23,7 +23,7 @@ import com.google.inject.*;
 
 /**
  * Provider of <code>{@link ProtoDescriptor}</code>s.
- * 
+ *
  * @author Alex Ruiz
  */
 @Singleton public class ProtoDescriptorProvider {
@@ -48,11 +48,15 @@ import com.google.inject.*;
   public ProtoDescriptor descriptor(String importUri) {
     ensureProtoDescriptorsAreCreated();
     ProtoDescriptor protoDescriptor = descriptors.get(importUri);
-    if (protoDescriptor != null) return protoDescriptor;
+    if (protoDescriptor != null) {
+      return protoDescriptor;
+    }
     // URI could have been resolved
     URI uri = URI.createURI(importUri);
     for (Entry<String, URI> info : descriptorInfos.entrySet()) {
-      if (info.getValue().equals(uri)) return descriptor(info.getKey());
+      if (info.getValue().equals(uri)) {
+        return descriptor(info.getKey());
+      }
     }
     return null;
   }
@@ -102,32 +106,44 @@ import com.google.inject.*;
 
   private ProtoDescriptorInfo additionalDescriptorInfo() {
     IConfigurationElement[] config = registry.getConfigurationElementsFor(EXTENSION_ID);
-    if (config == null) return defaultDescriptorInfo();
+    if (config == null) {
+      return defaultDescriptorInfo();
+    }
     for (IConfigurationElement e : config) {
       ProtoDescriptorInfo info = descriptorInfo(e);
-      if (info != null) return info;
+      if (info != null) {
+        return info;
+      }
     }
     return null;
   }
 
   private static ProtoDescriptorInfo descriptorInfo(IConfigurationElement e) {
     String importUri = e.getAttribute("importUri");
-    if (isEmpty(importUri)) return null;
+    if (isEmpty(importUri)) {
+      return null;
+    }
     URI location = descriptorLocation(e);
-    if (location == null) return null;
+    if (location == null) {
+      return null;
+    }
     return new ProtoDescriptorInfo(importUri, location);
   }
 
   private static URI descriptorLocation(IConfigurationElement e) {
     String path = e.getAttribute("path");
-    if (isEmpty(path)) return null;
+    if (isEmpty(path)) {
+      return null;
+    }
     StringBuilder uri = new StringBuilder();
     uri.append("platform:/plugin/").append(e.getContributor().getName()).append("/").append(path);
     return URI.createURI(uri.toString());
   }
 
   private void add(ProtoDescriptorInfo descriptorInfo) {
-    if (descriptorInfo == null) return;
+    if (descriptorInfo == null) {
+      return;
+    }
     primaryImportUri = descriptorInfo.importUri;
     descriptorInfos.put(primaryImportUri, descriptorInfo.location);
   }

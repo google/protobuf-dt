@@ -35,7 +35,9 @@ class ProtocMarkerFactory {
 
   void createErrorIfNecessary(String fileName, String message, int lineNumber) throws CoreException {
     String location = file.getLocation().toOSString();
-    if (!location.endsWith(fileName) || containsMarker(message, lineNumber)) return;
+    if (!location.endsWith(fileName) || containsMarker(message, lineNumber)) {
+      return;
+    }
     IMarker marker = file.createMarker(PROTOC_CHECK);
     marker.setAttribute(SEVERITY, SEVERITY_ERROR);
     marker.setAttribute(MESSAGE, message);
@@ -45,8 +47,9 @@ class ProtocMarkerFactory {
   private boolean containsMarker(String description, int lineNumber) throws CoreException {
     for (IMarker marker : markers) {
       String markerMessage = (String) marker.getAttribute(MESSAGE);
-      if (markerMessage.equalsIgnoreCase(description) && marker.getAttribute(LINE_NUMBER).equals(lineNumber))
+      if (markerMessage.equalsIgnoreCase(description) && marker.getAttribute(LINE_NUMBER).equals(lineNumber)) {
         return true;
+      }
     }
     return false;
   }

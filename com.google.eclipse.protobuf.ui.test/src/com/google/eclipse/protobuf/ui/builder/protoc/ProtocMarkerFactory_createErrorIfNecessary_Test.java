@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.*;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.stubs.resources.*;
-import com.google.eclipse.protobuf.ui.builder.protoc.ProtocMarkerFactory;
 
 /**
  * Tests for <code>{@link ProtocMarkerFactory#createErrorIfNecessary(String, String, int)}</code>.

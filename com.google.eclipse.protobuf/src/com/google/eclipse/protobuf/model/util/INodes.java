@@ -34,7 +34,9 @@ import com.google.inject.Singleton;
    */
   public INode firstNodeForFeature(EObject o, EStructuralFeature feature) {
     List<INode> nodes = findNodesForFeature(o, feature);
-    if (nodes.isEmpty()) return null;
+    if (nodes.isEmpty()) {
+      return null;
+    }
     return nodes.get(0);
   }
 
@@ -76,9 +78,13 @@ import com.google.inject.Singleton;
   }
 
   private static boolean belongsToComment(INode node, String commentRuleName) {
-    if (!(node instanceof ILeafNode)) return false;
+    if (!(node instanceof ILeafNode)) {
+      return false;
+    }
     EObject o = node.getGrammarElement();
-    if (!(o instanceof TerminalRule)) return false;
+    if (!(o instanceof TerminalRule)) {
+      return false;
+    }
     TerminalRule rule = (TerminalRule) o;
     return commentRuleName.equals(rule.getName());
   }
@@ -90,9 +96,13 @@ import com.google.inject.Singleton;
    */
   public boolean belongsToString(INode node) {
     EObject grammarElement = node.getGrammarElement();
-    if (!(grammarElement instanceof RuleCall)) return false;
+    if (!(grammarElement instanceof RuleCall)) {
+      return false;
+    }
     AbstractRule rule = ((RuleCall) grammarElement).getRule();
-    if (!(rule instanceof TerminalRule)) return false;
+    if (!(rule instanceof TerminalRule)) {
+      return false;
+    }
     TerminalRule terminalRule = (TerminalRule) rule;
     return "STRING".equals(terminalRule.getName());
   }
@@ -103,8 +113,10 @@ import com.google.inject.Singleton;
    * @return {@code true} if the given node is a hidden leaf node; {@code false} otherwise.
    */
   public boolean isHiddenLeafNode(INode node) {
-    if (!(node instanceof ILeafNode)) return false;
-    return ((ILeafNode) node).isHidden();
+    if (node instanceof ILeafNode) {
+      return ((ILeafNode) node).isHidden();
+    }
+    return false;
   }
 
   /**
@@ -113,7 +125,9 @@ import com.google.inject.Singleton;
    * @return the text of the given node, with leading and trailing whitespace omitted.
    */
   public String textOf(INode node) {
-    if (node == null) return null;
+    if (node == null) {
+      return null;
+    }
     String text = node.getText();
     return (text == null) ? null : text.trim();
   }

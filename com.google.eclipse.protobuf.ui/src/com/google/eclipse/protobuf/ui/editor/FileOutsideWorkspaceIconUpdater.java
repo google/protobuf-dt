@@ -12,17 +12,14 @@ import static org.eclipse.core.runtime.Status.OK_STATUS;
 import static org.eclipse.xtext.ui.editor.Messages.XtextEditorErrorTickUpdater_JobName;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.*;
 import org.eclipse.ui.progress.UIJob;
 import org.eclipse.xtext.ui.PluginImageHelper;
 import org.eclipse.xtext.ui.editor.IXtextEditorCallback.NullImpl;
-import org.eclipse.xtext.ui.editor.SchedulingRuleFactory;
-import org.eclipse.xtext.ui.editor.XtextEditor;
+import org.eclipse.xtext.ui.editor.*;
 
 import com.google.inject.Inject;
 

@@ -11,6 +11,8 @@ package com.google.eclipse.protobuf.conversion;
 import static java.lang.Double.*;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
+import java.util.*;
+
 import org.eclipse.xtext.conversion.ValueConverterException;
 import org.eclipse.xtext.conversion.impl.AbstractLexerBasedConverter;
 import org.eclipse.xtext.nodemodel.INode;
@@ -22,6 +24,14 @@ import org.eclipse.xtext.nodemodel.INode;
  */
 public class DOUBLEValueConverter extends AbstractLexerBasedConverter<Double> {
 
+  private static final Map<String, Double> PREDEFINED_VALUES = new HashMap<String, Double>();
+
+  static {
+    PREDEFINED_VALUES.put("nan", NaN);
+    PREDEFINED_VALUES.put("inf", POSITIVE_INFINITY);
+    PREDEFINED_VALUES.put("-inf", NEGATIVE_INFINITY);
+  }
+
   /**
    * Creates an {@code float} from the given input, if the given input represents a floating-point number.
    * @param string the given input.
@@ -31,10 +41,13 @@ public class DOUBLEValueConverter extends AbstractLexerBasedConverter<Double> {
    * number.
    */
   @Override public Double toValue(String string, INode node) throws ValueConverterException {
-    if (isEmpty(string)) throw new ValueConverterException("Couldn't convert empty string to double.", node, null);
-    if ("nan".equals(string)) return NaN;
-    if ("inf".equals(string)) return POSITIVE_INFINITY;
-    if ("-inf".equals(string)) return NEGATIVE_INFINITY;
+    if (isEmpty(string)) {
+      throw new ValueConverterException("Couldn't convert empty string to double.", node, null);
+    }
+    Double predefinedValue = PREDEFINED_VALUES.get(string);
+    if (predefinedValue != null) {
+      return predefinedValue;
+    }
     try {
       return Double.parseDouble(string);
     } catch (NumberFormatException e) {

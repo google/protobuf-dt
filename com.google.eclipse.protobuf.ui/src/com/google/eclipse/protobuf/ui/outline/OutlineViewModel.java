@@ -32,7 +32,9 @@ class OutlineViewModel {
     initialize();
     for (ProtobufElement e : protobuf.getElements()) {
       for (Class<?> type : GROUP_TYPES) {
-        if (!type.isInstance(e)) continue;
+        if (!type.isInstance(e)) {
+          continue;
+        }
         elements.get(type).add(e);
         break;
       }

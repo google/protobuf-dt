@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
- * 
+ *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.conversion;
@@ -19,7 +19,7 @@ import org.eclipse.xtext.nodemodel.INode;
 
 /**
  * Converts multi-line strings to {@code String}s.
- * 
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class STRINGValueConverter extends AbstractLexerBasedConverter<String> {
@@ -27,7 +27,9 @@ public class STRINGValueConverter extends AbstractLexerBasedConverter<String> {
   private static final Pattern LINE_BREAK = compile("\"[\t\r\n]+\"|'[\t\r\n]+'");
 
   @Override protected String toEscapedString(String value) {
-    if (value == null) return null;
+    if (value == null) {
+      return null;
+    }
     return '"' + convertToJavaString(removeLineBreaksFrom(value), false) + '"';
   }
 
@@ -39,7 +41,9 @@ public class STRINGValueConverter extends AbstractLexerBasedConverter<String> {
    * @throws ValueConverterException if the given input has illegal characters.
    */
   @Override public String toValue(String string, INode node) throws ValueConverterException {
-    if (string == null) return null;
+    if (string == null) {
+      return null;
+    }
     try {
       String clean = removeLineBreaksFrom(string).trim();
       return convertToJavaString(clean.substring(1, clean.length() - 1), true);
@@ -49,7 +53,9 @@ public class STRINGValueConverter extends AbstractLexerBasedConverter<String> {
   }
 
   private static String removeLineBreaksFrom(String s) {
-    if (isEmpty(s)) return s;
+    if (isEmpty(s)) {
+      return s;
+    }
     return LINE_BREAK.matcher(s).replaceAll("");
   }
 

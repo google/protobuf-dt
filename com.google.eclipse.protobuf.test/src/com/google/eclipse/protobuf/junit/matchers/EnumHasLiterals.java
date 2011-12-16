@@ -12,8 +12,7 @@ import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
 import java.util.*;
 
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
+import org.hamcrest.*;
 
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
@@ -28,16 +27,20 @@ public class EnumHasLiterals extends BaseMatcher<Enum> {
   public static EnumHasLiterals hasLiterals(String... literalNames) {
     return new EnumHasLiterals(literalNames);
   }
-  
+
   private EnumHasLiterals(String... literalNames) {
     this.literalNames = literalNames;
   }
-  
+
   @Override public boolean matches(Object arg) {
-    if (!(arg instanceof Enum)) return false;
+    if (!(arg instanceof Enum)) {
+      return false;
+    }
     Enum anEnum = (Enum) arg;
     List<String> actualNames = literalNames(anEnum);
-    for (String name : literalNames) actualNames.remove(name);
+    for (String name : literalNames) {
+      actualNames.remove(name);
+    }
     return actualNames.isEmpty();
   }
 
@@ -48,7 +51,7 @@ public class EnumHasLiterals extends BaseMatcher<Enum> {
     }
     return names;
   }
-  
+
   @Override public void describeTo(Description description) {
     description.appendValue(Arrays.toString(literalNames));
   }

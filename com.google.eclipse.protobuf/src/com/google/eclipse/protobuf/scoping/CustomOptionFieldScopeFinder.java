@@ -46,7 +46,9 @@ class CustomOptionFieldScopeFinder {
         return options.rootSourceOf(option);
       }
     });
-    if (e != null) return provider.fieldsInTypeOf(e);
+    if (e != null) {
+      return provider.fieldsInTypeOf(e);
+    }
     return emptySet();
   }
 
@@ -65,7 +67,9 @@ class CustomOptionFieldScopeFinder {
         return fieldOptions.rootSourceOf(option);
       }
     });
-    if (e != null) return provider.fieldsInTypeOf(e);
+    if (e != null) {
+      return provider.fieldsInTypeOf(e);
+    }
     return emptySet();
   }
 
@@ -81,7 +85,9 @@ class CustomOptionFieldScopeFinder {
       isFirstField = false;
     }
     if (field == null) {
-      if (previous == null) return provider.get();
+      if (previous == null) {
+        return provider.get();
+      }
       return optionFields.sourceOf(previous);
     }
     return null;
@@ -94,20 +100,26 @@ class CustomOptionFieldScopeFinder {
         Message fieldType = modelFinder.messageTypeOf((MessageField) e);
         for (MessageElement element : fieldType.getElements()) {
           IEObjectDescription d = describe(element);
-          if (d != null) descriptions.add(d);
+          if (d != null) {
+            descriptions.add(d);
+          }
         }
       }
       if (e instanceof Group) {
         for (GroupElement element : ((Group) e).getElements()) {
           IEObjectDescription d = describe(element);
-          if (d != null) descriptions.add(d);
+          if (d != null) {
+            descriptions.add(d);
+          }
         }
       }
       return descriptions;
     }
 
     private IEObjectDescription describe(EObject e) {
-      if (!(e instanceof IndexedElement)) return null;
+      if (!(e instanceof IndexedElement)) {
+        return null;
+      }
       String name = options.nameForOption((IndexedElement) e);
       return create(name, e);
     }
@@ -115,13 +127,19 @@ class CustomOptionFieldScopeFinder {
 
   private class ExtensionFieldDescriptorProvider implements IEObjectDescriptionsProvider {
     @Override public Collection<IEObjectDescription> fieldsInTypeOf(IndexedElement e) {
-      if (!(e instanceof MessageField)) return emptyList();
+      if (!(e instanceof MessageField)) {
+        return emptyList();
+      }
       Message fieldType = modelFinder.messageTypeOf((MessageField) e);
-      if (fieldType == null) return emptyList();
+      if (fieldType == null) {
+        return emptyList();
+      }
       Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
       for (TypeExtension extension : modelFinder.localExtensionsOf(fieldType)) {
         for (MessageElement element : extension.getElements()) {
-          if (!(element instanceof IndexedElement)) continue;
+          if (!(element instanceof IndexedElement)) {
+            continue;
+          }
           IndexedElement current = (IndexedElement) element;
           descriptions.addAll(qualifiedNameDescriptions.qualifiedNamesForOption(current));
           String name = options.nameForOption(current);
