@@ -58,13 +58,15 @@ public class DirectoryPathsEditor extends Composite {
     tblVwrDirectoryPaths.setContentProvider(ArrayContentProvider.getInstance());
 
     tblDirectoryPaths = tblVwrDirectoryPaths.getTable();
+    tblDirectoryPaths.setHeaderVisible(true);
     tblDirectoryPaths.setLinesVisible(true);
     tblDirectoryPaths.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
     TableViewerColumn tblclmnVwrPath = new TableViewerColumn(tblVwrDirectoryPaths, SWT.NONE);
     TableColumn tblclmnPath = tblclmnVwrPath.getColumn();
-    tblclmnPath.setWidth(200);
+    tblclmnPath.setWidth(290);
     tblclmnPath.setResizable(true);
+    tblclmnPath.setText(directories);
     tblclmnVwrPath.setLabelProvider(new ColumnLabelProvider() {
       @Override public String getText(Object element) {
         return ((DirectoryPath) element).toString();

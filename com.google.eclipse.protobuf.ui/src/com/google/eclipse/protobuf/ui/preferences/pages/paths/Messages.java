@@ -19,6 +19,7 @@ public class Messages extends NLS {
   public static String addDirectoryPath;
   public static String browseFileSystem;
   public static String browseWorkspace;
+  public static String directories;
   public static String directory;
   public static String directorySelection;
   public static String down;
