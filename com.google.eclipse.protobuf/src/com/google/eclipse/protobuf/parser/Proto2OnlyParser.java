@@ -11,7 +11,7 @@ package com.google.eclipse.protobuf.parser;
 import org.antlr.runtime.CharStream;
 import org.eclipse.xtext.nodemodel.*;
 import org.eclipse.xtext.nodemodel.impl.NodeModelBuilder;
-import org.eclipse.xtext.parser.*;
+import org.eclipse.xtext.parser.IParseResult;
 
 import com.google.eclipse.protobuf.parser.antlr.ProtobufParser;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
@@ -29,10 +29,10 @@ public class Proto2OnlyParser extends ProtobufParser {
   @Override protected IParseResult doParse(String ruleName, CharStream in, NodeModelBuilder builder,
       int initialLookAhead) {
     IParseResult result = super.doParse(ruleName, in, builder, initialLookAhead);
-    // TODO ignore this check via preferences in open source version.
-    if (isNonProto2(result)) {
-      return new ParseResult(new NonProto2Protobuf(), result.getRootNode(), false);
-    }
+    // TODO enable this check via preferences in internal version.
+    // if (isNonProto2(result)) {
+    //  return new ParseResult(new NonProto2Protobuf(), result.getRootNode(), false);
+    // }
     return result;
   }
 
