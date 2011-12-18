@@ -34,9 +34,8 @@ import com.google.inject.*;
   private static final Pattern COMMENT_START = compile("//\\s*"); // "//" plus whitespace
   private static final Patterns NEW_LINE = compileAll("\\r\\n", "\\n");
 
-  @Inject private FieldOptions fieldOptions;
   @Inject private INodes nodes;
-  @Inject private Options options;
+  @Inject private Options2 options;
 
   @Override public String getDocumentation(EObject o) {
     String comment = findComment(o);
@@ -69,7 +68,7 @@ import com.google.inject.*;
       return e != null ? e : o;
     }
     if (o instanceof FieldOption) {
-      IndexedElement e = fieldOptions.rootSourceOf((FieldOption) o);
+      IndexedElement e = options.rootSourceOf((FieldOption) o);
       return e != null ? e : o;
     }
     return o;

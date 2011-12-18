@@ -19,18 +19,18 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link FieldOptions#rootSourceOf(FieldOption)}</code>.
+ * Tests for <code>{@link Options2#rootSourceOf(FieldOption)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class FieldOptions_rootSourceOf_Test {
+public class Options2_rootSourceOf_FieldOption_Test {
 
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
-  private FieldOptions fieldOptions;
+  private Options2 options;
 
   @Before public void setUp() {
-    fieldOptions = xtext.getInstanceOf(FieldOptions.class);
+    options = xtext.getInstanceOf(Options2.class);
   }
 
   // syntax = "proto2";
@@ -40,7 +40,7 @@ public class FieldOptions_rootSourceOf_Test {
   // }
   @Test public void should_return_field_of_native_field_option() {
     FieldOption option = xtext.find("deprecated", FieldOption.class);
-    MessageField field = (MessageField) fieldOptions.rootSourceOf(option);
+    MessageField field = (MessageField) options.rootSourceOf(option);
     assertThat(field.getName(), equalTo("deprecated"));
   }
 
@@ -57,7 +57,7 @@ public class FieldOptions_rootSourceOf_Test {
   // }
   @Test public void should_return_field_of_custom_field_option() {
     FieldOption option = xtext.find("encoding", ")", FieldOption.class);
-    MessageField field = (MessageField) fieldOptions.rootSourceOf(option);
+    MessageField field = (MessageField) options.rootSourceOf(option);
     assertThat(field.getName(), equalTo("encoding"));
   }
 }

@@ -33,9 +33,10 @@ import com.google.inject.Singleton;
 @Singleton public class ModelFinder {
 
   /**
-   * Returns all the <strong>local</strong> extensions of the given message.
+   * Returns all the extensions of the given message declared in the same file as the message.
    * @param message the given message.
-   * @return all the <strong>local</strong> extensions of the given message, or an empty collection if none is found.
+   * @return all the extensions of the given message declared in the same file as the message, or an empty collection if
+   * none are found.
    */
   public Collection<TypeExtension> localExtensionsOf(Message message) {
     return extensionsOf(message, rootOf(message));
@@ -84,10 +85,10 @@ import com.google.inject.Singleton;
     return fieldType(field, Enum.class);
   }
 
-  private <T extends ComplexType> T fieldType(MessageField field, Class<T> typeClazz) {
+  private <T extends ComplexType> T fieldType(MessageField field, Class<T> targetType) {
     ComplexType type = typeOf(field);
-    if (typeClazz.isInstance(type)) {
-      return typeClazz.cast(type);
+    if (targetType.isInstance(type)) {
+      return targetType.cast(type);
     }
     return null;
   }

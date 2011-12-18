@@ -34,7 +34,7 @@ import com.google.inject.*;
   @Inject private NameResolver nameResolver;
   @Inject private MessageFields messageFields;
   @Inject private INodes nodes;
-  @Inject private Options options;
+  @Inject private Options2 options;
 
   public Object labelFor(Object o) {
     if (o instanceof Extensions) {

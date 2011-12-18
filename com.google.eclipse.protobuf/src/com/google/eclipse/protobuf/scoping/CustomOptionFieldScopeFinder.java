@@ -25,10 +25,9 @@ import com.google.inject.*;
  */
 class CustomOptionFieldScopeFinder {
 
-  @Inject private FieldOptions fieldOptions;
   @Inject private ModelFinder modelFinder;
   @Inject private OptionFields optionFields;
-  @Inject private Options options;
+  @Inject private Options2 options;
   @Inject private QualifiedNameDescriptions qualifiedNameDescriptions;
 
   Collection<IEObjectDescription> findScope(CustomOption option, MessageOptionField field) {
@@ -64,7 +63,7 @@ class CustomOptionFieldScopeFinder {
       IEObjectDescriptionsProvider provider) {
     IndexedElement e = referredField(field, option.getFields(), new Provider<IndexedElement>() {
       @Override public IndexedElement get() {
-        return fieldOptions.rootSourceOf(option);
+        return options.rootSourceOf(option);
       }
     });
     if (e != null) {

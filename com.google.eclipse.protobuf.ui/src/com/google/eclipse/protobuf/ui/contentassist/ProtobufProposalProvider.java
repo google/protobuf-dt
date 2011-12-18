@@ -49,14 +49,13 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Inject private IEObjectDescriptionChooser descriptionChooser;
   @Inject private ProtoDescriptorProvider descriptorProvider;
-  @Inject private FieldOptions fieldOptions;
   @Inject private ModelFinder finder;
   @Inject private Images images;
   @Inject private IndexedElements indexedElements;
   @Inject private PluginImageHelper imageHelper;
   @Inject private Literals literals;
   @Inject private MessageFields messageFields;
-  @Inject private Options options;
+  @Inject private Options2 options;
 
   @Override public void completeProtobuf_Syntax(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {}
@@ -243,7 +242,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     }
     if (model instanceof FieldOption) {
       FieldOption option = (FieldOption) model;
-      IndexedElement source = fieldOptions.rootSourceOf(option);
+      IndexedElement source = options.rootSourceOf(option);
       if (source instanceof MessageField) {
         return (MessageField) source;
       }
@@ -383,7 +382,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     }
     List<String> optionNames = new ArrayList<String>();
     for (FieldOption option : allFieldOptions) {
-      optionNames.add(fieldOptions.nameOf(option));
+      optionNames.add(options.nameOf(option));
     }
     return optionNames;
   }
@@ -466,7 +465,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     }
     NativeFieldOption option = (NativeFieldOption) model;
     ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
-    MessageField field = (MessageField) fieldOptions.rootSourceOf(option);
+    MessageField field = (MessageField) options.rootSourceOf(option);
     Enum enumType = descriptor.enumTypeOf(field);
     if (enumType != null) {
       proposeAndAccept(enumType, context, acceptor);
@@ -605,7 +604,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       return;
     }
     CustomOption option = (CustomOption) model;
-    IndexedElement e = options.lastFieldSourceFrom(option);
+    IndexedElement e = options.sourceOfLastFieldIn(option);
     if (e == null) {
       e = options.rootSourceOf(option);
     }
@@ -620,10 +619,11 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (!(model instanceof CustomFieldOption)) {
       return;
     }
+    // TODO check if this is the same as sourceOf
     CustomFieldOption option = (CustomFieldOption) model;
-    IndexedElement e = fieldOptions.sourceOfLastFieldIn(option);
+    IndexedElement e = options.sourceOfLastFieldIn(option);
     if (e == null) {
-      e = fieldOptions.rootSourceOf(option);
+      e = options.rootSourceOf(option);
     }
     if (e instanceof MessageField) {
       proposeFieldValue((MessageField) e, context, acceptor);

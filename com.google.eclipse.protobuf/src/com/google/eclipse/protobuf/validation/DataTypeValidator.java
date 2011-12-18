@@ -30,14 +30,14 @@ public class DataTypeValidator extends AbstractDeclarativeValidator {
 
   @Override public void register(EValidatorRegistrar registrar) {}
 
-  @Inject private FieldOptions fieldOptions;
   @Inject private IQualifiedNameProvider fqnProvider;
   @Inject private MessageFields messageFields;
   @Inject private ModelFinder modelFinder;
   @Inject private INodes nodes;
+  @Inject private Options2 options;
 
   @Check public void checkValueOfDefaultTypeMatchesFieldType(FieldOption option) {
-    if (fieldOptions.isDefaultValueOption(option)) {
+    if (options.isDefaultValueOption(option)) {
       MessageField field = (MessageField) option.eContainer();
       checkValueTypeMatchesFieldType(option, field);
     }

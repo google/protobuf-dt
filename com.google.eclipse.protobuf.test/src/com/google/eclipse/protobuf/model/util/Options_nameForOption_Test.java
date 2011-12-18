@@ -20,17 +20,17 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link Options#nameForOption(IndexedElement)}</code>
+ * Tests for <code>{@link Options2#nameForOption(IndexedElement)}</code>
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Options_nameForOption_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
-  private Options options;
+  private Options2 options;
 
   @Before public void setUp() {
-    options = xtext.getInstanceOf(Options.class);
+    options = xtext.getInstanceOf(Options2.class);
   }
 
   @Test public void should_return_unchanged_name_if_element_is_Field() {

@@ -19,18 +19,18 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link FieldOptions#sourceOf(CustomFieldOption)}</code>.
+ * Tests for <code>{@link Options2#sourceOf(CustomFieldOption)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class FieldOptions_sourceOf_Test {
+public class Options2_sourceOf_CustomFieldOption_Test {
 
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
-  private FieldOptions fieldOptions;
+  private Options2 options;
 
   @Before public void setUp() {
-    fieldOptions = xtext.getInstanceOf(FieldOptions.class);
+    options = xtext.getInstanceOf(Options2.class);
   }
 
   // syntax = "proto2";
@@ -46,7 +46,7 @@ public class FieldOptions_sourceOf_Test {
   // }
   @Test public void should_return_source_of_field_option() {
     CustomFieldOption option = xtext.find("encoding", ")", CustomFieldOption.class);
-    MessageField field = (MessageField) fieldOptions.sourceOf(option);
+    MessageField field = (MessageField) options.sourceOf(option);
     assertThat(field.getName(), equalTo("encoding"));
   }
 
@@ -67,7 +67,7 @@ public class FieldOptions_sourceOf_Test {
   // }
   @Test public void should_return_source_of_field_in_field_option() {
     CustomFieldOption option = xtext.find("custom", ").", CustomFieldOption.class);
-    MessageField field = (MessageField) fieldOptions.sourceOf(option);
+    MessageField field = (MessageField) options.sourceOf(option);
     assertThat(field.getName(), equalTo("count"));
   }
 }

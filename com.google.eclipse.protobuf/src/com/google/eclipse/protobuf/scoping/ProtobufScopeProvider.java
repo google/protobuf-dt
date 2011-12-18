@@ -39,11 +39,10 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   @Inject private CustomOptionScopeFinder customOptionScopeFinder;
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private FieldNotationScopeFinder fieldNotationScopeFinder;
-  @Inject private FieldOptions fieldOptions;
   @Inject private ModelFinder modelFinder;
   @Inject private LiteralDescriptions literalDescriptions;
   @Inject private NativeOptionDescriptions nativeOptionDescriptions;
-  @Inject private Options options;
+  @Inject private Options2 options;
   @Inject private TypeScopeFinder typeScopeFinder;
 
   @SuppressWarnings("unused") public IScope scope_ComplexTypeLink_target(ComplexTypeLink link, EReference r) {
@@ -100,12 +99,12 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     }
     if (container instanceof NativeFieldOption) {
       ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
-      IndexedElement c = fieldOptions.rootSourceOf((FieldOption) container);
+      IndexedElement c = options.rootSourceOf((FieldOption) container);
       anEnum = descriptor.enumTypeOf((MessageField) c);
     }
     if (container instanceof CustomFieldOption) {
       CustomFieldOption option = (CustomFieldOption) container;
-      container = fieldOptions.sourceOf(option);
+      container = options.sourceOf(option);
     }
     if (container instanceof SimpleValueField) {
       SimpleValueField field = (SimpleValueField) container;

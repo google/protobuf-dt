@@ -19,18 +19,18 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link Options#rootSourceOf(Option)}</code>.
+ * Tests for <code>{@link Options2#rootSourceOf(Option)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Options_rootSourceOf_Test {
+public class Options2_rootSourceOf_Option_Test {
 
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
-  private Options options;
+  private Options2 options;
 
   @Before public void setUp() {
-    options = xtext.getInstanceOf(Options.class);
+    options = xtext.getInstanceOf(Options2.class);
   }
 
   // syntax = "proto2";

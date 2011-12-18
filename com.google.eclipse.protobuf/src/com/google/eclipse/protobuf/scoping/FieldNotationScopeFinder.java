@@ -25,8 +25,7 @@ import com.google.inject.Inject;
  */
 class FieldNotationScopeFinder {
 
-  @Inject private FieldOptions fieldOptions;
-  @Inject private Options options;
+  @Inject private Options2 options;
   @Inject private ModelFinder modelFinder;
   @Inject private QualifiedNameDescriptions qualifiedNameDescriptions;
 
@@ -55,7 +54,7 @@ class FieldNotationScopeFinder {
     }
     if (container instanceof CustomFieldOption) {
       CustomFieldOption option = (CustomFieldOption) container;
-      source = fieldOptions.sourceOf(option);
+      source = options.sourceOf(option);
     }
     if (container instanceof ComplexValueField) {
       source = sourceOf((ComplexValueField) container);

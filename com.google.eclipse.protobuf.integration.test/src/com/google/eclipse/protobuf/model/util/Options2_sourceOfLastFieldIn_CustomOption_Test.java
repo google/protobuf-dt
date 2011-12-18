@@ -19,18 +19,18 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link Options#lastFieldSourceFrom(CustomOption)}</code>.
+ * Tests for <code>{@link Options2#sourceOfLastFieldIn(CustomOption)}</code>.
  *
  * alruiz@google.com (Alex Ruiz)
  */
-public class Options_lastFieldSourceFrom_Test {
+public class Options2_sourceOfLastFieldIn_CustomOption_Test {
 
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
-  private Options options;
+  private Options2 options;
 
   @Before public void setUp() {
-    options = xtext.getInstanceOf(Options.class);
+    options = xtext.getInstanceOf(Options2.class);
   }
 
   // syntax = "proto2";
@@ -48,7 +48,7 @@ public class Options_lastFieldSourceFrom_Test {
   // option (custom).count = 6;
   @Test public void should_return_option_field() {
     CustomOption option = xtext.find("custom", ")", CustomOption.class);
-    MessageField field = (MessageField) options.lastFieldSourceFrom(option);
+    MessageField field = (MessageField) options.sourceOfLastFieldIn(option);
     assertThat(field.getName(), equalTo("count"));
   }
 }

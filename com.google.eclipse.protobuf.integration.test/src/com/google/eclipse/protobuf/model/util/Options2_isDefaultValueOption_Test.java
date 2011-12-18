@@ -18,18 +18,18 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.FieldOption;
 
 /**
- * Tests for <code>{@link FieldOptions#isDefaultValueOption(FieldOption)}</code>.
+ * Tests for <code>{@link Options2#isDefaultValueOption(FieldOption)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class FieldOptions_isDefaultValueOption_Test {
+public class Options2_isDefaultValueOption_Test {
 
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
-  private FieldOptions fieldOptions;
+  private Options2 options;
 
   @Before public void setUp() {
-    fieldOptions = xtext.getInstanceOf(FieldOptions.class);
+    options = xtext.getInstanceOf(Options2.class);
   }
 
   // syntax = "proto2";
@@ -39,7 +39,7 @@ public class FieldOptions_isDefaultValueOption_Test {
   // }
   @Test public void should_return_true_if_FieldOption_is_default_value_one() {
     FieldOption option = xtext.find("default", FieldOption.class);
-    assertTrue(fieldOptions.isDefaultValueOption(option));
+    assertTrue(options.isDefaultValueOption(option));
   }
 
   // syntax = "proto2";
@@ -49,6 +49,6 @@ public class FieldOptions_isDefaultValueOption_Test {
   // }
   @Test public void should_return_false_if_FieldOption_is_not_default_value_one() {
     FieldOption option = xtext.find("deprecated", FieldOption.class);
-    assertFalse(fieldOptions.isDefaultValueOption(option));
+    assertFalse(options.isDefaultValueOption(option));
   }
 }

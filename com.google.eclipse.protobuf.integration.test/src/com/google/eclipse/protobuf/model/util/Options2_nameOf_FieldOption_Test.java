@@ -23,14 +23,14 @@ import com.google.eclipse.protobuf.protobuf.FieldOption;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class FieldOptions_nameOf_Test {
+public class Options2_nameOf_FieldOption_Test {
 
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
-  private FieldOptions fieldOptions;
+  private Options2 options;
 
   @Before public void setUp() {
-    fieldOptions = xtext.getInstanceOf(FieldOptions.class);
+    options = xtext.getInstanceOf(Options2.class);
   }
 
   // syntax = "proto2";
@@ -40,7 +40,7 @@ public class FieldOptions_nameOf_Test {
   // }
   @Test public void should_return_name_of_native_field_option() {
     FieldOption option = xtext.find("deprecated", FieldOption.class);
-    String name = fieldOptions.nameOf(option);
+    String name = options.nameOf(option);
     assertThat(name, equalTo("deprecated"));
   }
 
@@ -57,7 +57,7 @@ public class FieldOptions_nameOf_Test {
   // }
   @Test public void should_return_name_of_custom_field_option() {
     FieldOption option = xtext.find("encoding", ")", FieldOption.class);
-    String name = fieldOptions.nameOf(option);
+    String name = options.nameOf(option);
     assertThat(name, equalTo("encoding"));
   }
 }

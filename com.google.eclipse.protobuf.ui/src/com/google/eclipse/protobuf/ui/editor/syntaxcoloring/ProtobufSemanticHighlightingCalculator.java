@@ -11,7 +11,6 @@ package com.google.eclipse.protobuf.ui.editor.syntaxcoloring;
 
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
 import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.HighlightingConfiguration.*;
-import static org.eclipse.xtext.ui.editor.syntaxcoloring.DefaultHighlightingConfiguration.*;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.*;
@@ -32,7 +31,7 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
 
   @Inject private IndexedElements indexedElements;
   @Inject private INodes nodes;
-  @Inject private Options options;
+  @Inject private Options2 options;
 
   @Override public void provideHighlightingFor(XtextResource resource, IHighlightedPositionAcceptor acceptor) {
     if (resource == null) {

@@ -18,7 +18,7 @@ import org.eclipse.emf.ecore.*;
 import org.eclipse.xtext.util.SimpleAttributeResolver;
 
 import com.google.eclipse.protobuf.protobuf.*;
-import com.google.inject.Singleton;
+import com.google.inject.*;
 
 /**
  * Utility methods related to <code>{@link IndexedElement}</code>s.
@@ -27,6 +27,8 @@ import com.google.inject.Singleton;
  */
 @Singleton public class IndexedElements {
   private final static SimpleAttributeResolver<EObject, Long> INDEX_RESOLVER = newResolver(long.class, "index");
+
+  @Inject private ModelObjects modelObjects;
 
   /**
    * Calculates the index value for the given element. The calculated index value is the maximum of all the
@@ -81,13 +83,11 @@ import com.google.inject.Singleton;
    */
   @SuppressWarnings("unchecked")
   public List<FieldOption> fieldOptionsOf(IndexedElement e) {
-    if (e != null) {
-      EStructuralFeature feature = e.eClass().getEStructuralFeature("fieldOptions");
-      if (feature != null) {
-        return (List<FieldOption>) e.eGet(feature);
-      }
+    List<FieldOption> options = modelObjects.valueOfFeature(e, "fieldOptions", List.class);
+    if (options == null) {
+      options = emptyList();
     }
-    return emptyList();
+    return options;
   }
 
   /**

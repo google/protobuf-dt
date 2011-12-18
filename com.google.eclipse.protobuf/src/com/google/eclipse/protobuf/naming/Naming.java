@@ -10,7 +10,7 @@ package com.google.eclipse.protobuf.naming;
 
 import org.eclipse.emf.ecore.EObject;
 
-import com.google.eclipse.protobuf.model.util.Options;
+import com.google.eclipse.protobuf.model.util.Options2;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.*;
 
@@ -22,7 +22,7 @@ import com.google.inject.*;
 @Singleton public class Naming {
 
   @Inject private NameResolver nameResolver;
-  @Inject private Options options;
+  @Inject private Options2 options;
 
   /**
    * Returns the name of the given object. If the name will be used for an option and if the given object is a

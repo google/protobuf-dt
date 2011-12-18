@@ -19,18 +19,33 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link FieldOptions#sourceOfLastFieldIn(CustomFieldOption)}</code>.
+ * Tests for <code>{@link Options2#sourceOf(CustomOption)}</code>
  *
- * alruiz@google.com (Alex Ruiz)
+ * @author alruiz@google.com (Alex Ruiz)
  */
-public class FieldOptions_sourceOfLastFieldIn_Test {
+public class Options2_sourceOf_CustomOption_Test {
 
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
-  private FieldOptions fieldOptions;
+  private Options2 options;
 
   @Before public void setUp() {
-    fieldOptions = xtext.getInstanceOf(FieldOptions.class);
+    options = xtext.getInstanceOf(Options2.class);
+  }
+
+  // syntax = "proto2";
+  //
+  // import 'google/protobuf/descriptor.proto';
+  //
+  // extend google.protobuf.FileOptions {
+  //   optional string encoding = 1000;
+  // }
+  //
+  // option (encoding) = 'UTF-8';
+  @Test public void should_return_source_of_custom_option() {
+    CustomOption option = xtext.find("encoding", ")", CustomOption.class);
+    MessageField p = (MessageField) options.sourceOf(option);
+    assertThat(p.getName(), equalTo("encoding"));
   }
 
   // syntax = "proto2";
@@ -41,16 +56,14 @@ public class FieldOptions_sourceOfLastFieldIn_Test {
   //   optional int32 count = 1;
   // }
   //
-  // extend google.protobuf.FieldOptions {
+  // extend google.protobuf.FileOptions {
   //   optional Custom custom = 1000;
   // }
   //
-  // message Person {
-  //   optional boolean active = 1 [(custom).count = 6];
-  // }
-  @Test public void should_return_option_field() {
-    CustomFieldOption option = xtext.find("custom", ").", CustomFieldOption.class);
-    MessageField field = (MessageField) fieldOptions.sourceOfLastFieldIn(option);
-    assertThat(field.getName(), equalTo("count"));
+  // option (custom).count = 6;
+  @Test public void should_return_source_of_field_in_option() {
+    CustomOption option = xtext.find("custom", ")", CustomOption.class);
+    MessageField p = (MessageField) options.sourceOf(option);
+    assertThat(p.getName(), equalTo("count"));
   }
 }
