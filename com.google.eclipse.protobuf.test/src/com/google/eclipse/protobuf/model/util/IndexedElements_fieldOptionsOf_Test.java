@@ -13,46 +13,47 @@ import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
+import java.util.List;
+
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link IndexedElements#calculateTagNumberOf(IndexedElement)}</code>.
+ * Tests for <code>{@link IndexedElements#fieldOptionsOf(IndexedElement)}</code>
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class IndexedElements_calculateTagNumberOf_Test {
+public class IndexedElements_fieldOptionsOf_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
   private IndexedElements indexedElements;
 
   @Before public void setUp() {
-    indexedElements = xtext.getInstanceOf(IndexedElements.class);
+    indexedElements = new IndexedElements();
   }
 
   // syntax = "proto2";
   //
   // message Person {
-  //   required string name = 2;
+  //  optional bool active = 1 [default = false, deprecated = true];
   // }
-  @Test public void should_return_one_for_first_and_only_field() {
-    MessageField field = xtext.find("name", MessageField.class);
-    long index = indexedElements.calculateTagNumberOf(field);
-    assertThat(index, equalTo(1L));
+  @Test public void should_return_options_of_MessageField() {
+    MessageField field = xtext.find("active", MessageField.class);
+    List<FieldOption> fieldOptions = indexedElements.fieldOptionsOf(field);
+    assertThat(fieldOptions.size(), equalTo(2));
   }
 
   // syntax = "proto2";
   //
   // message Person {
-  //   required string name = 6;
-  //   required int32 id = 8;
+  //  optional group Names = 8 [deprecated = true] {}
   // }
-  @Test public void should_return_max_tag_number_value_plus_one_for_new_field() {
-    MessageField field = xtext.find("id", MessageField.class);
-    long index = indexedElements.calculateTagNumberOf(field);
-    assertThat(index, equalTo(7L));
+  @Test public void should_return_index_of_Group() {
+    Group group = xtext.find("Names", Group.class);
+    List<FieldOption> fieldOptions = indexedElements.fieldOptionsOf(group);
+    assertThat(fieldOptions.size(), equalTo(1));
   }
 }

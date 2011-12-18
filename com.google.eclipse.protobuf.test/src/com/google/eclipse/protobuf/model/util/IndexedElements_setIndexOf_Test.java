@@ -8,10 +8,14 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
-import static org.mockito.Mockito.*;
+import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 
 import org.junit.*;
 
+import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
@@ -21,21 +25,33 @@ import com.google.eclipse.protobuf.protobuf.*;
  */
 public class IndexedElements_setIndexOf_Test {
 
-  private static IndexedElements indexedElements;
+  @Rule public XtextRule xtext = createWith(unitTestSetup());
 
-  @BeforeClass public static void setUpOnce() {
+  private IndexedElements indexedElements;
+
+  @Before public void setUp() {
     indexedElements = new IndexedElements();
   }
 
-  @Test public void should_return_name_of_Property() {
-    MessageField field = mock(MessageField.class);
-    indexedElements.setIndexTo(field, 6L);
-    verify(field).setIndex(6L);
+  // syntax = "proto2";
+  //
+  // message Person {
+  //  optional String firstName = 6;
+  // }
+  @Test public void should_set_index_of_MessageField() {
+    MessageField field = xtext.find("firstName", MessageField.class);
+    indexedElements.setIndexTo(field, 1L);
+    assertThat(field.getIndex(), equalTo(1L));
   }
 
-  @Test public void should_return_name_of_Group() {
-    Group group = mock(Group.class);
-    indexedElements.setIndexTo(group, 8L);
-    verify(group).setIndex(8L);
+  // syntax = "proto2";
+  //
+  // message Person {
+  //  optional group Names = 8 {}
+  // }
+  @Test public void should_set_index_of_Group() {
+    Group group = xtext.find("Names", Group.class);
+    indexedElements.setIndexTo(group, 1L);
+    assertThat(group.getIndex(), equalTo(1L));
   }
 }

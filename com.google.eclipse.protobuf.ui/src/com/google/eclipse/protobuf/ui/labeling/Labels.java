@@ -120,10 +120,8 @@ import com.google.inject.*;
     StyledString text = new StyledString(nameResolver.nameOf(field));
     String typeName = messageFields.typeNameOf(field);
     if (typeName == null) {
-      typeName = "<unresolved reference>"; // TODO move to
+      typeName = "<unresolved reference>"; // TODO move to properties file
     }
-    // properties
-    // file
     String indexAndType = String.format(" [%d] : %s", field.getIndex(), typeName);
     text.append(indexAndType, DECORATIONS_STYLER);
     return text;
@@ -135,11 +133,7 @@ import com.google.inject.*;
     StringBuilder b = new StringBuilder();
     boolean isCustomOption = option instanceof CustomOption || option instanceof CustomFieldOption;
     if (isCustomOption) {
-      b.append("(");
-    }
-    b.append(name);
-    if (isCustomOption) {
-      b.append(")");
+      b.append(formatCustomOptionName(name));
     }
     if (option instanceof CustomOption) {
       appendFields(b, ((CustomOption) option).getFields());
@@ -148,6 +142,10 @@ import com.google.inject.*;
       appendFields(b, ((CustomFieldOption) option).getFields());
     }
     return b.toString();
+  }
+
+  private String formatCustomOptionName(String name) {
+    return String.format("(%s)", name);
   }
 
   private void appendFields(StringBuilder b, List<OptionField> fields) {

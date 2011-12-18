@@ -8,13 +8,14 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
 import static java.lang.Math.max;
 import static java.util.Collections.emptyList;
+import static org.eclipse.xtext.util.SimpleAttributeResolver.newResolver;
 
 import java.util.List;
 
 import org.eclipse.emf.ecore.*;
+import org.eclipse.xtext.util.SimpleAttributeResolver;
 
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.Singleton;
@@ -25,90 +26,11 @@ import com.google.inject.Singleton;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class IndexedElements {
+  private final static SimpleAttributeResolver<EObject, Long> INDEX_RESOLVER = newResolver(long.class, "index");
 
   /**
-   * Returns the name of the given <code>{@link IndexedElement}</code>.
-   * @param e the given {@code IndexedElement}.
-   * @return the name of the given {@code IndexedElement}, or {@code null} if the given {@code IndexedElement} is
-   * {@code null}.
-   */
-  public String nameOf(IndexedElement e) {
-    if (e instanceof MessageField) {
-      MessageField field = (MessageField) e;
-      return field.getName();
-    }
-    if (e instanceof Group) {
-      Group group = (Group) e;
-      return group.getName();
-    }
-    return null;
-  }
-
-  /**
-   * Returns the name of the given <code>{@link IndexedElement}</code>.
-   * @param e the given {@code IndexedElement}.
-   * @return the name of the given {@code IndexedElement}, or {@code Long.MIN_VALUE} if the given {@code IndexedElement}
-   * is {@code null}.
-   */
-  public long indexOf(IndexedElement e) {
-    if (e instanceof Group) {
-      return ((Group) e).getIndex();
-    }
-    if (e instanceof MessageField) {
-      return ((MessageField) e).getIndex();
-    }
-    return Long.MIN_VALUE;
-  }
-
-  /**
-   * Returns the "index" feature of the given <code>{@link IndexedElement}</code>.
-   * @param e the given {@code IndexedElement}.
-   * @return the "index" feature of the given {@code IndexedElement}, or {@code null} if the given
-   * {@code IndexedElement} is {@code null}.
-   */
-  public EStructuralFeature indexFeatureOf(IndexedElement e) {
-    if (e instanceof Group) {
-      return GROUP__INDEX;
-    }
-    if (e instanceof MessageField) {
-      return MESSAGE_FIELD__INDEX;
-    }
-    return null;
-  }
-
-  /**
-   * Returns the options of the given <code>{@link IndexedElement}</code>.
-   * @param e the given {@code IndexedElement}.
-   * @return the options of the given {@code IndexedElement}, or an empty list if the given {@code IndexedElement} is
-   * {@code null}.
-   */
-  public List<FieldOption> fieldOptionsOf(IndexedElement e) {
-    if (e instanceof Group) {
-      return ((Group) e).getFieldOptions();
-    }
-    if (e instanceof MessageField) {
-      return ((MessageField) e).getFieldOptions();
-    }
-    return emptyList();
-  }
-
-  /**
-   * Sets the index of the given <code>{@link IndexedElement}</code>.
-   * @param e e the given {@code IndexedElement}.
-   * @param newIndex the new index to set.
-   */
-  public void setIndexTo(IndexedElement e, long newIndex) {
-    if (e instanceof Group) {
-      ((Group) e).setIndex(newIndex);
-    }
-    if (e instanceof MessageField) {
-      ((MessageField) e).setIndex(newIndex);
-    }
-  }
-
-  /**
-   * Calculates the tag number value for the given element. The calculated tag number value is the maximum of all the
-   * tag number values of the given element's siblings, plus one. The minimum tag number value is 1.
+   * Calculates the index value for the given element. The calculated index value is the maximum of all the
+   * index values of the given element's siblings, plus one. The minimum index value is 1.
    * <p>
    * For example, in the following message:
    *
@@ -119,19 +41,77 @@ import com.google.inject.Singleton;
    *   optional PhoneNumber phone =
    * </pre>
    *
-   * The calculated tag number value for the element {@code PhoneNumber} will be 3.
+   * The calculated index value for the element {@code PhoneNumber} will be 3.
    * </p>
    * @param e the given element.
-   * @return the calculated value for the tag number of the given element.
+   * @return the calculated value for the index of the given element.
    */
-  public long calculateTagNumberOf(IndexedElement e) {
+  public long calculateNewIndexFor(IndexedElement e) {
     long index = 0;
-    for (EObject o : e.eContainer().eContents()) {
+    EObject type = e.eContainer();
+    for (EObject o : type.eContents()) {
       if (o == e || !(o instanceof IndexedElement)) {
         continue;
       }
       index = max(index, indexOf((IndexedElement) o));
     }
     return ++index;
+  }
+
+  /**
+   * Returns the name of the given <code>{@link IndexedElement}</code>.
+   * @param e the given {@code IndexedElement}.
+   * @return the name of the given {@code IndexedElement}, or {@code Long.MIN_VALUE} if the given {@code IndexedElement}
+   * is {@code null}.
+   */
+  public long indexOf(IndexedElement e) {
+    long index = Long.MIN_VALUE;
+    EStructuralFeature feature = indexFeatureOf(e);
+    if (feature != null) {
+      index = (Long) e.eGet(feature);
+    }
+    return index;
+  }
+
+  /**
+   * Returns the options of the given <code>{@link IndexedElement}</code>.
+   * @param e the given {@code IndexedElement}.
+   * @return the options of the given {@code IndexedElement}, or an empty list if the given {@code IndexedElement} is
+   * {@code null}.
+   */
+  @SuppressWarnings("unchecked")
+  public List<FieldOption> fieldOptionsOf(IndexedElement e) {
+    if (e != null) {
+      EStructuralFeature feature = e.eClass().getEStructuralFeature("fieldOptions");
+      if (feature != null) {
+        return (List<FieldOption>) e.eGet(feature);
+      }
+    }
+    return emptyList();
+  }
+
+  /**
+   * Sets the index of the given <code>{@link IndexedElement}</code>.
+   * @param e e the given {@code IndexedElement}.
+   * @param newIndex the new index to set.
+   */
+  public void setIndexTo(IndexedElement e, long newIndex) {
+    EStructuralFeature feature = indexFeatureOf(e);
+    if (feature != null) {
+      e.eSet(feature, newIndex);
+    }
+  }
+
+  /**
+   * Returns the "index" structural feature of the given <code>{@link IndexedElement}</code>.
+   * @param e the given {@code IndexedElement}.
+   * @return the "index" structural feature of the given {@code IndexedElement}, or {@code null} if the given
+   * {@code IndexedElement} is {@code null}.
+   */
+  public EStructuralFeature indexFeatureOf(IndexedElement e) {
+    if (e != null) {
+      return INDEX_RESOLVER.getAttribute(e);
+    }
+    return null;
   }
 }

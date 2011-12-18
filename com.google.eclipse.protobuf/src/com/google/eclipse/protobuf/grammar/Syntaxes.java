@@ -11,10 +11,10 @@ package com.google.eclipse.protobuf.grammar;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-public final class ValidSyntax {
+public final class Syntaxes {
 
   /**
-   * Returns the value to use to specify 'proto2' syntax.
+   * Returns the value to use to in the "syntax" element.
    * @return the {@code String} "proto2".
    */
   public static String proto2() {
@@ -22,13 +22,13 @@ public final class ValidSyntax {
   }
 
   /**
-   * Indicates whether the given {@code String} is equal to the one returned by <code>{@link #proto2()}</code>.
+   * Indicates whether the given {@code String} is equal to <code>{@link #proto2()}</code>.
    * @param s the {@code String} to check.
    * @return {@code true} if the given {@code String} is equal to "proto2," {@code false} otherwise.
    */
-  public static boolean isProto2Syntax(String s) {
+  public static boolean isSpecifyingProto2Syntax(String s) {
     return proto2().equals(s);
   }
 
-  private ValidSyntax() {}
+  private Syntaxes() {}
 }

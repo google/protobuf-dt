@@ -8,7 +8,6 @@
  */
 package com.google.eclipse.protobuf.validation;
 
-import static com.google.eclipse.protobuf.grammar.ValidSyntax.isProto2Syntax;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
 import static com.google.eclipse.protobuf.validation.Messages.*;
 import static java.lang.String.format;
@@ -20,7 +19,9 @@ import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 import org.eclipse.xtext.validation.*;
 
+import com.google.eclipse.protobuf.grammar.Syntaxes;
 import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.naming.NameResolver;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.inject.Inject;
@@ -36,6 +37,7 @@ import com.google.inject.Inject;
   public static final String MORE_THAN_ONE_PACKAGE_ERROR = "moreThanOnePackage";
 
   @Inject private IndexedElements indexedElements;
+  @Inject private NameResolver nameResolver;
   @Inject private Protobufs protobufs;
   @Inject private IQualifiedNameProvider qualifiedNameProvider;
   @Inject private ImportUriResolver uriResolver;
@@ -74,7 +76,7 @@ import com.google.inject.Inject;
 
   @Check public void checkSyntaxIsProto2(Syntax syntax) {
     String name = syntax.getName();
-    if (isProto2Syntax(name)) {
+    if (Syntaxes.proto2().equals(name)) {
       return;
     }
     String msg = (name == null) ? expectedSyntaxIdentifier : format(unrecognizedSyntaxIdentifier, name);
@@ -102,7 +104,7 @@ import com.google.inject.Inject;
           continue;
         }
         QualifiedName messageName = qualifiedNameProvider.getFullyQualifiedName(message);
-        String msg = format(fieldNumberAlreadyUsed, index, messageName.toString(), indexedElements.nameOf(other));
+        String msg = format(fieldNumberAlreadyUsed, index, messageName.toString(), nameResolver.nameOf(other));
         invalidTagNumberError(msg, e);
         break;
       }
@@ -143,6 +145,6 @@ import com.google.inject.Inject;
   }
 
   private boolean isNameNull(IndexedElement e) {
-    return indexedElements.nameOf(e) == null;
+    return nameResolver.nameOf(e) == null;
   }
 }

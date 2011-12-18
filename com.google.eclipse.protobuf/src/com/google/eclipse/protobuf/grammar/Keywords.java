@@ -25,6 +25,10 @@ import com.google.inject.*;
 
   private final Set<String> keywords;
 
+  /**
+   * Creates a new <code>{@link Keywords}</code>.
+   * @param grammarAccess provides access to elements of the protocol buffer language.
+   */
   @Inject public Keywords(IGrammarAccess grammarAccess) {
     keywords = getAllKeywords(grammarAccess.getGrammar());
   }

@@ -11,8 +11,7 @@ package com.google.eclipse.protobuf.model.util;
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertThat;
 
 import org.junit.*;
 
@@ -20,11 +19,11 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link IndexedElements#nameOf(IndexedElement)}</code>
+ * Tests for <code>{@link IndexedElements#calculateNewIndexFor(IndexedElement)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class IndexedElements_nameOf_Test {
+public class IndexedElements_calculateNewIndexFor_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
@@ -34,21 +33,26 @@ public class IndexedElements_nameOf_Test {
     indexedElements = xtext.getInstanceOf(IndexedElements.class);
   }
 
-  @Test public void should_return_name_of_Property() {
-    MessageField field = mock(MessageField.class);
-    when(field.getName()).thenReturn("foo");
-    assertThat(indexedElements.nameOf(field), equalTo("foo"));
-    verify(field).getName();
+  // syntax = "proto2";
+  //
+  // message Person {
+  //   required string name = 2;
+  // }
+  @Test public void should_return_one_for_first_and_only_field() {
+    MessageField field = xtext.find("name", MessageField.class);
+    long index = indexedElements.calculateNewIndexFor(field);
+    assertThat(index, equalTo(1L));
   }
 
-  @Test public void should_return_name_of_Group() {
-    Group group = mock(Group.class);
-    when(group.getName()).thenReturn("foo");
-    assertThat(indexedElements.nameOf(group), equalTo("foo"));
-    verify(group).getName();
-  }
-
-  @Test public void should_return_null_if_IndexedElement_is_null() {
-    assertNull(indexedElements.nameOf(null));
+  // syntax = "proto2";
+  //
+  // message Person {
+  //   required string name = 6;
+  //   required int32 id = 8;
+  // }
+  @Test public void should_return_max_index_value_plus_one_for_new_field() {
+    MessageField field = xtext.find("id", MessageField.class);
+    long index = indexedElements.calculateNewIndexFor(field);
+    assertThat(index, equalTo(7L));
   }
 }

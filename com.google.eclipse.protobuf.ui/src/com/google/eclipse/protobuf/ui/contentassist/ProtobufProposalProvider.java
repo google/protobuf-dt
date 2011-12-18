@@ -315,7 +315,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeMessageField_Index(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    long index = indexedElements.calculateTagNumberOf((MessageField) model);
+    long index = indexedElements.calculateNewIndexFor((MessageField) model);
     proposeIndex(index, context, acceptor);
   }
 

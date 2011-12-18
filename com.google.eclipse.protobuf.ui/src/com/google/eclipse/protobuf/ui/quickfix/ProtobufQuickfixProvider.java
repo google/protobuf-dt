@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.quickfix;
 
-import static com.google.eclipse.protobuf.grammar.ValidSyntax.proto2;
+import static com.google.eclipse.protobuf.grammar.Syntaxes.proto2;
 import static com.google.eclipse.protobuf.protobuf.BOOL.*;
 import static com.google.eclipse.protobuf.ui.quickfix.Messages.*;
 import static com.google.eclipse.protobuf.util.Strings.quote;
@@ -62,7 +62,7 @@ public class ProtobufQuickfixProvider extends DefaultQuickfixProvider {
     ISemanticModification modification = new ISemanticModification() {
       @Override public void apply(EObject element, IModificationContext context) throws Exception {
         IndexedElement e = (IndexedElement) element;
-        long tagNumber = indexedElements.calculateTagNumberOf(e);
+        long tagNumber = indexedElements.calculateNewIndexFor(e);
         indexedElements.setIndexTo(e, tagNumber);
       }
     };

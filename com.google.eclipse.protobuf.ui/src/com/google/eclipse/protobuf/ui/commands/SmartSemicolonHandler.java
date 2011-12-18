@@ -110,7 +110,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
               MessageField field = (MessageField) model;
               ContentToInsert content = newContent(field);
               if (content.equals(ContentToInsert.TAG_NUMBER_INSERTED)) {
-                long index = indexedElements.calculateTagNumberOf(field);
+                long index = indexedElements.calculateNewIndexFor(field);
                 field.setIndex(index);
                 updateIndexInCommentOfParent(field, index, document);
               }

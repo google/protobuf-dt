@@ -8,12 +8,14 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
+import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
 
 import org.junit.*;
 
+import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
@@ -23,24 +25,34 @@ import com.google.eclipse.protobuf.protobuf.*;
  */
 public class IndexedElements_indexOf_Test {
 
-  private static IndexedElements indexedElements;
+  @Rule public XtextRule xtext = createWith(unitTestSetup());
 
-  @BeforeClass public static void setUpOnce() {
+  private IndexedElements indexedElements;
+
+  @Before public void setUp() {
     indexedElements = new IndexedElements();
   }
 
-  @Test public void should_return_name_of_Property() {
-    MessageField field = mock(MessageField.class);
-    when(field.getIndex()).thenReturn(6L);
-    assertThat(indexedElements.indexOf(field), equalTo(6L));
-    verify(field).getIndex();
+  // syntax = "proto2";
+  //
+  // message Person {
+  //  optional String firstName = 6;
+  // }
+  @Test public void should_return_index_of_MessageField() {
+    MessageField field = xtext.find("firstName", MessageField.class);
+    long index = indexedElements.indexOf(field);
+    assertThat(index, equalTo(6L));
   }
 
-  @Test public void should_return_name_of_Group() {
-    Group group = mock(Group.class);
-    when(group.getIndex()).thenReturn(8L);
-    assertThat(indexedElements.indexOf(group), equalTo(8L));
-    verify(group).getIndex();
+  // syntax = "proto2";
+  //
+  // message Person {
+  //  optional group Names = 8 {}
+  // }
+  @Test public void should_return_index_of_Group() {
+    Group group = xtext.find("Names", Group.class);
+    long index = indexedElements.indexOf(group);
+    assertThat(index, equalTo(8L));
   }
 
   @Test public void should_return_MIN_VALUE_if_IndexedElement_is_null() {
