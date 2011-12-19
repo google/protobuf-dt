@@ -19,44 +19,40 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link Options2#rootSourceOf(FieldOption)}</code>.
+ * Tests for <code>{@link Options#rootSourceOf(Option)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Options2_rootSourceOf_FieldOption_Test {
+public class Options_rootSourceOf_Option_Test {
 
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
-  private Options2 options;
+  private Options options;
 
   @Before public void setUp() {
-    options = xtext.getInstanceOf(Options2.class);
+    options = xtext.getInstanceOf(Options.class);
   }
 
   // syntax = "proto2";
   //
-  // message Person {
-  //   optional boolean active = 1 [deprecated = false];
-  // }
-  @Test public void should_return_field_of_native_field_option() {
-    FieldOption option = xtext.find("deprecated", FieldOption.class);
+  // option java_package = 'com.google.eclipse.protobuf.tests';
+  @Test public void should_return_source_of_native_option() {
+    Option option = xtext.find("java_package", Option.class);
     MessageField field = (MessageField) options.rootSourceOf(option);
-    assertThat(field.getName(), equalTo("deprecated"));
+    assertThat(field.getName(), equalTo("java_package"));
   }
 
   // syntax = "proto2";
   //
   // import 'google/protobuf/descriptor.proto';
   //
-  // extend google.protobuf.FieldOptions {
+  // extend google.protobuf.FileOptions {
   //   optional string encoding = 1000;
   // }
   //
-  // message Person {
-  //   optional boolean active = 1 [(encoding) = 'UTF-8'];
-  // }
-  @Test public void should_return_field_of_custom_field_option() {
-    FieldOption option = xtext.find("encoding", ")", FieldOption.class);
+  // option (encoding) = 'UTF-8';
+  @Test public void should_return_source_of_custom_option() {
+    Option option = xtext.find("encoding", ")", Option.class);
     MessageField field = (MessageField) options.rootSourceOf(option);
     assertThat(field.getName(), equalTo("encoding"));
   }

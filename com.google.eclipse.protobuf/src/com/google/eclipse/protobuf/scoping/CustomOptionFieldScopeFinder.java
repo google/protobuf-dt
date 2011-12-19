@@ -27,7 +27,7 @@ class CustomOptionFieldScopeFinder {
 
   @Inject private ModelFinder modelFinder;
   @Inject private OptionFields optionFields;
-  @Inject private Options2 options;
+  @Inject private Options options;
   @Inject private QualifiedNameDescriptions qualifiedNameDescriptions;
 
   Collection<IEObjectDescription> findScope(CustomOption option, MessageOptionField field) {

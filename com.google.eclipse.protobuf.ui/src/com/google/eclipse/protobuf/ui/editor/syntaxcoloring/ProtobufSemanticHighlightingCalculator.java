@@ -31,7 +31,7 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
 
   @Inject private IndexedElements indexedElements;
   @Inject private INodes nodes;
-  @Inject private Options2 options;
+  @Inject private Options options;
 
   @Override public void provideHighlightingFor(XtextResource resource, IHighlightedPositionAcceptor acceptor) {
     if (resource == null) {

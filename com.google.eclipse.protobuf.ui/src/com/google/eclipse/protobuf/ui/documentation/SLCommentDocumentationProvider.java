@@ -35,7 +35,7 @@ import com.google.inject.*;
   private static final Patterns NEW_LINE = compileAll("\\r\\n", "\\n");
 
   @Inject private INodes nodes;
-  @Inject private Options2 options;
+  @Inject private Options options;
 
   @Override public String getDocumentation(EObject o) {
     String comment = findComment(o);

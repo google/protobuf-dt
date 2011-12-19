@@ -18,18 +18,18 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.FieldOption;
 
 /**
- * Tests for <code>{@link Options2#isDefaultValueOption(FieldOption)}</code>.
+ * Tests for <code>{@link Options#isDefaultValueOption(FieldOption)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Options2_isDefaultValueOption_Test {
+public class Options_isDefaultValueOption_Test {
 
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
-  private Options2 options;
+  private Options options;
 
   @Before public void setUp() {
-    options = xtext.getInstanceOf(Options2.class);
+    options = xtext.getInstanceOf(Options.class);
   }
 
   // syntax = "proto2";

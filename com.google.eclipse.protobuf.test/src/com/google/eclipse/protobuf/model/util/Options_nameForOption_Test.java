@@ -12,7 +12,6 @@ import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 import org.junit.*;
 
@@ -20,31 +19,37 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link Options2#nameForOption(IndexedElement)}</code>
+ * Tests for <code>{@link Options#nameForOption(IndexedElement)}</code>
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Options_nameForOption_Test {
 
   @Rule public XtextRule xtext = createWith(unitTestSetup());
 
-  private Options2 options;
+  private Options options;
 
   @Before public void setUp() {
-    options = xtext.getInstanceOf(Options2.class);
+    options = xtext.getInstanceOf(Options.class);
   }
 
+  // syntax = "proto2";
+  //
+  // message Person {
+  //  optional String firstName = 6;
+  // }
   @Test public void should_return_unchanged_name_if_element_is_Field() {
-    MessageField field = mock(MessageField.class);
-    when(field.getName()).thenReturn("active");
-    assertThat(options.nameForOption(field), equalTo("active"));
-    verify(field).getName();
+    MessageField field = xtext.find("firstName", MessageField.class);
+    assertThat(options.nameForOption(field), equalTo("firstName"));
   }
 
+  // syntax = "proto2";
+  //
+  // message Person {
+  //  optional group Names = 8 {}
+  // }
   @Test public void should_return_name_in_lower_case_if_element_is_Group() {
-    Group group = mock(Group.class);
-    when(group.getName()).thenReturn("Person");
-    assertThat(options.nameForOption(group), equalTo("person"));
-    verify(group).getName();
+    Group group = xtext.find("Names", Group.class);
+    assertThat(options.nameForOption(group), equalTo("names"));
   }
 
   @Test public void should_return_null_if_element_is_null() {

@@ -29,14 +29,14 @@ import com.google.inject.Singleton;
    * @return the name of the given element, or {@code null} if the given element does not have support for naming.
    */
   public String nameOf(EObject o) {
+    if (o == null) {
+      return null;
+    }
     if (o instanceof DefaultValueFieldOption) {
       return DEFAULT.toString();
     }
     Object value = nameFeatureOf(o);
-    if (value instanceof String) {
-      return (String) value;
-    }
-    return null;
+    return (String) value;
   }
 
   private Object nameFeatureOf(EObject e) {

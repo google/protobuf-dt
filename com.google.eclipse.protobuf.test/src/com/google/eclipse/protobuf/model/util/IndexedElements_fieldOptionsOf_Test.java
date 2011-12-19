@@ -32,7 +32,7 @@ public class IndexedElements_fieldOptionsOf_Test {
   private IndexedElements indexedElements;
 
   @Before public void setUp() {
-    indexedElements = new IndexedElements();
+    indexedElements = xtext.getInstanceOf(IndexedElements.class);
   }
 
   // syntax = "proto2";

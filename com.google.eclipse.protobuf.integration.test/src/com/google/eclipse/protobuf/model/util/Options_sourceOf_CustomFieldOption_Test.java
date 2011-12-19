@@ -19,18 +19,18 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link Options2#sourceOf(CustomFieldOption)}</code>.
+ * Tests for <code>{@link Options#sourceOf(CustomFieldOption)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Options2_sourceOf_CustomFieldOption_Test {
+public class Options_sourceOf_CustomFieldOption_Test {
 
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
-  private Options2 options;
+  private Options options;
 
   @Before public void setUp() {
-    options = xtext.getInstanceOf(Options2.class);
+    options = xtext.getInstanceOf(Options.class);
   }
 
   // syntax = "proto2";

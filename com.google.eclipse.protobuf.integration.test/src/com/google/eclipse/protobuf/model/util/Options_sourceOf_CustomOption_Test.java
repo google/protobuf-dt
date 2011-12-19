@@ -19,18 +19,33 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link Options2#sourceOfLastFieldIn(CustomOption)}</code>.
+ * Tests for <code>{@link Options#sourceOf(CustomOption)}</code>
  *
- * alruiz@google.com (Alex Ruiz)
+ * @author alruiz@google.com (Alex Ruiz)
  */
-public class Options2_sourceOfLastFieldIn_CustomOption_Test {
+public class Options_sourceOf_CustomOption_Test {
 
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
-  private Options2 options;
+  private Options options;
 
   @Before public void setUp() {
-    options = xtext.getInstanceOf(Options2.class);
+    options = xtext.getInstanceOf(Options.class);
+  }
+
+  // syntax = "proto2";
+  //
+  // import 'google/protobuf/descriptor.proto';
+  //
+  // extend google.protobuf.FileOptions {
+  //   optional string encoding = 1000;
+  // }
+  //
+  // option (encoding) = 'UTF-8';
+  @Test public void should_return_source_of_custom_option() {
+    CustomOption option = xtext.find("encoding", ")", CustomOption.class);
+    MessageField p = (MessageField) options.sourceOf(option);
+    assertThat(p.getName(), equalTo("encoding"));
   }
 
   // syntax = "proto2";
@@ -46,9 +61,9 @@ public class Options2_sourceOfLastFieldIn_CustomOption_Test {
   // }
   //
   // option (custom).count = 6;
-  @Test public void should_return_option_field() {
+  @Test public void should_return_source_of_field_in_option() {
     CustomOption option = xtext.find("custom", ")", CustomOption.class);
-    MessageField field = (MessageField) options.sourceOfLastFieldIn(option);
-    assertThat(field.getName(), equalTo("count"));
+    MessageField p = (MessageField) options.sourceOf(option);
+    assertThat(p.getName(), equalTo("count"));
   }
 }

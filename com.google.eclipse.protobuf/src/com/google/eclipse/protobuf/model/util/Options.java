@@ -22,7 +22,7 @@ import com.google.inject.*;
  * @author alruiz@google.com (Alex Ruiz)
  *
  */
-@Singleton public class Options2 {
+@Singleton public class Options {
 
   @Inject private ModelObjects modelObjects;
   @Inject private NameResolver nameResolver;

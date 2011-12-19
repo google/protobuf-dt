@@ -19,18 +19,18 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link Options2#sourceOfLastFieldIn(CustomFieldOption)}</code>.
+ * Tests for <code>{@link Options#sourceOfLastFieldIn(CustomOption)}</code>.
  *
  * alruiz@google.com (Alex Ruiz)
  */
-public class Options2_sourceOfLastFieldIn_CustomFieldOption_Test {
+public class Options_sourceOfLastFieldIn_CustomOption_Test {
 
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
-  private Options2 fieldOptions;
+  private Options options;
 
   @Before public void setUp() {
-    fieldOptions = xtext.getInstanceOf(Options2.class);
+    options = xtext.getInstanceOf(Options.class);
   }
 
   // syntax = "proto2";
@@ -41,16 +41,14 @@ public class Options2_sourceOfLastFieldIn_CustomFieldOption_Test {
   //   optional int32 count = 1;
   // }
   //
-  // extend google.protobuf.FieldOptions {
+  // extend google.protobuf.FileOptions {
   //   optional Custom custom = 1000;
   // }
   //
-  // message Person {
-  //   optional boolean active = 1 [(custom).count = 6];
-  // }
+  // option (custom).count = 6;
   @Test public void should_return_option_field() {
-    CustomFieldOption option = xtext.find("custom", ").", CustomFieldOption.class);
-    MessageField field = (MessageField) fieldOptions.sourceOfLastFieldIn(option);
+    CustomOption option = xtext.find("custom", ")", CustomOption.class);
+    MessageField field = (MessageField) options.sourceOfLastFieldIn(option);
     assertThat(field.getName(), equalTo("count"));
   }
 }

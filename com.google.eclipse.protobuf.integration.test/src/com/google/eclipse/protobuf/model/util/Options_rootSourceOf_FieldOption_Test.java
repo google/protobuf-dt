@@ -16,21 +16,21 @@ import static org.junit.Assert.assertThat;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.FieldOption;
+import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link FieldOptions#nameOf(FieldOption)}</code>.
+ * Tests for <code>{@link Options#rootSourceOf(FieldOption)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Options2_nameOf_FieldOption_Test {
+public class Options_rootSourceOf_FieldOption_Test {
 
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
-  private Options2 options;
+  private Options options;
 
   @Before public void setUp() {
-    options = xtext.getInstanceOf(Options2.class);
+    options = xtext.getInstanceOf(Options.class);
   }
 
   // syntax = "proto2";
@@ -38,10 +38,10 @@ public class Options2_nameOf_FieldOption_Test {
   // message Person {
   //   optional boolean active = 1 [deprecated = false];
   // }
-  @Test public void should_return_name_of_native_field_option() {
+  @Test public void should_return_field_of_native_field_option() {
     FieldOption option = xtext.find("deprecated", FieldOption.class);
-    String name = options.nameOf(option);
-    assertThat(name, equalTo("deprecated"));
+    MessageField field = (MessageField) options.rootSourceOf(option);
+    assertThat(field.getName(), equalTo("deprecated"));
   }
 
   // syntax = "proto2";
@@ -55,9 +55,9 @@ public class Options2_nameOf_FieldOption_Test {
   // message Person {
   //   optional boolean active = 1 [(encoding) = 'UTF-8'];
   // }
-  @Test public void should_return_name_of_custom_field_option() {
+  @Test public void should_return_field_of_custom_field_option() {
     FieldOption option = xtext.find("encoding", ")", FieldOption.class);
-    String name = options.nameOf(option);
-    assertThat(name, equalTo("encoding"));
+    MessageField field = (MessageField) options.rootSourceOf(option);
+    assertThat(field.getName(), equalTo("encoding"));
   }
 }

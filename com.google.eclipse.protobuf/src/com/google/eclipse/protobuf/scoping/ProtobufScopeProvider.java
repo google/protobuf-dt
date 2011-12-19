@@ -42,7 +42,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   @Inject private ModelFinder modelFinder;
   @Inject private LiteralDescriptions literalDescriptions;
   @Inject private NativeOptionDescriptions nativeOptionDescriptions;
-  @Inject private Options2 options;
+  @Inject private Options options;
   @Inject private TypeScopeFinder typeScopeFinder;
 
   @SuppressWarnings("unused") public IScope scope_ComplexTypeLink_target(ComplexTypeLink link, EReference r) {

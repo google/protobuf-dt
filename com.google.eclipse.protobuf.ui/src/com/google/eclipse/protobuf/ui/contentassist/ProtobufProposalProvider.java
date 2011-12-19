@@ -55,7 +55,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Inject private PluginImageHelper imageHelper;
   @Inject private Literals literals;
   @Inject private MessageFields messageFields;
-  @Inject private Options2 options;
+  @Inject private Options options;
 
   @Override public void completeProtobuf_Syntax(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {}

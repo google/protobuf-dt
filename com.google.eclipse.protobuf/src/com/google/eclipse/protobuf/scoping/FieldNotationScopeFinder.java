@@ -25,7 +25,7 @@ import com.google.inject.Inject;
  */
 class FieldNotationScopeFinder {
 
-  @Inject private Options2 options;
+  @Inject private Options options;
   @Inject private ModelFinder modelFinder;
   @Inject private QualifiedNameDescriptions qualifiedNameDescriptions;
 

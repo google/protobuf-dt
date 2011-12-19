@@ -34,7 +34,7 @@ public class DataTypeValidator extends AbstractDeclarativeValidator {
   @Inject private MessageFields messageFields;
   @Inject private ModelFinder modelFinder;
   @Inject private INodes nodes;
-  @Inject private Options2 options;
+  @Inject private Options options;
 
   @Check public void checkValueOfDefaultTypeMatchesFieldType(FieldOption option) {
     if (options.isDefaultValueOption(option)) {

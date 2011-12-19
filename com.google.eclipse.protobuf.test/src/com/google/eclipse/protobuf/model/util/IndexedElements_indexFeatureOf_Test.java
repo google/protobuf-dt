@@ -8,14 +8,16 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
+import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.junit.*;
 
+import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
@@ -25,20 +27,32 @@ import com.google.eclipse.protobuf.protobuf.*;
  */
 public class IndexedElements_indexFeatureOf_Test {
 
+  @Rule public XtextRule xtext = createWith(unitTestSetup());
+
   private static IndexedElements indexedElements;
 
   @BeforeClass public static void setUpOnce() {
     indexedElements = new IndexedElements();
   }
 
-  @Test public void should_return_name_of_Property() {
-    MessageField field = mock(MessageField.class);
+  // syntax = "proto2";
+  //
+  // message Person {
+  //  optional String firstName = 6;
+  // }
+  @Test public void should_return_index_feature_of_MessageField() {
+    MessageField field = xtext.find("firstName", MessageField.class);
     EStructuralFeature expected = MESSAGE_FIELD__INDEX;
     assertThat(indexedElements.indexFeatureOf(field), equalTo(expected));
   }
 
+  // syntax = "proto2";
+  //
+  // message Person {
+  //  optional group Names = 8 {}
+  // }
   @Test public void should_return_name_of_Group() {
-    Group group = mock(Group.class);
+    Group group = xtext.find("Names", Group.class);
     EStructuralFeature expected = GROUP__INDEX;
     assertThat(indexedElements.indexFeatureOf(group), equalTo(expected));
   }

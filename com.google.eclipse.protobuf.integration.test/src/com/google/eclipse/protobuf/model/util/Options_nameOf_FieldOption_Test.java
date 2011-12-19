@@ -16,44 +16,48 @@ import static org.junit.Assert.assertThat;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.FieldOption;
 
 /**
- * Tests for <code>{@link Options2#rootSourceOf(Option)}</code>.
+ * Tests for <code>{@link FieldOptions#nameOf(FieldOption)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Options2_rootSourceOf_Option_Test {
+public class Options_nameOf_FieldOption_Test {
 
   @Rule public XtextRule xtext = createWith(integrationTestSetup());
 
-  private Options2 options;
+  private Options options;
 
   @Before public void setUp() {
-    options = xtext.getInstanceOf(Options2.class);
+    options = xtext.getInstanceOf(Options.class);
   }
 
   // syntax = "proto2";
   //
-  // option java_package = 'com.google.eclipse.protobuf.tests';
-  @Test public void should_return_source_of_native_option() {
-    Option option = xtext.find("java_package", Option.class);
-    MessageField field = (MessageField) options.rootSourceOf(option);
-    assertThat(field.getName(), equalTo("java_package"));
+  // message Person {
+  //   optional boolean active = 1 [deprecated = false];
+  // }
+  @Test public void should_return_name_of_native_field_option() {
+    FieldOption option = xtext.find("deprecated", FieldOption.class);
+    String name = options.nameOf(option);
+    assertThat(name, equalTo("deprecated"));
   }
 
   // syntax = "proto2";
   //
   // import 'google/protobuf/descriptor.proto';
   //
-  // extend google.protobuf.FileOptions {
+  // extend google.protobuf.FieldOptions {
   //   optional string encoding = 1000;
   // }
   //
-  // option (encoding) = 'UTF-8';
-  @Test public void should_return_source_of_custom_option() {
-    Option option = xtext.find("encoding", ")", Option.class);
-    MessageField field = (MessageField) options.rootSourceOf(option);
-    assertThat(field.getName(), equalTo("encoding"));
+  // message Person {
+  //   optional boolean active = 1 [(encoding) = 'UTF-8'];
+  // }
+  @Test public void should_return_name_of_custom_field_option() {
+    FieldOption option = xtext.find("encoding", ")", FieldOption.class);
+    String name = options.nameOf(option);
+    assertThat(name, equalTo("encoding"));
   }
 }
