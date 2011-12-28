@@ -8,65 +8,36 @@
  */
 package com.google.eclipse.protobuf.ui.builder.protoc;
 
-import static com.google.eclipse.protobuf.ui.util.Paths.segmentsOf;
-import static java.io.File.separator;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 
-import java.util.*;
-
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
-
-import com.google.eclipse.protobuf.ui.preferences.pages.compiler.*;
+import com.google.eclipse.protobuf.ui.preferences.compiler.core.CompilerPreferences;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 class OutputDirectories {
 
-  private static final NullProgressMonitor NO_MONITOR = new NullProgressMonitor();
+  private final OutputDirectory java;
+  private final OutputDirectory cpp;
+  private final OutputDirectory python;
 
-  private final Map<SupportedLanguage, IFolder> outputDirectories = new HashMap<SupportedLanguage, IFolder>();
-
-  static OutputDirectories findOrCreateOutputDirectories(IProject project, CodeGenerationSettings preferences)
-      throws CoreException {
-    Map<SupportedLanguage, IFolder> outputDirectories = new HashMap<SupportedLanguage, IFolder>();
-    for (CodeGenerationSetting preference : preferences.allSettings()) {
-      if (!preference.isEnabled()) {
-        continue;
-      }
-      outputDirectories.put(preference.language(), findOrCreateOutputDirectory(project, preference));
-    }
-    return new OutputDirectories(outputDirectories);
+  OutputDirectories(IProject project, CompilerPreferences preferences) throws CoreException {
+    java = new OutputDirectory(project, preferences.javaCodeGenerationEnabled(), preferences.javaOutputDirectory());
+    cpp = new OutputDirectory(project, preferences.cppCodeGenerationEnabled(), preferences.cppOutputDirectory());
+    python = new OutputDirectory(project, preferences.pythonCodeGenerationEnabled(),
+        preferences.pythonOutputDirectory());
   }
 
-  private static IFolder findOrCreateOutputDirectory(IProject project, CodeGenerationSetting preference)
-      throws CoreException {
-    return findOrCreateOutputDirectory(project, preference.outputDirectory());
+  OutputDirectory java() {
+    return java;
   }
 
-  private static IFolder findOrCreateOutputDirectory(IProject project, String outputFolderName) throws CoreException {
-    IFolder outputFolder = null;
-    StringBuilder path = new StringBuilder();
-    for (String segment : segmentsOf(outputFolderName)) {
-      path.append(segment);
-      outputFolder = project.getFolder(path.toString());
-      if (!outputFolder.exists()) {
-        outputFolder.create(true, true, NO_MONITOR);
-      }
-      path.append(separator);
-    }
-    return outputFolder;
+  OutputDirectory cpp() {
+    return cpp;
   }
 
-  private OutputDirectories(Map<SupportedLanguage, IFolder> outputDirectories) {
-    this.outputDirectories.putAll(outputDirectories);
-  }
-
-  Collection<IFolder> values() {
-    return outputDirectories.values();
-  }
-
-  IFolder outputDirectoryFor(SupportedLanguage language) {
-    return outputDirectories.get(language);
+  OutputDirectory python() {
+    return python;
   }
 }

@@ -24,7 +24,7 @@ import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.xtext.ui.PluginImageHelper;
 
-import com.google.eclipse.protobuf.ui.preferences.DataChangedListener;
+import com.google.eclipse.protobuf.ui.preferences.pages.DataChangedListener;
 
 /**
  * Editor where users can add/remove the directories to be used for URI resolution.

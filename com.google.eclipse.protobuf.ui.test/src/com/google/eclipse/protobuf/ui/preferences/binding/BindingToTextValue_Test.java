@@ -8,13 +8,14 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.binding;
 
-import static com.google.eclipse.protobuf.ui.preferences.binding.BindingToTextValue.bindTextOf;
+import static com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToTextValue.bindTextOf;
 import static org.mockito.Mockito.*;
 
 import org.eclipse.swt.widgets.Text;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.ui.preferences.StringPreference;
+import com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToTextValue;
 
 /**
  * Tests for <code>{@link BindingToTextValue}</code>.
@@ -35,16 +36,16 @@ public class BindingToTextValue_Test {
   }
 
   @Test public void should_apply_preference_value_to_selection_in_Button() {
-    when(preference.value()).thenReturn("Hello World");
+    when(preference.getValue()).thenReturn("Hello World");
     binding.applyPreferenceValueToTarget();
-    verify(preference).value();
+    verify(preference).getValue();
     verify(text).setText("Hello World");
   }
 
   @Test public void should_apply_preference_default_value_to_selection_in_Button() {
-    when(preference.defaultValue()).thenReturn("Hello World");
+    when(preference.getDefaultValue()).thenReturn("Hello World");
     binding.applyDefaultPreferenceValueToTarget();
-    verify(preference).defaultValue();
+    verify(preference).getDefaultValue();
     verify(text).setText("Hello World");
   }
 
@@ -52,6 +53,6 @@ public class BindingToTextValue_Test {
     when(text.getText()).thenReturn("Hello World");
     binding.savePreferenceValue();
     verify(text).getText();
-    verify(preference).value("Hello World");
+    verify(preference).setValue("Hello World");
   }
 }

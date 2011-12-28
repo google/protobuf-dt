@@ -27,22 +27,22 @@ public class BooleanPreference extends Preference<Boolean> {
   }
 
   /** {@inheritDoc} */
-  @Override public Boolean value() {
-    return store.getBoolean(name);
+  @Override public Boolean getValue() {
+    return getPreferenceStore().getBoolean(getName());
   }
 
   /** {@inheritDoc} */
-  @Override public Boolean defaultValue() {
-    return store.getDefaultBoolean(name);
+  @Override public Boolean getDefaultValue() {
+    return getPreferenceStore().getDefaultBoolean(getName());
   }
 
   /** {@inheritDoc} */
-  @Override public void value(Boolean value) {
-    store.setValue(name, value);
+  @Override public void setValue(Boolean value) {
+    getPreferenceStore().setValue(getName(), value);
   }
 
   /** {@inheritDoc} */
-  @Override public void defaultValue(Boolean value) {
-    store.setDefault(name, value);
+  @Override public void setDefaultValue(Boolean value) {
+    getPreferenceStore().setDefault(getName(), value);
   }
 }

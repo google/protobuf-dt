@@ -24,13 +24,14 @@ import org.eclipse.xtext.ui.editor.XtextEditor;
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
 import org.eclipse.xtext.ui.editor.contentassist.antlr.ParserBasedContentAssistContextFactory;
 import org.eclipse.xtext.ui.editor.model.IXtextDocument;
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 import org.eclipse.xtext.util.Pair;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.ui.preferences.pages.editor.numerictag.*;
+import com.google.eclipse.protobuf.ui.preferences.editor.numerictag.core.NumericTagPreferences;
 import com.google.eclipse.protobuf.ui.util.Literals;
 import com.google.inject.Inject;
 
@@ -51,8 +52,8 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
   @Inject private IndexedElements indexedElements;
   @Inject private Literals literals;
   @Inject private INodes nodes;
-  @Inject private NumericTagPreferencesFactory preferencesFactory;
   @Inject private ParserBasedContentAssistContextFactory contextFactory;
+  @Inject private IPreferenceStoreAccess storeAccess;
 
   private static final String SEMICOLON = CommonKeyword.SEMICOLON.toString();
 
@@ -162,8 +163,8 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
     if (parent == null) {
       return;
     }
-    NumericTagPreferences preferences = preferencesFactory.preferences();
-    for (String pattern : preferences.patterns()) {
+    NumericTagPreferences preferences = new NumericTagPreferences(storeAccess);
+    for (String pattern : preferences.patterns().getValue()) {
       Pair<INode, Matcher> match = commentNodesFinder.matchingCommentNode(parent, pattern);
       if (match == null) {
         return;

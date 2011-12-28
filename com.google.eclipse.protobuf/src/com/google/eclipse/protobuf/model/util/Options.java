@@ -19,8 +19,9 @@ import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.*;
 
 /**
- * @author alruiz@google.com (Alex Ruiz)
+ * Utility methods related to <code>{@link Option}</code>s.
  *
+ * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class Options {
 

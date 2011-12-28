@@ -10,7 +10,6 @@
 package com.google.eclipse.protobuf.ui.editor.model;
 
 import static com.google.eclipse.protobuf.ui.exception.CoreExceptions.error;
-import static com.google.eclipse.protobuf.ui.preferences.pages.editor.save.SaveActionsPreferences.RemoveTrailingSpace.*;
 import static com.google.eclipse.protobuf.util.Encodings.UTF_8;
 import static org.eclipse.core.filebuffers.FileBuffers.getTextFileBufferManager;
 import static org.eclipse.core.filebuffers.LocationKind.*;
@@ -24,9 +23,9 @@ import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.undo.IDocumentUndoManager;
 import org.eclipse.ui.*;
 import org.eclipse.xtext.ui.editor.model.*;
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
-import com.google.eclipse.protobuf.ui.preferences.pages.editor.save.*;
-import com.google.eclipse.protobuf.ui.preferences.pages.editor.save.SaveActionsPreferences.RemoveTrailingSpace;
+import com.google.eclipse.protobuf.ui.preferences.editor.save.core.SaveActionsPreferences;
 import com.google.eclipse.protobuf.ui.util.editor.Editors;
 import com.google.inject.Inject;
 
@@ -39,7 +38,7 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
 
   @Inject private Editors editors;
   @Inject private DocumentContentsFactoryRegistry documentContentsFactories;
-  @Inject private SaveActionsPreferencesFactory preferencesFactory;
+  @Inject private IPreferenceStoreAccess storeAccess;
   @Inject private SaveActions saveActions;
 
   @Override protected ElementInfo createElementInfo(Object element) throws CoreException {
@@ -107,13 +106,13 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
     }
   }
 
-  private IRegion[] changedRegions(IProgressMonitor monitor, IFileEditorInput editorInput, IDocument document) throws CoreException {
-    SaveActionsPreferences preferences = preferencesFactory.preferences();
-    RemoveTrailingSpace removeTrailingSpace = preferences.removeTrailingSpace();
-    if (removeTrailingSpace.equals(NONE)) {
+  private IRegion[] changedRegions(IProgressMonitor monitor, IFileEditorInput editorInput, IDocument document)
+      throws CoreException {
+    SaveActionsPreferences preferences = new SaveActionsPreferences(storeAccess);
+    if (!preferences.removeTrailingWhitespace().getValue()) {
       return NO_CHANGE;
     }
-    if (removeTrailingSpace.equals(IN_EDITED_LINES)) {
+    if (preferences.inEditedLines().getValue()) {
       return editors.calculateChangedLineRegions(textFileBuffer(monitor, editorInput), document, monitor);
     }
     return new IRegion[] { new Region(0, document.getLength()) };

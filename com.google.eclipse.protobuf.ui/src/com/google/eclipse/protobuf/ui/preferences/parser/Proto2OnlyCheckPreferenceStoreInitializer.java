@@ -22,6 +22,6 @@ public class Proto2OnlyCheckPreferenceStoreInitializer implements IPreferenceSto
   @Override public void initialize(IPreferenceStoreAccess access) {
     IPreferenceStore store = access.getWritablePreferenceStore();
     RawPreferences preferences = new RawPreferences(store);
-    preferences.enableProto2OnlyChecks().defaultValue(false);
+    preferences.enableProto2OnlyChecks().setDefaultValue(false);
   }
 }

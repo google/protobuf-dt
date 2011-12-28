@@ -35,30 +35,32 @@ public class StringListPreference extends Preference<List<String>> {
   }
 
   /** {@inheritDoc} */
-  @Override public List<String> value() {
-    return doSplit(store.getString(name));
+  @Override public List<String> getValue() {
+    String value = getPreferenceStore().getString(getName());
+    return splitIntoList(value);
   }
 
   /** {@inheritDoc} */
-  @Override public List<String> defaultValue() {
-    return doSplit(store.getDefaultString(name));
+  @Override public List<String> getDefaultValue() {
+    String defaultValue = getPreferenceStore().getDefaultString(getName());
+    return splitIntoList(defaultValue);
   }
 
-  private List<String> doSplit(String value) {
+  private List<String> splitIntoList(String value) {
     return split(value, delimiter);
   }
 
   /** {@inheritDoc} */
-  @Override public void value(List<String> value) {
-    store.setValue(name, doConcat(value));
+  @Override public void setValue(List<String> value) {
+    getPreferenceStore().setValue(getName(), concatenate(value));
   }
 
   /** {@inheritDoc} */
-  @Override public void defaultValue(List<String> value) {
-    store.setDefault(name, doConcat(value));
+  @Override public void setDefaultValue(List<String> value) {
+    getPreferenceStore().setDefault(getName(), concatenate(value));
   }
 
-  private String doConcat(List<String> value) {
+  private String concatenate(List<String> value) {
     return concat(delimiter, value);
   }
 }

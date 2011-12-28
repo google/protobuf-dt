@@ -14,8 +14,10 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.widgets.Button;
 import org.junit.*;
 
+import com.google.eclipse.protobuf.ui.preferences.pages.ButtonGroup;
+
 /**
- * Tests for <code>{@link Buttons#add(SelectionListener)}</code>.
+ * Tests for <code>{@link ButtonGroup#add(SelectionListener)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
@@ -30,7 +32,7 @@ public class Buttons_add_Test {
   }
 
   @Test public void should_add_SelectionListener_to_all_buttons() {
-    Buttons.with(buttons).add(listener);
+    ButtonGroup.with(buttons).add(listener);
     for (Button b : buttons) {
       verify(b).addSelectionListener(listener);
     }

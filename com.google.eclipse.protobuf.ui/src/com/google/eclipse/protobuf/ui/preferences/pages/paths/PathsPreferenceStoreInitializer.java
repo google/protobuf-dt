@@ -22,8 +22,8 @@ public class PathsPreferenceStoreInitializer implements IPreferenceStoreInitiali
   @Override public void initialize(IPreferenceStoreAccess access) {
     IPreferenceStore store = access.getWritablePreferenceStore();
     RawPreferences preferences = new RawPreferences(store);
-    preferences.filesInOneDirectoryOnly().defaultValue(true);
-    preferences.filesInMultipleDirectories().defaultValue(false);
-    preferences.directoryPaths().defaultValue("");
+    preferences.filesInOneDirectoryOnly().setDefaultValue(true);
+    preferences.filesInMultipleDirectories().setDefaultValue(false);
+    preferences.directoryPaths().setDefaultValue("");
   }
 }

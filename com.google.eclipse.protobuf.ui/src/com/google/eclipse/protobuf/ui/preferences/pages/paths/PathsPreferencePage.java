@@ -9,8 +9,8 @@
 package com.google.eclipse.protobuf.ui.preferences.pages.paths;
 
 import static com.google.eclipse.protobuf.ui.ProtobufUiModule.PLUGIN_ID;
-import static com.google.eclipse.protobuf.ui.preferences.Buttons.with;
-import static com.google.eclipse.protobuf.ui.preferences.binding.BindingToButtonSelection.bindSelectionOf;
+import static com.google.eclipse.protobuf.ui.preferences.pages.ButtonGroup.with;
+import static com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToButtonSelection.bindSelectionOf;
 import static com.google.eclipse.protobuf.ui.preferences.pages.paths.Messages.*;
 import static java.util.Collections.unmodifiableList;
 import static org.eclipse.core.resources.IncrementalProjectBuilder.FULL_BUILD;
@@ -24,7 +24,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.*;
@@ -32,8 +31,8 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.xtext.ui.PluginImageHelper;
 
 import com.google.eclipse.protobuf.ui.preferences.*;
-import com.google.eclipse.protobuf.ui.preferences.binding.*;
-import com.google.eclipse.protobuf.ui.preferences.pages.PreferenceAndPropertyPage;
+import com.google.eclipse.protobuf.ui.preferences.pages.*;
+import com.google.eclipse.protobuf.ui.preferences.pages.binding.*;
 import com.google.eclipse.protobuf.ui.validation.ValidationTrigger;
 import com.google.inject.Inject;
 
@@ -110,7 +109,9 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
     pageIsNowValid();
   }
 
-  @Override protected BooleanPreference enableProjectSettingsPreference(IPreferenceStore store) {
+
+
+  @Override protected String enableProjectSettingsPreferenceName() {
     return null; // this page is always a "Project Properties" page
   }
 
@@ -121,15 +122,15 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
     final StringPreference directoryPaths = preferences.directoryPaths();
     preferenceBinder.add(new Binding() {
       @Override public void applyPreferenceValueToTarget() {
-        setDirectoryPaths(directoryPaths.value());
+        setDirectoryPaths(directoryPaths.getValue());
       }
 
       @Override public void applyDefaultPreferenceValueToTarget() {
-        setDirectoryPaths(directoryPaths.defaultValue());
+        setDirectoryPaths(directoryPaths.getDefaultValue());
       }
 
       @Override public void savePreferenceValue() {
-        directoryPaths.value(directoryNames());
+        directoryPaths.setValue(directoryNames());
       }
     });
   }

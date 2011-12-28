@@ -12,6 +12,8 @@ import static org.mockito.Mockito.*;
 
 import org.junit.*;
 
+import com.google.eclipse.protobuf.ui.preferences.pages.binding.*;
+
 /**
  * Tests for <code>{@link PreferenceBinder}</code>.
  *

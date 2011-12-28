@@ -8,10 +8,10 @@
  */
 package com.google.eclipse.protobuf.ui.builder.protoc;
 
-import static com.google.eclipse.protobuf.ui.builder.protoc.OutputDirectories.findOrCreateOutputDirectories;
 import static com.google.eclipse.protobuf.ui.exception.CoreExceptions.error;
-import static com.google.eclipse.protobuf.ui.preferences.pages.compiler.PostCompilationRefreshTarget.PROJECT;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.core.CompilerPreferences.compilerPreferences;
 import static com.google.eclipse.protobuf.ui.preferences.pages.paths.PathResolutionType.MULTIPLE_DIRECTORIES;
+import static com.google.eclipse.protobuf.util.Closeables.closeQuietly;
 import static java.util.Collections.*;
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
 
@@ -24,8 +24,9 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.builder.IXtextBuilderParticipant;
 import org.eclipse.xtext.resource.*;
 import org.eclipse.xtext.resource.IResourceDescription.Delta;
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
-import com.google.eclipse.protobuf.ui.preferences.pages.compiler.*;
+import com.google.eclipse.protobuf.ui.preferences.compiler.core.CompilerPreferences;
 import com.google.eclipse.protobuf.ui.preferences.pages.paths.*;
 import com.google.inject.Inject;
 
@@ -36,7 +37,7 @@ import com.google.inject.Inject;
  */
 public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
 
-  @Inject private CompilerPreferencesFactory compilerPreferencesFactory;
+  @Inject private IPreferenceStoreAccess storeAccess;
   @Inject private PathsPreferencesFactory pathsPreferencesFactory;
   @Inject private ProtocCommandFactory commandFactory;
   @Inject private ProtocOutputParser outputParser;
@@ -44,15 +45,15 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
 
   @Override public void build(IBuildContext context, IProgressMonitor monitor) throws CoreException {
     IProject project = context.getBuiltProject();
-    CompilerPreferences preferences = compilerPreferencesFactory.preferences(project);
-    if (!preferences.shouldCompileProtoFiles()) {
+    CompilerPreferences preferences = compilerPreferences(storeAccess, project);
+    if (!preferences.compileProtoFiles().getValue()) {
       return;
     }
     List<Delta> deltas = context.getDeltas();
     if (deltas.isEmpty()) {
       return;
     }
-    OutputDirectories outputDirectories = findOrCreateOutputDirectories(project, preferences.codeGenerationSettings());
+    OutputDirectories outputDirectories = new OutputDirectories(project, preferences);
     String descriptorPath = descriptorPath(preferences);
     List<String> importRoots = importRoots(project);
     for (Delta d : deltas) {
@@ -63,15 +64,16 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
       if (importRoots.isEmpty()) {
         importRoots = singleImportRoot(source);
       }
-      generateSingleProto(source, preferences.protocPath(), importRoots, descriptorPath, outputDirectories);
+      generateSingleProto(source, protocPath(preferences), importRoots, descriptorPath, outputDirectories);
     }
-    if (preferences.shouldRefreshResources()) {
-      refresh(project, outputDirectories, preferences.refreshTarget(), monitor);
+    if (preferences.refreshResources().getValue()) {
+      boolean refreshProject = preferences.refreshProject().getValue();
+      refresh(project, outputDirectories, refreshProject, monitor);
     }
   }
 
   private String descriptorPath(CompilerPreferences preferences) {
-    return protoDescriptorPathFinder.findRootOf(preferences.descriptorPath());
+    return protoDescriptorPathFinder.findRootOf(preferences.descriptorPath().getValue());
   }
 
   private List<String> importRoots(IProject project) {
@@ -90,16 +92,16 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
     return emptyList();
   }
 
-  private static IFile protoFile(IResourceDescription r, IProject project) {
-    String path = filePathIfIsProtoFile(r);
+  private IFile protoFile(IResourceDescription resource, IProject project) {
+    String path = filePathIfIsProtoFile(resource);
     return (path == null) ? null : project.getWorkspace().getRoot().getFile(new Path(path));
   }
 
-  private static String filePathIfIsProtoFile(IResourceDescription r) {
-    if (r == null) {
+  private String filePathIfIsProtoFile(IResourceDescription resource) {
+    if (resource == null) {
       return null;
     }
-    URI uri = r.getURI();
+    URI uri = resource.getURI();
     if (!uri.fileExtension().equals("proto"))
     {
       return null;
@@ -124,6 +126,13 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
       current = current.getParentFile();
     }
     return singletonList(current.toString());
+  }
+
+  String protocPath(CompilerPreferences preferences) {
+    if (preferences.useProtocInSystemPath().getValue()) {
+      return "protoc";
+    }
+    return preferences.protocPath().getValue();
   }
 
   private void generateSingleProto(IFile source, String protocPath, List<String> importRoots, String descriptorPath,
@@ -151,31 +160,25 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
         System.out.println("[protoc] " + line);
       }
     } finally {
-      close(reader);
+      closeQuietly(reader);
     }
   }
 
-  private static void close(Reader reader) {
-    if (reader == null) {
+  private void refresh(IProject project, OutputDirectories outputDirectories, boolean refreshProject,
+      IProgressMonitor monitor) throws CoreException {
+    if (refreshProject) {
+      project.refreshLocal(DEPTH_INFINITE, monitor);
       return;
     }
-    try {
-      reader.close();
-    } catch (IOException ignored) {}
+    refresh(outputDirectories.java(), monitor);
+    refresh(outputDirectories.cpp(), monitor);
+    refresh(outputDirectories.python(), monitor);
   }
 
-  private static void refresh(IProject project, OutputDirectories outputDirectories,
-      PostCompilationRefreshTarget refreshTarget, IProgressMonitor monitor) throws CoreException {
-    if (refreshTarget.equals(PROJECT)) {
-      refresh(project, monitor);
-      return;
+  private void refresh(OutputDirectory directory, IProgressMonitor monitor) throws CoreException {
+    if (directory.isEnabled()) {
+      IFolder location = directory.getLocation();
+      location.refreshLocal(DEPTH_INFINITE, monitor);
     }
-    for (IFolder outputDirectory : outputDirectories.values()) {
-      refresh(outputDirectory, monitor);
-    }
-  }
-
-  private static void refresh(IResource target, IProgressMonitor monitor) throws CoreException {
-    target.refreshLocal(DEPTH_INFINITE, monitor);
   }
 }

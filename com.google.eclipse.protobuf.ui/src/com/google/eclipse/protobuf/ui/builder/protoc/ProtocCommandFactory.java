@@ -9,26 +9,16 @@
 package com.google.eclipse.protobuf.ui.builder.protoc;
 
 import static com.google.eclipse.protobuf.util.CommonWords.space;
+import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import java.util.*;
+import java.util.List;
 
 import org.eclipse.core.resources.*;
-import org.eclipse.xtext.util.Strings;
-
-import com.google.eclipse.protobuf.ui.preferences.pages.compiler.SupportedLanguage;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 class ProtocCommandFactory {
-
-  private static final Map<SupportedLanguage, String> LANG_OUT_FLAG = new HashMap<SupportedLanguage, String>();
-
-  static {
-    for (SupportedLanguage lang : SupportedLanguage.values()) {
-      LANG_OUT_FLAG.put(lang, "--" + lang.code() + "_out=");
-    }
-  }
 
   String protocCommand(IFile protoFile, String protocPath, List<String> importRoots, String descriptorPath,
       OutputDirectories outputDirectories) {
@@ -37,21 +27,22 @@ class ProtocCommandFactory {
     for (String importRoot : importRoots) {
       command.append("-I=").append(importRoot).append(space());
     }
-    if (!Strings.isEmpty(descriptorPath)) {
+    if (!isEmpty(descriptorPath)) {
       command.append("--proto_path=").append(descriptorPath).append(space());
     }
-    for (SupportedLanguage language : SupportedLanguage.values()) {
-      IFolder outputDirectory = outputDirectories.outputDirectoryFor(language);
-      if (outputDirectory == null) {
-        continue;
-      }
-      command.append(langOutFlag(language)).append(outputDirectory.getLocation().toOSString()).append(space());
-    }
+    addOutputDirectory(outputDirectories.java(), "java", command);
+    addOutputDirectory(outputDirectories.cpp(), "cpp", command);
+    addOutputDirectory(outputDirectories.python(), "python", command);
     command.append(protoFile.getLocation().toOSString());
     return command.toString();
   }
 
-  private String langOutFlag(SupportedLanguage targetLanguage) {
-    return LANG_OUT_FLAG.get(targetLanguage);
+  private void addOutputDirectory(OutputDirectory outputDirectory, String code, StringBuilder command) {
+    if (!outputDirectory.isEnabled()) {
+      return;
+    }
+    command.append("--").append(code).append("_out=");
+    IFolder directory = outputDirectory.getLocation();
+    command.append(directory.getLocation().toOSString()).append(space());
   }
 }

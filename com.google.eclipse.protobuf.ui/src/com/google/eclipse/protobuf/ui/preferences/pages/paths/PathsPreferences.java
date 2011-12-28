@@ -29,7 +29,7 @@ public class PathsPreferences {
   private static final String CSV_PATTERN = "[\\s]*,[\\s]*";
 
   PathsPreferences(RawPreferences preferences, IProject project) {
-    boolean filesInOneDirectoryOnly = preferences.filesInOneDirectoryOnly().value();
+    boolean filesInOneDirectoryOnly = preferences.filesInOneDirectoryOnly().getValue();
     pathResolutionType = filesInOneDirectoryOnly ? SINGLE_DIRECTORY : MULTIPLE_DIRECTORIES;
     importRoots = importRoots(preferences, project);
   }
@@ -39,7 +39,7 @@ public class PathsPreferences {
       return emptyList();
     }
     List<DirectoryPath> roots = new ArrayList<DirectoryPath>();
-    for (String root : preferences.directoryPaths().value().split(CSV_PATTERN)) {
+    for (String root : preferences.directoryPaths().getValue().split(CSV_PATTERN)) {
       roots.add(DirectoryPath.parse(root, project));
     }
     return unmodifiableList(roots);

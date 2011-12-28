@@ -8,9 +8,10 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages;
 
-import static com.google.eclipse.protobuf.ui.preferences.binding.BindingToButtonSelection.bindSelectionOf;
 import static com.google.eclipse.protobuf.ui.preferences.pages.Messages.*;
+import static com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToButtonSelection.bindSelectionOf;
 import static org.eclipse.ui.dialogs.PreferencesUtil.createPreferenceDialogOn;
+import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import java.util.Map;
 
@@ -25,7 +26,7 @@ import org.eclipse.ui.*;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.eclipse.protobuf.ui.preferences.BooleanPreference;
-import com.google.eclipse.protobuf.ui.preferences.binding.PreferenceBinder;
+import com.google.eclipse.protobuf.ui.preferences.pages.binding.PreferenceBinder;
 import com.google.inject.Inject;
 
 /**
@@ -33,7 +34,8 @@ import com.google.inject.Inject;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public abstract class PreferenceAndPropertyPage extends PreferencePage implements IWorkbenchPreferencePage, IWorkbenchPropertyPage {
+public abstract class PreferenceAndPropertyPage extends PreferencePage implements IWorkbenchPreferencePage,
+    IWorkbenchPropertyPage {
 
   private Button btnEnableProjectSettings;
 
@@ -123,21 +125,21 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
   protected abstract void doCreateContents(Composite parent);
 
   private void setupBindingOfBtnEnabledProjectSettings() {
-    BooleanPreference preference = enableProjectSettingsPreference(getPreferenceStore());
-    if (preference == null) {
+    String preferenceName = enableProjectSettingsPreferenceName();
+    if (isEmpty(preferenceName)) {
       return;
     }
+    BooleanPreference preference = new BooleanPreference(preferenceName, getPreferenceStore());
     preferenceBinder.add(bindSelectionOf(btnEnableProjectSettings).to(preference));
   }
 
   /**
-   * Returns the preference that indicates whether this page is a "Project Properties" or a "Workspace Preferences"
-   * page.
-   * @param store the store where the preference value is stored.
-   * @return the preference that indicates whether this page is a "Project Properties" or a "Workspace Preferences"
-   * page.
+   * Returns the name of the preference that specifies whether this page is a "Project Properties" or a "Workspace
+   * Preferences" page.
+   * @return the name of the preference that specifies whether this page is a "Project Properties" or a "Workspace
+   * Preferences" page.
    */
-  protected abstract BooleanPreference enableProjectSettingsPreference(IPreferenceStore store);
+  protected abstract String enableProjectSettingsPreferenceName();
 
   /**
    * Sets up data binding.

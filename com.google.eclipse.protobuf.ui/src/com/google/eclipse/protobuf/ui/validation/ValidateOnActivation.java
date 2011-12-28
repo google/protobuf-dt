@@ -10,12 +10,14 @@
 package com.google.eclipse.protobuf.ui.validation;
 
 import static com.google.eclipse.protobuf.ui.Internals.injector;
+import static com.google.eclipse.protobuf.ui.preferences.general.core.GeneralPreferences.generalPreferences;
 import static com.google.eclipse.protobuf.ui.validation.Validation.validate;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.*;
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
-import com.google.eclipse.protobuf.ui.preferences.pages.general.*;
+import com.google.eclipse.protobuf.ui.preferences.general.core.GeneralPreferences;
 import com.google.eclipse.protobuf.ui.util.Resources;
 
 /**
@@ -49,12 +51,9 @@ public class ValidateOnActivation implements IPartListener2 {
   }
 
   private boolean shouldValidateEditor(IProject project) {
-    GeneralPreferencesFactory factory = injector().getInstance(GeneralPreferencesFactory.class);
-    if (factory == null) {
-      return false;
-    }
-    GeneralPreferences preferences = factory.preferences(project);
-    return preferences.validateFilesOnActivation();
+    IPreferenceStoreAccess storeAccess = injector().getInstance(IPreferenceStoreAccess.class);
+    GeneralPreferences preferences = generalPreferences(storeAccess, project);
+    return preferences.validateFilesOnActivation().getValue();
   }
 
   /**

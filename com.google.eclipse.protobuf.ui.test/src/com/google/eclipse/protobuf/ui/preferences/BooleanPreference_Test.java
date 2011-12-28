@@ -34,23 +34,23 @@ public class BooleanPreference_Test {
 
   @Test public void should_read_value_from_IPreferenceStore() {
     when(store.getBoolean(name)).thenReturn(true);
-    assertTrue(preference.value());
+    assertTrue(preference.getValue());
     verify(store).getBoolean(name);
   }
 
   @Test public void should_read_default_value_from_IPreferenceStore() {
     when(store.getDefaultBoolean(name)).thenReturn(true);
-    assertTrue(preference.defaultValue());
+    assertTrue(preference.getDefaultValue());
     verify(store).getDefaultBoolean(name);
   }
 
   @Test public void should_update_value_in_IPreferenceStore() {
-    preference.value(true);
+    preference.setValue(true);
     verify(store).setValue(name, true);
   }
 
   @Test public void should_update_default_value_in_IPreferenceStore() {
-    preference.defaultValue(true);
+    preference.setDefaultValue(true);
     verify(store).setDefault(name, true);
   }
 }

@@ -8,10 +8,10 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages.paths;
 
+import static com.google.eclipse.protobuf.ui.preferences.pages.TextWidgets.setEditable;
 import static com.google.eclipse.protobuf.ui.preferences.pages.paths.DirectorySelectionDialogs.*;
 import static com.google.eclipse.protobuf.ui.preferences.pages.paths.Messages.*;
 import static com.google.eclipse.protobuf.ui.preferences.pages.paths.ProjectVariable.useProjectVariable;
-import static com.google.eclipse.protobuf.ui.swt.Colors.widgetBackground;
 import static org.eclipse.jface.dialogs.IDialogConstants.OK_ID;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
@@ -22,7 +22,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
-import com.google.eclipse.protobuf.ui.preferences.InputDialog;
+import com.google.eclipse.protobuf.ui.preferences.pages.InputDialog;
 
 /**
  * Dialog where users can select a path (in the workspace or file system) to be included in resolution of imports.
@@ -62,9 +62,8 @@ public class AddDirectoryDialog extends InputDialog {
     label.setText(directory);
 
     txtPath = new Text(cmpDialogArea, SWT.BORDER);
-    txtPath.setBackground(widgetBackground());
     txtPath.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-    txtPath.setEditable(false);
+    setEditable(txtPath, false);
 
     Composite cmpCheckBox = new Composite(cmpDialogArea, SWT.NONE);
     cmpCheckBox.setEnabled(false);

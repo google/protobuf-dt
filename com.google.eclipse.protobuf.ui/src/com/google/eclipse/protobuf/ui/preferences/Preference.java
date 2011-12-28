@@ -18,8 +18,8 @@ import org.eclipse.jface.preference.IPreferenceStore;
  */
 public abstract class Preference<T> {
 
-  protected final String name;
-  protected final IPreferenceStore store;
+  private final String name;
+  private IPreferenceStore store;
 
   /**
    * Creates a new </code>{@link Preference}</code>.
@@ -28,14 +28,14 @@ public abstract class Preference<T> {
    */
   public Preference(String name, IPreferenceStore store) {
     this.name = name;
-    this.store = store;
+    setPreferenceStore(store);
   }
 
   /**
    * Returns the name of this preference.
    * @return the name of this preference.
    */
-  public final String name() {
+  public String getName() {
     return name;
   }
 
@@ -43,23 +43,39 @@ public abstract class Preference<T> {
    * Returns the value of this preference.
    * @return the value of this preference.
    */
-  public abstract T value();
+  public abstract T getValue();
 
   /**
    * Returns the default value of this preference.
    * @return the default value of this preference.
    */
-  public abstract T defaultValue();
+  public abstract T getDefaultValue();
 
   /**
-   * Saves the value of this preference to the given store.
-   * @param value the value to save.
+   * Sets the value of this preference to the given store.
+   * @param value the value to set.
    */
-  public abstract void value(T value);
+  public abstract void setValue(T value);
 
   /**
-   * Saves the default value of this preference to the given store.
-   * @param value the default value to save.
+   * Sets the default value of this preference to the given store.
+   * @param value the default value to set.
    */
-  public abstract void defaultValue(T value);
+  public abstract void setDefaultValue(T value);
+
+  /**
+   * Returns the table mapping named preferences to values.
+   * @return the table mapping named preferences to values.
+   */
+  public IPreferenceStore getPreferenceStore() {
+    return store;
+  }
+
+  /**
+   * Sets the table mapping named preferences to values.
+   * @param store the new table.
+   */
+  public void setPreferenceStore(IPreferenceStore store) {
+    this.store = store;
+  }
 }

@@ -8,13 +8,14 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.binding;
 
-import static com.google.eclipse.protobuf.ui.preferences.binding.BindingToButtonSelection.bindSelectionOf;
+import static com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToButtonSelection.bindSelectionOf;
 import static org.mockito.Mockito.*;
 
 import org.eclipse.swt.widgets.Button;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.ui.preferences.BooleanPreference;
+import com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToButtonSelection;
 
 /**
  * Tests for <code>{@link BindingToButtonSelection}</code>.
@@ -35,16 +36,16 @@ public class BindingToButtonSelection_Test {
   }
 
   @Test public void should_apply_preference_value_to_selection_in_Button() {
-    when(preference.value()).thenReturn(true);
+    when(preference.getValue()).thenReturn(true);
     binding.applyPreferenceValueToTarget();
-    verify(preference).value();
+    verify(preference).getValue();
     verify(button).setSelection(true);
   }
 
   @Test public void should_apply_preference_default_value_to_selection_in_Button() {
-    when(preference.defaultValue()).thenReturn(true);
+    when(preference.getDefaultValue()).thenReturn(true);
     binding.applyDefaultPreferenceValueToTarget();
-    verify(preference).defaultValue();
+    verify(preference).getDefaultValue();
     verify(button).setSelection(true);
   }
 
@@ -52,6 +53,6 @@ public class BindingToButtonSelection_Test {
     when(button.getSelection()).thenReturn(true);
     binding.savePreferenceValue();
     verify(button).getSelection();
-    verify(preference).value(true);
+    verify(preference).setValue(true);
   }
 }

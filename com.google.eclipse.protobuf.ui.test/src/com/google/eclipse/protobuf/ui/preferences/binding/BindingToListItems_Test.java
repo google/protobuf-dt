@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.binding;
 
-import static com.google.eclipse.protobuf.ui.preferences.binding.BindingToListItems.bindItemsOf;
+import static com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToListItems.bindItemsOf;
 import static java.util.Arrays.asList;
 import static org.mockito.Mockito.*;
 
@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.List;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.ui.preferences.StringListPreference;
+import com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToListItems;
 
 /**
  * Tests for <code>{@link BindingToListItems}</code>.
@@ -36,18 +37,18 @@ public class BindingToListItems_Test {
   }
 
   @Test public void should_apply_preference_value_to_selection_in_Button() {
-    when(preference.value()).thenReturn(asList("One" , "Two"));
+    when(preference.getValue()).thenReturn(asList("One" , "Two"));
     binding.applyPreferenceValueToTarget();
-    verify(preference).value();
+    verify(preference).getValue();
     verify(list).removeAll();
     verify(list).add("One");
     verify(list).add("Two");
   }
 
   @Test public void should_apply_preference_default_value_to_selection_in_Button() {
-    when(preference.defaultValue()).thenReturn(asList("One" , "Two"));
+    when(preference.getDefaultValue()).thenReturn(asList("One" , "Two"));
     binding.applyDefaultPreferenceValueToTarget();
-    verify(preference).defaultValue();
+    verify(preference).getDefaultValue();
     verify(list).removeAll();
     verify(list).add("One");
     verify(list).add("Two");
@@ -57,6 +58,6 @@ public class BindingToListItems_Test {
     when(list.getItems()).thenReturn(new String[] { "One", "Two" });
     binding.savePreferenceValue();
     verify(list).getItems();
-    verify(preference).value(asList("One" , "Two"));
+    verify(preference).setValue(asList("One" , "Two"));
   }
 }

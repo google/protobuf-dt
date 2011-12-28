@@ -27,22 +27,22 @@ public class StringPreference extends Preference<String> {
   }
 
   /** {@inheritDoc} */
-  @Override public String value() {
-    return store.getString(name);
+  @Override public String getValue() {
+    return getPreferenceStore().getString(getName());
   }
 
   /** {@inheritDoc} */
-  @Override public String defaultValue() {
-    return store.getDefaultString(name);
+  @Override public String getDefaultValue() {
+    return getPreferenceStore().getDefaultString(getName());
   }
 
   /** {@inheritDoc} */
-  @Override public void value(String value) {
-    store.setValue(name, value);
+  @Override public void setValue(String value) {
+    getPreferenceStore().setValue(getName(), value);
   }
 
   /** {@inheritDoc} */
-  @Override public void defaultValue(String value) {
-    store.setDefault(name, value);
+  @Override public void setDefaultValue(String value) {
+    getPreferenceStore().setDefault(getName(), value);
   }
 }
