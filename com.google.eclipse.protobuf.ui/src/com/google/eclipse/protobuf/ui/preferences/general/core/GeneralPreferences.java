@@ -20,7 +20,6 @@ import com.google.eclipse.protobuf.ui.preferences.BooleanPreference;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class GeneralPreferences {
-
   public static final String ENABLE_PROJECT_SETTINGS_PREFERENCE_NAME = "general.enableProjectSettings";
 
   /**

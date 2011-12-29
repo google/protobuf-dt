@@ -21,7 +21,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufReconciler extends XtextReconciler {
-
   private boolean installed;
 
   @Inject public ProtobufReconciler(ProtobufReconcileStrategy strategy) {

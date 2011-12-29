@@ -24,7 +24,6 @@ import com.google.eclipse.protobuf.ui.preferences.StringListPreference;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class BindingToListItems implements Binding {
-
   private final List list;
   private final StringListPreference preference;
 

@@ -28,7 +28,6 @@ import com.google.eclipse.protobuf.protobuf.Import;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class ProtobufSpelling extends SpellingReconcileStrategy {
-
   private final INodes nodes;
 
   ProtobufSpelling(ISourceViewer viewer, SpellingService spellingService, INodes nodes) {

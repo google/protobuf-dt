@@ -14,7 +14,6 @@ import org.eclipse.osgi.util.NLS;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Messages extends NLS {
-
   public static String comments;
   public static String defaults;
   public static String enumDefinitions;

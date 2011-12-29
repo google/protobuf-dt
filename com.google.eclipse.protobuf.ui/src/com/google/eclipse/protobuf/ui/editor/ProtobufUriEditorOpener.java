@@ -22,7 +22,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufUriEditorOpener extends LanguageSpecificURIEditorOpener {
-
   private static Logger logger = Logger.getLogger(ProtobufUriEditorOpener.class);
 
   @Inject private FileOpener fileOpener;

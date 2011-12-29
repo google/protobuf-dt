@@ -16,7 +16,6 @@ import org.eclipse.xtext.ui.editor.model.XtextDocument;
  * @author alruiz@google.com (Alex Ruiz)
  */
 interface DocumentContentsFactory {
-
   void createContents(XtextDocument document, Object element) throws CoreException;
 
   boolean supportsEditorInputType(IEditorInput input);

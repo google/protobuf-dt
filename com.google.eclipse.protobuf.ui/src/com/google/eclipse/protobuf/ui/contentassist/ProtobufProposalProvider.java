@@ -46,7 +46,6 @@ import com.google.inject.Inject;
  * @see <a href="http://www.eclipse.org/Xtext/documentation/latest/xtext.html#contentAssist">Xtext Content Assist</a>
  */
 public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
-
   @Inject private IEObjectDescriptionChooser descriptionChooser;
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private ModelFinder finder;

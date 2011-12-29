@@ -30,7 +30,6 @@ import com.google.inject.name.Named;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class PreferenceStoreAccess implements IPreferenceStoreAccess {
-
   private boolean initialized = false;
 
   @Inject private IPreferenceStoreInitializer.CompositeImpl initializer;

@@ -19,7 +19,6 @@ import com.google.inject.Singleton;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton class ProtoDescriptorPathFinder {
-
   private final String descriptorFqn;
 
   ProtoDescriptorPathFinder() {

@@ -16,7 +16,6 @@ package com.google.eclipse.protobuf.ui.util;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class SimpleReference<T> {
-
   private T value;
 
   /**

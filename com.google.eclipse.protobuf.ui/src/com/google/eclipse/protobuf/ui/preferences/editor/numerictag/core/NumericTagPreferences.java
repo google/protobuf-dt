@@ -19,7 +19,6 @@ import com.google.eclipse.protobuf.ui.preferences.StringListPreference;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class NumericTagPreferences {
-
   private final StringListPreference patterns;
 
   /**

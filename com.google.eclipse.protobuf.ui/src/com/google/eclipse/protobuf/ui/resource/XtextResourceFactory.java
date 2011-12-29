@@ -33,7 +33,6 @@ import com.google.inject.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class XtextResourceFactory {
-
   @Inject private IResourceSetProvider resourceSetProvider;
   @Inject private Resources resources;
 

@@ -26,7 +26,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class FileStoreDocumentContentsFactory implements DocumentContentsFactory {
-
   @Inject private ContentReader contentReader;
   @Inject private UriEditorInputs files;
   @Inject private XtextResourceFactory resourceFactory;

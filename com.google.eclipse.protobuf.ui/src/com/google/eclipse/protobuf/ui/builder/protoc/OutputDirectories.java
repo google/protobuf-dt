@@ -17,7 +17,6 @@ import com.google.eclipse.protobuf.ui.preferences.compiler.core.CompilerPreferen
  * @author alruiz@google.com (Alex Ruiz)
  */
 class OutputDirectories {
-
   private final OutputDirectory java;
   private final OutputDirectory cpp;
   private final OutputDirectory python;

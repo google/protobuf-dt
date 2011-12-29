@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.CoreException;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class CodeGenerationErrorParser implements ProtocOutputParser {
-
   /*
    * (.*):\\s*(--.*)
    * --1- -*- --2-

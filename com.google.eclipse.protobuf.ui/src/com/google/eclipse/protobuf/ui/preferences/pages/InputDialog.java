@@ -18,7 +18,6 @@ import org.eclipse.swt.widgets.Shell;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class InputDialog extends Dialog {
-
   private final String title;
 
   /**

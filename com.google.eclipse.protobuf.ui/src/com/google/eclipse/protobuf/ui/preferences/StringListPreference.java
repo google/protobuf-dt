@@ -20,7 +20,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class StringListPreference extends Preference<List<String>> {
-
   private final String delimiter;
 
   /**

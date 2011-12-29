@@ -32,7 +32,6 @@ import com.google.eclipse.protobuf.protobuf.Import;
  * @author alruiz@google.com (Alex Ruiz)
  */
 final class Validation {
-
   static void validate(IEditorPart editor) {
     XtextEditor protoEditor = asProtoEditor(editor);
     if (protoEditor == null) {

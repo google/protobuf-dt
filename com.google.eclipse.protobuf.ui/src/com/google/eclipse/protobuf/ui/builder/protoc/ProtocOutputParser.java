@@ -17,7 +17,5 @@ import com.google.inject.ImplementedBy;
  */
 @ImplementedBy(CompoundParser.class)
 interface ProtocOutputParser {
-
   boolean parseAndAddMarkerIfNecessary(String line, ProtocMarkerFactory markerFactory) throws CoreException;
-
 }

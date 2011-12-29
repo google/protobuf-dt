@@ -19,7 +19,6 @@ import org.eclipse.ui.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class UriEditorInput implements IEditorInput {
-
   private final URI fileUri;
   private final String name;
 

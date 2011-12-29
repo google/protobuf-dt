@@ -22,7 +22,6 @@ import com.google.inject.Inject;
  */
 @SuppressWarnings("restriction")
 public class AutoAddNatureEditorCallback extends AbstractDirtyStateAwareEditorCallback {
-
   @Inject private ToggleXtextNatureAction xtext;
 
   @Override public void afterCreatePartControl(XtextEditor editor) {

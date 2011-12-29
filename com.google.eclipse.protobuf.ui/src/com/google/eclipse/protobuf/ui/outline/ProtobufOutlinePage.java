@@ -25,7 +25,6 @@ import com.google.common.base.Predicate;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufOutlinePage extends OutlinePage {
-
   @Override protected List<IOutlineNode> getInitiallyExpandedNodes() {
     IOutlineNode rootNode = getTreeProvider().createRoot(getXtextDocument());
     List<IOutlineNode> nodes = newArrayList(rootNode);

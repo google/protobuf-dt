@@ -20,7 +20,6 @@ import com.google.eclipse.protobuf.ui.preferences.StringPreference;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class BindingToTextValue implements Binding {
-
   private final Text text;
   private final StringPreference preference;
 

@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public final class CoreExceptions {
-
   public static CoreException error(Throwable cause) {
     String message = cause.getMessage();
     if (message == null) {

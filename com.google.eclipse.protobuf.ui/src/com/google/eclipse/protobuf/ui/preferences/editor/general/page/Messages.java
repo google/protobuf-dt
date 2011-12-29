@@ -15,13 +15,12 @@ import org.eclipse.osgi.util.NLS;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Messages extends NLS {
-
   public static String header;
 
   static {
     // initialize resource bundle
-    Class<Messages> clazz = Messages.class;
-    NLS.initializeMessages(clazz.getName(), clazz);
+    Class<Messages> type = Messages.class;
+    NLS.initializeMessages(type.getName(), type);
   }
 
   private Messages() {}

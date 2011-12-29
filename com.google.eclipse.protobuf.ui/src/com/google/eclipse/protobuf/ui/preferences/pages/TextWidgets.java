@@ -19,7 +19,6 @@ import org.eclipse.swt.widgets.Text;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public final class TextWidgets {
-
   /**
    * Sets the "editable" state of the given text widget. This method also sets the background of the widget to
    * the system color with id <code>{@link SWT#COLOR_LIST_BACKGROUND}</code> if the given "editable" state is

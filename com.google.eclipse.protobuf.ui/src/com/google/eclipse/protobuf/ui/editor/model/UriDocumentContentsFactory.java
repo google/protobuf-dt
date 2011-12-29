@@ -28,7 +28,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class UriDocumentContentsFactory implements DocumentContentsFactory {
-
   @Inject private ContentReader contentReader;
   @Inject private XtextResourceFactory resourceFactory;
 

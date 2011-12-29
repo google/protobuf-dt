@@ -24,7 +24,6 @@ import com.google.inject.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class ProtobufDocumentationProvider implements IEObjectDocumentationProvider {
-
   private final List<IEObjectDocumentationProvider> delegates = new ArrayList<IEObjectDocumentationProvider>();
 
   @Inject public ProtobufDocumentationProvider(SLCommentDocumentationProvider p1, MLCommentDocumentationProvider p2) {

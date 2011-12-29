@@ -25,7 +25,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufQuickAssistProcessor extends XtextQuickAssistProcessor {
-
   @Inject private SpellingCorrectionProcessor spellingCorrectionProcessor;
 
   @Override public ICompletionProposal[] computeQuickAssistProposals(IQuickAssistInvocationContext context) {

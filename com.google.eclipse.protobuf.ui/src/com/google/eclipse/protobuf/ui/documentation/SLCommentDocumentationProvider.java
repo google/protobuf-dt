@@ -30,7 +30,6 @@ import com.google.inject.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class SLCommentDocumentationProvider implements IEObjectDocumentationProvider {
-
   private static final Pattern COMMENT_START = compile("//\\s*"); // "//" plus whitespace
   private static final Patterns NEW_LINE = compileAll("\\r\\n", "\\n");
 

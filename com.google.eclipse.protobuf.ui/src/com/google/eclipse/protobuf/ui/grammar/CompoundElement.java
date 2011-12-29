@@ -20,7 +20,6 @@ import com.google.eclipse.protobuf.grammar.CommonKeyword;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public enum CompoundElement {
-
   DEFAULT_EQUAL(joinWithWhitespace(DEFAULT, EQUAL, "")),
   DEFAULT_EQUAL_IN_BRACKETS(inBrackets(DEFAULT_EQUAL)),
   QUOTE("\""),

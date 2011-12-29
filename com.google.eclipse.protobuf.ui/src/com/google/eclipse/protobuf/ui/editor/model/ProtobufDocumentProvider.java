@@ -33,7 +33,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufDocumentProvider extends XtextDocumentProvider {
-
   private static final IRegion[] NO_CHANGE = new IRegion[0];
 
   @Inject private Editors editors;

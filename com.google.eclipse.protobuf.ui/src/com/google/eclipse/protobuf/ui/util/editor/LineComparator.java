@@ -22,7 +22,6 @@ import org.eclipse.jface.text.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class LineComparator implements IRangeComparator {
-
   private static final long UNKNOWN_HASH = Long.MIN_VALUE;
 
   private static Logger logger = Logger.getLogger(LineComparator.class);

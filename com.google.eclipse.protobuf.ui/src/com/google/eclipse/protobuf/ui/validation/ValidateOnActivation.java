@@ -26,7 +26,6 @@ import com.google.eclipse.protobuf.ui.util.Resources;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ValidateOnActivation implements IPartListener2 {
-
   /**
    * Validates the active active editor in the given part that contains a .proto file in the Workspace.
    * @param partRef the part that was activated.

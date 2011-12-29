@@ -30,7 +30,6 @@ import com.google.eclipse.protobuf.ui.preferences.pages.binding.PreferenceBinder
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class NumericTagPreferencePage extends PreferenceAndPropertyPage {
-
   private static final String PREFERENCE_PAGE_ID = NumericTagPreferencePage.class.getName();
 
   private List lstPaths;

@@ -23,7 +23,6 @@ import com.google.eclipse.protobuf.protobuf.Package;
  */
 @SuppressWarnings("restriction")
 class OutlineViewModel {
-
   private static final Class<?>[] GROUP_TYPES = { Package.class, Import.class, ProtobufElement.class };
 
   private final Map<Class<?>, List<EObject>> elements = newLinkedHashMap();

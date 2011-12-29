@@ -17,7 +17,6 @@ import org.eclipse.swt.widgets.Button;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ButtonGroup {
-
   /**
    * Creates a new <code>{@link ButtonGroup}</code>.
    * @param buttons the buttons to group.

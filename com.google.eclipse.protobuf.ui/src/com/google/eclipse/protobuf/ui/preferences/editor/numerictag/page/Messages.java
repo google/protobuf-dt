@@ -14,7 +14,6 @@ import org.eclipse.osgi.util.NLS;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Messages extends NLS {
-
   public static String add;
   public static String addNewPattern;
   public static String edit;
@@ -27,8 +26,8 @@ public class Messages extends NLS {
   public static String testPattern;
 
   static {
-    Class<Messages> clazz = Messages.class;
-    NLS.initializeMessages(clazz.getName(), clazz);
+    Class<Messages> type = Messages.class;
+    NLS.initializeMessages(type.getName(), type);
   }
 
   private Messages() {}

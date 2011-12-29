@@ -28,7 +28,6 @@ import com.google.inject.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton class CommentNodesFinder {
-
   private static final String MATCH_ANYTHING = ".*";
 
   @Inject private INodes nodes;

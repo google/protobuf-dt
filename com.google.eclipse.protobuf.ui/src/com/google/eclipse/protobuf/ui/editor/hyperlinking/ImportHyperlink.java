@@ -22,7 +22,6 @@ import com.google.eclipse.protobuf.ui.editor.FileOpener;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class ImportHyperlink implements IHyperlink {
-
   private static Logger logger = Logger.getLogger(ImportHyperlink.class);
 
   private final URI importUri;

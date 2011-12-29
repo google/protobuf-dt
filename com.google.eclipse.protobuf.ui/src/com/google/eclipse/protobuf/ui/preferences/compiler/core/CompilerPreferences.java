@@ -20,7 +20,6 @@ import com.google.eclipse.protobuf.ui.preferences.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class CompilerPreferences {
-
   public static final String ENABLE_PROJECT_SETTINGS_PREFERENCE_NAME = "compiler.enableProjectSettings";
 
   /**

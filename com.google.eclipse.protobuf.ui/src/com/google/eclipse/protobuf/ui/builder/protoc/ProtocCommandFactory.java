@@ -19,7 +19,6 @@ import org.eclipse.core.resources.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class ProtocCommandFactory {
-
   String protocCommand(IFile protoFile, String protocPath, List<String> importRoots, String descriptorPath,
       OutputDirectories outputDirectories) {
     StringBuilder command = new StringBuilder();

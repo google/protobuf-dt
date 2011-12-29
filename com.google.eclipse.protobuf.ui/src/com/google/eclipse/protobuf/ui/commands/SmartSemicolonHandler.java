@@ -43,7 +43,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class SmartSemicolonHandler extends SmartInsertHandler {
-
   private static final Pattern NUMBERS_PATTERN = compile("[\\d]+");
 
   private static Logger logger = Logger.getLogger(SmartSemicolonHandler.class);

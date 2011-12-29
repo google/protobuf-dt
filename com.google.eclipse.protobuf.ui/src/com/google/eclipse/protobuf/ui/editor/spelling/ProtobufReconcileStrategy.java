@@ -22,7 +22,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufReconcileStrategy extends XtextDocumentReconcileStrategy {
-
   private ProtobufSpelling spellingStrategy;
 
   @Inject private INodes nodes;

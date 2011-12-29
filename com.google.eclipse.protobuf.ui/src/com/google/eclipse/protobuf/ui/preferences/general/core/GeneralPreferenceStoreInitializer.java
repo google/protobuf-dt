@@ -17,8 +17,6 @@ import org.eclipse.xtext.ui.editor.preferences.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class GeneralPreferenceStoreInitializer implements IPreferenceStoreInitializer {
-
-  /** {@inheritDoc} */
   @Override public void initialize(IPreferenceStoreAccess storeAccess) {
     IPreferenceStore store = storeAccess.getWritablePreferenceStore();
     GeneralPreferences preferences = new GeneralPreferences(store);

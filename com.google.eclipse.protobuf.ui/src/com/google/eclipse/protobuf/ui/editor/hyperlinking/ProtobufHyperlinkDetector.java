@@ -34,7 +34,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufHyperlinkDetector extends DefaultHyperlinkDetector {
-
   private static final IHyperlink[] NO_HYPERLINKS = null;
 
   @Inject private EObjectAtOffsetHelper eObjectAtOffsetHelper;

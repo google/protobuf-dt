@@ -36,7 +36,6 @@ import com.google.inject.Singleton;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class Editors {
-
   private static Logger logger = Logger.getLogger(Editors.class);
 
   public IRegion[] calculateChangedLineRegions(final ITextFileBuffer buffer, final IDocument current,

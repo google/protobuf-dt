@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.CoreException;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class CompoundParser implements ProtocOutputParser {
-
   private static final List<ProtocOutputParser> PARSERS =
       asList(new LineSpecificErrorParser(), new CodeGenerationErrorParser());
 

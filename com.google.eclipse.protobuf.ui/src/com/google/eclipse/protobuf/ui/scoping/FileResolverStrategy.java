@@ -17,7 +17,6 @@ import com.google.eclipse.protobuf.ui.preferences.paths.core.PathsPreferences;
  * @author alruiz@google.com (Alex Ruiz)
  */
 interface FileResolverStrategy {
-
   String PLATFORM_RESOURCE_PREFIX = "platform:/resource";
   char SEPARATOR = IPath.SEPARATOR;
 

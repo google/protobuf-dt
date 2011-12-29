@@ -27,7 +27,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class FileOutsideWorkspaceIconUpdater extends NullImpl {
-
   private static final ISchedulingRule SEQUENCE_RULE = SchedulingRuleFactory.INSTANCE.newSequence();
 
   @Inject

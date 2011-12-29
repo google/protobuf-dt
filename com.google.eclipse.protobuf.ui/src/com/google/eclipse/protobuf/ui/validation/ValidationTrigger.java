@@ -25,17 +25,13 @@ import com.google.inject.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class ValidationTrigger {
-
   private final String PROTO_EDITOR_ID = "com.google.eclipse.protobuf.Protobuf";
 
   @Inject private Resources resources;
 
   /**
-   * Triggers validation of all open .proto files belonging to the given
-   * project.
-   *
-   * @param project
-   *          the given project.
+   * Triggers validation of all open .proto files belonging to the given project.
+   * @param project the given project.
    */
   public void validateOpenEditors(IProject project) {
     for (IWorkbenchWindow window : PlatformUI.getWorkbench().getWorkbenchWindows()) {

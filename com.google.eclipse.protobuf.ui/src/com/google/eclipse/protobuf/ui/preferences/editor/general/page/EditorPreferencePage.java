@@ -24,7 +24,6 @@ import org.eclipse.ui.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class EditorPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
-
   @Override protected Control createContents(Composite parent) {
     Composite contents = new Composite(parent, NONE);
     contents.setLayout(new GridLayout(1, false));

@@ -17,10 +17,8 @@ import org.eclipse.xtext.ui.editor.preferences.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class CompilerPreferenceStoreInitializer implements IPreferenceStoreInitializer {
-
   private static final String DEFAULT_OUTPUT_DIRECTORY = "src-gen";
 
-  /** {@inheritDoc} */
   @Override public void initialize(IPreferenceStoreAccess access) {
     IPreferenceStore store = access.getWritablePreferenceStore();
     CompilerPreferences preferences = new CompilerPreferences(store);

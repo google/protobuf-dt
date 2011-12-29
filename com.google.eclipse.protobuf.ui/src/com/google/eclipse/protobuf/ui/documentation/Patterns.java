@@ -15,7 +15,6 @@ import java.util.regex.Pattern;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class Patterns implements Iterable<Pattern> {
-
   static Patterns compileAll(String...patterns) {
     return new Patterns(patterns);
   }

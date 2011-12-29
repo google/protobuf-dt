@@ -30,7 +30,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class SaveActionsPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
-
   @Inject private IPreferenceStoreAccess preferenceStoreAccess;
 
   private final PreferenceBinder preferenceBinder = new PreferenceBinder();

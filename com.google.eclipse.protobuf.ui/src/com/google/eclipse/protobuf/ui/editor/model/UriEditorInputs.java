@@ -21,7 +21,6 @@ import com.google.inject.Singleton;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton class UriEditorInputs {
-
   File fileFrom(IURIEditorInput input) {
     URI uri = input.getURI();
     String scheme = uri.getScheme();

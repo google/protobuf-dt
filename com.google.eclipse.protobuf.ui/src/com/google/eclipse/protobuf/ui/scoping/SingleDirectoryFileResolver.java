@@ -21,7 +21,6 @@ import com.google.eclipse.protobuf.ui.util.Resources;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class SingleDirectoryFileResolver implements FileResolverStrategy {
-
   private final Resources resources;
 
   SingleDirectoryFileResolver(Resources resources) {

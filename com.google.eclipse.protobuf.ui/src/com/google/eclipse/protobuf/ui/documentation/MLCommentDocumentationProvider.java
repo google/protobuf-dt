@@ -28,7 +28,6 @@ import com.google.inject.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class MLCommentDocumentationProvider implements IEObjectDocumentationProvider {
-
   private static final Pattern COMMENT = compile("(?s)/\\*\\*?.*");
   private static final Patterns CLEAN_UP = compileAll("\\A/\\*\\*?", "\\*/\\z", "(?m)^( |\\t)*\\** ?",
       "(?m)( |\\t)*\\**( |\\t)*$");

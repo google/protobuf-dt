@@ -16,7 +16,6 @@ import java.util.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class PreferenceBinder {
-
   private final List<Binding> allBindings = new ArrayList<Binding>();
 
   /**

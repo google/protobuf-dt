@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProjectVariable {
-
   private static final String VARIABLE_VALUE = "${project}";
 
   public static IPath replaceProjectNameWithProjectVariable(IPath path, IProject project) {

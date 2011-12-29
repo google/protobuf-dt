@@ -18,7 +18,6 @@ import org.eclipse.xtext.ui.editor.utils.TextStyle;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class HighlightingConfiguration extends DefaultHighlightingConfiguration {
-
   public static final String ENUM_DEFINITION_ID = "enumDefinition";
   public static final String ENUM_ID = "enum";
   public static final String ENUM_LITERAL_DEFINITION = "enumLiteralDefinition";

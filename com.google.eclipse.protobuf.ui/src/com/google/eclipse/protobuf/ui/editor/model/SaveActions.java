@@ -23,7 +23,6 @@ import com.google.inject.Singleton;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton class SaveActions {
-
   private static Logger logger = Logger.getLogger(SaveActions.class);
 
   TextEdit createSaveAction(IDocument document, IRegion[] changedRegions) {

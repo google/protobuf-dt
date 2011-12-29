@@ -27,7 +27,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufResourceUIValidatorExtension extends DefaultResourceUIValidatorExtension {
-
   public static final String EDITOR_CHECK = "com.google.eclipse.protobuf.ui.editorMarker";
 
   @VisibleForTesting @Inject MarkerCreator markerCreator;

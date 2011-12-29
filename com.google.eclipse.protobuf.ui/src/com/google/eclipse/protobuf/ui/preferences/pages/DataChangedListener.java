@@ -14,6 +14,5 @@ package com.google.eclipse.protobuf.ui.preferences.pages;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public interface DataChangedListener {
-
   void dataChanged();
 }

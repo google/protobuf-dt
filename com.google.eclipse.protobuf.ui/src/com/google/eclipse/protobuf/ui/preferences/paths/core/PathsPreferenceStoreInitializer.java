@@ -17,8 +17,6 @@ import org.eclipse.xtext.ui.editor.preferences.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class PathsPreferenceStoreInitializer implements IPreferenceStoreInitializer {
-
-  /** {@inheritDoc} */
   @Override public void initialize(IPreferenceStoreAccess access) {
     IPreferenceStore store = access.getWritablePreferenceStore();
     PathsPreferences preferences = new PathsPreferences(store);

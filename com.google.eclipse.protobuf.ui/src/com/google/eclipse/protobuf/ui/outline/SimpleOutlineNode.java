@@ -19,7 +19,6 @@ import org.eclipse.xtext.ui.editor.outline.impl.AbstractOutlineNode;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class SimpleOutlineNode extends AbstractOutlineNode {
-
   private final URI ownerUri;
 
   SimpleOutlineNode(IOutlineNode parent, EObject owner, Image image, Object text, boolean isLeaf) {

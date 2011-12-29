@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.CoreException;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class LineSpecificErrorParser implements ProtocOutputParser {
-
   /*
    * (.*):(\\d+):(\\d+):\\s*(.*)
    * --1- ---2-- ---3-- -*- --4-

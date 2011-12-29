@@ -16,7 +16,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class BooleanPreference extends Preference<Boolean> {
-
   /**
    * Creates a new </code>{@link BooleanPreference}</code>.
    * @param name the name of this preference.

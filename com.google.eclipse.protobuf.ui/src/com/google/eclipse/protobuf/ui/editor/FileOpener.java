@@ -25,7 +25,6 @@ import com.google.inject.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class FileOpener {
-
   @Inject private Resources resources;
 
   public IEditorPart openProtoFileInWorkspace(URI uri) throws PartInitException {

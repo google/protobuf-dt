@@ -30,7 +30,6 @@ import com.google.inject.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class Labels {
-
   @Inject private NameResolver nameResolver;
   @Inject private MessageFields messageFields;
   @Inject private INodes nodes;

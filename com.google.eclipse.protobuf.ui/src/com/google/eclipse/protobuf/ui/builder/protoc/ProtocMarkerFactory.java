@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.CoreException;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class ProtocMarkerFactory {
-
   private static final String PROTOC_CHECK = "com.google.eclipse.protobuf.ui.protocMarker";
 
   private final IFile file;

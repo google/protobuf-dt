@@ -16,7 +16,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public interface Binding {
-
   /**
    * Reads a preference value and applies it to the target object.
    */

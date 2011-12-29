@@ -28,7 +28,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufSemanticHighlightingCalculator implements ISemanticHighlightingCalculator {
-
   @Inject private IndexedElements indexedElements;
   @Inject private INodes nodes;
   @Inject private Options options;

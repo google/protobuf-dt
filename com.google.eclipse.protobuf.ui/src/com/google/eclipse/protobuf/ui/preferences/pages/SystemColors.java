@@ -18,7 +18,6 @@ import org.eclipse.swt.widgets.Display;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public final class SystemColors {
-
   /**
    * Returns the system color with id <code>{@link SWT#COLOR_WIDGET_BACKGROUND}</code>.
    * @return the system color with id {@code COLOR_WIDGET_BACKGROUND}.

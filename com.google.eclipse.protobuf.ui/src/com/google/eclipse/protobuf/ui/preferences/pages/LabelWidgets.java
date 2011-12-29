@@ -19,7 +19,6 @@ import org.eclipse.swt.widgets.Label;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public final class LabelWidgets {
-
   /**
    * Enables the given label widget if the given "enabled" state is {@code true}, and disables it otherwise. This method
    * also sets the foreground of the widget to the system color with id <code>{@link SWT#COLOR_WIDGET_FOREGROUND}</code>

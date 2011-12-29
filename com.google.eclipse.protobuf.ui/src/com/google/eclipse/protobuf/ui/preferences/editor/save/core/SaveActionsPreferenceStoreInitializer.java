@@ -16,8 +16,6 @@ import org.eclipse.xtext.ui.editor.preferences.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class SaveActionsPreferenceStoreInitializer implements IPreferenceStoreInitializer {
-
-  /** {@inheritDoc} */
   @Override public void initialize(IPreferenceStoreAccess storeAccess) {
     SaveActionsPreferences preferences = new SaveActionsPreferences(storeAccess);
     preferences.removeTrailingWhitespace().setDefaultValue(true);

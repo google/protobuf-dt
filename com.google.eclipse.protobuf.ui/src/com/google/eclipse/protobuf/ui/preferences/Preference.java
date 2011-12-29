@@ -17,7 +17,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public abstract class Preference<T> {
-
   private final String name;
   private IPreferenceStore store;
 

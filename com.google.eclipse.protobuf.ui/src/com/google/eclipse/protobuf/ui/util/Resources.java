@@ -24,7 +24,6 @@ import com.google.inject.Singleton;
  */
 @SuppressWarnings("deprecation")
 @Singleton public class Resources {
-
   private static final IViewReference[] NO_VIEW_REFERENCES = new IViewReference[0];
 
   public static final String URI_SCHEME_FOR_FILES = "file";

@@ -18,7 +18,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class DocumentContentsFactoryRegistry {
-
   private final List<DocumentContentsFactory> factories = new ArrayList<DocumentContentsFactory>();
 
   @Inject

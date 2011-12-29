@@ -16,7 +16,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class StringPreference extends Preference<String> {
-
   /**
    * Creates a new </code>{@link StringPreference}</code>.
    * @param name the name of this preference.

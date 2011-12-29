@@ -33,7 +33,6 @@ import com.google.eclipse.protobuf.ui.preferences.paths.core.DirectoryPath;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class DirectoryPathsEditor extends Composite {
-
   private final IProject project;
 
   private final Table tblDirectoryPaths;

@@ -26,7 +26,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class FileUriResolver implements IFileUriResolver {
-
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private Resources resources;
   @Inject private IPreferenceStoreAccess storeAccess;

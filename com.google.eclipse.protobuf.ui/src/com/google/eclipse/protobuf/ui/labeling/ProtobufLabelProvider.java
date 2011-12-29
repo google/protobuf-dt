@@ -21,7 +21,6 @@ import com.google.inject.Inject;
  * @see <a href="http://www.eclipse.org/Xtext/documentation/latest/xtext.html#labelProvider">Xtext Label Provider</a>
  */
 public class ProtobufLabelProvider extends DefaultEObjectLabelProvider {
-
   @Inject private Labels labels;
   @Inject private Images images;
 

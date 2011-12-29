@@ -15,7 +15,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class FileResolverStrategies {
-
   private final FileResolverStrategy singleDirectory;
   private final FileResolverStrategy multipleDirectories;
 

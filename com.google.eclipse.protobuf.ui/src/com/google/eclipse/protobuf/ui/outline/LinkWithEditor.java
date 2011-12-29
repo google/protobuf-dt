@@ -20,7 +20,6 @@ import com.google.inject.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class LinkWithEditor extends LinkWithEditorOutlineContribution {
-
   @Inject private Provider<OutlineWithEditorLinker> outlineWithEditorLinkerProvider;
 
   private final Map<OutlinePage, OutlineWithEditorLinker> page2linker = Maps.newHashMap();

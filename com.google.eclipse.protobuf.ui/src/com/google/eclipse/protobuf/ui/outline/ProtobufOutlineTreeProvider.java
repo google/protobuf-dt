@@ -25,7 +25,6 @@ import com.google.eclipse.protobuf.protobuf.Package;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufOutlineTreeProvider extends DefaultOutlineTreeProvider {
-
   private static final List<Class<? extends EObject>> IGNORED_ELEMENT_TYPES = new ArrayList<Class<? extends EObject>>();
 
   static {

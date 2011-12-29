@@ -16,7 +16,6 @@ import static java.io.File.separator;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public final class Paths {
-
   /**
    * Returns the segments of the given path.
    * @param path the given path.

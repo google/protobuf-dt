@@ -30,7 +30,6 @@ import com.google.eclipse.protobuf.ui.preferences.pages.InputDialog;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class AddOrEditPatternDialog extends InputDialog {
-
   private Text txtPattern;
   private Text txtTest;
   private Text txtPatternError;

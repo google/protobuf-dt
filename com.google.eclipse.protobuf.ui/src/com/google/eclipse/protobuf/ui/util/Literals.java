@@ -22,7 +22,6 @@ import com.google.inject.Singleton;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class Literals {
-
   /**
    * Calculates the index value for the given literal. The calculated index
    * value is the maximum of all the index values of the given literal's

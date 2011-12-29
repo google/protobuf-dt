@@ -37,7 +37,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufQuickfixProvider extends DefaultQuickfixProvider {
-
   private static final String ICON_FOR_CHANGE = "change.gif";
 
   @Inject private IndexedElements indexedElements;

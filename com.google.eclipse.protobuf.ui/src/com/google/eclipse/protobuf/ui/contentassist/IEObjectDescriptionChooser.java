@@ -20,7 +20,6 @@ import org.eclipse.xtext.resource.IEObjectDescription;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class IEObjectDescriptionChooser {
-
   Collection<IEObjectDescription> shortestQualifiedNamesIn(Collection<IEObjectDescription> descriptions) {
     if (descriptions.isEmpty()) {
       return emptySet();

@@ -31,7 +31,6 @@ import org.eclipse.ui.views.navigator.ResourceComparator;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class DirectorySelectionDialogs {
-
   static IPath showWorkspaceDirectorySelectionDialog(Shell shell, String initialPath) {
     return showWorkspaceDirectorySelectionDialog(shell, initialPath, null);
   }

@@ -19,7 +19,6 @@ import com.google.eclipse.protobuf.ui.preferences.BooleanPreference;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class SaveActionsPreferences {
-
   private final BooleanPreference removeTrailingWhitespace;
   private final BooleanPreference inAllLines;
   private final BooleanPreference inEditedLines;
