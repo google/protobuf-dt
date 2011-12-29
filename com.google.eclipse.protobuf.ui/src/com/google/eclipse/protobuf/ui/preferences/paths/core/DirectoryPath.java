@@ -6,16 +6,15 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.preferences.pages.paths;
+package com.google.eclipse.protobuf.ui.preferences.paths.core;
 
-import static com.google.eclipse.protobuf.ui.preferences.pages.paths.ProjectVariable.useProjectName;
-import static java.util.regex.Pattern.compile;
+import static com.google.eclipse.protobuf.ui.preferences.paths.core.ProjectVariable.replaceProjectVariableWithProjectName;
 
 import java.util.regex.*;
 
 import org.eclipse.core.filesystem.*;
 import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.*;
 
 /**
  * Represents the path of a directory.
@@ -23,39 +22,36 @@ import org.eclipse.core.runtime.Path;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class DirectoryPath {
-
-  private static final Pattern WORKSPACE_PATH_PATTERN = compile("\\$\\{workspace_loc:(.*)\\}");
+  private static final Pattern WORKSPACE_PATH_PATTERN = Pattern.compile("\\$\\{workspace_loc:(.*)\\}");
 
   private final String value;
   private final boolean isWorkspacePath;
 
-  static DirectoryPath parse(String path) {
-    return parse(path, null);
-  }
-
-  static DirectoryPath parse(String path, IProject project) {
+  /**
+   * Creates a new <code>{@link DirectoryPath}</code>.
+   * @param path the path to parse. If the path belongs to a file in the workspace it should match the pattern
+   * "\$\{workspace_loc:(.*)\}".
+   * @param project the current project.
+   * @return the created {@code DirectoryPath}.
+   */
+  public static DirectoryPath parse(String path, IProject project) {
     Matcher matcher = WORKSPACE_PATH_PATTERN.matcher(path);
+    String actualPath = path;
+    boolean isWorkspacePath = false;
     if (matcher.matches()) {
-      String actualPath = matcher.group(1);
+      actualPath = matcher.group(1);
+      isWorkspacePath = true;
       if (project != null) {
-        actualPath = useProjectName(actualPath, project);
+        IPath newPath = replaceProjectVariableWithProjectName(new Path(actualPath), project);
+        actualPath = newPath.toOSString();
       }
-      return new DirectoryPath(actualPath, true);
     }
-    return new DirectoryPath(path, false);
+    return new DirectoryPath(actualPath, isWorkspacePath);
   }
 
-  DirectoryPath(String path, boolean isWorkspacePath) {
+  private DirectoryPath(String path, boolean isWorkspacePath) {
     this.value = path;
     this.isWorkspacePath = isWorkspacePath;
-  }
-
-  /** {@inheritDoc} */
-  @Override public String toString() {
-    if (!isWorkspacePath) {
-      return value;
-    }
-    return "${workspace_loc:" + value + "}";
   }
 
   /**
@@ -76,28 +72,28 @@ public class DirectoryPath {
 
   /**
    * Returns the absolute path in the local file system, or {@code null} if no path can be determined.
-   * @param project used if this path belongs to a workspace resource.
    * @return the absolute path in the local file system, or {@code null} if no path can be determined.
    */
-  public String location(IProject project) {
+  public String absolutePathInFileSystem() {
+    Path path = new Path(value);
     if (isWorkspacePath()) {
-      return locationOfWorkspaceDirectory(project);
+      return locationOfWorkspaceDirectory(path);
     }
-    return locationOfFileSystemDirectory();
+    return locationOfFileSystemDirectory(path);
   }
 
-  private String locationOfWorkspaceDirectory(IProject project) {
+  private String locationOfWorkspaceDirectory(Path path) {
     IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-    IFolder folder = root.getFolder(new Path(value()));
-    return folder.getLocation().toOSString();
+    IFolder directory = root.getFolder(path);
+    return directory.getLocation().toOSString();
   }
 
-  private String locationOfFileSystemDirectory() {
+  private String locationOfFileSystemDirectory(Path path) {
     IFileSystem fileSystem = EFS.getLocalFileSystem();
-    IFileInfo fileInfo = fileSystem.getStore(new Path(value())).fetchInfo();
+    IFileInfo fileInfo = fileSystem.getStore(path).fetchInfo();
     if (!fileInfo.isDirectory()) {
       return null;
     }
-    return value();
+    return value;
   }
 }

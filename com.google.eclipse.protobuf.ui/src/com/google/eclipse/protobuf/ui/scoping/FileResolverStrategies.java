@@ -8,28 +8,27 @@
  */
 package com.google.eclipse.protobuf.ui.scoping;
 
-import static com.google.eclipse.protobuf.ui.preferences.pages.paths.PathResolutionType.*;
-
-import java.util.*;
-
-import com.google.eclipse.protobuf.ui.preferences.pages.paths.PathResolutionType;
 import com.google.eclipse.protobuf.ui.util.Resources;
-import com.google.inject.*;
+import com.google.inject.Inject;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton class FileResolverStrategies {
+class FileResolverStrategies {
 
-  private final Map<PathResolutionType, FileResolverStrategy> strategies =
-      new HashMap<PathResolutionType, FileResolverStrategy>();
+  private final FileResolverStrategy singleDirectory;
+  private final FileResolverStrategy multipleDirectories;
 
   @Inject FileResolverStrategies(PathMapping mapping, Resources resources) {
-    strategies.put(SINGLE_DIRECTORY, new SingleDirectoryFileResolver(resources));
-    strategies.put(MULTIPLE_DIRECTORIES, new MultipleDirectoriesFileResolver(mapping, resources));
+    singleDirectory = new SingleDirectoryFileResolver(resources);
+    multipleDirectories = new MultipleDirectoriesFileResolver(mapping, resources);
   }
 
-  FileResolverStrategy strategyFor(PathResolutionType type) {
-    return strategies.get(type);
+  FileResolverStrategy singleDirectory() {
+    return singleDirectory;
+  }
+
+  FileResolverStrategy multipleDirectories() {
+    return multipleDirectories;
   }
 }

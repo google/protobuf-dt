@@ -8,7 +8,9 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.paths.core;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.eclipse.protobuf.ui.preferences.*;
 import com.google.eclipse.protobuf.ui.preferences.editor.save.core.SaveActionsPreferences;
@@ -19,16 +21,35 @@ import com.google.eclipse.protobuf.ui.preferences.editor.save.core.SaveActionsPr
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class PathsPreferences {
-
   private final BooleanPreference filesInOneDirectoryOnly;
   private final BooleanPreference filesInMultipleDirectories;
   private final StringPreference directoryPaths;
+  private final IProject project;
+
+  /**
+   * Creates a new <code>{@link PathsPreferences}</code>.
+   * @param storeAccess simplified access to Eclipse's preferences.
+   * @param project the current project.
+   */
+  public PathsPreferences(IPreferenceStoreAccess storeAccess, IProject project) {
+    this(storeAccess.getWritablePreferenceStore(project), project);
+  }
 
   /**
    * Creates a new <code>{@link SaveActionsPreferences}</code>.
    * @param store a table mapping named preferences to values.
    */
   public PathsPreferences(IPreferenceStore store) {
+    this(store, null);
+  }
+
+  /**
+   * Creates a new <code>{@link SaveActionsPreferences}</code>.
+   * @param store a table mapping named preferences to values.
+   * @param project the current project.
+   */
+  public PathsPreferences(IPreferenceStore store, IProject project) {
+    this.project = project;
     filesInOneDirectoryOnly = new BooleanPreference("paths.filesInOneDirectoryOnly", store);
     filesInMultipleDirectories = new BooleanPreference("paths.filesInMultipleDirectories", store);
     directoryPaths = new StringPreference("paths.directoryPaths", store);
@@ -58,5 +79,13 @@ public class PathsPreferences {
    */
   public StringPreference directoryPaths() {
     return directoryPaths;
+  }
+
+  /**
+   * Returns the current project.
+   * @return the current project.
+   */
+  public IProject getProject() {
+    return project;
   }
 }

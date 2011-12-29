@@ -10,7 +10,7 @@ package com.google.eclipse.protobuf.ui.builder.protoc;
 
 import static com.google.eclipse.protobuf.ui.exception.CoreExceptions.error;
 import static com.google.eclipse.protobuf.ui.preferences.compiler.core.CompilerPreferences.compilerPreferences;
-import static com.google.eclipse.protobuf.ui.preferences.pages.paths.PathResolutionType.MULTIPLE_DIRECTORIES;
+import static com.google.eclipse.protobuf.ui.util.CommaSeparatedValues.splitCsv;
 import static com.google.eclipse.protobuf.util.Closeables.closeQuietly;
 import static java.util.Collections.*;
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
@@ -27,7 +27,7 @@ import org.eclipse.xtext.resource.IResourceDescription.Delta;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.eclipse.protobuf.ui.preferences.compiler.core.CompilerPreferences;
-import com.google.eclipse.protobuf.ui.preferences.pages.paths.*;
+import com.google.eclipse.protobuf.ui.preferences.paths.core.*;
 import com.google.inject.Inject;
 
 /**
@@ -37,11 +37,10 @@ import com.google.inject.Inject;
  */
 public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
 
-  @Inject private IPreferenceStoreAccess storeAccess;
-  @Inject private PathsPreferencesFactory pathsPreferencesFactory;
   @Inject private ProtocCommandFactory commandFactory;
   @Inject private ProtocOutputParser outputParser;
   @Inject private ProtoDescriptorPathFinder protoDescriptorPathFinder;
+  @Inject private IPreferenceStoreAccess storeAccess;
 
   @Override public void build(IBuildContext context, IProgressMonitor monitor) throws CoreException {
     IProject project = context.getBuiltProject();
@@ -78,11 +77,12 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
 
   private List<String> importRoots(IProject project) {
     List<String> paths = new ArrayList<String>();
-    PathsPreferences preferences = pathsPreferencesFactory.preferences(project);
-    if (MULTIPLE_DIRECTORIES.equals(preferences.pathResolutionType())) {
-      List<DirectoryPath> directoryPaths = preferences.importRoots();
-      for (DirectoryPath path : directoryPaths) {
-        String location = path.location(project);
+    PathsPreferences preferences = new PathsPreferences(storeAccess, project);
+    if (preferences.filesInMultipleDirectories().getValue()) {
+      String directoryPaths = preferences.directoryPaths().getValue();
+      for (String importRoot : splitCsv(directoryPaths)) {
+        DirectoryPath path = DirectoryPath.parse(importRoot, project);
+        String location = path.absolutePathInFileSystem();
         if (location != null) {
           paths.add(location);
         }

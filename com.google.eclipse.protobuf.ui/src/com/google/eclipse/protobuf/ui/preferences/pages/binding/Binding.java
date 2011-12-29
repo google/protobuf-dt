@@ -18,17 +18,17 @@ import org.eclipse.jface.preference.IPreferenceStore;
 public interface Binding {
 
   /**
-   * Reads a preference value and applies it to this binding's target object.
+   * Reads a preference value and applies it to the target object.
    */
   void applyPreferenceValueToTarget();
 
   /**
-   * Reads a default value preference and applies it to the this binding's target object.
+   * Reads a default value preference and applies it to the the target object.
    */
   void applyDefaultPreferenceValueToTarget();
 
   /**
-   * Applies the value of this binding's target object to a preference.
+   * Saves the value of the target object to a preference.
    */
   void savePreferenceValue();
 }

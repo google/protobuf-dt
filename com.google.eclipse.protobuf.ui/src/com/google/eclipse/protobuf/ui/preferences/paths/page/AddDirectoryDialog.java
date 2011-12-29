@@ -6,12 +6,11 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.preferences.pages.paths;
+package com.google.eclipse.protobuf.ui.preferences.paths.page;
 
 import static com.google.eclipse.protobuf.ui.preferences.pages.TextWidgets.setEditable;
-import static com.google.eclipse.protobuf.ui.preferences.pages.paths.DirectorySelectionDialogs.*;
-import static com.google.eclipse.protobuf.ui.preferences.pages.paths.Messages.*;
-import static com.google.eclipse.protobuf.ui.preferences.pages.paths.ProjectVariable.useProjectVariable;
+import static com.google.eclipse.protobuf.ui.preferences.paths.page.DirectorySelectionDialogs.*;
+import static com.google.eclipse.protobuf.ui.preferences.paths.page.Messages.*;
 import static org.eclipse.jface.dialogs.IDialogConstants.OK_ID;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
@@ -23,6 +22,7 @@ import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
 import com.google.eclipse.protobuf.ui.preferences.pages.InputDialog;
+import com.google.eclipse.protobuf.ui.preferences.paths.core.ProjectVariable;
 
 /**
  * Dialog where users can select a path (in the workspace or file system) to be included in resolution of imports.
@@ -30,10 +30,11 @@ import com.google.eclipse.protobuf.ui.preferences.pages.InputDialog;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class AddDirectoryDialog extends InputDialog {
+  private static final String DIRECTORY_PATH_FORMAT = "${workspace_loc:%s}";
 
   private final IProject project;
 
-  private DirectoryPath selectedPath;
+  private String selectedPath;
 
   private Text txtPath;
   private Button btnWorkspace;
@@ -100,7 +101,7 @@ public class AddDirectoryDialog extends InputDialog {
       @Override public void widgetSelected(SelectionEvent e) {
         IPath path = showWorkspaceDirectorySelectionDialog(getShell(), enteredPathText());
         if (path != null) {
-          path = useProjectVariable(path, project);
+          path = ProjectVariable.replaceProjectNameWithProjectVariable(path, project);
           txtPath.setText(path.toString().trim());
           btnIsWorkspacePath.setSelection(true);
         }
@@ -132,7 +133,10 @@ public class AddDirectoryDialog extends InputDialog {
 
   /** {@inheritDoc} */
   @Override protected void okPressed() {
-    selectedPath = new DirectoryPath(enteredPathText(), btnIsWorkspacePath.getSelection());
+    selectedPath = enteredPathText();
+    if (btnIsWorkspacePath.getSelection()) {
+      selectedPath = String.format(DIRECTORY_PATH_FORMAT, selectedPath);
+    }
     super.okPressed();
   }
 
@@ -144,7 +148,7 @@ public class AddDirectoryDialog extends InputDialog {
    * Returns the path selected by the user.
    * @return the path selected by the user.
    */
-  public DirectoryPath selectedPath() {
+  public String selectedPath() {
     return selectedPath;
   }
 }

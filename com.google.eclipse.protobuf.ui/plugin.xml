@@ -216,7 +216,7 @@
   </extension>
   <extension point="org.eclipse.ui.propertyPages">
     <page
-      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.pages.general.GeneralPreferencePage"
+      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.general.page.GeneralPreferencePage"
       id="com.google.eclipse.protobuf.Protobuf"
       name="%page.name"
       selectionFilter="single">
@@ -237,7 +237,7 @@
     </page>
     <page
       category="com.google.eclipse.protobuf.Protobuf"
-      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.pages.paths.PathsPreferencePage"
+      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.paths.page.PathsPreferencePage"
       id="com.google.eclipse.protobuf.ui.properties.paths.PropertyPage"
       name="%page.name.3"
       selectionFilter="single">

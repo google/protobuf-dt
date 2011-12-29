@@ -14,7 +14,7 @@ import java.util.*;
 
 import org.eclipse.emf.common.util.URI;
 
-import com.google.eclipse.protobuf.ui.preferences.pages.paths.PathsPreferences;
+import com.google.eclipse.protobuf.ui.preferences.paths.core.PathsPreferences;
 import com.google.eclipse.protobuf.ui.util.Resources;
 
 /**

@@ -36,9 +36,7 @@ import com.google.inject.Inject;
  */
 public abstract class PreferenceAndPropertyPage extends PreferencePage implements IWorkbenchPreferencePage,
     IWorkbenchPropertyPage {
-
   private Button btnEnableProjectSettings;
-
   private Link lnkEnableWorkspaceSettings;
 
   private IProject project;

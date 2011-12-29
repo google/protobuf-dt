@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.preferences.pages.paths;
+package com.google.eclipse.protobuf.ui.preferences.paths.core;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
@@ -17,11 +17,11 @@ import org.eclipse.core.runtime.*;
 import org.junit.*;
 
 /**
- * Tests for <code>{@link ProjectVariable#useProjectVariable(IPath, IProject)}</code>.
+ * Tests for <code>{@link ProjectVariable#replaceProjectNameWithProjectVariable(IPath, IProject)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ProjectVariable_useProjectVariable_Test {
+public class ProjectVariable_replaceProjectNameWithProjectVariable_Test {
 
   private IProject project;
 
@@ -32,21 +32,21 @@ public class ProjectVariable_useProjectVariable_Test {
   @Test public void should_use_variable_if_path_contains_project_name() {
     IPath path = new Path("/test/src/test");
     when(project.getName()).thenReturn("test");
-    IPath newPath = ProjectVariable.useProjectVariable(path, project);
-    assertThat(newPath.toString(), equalTo("/${project}/src/test"));
+    IPath newPath = ProjectVariable.replaceProjectNameWithProjectVariable(path, project);
+    assertThat(newPath.toOSString(), equalTo("/${project}/src/test"));
   }
 
   @Test public void should_not_use_variable_if_path_does_not_contain_project_name() {
     IPath path = new Path("/main/src/test");
     when(project.getName()).thenReturn("test");
-    IPath newPath = ProjectVariable.useProjectVariable(path, project);
-    assertThat(newPath.toString(), equalTo("/main/src/test"));
+    IPath newPath = ProjectVariable.replaceProjectNameWithProjectVariable(path, project);
+    assertThat(newPath.toOSString(), equalTo("/main/src/test"));
   }
 
   @Test public void should_not_use_variable_if_path_already_contains_it() {
     IPath path = new Path("/${project}/src/test");
     when(project.getName()).thenReturn("test");
-    IPath newPath = ProjectVariable.useProjectVariable(path, project);
-    assertThat(newPath.toString(), equalTo("/${project}/src/test"));
+    IPath newPath = ProjectVariable.replaceProjectNameWithProjectVariable(path, project);
+    assertThat(newPath.toOSString(), equalTo("/${project}/src/test"));
   }
 }

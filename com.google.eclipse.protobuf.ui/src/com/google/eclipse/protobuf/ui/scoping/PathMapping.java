@@ -27,10 +27,10 @@ class PathMapping {
 
   private static class FolderPathMapper implements Function<String, String> {
     @Override public String apply(String workspacePath) {
-      return folder(workspacePath).getLocation().toOSString();
+      return directory(workspacePath).getLocation().toOSString();
     }
 
-    private static IFolder folder(String workspacePath) {
+    private static IFolder directory(String workspacePath) {
       IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
       return root.getFolder(new Path(workspacePath));
     }

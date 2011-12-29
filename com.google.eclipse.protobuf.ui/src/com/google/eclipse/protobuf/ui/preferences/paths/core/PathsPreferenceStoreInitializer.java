@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.preferences.pages.paths;
+package com.google.eclipse.protobuf.ui.preferences.paths.core;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.xtext.ui.editor.preferences.*;
@@ -21,7 +21,7 @@ public class PathsPreferenceStoreInitializer implements IPreferenceStoreInitiali
   /** {@inheritDoc} */
   @Override public void initialize(IPreferenceStoreAccess access) {
     IPreferenceStore store = access.getWritablePreferenceStore();
-    RawPreferences preferences = new RawPreferences(store);
+    PathsPreferences preferences = new PathsPreferences(store);
     preferences.filesInOneDirectoryOnly().setDefaultValue(true);
     preferences.filesInMultipleDirectories().setDefaultValue(false);
     preferences.directoryPaths().setDefaultValue("");

@@ -6,12 +6,12 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.preferences.pages.paths;
+package com.google.eclipse.protobuf.ui.preferences.paths.page;
 
 import static com.google.eclipse.protobuf.ui.ProtobufUiModule.PLUGIN_ID;
 import static com.google.eclipse.protobuf.ui.preferences.pages.ButtonGroup.with;
 import static com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToButtonSelection.bindSelectionOf;
-import static com.google.eclipse.protobuf.ui.preferences.pages.paths.Messages.*;
+import static com.google.eclipse.protobuf.ui.preferences.paths.page.Messages.*;
 import static java.util.Collections.unmodifiableList;
 import static org.eclipse.core.resources.IncrementalProjectBuilder.FULL_BUILD;
 import static org.eclipse.core.runtime.Status.OK_STATUS;
@@ -30,9 +30,9 @@ import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.xtext.ui.PluginImageHelper;
 
-import com.google.eclipse.protobuf.ui.preferences.*;
 import com.google.eclipse.protobuf.ui.preferences.pages.*;
 import com.google.eclipse.protobuf.ui.preferences.pages.binding.*;
+import com.google.eclipse.protobuf.ui.preferences.paths.core.PathsPreferences;
 import com.google.eclipse.protobuf.ui.validation.ValidationTrigger;
 import com.google.inject.Inject;
 
@@ -42,7 +42,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class PathsPreferencePage extends PreferenceAndPropertyPage {
-
   private static Logger logger = Logger.getLogger(PathsPreferencePage.class);
 
   private static final String COMMA_DELIMITER = ",";
@@ -116,45 +115,42 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
   }
 
   @Override protected void setupBinding(PreferenceBinder preferenceBinder) {
-    RawPreferences preferences = new RawPreferences(getPreferenceStore());
-    preferenceBinder.addAll(bindSelectionOf(btnOneDirectoryOnly).to(preferences.filesInOneDirectoryOnly()),
-        bindSelectionOf(btnMultipleDirectories).to(preferences.filesInMultipleDirectories()));
-    final StringPreference directoryPaths = preferences.directoryPaths();
+    final PathsPreferences preferences = new PathsPreferences(getPreferenceStore());
+    preferenceBinder.addAll(
+        bindSelectionOf(btnOneDirectoryOnly).to(preferences.filesInOneDirectoryOnly()),
+        bindSelectionOf(btnMultipleDirectories).to(preferences.filesInMultipleDirectories())
+      );
     preferenceBinder.add(new Binding() {
       @Override public void applyPreferenceValueToTarget() {
-        setDirectoryPaths(directoryPaths.getValue());
+        setDirectoryPaths(preferences.directoryPaths().getValue());
       }
 
       @Override public void applyDefaultPreferenceValueToTarget() {
-        setDirectoryPaths(directoryPaths.getDefaultValue());
+        setDirectoryPaths(preferences.directoryPaths().getDefaultValue());
       }
 
       @Override public void savePreferenceValue() {
-        directoryPaths.setValue(directoryNames());
+        preferences.directoryPaths().setValue(directoryNames());
       }
     });
   }
 
   private String directoryNames() {
-    List<DirectoryPath> paths = directoryPathsEditor.directoryPaths();
+    List<String> paths = directoryPathsEditor.directoryPaths();
     if (paths.isEmpty())
      {
       return "";
     }
-    List<String> pathsAsText = new ArrayList<String>();
-    for (DirectoryPath path : paths) {
-      pathsAsText.add(path.toString());
-    }
-    return concat(COMMA_DELIMITER, pathsAsText);
+    return concat(COMMA_DELIMITER, paths);
   }
 
   private void setDirectoryPaths(String directoryPaths) {
-    List<DirectoryPath> paths = new ArrayList<DirectoryPath>();
+    List<String> paths = new ArrayList<String>();
     for (String path : split(directoryPaths, COMMA_DELIMITER)) {
       if (isEmpty(path)) {
         continue;
       }
-      paths.add(DirectoryPath.parse(path));
+      paths.add(path);
     }
     directoryPathsEditor.directoryPaths(unmodifiableList(paths));
   }

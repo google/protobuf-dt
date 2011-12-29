@@ -8,21 +8,22 @@
  */
 package com.google.eclipse.protobuf.ui.scoping;
 
-import java.util.List;
+import static com.google.eclipse.protobuf.ui.util.CommaSeparatedValues.splitCsv;
+
+import java.util.*;
 
 import org.eclipse.core.filesystem.*;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.runtime.*;
 import org.eclipse.emf.common.util.URI;
 
-import com.google.eclipse.protobuf.ui.preferences.pages.paths.*;
+import com.google.eclipse.protobuf.ui.preferences.paths.core.*;
 import com.google.eclipse.protobuf.ui.util.Resources;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 class MultipleDirectoriesFileResolver implements FileResolverStrategy {
-
   private final PathMapping mapping;
   private final Resources resources;
 
@@ -33,18 +34,20 @@ class MultipleDirectoriesFileResolver implements FileResolverStrategy {
 
   /** {@inheritDoc} */
   @Override public String resolveUri(String importUri, URI declaringResourceUri, PathsPreferences preferences) {
-    List<DirectoryPath> importRoots = preferences.importRoots();
-    for (DirectoryPath root : importRoots) {
-      String resolved = resolveUri(importUri, root);
+    String directoryPaths = preferences.directoryPaths().getValue();
+    List<String> fileSystemDirectories = new ArrayList<String>();
+    for (String importRoot : splitCsv(directoryPaths)) {
+      DirectoryPath path = DirectoryPath.parse(importRoot, preferences.getProject());
+      String resolved = resolveUri(importUri, path);
       if (resolved != null) {
         return resolved;
       }
-    }
-    for (DirectoryPath root : importRoots) {
-      if (!root.isWorkspacePath()) {
-        continue;
+      if (!path.isWorkspacePath()) {
+        fileSystemDirectories.add(path.value());
       }
-      String resolved = resolveUriInFileSystem(importUri, mapping.folderLocation(root.value()));
+    }
+    for (String root : fileSystemDirectories) {
+      String resolved = resolveUriInFileSystem(importUri, mapping.folderLocation(root));
       if (resolved != null) {
         return resolved;
       }
@@ -52,23 +55,23 @@ class MultipleDirectoriesFileResolver implements FileResolverStrategy {
     return null;
   }
 
-  private String resolveUri(String importUri, DirectoryPath importRoot) {
-    String root = importRoot.value();
-    if (importRoot.isWorkspacePath()) {
+  private String resolveUri(String importUri, DirectoryPath importRootPath) {
+    String root = importRootPath.value();
+    if (importRootPath.isWorkspacePath()) {
       return resolveUriInWorkspace(importUri, root);
     }
     return resolveUriInFileSystem(importUri, root);
   }
 
-  private String resolveUriInWorkspace(String importUri, String importRoot) {
-    String path = PLATFORM_RESOURCE_PREFIX + importRoot + SEPARATOR + importUri;
+  private String resolveUriInWorkspace(String importUri, String importRootPath) {
+    String path = PLATFORM_RESOURCE_PREFIX + importRootPath + SEPARATOR + importUri;
     boolean exists = resources.fileExists(URI.createURI(path));
     return (exists) ? path : null;
   }
 
-  private String resolveUriInFileSystem(String importUri, String importRoot) {
+  private String resolveUriInFileSystem(String importUri, String importRootPath) {
     IFileSystem fileSystem = EFS.getLocalFileSystem();
-    IPath path = new Path(importRoot + SEPARATOR + importUri);
+    IPath path = new Path(importRootPath + SEPARATOR + importUri);
     IFileInfo fileInfo = fileSystem.getStore(path).fetchInfo();
     if (!fileInfo.exists()) {
       return null;

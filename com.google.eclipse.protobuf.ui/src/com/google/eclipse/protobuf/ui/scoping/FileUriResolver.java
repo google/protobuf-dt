@@ -13,9 +13,10 @@ import static org.eclipse.xtext.util.Strings.isEmpty;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.eclipse.protobuf.scoping.*;
-import com.google.eclipse.protobuf.ui.preferences.pages.paths.*;
+import com.google.eclipse.protobuf.ui.preferences.paths.core.PathsPreferences;
 import com.google.eclipse.protobuf.ui.util.Resources;
 import com.google.inject.Inject;
 
@@ -26,10 +27,10 @@ import com.google.inject.Inject;
  */
 public class FileUriResolver implements IFileUriResolver {
 
-  @Inject private PathsPreferencesFactory preferencesFactory;
-  @Inject private FileResolverStrategies resolvers;
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private Resources resources;
+  @Inject private IPreferenceStoreAccess storeAccess;
+  @Inject private FileResolverStrategies resolvers;
 
   /*
    * The import URI is relative to the file where the import is. Protoc works fine, but the editor doesn't.
@@ -71,11 +72,14 @@ public class FileUriResolver implements IFileUriResolver {
     if (project == null) {
       throw new IllegalStateException("Unable to find current project");
     }
-    PathsPreferences preferences = preferencesFactory.preferences(project);
+    PathsPreferences preferences = new PathsPreferences(storeAccess, project);
     return resolver(preferences).resolveUri(importUri, resourceUri, preferences);
   }
 
   private FileResolverStrategy resolver(PathsPreferences preferences) {
-    return resolvers.strategyFor(preferences.pathResolutionType());
+    if (preferences.filesInOneDirectoryOnly().getValue()) {
+      return resolvers.singleDirectory();
+    }
+    return resolvers.multipleDirectories();
   }
 }

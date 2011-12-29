@@ -6,9 +6,9 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.preferences.pages.paths;
+package com.google.eclipse.protobuf.ui.preferences.paths.page;
 
-import static com.google.eclipse.protobuf.ui.preferences.pages.paths.Messages.*;
+import static com.google.eclipse.protobuf.ui.preferences.paths.page.Messages.*;
 import static java.util.Collections.unmodifiableList;
 import static org.eclipse.jface.window.Window.OK;
 
@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.xtext.ui.PluginImageHelper;
 
 import com.google.eclipse.protobuf.ui.preferences.pages.DataChangedListener;
+import com.google.eclipse.protobuf.ui.preferences.paths.core.DirectoryPath;
 
 /**
  * Editor where users can add/remove the directories to be used for URI resolution.
@@ -42,7 +43,7 @@ public class DirectoryPathsEditor extends Composite {
   private final Button btnUp;
   private final Button btnDown;
 
-  private final LinkedList<DirectoryPath> importPaths = new LinkedList<DirectoryPath>();
+  private final LinkedList<String> importPaths = new LinkedList<String>();
 
   private DataChangedListener dataChangedListener;
 
@@ -69,7 +70,7 @@ public class DirectoryPathsEditor extends Composite {
     tblclmnPath.setText(directories);
     tblclmnVwrPath.setLabelProvider(new ColumnLabelProvider() {
       @Override public String getText(Object element) {
-        return ((DirectoryPath) element).toString();
+        return element.toString();
       }
     });
 
@@ -149,7 +150,7 @@ public class DirectoryPathsEditor extends Composite {
     }
     int target = goUp ? index - 1 : index + 1;
     int[] selection = tblDirectoryPaths.getSelectionIndices();
-    DirectoryPath path = importPaths.get(selection[0]);
+    String path = importPaths.get(selection[0]);
     importPaths.remove(index);
     importPaths.add(target, path);
     updateTable();
@@ -181,11 +182,11 @@ public class DirectoryPathsEditor extends Composite {
     btnDown.setEnabled(hasElements && hasSelection && selectionIndex < size - 1);
   }
 
-  public List<DirectoryPath> directoryPaths() {
+  public List<String> directoryPaths() {
     return unmodifiableList(importPaths);
   }
 
-  public void directoryPaths(Collection<DirectoryPath> paths) {
+  public void directoryPaths(Collection<String> paths) {
     importPaths.clear();
     importPaths.addAll(paths);
     updateTable();

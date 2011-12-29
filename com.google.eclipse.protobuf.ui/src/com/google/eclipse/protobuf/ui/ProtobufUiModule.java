@@ -41,7 +41,7 @@ import com.google.eclipse.protobuf.ui.preferences.compiler.core.CompilerPreferen
 import com.google.eclipse.protobuf.ui.preferences.editor.numerictag.core.NumericTagPreferenceStoreInitializer;
 import com.google.eclipse.protobuf.ui.preferences.editor.save.core.SaveActionsPreferenceStoreInitializer;
 import com.google.eclipse.protobuf.ui.preferences.general.core.GeneralPreferenceStoreInitializer;
-import com.google.eclipse.protobuf.ui.preferences.pages.paths.PathsPreferenceStoreInitializer;
+import com.google.eclipse.protobuf.ui.preferences.paths.core.PathsPreferenceStoreInitializer;
 import com.google.eclipse.protobuf.ui.quickfix.ProtobufQuickAssistProcessor;
 import com.google.eclipse.protobuf.ui.scoping.FileUriResolver;
 import com.google.eclipse.protobuf.ui.validation.*;

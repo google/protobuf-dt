@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.preferences.pages.paths;
+package com.google.eclipse.protobuf.ui.preferences.paths.core;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.*;
@@ -16,17 +16,16 @@ import org.eclipse.core.runtime.*;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-class ProjectVariable {
+public class ProjectVariable {
 
   private static final String VARIABLE_VALUE = "${project}";
 
-  static IPath useProjectVariable(IPath path, IProject project) {
+  public static IPath replaceProjectNameWithProjectVariable(IPath path, IProject project) {
     return switchProjectSegments(path, project.getName(), VARIABLE_VALUE);
   }
 
-  static String useProjectName(String path, IProject project) {
-    IPath newPath = switchProjectSegments(new Path(path), VARIABLE_VALUE, project.getName());
-    return newPath.toString();
+  public static IPath replaceProjectVariableWithProjectName(IPath path, IProject project) {
+    return switchProjectSegments(path, VARIABLE_VALUE, project.getName());
   }
 
   private static IPath switchProjectSegments(IPath path, String currentSegment, String newSegment) {

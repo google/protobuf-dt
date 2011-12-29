@@ -11,7 +11,7 @@ package com.google.eclipse.protobuf.ui.scoping;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.util.URI;
 
-import com.google.eclipse.protobuf.ui.preferences.pages.paths.PathsPreferences;
+import com.google.eclipse.protobuf.ui.preferences.paths.core.PathsPreferences;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

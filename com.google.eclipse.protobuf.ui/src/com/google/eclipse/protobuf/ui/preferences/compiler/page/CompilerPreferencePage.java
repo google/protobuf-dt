@@ -359,6 +359,10 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
   }
 
   private void checkState() {
+    if (isPropertyPage() && !areProjectSettingsActive()) {
+      pageIsNowValid();
+      return;
+    }
     if (!atLeastOneTargetLanguageIsSelected()) {
       pageIsNowInvalid(errorNoLanguageSelected);
       return;
