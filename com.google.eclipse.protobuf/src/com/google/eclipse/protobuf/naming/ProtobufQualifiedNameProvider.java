@@ -30,7 +30,6 @@ import com.google.inject.*;
  */
 public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.AbstractImpl implements
     IProtobufQualifiedNameProvider {
-
   @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
   @Inject private final IResourceScopeCache cache = IResourceScopeCache.NullImpl.INSTANCE;
 

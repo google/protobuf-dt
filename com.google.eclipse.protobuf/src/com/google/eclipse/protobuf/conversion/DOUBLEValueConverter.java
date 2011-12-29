@@ -23,7 +23,6 @@ import org.eclipse.xtext.nodemodel.INode;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class DOUBLEValueConverter extends AbstractLexerBasedConverter<Double> {
-
   private static final Map<String, Double> PREDEFINED_VALUES = new HashMap<String, Double>();
 
   static {

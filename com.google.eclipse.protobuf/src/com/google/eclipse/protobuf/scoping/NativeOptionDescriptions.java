@@ -22,7 +22,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class NativeOptionDescriptions {
-
   @Inject private ProtoDescriptorProvider descriptorProvider;
 
   Collection<IEObjectDescription> sources(AbstractOption option) {

@@ -18,8 +18,8 @@ import com.google.inject.ImplementedBy;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@ImplementedBy(NullFileUriResolver.class) public interface IFileUriResolver {
-
+@ImplementedBy(NullFileUriResolver.class)
+public interface IFileUriResolver {
   /**
    * Resolves the given 'import' URI.
    * @param importUri the 'import' URI.

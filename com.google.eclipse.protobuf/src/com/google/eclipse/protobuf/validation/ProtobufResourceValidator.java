@@ -37,7 +37,6 @@ import com.google.eclipse.protobuf.linking.ProtobufDiagnostic;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufResourceValidator extends ResourceValidatorImpl {
-
   private static final Logger log = Logger.getLogger(ProtobufResourceValidator.class);
 
   @Override public List<Issue> validate(Resource resource, CheckMode mode, CancelIndicator indicator) {

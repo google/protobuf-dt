@@ -14,7 +14,6 @@ package com.google.eclipse.protobuf.util;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public final class SystemProperties {
-
   private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
   public static String lineSeparator() {

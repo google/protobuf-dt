@@ -12,7 +12,6 @@ package com.google.eclipse.protobuf.util;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public final class CommonWords {
-
   private static final String SPACE = " ";
 
   /**

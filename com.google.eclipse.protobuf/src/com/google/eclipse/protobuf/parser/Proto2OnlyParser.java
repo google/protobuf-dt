@@ -11,10 +11,11 @@ package com.google.eclipse.protobuf.parser;
 import org.antlr.runtime.CharStream;
 import org.eclipse.xtext.nodemodel.*;
 import org.eclipse.xtext.nodemodel.impl.NodeModelBuilder;
-import org.eclipse.xtext.parser.IParseResult;
+import org.eclipse.xtext.parser.*;
 
 import com.google.eclipse.protobuf.parser.antlr.ProtobufParser;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.inject.Inject;
 
 /**
  * Parser that only parses protocol buffers with "proto2" syntax, older syntax is ignored completely.
@@ -22,21 +23,21 @@ import com.google.eclipse.protobuf.protobuf.Protobuf;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Proto2OnlyParser extends ProtobufParser {
-
   private static final String[] ERRORS_TO_LOOK_FOR = { "missing EOF at 'c'", "missing EOF at 'java'",
       "missing EOF at 'parsed'", "missing EOF at 'python'", "no viable alternative at input '<'" };
+
+  @Inject private ParserChecksSettingsProvider settingsProvider;
 
   @Override protected IParseResult doParse(String ruleName, CharStream in, NodeModelBuilder builder,
       int initialLookAhead) {
     IParseResult result = super.doParse(ruleName, in, builder, initialLookAhead);
-    // TODO enable this check via preferences in internal version.
-    // if (isNonProto2(result)) {
-    //  return new ParseResult(new NonProto2Protobuf(), result.getRootNode(), false);
-    // }
+    if (settingsProvider.shouldCheckProto2Only() && isNotProto2(result)) {
+     return new ParseResult(new NonProto2Protobuf(), result.getRootNode(), false);
+    }
     return result;
   }
 
-  private boolean isNonProto2(IParseResult result) {
+  private boolean isNotProto2(IParseResult result) {
     if (!result.hasSyntaxErrors()) {
       return false;
     }

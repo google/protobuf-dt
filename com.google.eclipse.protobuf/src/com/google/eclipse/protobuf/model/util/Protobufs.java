@@ -18,7 +18,6 @@ import com.google.inject.Singleton;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class Protobufs {
-
   /**
    * Indicates whether the given <code>{@link Protobuf}</code> is not {@code null} and has "proto2" syntax.
    * @param protobuf the {@code Protobuf} to check.

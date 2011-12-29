@@ -21,7 +21,6 @@ import org.eclipse.xtext.nodemodel.INode;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufDiagnostic extends AbstractDiagnostic {
-
   private final String code;
   private final String[] data;
   private final StringBuilder message;

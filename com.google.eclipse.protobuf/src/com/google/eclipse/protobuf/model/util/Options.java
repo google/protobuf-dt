@@ -23,7 +23,6 @@ import com.google.inject.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class Options {
-
   @Inject private ModelObjects modelObjects;
   @Inject private NameResolver nameResolver;
   @Inject private OptionFields optionFields;

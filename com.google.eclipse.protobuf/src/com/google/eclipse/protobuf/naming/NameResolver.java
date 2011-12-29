@@ -22,7 +22,6 @@ import com.google.inject.Singleton;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class NameResolver {
-
   /**
    * Returns the name of the given element.
    * @param o the given element.

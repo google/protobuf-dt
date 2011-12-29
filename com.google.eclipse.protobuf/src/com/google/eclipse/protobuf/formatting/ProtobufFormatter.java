@@ -22,7 +22,6 @@ import com.google.eclipse.protobuf.services.ProtobufGrammarAccess;
  * @see <a href="http://www.eclipse.org/Xtext/documentation/2_0_0/105-formatting.php">Xtext Formatting</a>
  */
 public class ProtobufFormatter extends AbstractDeclarativeFormatter {
-
   @Override protected void configureFormatting(FormattingConfig c) {
     ProtobufGrammarAccess g = (ProtobufGrammarAccess) getGrammarAccess();
     c.setLinewrap(0, 1, 2).before(g.getSL_COMMENTRule());

@@ -24,7 +24,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class QualifiedNameDescriptions {
-
   @Inject private IProtobufQualifiedNameProvider nameProvider;
   @Inject private QualifiedNames qualifiedNames;
 

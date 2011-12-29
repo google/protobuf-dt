@@ -22,7 +22,6 @@ import com.google.inject.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class Keywords {
-
   private final Set<String> keywords;
 
   /**

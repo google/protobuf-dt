@@ -26,7 +26,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class TypeScopeFinder implements ScopeFinder {
-
   @Inject private PackageIntersectionDescriptions packageIntersectionDescriptions;
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private LocalNamesProvider localNamesProvider;

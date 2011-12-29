@@ -20,7 +20,6 @@ import com.google.inject.Singleton;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class QualifiedNames {
-
   public QualifiedName createFqn(List<String> segments) {
     return QualifiedName.create(asArray(segments));
   }

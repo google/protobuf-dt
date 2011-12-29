@@ -25,7 +25,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class PackageIntersectionDescriptions {
-
   @Inject private Packages packages;
   @Inject private QualifiedNames qualifiedNames;
   @Inject private IQualifiedNameProvider nameProvider;

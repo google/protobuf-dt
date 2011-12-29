@@ -12,7 +12,6 @@ package com.google.eclipse.protobuf.grammar;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public final class Syntaxes {
-
   /**
    * Returns the value to use to in the "syntax" element.
    * @return the {@code String} "proto2".

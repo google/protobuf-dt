@@ -24,7 +24,6 @@ import com.google.inject.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class CustomOptionFieldScopeFinder {
-
   @Inject private ModelFinder modelFinder;
   @Inject private OptionFields optionFields;
   @Inject private Options options;

@@ -23,7 +23,6 @@ import org.eclipse.xtext.nodemodel.INode;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class STRINGValueConverter extends AbstractLexerBasedConverter<String> {
-
   private static final Pattern LINE_BREAK = compile("\"[\t\r\n]+\"|'[\t\r\n]+'");
 
   @Override protected String toEscapedString(String value) {

@@ -27,7 +27,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class AstWalker {
-
   @Inject private ModelFinder modelFinder;
   @Inject private Imports imports;
   @Inject private Packages packages;

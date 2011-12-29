@@ -23,7 +23,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Resources {
-
   @Inject private ImportUriResolver uriResolver;
 
   /**

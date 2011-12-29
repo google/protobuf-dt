@@ -31,7 +31,6 @@ import com.google.inject.Inject;
  * @see <a href="http://www.eclipse.org/Xtext/documentation/latest/xtext.html#scoping">Xtext Scoping</a>
  */
 public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider implements Scoping {
-
   private static final boolean DO_NOT_IGNORE_CASE = false;
 
   @Inject private AstWalker astWalker;

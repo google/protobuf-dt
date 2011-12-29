@@ -25,15 +25,14 @@ import com.google.inject.*;
  */
 public class IntegrationTestSetup extends ProtobufStandaloneSetup {
 
-  IntegrationTestSetup() {}
+  protected IntegrationTestSetup() {}
 
   @Override
   public Injector createInjector() {
     return Guice.createInjector(new Module());
   }
 
-  private static class Module extends ProtobufRuntimeModule {
-    @SuppressWarnings("unused")
+  protected static class Module extends ProtobufRuntimeModule {
     public Class<? extends IFileUriResolver> bindFileUriResolver() {
       return FileUriResolver.class;
     }

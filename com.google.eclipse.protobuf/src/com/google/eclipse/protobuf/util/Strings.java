@@ -14,7 +14,6 @@ package com.google.eclipse.protobuf.util;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public final class Strings {
-
   /**
    * Returns the given {@code String} in double quotes.
    * @param s the given {@code String}, may be {@code null}.

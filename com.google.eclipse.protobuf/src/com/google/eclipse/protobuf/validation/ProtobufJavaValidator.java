@@ -31,7 +31,6 @@ import com.google.inject.Inject;
  */
 @ComposedChecks(validators = { DataTypeValidator.class, ImportValidator.class }) public class ProtobufJavaValidator
     extends AbstractProtobufJavaValidator {
-
   public static final String SYNTAX_IS_NOT_PROTO2_ERROR = "syntaxIsNotProto2";
   public static final String INVALID_FIELD_TAG_NUMBER_ERROR = "invalidFieldTagNumber";
   public static final String MORE_THAN_ONE_PACKAGE_ERROR = "moreThanOnePackage";

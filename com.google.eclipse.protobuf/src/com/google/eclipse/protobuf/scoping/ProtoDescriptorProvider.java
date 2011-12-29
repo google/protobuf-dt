@@ -27,7 +27,6 @@ import com.google.inject.*;
  * @author Alex Ruiz
  */
 @Singleton public class ProtoDescriptorProvider {
-
   private static final String EXTENSION_ID = "com.google.eclipse.protobuf.descriptorSource";
 
   @Inject private IParser parser;
@@ -94,7 +93,7 @@ import com.google.inject.*;
       if (descriptorInfos == null) {
         descriptorInfos = new LinkedHashMap<String, URI>();
         add(defaultDescriptorInfo());
-        add(additionalDescriptorInfo());
+        add(descriptorInfoFromExtensionPoint());
       }
     }
   }
@@ -104,10 +103,10 @@ import com.google.inject.*;
     return new ProtoDescriptorInfo("google/protobuf/descriptor.proto", location);
   }
 
-  private ProtoDescriptorInfo additionalDescriptorInfo() {
+  private ProtoDescriptorInfo descriptorInfoFromExtensionPoint() {
     IConfigurationElement[] config = registry.getConfigurationElementsFor(EXTENSION_ID);
     if (config == null) {
-      return defaultDescriptorInfo();
+      return null;
     }
     for (IConfigurationElement e : config) {
       ProtoDescriptorInfo info = descriptorInfo(e);

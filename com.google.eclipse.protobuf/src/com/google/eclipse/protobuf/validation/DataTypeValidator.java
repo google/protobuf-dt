@@ -24,7 +24,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class DataTypeValidator extends AbstractDeclarativeValidator {
-
   public static final String EXPECTED_BOOL_ERROR = "expectedBool";
   public static final String EXPECTED_STRING_ERROR = "expectedString";
 

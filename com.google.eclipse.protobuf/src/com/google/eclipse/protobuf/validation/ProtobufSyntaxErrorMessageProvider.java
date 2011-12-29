@@ -23,7 +23,6 @@ import com.google.eclipse.protobuf.protobuf.MessageField;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufSyntaxErrorMessageProvider extends SyntaxErrorMessageProvider {
-
   @Override public SyntaxErrorMessage getSyntaxErrorMessage(IParserErrorContext context) {
     String message = context.getDefaultMessage();
     EObject currentContext = context.getCurrentContext();

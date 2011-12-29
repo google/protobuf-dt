@@ -38,7 +38,6 @@ import com.google.eclipse.protobuf.protobuf.Enum;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtoDescriptor {
-
   private static final Map<String, OptionType> OPTION_DEFINITION_BY_NAME = new HashMap<String, OptionType>();
 
   static {

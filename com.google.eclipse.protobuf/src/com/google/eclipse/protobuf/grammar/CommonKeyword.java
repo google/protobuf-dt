@@ -14,7 +14,6 @@ package com.google.eclipse.protobuf.grammar;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public enum CommonKeyword {
-
   // we used to get keywords from IGrammarAccess. The problem was that we still had to hard-code the keyword we were
   // looking for. The code was too complicated and if the grammar changed for some reason, we had to change our
   // implementation anyway.

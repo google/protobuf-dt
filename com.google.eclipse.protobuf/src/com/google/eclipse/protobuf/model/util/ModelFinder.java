@@ -31,7 +31,6 @@ import com.google.inject.Singleton;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class ModelFinder {
-
   /**
    * Returns all the extensions of the given message declared in the same file as the message.
    * @param message the given message.

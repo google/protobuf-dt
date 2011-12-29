@@ -20,7 +20,6 @@ import com.google.inject.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class Imports {
-
   @Inject private ProtoDescriptorProvider descriptorProvider;
 
   /**

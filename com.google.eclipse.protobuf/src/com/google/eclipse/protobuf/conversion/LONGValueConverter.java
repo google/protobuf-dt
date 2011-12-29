@@ -22,7 +22,6 @@ import org.eclipse.xtext.nodemodel.INode;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class LONGValueConverter extends AbstractLexerBasedConverter<Long> {
-
   /**
    * Creates an {@code int} from the given input, if the given input represents an integer number.
    * @param string the given input.

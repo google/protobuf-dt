@@ -20,14 +20,16 @@ import com.google.inject.*;
  */
 public class UnitTestSetup extends ProtobufStandaloneSetup {
 
-  UnitTestSetup() {}
+  protected UnitTestSetup() {}
 
   @Override
   public Injector createInjector() {
     return Guice.createInjector(new Module());
   }
 
-  private static class Module extends ProtobufRuntimeModule {
+  protected static class Module extends ProtobufRuntimeModule {
+    public Module() {}
+
     @Override public void configureExtensionRegistry(Binder binder) {
       binder.bind(IExtensionRegistry.class).toProvider(ExtensionRegistryProvider.class);
     }

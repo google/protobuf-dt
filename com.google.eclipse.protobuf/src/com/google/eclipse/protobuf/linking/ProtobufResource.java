@@ -18,7 +18,6 @@ import org.eclipse.xtext.util.Triple;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufResource extends LazyLinkingResource {
-
   @Override protected Diagnostic createDiagnostic(Triple<EObject, EReference, INode> t, DiagnosticMessage message) {
     return new ProtobufDiagnostic(message.getIssueCode(), message.getIssueData(), message.getMessage(), t.getThird());
   }

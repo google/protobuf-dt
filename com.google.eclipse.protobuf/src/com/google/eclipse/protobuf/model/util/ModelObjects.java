@@ -18,7 +18,6 @@ import com.google.inject.Singleton;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class ModelObjects {
-
   /**
    * Returns the value of the structural feature with a matching name in the given model object.
    * @param e the given model object.

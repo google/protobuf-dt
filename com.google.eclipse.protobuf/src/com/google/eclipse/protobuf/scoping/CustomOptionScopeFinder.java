@@ -26,7 +26,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class CustomOptionScopeFinder implements ScopeFinder {
-
   @Inject private LocalNamesProvider localNamesProvider;
   @Inject private ModelFinder modelFinder;
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;

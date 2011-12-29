@@ -57,7 +57,6 @@ import com.google.inject.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class LocalNamesProvider {
-
   @Inject private final IResourceScopeCache cache = IResourceScopeCache.NullImpl.INSTANCE;
   @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
 

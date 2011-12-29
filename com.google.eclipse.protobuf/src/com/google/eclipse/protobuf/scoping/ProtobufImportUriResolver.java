@@ -26,7 +26,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufImportUriResolver extends ImportUriResolver {
-
   @Inject private IFileUriResolver delegate;
 
   /**

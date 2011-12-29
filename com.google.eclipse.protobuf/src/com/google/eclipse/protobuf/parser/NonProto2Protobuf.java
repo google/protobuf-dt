@@ -17,5 +17,8 @@ import com.google.eclipse.protobuf.protobuf.impl.ProtobufImpl;
  */
 public class NonProto2Protobuf extends ProtobufImpl {
 
-  NonProto2Protobuf() {}
+  /**
+   * Creates a new <code>{@link NonProto2Protobuf}</code>.
+   */
+  public NonProto2Protobuf() {}
 }

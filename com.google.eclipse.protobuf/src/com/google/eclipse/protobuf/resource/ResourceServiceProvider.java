@@ -20,7 +20,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ResourceServiceProvider extends ResourceServiceProviderImpl {
-
   @Inject
   public ResourceServiceProvider(IResourceServiceProvider.Registry registry, IResourceServiceProvider provider) {
     super(registry, provider);

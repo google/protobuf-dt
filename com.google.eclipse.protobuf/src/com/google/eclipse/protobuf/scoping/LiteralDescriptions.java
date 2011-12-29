@@ -23,7 +23,6 @@ import com.google.eclipse.protobuf.protobuf.Enum;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class LiteralDescriptions {
-
   Collection<IEObjectDescription> literalsOf(Enum anEnum) {
     if (anEnum == null) {
       return emptyList();

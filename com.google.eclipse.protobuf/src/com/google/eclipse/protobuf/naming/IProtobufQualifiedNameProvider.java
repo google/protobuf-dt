@@ -19,7 +19,6 @@ import com.google.inject.ImplementedBy;
  */
 @ImplementedBy(ProtobufQualifiedNameProvider.class) public interface IProtobufQualifiedNameProvider extends
     IQualifiedNameProvider {
-
   /**
    * Returns the qualified name of the given object, to be used in an option. If the given object is a
    * <code>{@link Group}</code>, this methods returns the name in lower case.

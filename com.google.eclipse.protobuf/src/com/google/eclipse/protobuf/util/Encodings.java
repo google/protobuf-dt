@@ -14,7 +14,6 @@ package com.google.eclipse.protobuf.util;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public final class Encodings {
-
   public static final String UTF_8 = "UTF-8";
 
   private Encodings() {}

@@ -17,7 +17,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufTerminalConverters extends DefaultTerminalConverters {
-
   @Inject private DOUBLEValueConverter doubleValueConverter;
   @Inject private HEXValueConverter hexValueConverter;
   @Inject private LONGValueConverter longValueConverter;

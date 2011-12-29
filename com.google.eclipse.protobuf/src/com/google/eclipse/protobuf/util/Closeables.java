@@ -16,7 +16,6 @@ import java.io.Closeable;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Closeables {
-
   /**
    * Invokes {@code close()} on the given <code>{@link Closeable}</code>, ignoring any thrown exceptions.
    * @param c the given {@code Closeable}.

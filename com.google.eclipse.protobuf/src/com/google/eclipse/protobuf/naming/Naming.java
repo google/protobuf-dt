@@ -20,7 +20,6 @@ import com.google.inject.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class Naming {
-
   @Inject private NameResolver nameResolver;
   @Inject private Options options;
 

@@ -29,7 +29,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ImportValidator extends AbstractDeclarativeValidator {
-
   @Inject private ModelFinder finder;
   @Inject private Protobufs protobufs;
   @Inject private Resources resources;

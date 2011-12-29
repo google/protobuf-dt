@@ -14,7 +14,6 @@ package com.google.eclipse.protobuf.util;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public final class Objects {
-
   /** Prime number used to calculate the hash code of objects. */
   public static final int HASH_CODE_PRIME = 31;
 

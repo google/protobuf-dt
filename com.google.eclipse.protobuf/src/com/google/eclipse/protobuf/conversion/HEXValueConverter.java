@@ -22,7 +22,6 @@ import org.eclipse.xtext.nodemodel.INode;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class HEXValueConverter extends AbstractLexerBasedConverter<Long> {
-
   private static final String[] VALID_PREFIXES = { "0x", "-0x", "0X", "-0x" };
 
   /**

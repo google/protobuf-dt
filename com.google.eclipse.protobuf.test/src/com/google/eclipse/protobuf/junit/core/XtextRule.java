@@ -69,7 +69,7 @@ public class XtextRule implements MethodRule {
     return injector;
   }
 
-  private void parseText(String text) {
+  public void parseText(String text) {
     boolean ignoreSyntaxErrors = shouldIgnoreSyntaxErrorsIn(text);
     resource = resourceFrom(new StringInputStream(text));
     IParseResult parseResult = resource.getParseResult();

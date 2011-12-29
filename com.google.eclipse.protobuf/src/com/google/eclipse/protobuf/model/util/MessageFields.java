@@ -21,7 +21,6 @@ import com.google.inject.Singleton;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class MessageFields {
-
   /**
    * Indicates whether the modifier of the given field is <code>{@link Modifier#OPTIONAL}</code>.
    * @param field the given field.

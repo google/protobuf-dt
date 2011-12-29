@@ -18,7 +18,6 @@ import com.google.inject.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class ExtensionRegistryProvider implements Provider<IExtensionRegistry> {
-
   @Override public IExtensionRegistry get() {
     return Platform.getExtensionRegistry();
   }

@@ -24,7 +24,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Packages {
-
   @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
 
   /**

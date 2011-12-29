@@ -18,7 +18,6 @@ import com.google.eclipse.protobuf.protobuf.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public interface Scoping {
-
   Collection<IEObjectDescription> allPossibleTypesFor(MessageField field);
 
   Collection<IEObjectDescription> allPossibleTypesFor(TypeExtension extension);
