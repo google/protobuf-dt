@@ -360,6 +360,12 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
 
   private void checkState() {
     if (isPropertyPage() && !areProjectSettingsActive()) {
+      // the page is a 'project property' page and the 'enable project settings' check-box is not selected
+      pageIsNowValid();
+      return;
+    }
+    if (!btnCompileProtoFiles.getSelection()) {
+      // all the options of this page are disabled
       pageIsNowValid();
       return;
     }

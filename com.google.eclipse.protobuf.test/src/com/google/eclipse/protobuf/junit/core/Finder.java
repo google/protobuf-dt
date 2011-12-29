@@ -12,7 +12,7 @@ package com.google.eclipse.protobuf.junit.core;
 import static com.google.eclipse.protobuf.junit.core.SearchOption.IGNORE_CASE;
 import static com.google.eclipse.protobuf.util.SystemProperties.lineSeparator;
 
-import java.util.List;
+import java.util.*;
 
 import org.eclipse.emf.ecore.*;
 import org.eclipse.xtext.naming.QualifiedName;
@@ -49,7 +49,7 @@ class Finder {
   <T extends EObject> T find(String text, int count, Class<T> type, List<SearchOption> options) {
     int offset = protoAsText.indexOf(text);
     String name = text.substring(0, count);
-    BidiTreeIterator<AbstractNode> iterator = root.basicIterator();
+    Iterator<AbstractNode> iterator = root.basicIterator();
     while (iterator.hasNext()) {
       AbstractNode node = iterator.next();
       int nodeOffset = node.getOffset();

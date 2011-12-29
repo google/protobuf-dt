@@ -59,7 +59,7 @@
       <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
     </page>
     <page
-      category="com.google.eclipse.protobuf.ui.preferences.pages.editor"
+      category="com.google.eclipse.protobuf.ui.preferences.editor.general.page.EditorPreferencePage"
       class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:org.eclipse.xtext.ui.editor.syntaxcoloring.SyntaxColoringPreferencePage"
       id="com.google.eclipse.protobuf.Protobuf.coloring"
       name="%page.name.0">
@@ -80,14 +80,14 @@
       <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
     </page>
     <page
-      category="com.google.eclipse.protobuf.ui.preferences.pages.editor"
+      category="com.google.eclipse.protobuf.ui.preferences.editor.general.page.EditorPreferencePage"
       class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.editor.save.page.SaveActionsPreferencePage"
       id="com.google.eclipse.protobuf.ui.preferences.editor.save.page.SaveActionsPreferencePage"
       name="%page.name.5">
       <keywordReference id="com.google.eclipse.protobuf.ui.keyword_Protobuf" />
     </page>
     <page
-      category="com.google.eclipse.protobuf.ui.preferences.pages.editor"
+      category="com.google.eclipse.protobuf.ui.preferences.editor.general.page.EditorPreferencePage"
       class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.editor.numerictag.page.NumericTagPreferencePage"
       id="com.google.eclipse.protobuf.ui.preferences.editor.numerictag.page.NumericTagPreferencePage"
       name="%page.name.6">
