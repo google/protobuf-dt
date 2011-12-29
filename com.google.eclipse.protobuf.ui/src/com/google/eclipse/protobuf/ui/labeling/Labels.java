@@ -57,8 +57,8 @@ import com.google.inject.*;
       MessageField field = (MessageField) o;
       return labelFor(field);
     }
-    if (o instanceof Option) {
-      Option option = (Option) o;
+    if (o instanceof AbstractOption) {
+      AbstractOption option = (AbstractOption) o;
       return labelFor(option);
     }
     if (o instanceof Rpc) {
@@ -127,19 +127,13 @@ import com.google.inject.*;
     return text;
   }
 
-  private Object labelFor(Option option) {
+  private Object labelFor(AbstractOption option) {
     IndexedElement e = options.rootSourceOf(option);
     String name = options.nameForOption(e);
     StringBuilder b = new StringBuilder();
-    boolean isCustomOption = option instanceof CustomOption || option instanceof CustomFieldOption;
-    if (isCustomOption) {
+    if (option instanceof AbstractCustomOption) {
       b.append(formatCustomOptionName(name));
-    }
-    if (option instanceof CustomOption) {
-      appendFields(b, ((CustomOption) option).getFields());
-    }
-    if (option instanceof CustomFieldOption) {
-      appendFields(b, ((CustomFieldOption) option).getFields());
+      appendFields(b, options.fieldsOf((AbstractCustomOption) option));
     }
     return b.toString();
   }

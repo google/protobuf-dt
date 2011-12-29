@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.validation;
 
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.FIELD_OPTION__VALUE;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.ABSTRACT_OPTION__VALUE;
 import static com.google.eclipse.protobuf.validation.Messages.*;
 
 import org.eclipse.xtext.naming.*;
@@ -34,69 +34,62 @@ public class DataTypeValidator extends AbstractDeclarativeValidator {
   @Inject private MessageFields messageFields;
   @Inject private ModelFinder modelFinder;
   @Inject private INodes nodes;
-  @Inject private Options options;
 
-  @Check public void checkValueOfDefaultTypeMatchesFieldType(FieldOption option) {
-    if (options.isDefaultValueOption(option)) {
-      MessageField field = (MessageField) option.eContainer();
-      checkValueTypeMatchesFieldType(option, field);
-    }
-  }
-
-  private void checkValueTypeMatchesFieldType(FieldOption option, MessageField field) {
-    if (validateBool(option, field)) {
+  @Check public void checkValueOfDefaultTypeMatchesFieldType(DefaultValueFieldOption option) {
+    MessageField field = (MessageField) option.eContainer();
+    if (messageFields.isBool(field)) {
+      validateBool(option);
       return;
     }
-    if (validateFloatingPointNumber(option, field)) {
+    if (messageFields.isFloatingPointNumber(field)) {
+      validateFloatingPointNumber(option);
       return;
     }
-    if (validateInteger(option, field)) {
+    if (messageFields.isInteger(field)) {
+      validateInteger(option);
       return;
-    }
-    if (validateString(option, field)) {
-      return;
-    }
-    validateEnumLiteral(option, field);
-  }
-
-  private boolean validateBool(FieldOption option, MessageField field) {
-    if (!messageFields.isBool(field)) {
-      return false;
-    }
-    Value value = option.getValue();
-    if (!(value instanceof BooleanLink)) {
-      error(expectedTrueOrFalse, option, FIELD_OPTION__VALUE, EXPECTED_BOOL_ERROR);
-    }
-    return true;
-  }
-
-  private boolean validateFloatingPointNumber(FieldOption option, MessageField field) {
-    if (!messageFields.isFloatingPointNumber(field)) {
-      return false;
-    }
-    Value value = option.getValue();
-    if (!(value instanceof DoubleLink) && !isInteger(value)) {
-      error(expectedNumber, FIELD_OPTION__VALUE);
-    }
-    return true;
-  }
-
-  private boolean validateInteger(FieldOption option, MessageField field) {
-    if (!messageFields.isInteger(field)) {
-      return false;
-    }
-    Value value = option.getValue();
-    if (!isInteger(value)) {
-      error(expectedInteger, FIELD_OPTION__VALUE);
-      return true;
     }
     if (messageFields.isUnsignedInteger(field)) {
-      long longValue = longValueIn(value);
-      if (longValue < 0) {
-        error(expectedPositiveNumber, FIELD_OPTION__VALUE);
-      }
+      validateUnsignedInteger(option);
+      return;
     }
-    return true;
+    if (messageFields.isBytes(field) || messageFields.isString(field)) {
+      validateString(option);
+      return;
+    }
+    Enum anEnum = modelFinder.enumTypeOf(field);
+    if (anEnum != null) {
+      validateEnumLiteral(option, anEnum);
+    }
+  }
+
+  private void validateBool(DefaultValueFieldOption option) {
+    Value value = option.getValue();
+    if (!(value instanceof BooleanLink)) {
+      error(expectedTrueOrFalse, option, ABSTRACT_OPTION__VALUE, EXPECTED_BOOL_ERROR);
+    }
+  }
+
+  private void validateFloatingPointNumber(DefaultValueFieldOption option) {
+    Value value = option.getValue();
+    if (!(value instanceof DoubleLink) && !isInteger(value)) {
+      error(expectedNumber, ABSTRACT_OPTION__VALUE);
+    }
+  }
+
+  private void validateInteger(DefaultValueFieldOption option) {
+    Value value = option.getValue();
+    if (!isInteger(value)) {
+      error(expectedInteger, ABSTRACT_OPTION__VALUE);
+    }
+  }
+
+  private void validateUnsignedInteger(DefaultValueFieldOption option) {
+    Value value = option.getValue();
+    long longValue = longValueIn(value);
+    if (longValue < 0) {
+      error(expectedPositiveNumber, ABSTRACT_OPTION__VALUE);
+    }
   }
 
   private boolean isInteger(Value value) {
@@ -115,25 +108,20 @@ public class DataTypeValidator extends AbstractDeclarativeValidator {
     throw new IllegalArgumentException(value + " does not belong to an integer type");
   }
 
-  private boolean validateString(FieldOption option, MessageField field) {
-    if (!messageFields.isBytes(field) && !messageFields.isString(field)) {
-      return false;
-    }
+  private void validateString(DefaultValueFieldOption option) {
     Value value = option.getValue();
     if (!(value instanceof StringLink)) {
-      error(expectedString, option, FIELD_OPTION__VALUE, EXPECTED_STRING_ERROR);
+      error(expectedString, option, ABSTRACT_OPTION__VALUE, EXPECTED_STRING_ERROR);
     }
-    return true;
   }
 
-  private boolean validateEnumLiteral(FieldOption option, MessageField field) {
+  private boolean validateEnumLiteral(DefaultValueFieldOption option, Enum anEnum) {
     Value value = option.getValue();
-    Enum anEnum = modelFinder.enumTypeOf(field);
     if (anEnum == null) {
       return false;
     }
     if (!(value instanceof LiteralLink)) {
-      error(expectedIdentifier, FIELD_OPTION__VALUE);
+      error(expectedIdentifier, ABSTRACT_OPTION__VALUE);
       return true;
     }
     Literal literal = ((LiteralLink) value).getTarget();
@@ -141,12 +129,12 @@ public class DataTypeValidator extends AbstractDeclarativeValidator {
       QualifiedName enumFqn = fqnProvider.getFullyQualifiedName(anEnum);
       String literalName = nodes.textOf(nodeForValueFeatureIn(option));
       String msg = String.format(literalNotInEnum, enumFqn, literalName);
-      error(msg, FIELD_OPTION__VALUE);
+      error(msg, ABSTRACT_OPTION__VALUE);
     }
     return true;
   }
 
-  private INode nodeForValueFeatureIn(FieldOption option) {
-    return nodes.firstNodeForFeature(option, FIELD_OPTION__VALUE);
+  private INode nodeForValueFeatureIn(DefaultValueFieldOption option) {
+    return nodes.firstNodeForFeature(option, ABSTRACT_OPTION__VALUE);
   }
 }

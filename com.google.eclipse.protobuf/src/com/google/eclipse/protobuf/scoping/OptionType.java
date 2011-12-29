@@ -56,16 +56,7 @@ enum OptionType {
    * @param option the given option.
    * @return the type of the given option or {@code null} if a type cannot be found.
    */
-  static OptionType typeOf(FieldOption option) {
-    return findOptionTypeForLevelOf(option.eContainer());
-  }
-
-  /**
-   * Returns the type of the given option.
-   * @param option the given option.
-   * @return the type of the given option or {@code null} if a type cannot be found.
-   */
-  static OptionType typeOf(Option option) {
+  static OptionType typeOf(AbstractOption option) {
     return findOptionTypeForLevelOf(option.eContainer());
   }
 

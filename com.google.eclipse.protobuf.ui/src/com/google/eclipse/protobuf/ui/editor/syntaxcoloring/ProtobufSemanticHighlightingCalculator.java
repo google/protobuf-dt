@@ -128,11 +128,11 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
     for (FieldOption option : indexedElements.fieldOptionsOf(element)) {
       Value value = option.getValue();
       if (value instanceof LiteralLink) {
-        highlightFirstFeature(option, FIELD_OPTION__VALUE, acceptor, ENUM_LITERAL_ID);
+        highlightFirstFeature(option, ABSTRACT_OPTION__VALUE, acceptor, ENUM_LITERAL_ID);
         return;
       }
       if (value instanceof NumberLink) {
-        highlightFirstFeature(option, FIELD_OPTION__VALUE, acceptor, NUMBER_ID);
+        highlightFirstFeature(option, ABSTRACT_OPTION__VALUE, acceptor, NUMBER_ID);
       }
     }
   }
@@ -216,11 +216,11 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
     }
     Value value = option.getValue();
     if (value instanceof LiteralLink) {
-      highlightFirstFeature(option, OPTION__VALUE, acceptor, ENUM_LITERAL_ID);
+      highlightFirstFeature(option, ABSTRACT_OPTION__VALUE, acceptor, ENUM_LITERAL_ID);
       return;
     }
     if (value instanceof NumberLink) {
-      highlightFirstFeature(option, OPTION__VALUE, acceptor, NUMBER_ID);
+      highlightFirstFeature(option, ABSTRACT_OPTION__VALUE, acceptor, NUMBER_ID);
     }
   }
 

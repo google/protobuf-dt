@@ -26,7 +26,7 @@ public final class LabelWidgets {
    * if the given "enabled" state is {@code true}, otherwise it sets the foreground of the widget to the system color
    * with id <code>{@link SWT#COLOR_TITLE_INACTIVE_FOREGROUND}</code>.
    * @param label the given label widget.
-   * @param editable the new "enabled" state.
+   * @param enabled the new "enabled" state.
    * @throws SWTException if the given label widget has been disposed or if this method is not called from the thread
    * that created the label widget.
    */

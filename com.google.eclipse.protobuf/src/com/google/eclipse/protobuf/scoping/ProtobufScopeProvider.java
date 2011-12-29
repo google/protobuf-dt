@@ -45,7 +45,8 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   @Inject private Options options;
   @Inject private TypeScopeFinder typeScopeFinder;
 
-  @SuppressWarnings("unused") public IScope scope_ComplexTypeLink_target(ComplexTypeLink link, EReference r) {
+  @SuppressWarnings("unused")
+  public IScope scope_ComplexTypeLink_target(ComplexTypeLink link, EReference r) {
     EObject c = link.eContainer();
     if (c instanceof MessageField) { return createScope(allPossibleTypesFor((MessageField) c)); }
     Set<IEObjectDescription> descriptions = emptySet();
@@ -56,7 +57,8 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     return astWalker.traverseAst(field, typeScopeFinder, ComplexType.class);
   }
 
-  @SuppressWarnings("unused") public IScope scope_ExtensibleTypeLink_target(ExtensibleTypeLink link, EReference r) {
+  @SuppressWarnings("unused")
+  public IScope scope_ExtensibleTypeLink_target(ExtensibleTypeLink link, EReference r) {
     return createScope(extensibleTypesFor(link));
   }
 
@@ -69,7 +71,8 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     return astWalker.traverseAst(root, typeScopeFinder, ExtensibleType.class);
   }
 
-  @SuppressWarnings("unused") public IScope scope_MessageLink_target(MessageLink link, EReference r) {
+  @SuppressWarnings("unused")
+  public IScope scope_MessageLink_target(MessageLink link, EReference r) {
     return createScope(messagesFor(link));
   }
 
@@ -82,28 +85,23 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     return astWalker.traverseAst(root, typeScopeFinder, Message.class);
   }
 
-  @SuppressWarnings("unused") public IScope scope_LiteralLink_target(LiteralLink link, EReference r) {
+  @SuppressWarnings("unused")
+  public IScope scope_LiteralLink_target(LiteralLink link, EReference r) {
     EObject container = link.eContainer();
     Enum anEnum = null;
     if (container instanceof DefaultValueFieldOption) {
       container = container.eContainer();
     }
-    if (container instanceof NativeOption) {
-      ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
-      IndexedElement e = options.rootSourceOf((Option) container);
-      anEnum = descriptor.enumTypeOf((MessageField) e);
+    if (container instanceof AbstractOption) {
+      AbstractOption option = (AbstractOption) container;
+      if (options.isNative(option)) {
+        ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
+        IndexedElement e = options.rootSourceOf(option);
+        anEnum = descriptor.enumTypeOf((MessageField) e);
+      }
     }
-    if (container instanceof CustomOption) {
-      CustomOption option = (CustomOption) container;
-      container = options.sourceOf(option);
-    }
-    if (container instanceof NativeFieldOption) {
-      ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
-      IndexedElement c = options.rootSourceOf((FieldOption) container);
-      anEnum = descriptor.enumTypeOf((MessageField) c);
-    }
-    if (container instanceof CustomFieldOption) {
-      CustomFieldOption option = (CustomFieldOption) container;
+    if (container instanceof AbstractCustomOption) {
+      AbstractCustomOption option = (AbstractCustomOption) container;
       container = options.sourceOf(option);
     }
     if (container instanceof SimpleValueField) {
@@ -116,30 +114,25 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     return createScope(literalDescriptions.literalsOf(anEnum));
   }
 
-  @SuppressWarnings("unused") public IScope scope_OptionSource_target(OptionSource source, EReference r) {
+  @SuppressWarnings("unused")
+  public IScope scope_OptionSource_target(OptionSource source, EReference r) {
     EObject c = source.eContainer();
-    if (c instanceof NativeOption) {
-      NativeOption option = (NativeOption) c;
-      return createScope(nativeOptionDescriptions.sources(option));
+    if (c instanceof AbstractOption) {
+      AbstractOption option = (AbstractOption) c;
+      if (options.isNative(option)) {
+        return createScope(nativeOptionDescriptions.sources(option));
+      }
     }
-    if (c instanceof NativeFieldOption) {
-      NativeFieldOption option = (NativeFieldOption) c;
-      return createScope(nativeOptionDescriptions.sources(option));
-    }
-    if (c instanceof CustomOption) {
-      CustomOption option = (CustomOption) c;
-      return createScope(allPossibleSourcesOf(option));
-    }
-    if (c instanceof CustomFieldOption) {
-      CustomFieldOption option = (CustomFieldOption) c;
+    if (c instanceof AbstractCustomOption) {
+      AbstractCustomOption option = (AbstractCustomOption) c;
       return createScope(allPossibleSourcesOf(option));
     }
     Set<IEObjectDescription> descriptions = emptySet();
     return createScope(descriptions);
   }
 
-  @Override public Collection<IEObjectDescription> allPossibleSourcesOf(CustomOption option) {
-    OptionType optionType = typeOf(option);
+  @Override public Collection<IEObjectDescription> allPossibleSourcesOf(AbstractCustomOption option) {
+    OptionType optionType = typeOf((AbstractOption) option);
     Collection<IEObjectDescription> descriptions = emptySet();
     if (optionType != null) {
       descriptions = astWalker.traverseAst(option, customOptionScopeFinder, optionType);
@@ -147,16 +140,8 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     return descriptions;
   }
 
-  @Override public Collection<IEObjectDescription> allPossibleSourcesOf(CustomFieldOption option) {
-    OptionType optionType = typeOf(option);
-    Collection<IEObjectDescription> descriptions = emptySet();
-    if (optionType != null) {
-      descriptions = astWalker.traverseAst(option, customOptionScopeFinder, optionType);
-    }
-    return descriptions;
-  }
-
-  @SuppressWarnings("unused") public IScope scope_OptionField_target(OptionField field, EReference r) {
+  @SuppressWarnings("unused")
+  public IScope scope_OptionField_target(OptionField field, EReference r) {
     return createScope(allPossibleSourcesOf(field));
   }
 
@@ -165,52 +150,34 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
       return emptySet();
     }
     EObject container = field.eContainer();
-    if (container instanceof CustomOption) {
-      CustomOption option = (CustomOption) container;
-      if (field instanceof MessageOptionField) { return findSources(option, (MessageOptionField) field); }
-      return findSources(option, (ExtensionOptionField) field);
-    }
-    if (container instanceof CustomFieldOption) {
-      CustomFieldOption option = (CustomFieldOption) container;
-      if (field instanceof MessageOptionField) { return findSources(option, (MessageOptionField) field); }
+    if (container instanceof AbstractCustomOption) {
+      AbstractCustomOption option = (AbstractCustomOption) container;
+      if (field instanceof MessageOptionField) {
+        return findSources(option, (MessageOptionField) field);
+      }
       return findSources(option, (ExtensionOptionField) field);
     }
     return emptySet();
   }
 
-  @Override public Collection<IEObjectDescription> allPossibleNormalFieldsOf(CustomOption option) {
+  @Override public Collection<IEObjectDescription> allPossibleNormalFieldsOf(AbstractCustomOption option) {
     return findSources(option, (MessageOptionField) null);
   }
 
-  @Override public Collection<IEObjectDescription> allPossibleNormalFieldsOf(CustomFieldOption option) {
-    return findSources(option, (MessageOptionField) null);
-  }
-
-  @Override public Collection<IEObjectDescription> allPossibleExtensionFieldsOf(CustomOption option) {
+  @Override public Collection<IEObjectDescription> allPossibleExtensionFieldsOf(AbstractCustomOption option) {
     return findSources(option, (ExtensionOptionField) null);
   }
 
-  @Override public Collection<IEObjectDescription> allPossibleExtensionFieldsOf(CustomFieldOption option) {
-    return findSources(option, (ExtensionOptionField) null);
+  private Collection<IEObjectDescription> findSources(AbstractCustomOption option, MessageOptionField optionField) {
+    return customOptionFieldScopeFinder.findScope(option, optionField);
   }
 
-  private Collection<IEObjectDescription> findSources(CustomOption option, MessageOptionField field) {
-    return customOptionFieldScopeFinder.findScope(option, field);
+  private Collection<IEObjectDescription> findSources(AbstractCustomOption option, ExtensionOptionField optionField) {
+    return customOptionFieldScopeFinder.findScope(option, optionField);
   }
 
-  private Collection<IEObjectDescription> findSources(CustomOption option, ExtensionOptionField field) {
-    return customOptionFieldScopeFinder.findScope(option, field);
-  }
-
-  private Collection<IEObjectDescription> findSources(CustomFieldOption option, MessageOptionField field) {
-    return customOptionFieldScopeFinder.findScope(option, field);
-  }
-
-  private Collection<IEObjectDescription> findSources(CustomFieldOption option, ExtensionOptionField field) {
-    return customOptionFieldScopeFinder.findScope(option, field);
-  }
-
-  @SuppressWarnings("unused") public IScope scope_FieldName_target(FieldName name, EReference r) {
+  @SuppressWarnings("unused")
+  public IScope scope_FieldName_target(FieldName name, EReference r) {
     return createScope(findSources(name));
   }
 

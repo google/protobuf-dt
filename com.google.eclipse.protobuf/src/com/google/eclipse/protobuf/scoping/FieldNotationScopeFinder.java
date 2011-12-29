@@ -48,12 +48,8 @@ class FieldNotationScopeFinder {
   private MessageField sourceOf(ComplexValue value) {
     IndexedElement source = null;
     EObject container = value.eContainer();
-    if (container instanceof CustomOption) {
-      CustomOption option = (CustomOption) container;
-      source = options.sourceOf(option);
-    }
-    if (container instanceof CustomFieldOption) {
-      CustomFieldOption option = (CustomFieldOption) container;
+    if (container instanceof AbstractCustomOption) {
+      AbstractCustomOption option = (AbstractCustomOption) container;
       source = options.sourceOf(option);
     }
     if (container instanceof ComplexValueField) {

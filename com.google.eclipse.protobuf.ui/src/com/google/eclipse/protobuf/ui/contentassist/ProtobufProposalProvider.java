@@ -340,7 +340,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     proposeAndAccept(name, context, acceptor);
   }
 
-  private void proposeAndAccept(String proposalText, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+  private void proposeAndAccept(String proposalText, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
     acceptor.accept(createCompletionProposal(proposalText, context));
   }
 
@@ -515,25 +516,26 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeCustomOption_Source(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    if (!(model instanceof CustomOption)) {
-      return;
-    }
-    CustomOption option = (CustomOption) model;
-    Collection<IEObjectDescription> scope = scoping().allPossibleSourcesOf(option);
-    proposeAndAcceptOptions(scope, context, acceptor);
+    completeAbstractCustomOptionSource(model, context, acceptor);
   }
 
   @Override public void completeCustomFieldOption_Source(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    if (!(model instanceof CustomFieldOption)) {
+    completeAbstractCustomOptionSource(model, context, acceptor);
+  }
+
+  private void completeAbstractCustomOptionSource(EObject model, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+    if (!(model instanceof AbstractCustomOption)) {
       return;
     }
-    CustomFieldOption option = (CustomFieldOption) model;
+    AbstractCustomOption option = (AbstractCustomOption) model;
     Collection<IEObjectDescription> scope = scoping().allPossibleSourcesOf(option);
     proposeAndAcceptOptions(scope, context, acceptor);
   }
 
-  private void proposeAndAcceptOptions(Collection<IEObjectDescription> scope, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+  private void proposeAndAcceptOptions(Collection<IEObjectDescription> scope, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
     Image image = imageForOption();
     for (IEObjectDescription d : descriptionChooser.shortestQualifiedNamesIn(scope)) {
       proposeAndAccept(d, image, context, acceptor);

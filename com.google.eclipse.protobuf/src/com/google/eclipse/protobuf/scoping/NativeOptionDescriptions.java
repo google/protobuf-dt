@@ -13,7 +13,6 @@ import static org.eclipse.xtext.resource.EObjectDescription.create;
 
 import java.util.*;
 
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
 import com.google.eclipse.protobuf.protobuf.*;
@@ -26,15 +25,7 @@ class NativeOptionDescriptions {
 
   @Inject private ProtoDescriptorProvider descriptorProvider;
 
-  Collection<IEObjectDescription> sources(NativeOption option) {
-    return allSources(option);
-  }
-
-  Collection<IEObjectDescription> sources(NativeFieldOption option) {
-    return allSources(option);
-  }
-
-  private Collection<IEObjectDescription> allSources(EObject option) {
+  Collection<IEObjectDescription> sources(AbstractOption option) {
     ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
     Collection<MessageField> optionSources = descriptor.availableOptionsFor(option.eContainer());
     if (optionSources.isEmpty()) {

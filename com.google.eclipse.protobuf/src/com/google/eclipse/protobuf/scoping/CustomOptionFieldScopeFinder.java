@@ -30,19 +30,19 @@ class CustomOptionFieldScopeFinder {
   @Inject private Options options;
   @Inject private QualifiedNameDescriptions qualifiedNameDescriptions;
 
-  Collection<IEObjectDescription> findScope(CustomOption option, MessageOptionField field) {
+  Collection<IEObjectDescription> findScope(AbstractCustomOption option, MessageOptionField field) {
     return findScope(option, field, new MessageFieldDescriptorProvider());
   }
 
-  Collection<IEObjectDescription> findScope(CustomOption option, ExtensionOptionField field) {
+  Collection<IEObjectDescription> findScope(AbstractCustomOption option, ExtensionOptionField field) {
     return findScope(option, field, new ExtensionFieldDescriptorProvider());
   }
 
-  private Collection<IEObjectDescription> findScope(final CustomOption option, OptionField field,
+  private Collection<IEObjectDescription> findScope(final AbstractCustomOption option, OptionField field,
       IEObjectDescriptionsProvider provider) {
-    IndexedElement e = referredField(field, option.getFields(), new Provider<IndexedElement>() {
+    IndexedElement e = referredField(option, field, new Provider<IndexedElement>() {
       @Override public IndexedElement get() {
-        return options.rootSourceOf(option);
+        return options.rootSourceOf((AbstractOption) option);
       }
     });
     if (e != null) {
@@ -51,32 +51,11 @@ class CustomOptionFieldScopeFinder {
     return emptySet();
   }
 
-  Collection<IEObjectDescription> findScope(CustomFieldOption option, MessageOptionField field) {
-    return findScope(option, field, new MessageFieldDescriptorProvider());
-  }
-
-  Collection<IEObjectDescription> findScope(CustomFieldOption option, ExtensionOptionField field) {
-    return findScope(option, field, new ExtensionFieldDescriptorProvider());
-  }
-
-  private Collection<IEObjectDescription> findScope(final CustomFieldOption option, OptionField field,
-      IEObjectDescriptionsProvider provider) {
-    IndexedElement e = referredField(field, option.getFields(), new Provider<IndexedElement>() {
-      @Override public IndexedElement get() {
-        return options.rootSourceOf(option);
-      }
-    });
-    if (e != null) {
-      return provider.fieldsInTypeOf(e);
-    }
-    return emptySet();
-  }
-
-  private IndexedElement referredField(OptionField field, List<OptionField> allFields,
+  private IndexedElement referredField(AbstractCustomOption option, OptionField field,
       Provider<IndexedElement> provider) {
     OptionField previous = null;
     boolean isFirstField = true;
-    for (OptionField current : allFields) {
+    for (OptionField current : options.fieldsOf(option)) {
       if (current == field) {
         return (isFirstField) ? provider.get() : optionFields.sourceOf(previous);
       }

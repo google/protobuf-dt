@@ -41,7 +41,7 @@ public final class TextWidgets {
    * if the given "enabled" state is {@code true}, otherwise it sets the background of the widget to the system color
    * with id <code>{@link SWT#COLOR_WIDGET_BACKGROUND}</code>.
    * @param text the given text widget.
-   * @param editable the new "enabled" state.
+   * @param enabled the new "enabled" state.
    * @throws SWTException if the given text widget has been disposed or if this method is not called from the thread
    * that created the text widget.
    */

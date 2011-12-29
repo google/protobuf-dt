@@ -8,11 +8,10 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
+import static java.util.Collections.emptyList;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import java.util.List;
-
-import org.eclipse.emf.ecore.EObject;
 
 import com.google.eclipse.protobuf.naming.NameResolver;
 import com.google.eclipse.protobuf.protobuf.*;
@@ -29,6 +28,20 @@ import com.google.inject.*;
   @Inject private NameResolver nameResolver;
   @Inject private OptionFields optionFields;
 
+  public boolean isNative(AbstractOption option) {
+    return option instanceof NativeOption || option instanceof NativeFieldOption;
+  }
+
+  public List<OptionField> fieldsOf(AbstractCustomOption option) {
+    if (option instanceof CustomOption) {
+      return ((CustomOption) option).getFields();
+    }
+    if (option instanceof CustomFieldOption) {
+      return ((CustomFieldOption) option).getFields();
+    }
+    return emptyList();
+  }
+
   /**
    * Indicates whether the given option is the "default value" one.
    * @param option the given option to check.
@@ -39,9 +52,9 @@ import com.google.inject.*;
   }
 
   /**
-   * Returns the <code>{@link IndexedElement}</code> the given <code>{@link CustomOption}</code> is referring to. This
-   * method will check first the source of the last field of the given option (if any.) If the option does not have any
-   * fields, this method will return the root source of the option.
+   * Returns the <code>{@link IndexedElement}</code> the given custom option is referring to. This method will check
+   * first the source of the last field of the given option (if any.) If the option does not have any fields, this
+   * method will return the root source of the option.
    * <p>
    * Example #1
    *
@@ -60,102 +73,32 @@ import com.google.inject.*;
    *
    * this method will return the <code>{@link IndexedElement}</code> "foo" is pointing to.
    * </p>
-   * @param option the given {@code CustomOption}.
-   * @return the {@code IndexedElement} the given {@code CustomOption} is referring to, or {@code null} if it cannot be
+   * @param option the given custom option.
+   * @return the {@code IndexedElement} the given custom option is referring to, or {@code null} if it cannot be
    * found.
    */
-  public IndexedElement sourceOf(CustomOption option) {
+  public IndexedElement sourceOf(AbstractCustomOption option) {
     IndexedElement e = sourceOfLastFieldIn(option);
     if (e == null) {
-      e = rootSourceOf(option);
+      e = rootSourceOf((AbstractOption) option);
     }
     return e;
   }
 
   /**
-   * Returns the last field of the given <code>{@link CustomOption}</code>. In the following example
+   * Returns the last field of the given custom option. In the following example
    *
    * <pre>
    * option(myOption).foo = true;
    * </pre>
    *
    * this method will return the field that "foo" is pointing to.
-   * @param option the given {@code CustomOption}.
-   * @return the last field of the given {@code CustomOption} is referring to, or {@code null} if one cannot be found.
+   * @param option the given custom option.
+   * @return the last field of the given custom option is referring to, or {@code null} if one cannot be found.
    */
-  public IndexedElement sourceOfLastFieldIn(CustomOption option) {
-    return findSourceOfLastField(option);
-  }
-
-  /**
-   * Returns the <code>{@link IndexedElement}</code> the given <code>{@link Option}</code> is referring to. In the
-   * following example
-   *
-   * <pre>
-   * option(myOption).foo = true;
-   * </pre>
-   *
-   * this method will return the <code>{@link IndexedElement}</code> "myOption" is pointing to.
-   * @param option the given {@code Option}.
-   * @return the {@code IndexedElement} the given {@code Option} is referring to, or {@code null} if it cannot be found.
-   */
-  public IndexedElement rootSourceOf(Option option) {
-    return findRootSource(option);
-  }
-
-  /**
-   * Returns the <code>{@link IndexedElement}</code> the given <code>{@link CustomFieldOption}</code> is referring to.
-   * This method will check first the source of the last field of the given option (if any.) If the option does not have
-   * any fields, this method will return the root source of the option.
-   * <p>
-   * Example #1
-   *
-   * <pre>
-   * [(myFieldOption) = true];
-   * </pre>
-   *
-   * this method will return the <code>{@link IndexedElement}</code> "myFieldOption" is pointing to.
-   * </p>
-   * <p>
-   * Example #2
-   *
-   * <pre>
-   * [(myOption).foo = true];
-   * </pre>
-   *
-   * this method will return the <code>{@link IndexedElement}</code> "foo" is pointing to.
-   * </p>
-   * @param option the given {@code CustomFieldOption}.
-   * @return the {@code IndexedElement} the given {@code CustomFieldOption} is referring to, or {@code null} if it
-   *         cannot be found.
-   */
-  public IndexedElement sourceOf(CustomFieldOption option) {
-    IndexedElement e = sourceOfLastFieldIn(option);
-    if (e == null) {
-      e = rootSourceOf(option);
-    }
-    return e;
-  }
-
-  /**
-   * Returns the last field of the given <code>{@link CustomFieldOption}</code>. In the following example
-   *
-   * <pre>
-   * [(myOption).foo = true];
-   * </pre>
-   *
-   * this method will return the field that "foo" is pointing to.
-   * @param option the given {@code CustomFieldOption}.
-   * @return the last field of the given {@code CustomFieldOption} is referring to, or {@code null} if one cannot be
-   * found.
-   */
-  public IndexedElement sourceOfLastFieldIn(CustomFieldOption option) {
-    return findSourceOfLastField(option);
-  }
-
   @SuppressWarnings("unchecked")
-  private IndexedElement findSourceOfLastField(EObject e) {
-    List<OptionField> fields = modelObjects.valueOfFeature(e, "fields", List.class);
+  public IndexedElement sourceOfLastFieldIn(AbstractCustomOption option) {
+    List<OptionField> fields = modelObjects.valueOfFeature(option, "fields", List.class);
     if (fields == null || fields.isEmpty()) {
       return null;
     }
@@ -164,23 +107,18 @@ import com.google.inject.*;
   }
 
   /**
-   * Returns the <code>{@link IndexedElement}</code> the given <code>{@link FieldOption}</code> is referring to. In the
-   * following example
+   * Returns the <code>{@link IndexedElement}</code> the given option is referring to. In the following example
    *
    * <pre>
-   * [(myFieldOption) = true]
+   * option(myOption).foo = true;
    * </pre>
    *
-   * this method will return the <code>{@link IndexedElement}</code> "myFieldOption" is pointing to.
-   * @param option the given {@code FieldOption}.
-   * @return the {@code Property} the given {@code FieldOption} is referring to, or {@code null} if it cannot be found.
+   * this method will return the <code>{@link IndexedElement}</code> "myOption" is pointing to.
+   * @param option the given option.
+   * @return the {@code Property} the given option is referring to, or {@code null} if it cannot be found.
    */
-  public IndexedElement rootSourceOf(FieldOption option) {
-    return findRootSource(option);
-  }
-
-  private IndexedElement findRootSource(EObject e) {
-    OptionSource source = modelObjects.valueOfFeature(e, "source", OptionSource.class);
+  public IndexedElement rootSourceOf(AbstractOption option) {
+    OptionSource source = modelObjects.valueOfFeature(option, "source", OptionSource.class);
     return source == null ? null : source.getTarget();
   }
 

@@ -19,7 +19,7 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link Options#sourceOf(CustomFieldOption)}</code>.
+ * Tests for <code>{@link Options#sourceOf(AbstractCustomOption)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */

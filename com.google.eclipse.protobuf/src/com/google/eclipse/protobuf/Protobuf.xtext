@@ -134,6 +134,12 @@ IdOrReservedWord:
 MessageLink:
   target=[Message|QualifiedName];
 
+AbstractOption:
+  Option | FieldOption;
+
+AbstractCustomOption:
+  CustomOption | CustomFieldOption;
+
 Option:
   NativeOption | CustomOption;
 

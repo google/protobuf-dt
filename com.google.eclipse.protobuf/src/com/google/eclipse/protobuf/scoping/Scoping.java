@@ -25,17 +25,11 @@ public interface Scoping {
 
   Collection<IEObjectDescription> allPossibleMessagesFor(Rpc rpc);
 
-  Collection<IEObjectDescription> allPossibleSourcesOf(CustomOption option);
+  Collection<IEObjectDescription> allPossibleSourcesOf(AbstractCustomOption option);
 
-  Collection<IEObjectDescription> allPossibleSourcesOf(CustomFieldOption option);
+  Collection<IEObjectDescription> allPossibleNormalFieldsOf(AbstractCustomOption option);
 
-  Collection<IEObjectDescription> allPossibleNormalFieldsOf(CustomOption option);
-
-  Collection<IEObjectDescription> allPossibleNormalFieldsOf(CustomFieldOption option);
-
-  Collection<IEObjectDescription> allPossibleExtensionFieldsOf(CustomOption option);
-
-  Collection<IEObjectDescription> allPossibleExtensionFieldsOf(CustomFieldOption option);
+  Collection<IEObjectDescription> allPossibleExtensionFieldsOf(AbstractCustomOption option);
 
   Collection<IEObjectDescription> allPossibleNamesOfNormalFieldsOf(ComplexValue value);
 
