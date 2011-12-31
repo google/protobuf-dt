@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.junit.matchers;
 
+import static com.google.common.collect.Collections2.transform;
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
 import java.util.*;
@@ -15,6 +16,7 @@ import java.util.*;
 import org.eclipse.emf.ecore.EObject;
 import org.hamcrest.*;
 
+import com.google.common.base.Function;
 import com.google.eclipse.protobuf.junit.IEObjectDescriptions;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
@@ -54,11 +56,11 @@ public class ContainAllLiteralsInEnum extends BaseMatcher<IEObjectDescriptions> 
   }
 
   @Override public void describeTo(Description description) {
-    List<String> names = new ArrayList<String>();
-    for (Literal literal : allLiterals()) {
-      String name = literal.getName();
-      names.add(name);
-    }
+    Collection<String> names = transform(allLiterals(), new Function<Literal, String>() {
+      @Override public String apply(Literal input) {
+        return input.getName();
+      }
+    });
     description.appendValue(names);
   }
 

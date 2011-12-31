@@ -8,9 +8,10 @@
  */
 package com.google.eclipse.protobuf.ui.outline;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.eclipse.protobuf.ui.outline.Messages.importDeclarations;
 
-import java.util.*;
+import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.ui.editor.outline.IOutlineNode;
@@ -25,7 +26,7 @@ import com.google.eclipse.protobuf.protobuf.Package;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufOutlineTreeProvider extends DefaultOutlineTreeProvider {
-  private static final List<Class<? extends EObject>> IGNORED_ELEMENT_TYPES = new ArrayList<Class<? extends EObject>>();
+  private static final List<Class<? extends EObject>> IGNORED_ELEMENT_TYPES = newArrayList();
 
   static {
     IGNORED_ELEMENT_TYPES.add(BooleanLink.class);

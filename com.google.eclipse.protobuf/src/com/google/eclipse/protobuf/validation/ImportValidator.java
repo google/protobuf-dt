@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.validation;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
 import static com.google.eclipse.protobuf.validation.Messages.importingNonProto2;
 import static org.eclipse.xtext.util.Tuples.pair;
@@ -51,7 +52,7 @@ public class ImportValidator extends AbstractDeclarativeValidator {
     }
     ResourceSet resourceSet = resource.getResourceSet();
     boolean hasNonProto2 = false;
-    List<Pair<Import, Resource>> resourcesToCheck = new ArrayList<Pair<Import, Resource>>();
+    List<Pair<Import, Resource>> resourcesToCheck = newArrayList();
     Set<URI> checked = new HashSet<URI>();
     checked.add(resource.getURI());
     for (Import anImport : finder.importsIn(root)) {
@@ -80,7 +81,7 @@ public class ImportValidator extends AbstractDeclarativeValidator {
     if (!protobufs.isProto2(root)) {
       return false;
     }
-    List<Pair<Import, Resource>> resourcesToCheck = new ArrayList<Pair<Import, Resource>>();
+    List<Pair<Import, Resource>> resourcesToCheck = newArrayList();
     for (Import anImport : finder.importsIn(root)) {
       Resource imported = resources.importedResource(anImport, resourceSet);
       if (checked.contains(imported.getURI())) {

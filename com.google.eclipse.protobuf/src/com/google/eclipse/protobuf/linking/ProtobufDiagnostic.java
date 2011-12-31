@@ -8,12 +8,14 @@
  */
 package com.google.eclipse.protobuf.linking;
 
-import static com.google.eclipse.protobuf.util.Objects.*;
+import static com.google.common.base.Objects.equal;
 import static java.util.Arrays.copyOf;
 import static org.eclipse.xtext.util.Arrays.contains;
 
 import org.eclipse.xtext.diagnostics.*;
 import org.eclipse.xtext.nodemodel.INode;
+
+import com.google.common.base.Objects;
 
 /**
  * <code>{@link Diagnostic}</code> that supports appending text to its message.
@@ -72,11 +74,7 @@ public class ProtobufDiagnostic extends AbstractDiagnostic {
   }
 
   @Override public int hashCode() {
-    final int prime = HASH_CODE_PRIME;
-    int result = 1;
-    result = prime * result + hashCodeOf(message);
-    result = prime * result + hashCodeOf(node);
-    return result;
+    return Objects.hashCode(message, node);
   }
 
   @Override public boolean equals(Object obj) {
@@ -87,9 +85,9 @@ public class ProtobufDiagnostic extends AbstractDiagnostic {
       return false;
     }
     ProtobufDiagnostic other = (ProtobufDiagnostic) obj;
-    if (!areEqual(message, other.message)) {
+    if (!equal(message, other.message)) {
       return false;
     }
-    return areEqual(node, other.node);
+    return equal(node, other.node);
   }
 }

@@ -8,12 +8,14 @@
  */
 package com.google.eclipse.protobuf.ui.editor;
 
-import static com.google.eclipse.protobuf.util.Objects.*;
+import static com.google.common.base.Objects.equal;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.*;
+
+import com.google.common.base.Objects;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -64,17 +66,13 @@ public class UriEditorInput implements IEditorInput {
       return false;
     }
     UriEditorInput other = (UriEditorInput) obj;
-    if (!areEqual(name, other.name)) {
+    if (!equal(name, other.name)) {
       return false;
     }
-    return areEqual(fileUri, other.fileUri);
+    return equal(fileUri, other.fileUri);
   }
 
   @Override public int hashCode() {
-    final int prime = HASH_CODE_PRIME;
-    int result = 1;
-    result = prime * result + hashCodeOf(name);
-    result = prime * result + hashCodeOf(fileUri);
-    return result;
+    return Objects.hashCode(name, fileUri);
   }
 }

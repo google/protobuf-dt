@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static com.google.common.collect.Maps.newHashMap;
+
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -23,7 +25,7 @@ enum OptionType {
   FILE("FileOptions"), MESSAGE("MessageOptions"), FIELD("FieldOptions"), ENUM("EnumOptions"),
   LITERAL("EnumValueOptions"), SERVICE("ServiceOptions"), RPC("MethodOptions");
 
-  private static final Map<Class<?>, OptionType> OPTION_TYPES_BY_CONTAINER = new HashMap<Class<?>, OptionType>();
+  private static final Map<Class<?>, OptionType> OPTION_TYPES_BY_CONTAINER = newHashMap();
 
   static {
     OPTION_TYPES_BY_CONTAINER.put(Protobuf.class, FILE);

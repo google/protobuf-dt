@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.contentassist;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.eclipse.protobuf.ui.contentassist.IEObjectDescriptionsHaveNames.containOnly;
 import static java.util.Collections.emptyMap;
 import static org.junit.Assert.assertThat;
@@ -36,7 +37,7 @@ public class IEObjectDescriptionChooser_shortestQualifiedNamesIn_Test {
   @Before public void setUp() {
     userData = emptyMap();
     chooser = new IEObjectDescriptionChooser();
-    descriptions = new ArrayList<IEObjectDescription>();
+    descriptions = newArrayList();
     describe(mock(Message.class), QualifiedName.create("com", "google", "test", "Phone"));
     describe(mock(Message.class), QualifiedName.create("com", "google", "test", "EMail"));
   }
@@ -54,7 +55,7 @@ public class IEObjectDescriptionChooser_shortestQualifiedNamesIn_Test {
    */
   private void describe(EObject e, QualifiedName name) {
     int count = name.getSegmentCount();
-    List<String> segments = new ArrayList<String>();
+    List<String> segments = newArrayList();
     for (int i = count - 1; i >= 0; i--) {
       segments.add(0, name.getSegment(i));
       QualifiedName newName = QualifiedName.create(segments.toArray(new String[segments.size()]));

@@ -9,10 +9,11 @@
  */
 package com.google.eclipse.protobuf.ui.quickfix;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 
-import java.util.*;
+import java.util.List;
 
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.quickassist.IQuickAssistInvocationContext;
@@ -28,7 +29,7 @@ public class ProtobufQuickAssistProcessor extends XtextQuickAssistProcessor {
   @Inject private SpellingCorrectionProcessor spellingCorrectionProcessor;
 
   @Override public ICompletionProposal[] computeQuickAssistProposals(IQuickAssistInvocationContext context) {
-    List<ICompletionProposal> proposals = new ArrayList<ICompletionProposal>();
+    List<ICompletionProposal> proposals = newArrayList();
     proposals.addAll(spellingFixes(context));
     proposals.addAll(asList(super.computeQuickAssistProposals(context)));
     return proposals.toArray(new ICompletionProposal[proposals.size()]);

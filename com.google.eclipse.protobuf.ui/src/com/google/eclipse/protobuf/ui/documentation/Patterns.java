@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.documentation;
 
+import static com.google.common.collect.Lists.newArrayList;
+
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -19,7 +21,7 @@ class Patterns implements Iterable<Pattern> {
     return new Patterns(patterns);
   }
 
-  private final List<Pattern> patterns = new ArrayList<Pattern>();
+  private final List<Pattern> patterns = newArrayList();
 
   private Patterns(String[] patterns) {
     for (String s : patterns) {

@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static com.google.common.collect.Maps.newLinkedHashMap;
 import static java.util.Collections.unmodifiableCollection;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
@@ -63,7 +64,7 @@ import com.google.inject.*;
   private void ensureProtoDescriptorsAreCreated() {
     synchronized (lock) {
       if (descriptors == null) {
-        descriptors = new LinkedHashMap<String, ProtoDescriptor>();
+        descriptors = newLinkedHashMap();
         ensureProtoDescriptorInfosAreCreated();
         for (Entry<String, URI> entry : descriptorInfos.entrySet()) {
           String importUri = entry.getKey();
@@ -91,7 +92,7 @@ import com.google.inject.*;
   private void ensureProtoDescriptorInfosAreCreated() {
     synchronized (lock) {
       if (descriptorInfos == null) {
-        descriptorInfos = new LinkedHashMap<String, URI>();
+        descriptorInfos = newLinkedHashMap();
         add(defaultDescriptorInfo());
         add(descriptorInfoFromExtensionPoint());
       }

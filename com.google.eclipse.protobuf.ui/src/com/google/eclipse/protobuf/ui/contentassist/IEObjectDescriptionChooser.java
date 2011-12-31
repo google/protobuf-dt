@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.contentassist;
 
+import static com.google.common.collect.Maps.newHashMap;
 import static java.util.Collections.*;
 
 import java.util.*;
@@ -24,7 +25,7 @@ class IEObjectDescriptionChooser {
     if (descriptions.isEmpty()) {
       return emptySet();
     }
-    Map<EObject, IEObjectDescription> shortestOnes = new HashMap<EObject, IEObjectDescription>();
+    Map<EObject, IEObjectDescription> shortestOnes = newHashMap();
     for (IEObjectDescription d : descriptions) {
       EObject e = d.getEObjectOrProxy();
       IEObjectDescription stored = shortestOnes.get(e);

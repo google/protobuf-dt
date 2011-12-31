@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.contentassist;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.*;
 import static com.google.eclipse.protobuf.protobuf.Modifier.*;
 import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.*;
@@ -380,7 +381,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (allFieldOptions.isEmpty()) {
       return emptyList();
     }
-    List<String> optionNames = new ArrayList<String>();
+    List<String> optionNames = newArrayList();
     for (FieldOption option : allFieldOptions) {
       optionNames.add(options.nameOf(option));
     }

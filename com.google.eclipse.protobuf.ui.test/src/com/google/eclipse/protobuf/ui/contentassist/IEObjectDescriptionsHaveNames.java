@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.contentassist;
 
-import static java.util.Arrays.asList;
+import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.*;
 
@@ -28,7 +28,7 @@ public class IEObjectDescriptionsHaveNames extends BaseMatcher<Collection<IEObje
   }
 
   private IEObjectDescriptionsHaveNames(String[] qualifiedNames) {
-    this.qualifiedNames = new ArrayList<String>(asList(qualifiedNames));
+    this.qualifiedNames = newArrayList(qualifiedNames);
   }
 
   /** {@inheritDoc} */
@@ -38,7 +38,7 @@ public class IEObjectDescriptionsHaveNames extends BaseMatcher<Collection<IEObje
       return false;
     }
     Collection<IEObjectDescription> descriptions = (Collection<IEObjectDescription>) arg;
-    List<String> copyOfNames = new ArrayList<String>(qualifiedNames);
+    List<String> copyOfNames = newArrayList(qualifiedNames);
     if (copyOfNames.size() != descriptions.size()) {
       return false;
     }

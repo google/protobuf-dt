@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.junit.matchers;
 
+import static com.google.common.collect.Lists.newArrayList;
+
 import java.util.*;
 
 import org.hamcrest.*;
@@ -34,7 +36,7 @@ public class ContainAllNames extends BaseMatcher<IEObjectDescriptions> {
       return false;
     }
     IEObjectDescriptions descriptions = (IEObjectDescriptions) arg;
-    List<String> names = new ArrayList<String>(descriptions.names());
+    List<String> names = newArrayList(descriptions.names());
     if (names.size() != expectedNames.length) {
       return false;
     }

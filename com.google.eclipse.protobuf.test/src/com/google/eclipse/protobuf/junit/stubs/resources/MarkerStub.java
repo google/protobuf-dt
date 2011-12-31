@@ -8,19 +8,23 @@
  */
 package com.google.eclipse.protobuf.junit.stubs.resources;
 
-import static com.google.eclipse.protobuf.util.Objects.*;
+import static com.google.common.base.Objects.equal;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newHashMap;
 import static java.util.Collections.unmodifiableMap;
 
 import java.util.*;
 
 import org.eclipse.core.resources.*;
 
+import com.google.common.base.Objects;
+
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class MarkerStub implements IMarker {
 
-  private final Map<String, Object> attributes = new HashMap<String, Object>();
+  private final Map<String, Object> attributes = newHashMap();
   private final String type;
   private final long creationTime;
 
@@ -91,7 +95,7 @@ public class MarkerStub implements IMarker {
 
   /** {@inheritDoc} */
   @Override public Object[] getAttributes(String[] attributeNames) {
-    List<Object> values = new ArrayList<Object>();
+    List<Object> values = newArrayList();
     for (String name : attributeNames) {
       values.add(attributes.get(name));
     }
@@ -168,18 +172,14 @@ public class MarkerStub implements IMarker {
       return false;
     }
     MarkerStub other = (MarkerStub) obj;
-    if (!areEqual(attributes, other.attributes)) {
+    if (!equal(attributes, other.attributes)) {
       return false;
     }
-    return areEqual(type, other.type);
+    return equal(type, other.type);
   }
 
   @Override public int hashCode() {
-    final int prime = HASH_CODE_PRIME;
-    int result = 1;
-    result = prime * result + hashCodeOf(attributes);
-    result = prime * result + hashCodeOf(type);
-    return result;
+    return Objects.hashCode(attributes, type);
   }
 
   @Override public String toString() {

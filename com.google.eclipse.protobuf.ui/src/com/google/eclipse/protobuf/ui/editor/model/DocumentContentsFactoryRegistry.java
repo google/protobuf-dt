@@ -8,22 +8,22 @@
  */
 package com.google.eclipse.protobuf.ui.editor.model;
 
-import java.util.*;
+import java.util.List;
 
 import org.eclipse.ui.IEditorInput;
 
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 class DocumentContentsFactoryRegistry {
-  private final List<DocumentContentsFactory> factories = new ArrayList<DocumentContentsFactory>();
+  private final List<DocumentContentsFactory> factories;
 
   @Inject
-  DocumentContentsFactoryRegistry(FileStoreDocumentContentsFactory factory1, UriDocumentContentsFactory factory2) {
-    factories.add(factory1);
-    factories.add(factory2);
+  DocumentContentsFactoryRegistry(FileStoreDocumentContentsFactory f1, UriDocumentContentsFactory f2) {
+    factories = Lists.newArrayList(f1, f2);
   }
 
   DocumentContentsFactory findFactory(Object element) {

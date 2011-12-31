@@ -8,9 +8,10 @@
  */
 package com.google.eclipse.protobuf.ui.documentation;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import java.util.*;
+import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
@@ -24,11 +25,10 @@ import com.google.inject.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class ProtobufDocumentationProvider implements IEObjectDocumentationProvider {
-  private final List<IEObjectDocumentationProvider> delegates = new ArrayList<IEObjectDocumentationProvider>();
+  private final List<IEObjectDocumentationProvider> delegates;
 
   @Inject public ProtobufDocumentationProvider(SLCommentDocumentationProvider p1, MLCommentDocumentationProvider p2) {
-    delegates.add(p1);
-    delegates.add(p2);
+    delegates = newArrayList(p1, p2);
   }
 
   /** {@inheritDoc} */

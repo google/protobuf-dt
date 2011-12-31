@@ -8,13 +8,14 @@
  */
 package com.google.eclipse.protobuf.ui.commands;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.eclipse.protobuf.util.SystemProperties.lineSeparator;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.getNode;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 import static org.eclipse.xtext.util.Tuples.pair;
 
-import java.util.*;
+import java.util.List;
 import java.util.regex.*;
 
 import org.eclipse.emf.ecore.EObject;
@@ -58,7 +59,7 @@ import com.google.inject.*;
   }
 
   private List<Pattern> compile(String[] patterns, EObject target) {
-    List<Pattern> compiled = new ArrayList<Pattern>();
+    List<Pattern> compiled = newArrayList();
     for (final String s : patterns) {
       Pattern p = cache.get(s, target.eResource(), new Provider<Pattern>() {
         @Override public Pattern get() {

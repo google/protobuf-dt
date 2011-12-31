@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.paths.page;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.eclipse.protobuf.ui.ProtobufUiModule.PLUGIN_ID;
 import static com.google.eclipse.protobuf.ui.preferences.pages.ButtonGroup.with;
 import static com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToButtonSelection.bindSelectionOf;
@@ -18,7 +19,6 @@ import static org.eclipse.core.runtime.Status.OK_STATUS;
 import static org.eclipse.core.runtime.jobs.Job.BUILD;
 import static org.eclipse.xtext.util.Strings.*;
 
-import java.util.*;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -145,12 +145,11 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
   }
 
   private void setDirectoryPaths(String directoryPaths) {
-    List<String> paths = new ArrayList<String>();
+    List<String> paths = newArrayList();
     for (String path : split(directoryPaths, COMMA_DELIMITER)) {
-      if (isEmpty(path)) {
-        continue;
+      if (!isEmpty(path)) {
+        paths.add(path);
       }
-      paths.add(path);
     }
     directoryPathsEditor.directoryPaths(unmodifiableList(paths));
   }

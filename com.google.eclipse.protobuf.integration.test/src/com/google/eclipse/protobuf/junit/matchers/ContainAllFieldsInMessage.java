@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.junit.matchers;
 
+import static com.google.common.collect.Collections2.transform;
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
 import java.util.*;
@@ -15,6 +16,7 @@ import java.util.*;
 import org.eclipse.emf.ecore.EObject;
 import org.hamcrest.*;
 
+import com.google.common.base.Function;
 import com.google.eclipse.protobuf.junit.IEObjectDescriptions;
 import com.google.eclipse.protobuf.protobuf.*;
 
@@ -57,10 +59,12 @@ public class ContainAllFieldsInMessage extends BaseMatcher<IEObjectDescriptions>
   }
 
   @Override public void describeTo(Description description) {
-    List<String> names = new ArrayList<String>();
-    for (IndexedElement e : allIndexedElements()) {
-      names.add(nameOf(e));
-    }
+    List<IndexedElement> allIndexedElements = allIndexedElements();
+    Collection<String> names = transform(allIndexedElements, new Function<IndexedElement, String>() {
+      @Override public String apply(IndexedElement input) {
+        return nameOf(input);
+      }
+    });
     description.appendValue(names);
   }
 

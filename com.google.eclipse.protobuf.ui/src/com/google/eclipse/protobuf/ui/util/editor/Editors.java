@@ -9,6 +9,7 @@
  */
 package com.google.eclipse.protobuf.ui.util.editor;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.eclipse.protobuf.ui.ProtobufUiModule.PLUGIN_ID;
 import static com.google.eclipse.protobuf.ui.util.editor.Messages.*;
 import static org.eclipse.compare.rangedifferencer.RangeDifferencer.findDifferences;
@@ -17,7 +18,7 @@ import static org.eclipse.core.runtime.IStatus.ERROR;
 import static org.eclipse.core.runtime.Status.OK_STATUS;
 import static org.eclipse.core.runtime.SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK;
 
-import java.util.*;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.compare.rangedifferencer.RangeDifference;
@@ -71,7 +72,7 @@ import com.google.inject.Singleton;
          */
         private IRegion[] getChangedLineRegions(IDocument old) {
           RangeDifference[] differences = differencesWith(old);
-          List<IRegion> regions = new ArrayList<IRegion>();
+          List<IRegion> regions = newArrayList();
           int numberOfLines = current.getNumberOfLines();
           for (RangeDifference difference : differences) {
             if (difference.kind() == RangeDifference.CHANGE) {

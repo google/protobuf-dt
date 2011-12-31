@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Collections.unmodifiableList;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
 import java.util.*;
@@ -38,9 +40,9 @@ class QualifiedNameDescriptions {
   }
 
   private Collection<IEObjectDescription> allQualifiedNames(EObject e, QualifiedName fqn) {
-    List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
+    List<IEObjectDescription> descriptions = newArrayList();
     descriptions.add(create(fqn, e));
     descriptions.add(create(qualifiedNames.addLeadingDot(fqn), e));
-    return descriptions;
+    return unmodifiableList(descriptions);
   }
 }

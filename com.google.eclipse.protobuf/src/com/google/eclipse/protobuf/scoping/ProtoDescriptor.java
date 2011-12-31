@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newHashMap;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MESSAGE_FIELD__TYPE;
 import static com.google.eclipse.protobuf.scoping.OptionType.findOptionTypeForLevelOf;
 import static com.google.eclipse.protobuf.util.Closeables.closeQuietly;
@@ -38,7 +40,7 @@ import com.google.eclipse.protobuf.protobuf.Enum;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtoDescriptor {
-  private static final Map<String, OptionType> OPTION_DEFINITION_BY_NAME = new HashMap<String, OptionType>();
+  private static final Map<String, OptionType> OPTION_DEFINITION_BY_NAME = newHashMap();
 
   static {
     populateMap();
@@ -50,9 +52,9 @@ public class ProtoDescriptor {
     }
   }
 
-  private final List<ComplexType> allTypes = new ArrayList<ComplexType>();
-  private final Map<OptionType, Map<String, MessageField>> optionsByType = new HashMap<OptionType, Map<String, MessageField>>();
-  private final Map<String, Enum> enumsByName = new HashMap<String, Enum>();
+  private final List<ComplexType> allTypes = newArrayList();
+  private final Map<OptionType, Map<String, MessageField>> optionsByType = newHashMap();
+  private final Map<String, Enum> enumsByName = newHashMap();
 
   private Protobuf root;
 

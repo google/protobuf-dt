@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.labeling;
 
+import static com.google.common.collect.Maps.newHashMap;
 import static com.google.eclipse.protobuf.protobuf.Modifier.*;
 import static java.util.Arrays.asList;
 
@@ -29,14 +30,14 @@ import com.google.inject.Singleton;
   private static final String GIF_EXTENSION = ".gif";
   private static final String DEFAULT_IMAGE = "empty.gif";
 
-  private static final Map<Modifier, String> IMAGES_BY_MODIFIER = new HashMap<Modifier, String>();
+  private static final Map<Modifier, String> IMAGES_BY_MODIFIER = newHashMap();
   static {
     IMAGES_BY_MODIFIER.put(OPTIONAL, "field-opt.gif");
     IMAGES_BY_MODIFIER.put(REPEATED, "field-rep.gif");
     IMAGES_BY_MODIFIER.put(REQUIRED, "field-req.gif");
   }
 
-  private static final Map<Class<?>, String> IMAGES_BY_TYPE = new HashMap<Class<?>, String>();
+  private static final Map<Class<?>, String> IMAGES_BY_TYPE = newHashMap();
   static {
     IMAGES_BY_TYPE.put(Enum.class, "enum.gif");
     IMAGES_BY_TYPE.put(TypeExtension.class, "extend.gif");

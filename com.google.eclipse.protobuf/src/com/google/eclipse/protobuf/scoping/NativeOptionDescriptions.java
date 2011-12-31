@@ -8,7 +8,8 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static java.util.Collections.emptyList;
+import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Collections.*;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
 import java.util.*;
@@ -34,11 +35,11 @@ class NativeOptionDescriptions {
   }
 
   private Collection<IEObjectDescription> describe(Collection<MessageField> fields) {
-    List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
+    List<IEObjectDescription> descriptions = newArrayList();
     for (MessageField field : fields) {
       String name = field.getName();
       descriptions.add(create(name, field));
     }
-    return descriptions;
+    return unmodifiableList(descriptions);
   }
 }

@@ -84,20 +84,20 @@ public class SaveActionsPreferencePage extends PreferencePage implements IWorkbe
 
   private void updateContents() {
     boolean enabled = btnRemoveTrailingwhitespace.getSelection();
-    btnInEditedLines.setEnabled(enabled);
     btnInAllLines.setEnabled(enabled);
+    btnInEditedLines.setEnabled(enabled);
   }
 
-  @Override protected final IPreferenceStore doGetPreferenceStore() {
+  @Override protected IPreferenceStore doGetPreferenceStore() {
     return preferenceStoreAccess.getWritablePreferenceStore();
   }
 
-  @Override public final boolean performOk() {
+  @Override public boolean performOk() {
     preferenceBinder.saveValues();
     return true;
   }
 
-  @Override protected final void performDefaults() {
+  @Override protected void performDefaults() {
     preferenceBinder.applyDefaults();
     super.performDefaults();
     updateContents();

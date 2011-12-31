@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.junit;
 
+import static com.google.common.collect.Maps.newLinkedHashMap;
 import static java.util.Collections.unmodifiableSet;
 
 import java.util.*;
@@ -30,7 +31,7 @@ public class IEObjectDescriptions {
     return new IEObjectDescriptions(elements);
   }
 
-  private final Map<String, IEObjectDescription> descriptions = new LinkedHashMap<String, IEObjectDescription>();
+  private final Map<String, IEObjectDescription> descriptions = newLinkedHashMap();
 
   private IEObjectDescriptions(Iterable<IEObjectDescription> elements) {
     for (IEObjectDescription d : elements) {

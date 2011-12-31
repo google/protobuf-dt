@@ -8,8 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.validation;
 
+import static com.google.common.base.Objects.equal;
 import static com.google.eclipse.protobuf.ui.validation.Validation.validate;
-import static com.google.eclipse.protobuf.util.Objects.areEqual;
 
 import java.net.URI;
 
@@ -61,6 +61,6 @@ import com.google.inject.*;
     }
     URI uri1 = p1.getLocationURI();
     URI uri2 = p2.getLocationURI();
-    return areEqual(uri1, uri2);
+    return equal(uri1, uri2);
   }
 }

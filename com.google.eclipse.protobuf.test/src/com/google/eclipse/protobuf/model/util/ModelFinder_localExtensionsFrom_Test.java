@@ -8,11 +8,12 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.junit.Assert.assertSame;
 
-import java.util.*;
+import java.util.List;
 
 import org.junit.*;
 
@@ -43,7 +44,7 @@ public class ModelFinder_localExtensionsFrom_Test {
   // extend Person {}
   @Test public void should_return_extensions_of_message() {
     Message m = xtext.find("Person", " {", Message.class);
-    List<TypeExtension> extensions = new ArrayList<TypeExtension>(finder.localExtensionsOf(m));
+    List<TypeExtension> extensions = newArrayList(finder.localExtensionsOf(m));
     Message referred = (Message) extensions.get(0).getType().getTarget();
     assertSame(m, referred);
   }

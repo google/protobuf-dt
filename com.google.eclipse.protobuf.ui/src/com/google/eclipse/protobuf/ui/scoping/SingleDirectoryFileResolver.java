@@ -8,9 +8,11 @@
  */
 package com.google.eclipse.protobuf.ui.scoping;
 
+import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Collections.*;
 import static org.eclipse.emf.common.util.URI.createURI;
 
-import java.util.*;
+import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -63,12 +65,13 @@ class SingleDirectoryFileResolver implements FileResolverStrategy {
 
   // first is always "platform" and last is the file name (both unnecessary)
   private static List<String> removeFirstAndLast(URI declaringResourceUri) {
-    List<String> segments = new ArrayList<String>(declaringResourceUri.segmentsList());
-    if (segments.isEmpty()) {
-      return segments;
+    List<String> originalSegments = declaringResourceUri.segmentsList();
+    if (originalSegments.isEmpty()) {
+      return emptyList();
     }
+    List<String> segments = newArrayList(originalSegments);
     segments.remove(0);
     segments.remove(segments.size() - 1);
-    return segments;
+    return unmodifiableList(segments);
   }
 }

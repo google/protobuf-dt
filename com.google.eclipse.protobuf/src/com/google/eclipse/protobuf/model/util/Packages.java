@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.*;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
@@ -70,7 +71,7 @@ public class Packages {
     if (segmentCount <= 1) {
       return emptyList();
     }
-    List<QualifiedName> allNames = new ArrayList<QualifiedName>();
+    List<QualifiedName> allNames = newArrayList();
     for (int i = segmentCount - 1; i > 0; i--) {
       current = QualifiedName.create(segments.get(i)).append(current);
       allNames.add(current);

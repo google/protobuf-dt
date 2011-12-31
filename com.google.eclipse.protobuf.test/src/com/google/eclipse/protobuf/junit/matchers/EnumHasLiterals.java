@@ -8,12 +8,15 @@
  */
 package com.google.eclipse.protobuf.junit.matchers;
 
+import static com.google.common.collect.Collections2.transform;
+import static com.google.common.collect.Lists.newArrayList;
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
 import java.util.*;
 
 import org.hamcrest.*;
 
+import com.google.common.base.Function;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 
@@ -37,19 +40,20 @@ public class EnumHasLiterals extends BaseMatcher<Enum> {
       return false;
     }
     Enum anEnum = (Enum) arg;
-    List<String> actualNames = literalNames(anEnum);
+    List<String> actualNames = newArrayList(literalNames(anEnum));
     for (String name : literalNames) {
       actualNames.remove(name);
     }
     return actualNames.isEmpty();
   }
 
-  private List<String> literalNames(Enum anEnum) {
-    List<String> names = new ArrayList<String>();
-    for (Literal literal : getAllContentsOfType(anEnum, Literal.class)) {
-      names.add(literal.getName());
-    }
-    return names;
+  private Collection<String> literalNames(Enum anEnum) {
+    List<Literal> allLiterals = getAllContentsOfType(anEnum, Literal.class);
+    return transform(allLiterals, new Function<Literal, String>() {
+      @Override public String apply(Literal input) {
+        return input.getName();
+      }
+    });
   }
 
   @Override public void describeTo(Description description) {

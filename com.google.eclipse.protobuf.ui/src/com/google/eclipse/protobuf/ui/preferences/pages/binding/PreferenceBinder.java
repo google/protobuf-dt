@@ -8,7 +8,9 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages.binding;
 
-import java.util.*;
+import static com.google.common.collect.Lists.newArrayList;
+
+import java.util.List;
 
 /**
  * Binds preference values to properties in UI controls.
@@ -16,7 +18,7 @@ import java.util.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class PreferenceBinder {
-  private final List<Binding> allBindings = new ArrayList<Binding>();
+  private final List<Binding> allBindings = newArrayList();
 
   /**
    * Adds all the given bindings to this binder.

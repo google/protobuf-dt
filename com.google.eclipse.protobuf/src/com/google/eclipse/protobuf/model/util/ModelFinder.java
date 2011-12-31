@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.unmodifiableList;
 import static org.eclipse.emf.ecore.util.EcoreUtil.getAllContents;
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
@@ -153,7 +154,7 @@ import com.google.inject.Singleton;
    * @return all the import definitions in the given proto.
    */
   public List<Import> importsIn(Protobuf root) {
-    List<Import> imports = new ArrayList<Import>();
+    List<Import> imports = newArrayList();
     for (ProtobufElement e : root.getElements()) {
       if (e instanceof Import) {
         imports.add((Import) e);
@@ -168,7 +169,7 @@ import com.google.inject.Singleton;
    * @return all the public import definitions in the given proto.
    */
   public List<Import> publicImportsIn(Protobuf root) {
-    List<Import> imports = new ArrayList<Import>();
+    List<Import> imports = newArrayList();
     for (ProtobufElement e : root.getElements()) {
       if (e instanceof PublicImport) {
         imports.add((Import) e);
@@ -201,7 +202,7 @@ import com.google.inject.Singleton;
   }
 
   public Collection<MessageField> propertiesOf(Message message) {
-    List<MessageField> properties = new ArrayList<MessageField>();
+    List<MessageField> properties = newArrayList();
     for (MessageElement e : message.getElements()) {
       if (e instanceof MessageField) {
         properties.add((MessageField) e);

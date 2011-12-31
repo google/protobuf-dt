@@ -8,7 +8,9 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
-import java.util.*;
+import static com.google.common.collect.Lists.newArrayList;
+
+import java.util.List;
 
 import org.eclipse.xtext.naming.QualifiedName;
 
@@ -32,7 +34,7 @@ import com.google.inject.Singleton;
     if (name.getFirstSegment().equals("")) {
       return name;
     }
-    List<String> segments = new ArrayList<String>();
+    List<String> segments = newArrayList();
     segments.addAll(name.getSegments());
     segments.add(0, "");
     return QualifiedName.create(segments.toArray(new String[segments.size()]));

@@ -8,11 +8,15 @@
  */
 package com.google.eclipse.protobuf.junit.matchers;
 
-import java.util.*;
+import static com.google.common.collect.Collections2.transform;
+import static com.google.common.collect.Lists.newArrayList;
+
+import java.util.Collection;
 
 import org.eclipse.emf.ecore.EObject;
 import org.hamcrest.*;
 
+import com.google.common.base.Function;
 import com.google.eclipse.protobuf.junit.IEObjectDescriptions;
 import com.google.eclipse.protobuf.protobuf.MessageField;
 
@@ -21,7 +25,7 @@ import com.google.eclipse.protobuf.protobuf.MessageField;
  */
 public class ContainAllFields extends BaseMatcher<IEObjectDescriptions> {
 
-  private final Collection<MessageField> fields = new ArrayList<MessageField>();
+  private final Collection<MessageField> fields = newArrayList();
 
   public static ContainAllFields containAll(Collection<MessageField> fields) {
     return new ContainAllFields(fields);
@@ -50,10 +54,11 @@ public class ContainAllFields extends BaseMatcher<IEObjectDescriptions> {
   }
 
   @Override public void describeTo(Description description) {
-    List<String> names = new ArrayList<String>();
-    for (MessageField field : fields) {
-      names.add(field.getName());
-    }
+    Collection<String> names = transform(fields, new Function<MessageField, String>() {
+      @Override public String apply(MessageField input) {
+        return input.getName();
+      }
+    });
     description.appendValue(names);
   }
 }

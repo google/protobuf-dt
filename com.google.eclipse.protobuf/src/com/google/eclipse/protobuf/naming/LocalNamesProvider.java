@@ -8,12 +8,13 @@
  */
 package com.google.eclipse.protobuf.naming;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.eclipse.protobuf.naming.Naming.NamingUsage.*;
 import static java.util.Collections.*;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 import static org.eclipse.xtext.util.Tuples.pair;
 
-import java.util.*;
+import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.*;
@@ -77,7 +78,7 @@ public class LocalNamesProvider {
     Pair<EObject, String> key = pair(e, "localFqns");
     return cache.get(key, e.eResource(), new Provider<List<QualifiedName>>() {
       @Override public List<QualifiedName> get() {
-        List<QualifiedName> allNames = new ArrayList<QualifiedName>();
+        List<QualifiedName> allNames = newArrayList();
         EObject current = e;
         String name = naming.nameOf(e, usage);
         if (isEmpty(name)) {

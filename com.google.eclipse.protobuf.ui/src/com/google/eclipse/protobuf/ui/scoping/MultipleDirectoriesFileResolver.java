@@ -8,9 +8,10 @@
  */
 package com.google.eclipse.protobuf.ui.scoping;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.eclipse.protobuf.ui.util.CommaSeparatedValues.splitCsv;
 
-import java.util.*;
+import java.util.List;
 
 import org.eclipse.core.filesystem.*;
 import org.eclipse.core.filesystem.URIUtil;
@@ -35,7 +36,7 @@ class MultipleDirectoriesFileResolver implements FileResolverStrategy {
   /** {@inheritDoc} */
   @Override public String resolveUri(String importUri, URI declaringResourceUri, PathsPreferences preferences) {
     String directoryPaths = preferences.directoryPaths().getValue();
-    List<String> fileSystemDirectories = new ArrayList<String>();
+    List<String> fileSystemDirectories = newArrayList();
     for (String importRoot : splitCsv(directoryPaths)) {
       DirectoryPath path = DirectoryPath.parse(importRoot, preferences.getProject());
       String resolved = resolveUri(importUri, path);

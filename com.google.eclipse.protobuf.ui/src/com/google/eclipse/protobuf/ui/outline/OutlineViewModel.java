@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.outline;
 
-import static com.google.inject.internal.Maps.newLinkedHashMap;
+import static com.google.common.collect.Maps.newLinkedHashMap;
 import static java.util.Collections.unmodifiableList;
 
 import java.util.*;
@@ -21,7 +21,6 @@ import com.google.eclipse.protobuf.protobuf.Package;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-@SuppressWarnings("restriction")
 class OutlineViewModel {
   private static final Class<?>[] GROUP_TYPES = { Package.class, Import.class, ProtobufElement.class };
 

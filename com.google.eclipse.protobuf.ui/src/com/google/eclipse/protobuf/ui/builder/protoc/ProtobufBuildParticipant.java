@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.builder.protoc;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.eclipse.protobuf.ui.exception.CoreExceptions.error;
 import static com.google.eclipse.protobuf.ui.preferences.compiler.core.CompilerPreferences.compilerPreferences;
 import static com.google.eclipse.protobuf.ui.util.CommaSeparatedValues.splitCsv;
@@ -16,7 +17,7 @@ import static java.util.Collections.*;
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
 
 import java.io.*;
-import java.util.*;
+import java.util.List;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
@@ -75,7 +76,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
   }
 
   private List<String> importRoots(IProject project) {
-    List<String> paths = new ArrayList<String>();
+    List<String> paths = newArrayList();
     PathsPreferences preferences = new PathsPreferences(storeAccess, project);
     if (preferences.filesInMultipleDirectories().getValue()) {
       String directoryPaths = preferences.directoryPaths().getValue();

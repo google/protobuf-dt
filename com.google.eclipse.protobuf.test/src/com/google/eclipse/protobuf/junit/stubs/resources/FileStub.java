@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.junit.stubs.resources;
 
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newHashMap;
 import static java.util.Collections.*;
 
 import java.io.*;
@@ -24,7 +26,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
  */
 public class FileStub implements IFile {
 
-  private final Map<String, List<MarkerStub>> markersByType = new HashMap<String, List<MarkerStub>>();
+  private final Map<String, List<MarkerStub>> markersByType = newHashMap();
   private IPath location;
 
   /** {@inheritDoc} */
@@ -537,7 +539,7 @@ public class FileStub implements IFile {
     String type = marker.getType();
     List<MarkerStub> markers = markersByType.get(type);
     if (markers == null) {
-      markers = new ArrayList<MarkerStub>();
+      markers = newArrayList();
       markersByType.put(type, markers);
     }
     markers.add(marker);

@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.emptySet;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
@@ -58,7 +59,7 @@ class PackageIntersectionDescriptions {
     }
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
     QualifiedName fqn = nameProvider.getFullyQualifiedName(e);
-    List<String> segments = new ArrayList<String>(fqn.getSegments());
+    List<String> segments = newArrayList(fqn.getSegments());
     for (int i = 0; i < start; i++) {
       segments.remove(0);
       descriptions.add(create(fqn(segments), e));

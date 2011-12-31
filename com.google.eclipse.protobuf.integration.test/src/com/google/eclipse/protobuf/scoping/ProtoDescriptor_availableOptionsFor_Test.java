@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static com.google.common.collect.Maps.newHashMap;
 import static com.google.eclipse.protobuf.junit.core.Setups.integrationTestSetup;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static com.google.eclipse.protobuf.junit.matchers.FieldHasType.*;
@@ -77,7 +78,7 @@ public class ProtoDescriptor_availableOptionsFor_Test {
   }
 
   private static class Options {
-    private final Map<String, MessageField> optionsByName = new HashMap<String, MessageField>();
+    private final Map<String, MessageField> optionsByName = newHashMap();
 
     void mapByName(Collection<MessageField> options) {
       optionsByName.clear();

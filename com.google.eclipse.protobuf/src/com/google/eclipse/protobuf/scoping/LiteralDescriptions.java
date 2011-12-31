@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.emptyList;
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
@@ -27,7 +28,7 @@ class LiteralDescriptions {
     if (anEnum == null) {
       return emptyList();
     }
-    List<IEObjectDescription> descriptions = new ArrayList<IEObjectDescription>();
+    List<IEObjectDescription> descriptions = newArrayList();
     for (Literal literal : getAllContentsOfType(anEnum, Literal.class)) {
       String name = literal.getName();
       descriptions.add(create(name, literal));

@@ -8,10 +8,11 @@
  */
 package com.google.eclipse.protobuf.conversion;
 
+import static com.google.common.collect.Maps.newHashMap;
 import static java.lang.Double.*;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import java.util.*;
+import java.util.Map;
 
 import org.eclipse.xtext.conversion.ValueConverterException;
 import org.eclipse.xtext.conversion.impl.AbstractLexerBasedConverter;
@@ -23,7 +24,7 @@ import org.eclipse.xtext.nodemodel.INode;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class DOUBLEValueConverter extends AbstractLexerBasedConverter<Double> {
-  private static final Map<String, Double> PREDEFINED_VALUES = new HashMap<String, Double>();
+  private static final Map<String, Double> PREDEFINED_VALUES = newHashMap();
 
   static {
     PREDEFINED_VALUES.put("nan", NaN);

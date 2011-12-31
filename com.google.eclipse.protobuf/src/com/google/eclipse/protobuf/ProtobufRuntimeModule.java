@@ -11,6 +11,7 @@ package com.google.eclipse.protobuf;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.xtext.conversion.IValueConverterService;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
+import org.eclipse.xtext.parser.IParser;
 import org.eclipse.xtext.parser.antlr.ISyntaxErrorMessageProvider;
 import org.eclipse.xtext.resource.*;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
@@ -28,7 +29,7 @@ import com.google.inject.Binder;
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
  */
-public class ProtobufRuntimeModule extends com.google.eclipse.protobuf.AbstractProtobufRuntimeModule {
+public class ProtobufRuntimeModule extends AbstractProtobufRuntimeModule {
   public Class<? extends IGlobalServiceProvider> bindIGlobalServiceProvider() {
     return ResourceServiceProvider.class;
   }
@@ -37,7 +38,7 @@ public class ProtobufRuntimeModule extends com.google.eclipse.protobuf.AbstractP
     return ProtobufImportUriResolver.class;
   }
 
-  @Override public Class<? extends org.eclipse.xtext.parser.IParser> bindIParser() {
+  @Override public Class<? extends IParser> bindIParser() {
     return Proto2OnlyParser.class;
   }
 

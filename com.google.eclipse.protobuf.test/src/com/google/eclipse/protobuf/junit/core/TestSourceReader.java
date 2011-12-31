@@ -9,6 +9,8 @@
  */
 package com.google.eclipse.protobuf.junit.core;
 
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newHashMap;
 import static java.io.File.separator;
 
 import java.io.*;
@@ -25,7 +27,7 @@ class TestSourceReader {
 
   private static final String COMMENT_START = "//";
 
-  private final Map<String, List<String>> comments = new HashMap<String, List<String>>();
+  private final Map<String, List<String>> comments = newHashMap();
   private final CommentProcessor processor = new CommentProcessor();
 
   private boolean initialized;
@@ -63,7 +65,7 @@ class TestSourceReader {
     String classFile = fqn + ".java";
     File file = new File("src" + separator + classFile);
     Scanner scanner = null;
-    List<String> allComments = new ArrayList<String>();
+    List<String> allComments = newArrayList();
     MultiLineTextBuilder comment = new MultiLineTextBuilder();
     try {
       scanner = new Scanner(new FileInputStream(file));
@@ -87,7 +89,7 @@ class TestSourceReader {
         }
         if (testName != null) {
           comments.put(testName, allComments);
-          allComments = new ArrayList<String>();
+          allComments = newArrayList();
         }
       }
     } catch (IOException e) {
