@@ -23,7 +23,6 @@ import com.google.eclipse.protobuf.ui.editor.FileOpener;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ImportHyperlink_open_Test {
-
   private static IRegion region;
 
   @BeforeClass public static void setUpOnce() {

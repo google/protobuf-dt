@@ -29,7 +29,6 @@ import com.google.eclipse.protobuf.protobuf.Message;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class IEObjectDescriptionChooser_shortestQualifiedNamesIn_Test {
-
   private List<IEObjectDescription> descriptions;
   private Map<String, String> userData;
   private IEObjectDescriptionChooser chooser;

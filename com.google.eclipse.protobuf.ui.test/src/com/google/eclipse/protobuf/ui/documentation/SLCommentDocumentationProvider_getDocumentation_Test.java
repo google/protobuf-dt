@@ -8,8 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.documentation;
 
-import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
-import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
+import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -25,8 +25,7 @@ import com.google.eclipse.protobuf.protobuf.MessageField;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class SLCommentDocumentationProvider_getDocumentation_Test {
-
-  @Rule public XtextRule xtext = createWith(unitTestSetup());
+  @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
   private SLCommentDocumentationProvider provider;
 

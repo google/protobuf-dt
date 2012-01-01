@@ -19,7 +19,6 @@ import org.junit.Test;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class CommaSeparatedValues_splitCsv_Test {
-
   @Test public void should_split_CSV() {
     String[] values = CommaSeparatedValues.splitCsv("Yoda, Leia, Luke");
     assertThat(values, equalTo(new String[] { "Yoda", "Leia", "Luke" }));

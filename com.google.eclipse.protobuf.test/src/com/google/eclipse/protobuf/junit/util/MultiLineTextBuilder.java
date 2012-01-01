@@ -14,7 +14,6 @@ import static com.google.eclipse.protobuf.util.SystemProperties.lineSeparator;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class MultiLineTextBuilder {
-
   private final StringBuilder builder = new StringBuilder();
 
   public MultiLineTextBuilder() {}

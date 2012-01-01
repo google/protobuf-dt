@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+* Copyright (c) 2011 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -16,26 +16,23 @@ import java.io.File;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 
-import com.google.eclipse.protobuf.*;
 import com.google.eclipse.protobuf.scoping.IFileUriResolver;
-import com.google.inject.*;
+import com.google.inject.AbstractModule;
 
 /**
+ * Guice module for unit testing.
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class IntegrationTestSetup extends ProtobufStandaloneSetup {
-
-  protected IntegrationTestSetup() {}
-
-  @Override
-  public Injector createInjector() {
-    return Guice.createInjector(new Module());
+public class IntegrationTestModule extends AbstractModule {
+  public static IntegrationTestModule integrationTestModule() {
+    return new IntegrationTestModule();
   }
 
-  protected static class Module extends ProtobufRuntimeModule {
-    public Class<? extends IFileUriResolver> bindFileUriResolver() {
-      return FileUriResolver.class;
-    }
+  private IntegrationTestModule( ) {}
+
+  @Override protected void configure() {
+    binder().bind(IFileUriResolver.class).to(FileUriResolver.class);
   }
 
   private static class FileUriResolver implements IFileUriResolver {

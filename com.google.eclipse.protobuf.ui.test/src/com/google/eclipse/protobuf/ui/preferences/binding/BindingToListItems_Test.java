@@ -24,7 +24,6 @@ import com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToListIte
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class BindingToListItems_Test {
-
   private List list;
   private StringListPreference preference;
 

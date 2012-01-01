@@ -21,7 +21,6 @@ import org.junit.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufDocumentationProvider_getDocumentation_Test {
-
   private static EObject o;
 
   @BeforeClass public static void setUpOnce() {

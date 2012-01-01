@@ -21,7 +21,6 @@ import org.junit.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufDiagnostic_appendToMessage_Test {
-
   private ProtobufDiagnostic diagnostic;
 
   @Before public void setUp() {

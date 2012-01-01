@@ -27,7 +27,6 @@ import org.junit.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufResource_createDiagnostic_Test {
-
   private static Triple<EObject, EReference, INode> triple;
 
   @BeforeClass public static void setUpOnce() {

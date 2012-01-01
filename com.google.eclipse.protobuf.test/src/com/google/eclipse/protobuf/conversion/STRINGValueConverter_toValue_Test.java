@@ -8,8 +8,8 @@
  */
 package com.google.eclipse.protobuf.conversion;
 
-import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
-import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
+import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static java.util.Arrays.asList;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
@@ -32,8 +32,7 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
  */
 @RunWith(Parameterized.class)
 public class STRINGValueConverter_toValue_Test {
-
-  @Rule public XtextRule xtext = createWith(unitTestSetup());
+  @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
   private final String input;
   private final String expected;

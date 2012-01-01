@@ -20,7 +20,6 @@ import org.hamcrest.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class IEObjectDescriptionsHaveNames extends BaseMatcher<Collection<IEObjectDescription>> {
-
   private final List<String> qualifiedNames;
 
   public static IEObjectDescriptionsHaveNames containOnly(String...names) {

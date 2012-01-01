@@ -24,7 +24,6 @@ import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class TestSourceReader {
-
   private static final String COMMENT_START = "//";
 
   private final Map<String, List<String>> comments = newHashMap();

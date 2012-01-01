@@ -30,7 +30,7 @@ import org.junit.rules.MethodRule;
 import org.junit.runners.model.*;
 
 import com.google.eclipse.protobuf.protobuf.Protobuf;
-import com.google.inject.Injector;
+import com.google.inject.*;
 
 /**
  * Rule that performs configuration of a standalone Xtext environment.
@@ -38,13 +38,16 @@ import com.google.inject.Injector;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class XtextRule implements MethodRule {
-
   private final Injector injector;
   private final TestSourceReader reader;
 
   private Protobuf root;
   private XtextResource resource;
   private Finder finder;
+
+  public static XtextRule overrideRuntimeModuleWith(Module testModule) {
+    return new XtextRule(new OverrideRuntimeModuleSetup(testModule));
+  }
 
   public static XtextRule createWith(ISetup setup) {
     return new XtextRule(setup);

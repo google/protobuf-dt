@@ -20,10 +20,8 @@ import org.junit.Test;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class CompoundElement_charCount_Test {
-
   @Test public void should_return_number_of_characters_in_value() {
     assertThat(DEFAULT_EQUAL.charCount(), equalTo(DEFAULT_EQUAL.toString().length()));
     assertThat(DEFAULT_EQUAL_IN_BRACKETS.charCount(), equalTo(DEFAULT_EQUAL_IN_BRACKETS.toString().length()));
   }
-
 }

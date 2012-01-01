@@ -22,7 +22,6 @@ import org.eclipse.emf.ecore.resource.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ResourceStub implements Resource {
-
   private URI uri;
 
   public ResourceStub() {}

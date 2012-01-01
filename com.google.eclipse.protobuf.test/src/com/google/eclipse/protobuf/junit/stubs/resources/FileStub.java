@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class FileStub implements IFile {
-
   private final Map<String, List<MarkerStub>> markersByType = newHashMap();
   private IPath location;
 

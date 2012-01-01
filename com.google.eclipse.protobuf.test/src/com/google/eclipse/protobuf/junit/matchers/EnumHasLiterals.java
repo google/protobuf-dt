@@ -24,7 +24,6 @@ import com.google.eclipse.protobuf.protobuf.Enum;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class EnumHasLiterals extends BaseMatcher<Enum> {
-
   private final String[] literalNames;
 
   public static EnumHasLiterals hasLiterals(String... literalNames) {

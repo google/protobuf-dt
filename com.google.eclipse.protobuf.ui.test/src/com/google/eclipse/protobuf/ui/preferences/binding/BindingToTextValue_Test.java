@@ -23,7 +23,6 @@ import com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToTextVal
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class BindingToTextValue_Test {
-
   private Text text;
   private StringPreference preference;
 

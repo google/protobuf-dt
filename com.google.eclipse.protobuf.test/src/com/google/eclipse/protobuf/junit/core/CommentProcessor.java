@@ -19,7 +19,6 @@ import java.util.regex.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class CommentProcessor {
-
   private static final Pattern CREATE_FILE_PATTERN = compile("// Create file (.*)");
 
   Object processComment(String comment) {

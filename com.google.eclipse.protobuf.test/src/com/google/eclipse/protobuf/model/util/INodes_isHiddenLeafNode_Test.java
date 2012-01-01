@@ -20,7 +20,6 @@ import org.junit.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class INodes_isHiddenLeafNode_Test {
-
   private INodes nodes;
 
   @Before public void setUp() {

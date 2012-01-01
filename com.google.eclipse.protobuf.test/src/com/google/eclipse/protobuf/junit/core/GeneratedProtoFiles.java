@@ -17,7 +17,6 @@ import java.io.File;
  * @author alruiz@google.com (Alex Ruiz)
  */
 final class GeneratedProtoFiles {
-
   private static final String PARENT_DIRECTORY_NAME = "test-protos";
 
   static File protoFile(String fileName) {

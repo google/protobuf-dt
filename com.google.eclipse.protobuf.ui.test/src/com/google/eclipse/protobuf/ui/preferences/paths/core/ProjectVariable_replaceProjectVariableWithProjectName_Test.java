@@ -22,7 +22,6 @@ import org.junit.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProjectVariable_replaceProjectVariableWithProjectName_Test {
-
   private IProject project;
 
   @Before public void setUp() {

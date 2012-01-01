@@ -26,10 +26,9 @@ import com.google.eclipse.protobuf.protobuf.Package;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class Finder {
-
   // TODO remove feature names that are not used or don't exist any more.
-  private static final String[] FEATURE_NAMES = {"extension", "target", "message", "name", "optionField", "property",
-      "source", "type", "value"};
+  private static final String[] FEATURE_NAMES = { "extension", "target", "message", "name", "optionField", "property",
+      "source", "type", "value" };
 
   private final String protoAsText;
   private final AbstractNode root;

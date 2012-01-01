@@ -19,7 +19,6 @@ import org.junit.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class LineSpecificErrorParser_parseAndAddMarkerIfNecessary_Test {
-
   private ProtocMarkerFactory markerFactory;
   private LineSpecificErrorParser outputParser;
 

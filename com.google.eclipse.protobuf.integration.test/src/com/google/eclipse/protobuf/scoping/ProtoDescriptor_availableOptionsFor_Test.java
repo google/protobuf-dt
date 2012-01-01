@@ -9,8 +9,8 @@
 package com.google.eclipse.protobuf.scoping;
 
 import static com.google.common.collect.Maps.newHashMap;
-import static com.google.eclipse.protobuf.junit.core.Setups.integrationTestSetup;
-import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
+import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static com.google.eclipse.protobuf.junit.matchers.FieldHasType.*;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
@@ -30,8 +30,7 @@ import com.google.eclipse.protobuf.protobuf.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtoDescriptor_availableOptionsFor_Test {
-
-  @Rule public XtextRule xtext = createWith(integrationTestSetup());
+  @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
   private Options options;
   private ProtoDescriptor descriptor;

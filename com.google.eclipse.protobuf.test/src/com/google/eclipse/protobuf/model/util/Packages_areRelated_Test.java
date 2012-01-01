@@ -21,7 +21,6 @@ import com.google.eclipse.protobuf.protobuf.Package;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Packages_areRelated_Test {
-
   private static Packages packages;
 
   @BeforeClass public static void setUpOnce() {

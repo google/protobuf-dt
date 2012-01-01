@@ -26,7 +26,6 @@ import org.junit.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufResourceUIValidatorExtension_createMarkers_Test {
-
   private static IFile file;
   private static List<Issue> issues;
   private static IProgressMonitor monitor;

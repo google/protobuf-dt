@@ -21,8 +21,7 @@ import com.google.eclipse.protobuf.ui.preferences.pages.ButtonGroup;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Buttons_add_Test {
-
+public class ButtonGroup_add_Test {
   private Button[] buttons;
   private SelectionListener listener;
 

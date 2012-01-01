@@ -21,7 +21,6 @@ import org.junit.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Closeables_closeQuietly_Test {
-
   private Closeable closeable;
 
   @Before public void setUp() {

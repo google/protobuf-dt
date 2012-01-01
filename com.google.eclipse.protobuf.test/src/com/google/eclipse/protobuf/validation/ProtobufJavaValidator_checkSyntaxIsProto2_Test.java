@@ -24,7 +24,6 @@ import com.google.eclipse.protobuf.protobuf.Syntax;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufJavaValidator_checkSyntaxIsProto2_Test {
-
   private Syntax syntax;
   private ValidationMessageAcceptor messageAcceptor;
   private ProtobufJavaValidator validator;

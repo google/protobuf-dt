@@ -8,8 +8,8 @@
  */
 package com.google.eclipse.protobuf.grammar;
 
-import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
-import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
+import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static org.eclipse.xtext.GrammarUtil.getAllKeywords;
 import static org.junit.Assert.*;
 
@@ -24,8 +24,7 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Keywords_isKeyword_Test {
-
-  @Rule public XtextRule xtext = createWith(unitTestSetup());
+  @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
   private IGrammarAccess grammarAccess;
   private Keywords keywords;

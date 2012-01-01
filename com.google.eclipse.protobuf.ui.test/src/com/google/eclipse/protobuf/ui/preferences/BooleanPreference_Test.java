@@ -20,7 +20,6 @@ import org.junit.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class BooleanPreference_Test {
-
   private String name;
   private IPreferenceStore store;
 

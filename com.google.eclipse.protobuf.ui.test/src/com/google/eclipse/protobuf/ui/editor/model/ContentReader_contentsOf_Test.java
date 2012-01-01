@@ -22,7 +22,6 @@ import org.junit.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ContentReader_contentsOf_Test {
-
   private ContentReader reader;
 
   @Before public void setUp() {

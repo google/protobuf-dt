@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+* Copyright (c) 2011 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -12,27 +12,22 @@ import static org.mockito.Mockito.mock;
 
 import org.eclipse.core.runtime.IExtensionRegistry;
 
-import com.google.eclipse.protobuf.*;
 import com.google.inject.*;
 
 /**
+ * Guice module for unit testing.
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class UnitTestSetup extends ProtobufStandaloneSetup {
-
-  protected UnitTestSetup() {}
-
-  @Override
-  public Injector createInjector() {
-    return Guice.createInjector(new Module());
+public class UnitTestModule extends AbstractModule {
+  public static UnitTestModule unitTestModule() {
+    return new UnitTestModule();
   }
 
-  protected static class Module extends ProtobufRuntimeModule {
-    public Module() {}
+  private UnitTestModule( ) {}
 
-    @Override public void configureExtensionRegistry(Binder binder) {
-      binder.bind(IExtensionRegistry.class).toProvider(ExtensionRegistryProvider.class);
-    }
+  @Override protected void configure() {
+    binder().bind(IExtensionRegistry.class).toProvider(ExtensionRegistryProvider.class);
   }
 
   private static class ExtensionRegistryProvider implements Provider<IExtensionRegistry> {

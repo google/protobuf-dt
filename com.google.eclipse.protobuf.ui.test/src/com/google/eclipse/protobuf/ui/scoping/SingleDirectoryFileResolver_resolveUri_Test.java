@@ -26,7 +26,6 @@ import com.google.eclipse.protobuf.ui.util.Resources;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class SingleDirectoryFileResolver_resolveUri_Test {
-
   private static URI resourceUri;
   private static PathsPreferences preferences;
 

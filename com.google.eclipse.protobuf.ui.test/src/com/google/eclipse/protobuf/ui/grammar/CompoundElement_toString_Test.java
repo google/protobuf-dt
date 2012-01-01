@@ -20,9 +20,7 @@ import org.junit.Test;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class CompoundElement_toString_Test {
-
   @Test public void should_return_value() {
     assertThat(DEFAULT_EQUAL.toString(), equalTo("default = "));
   }
-
 }

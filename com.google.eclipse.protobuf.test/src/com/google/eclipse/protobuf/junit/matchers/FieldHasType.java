@@ -16,7 +16,6 @@ import com.google.eclipse.protobuf.protobuf.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class FieldHasType extends BaseMatcher<MessageField> {
-
   private final String typeName;
 
   public static FieldHasType isBool() {

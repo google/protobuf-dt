@@ -20,7 +20,6 @@ import com.google.eclipse.protobuf.junit.IEObjectDescriptions;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ContainNames extends BaseMatcher<IEObjectDescriptions> {
-
   private final List<String> expectedNames;
 
   public static ContainNames contain(String... names) {

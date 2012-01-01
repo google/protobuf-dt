@@ -8,8 +8,8 @@
  */
 package com.google.eclipse.protobuf.bugs;
 
-import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
-import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
+import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -24,8 +24,7 @@ import com.google.eclipse.protobuf.protobuf.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Issue166_SupportOptionalDecimals_Test {
-
-  @Rule public XtextRule xtext = createWith(unitTestSetup());
+  @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
   // syntax = "proto2";
   //

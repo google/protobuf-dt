@@ -19,7 +19,6 @@ import org.junit.Test;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class CommonKeyword_hasValue_Test {
-
   @Test public void should_return_true_if_value_is_equal_to_String() {
     assertTrue(BOOL.hasValue("bool"));
     assertTrue(TRUE.hasValue("true"));

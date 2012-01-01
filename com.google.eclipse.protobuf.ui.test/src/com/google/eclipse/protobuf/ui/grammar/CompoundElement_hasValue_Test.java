@@ -19,7 +19,6 @@ import org.junit.Test;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class CompoundElement_hasValue_Test {
-
   @Test public void should_return_true_if_value_is_equal_to_String() {
     assertTrue(DEFAULT_EQUAL.hasValue("default = "));
     assertTrue(DEFAULT_EQUAL_IN_BRACKETS.hasValue("[default = ]"));

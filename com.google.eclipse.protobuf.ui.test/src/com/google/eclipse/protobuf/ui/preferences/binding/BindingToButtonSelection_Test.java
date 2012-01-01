@@ -23,7 +23,6 @@ import com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToButtonS
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class BindingToButtonSelection_Test {
-
   private Button button;
   private BooleanPreference preference;
 

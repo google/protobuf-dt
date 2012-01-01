@@ -25,7 +25,6 @@ import com.google.eclipse.protobuf.protobuf.Enum;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ContainAllLiteralsInEnum extends BaseMatcher<IEObjectDescriptions> {
-
   private final Enum anEnum;
 
   public static ContainAllLiteralsInEnum containAllLiteralsIn(Enum anEnum) {

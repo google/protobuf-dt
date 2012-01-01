@@ -23,7 +23,6 @@ import com.google.common.base.Objects;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class MarkerStub implements IMarker {
-
   private final Map<String, Object> attributes = newHashMap();
   private final String type;
   private final long creationTime;

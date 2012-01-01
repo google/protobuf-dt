@@ -24,7 +24,6 @@ import com.google.eclipse.protobuf.protobuf.MessageField;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ContainAllFields extends BaseMatcher<IEObjectDescriptions> {
-
   private final Collection<MessageField> fields = newArrayList();
 
   public static ContainAllFields containAll(Collection<MessageField> fields) {

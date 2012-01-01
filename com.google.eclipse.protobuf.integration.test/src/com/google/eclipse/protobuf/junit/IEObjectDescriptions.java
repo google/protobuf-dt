@@ -22,7 +22,6 @@ import org.eclipse.xtext.scoping.IScope;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class IEObjectDescriptions {
-
   public static IEObjectDescriptions descriptionsIn(IScope scope) {
     return descriptions(scope.getAllElements());
   }

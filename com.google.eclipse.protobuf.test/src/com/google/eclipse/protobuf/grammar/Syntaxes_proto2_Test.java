@@ -9,7 +9,7 @@
 package com.google.eclipse.protobuf.grammar;
 
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
@@ -19,7 +19,6 @@ import org.junit.Test;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Syntaxes_proto2_Test {
-
   @Test public void should_return_proto2() {
     assertThat(Syntaxes.proto2(), equalTo("proto2"));
   }

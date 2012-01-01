@@ -8,8 +8,8 @@
  */
 package com.google.eclipse.protobuf.bugs;
 
-import static com.google.eclipse.protobuf.junit.core.Setups.unitTestSetup;
-import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
+import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.emf.common.util.BasicDiagnostic;
@@ -24,8 +24,7 @@ import com.google.eclipse.protobuf.validation.ProtobufJavaValidator;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Issue148_FixDuplicateNameError_Test {
-
-  @Rule public XtextRule xtext = createWith(unitTestSetup());
+  @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
   private ProtobufJavaValidator validator;
 

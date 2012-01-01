@@ -26,7 +26,6 @@ import com.google.eclipse.protobuf.junit.stubs.resources.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtocMarkerFactory_createErrorIfNecessary_Test {
-
   private static final String PROTOC = "com.google.eclipse.protobuf.ui.protocMarker";
 
   private FileStub file;

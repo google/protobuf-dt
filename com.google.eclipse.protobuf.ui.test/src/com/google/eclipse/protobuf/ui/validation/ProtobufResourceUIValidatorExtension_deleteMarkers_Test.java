@@ -24,7 +24,6 @@ import org.junit.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufResourceUIValidatorExtension_deleteMarkers_Test {
-
   private static CheckMode checkMode;
   private static IProgressMonitor monitor;
 

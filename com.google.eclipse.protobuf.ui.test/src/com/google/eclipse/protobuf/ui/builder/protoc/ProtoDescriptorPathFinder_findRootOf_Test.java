@@ -21,7 +21,6 @@ import org.junit.rules.ExpectedException;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtoDescriptorPathFinder_findRootOf_Test {
-
   private static ProtoDescriptorPathFinder finder;
 
   @BeforeClass public static void setUpOnce() {

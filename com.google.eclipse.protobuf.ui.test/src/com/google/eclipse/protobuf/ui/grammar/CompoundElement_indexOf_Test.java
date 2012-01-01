@@ -23,7 +23,6 @@ import com.google.eclipse.protobuf.grammar.CommonKeyword;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class CompoundElement_indexOf_Test {
-
   @Test public void should_return_index_of_keyword_as_substring() {
     assertThat(DEFAULT_EQUAL.indexOf(EQUAL), equalTo(DEFAULT_EQUAL.toString().indexOf(EQUAL.toString())));
   }

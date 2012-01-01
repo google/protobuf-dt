@@ -24,7 +24,6 @@ import com.google.eclipse.protobuf.protobuf.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ContainAllFieldsInMessage extends BaseMatcher<IEObjectDescriptions> {
-
   private final EObject container;
 
   public static ContainAllFieldsInMessage containAllFieldsIn(Group group) {

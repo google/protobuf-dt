@@ -21,7 +21,6 @@ import org.junit.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class DirectoryPath_parse_Test {
-
   private IProject project;
 
   @Before public void setUp() {

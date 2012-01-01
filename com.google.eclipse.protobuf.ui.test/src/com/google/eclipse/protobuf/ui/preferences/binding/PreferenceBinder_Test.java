@@ -20,7 +20,6 @@ import com.google.eclipse.protobuf.ui.preferences.pages.binding.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class PreferenceBinder_Test {
-
   private Binding[] bindings;
   private PreferenceBinder binder;
 

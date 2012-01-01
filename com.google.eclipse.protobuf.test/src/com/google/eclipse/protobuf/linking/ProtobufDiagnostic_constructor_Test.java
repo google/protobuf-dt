@@ -24,7 +24,6 @@ import org.junit.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufDiagnostic_constructor_Test {
-
   private static INode node;
 
   @BeforeClass public static void setUpOnce() {
