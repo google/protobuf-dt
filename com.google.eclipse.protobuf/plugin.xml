@@ -5,7 +5,6 @@
     id="descriptorSource"
     name="descriptor-source"
     schema="schema/descriptor-source.exsd" />
-  <extension-point id="parserChecks" name="parser-checks" schema="schema/parser-checks.exsd"/>
   <extension point="org.eclipse.emf.ecore.generated_package">
     <package
       uri="http://www.google.com/eclipse/protobuf/Protobuf"

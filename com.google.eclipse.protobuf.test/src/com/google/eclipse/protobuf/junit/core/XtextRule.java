@@ -46,15 +46,19 @@ public class XtextRule implements MethodRule {
   private Finder finder;
 
   public static XtextRule overrideRuntimeModuleWith(Module testModule) {
-    return new XtextRule(new OverrideRuntimeModuleSetup(testModule));
+    return createWith(new OverrideRuntimeModuleSetup(testModule));
   }
 
   public static XtextRule createWith(ISetup setup) {
-    return new XtextRule(setup);
+    return createWith(setup.createInjectorAndDoEMFRegistration());
   }
 
-  private XtextRule(ISetup setup) {
-    injector = setup.createInjectorAndDoEMFRegistration();
+  public static XtextRule createWith(Injector injector) {
+    return new XtextRule(injector);
+  }
+
+  private XtextRule(Injector injector) {
+    this.injector = injector;
     reader = new TestSourceReader();
   }
 

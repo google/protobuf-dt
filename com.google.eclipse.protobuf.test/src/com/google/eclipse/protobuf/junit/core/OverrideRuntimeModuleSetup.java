@@ -7,10 +7,13 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.junit.core;
-import static com.google.inject.util.Modules.override;
+
+import static org.eclipse.xtext.util.Modules2.mixin;
 
 import com.google.eclipse.protobuf.*;
 import com.google.inject.*;
+
+
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
@@ -22,7 +25,7 @@ public class OverrideRuntimeModuleSetup extends ProtobufStandaloneSetup {
   }
 
   @Override public Injector createInjector() {
-    Module newModule = override(new ProtobufRuntimeModule()).with(module);
-    return Guice.createInjector(newModule);
+    Module mixin = mixin(new ProtobufRuntimeModule(), module);
+    return Guice.createInjector(mixin);
   }
 }

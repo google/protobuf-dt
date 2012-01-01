@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test
+Bundle-SymbolicName: com.google.eclipse.protobuf.ui.functional.test
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Google Inc.
+Fragment-Host: com.google.eclipse.protobuf.ui;bundle-version="1.1.1"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.swtbot.go;bundle-version="2.0.5",
+ org.mockito;bundle-version="1.8.5"
