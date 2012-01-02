@@ -17,7 +17,7 @@ import com.google.inject.Injector;
 public final class Internals {
   private static final String LANGUAGE_NAME = "com.google.eclipse.protobuf.Protobuf";
 
-  public static Injector injector() {
+  public static Injector plugInInjector() {
     return ProtobufActivator.getInstance().getInjector(languageName());
   }
 

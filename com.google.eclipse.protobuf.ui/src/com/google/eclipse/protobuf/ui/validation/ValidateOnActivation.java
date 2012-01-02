@@ -9,7 +9,7 @@
  */
 package com.google.eclipse.protobuf.ui.validation;
 
-import static com.google.eclipse.protobuf.ui.Internals.injector;
+import static com.google.eclipse.protobuf.ui.Internals.plugInInjector;
 import static com.google.eclipse.protobuf.ui.preferences.general.core.GeneralPreferences.generalPreferences;
 import static com.google.eclipse.protobuf.ui.validation.Validation.validate;
 
@@ -45,12 +45,12 @@ public class ValidateOnActivation implements IPartListener2 {
   }
 
   private IProject projectFrom(IEditorPart editor) {
-    Resources resources = injector().getInstance(Resources.class);
+    Resources resources = plugInInjector().getInstance(Resources.class);
     return resources.project(editor);
   }
 
   private boolean shouldValidateEditor(IProject project) {
-    IPreferenceStoreAccess storeAccess = injector().getInstance(IPreferenceStoreAccess.class);
+    IPreferenceStoreAccess storeAccess = plugInInjector().getInstance(IPreferenceStoreAccess.class);
     GeneralPreferences preferences = generalPreferences(storeAccess, project);
     return preferences.validateFilesOnActivation().getValue();
   }

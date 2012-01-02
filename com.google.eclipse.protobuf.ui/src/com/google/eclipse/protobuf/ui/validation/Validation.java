@@ -111,12 +111,12 @@ final class Validation {
     if (text == null) {
       return null;
     }
-    STRINGValueConverter converter = injector().getInstance(STRINGValueConverter.class);
+    STRINGValueConverter converter = plugInInjector().getInstance(STRINGValueConverter.class);
     return converter.toValue(text, node);
   }
 
   private static INodes nodes() {
-    return injector().getInstance(INodes.class);
+    return plugInInjector().getInstance(INodes.class);
   }
 
   private Validation() {}
