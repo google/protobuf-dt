@@ -25,13 +25,13 @@ import com.google.eclipse.protobuf.ui.util.Resources;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ValidateFileOnActivation implements IPartListener2 {
+public class ValidateFileOnActivation extends AbstractPartListener {
   /**
    * Validates the active active editor in the given part that contains a .proto file in the Workspace.
-   * @param partRef the part that was activated.
+   * @param ref the part that was activated.
    */
-  @Override public void partActivated(IWorkbenchPartReference partRef) {
-    IEditorPart activeEditor = activeEditor(partRef);
+  @Override public void partActivated(IWorkbenchPartReference ref) {
+    IEditorPart activeEditor = activeEditor(ref);
     IProject project = projectFrom(activeEditor);
     if (project == null || !shouldValidateEditor(project)) {
       return;
@@ -39,8 +39,8 @@ public class ValidateFileOnActivation implements IPartListener2 {
     validate(activeEditor);
   }
 
-  private IEditorPart activeEditor(IWorkbenchPartReference partRef) {
-    IWorkbenchPage page = partRef.getPage();
+  private IEditorPart activeEditor(IWorkbenchPartReference ref) {
+    IWorkbenchPage page = ref.getPage();
     return (page == null) ? null : page.getActiveEditor();
   }
 
@@ -54,46 +54,4 @@ public class ValidateFileOnActivation implements IPartListener2 {
     GeneralPreferences preferences = generalPreferences(storeAccess, project);
     return preferences.validateFilesOnActivation().getValue();
   }
-
-  /**
-   * This method does nothing.
-   * @param partRef the part that was surfaced.
-   */
-  @Override public void partBroughtToTop(IWorkbenchPartReference partRef) {}
-
-  /**
-   * This method does nothing.
-   * @param partRef the part that was closed.
-   */
-  @Override public void partClosed(IWorkbenchPartReference partRef) {}
-
-  /**
-   * This method does nothing.
-   * @param partRef the part that was deactivated.
-   */
-  @Override public void partDeactivated(IWorkbenchPartReference partRef) {}
-
-  /**
-   * This method does nothing.
-   * @param partRef the part that was opened.
-   */
-  @Override public void partOpened(IWorkbenchPartReference partRef) {}
-
-  /**
-   * This method does nothing.
-   * @param partRef the part that was hidden.
-   */
-  @Override public void partHidden(IWorkbenchPartReference partRef) {}
-
-  /**
-   * This method does nothing.
-   * @param partRef the part that is visible.
-   */
-  @Override public void partVisible(IWorkbenchPartReference partRef) {}
-
-  /**
-   * This method does nothing.
-   * @param partRef the part whose input was changed.
-   */
-  @Override public void partInputChanged(IWorkbenchPartReference partRef) {}
 }
