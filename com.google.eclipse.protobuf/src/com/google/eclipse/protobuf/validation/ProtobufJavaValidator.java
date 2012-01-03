@@ -11,12 +11,9 @@ package com.google.eclipse.protobuf.validation;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
 import static com.google.eclipse.protobuf.validation.Messages.*;
 import static java.lang.String.format;
-import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.*;
-import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 import org.eclipse.xtext.validation.*;
 
 import com.google.eclipse.protobuf.grammar.Syntaxes;
@@ -39,38 +36,11 @@ import com.google.inject.Inject;
   @Inject private NameResolver nameResolver;
   @Inject private Protobufs protobufs;
   @Inject private IQualifiedNameProvider qualifiedNameProvider;
-  @Inject private ImportUriResolver uriResolver;
 
   @Check public void checkIsProto2(Protobuf protobuf) {
     if (!protobufs.isProto2(protobuf)) {
       warning(nonProto2, null);
     }
-  }
-
-  @Check public void checkImportIsResolved(Import anImport) {
-    if (retryUntilItIsResolved(anImport)) {
-      return;
-    }
-    error(format(importNotFound, anImport.getImportURI()), IMPORT__IMPORT_URI);
-  }
-
-  private boolean retryUntilItIsResolved(Import anImport) {
-    if (isResolved(anImport)) {
-      return true;
-    }
-    uriResolver.apply(anImport);
-    return isResolved(anImport);
-  }
-
-  private boolean isResolved(Import anImport) {
-    String importUri = anImport.getImportURI();
-    if (!isEmpty(importUri)) {
-      URI uri = URI.createURI(importUri);
-      if (!isEmpty(uri.scheme())) {
-        return true;
-      }
-    }
-    return false;
   }
 
   @Check public void checkSyntaxIsProto2(Syntax syntax) {

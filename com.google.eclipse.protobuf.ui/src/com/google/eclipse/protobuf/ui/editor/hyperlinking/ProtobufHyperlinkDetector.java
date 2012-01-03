@@ -8,22 +8,20 @@
  */
 package com.google.eclipse.protobuf.ui.editor.hyperlinking;
 
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
 import static org.eclipse.emf.common.util.URI.createURI;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.hyperlink.*;
 import org.eclipse.xtext.CrossReference;
-import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.resource.*;
 import org.eclipse.xtext.ui.editor.hyperlinking.DefaultHyperlinkDetector;
 import org.eclipse.xtext.ui.editor.model.IXtextDocument;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
-import com.google.eclipse.protobuf.model.util.INodes;
 import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.ui.editor.FileOpener;
+import com.google.eclipse.protobuf.ui.util.Imports;
 import com.google.inject.Inject;
 
 
@@ -38,7 +36,7 @@ public class ProtobufHyperlinkDetector extends DefaultHyperlinkDetector {
 
   @Inject private EObjectAtOffsetHelper eObjectAtOffsetHelper;
   @Inject private FileOpener fileOpener;
-  @Inject private INodes nodes;
+  @Inject private Imports imports;
 
   @Override public IHyperlink[] detectHyperlinks(ITextViewer textViewer, final IRegion region,
       final boolean canShowMultipleHyperlinks) {
@@ -62,7 +60,7 @@ public class ProtobufHyperlinkDetector extends DefaultHyperlinkDetector {
           return NO_HYPERLINKS;
         }
         Import anImport = (Import) resolved;
-        String importUri = rawUriIn(anImport);
+        String importUri = imports.uriAsEnteredByUser(anImport);
         if (importUri == null) {
           return NO_HYPERLINKS;
         }
@@ -79,18 +77,6 @@ public class ProtobufHyperlinkDetector extends DefaultHyperlinkDetector {
         return new IHyperlink[] { hyperlink };
       }
     });
-  }
-
-  private String rawUriIn(Import anImport) {
-    INode node = nodes.firstNodeForFeature(anImport, IMPORT__IMPORT_URI);
-    if (node == null) {
-      return null;
-    }
-    String text = node.getText();
-    if (text == null || text.length() < 3) {
-      return null;
-    }
-    return text.substring(1, text.length() - 1); // remove quotes
   }
 
   private IRegion importUriRegion(IXtextDocument document, int offset, String importUri) throws BadLocationException {

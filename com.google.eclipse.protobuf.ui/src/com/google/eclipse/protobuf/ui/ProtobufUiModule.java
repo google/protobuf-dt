@@ -154,6 +154,6 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
     if (w == null || !(plugin instanceof ProtobufActivator)) {
       return;
     }
-    w.getPartService().addPartListener(new ValidateOnActivation());
+    w.getPartService().addPartListener(new ValidateFileOnActivation());
   }
 }

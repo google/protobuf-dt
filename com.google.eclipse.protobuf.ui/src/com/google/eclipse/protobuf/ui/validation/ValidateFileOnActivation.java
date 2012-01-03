@@ -10,7 +10,7 @@
 package com.google.eclipse.protobuf.ui.validation;
 
 import static com.google.eclipse.protobuf.ui.preferences.general.core.GeneralPreferences.generalPreferences;
-import static com.google.eclipse.protobuf.ui.validation.Validation.validate;
+import static com.google.eclipse.protobuf.ui.validation.ProtobufValidation.validate;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.*;
@@ -25,7 +25,7 @@ import com.google.eclipse.protobuf.ui.util.Resources;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ValidateOnActivation implements IPartListener2 {
+public class ValidateFileOnActivation implements IPartListener2 {
   /**
    * Validates the active active editor in the given part that contains a .proto file in the Workspace.
    * @param partRef the part that was activated.

@@ -9,7 +9,7 @@
 package com.google.eclipse.protobuf.ui.validation;
 
 import static com.google.common.base.Objects.equal;
-import static com.google.eclipse.protobuf.ui.validation.Validation.validate;
+import static com.google.eclipse.protobuf.ui.validation.ProtobufValidation.validate;
 
 import java.net.URI;
 
