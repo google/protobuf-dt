@@ -14,10 +14,14 @@ import com.google.inject.Injector;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-public final class Internals {
+public final class ProtobufPlugIn {
   private static final String LANGUAGE_NAME = "com.google.eclipse.protobuf.Protobuf";
 
-  public static Injector plugInInjector() {
+  public static <T> T getInstance(Class<T> type) {
+    return injector().getInstance(type);
+  }
+
+  public static Injector injector() {
     return ProtobufActivator.getInstance().getInjector(languageName());
   }
 
@@ -25,5 +29,5 @@ public final class Internals {
     return LANGUAGE_NAME;
   }
 
-  private Internals() {}
+  private ProtobufPlugIn() {}
 }

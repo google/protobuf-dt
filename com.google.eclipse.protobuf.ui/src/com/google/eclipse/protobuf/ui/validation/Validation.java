@@ -9,7 +9,7 @@
 package com.google.eclipse.protobuf.ui.validation;
 
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
-import static com.google.eclipse.protobuf.ui.Internals.*;
+import static com.google.eclipse.protobuf.ui.ProtobufPlugIn.languageName;
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
 import java.util.List;
@@ -27,6 +27,7 @@ import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 import com.google.eclipse.protobuf.conversion.STRINGValueConverter;
 import com.google.eclipse.protobuf.model.util.INodes;
 import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.ui.ProtobufPlugIn;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -111,12 +112,12 @@ final class Validation {
     if (text == null) {
       return null;
     }
-    STRINGValueConverter converter = plugInInjector().getInstance(STRINGValueConverter.class);
+    STRINGValueConverter converter = ProtobufPlugIn.getInstance(STRINGValueConverter.class);
     return converter.toValue(text, node);
   }
 
   private static INodes nodes() {
-    return plugInInjector().getInstance(INodes.class);
+    return ProtobufPlugIn.getInstance(INodes.class);
   }
 
   private Validation() {}

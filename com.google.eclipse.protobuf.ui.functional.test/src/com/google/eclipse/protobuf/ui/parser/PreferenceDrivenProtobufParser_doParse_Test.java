@@ -9,7 +9,6 @@
 package com.google.eclipse.protobuf.ui.parser;
 
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.ui.Internals.plugInInjector;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.*;
 
@@ -23,6 +22,7 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 import com.google.eclipse.protobuf.parser.NonProto2Protobuf;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.eclipse.protobuf.ui.ProtobufPlugIn;
 
 /**
  * Tests for <code>{@link PreferenceDrivenProtobufParser#doParse(String, CharStream, NodeModelBuilder, int)}</code>.
@@ -39,7 +39,7 @@ public class PreferenceDrivenProtobufParser_doParse_Test {
     proto1 = proto.toString();
   }
 
-  @Rule public XtextRule xtext = createWith(plugInInjector());
+  @Rule public XtextRule xtext = createWith(ProtobufPlugIn.injector());
 
   private IPreferenceStore store;
 
