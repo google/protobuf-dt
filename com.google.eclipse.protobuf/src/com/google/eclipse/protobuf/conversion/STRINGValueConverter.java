@@ -8,10 +8,8 @@
  */
 package com.google.eclipse.protobuf.conversion;
 
-import static java.util.regex.Pattern.compile;
-import static org.eclipse.xtext.util.Strings.*;
-
-import java.util.regex.Pattern;
+import static com.google.eclipse.protobuf.util.Strings.*;
+import static org.eclipse.xtext.util.Strings.convertToJavaString;
 
 import org.eclipse.xtext.conversion.ValueConverterException;
 import org.eclipse.xtext.conversion.impl.AbstractLexerBasedConverter;
@@ -23,17 +21,16 @@ import org.eclipse.xtext.nodemodel.INode;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class STRINGValueConverter extends AbstractLexerBasedConverter<String> {
-  private static final Pattern LINE_BREAK = compile("\"[\t\r\n]+\"|'[\t\r\n]+'");
-
   @Override protected String toEscapedString(String value) {
     if (value == null) {
       return null;
     }
+    // TODO check if we really need to quote
     return '"' + convertToJavaString(removeLineBreaksFrom(value), false) + '"';
   }
 
   /**
-   * Creates a {@code String} from the given input, if the given input represents a multi-line string.
+   * Creates a {@code String} from the given input, if the given input represents a multiple-line string.
    * @param string the given input.
    * @param node the parsed node including hidden parts.
    * @return the new integer.
@@ -44,18 +41,10 @@ public class STRINGValueConverter extends AbstractLexerBasedConverter<String> {
       return null;
     }
     try {
-      String clean = removeLineBreaksFrom(string).trim();
-      return convertToJavaString(clean.substring(1, clean.length() - 1), true);
+      return convertToJavaString(unquote(removeLineBreaksFrom(string).trim()), true);
     } catch (IllegalArgumentException e) {
       throw parsingError(string, node, e);
     }
-  }
-
-  private static String removeLineBreaksFrom(String s) {
-    if (isEmpty(s)) {
-      return s;
-    }
-    return LINE_BREAK.matcher(s).replaceAll("");
   }
 
   private ValueConverterException parsingError(String string, INode node, Exception cause) {

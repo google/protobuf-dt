@@ -19,9 +19,9 @@ import org.eclipse.xtext.ui.editor.hyperlinking.DefaultHyperlinkDetector;
 import org.eclipse.xtext.ui.editor.model.IXtextDocument;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
+import com.google.eclipse.protobuf.model.util.Imports;
 import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.ui.editor.FileOpener;
-import com.google.eclipse.protobuf.ui.util.Imports;
 import com.google.inject.Inject;
 
 

@@ -8,25 +8,31 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
+import static com.google.eclipse.protobuf.util.Strings.*;
+import static org.eclipse.xtext.util.Strings.convertToJavaString;
+
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.xtext.nodemodel.INode;
 
 import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider;
-import com.google.inject.*;
+import com.google.inject.Inject;
 
 /**
  * Utility methods related to imports.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton public class Imports {
+public class Imports {
   @Inject private ProtoDescriptorProvider descriptorProvider;
+  @Inject private INodes nodes;
 
   /**
-   * Indicates whether the URI of the given import is equal to the path of descriptor.proto
-   * ("google/protobuf/descriptor.proto").
-   * @param anImport the import to check.
-   * @return {@code true} if the URI of the given import is equal to the path of descriptor.proto, {@code false}
+   * Indicates whether the URI of the given {@code Import} is equal to the path of the file "descriptor.proto."
+   * @param anImport the {@code Import} to check.
+   * @return {@code true} if the URI of the given {@code Import} is equal to the path of the file "descriptor.proto,"
+   * {@code false}
    * otherwise.
    */
   public boolean hasUnresolvedDescriptorUri(Import anImport) {
@@ -37,9 +43,9 @@ import com.google.inject.*;
   }
 
   /**
-   * Indicates whether the given <code>{@link Import}</code> is pointing to descriptor.proto.
-   * @param anImport the given import to check.
-   * @return {@code true} if the given import is pointing to descriptor.proto, {@code false} otherwise.
+   * Indicates whether the given {@code Import} is pointing to descriptor.proto.
+   * @param anImport the given {@code Import} to check.
+   * @return {@code true} if the given {@code Import} is pointing to descriptor.proto, {@code false} otherwise.
    */
   public boolean isImportingDescriptor(Import anImport) {
     if (hasUnresolvedDescriptorUri(anImport)) {
@@ -57,4 +63,21 @@ import com.google.inject.*;
     }
     return false;
   }
-}
+
+  /**
+   * Returns the URI of the given {@code Import} as it looks in the editor (i.e. before it is resolved.)
+   * @param anImport the given {@code Import}.
+   * @return the URI of the given {@code Import} as it looks in the editor.
+   */
+  public String uriAsEnteredByUser(Import anImport) {
+    INode node = nodes.firstNodeForFeature(anImport, IMPORT__IMPORT_URI);
+    if (node == null) {
+      return null;
+    }
+    String text = node.getText();
+    if (text == null) {
+      return null;
+    }
+    return convertToJavaString(unquote(removeLineBreaksFrom(text).trim()), true);
+  }
+ }

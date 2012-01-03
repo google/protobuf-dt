@@ -41,8 +41,8 @@ public class ImportValidator extends AbstractDeclarativeValidator {
   @Override public void register(EValidatorRegistrar registrar) {}
 
   /**
-   * Verifies that "imports" in the given root only refer to "proto2" files. If non-proto2 "imports" are found, this
-   * validator creates warning markers for such "imports".
+   * Verifies that {@code Import}s in the given root only refer to "proto2" files. If non-proto2 {@code Import}s are
+   * found, this validator will create warning markers for such "imports".
    * @param root the root containing the imports to check.
    */
   @Check public void checkNonProto2Imports(Protobuf root) {
@@ -109,9 +109,9 @@ public class ImportValidator extends AbstractDeclarativeValidator {
   }
 
   /**
-   * Verifies that the URI of the given "import" has been resolved. If the URI has not been resolved, the validator
-   * creates an error marker for the given "import."
-   * @param anImport the given "import."
+   * Verifies that the URI of the given {@code Import} has been resolved. If the URI has not been resolved, this
+   * validator will create an error marker for the given {@code Import}.
+   * @param anImport the given {@code Import}.
    */
   @Check public void checkUriIsResolved(Import anImport) {
     if (isResolved(anImport)) {
