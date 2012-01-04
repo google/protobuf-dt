@@ -52,7 +52,7 @@ import com.google.inject.*;
       if (!nodes.isHiddenLeafNode(currentNode)) {
         continue;
       }
-      if (!nodes.belongsToSingleLineComment(currentNode)) {
+      if (!nodes.isSingleLineComment(currentNode)) {
         continue;
       }
       String comment = ((ILeafNode) currentNode).getText();

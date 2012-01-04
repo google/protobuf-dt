@@ -19,11 +19,11 @@ import org.junit.*;
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 
 /**
- * Test for <code>{@link INodes#belongsToSingleLineComment(INode)}</code>
+ * Test for <code>{@link INodes#isSingleLineComment(INode)}</code>
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class INodes_belongsToSingleLineComment_Test {
+public class INodes_isSingleLineComment_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
   private INodes nodes;
@@ -38,7 +38,7 @@ public class INodes_belongsToSingleLineComment_Test {
   // message Person {}
   @Test public void should_return_true_if_node_belongs_to_single_line_comment() {
     ILeafNode commentNode = xtext.find("// This is a test.");
-    assertTrue(nodes.belongsToSingleLineComment(commentNode));
+    assertTrue(nodes.isSingleLineComment(commentNode));
   }
 
   // syntax = "proto2";
@@ -46,6 +46,6 @@ public class INodes_belongsToSingleLineComment_Test {
   // message Person {}
   @Test public void should_return_false_if_node_does_not_belong_to_single_line_comment() {
     ICompositeNode node = getNode(xtext.root());
-    assertFalse(nodes.belongsToSingleLineComment(node));
+    assertFalse(nodes.isSingleLineComment(node));
   }
 }

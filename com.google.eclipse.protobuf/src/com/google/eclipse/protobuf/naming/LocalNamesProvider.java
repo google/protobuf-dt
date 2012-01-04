@@ -9,7 +9,6 @@
 package com.google.eclipse.protobuf.naming;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.eclipse.protobuf.naming.Naming.NamingUsage.*;
 import static java.util.Collections.*;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 import static org.eclipse.xtext.util.Tuples.pair;
@@ -21,7 +20,6 @@ import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.util.*;
 
 import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.naming.Naming.NamingUsage;
 import com.google.inject.*;
 
 /**
@@ -63,24 +61,24 @@ public class LocalNamesProvider {
 
   @Inject private ModelFinder finder;
   @Inject private NameResolver nameResolver;
-  @Inject private Naming naming;
+  @Inject private NamingStrategies namingStrategies;
   @Inject private Packages packages;
 
   public List<QualifiedName> names(EObject e) {
-    return allNames(e, DEFAULT);
+    return allNames(e, namingStrategies.normal());
   }
 
   public List<QualifiedName> namesForOption(EObject e) {
-    return allNames(e, OPTION);
+    return allNames(e, namingStrategies.option());
   }
 
-  private List<QualifiedName> allNames(final EObject e, final NamingUsage usage) {
+  private List<QualifiedName> allNames(final EObject e, final NamingStrategy naming) {
     Pair<EObject, String> key = pair(e, "localFqns");
     return cache.get(key, e.eResource(), new Provider<List<QualifiedName>>() {
       @Override public List<QualifiedName> get() {
         List<QualifiedName> allNames = newArrayList();
         EObject current = e;
-        String name = naming.nameOf(e, usage);
+        String name = naming.nameOf(e);
         if (isEmpty(name)) {
           return emptyList();
         }

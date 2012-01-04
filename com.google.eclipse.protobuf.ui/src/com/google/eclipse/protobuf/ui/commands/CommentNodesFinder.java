@@ -40,7 +40,7 @@ import com.google.inject.*;
       if (!nodes.isHiddenLeafNode(currentNode)) {
         continue;
       }
-      if (!nodes.belongsToComment(currentNode)) {
+      if (!nodes.isComment(currentNode)) {
         continue;
       }
       String rawComment = ((ILeafNode) currentNode).getText();

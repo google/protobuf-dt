@@ -122,14 +122,14 @@ import com.google.inject.*;
   }
 
   /**
-   * Returns the name of the given <code>{@link IndexedElement}</code> used as a source of an option. If the given
-   * element is a <code>{@link Group}</code>, this method will return its name in lower case.
-   * @param e the given {@code IndexedElement}.
-   * @return the name of the given <code>{@link IndexedElement}</code>.
+   * Returns the name of the given <code>{@link IndexedElement}</code> that is being used as a source of an option. If
+   * the given element is a <code>{@link Group}</code>, this method will return its name in lower case.
+   * @param optionSource the given {@code IndexedElement} that is being used as a source of an option.
+   * @return the name of the given {@code IndexedElement}.
    */
-  public String nameForOption(IndexedElement e) {
-    String name = nameResolver.nameOf(e);
-    if (e instanceof Group && !isEmpty(name)) {
+  public String nameForOption(IndexedElement optionSource) {
+    String name = nameResolver.nameOf(optionSource);
+    if (optionSource instanceof Group && !isEmpty(name)) {
       name = name.toLowerCase();
     }
     return name;

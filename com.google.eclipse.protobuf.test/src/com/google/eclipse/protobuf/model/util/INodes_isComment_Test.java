@@ -19,11 +19,11 @@ import org.junit.*;
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 
 /**
- * Test for <code>{@link INodes#belongsToComment(INode)}</code>
+ * Test for <code>{@link INodes#isComment(INode)}</code>
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class INodes_belongsToComment_Test {
+public class INodes_isComment_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
   private INodes nodes;
@@ -38,7 +38,7 @@ public class INodes_belongsToComment_Test {
   // message Person {}
   @Test public void should_return_true_if_node_belongs_to_single_line_comment() {
     ILeafNode commentNode = xtext.find("// This is a test.");
-    assertTrue(nodes.belongsToComment(commentNode));
+    assertTrue(nodes.isComment(commentNode));
   }
 
   // syntax = "proto2";
@@ -47,7 +47,7 @@ public class INodes_belongsToComment_Test {
   // message Person {}
   @Test public void should_return_true_if_node_belongs_to_multiple_line_comment() {
     ILeafNode commentNode = xtext.find("/* This is a test. */");
-    assertTrue(nodes.belongsToComment(commentNode));
+    assertTrue(nodes.isComment(commentNode));
   }
 
   // syntax = "proto2";
@@ -55,6 +55,6 @@ public class INodes_belongsToComment_Test {
   // message Person {}
   @Test public void should_return_false_if_node_does_not_belong_to_any_comment() {
     ICompositeNode node = getNode(xtext.root());
-    assertFalse(nodes.belongsToComment(node));
+    assertFalse(nodes.isComment(node));
   }
 }

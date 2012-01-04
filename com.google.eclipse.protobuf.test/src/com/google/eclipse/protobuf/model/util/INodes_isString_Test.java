@@ -19,11 +19,11 @@ import org.junit.*;
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 
 /**
- * Test for <code>{@link INodes#belongsToMultipleLineComment(INode)}</code>
+ * Tests for <code>{@link INodes#isString(INode)}</code>
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class INodes_belongsToMultipleLineComment_Test {
+public class INodes_isString_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
   private INodes nodes;
@@ -34,18 +34,19 @@ public class INodes_belongsToMultipleLineComment_Test {
 
   // syntax = "proto2";
   //
-  // /* This is a test. */
-  // message Person {}
-  @Test public void should_return_true_if_node_belongs_to_multiple_line_comment() {
-    ILeafNode commentNode = xtext.find("/* This is a test. */");
-    assertTrue(nodes.belongsToMultipleLineComment(commentNode));
+  // message Person {
+  //   optional string name = 1 [default = 'Alex'];
+  // }
+  @Test public void should_return_true_if_node_belongs_to_string() {
+    ILeafNode node = xtext.find("'Alex'");
+    assertTrue(nodes.isString(node));
   }
 
   // syntax = "proto2";
   //
   // message Person {}
-  @Test public void should_return_false_if_node_does_not_belong_to_single_line_comment() {
+  @Test public void should_return_false_if_node_does_not_belong_to_string() {
     ICompositeNode node = getNode(xtext.root());
-    assertFalse(nodes.belongsToMultipleLineComment(node));
+    assertFalse(nodes.isString(node));
   }
 }

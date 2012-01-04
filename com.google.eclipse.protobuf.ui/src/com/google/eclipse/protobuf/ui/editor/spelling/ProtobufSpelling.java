@@ -85,10 +85,10 @@ class ProtobufSpelling extends SpellingReconcileStrategy {
     if (node == null) {
       return false;
     }
-    if (nodes.belongsToComment(node)) {
+    if (nodes.isComment(node)) {
       return true;
     }
-    if (nodes.belongsToString(node)) {
+    if (nodes.isString(node)) {
       EObject o = findActualSemanticObjectFor(node);
       return !(o instanceof Import);
     }

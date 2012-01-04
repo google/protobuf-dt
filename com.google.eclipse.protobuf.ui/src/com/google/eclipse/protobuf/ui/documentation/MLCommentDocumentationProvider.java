@@ -48,7 +48,7 @@ import com.google.inject.*;
       if (!nodes.isHiddenLeafNode(currentNode)) {
         continue;
       }
-      if (!nodes.belongsToMultipleLineComment(currentNode)) {
+      if (!nodes.isMultipleLineComment(currentNode)) {
         continue;
       }
       String text = ((ILeafNode) currentNode).getText();

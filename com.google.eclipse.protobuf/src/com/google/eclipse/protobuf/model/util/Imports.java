@@ -39,7 +39,8 @@ public class Imports {
     if (anImport == null) {
       return false;
     }
-    return descriptorProvider.descriptorLocation(anImport.getImportURI()) != null;
+    URI descriptorLocation = descriptorProvider.descriptorLocation(anImport.getImportURI());
+    return descriptorLocation != null;
   }
 
   /**
@@ -71,10 +72,7 @@ public class Imports {
    */
   public String uriAsEnteredByUser(Import anImport) {
     INode node = nodes.firstNodeForFeature(anImport, IMPORT__IMPORT_URI);
-    if (node == null) {
-      return null;
-    }
-    String text = node.getText();
+    String text = (node == null) ? null : node.getText();
     if (text == null) {
       return null;
     }

@@ -45,8 +45,8 @@ import com.google.inject.Singleton;
    * @return {@code true} if the given node belongs to a string, or a single- or multi-line comment; {@code false}
    * otherwise.
    */
-  public boolean belongsToCommentOrString(INode node) {
-    return belongsToComment(node) || belongsToString(node);
+  public boolean isCommentOrString(INode node) {
+    return isComment(node) || isString(node);
   }
 
   /**
@@ -54,8 +54,8 @@ import com.google.inject.Singleton;
    * @param node the node to check.
    * @return {@code true} if the given node belongs to a single- or multiple-line comment; {@code false} otherwise.
    */
-  public boolean belongsToComment(INode node) {
-    return belongsToSingleLineComment(node) || belongsToMultipleLineComment(node);
+  public boolean isComment(INode node) {
+    return isSingleLineComment(node) || isMultipleLineComment(node);
   }
 
   /**
@@ -63,8 +63,8 @@ import com.google.inject.Singleton;
    * @param node the node to check.
    * @return {@code true} if the given node belongs to a single-line comment; {@code false} otherwise.
    */
-  public boolean belongsToSingleLineComment(INode node) {
-    return belongsToComment(node, "SL_COMMENT");
+  public boolean isSingleLineComment(INode node) {
+    return isComment(node, "SL_COMMENT");
   }
 
   /**
@@ -72,11 +72,11 @@ import com.google.inject.Singleton;
    * @param node the node to check.
    * @return {@code true} if the given node belongs to a multiple-line comment; {@code false} otherwise.
    */
-  public boolean belongsToMultipleLineComment(INode node) {
-    return belongsToComment(node, "ML_COMMENT");
+  public boolean isMultipleLineComment(INode node) {
+    return isComment(node, "ML_COMMENT");
   }
 
-  private static boolean belongsToComment(INode node, String commentRuleName) {
+  private static boolean isComment(INode node, String commentRuleName) {
     if (!(node instanceof ILeafNode)) {
       return false;
     }
@@ -93,7 +93,7 @@ import com.google.inject.Singleton;
    * @param node the node to check.
    * @return {@code true} if the given node belongs to a string; {@code false} otherwise.
    */
-  public boolean belongsToString(INode node) {
+  public boolean isString(INode node) {
     EObject grammarElement = node.getGrammarElement();
     if (!(grammarElement instanceof RuleCall)) {
       return false;
