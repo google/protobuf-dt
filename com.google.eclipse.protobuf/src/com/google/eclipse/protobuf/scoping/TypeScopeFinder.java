@@ -61,7 +61,7 @@ class TypeScopeFinder implements ScopeFinder {
     }
     EObject e = (EObject) target;
     Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
-    List<QualifiedName> names = localNamesProvider.names(e);
+    List<QualifiedName> names = localNamesProvider.namesFor(e);
     int nameCount = names.size();
     for (int i = level; i < nameCount; i++) {
       descriptions.add(create(names.get(i), e));

@@ -36,12 +36,12 @@ public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.Abstra
   @Inject private Packages packages;
   @Inject private QualifiedNames qualifiedNames;
 
-  @Override public QualifiedName getFullyQualifiedName(EObject e) {
-    return getFullyQualifiedName(e, namingStrategies.normal());
+  @Override public QualifiedName getFullyQualifiedName(EObject target) {
+    return getFullyQualifiedName(target, namingStrategies.normal());
   }
 
-  @Override public QualifiedName getFullyQualifiedNameForOption(EObject e) {
-    return getFullyQualifiedName(e, namingStrategies.option());
+  @Override public QualifiedName getFullyQualifiedNameForOption(EObject source) {
+    return getFullyQualifiedName(source, namingStrategies.option());
   }
 
   private QualifiedName getFullyQualifiedName(final EObject e, final NamingStrategy naming) {

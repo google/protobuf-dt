@@ -20,10 +20,10 @@ import com.google.inject.ImplementedBy;
 @ImplementedBy(ProtobufQualifiedNameProvider.class)
 public interface IProtobufQualifiedNameProvider extends IQualifiedNameProvider {
   /**
-   * Returns the qualified name of the given object, to be used as the name of an option. If the given object is a
-   * <code>{@link Group}</code>, this method returns the name in lower case.
-   * @param e the given object.
-   * @return the qualified name of the given object, to be used as the name of an option.
+   * Returns the qualified name of the given object that is being used as the source of an option. If the given object
+   * is a <code>{@link Group}</code>, this method returns the name in lower case.
+   * @param source the source of an option.
+   * @return the qualified name of the given object that is being used as the name of an option.
    */
-  QualifiedName getFullyQualifiedNameForOption(EObject e);
+  QualifiedName getFullyQualifiedNameForOption(EObject source);
 }

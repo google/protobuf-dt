@@ -23,11 +23,11 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.Enum;
 
 /**
- * Tests for <code>{@link LocalNamesProvider#names(EObject)}</code>.
+ * Tests for <code>{@link LocalNamesProvider#namesFor(EObject)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class LocalNamesProvider_names_Test {
+public class LocalNamesProvider_namesFor_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
   private LocalNamesProvider namesProvider;
@@ -50,7 +50,7 @@ public class LocalNamesProvider_names_Test {
   // }
   @Test public void should_return_all_possible_local_names() {
     Enum phoneType = xtext.find("PhoneType", " {", Enum.class);
-    List<QualifiedName> names = namesProvider.names(phoneType);
+    List<QualifiedName> names = namesProvider.namesFor(phoneType);
     assertThat(names.get(0).toString(), equalTo("PhoneType"));
     assertThat(names.get(1).toString(), equalTo("PhoneNumber.PhoneType"));
     assertThat(names.get(2).toString(), equalTo("Person.PhoneNumber.PhoneType"));

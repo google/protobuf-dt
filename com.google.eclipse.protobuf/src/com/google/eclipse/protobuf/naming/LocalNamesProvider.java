@@ -64,12 +64,12 @@ public class LocalNamesProvider {
   @Inject private NamingStrategies namingStrategies;
   @Inject private Packages packages;
 
-  public List<QualifiedName> names(EObject e) {
-    return allNames(e, namingStrategies.normal());
+  public List<QualifiedName> namesFor(EObject target) {
+    return allNames(target, namingStrategies.normal());
   }
 
-  public List<QualifiedName> namesForOption(EObject e) {
-    return allNames(e, namingStrategies.option());
+  public List<QualifiedName> namesForOption(EObject source) {
+    return allNames(source, namingStrategies.option());
   }
 
   private List<QualifiedName> allNames(final EObject e, final NamingStrategy naming) {
