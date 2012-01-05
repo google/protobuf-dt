@@ -20,14 +20,18 @@ import com.google.inject.*;
 @SuppressWarnings("restriction")
 public class ExtendedGenerator extends Generator {
   public ExtendedGenerator() {
-    new XtextStandaloneSetup() {
-      @Override public Injector createInjector() {
-        return Guice.createInjector(new XtextRuntimeModule() {
-            @Override public Class<? extends IXtext2EcorePostProcessor> bindIXtext2EcorePostProcessor() {
-              return ProtobufEcorePostProcessor.class;
-          }
-        });
-      }
-    }.createInjectorAndDoEMFRegistration();
+    new XtextStandaloneSetupExtension().createInjectorAndDoEMFRegistration();
+  }
+  
+  private static class XtextStandaloneSetupExtension extends XtextStandaloneSetup {
+    @Override public Injector createInjector() {
+      return Guice.createInjector(new XtextRuntimeModuleExtension());
+    }
+  }
+  
+  private static class XtextRuntimeModuleExtension extends XtextRuntimeModule {
+    @Override public Class<? extends IXtext2EcorePostProcessor> bindIXtext2EcorePostProcessor() {
+      return ProtobufEcorePostProcessor.class;
+    }
   }
 }
