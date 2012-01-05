@@ -32,7 +32,7 @@ Workflow {
     directory = "${runtimeProject}.ui/src-gen"
   }
 
-  component = Generator {
+  component = ExtendedGenerator {
     pathRtProject = runtimeProject
     pathUiProject = "${runtimeProject}.ui"
     projectNameRt = projectName
