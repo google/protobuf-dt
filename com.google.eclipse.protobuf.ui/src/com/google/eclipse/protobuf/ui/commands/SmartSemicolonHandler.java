@@ -140,11 +140,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
 
   private ContentToInsert newContent(Literal literal) {
     INode indexNode = nodes.firstNodeForFeature(literal, LITERAL__INDEX);
-    ContentToInsert content = newContent(indexNode);
-    if (content.equals(ContentToInsert.TAG_NUMBER_INSERTED)) {
-      literal.setIndex(-1); // reset to make at semicolon work when new index is zero (TODO fix bug.)
-    }
-    return content;
+    return newContent(indexNode);
   }
 
   private ContentToInsert newContent(MessageField field) {
@@ -204,7 +200,6 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
       this.location = location;
     }
 
-    /** {@inheritDoc} */
     @Override public String toString() {
       return String.format("ContentToInsert [value=%s, location=%s]", value, location);
     }

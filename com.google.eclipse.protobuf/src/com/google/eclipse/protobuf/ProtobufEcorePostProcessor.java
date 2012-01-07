@@ -22,12 +22,12 @@ public class ProtobufEcorePostProcessor implements IXtext2EcorePostProcessor {
     EPackage p = metamodel.getEPackage();
     for (EClassifier c : p.getEClassifiers()) {
       if (c instanceof EClass && "Literal".equals(c.getName())) {
-        setDefaultValueOfIndexInLiteral((EClass) c);
+        processLiteralClass((EClass) c);
       }
     }
   }
 
-  private void setDefaultValueOfIndexInLiteral(EClass c) {
+  private void processLiteralClass(EClass c) {
     for (EAttribute a : c.getEAllAttributes()) {
       if ("index".equals(a.getName())) {
         a.setDefaultValue(-1L);
