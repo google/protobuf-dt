@@ -23,8 +23,6 @@ import com.google.inject.Singleton;
    * @return the field the given option field is referring to, or {@code null} if one cannot be found.
    */
   public IndexedElement sourceOf(OptionField field) {
-    if (field instanceof MessageOptionField) { return ((MessageOptionField) field).getTarget(); }
-    if (field instanceof ExtensionOptionField) { return ((ExtensionOptionField) field).getTarget(); }
-    return null;
+    return (field == null) ? null : field.getTarget();
   }
 }

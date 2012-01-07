@@ -54,10 +54,7 @@ class FieldNotationScopeFinder {
     if (container instanceof ComplexValueField) {
       source = sourceOf((ComplexValueField) container);
     }
-    if (source instanceof MessageField) {
-      return (MessageField) source;
-    }
-    return null;
+    return (source instanceof MessageField) ? (MessageField) source : null;
   }
 
   private MessageField sourceOf(ComplexValueField field) {

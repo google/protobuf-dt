@@ -73,13 +73,12 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeComplexTypeLink_Target(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    if (!(model instanceof MessageField)) {
-      return;
-    }
-    Collection<IEObjectDescription> scope = scoping().allPossibleTypesFor((MessageField) model);
-    for (IEObjectDescription d : descriptionChooser.shortestQualifiedNamesIn(scope)) {
-      Image image = imageHelper.getImage(images.imageFor(d.getEObjectOrProxy()));
-      proposeAndAccept(d, image, context, acceptor);
+    if (model instanceof MessageField) {
+      Collection<IEObjectDescription> scope = scoping().allPossibleTypesFor((MessageField) model);
+      for (IEObjectDescription d : descriptionChooser.shortestQualifiedNamesIn(scope)) {
+        Image image = imageHelper.getImage(images.imageFor(d.getEObjectOrProxy()));
+        proposeAndAccept(d, image, context, acceptor);
+      }
     }
   }
 
@@ -233,15 +232,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (model instanceof MessageField) {
       return (MessageField) model;
     }
-    if (model instanceof Option) {
-      Option option = (Option) model;
-      IndexedElement source = options.rootSourceOf(option);
-      if (source instanceof MessageField) {
-        return (MessageField) source;
-      }
-    }
-    if (model instanceof FieldOption) {
-      FieldOption option = (FieldOption) model;
+    if (model instanceof AbstractOption) {
+      AbstractOption option = (AbstractOption) model;
       IndexedElement source = options.rootSourceOf(option);
       if (source instanceof MessageField) {
         return (MessageField) source;
@@ -300,10 +292,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (model instanceof DefaultValueFieldOption) {
       field = (MessageField) model.eContainer();
     }
-    if (field == null) {
-      return;
-    }
-    if (!messageFields.isOptional(field)) {
+    if (field == null || !messageFields.isOptional(field)) {
       return;
     }
     Enum enumType = finder.enumTypeOf(field);
@@ -390,28 +379,27 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   private void proposeDefaultKeyword(IndexedElement e, List<String> existingOptionNames, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    if (!(e instanceof MessageField)) {
-      return;
+    if (e instanceof MessageField) {
+      MessageField field = (MessageField) e;
+      if (!messageFields.isOptional(field) || existingOptionNames.contains(DEFAULT.toString())) {
+        return;
+      }
+      CompoundElement display = DEFAULT_EQUAL;
+      int cursorPosition = display.charCount();
+      if (messageFields.isString(field)) {
+        display = DEFAULT_EQUAL_STRING;
+        cursorPosition++;
+      }
+      createAndAccept(display, cursorPosition, context, acceptor);
     }
-    MessageField field = (MessageField) e;
-    if (!messageFields.isOptional(field) || existingOptionNames.contains(DEFAULT.toString())) {
-      return;
-    }
-    CompoundElement display = DEFAULT_EQUAL;
-    int cursorPosition = display.charCount();
-    if (messageFields.isString(field)) {
-      display = DEFAULT_EQUAL_STRING;
-      cursorPosition++;
-    }
-    createAndAccept(display, cursorPosition, context, acceptor);
   }
 
   private boolean canBePacked(IndexedElement e) {
-    if (!(e instanceof MessageField)) {
-      return false;
+    if (e instanceof MessageField) {
+      MessageField field = (MessageField) e;
+      return messageFields.isPrimitive(field) && REPEATED.equals(field.getModifier());
     }
-    MessageField field = (MessageField) e;
-    return messageFields.isPrimitive(field) && REPEATED.equals(field.getModifier());
+    return false;
   }
 
   private void proposeOption(MessageField optionSource, ContentAssistContext context,
@@ -450,10 +438,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (model instanceof MessageField) {
       field = (MessageField) model;
     }
-    if (field == null) {
-      return;
-    }
-    if (!messageFields.isOptional(field)) {
+    if (field == null || !messageFields.isOptional(field)) {
       return;
     }
     proposeFieldValue(field, context, acceptor);
@@ -461,18 +446,17 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeNativeFieldOption_Value(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    if (!(model instanceof NativeFieldOption)) {
-      return;
+    if (model instanceof NativeFieldOption) {
+      NativeFieldOption option = (NativeFieldOption) model;
+      ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
+      MessageField field = (MessageField) options.rootSourceOf(option);
+      Enum enumType = descriptor.enumTypeOf(field);
+      if (enumType != null) {
+        proposeAndAccept(enumType, context, acceptor);
+        return;
+      }
+      proposePrimitiveValues(field, context, acceptor);
     }
-    NativeFieldOption option = (NativeFieldOption) model;
-    ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
-    MessageField field = (MessageField) options.rootSourceOf(option);
-    Enum enumType = descriptor.enumTypeOf(field);
-    if (enumType != null) {
-      proposeAndAccept(enumType, context, acceptor);
-      return;
-    }
-    proposePrimitiveValues(field, context, acceptor);
   }
 
   private boolean proposePrimitiveValues(MessageField field, ContentAssistContext context,
@@ -526,12 +510,11 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   private void completeAbstractCustomOptionSource(EObject model, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    if (!(model instanceof AbstractCustomOption)) {
-      return;
+    if (model instanceof AbstractCustomOption) {
+      AbstractCustomOption option = (AbstractCustomOption) model;
+      Collection<IEObjectDescription> scope = scoping().allPossibleSourcesOf(option);
+      proposeAndAcceptOptions(scope, context, acceptor);
     }
-    AbstractCustomOption option = (AbstractCustomOption) model;
-    Collection<IEObjectDescription> scope = scoping().allPossibleSourcesOf(option);
-    proposeAndAcceptOptions(scope, context, acceptor);
   }
 
   private void proposeAndAcceptOptions(Collection<IEObjectDescription> scope, ContentAssistContext context,
@@ -553,22 +536,20 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeCustomOption_Fields(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    if (!(model instanceof CustomOption)) {
-      return;
+    if (model instanceof CustomOption) {
+      CustomOption option = (CustomOption) model;
+      proposeAndAccept(scoping().allPossibleNormalFieldsOf(option), context, acceptor);
+      proposeAndAccept(scoping().allPossibleExtensionFieldsOf(option), "(%s)", "(%s)", context, acceptor);
     }
-    CustomOption option = (CustomOption) model;
-    proposeAndAccept(scoping().allPossibleNormalFieldsOf(option), context, acceptor);
-    proposeAndAccept(scoping().allPossibleExtensionFieldsOf(option), "(%s)", "(%s)", context, acceptor);
   }
 
   @Override public void completeCustomFieldOption_Fields(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    if (!(model instanceof CustomFieldOption)) {
-      return;
+    if (model instanceof CustomFieldOption) {
+      CustomFieldOption option = (CustomFieldOption) model;
+      proposeAndAccept(scoping().allPossibleNormalFieldsOf(option), context, acceptor);
+      proposeExtensionFields(scoping().allPossibleExtensionFieldsOf(option), context, acceptor);
     }
-    CustomFieldOption option = (CustomFieldOption) model;
-    proposeAndAccept(scoping().allPossibleNormalFieldsOf(option), context, acceptor);
-    proposeExtensionFields(scoping().allPossibleExtensionFieldsOf(option), context, acceptor);
   }
 
   private void proposeExtensionFields(Collection<IEObjectDescription> scope, ContentAssistContext context,
@@ -602,42 +583,37 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeCustomOption_Value(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    if (!(model instanceof CustomOption)) {
-      return;
-    }
-    CustomOption option = (CustomOption) model;
-    IndexedElement e = options.sourceOfLastFieldIn(option);
-    if (e == null) {
-      e = options.rootSourceOf(option);
-    }
-    if (e instanceof MessageField) {
-      proposeFieldValue((MessageField) e, context, acceptor);
+    if (model instanceof CustomOption) {
+      CustomOption option = (CustomOption) model;
+      IndexedElement e = options.sourceOfLastFieldIn(option);
+      if (e == null) {
+        e = options.rootSourceOf(option);
+      }
+      if (e instanceof MessageField) {
+        proposeFieldValue((MessageField) e, context, acceptor);
+      }
     }
   }
 
   @Override public void completeCustomFieldOption_Value(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     // TODO content assist returns "{"
-    if (!(model instanceof CustomFieldOption)) {
-      return;
-    }
-    // TODO check if this is the same as sourceOf
-    CustomFieldOption option = (CustomFieldOption) model;
-    IndexedElement e = options.sourceOfLastFieldIn(option);
-    if (e == null) {
-      e = options.rootSourceOf(option);
-    }
-    if (e instanceof MessageField) {
-      proposeFieldValue((MessageField) e, context, acceptor);
+    if (model instanceof CustomFieldOption) {
+      // TODO check if this is the same as sourceOf
+      CustomFieldOption option = (CustomFieldOption) model;
+      IndexedElement e = options.sourceOfLastFieldIn(option);
+      if (e == null) {
+        e = options.rootSourceOf(option);
+      }
+      if (e instanceof MessageField) {
+        proposeFieldValue((MessageField) e, context, acceptor);
+      }
     }
   }
 
   private void proposeFieldValue(MessageField field, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    if (field == null) {
-      return;
-    }
-    if (proposePrimitiveValues(field, context, acceptor)) {
+    if (field == null || proposePrimitiveValues(field, context, acceptor)) {
       return;
     }
     Enum enumType = finder.enumTypeOf(field);
@@ -663,24 +639,22 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeSimpleValueField_Value(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    if (!(model instanceof SimpleValueField)) {
-      return;
-    }
-    SimpleValueField field = (SimpleValueField) model;
-    FieldName name = field.getName();
-    if (name != null) {
-      proposeFieldValue(name.getTarget(), context, acceptor);
+    if (model instanceof SimpleValueField) {
+      SimpleValueField field = (SimpleValueField) model;
+      FieldName name = field.getName();
+      if (name != null) {
+        proposeFieldValue(name.getTarget(), context, acceptor);
+      }
     }
   }
 
   @Override public void completeSimpleValueField_Name(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    if (!(model instanceof ComplexValue)) {
-      return;
+    if (model instanceof ComplexValue) {
+      ComplexValue value = (ComplexValue) model;
+      proposeAndAccept(scoping().allPossibleNamesOfNormalFieldsOf(value), "%s:", null, context, acceptor);
+      proposeAndAccept(scoping().allPossibleNamesOfExtensionFieldsOf(value), "[%s]:", "[%s]", context, acceptor);
     }
-    ComplexValue value = (ComplexValue) model;
-    proposeAndAccept(scoping().allPossibleNamesOfNormalFieldsOf(value), "%s:", null, context, acceptor);
-    proposeAndAccept(scoping().allPossibleNamesOfExtensionFieldsOf(value), "[%s]:", "[%s]", context, acceptor);
   }
 
   private void proposeAndAccept(Collection<IEObjectDescription> scope, String proposalFormat, String displayFormat,

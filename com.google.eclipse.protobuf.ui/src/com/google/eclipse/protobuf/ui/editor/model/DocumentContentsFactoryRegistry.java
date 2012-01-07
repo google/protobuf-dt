@@ -27,13 +27,12 @@ class DocumentContentsFactoryRegistry {
   }
 
   DocumentContentsFactory findFactory(Object element) {
-    if (!(element instanceof IEditorInput)) {
-      return null;
-    }
-    IEditorInput input = (IEditorInput) element;
-    for (DocumentContentsFactory factory : factories) {
-      if (factory.supportsEditorInputType(input)) {
-        return factory;
+    if (element instanceof IEditorInput) {
+      IEditorInput input = (IEditorInput) element;
+      for (DocumentContentsFactory factory : factories) {
+        if (factory.supportsEditorInputType(input)) {
+          return factory;
+        }
       }
     }
     return null;

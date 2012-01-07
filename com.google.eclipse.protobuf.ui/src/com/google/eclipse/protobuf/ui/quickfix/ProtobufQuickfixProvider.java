@@ -76,10 +76,9 @@ public class ProtobufQuickfixProvider extends DefaultQuickfixProvider {
     }
     ISemanticModification modification = new ISemanticModification() {
       @Override public void apply(EObject element, IModificationContext context) throws Exception {
-        if (!(element instanceof Package)) {
-          return;
+        if (element == aPackage) {
+          remove(aPackage);
         }
-        remove(aPackage);
       }
     };
     INode node = findActualNodeFor(aPackage);

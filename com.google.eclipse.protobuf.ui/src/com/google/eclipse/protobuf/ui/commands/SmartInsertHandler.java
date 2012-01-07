@@ -32,10 +32,7 @@ public abstract class SmartInsertHandler extends AbstractHandler {
 
   private StyledText styledTextFrom(XtextEditor editor) {
     Object adapter = editor.getAdapter(Control.class);
-    if (adapter instanceof StyledText) {
-      return (StyledText) adapter;
-    }
-    return null;
+    return (adapter instanceof StyledText) ? (StyledText) adapter : null;
   }
 
   protected abstract void insertContent(XtextEditor editor, StyledText styledText);

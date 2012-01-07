@@ -62,12 +62,8 @@ import com.google.inject.*;
   }
 
   private EObject findRealTarget(EObject o) {
-    if (o instanceof Option) {
-      IndexedElement e = options.rootSourceOf((Option) o);
-      return e != null ? e : o;
-    }
-    if (o instanceof FieldOption) {
-      IndexedElement e = options.rootSourceOf((FieldOption) o);
+    if (o instanceof AbstractOption) {
+      IndexedElement e = options.rootSourceOf((AbstractOption) o);
       return e != null ? e : o;
     }
     return o;

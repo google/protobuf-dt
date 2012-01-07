@@ -45,13 +45,12 @@ import com.google.inject.Singleton;
   public IProject activeProject() {
     for (IViewReference reference : viewReferencesInActivePage()) {
       IViewPart part = reference.getView(false);
-      if (!(part instanceof ResourceNavigator)) {
-        continue;
+      if (part instanceof ResourceNavigator) {
+        ResourceNavigator navigator = (ResourceNavigator) part;
+        StructuredSelection selection = (StructuredSelection) navigator.getTreeViewer().getSelection();
+        IResource resource = (IResource) selection.getFirstElement();
+        return resource.getProject();
       }
-      ResourceNavigator navigator = (ResourceNavigator) part;
-      StructuredSelection selection = (StructuredSelection) navigator.getTreeViewer().getSelection();
-      IResource resource = (IResource) selection.getFirstElement();
-      return resource.getProject();
     }
     return null;
   }

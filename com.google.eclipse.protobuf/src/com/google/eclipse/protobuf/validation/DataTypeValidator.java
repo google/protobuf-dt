@@ -83,16 +83,16 @@ public class DataTypeValidator extends AbstractDeclarativeValidator {
     }
   }
 
+  private boolean isInteger(Value value) {
+    return value instanceof LongLink || value instanceof HexNumberLink;
+  }
+
   private void validateUnsignedInteger(DefaultValueFieldOption option) {
     Value value = option.getValue();
     long longValue = longValueIn(value);
     if (longValue < 0) {
       error(expectedPositiveNumber, ABSTRACT_OPTION__VALUE);
     }
-  }
-
-  private boolean isInteger(Value value) {
-    return value instanceof LongLink || value instanceof HexNumberLink;
   }
 
   private long longValueIn(Value value) {
