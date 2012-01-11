@@ -6,16 +6,17 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.commands;
+package com.google.eclipse.protobuf.ui.commands.semicolon;
 
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
 import static java.util.regex.Pattern.compile;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.*;
 
 import org.apache.log4j.Logger;
-import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.*;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.xtext.nodemodel.INode;
@@ -31,6 +32,7 @@ import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.ui.commands.SmartInsertHandler;
 import com.google.eclipse.protobuf.ui.preferences.editor.numerictag.core.NumericTagPreferences;
 import com.google.eclipse.protobuf.ui.util.Literals;
 import com.google.inject.Inject;
@@ -45,6 +47,10 @@ import com.google.inject.Inject;
 public class SmartSemicolonHandler extends SmartInsertHandler {
   private static final Pattern NUMBERS_PATTERN = compile("[\\d]+");
 
+  private static final IUnitOfWork.Void<XtextResource> NULL_UNIT_OF_WORK = new IUnitOfWork.Void<XtextResource>() {
+    @Override public void process(XtextResource resource) {}
+  };
+
   private static Logger logger = Logger.getLogger(SmartSemicolonHandler.class);
 
   @Inject private CommentNodesFinder commentNodesFinder;
@@ -56,36 +62,29 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
 
   private static final String SEMICOLON = CommonKeyword.SEMICOLON.toString();
 
-  private static final ContentToInsert INSERT_SEMICOLON_AT_CURRENT_LOCATION = new ContentToInsert(SEMICOLON, Location.CURRENT);
-
-  /** {@inheritDoc} */
   @Override protected void insertContent(XtextEditor editor, StyledText styledText) {
-    int offset = styledText.getCaretOffset();
-    int lineAtOffset = styledText.getLineAtOffset(offset);
-    int offsetAtLine = styledText.getOffsetAtLine(lineAtOffset);
-    String line = styledText.getLine(lineAtOffset);
-    ContentToInsert newContent = newContent(editor, styledText, line);
-    if (newContent.equals(ContentToInsert.TAG_NUMBER_INSERTED)) {
-      refreshHighlighting(editor);
+    StyledTextAccess styledTextAccess = new StyledTextAccess(styledText);
+    String line = styledTextAccess.lineAtCaretOffset();
+    if (line.endsWith(SEMICOLON)) {
+      styledTextAccess.insert(SEMICOLON);
       return;
     }
-    if (newContent.location.equals(Location.END)) {
-      offset = offsetAtLine + line.length();
-      styledText.setCaretOffset(offset);
-    }
-    styledText.insert(newContent.value);
-    styledText.setCaretOffset(offset + newContent.value.length());
+    waitForReconcilerToFinishWork(editor);
+    insertContent(editor, styledTextAccess);
+    refreshHighlighting(editor);
   }
 
-  private ContentToInsert newContent(final XtextEditor editor, final StyledText styledText, final String line) {
-    if (line.endsWith(SEMICOLON)) {
-      return INSERT_SEMICOLON_AT_CURRENT_LOCATION;
-    }
+  private void waitForReconcilerToFinishWork(XtextEditor editor) {
+    editor.getDocument().readOnly(NULL_UNIT_OF_WORK);
+  }
+
+  private void insertContent(final XtextEditor editor, final StyledTextAccess styledTextAccess) {
+    final AtomicBoolean shouldInsertSemicolon = new AtomicBoolean(true);
     final IXtextDocument document = editor.getDocument();
     try {
-      return document.modify(new IUnitOfWork<ContentToInsert, XtextResource>() {
-        @Override public ContentToInsert exec(XtextResource resource) {
-          int offset = styledText.getCaretOffset();
+      document.modify(new IUnitOfWork.Void<XtextResource>() {
+        @Override public void process(XtextResource resource) {
+          int offset = styledTextAccess.caretOffset();
           ContentAssistContext[] context = contextFactory.create(editor.getInternalSourceViewer(), offset, resource);
           for (ContentAssistContext c : context) {
             if (nodes.isCommentOrString(c.getCurrentNode())) {
@@ -98,63 +97,46 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
             }
             if (model instanceof Literal) {
               Literal literal = (Literal) model;
-              ContentToInsert content = newContent(literal);
-              if (content.equals(ContentToInsert.TAG_NUMBER_INSERTED)) {
-                long index = literals.calculateIndexOf(literal);
+              if (shouldCalculateIndex(literal, LITERAL__INDEX)) {
+                long index = literals.calculateNewIndexOf(literal);
                 literal.setIndex(index);
                 updateIndexInCommentOfParent(literal, index, document);
+                shouldInsertSemicolon.set(false);
               }
-              return content;
             }
             if (model instanceof MessageField) {
               MessageField field = (MessageField) model;
-              ContentToInsert content = newContent(field);
-              if (content.equals(ContentToInsert.TAG_NUMBER_INSERTED)) {
+              if (shouldCalculateIndex(field, MESSAGE_FIELD__INDEX)) {
                 long index = indexedElements.calculateNewIndexFor(field);
                 field.setIndex(index);
                 updateIndexInCommentOfParent(field, index, document);
+                shouldInsertSemicolon.set(false);
               }
-              return content;
             }
           }
-          return INSERT_SEMICOLON_AT_CURRENT_LOCATION;
         }
       });
-    } catch (Throwable e) {
-      logger.error("Unable to generate tag number", e);
-      return INSERT_SEMICOLON_AT_CURRENT_LOCATION;
+    } catch (Throwable t) {
+      logger.error("Unable to generate tag number", t);
     }
+    if (shouldInsertSemicolon.get()) {
+      styledTextAccess.insert(SEMICOLON);
+    }
+  }
+
+  private boolean shouldCalculateIndex(EObject target, EAttribute indexAttribute) {
+    INode node = nodes.firstNodeForFeature(target, indexAttribute);
+    return node == null || isEmpty(node.getText());
   }
 
   private EObject modelFrom(ContentAssistContext c) {
     EObject current = c.getCurrentModel();
-    if (isIndexed(current)) {
-      return current;
-    }
-    return c.getPreviousModel();
+    boolean isIndexed = current instanceof MessageField || current instanceof Literal;
+    return (isIndexed) ? current : c.getPreviousModel();
   }
 
-  private boolean isIndexed(EObject e) {
-    return e instanceof MessageField || e instanceof Literal;
-  }
-
-  private ContentToInsert newContent(Literal literal) {
-    INode indexNode = nodes.firstNodeForFeature(literal, LITERAL__INDEX);
-    return newContent(indexNode);
-  }
-
-  private ContentToInsert newContent(MessageField field) {
-    INode indexNode = nodes.firstNodeForFeature(field, MESSAGE_FIELD__INDEX);
-    return newContent(indexNode);
-  }
-
-  private ContentToInsert newContent(INode indexNode) {
-    boolean hasIndex = indexNode != null && !isEmpty(indexNode.getText());
-    return hasIndex ? new ContentToInsert(SEMICOLON, Location.END) : ContentToInsert.TAG_NUMBER_INSERTED;
-  }
-
-  private void updateIndexInCommentOfParent(EObject o, long index, IXtextDocument document) {
-    EObject parent = o.eContainer();
+  private void updateIndexInCommentOfParent(EObject target, long index, IXtextDocument document) {
+    EObject parent = target.eContainer();
     if (parent == null) {
       return;
     }
@@ -183,29 +165,5 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
         editor.getInternalSourceViewer().invalidateTextPresentation();
       }
     });
-  }
-
-  private static class ContentToInsert {
-    final String value;
-    final Location location;
-
-    static final ContentToInsert TAG_NUMBER_INSERTED = new ContentToInsert();
-
-    ContentToInsert() {
-      this("", Location.NONE);
-    }
-
-    ContentToInsert(String value, Location location) {
-      this.value = value;
-      this.location = location;
-    }
-
-    @Override public String toString() {
-      return String.format("ContentToInsert [value=%s, location=%s]", value, location);
-    }
-  }
-
-  private static enum Location {
-    NONE, CURRENT, END;
   }
 }

@@ -30,7 +30,7 @@
       </activeWhen>
     </handler>
     <handler
-      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.commands.SmartSemicolonHandler"
+      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.commands.semicolon.SmartSemicolonHandler"
       commandId="com.google.eclipse.protobuf.ui.smartSemicolon">
       <activeWhen>
         <reference definitionId="com.google.eclipse.protobuf.Protobuf.Editor.opened">

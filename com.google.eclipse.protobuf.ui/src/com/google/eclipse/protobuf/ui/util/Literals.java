@@ -43,7 +43,7 @@ import com.google.inject.Singleton;
    *          the given literal.
    * @return the calculated index value.
    */
-  public long calculateIndexOf(Literal l) {
+  public long calculateNewIndexOf(Literal l) {
     long index = -1;
     List<Literal> allLiterals = getAllContentsOfType(l.eContainer(), Literal.class);
     for (Literal c : allLiterals) {

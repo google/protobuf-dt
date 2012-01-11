@@ -282,7 +282,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeLiteral_Index(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
-    long index = literals.calculateIndexOf((Literal) model);
+    long index = literals.calculateNewIndexOf((Literal) model);
     proposeIndex(index, context, acceptor);
   }
 

@@ -19,11 +19,11 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.Literal;
 
 /**
- * Tests for <code>{@link Literals#calculateIndexOf(Literal)}</code>.
+ * Tests for <code>{@link Literals#calculateNewIndexOf(Literal)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Literals_calculateIndexOf_Test {
+public class Literals_calculateNewIndexOf_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
   private Literals literals;
@@ -39,7 +39,7 @@ public class Literals_calculateIndexOf_Test {
   // }
   @Test public void should_return_zero_for_first_and_only_literal() {
     Literal mobile = xtext.find("MOBILE", Literal.class);
-    long index = literals.calculateIndexOf(mobile);
+    long index = literals.calculateNewIndexOf(mobile);
     assertThat(index, equalTo(0L));
   }
 
@@ -52,7 +52,7 @@ public class Literals_calculateIndexOf_Test {
   // }
   @Test public void should_return_max_index_value_plus_one_for_new_literal() {
     Literal work = xtext.find("WORK", Literal.class);
-    long index = literals.calculateIndexOf(work);
+    long index = literals.calculateNewIndexOf(work);
     assertThat(index, equalTo(6L));
   }
 }
