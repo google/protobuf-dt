@@ -12,17 +12,15 @@ package com.google.eclipse.protobuf.ui.labeling;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
 import static org.eclipse.jface.viewers.StyledString.DECORATIONS_STYLER;
 
-import java.util.List;
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.naming.NameResolver;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.inject.*;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.xtext.nodemodel.INode;
-
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.naming.NameResolver;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.inject.*;
 
 /**
  * Registry of commonly used text in the 'Protocol Buffer' editor.
@@ -130,9 +128,14 @@ import com.google.inject.*;
     IndexedElement e = options.rootSourceOf(option);
     String name = options.nameForOption(e);
     if (option instanceof AbstractCustomOption) {
+      AbstractCustomOption customOption = (AbstractCustomOption) option;
       StringBuilder b = new StringBuilder();
       b.append(formatCustomOptionName(name));
-      appendFields(b, options.fieldsOf((AbstractCustomOption) option));
+      for (OptionField field : options.fieldsOf(customOption)) {
+        IndexedElement source = field.getTarget();
+        b.append(".")
+         .append(options.nameForOption(source));
+      }
       return b.toString();
     }
     return name;
@@ -140,20 +143,6 @@ import com.google.inject.*;
 
   private String formatCustomOptionName(String name) {
     return String.format("(%s)", name);
-  }
-
-  private void appendFields(StringBuilder b, List<OptionField> fields) {
-    for (OptionField field : fields) {
-      b.append(".");
-      if (field instanceof MessageOptionField) {
-        IndexedElement source = ((MessageOptionField) field).getTarget();
-        b.append(options.nameForOption(source));
-      }
-      if (field instanceof ExtensionOptionField) {
-        IndexedElement source = ((ExtensionOptionField) field).getTarget();
-        b.append("(").append(options.nameForOption(source)).append(")");
-      }
-    }
   }
 
   private Object labelFor(Rpc rpc) {

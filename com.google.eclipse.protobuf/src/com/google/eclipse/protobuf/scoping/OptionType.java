@@ -10,11 +10,11 @@ package com.google.eclipse.protobuf.scoping;
 
 import static com.google.common.collect.Maps.newHashMap;
 
-import java.util.*;
-import java.util.Map.Entry;
-
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Types of options (by location.)
@@ -23,7 +23,7 @@ import com.google.eclipse.protobuf.protobuf.Enum;
  */
 enum OptionType {
   FILE("FileOptions"), MESSAGE("MessageOptions"), FIELD("FieldOptions"), ENUM("EnumOptions"),
-  LITERAL("EnumValueOptions"), SERVICE("ServiceOptions"), RPC("MethodOptions");
+  LITERAL("EnumValueOptions"), SERVICE("ServiceOptions"), RPC("MethodOptions"), STREAM("StreamOptions");
 
   private static final Map<Class<?>, OptionType> OPTION_TYPES_BY_CONTAINER = newHashMap();
 
@@ -35,6 +35,7 @@ enum OptionType {
     OPTION_TYPES_BY_CONTAINER.put(IndexedElement.class, FIELD);
     OPTION_TYPES_BY_CONTAINER.put(Service.class, SERVICE);
     OPTION_TYPES_BY_CONTAINER.put(Rpc.class, RPC);
+    OPTION_TYPES_BY_CONTAINER.put(Stream.class, STREAM);
   }
 
   // The name of the message in descriptor.proto that specifies the type of an option.

@@ -119,10 +119,14 @@ Service:
   '}' (';')?;
 
 ServiceElement:
-  Option | Rpc;
+  Option | Rpc | Stream;
 
 Rpc:
   'rpc' name=Name '(' argType=MessageLink ')' 'returns' '(' returnType=MessageLink ')'
+  (('{' options+=Option* '}') (';')? | ';');
+
+Stream:
+  'stream' name=Name '(' clientMessage=MessageLink ',' serverMessage=MessageLink ')'
   (('{' options+=Option* '}') (';')? | ';');
 
 Name:
@@ -216,7 +220,7 @@ ReservedWord:
 
 SafeReservedWord:
   'package' | 'import' | 'public' | 'option' | 'extend' | 'message' | 'optional' | 'required' | 'repeated' |
-  'enum' | 'service' | 'rpc' | 'returns' | 'default' | 'extensions' | 'to' | 'max' | 'true' | 'false' |
+  'enum' | 'service' | 'rpc' | 'stream' | 'returns' | 'default' | 'extensions' | 'to' | 'max' | 'true' | 'false' |
   'double' | 'float' | 'int32' | 'int64' | 'uint32' | 'uint64' | 'sint32' | 'sint64' | 'fixed32' | 'fixed64' |
   'sfixed32' | 'sfixed64' | 'bool' | 'string' | 'bytes';
 
