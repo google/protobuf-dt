@@ -129,12 +129,13 @@ import com.google.inject.*;
   private Object labelFor(AbstractOption option) {
     IndexedElement e = options.rootSourceOf(option);
     String name = options.nameForOption(e);
-    StringBuilder b = new StringBuilder();
     if (option instanceof AbstractCustomOption) {
+      StringBuilder b = new StringBuilder();
       b.append(formatCustomOptionName(name));
       appendFields(b, options.fieldsOf((AbstractCustomOption) option));
+      return b.toString();
     }
-    return b.toString();
+    return name;
   }
 
   private String formatCustomOptionName(String name) {

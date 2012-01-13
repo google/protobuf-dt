@@ -67,6 +67,9 @@ import com.google.inject.Singleton;
     if (o instanceof String) {
       return o + GIF_EXTENSION;
     }
+    if (o instanceof Option) {
+      return imageFor(Option.class);
+    }
     return imageFor(o.getClass());
   }
 
@@ -76,7 +79,7 @@ import com.google.inject.Singleton;
       return image;
     }
     Class<?>[] interfaces = type.getInterfaces();
-    if (interfaces == null || interfaces.length != 1) {
+    if (interfaces == null || interfaces.length == 0) {
       return DEFAULT_IMAGE;
     }
     return imageFor(interfaces[0]);
