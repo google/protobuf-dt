@@ -69,18 +69,14 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
       styledTextAccess.insert(SEMICOLON);
       return;
     }
-    waitForReconcilerToFinishWork(editor);
     insertContent(editor, styledTextAccess);
     refreshHighlighting(editor);
-  }
-
-  private void waitForReconcilerToFinishWork(XtextEditor editor) {
-    editor.getDocument().readOnly(NULL_UNIT_OF_WORK);
   }
 
   private void insertContent(final XtextEditor editor, final StyledTextAccess styledTextAccess) {
     final AtomicBoolean shouldInsertSemicolon = new AtomicBoolean(true);
     final IXtextDocument document = editor.getDocument();
+    document.readOnly(NULL_UNIT_OF_WORK); // wait for reconciler to finish its work.
     try {
       document.modify(new IUnitOfWork.Void<XtextResource>() {
         @Override public void process(XtextResource resource) {
