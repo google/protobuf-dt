@@ -11,14 +11,14 @@ package com.google.eclipse.protobuf.scoping;
 import static java.util.Collections.*;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
-import java.util.*;
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.inject.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.inject.*;
+import java.util.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -29,11 +29,11 @@ class CustomOptionFieldScopeFinder {
   @Inject private Options options;
   @Inject private QualifiedNameDescriptions qualifiedNameDescriptions;
 
-  Collection<IEObjectDescription> findScope(AbstractCustomOption option, MessageOptionField field) {
+  Collection<IEObjectDescription> messageFieldsInScope(AbstractCustomOption option, OptionField field) {
     return findScope(option, field, new MessageFieldDescriptorProvider());
   }
 
-  Collection<IEObjectDescription> findScope(AbstractCustomOption option, ExtensionOptionField field) {
+  Collection<IEObjectDescription> extensionFieldsInScope(AbstractCustomOption option, OptionField field) {
     return findScope(option, field, new ExtensionFieldDescriptorProvider());
   }
 

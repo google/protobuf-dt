@@ -74,7 +74,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Override public void completeComplexTypeLink_Target(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     if (model instanceof MessageField) {
-      Collection<IEObjectDescription> scope = scoping().allPossibleTypesFor((MessageField) model);
+      Collection<IEObjectDescription> scope = scoping().complexTypesInScope((MessageField) model);
       for (IEObjectDescription d : descriptionChooser.shortestQualifiedNamesIn(scope)) {
         Image image = imageHelper.getImage(images.imageFor(d.getEObjectOrProxy()));
         proposeAndAccept(d, image, context, acceptor);
@@ -86,8 +86,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     Collection<IEObjectDescription> scope = emptySet();
     if (model instanceof TypeExtension) {
-      TypeExtension extension = (TypeExtension) model;
-      scope = scoping().allPossibleTypesFor(extension);
+      TypeExtension typeExtension = (TypeExtension) model;
+      scope = scoping().extensibleTypesInScope(typeExtension);
     }
     for (IEObjectDescription d : descriptionChooser.shortestQualifiedNamesIn(scope)) {
       Image image = imageHelper.getImage(images.imageFor(d.getEObjectOrProxy()));
@@ -100,7 +100,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     Collection<IEObjectDescription> scope = emptySet();
     if (model instanceof Rpc) {
       Rpc rpc = (Rpc) model;
-      scope = scoping().allPossibleMessagesFor(rpc);
+      scope = scoping().messagesInScope(rpc);
     }
     for (IEObjectDescription d : descriptionChooser.shortestQualifiedNamesIn(scope)) {
       Image image = imageHelper.getImage(images.imageFor(d.getEObjectOrProxy()));
@@ -512,7 +512,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ICompletionProposalAcceptor acceptor) {
     if (model instanceof AbstractCustomOption) {
       AbstractCustomOption option = (AbstractCustomOption) model;
-      Collection<IEObjectDescription> scope = scoping().allPossibleSourcesOf(option);
+      Collection<IEObjectDescription> scope = scoping().indexedElementsInScope(option);
       proposeAndAcceptOptions(scope, context, acceptor);
     }
   }
@@ -538,8 +538,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     if (model instanceof CustomOption) {
       CustomOption option = (CustomOption) model;
-      proposeAndAccept(scoping().allPossibleNormalFieldsOf(option), context, acceptor);
-      proposeAndAccept(scoping().allPossibleExtensionFieldsOf(option), "(%s)", "(%s)", context, acceptor);
+      proposeAndAccept(scoping().messageFieldsInScope(option), context, acceptor);
+      proposeAndAccept(scoping().extensionFieldsInScope(option), "(%s)", "(%s)", context, acceptor);
     }
   }
 
@@ -547,8 +547,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     if (model instanceof CustomFieldOption) {
       CustomFieldOption option = (CustomFieldOption) model;
-      proposeAndAccept(scoping().allPossibleNormalFieldsOf(option), context, acceptor);
-      proposeExtensionFields(scoping().allPossibleExtensionFieldsOf(option), context, acceptor);
+      proposeAndAccept(scoping().messageFieldsInScope(option), context, acceptor);
+      proposeExtensionFields(scoping().extensionFieldsInScope(option), context, acceptor);
     }
   }
 

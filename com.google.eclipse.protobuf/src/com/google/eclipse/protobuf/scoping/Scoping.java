@@ -8,27 +8,84 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import java.util.Collection;
+import com.google.eclipse.protobuf.protobuf.*;
 
 import org.eclipse.xtext.resource.IEObjectDescription;
 
-import com.google.eclipse.protobuf.protobuf.*;
+import java.util.Collection;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 public interface Scoping {
-  Collection<IEObjectDescription> allPossibleTypesFor(MessageField field);
+  /**
+   * Returns the descriptions of all <code>{@link ComplexType}</code>s available in scope. The given
+   * <code>{@link MessageField}</code> may be using one of the returned {@code ComplexType}s as its type.
+   * @param field the given {@code MessageField}.
+   * @return the descriptions of all <code>{@link ComplexType}</code>s available in scope.
+   * @see MessageField#getType()
+   * @see ComplexTypeLink#getTarget()
+   */
+  Collection<IEObjectDescription> complexTypesInScope(MessageField field);
 
-  Collection<IEObjectDescription> allPossibleTypesFor(TypeExtension extension);
+  /**
+   * Returns the descriptions of all <code>{@link ExtensibleType}</code>s available in scope. The given
+   * <code>{@link TypeExtension}</code> may be using one of the returned {@code ExtensibleType}s as its extended type.
+   * @param extension the given {@code TypeExtension}.
+   * @return the descriptions of all the possible {@code ExtensibleType}s available in scope.
+   * @see TypeExtension#getType()
+   * @see ExtensibleTypeLink#getTarget()
+   */
+  Collection<IEObjectDescription> extensibleTypesInScope(TypeExtension extension);
 
-  Collection<IEObjectDescription> allPossibleMessagesFor(Rpc rpc);
+  /**
+   * Returns the descriptions of all <code>{@link Message}</code>s available in scope. The given
+   * <code>{@link Rpc}</code> may be using the returned {@code Message}s, one as its argument type and another one as
+   * its return type.
+   * @param rpc
+   * @return the descriptions of all {@code Message}s available in scope.
+   * @see Rpc#getArgType()
+   * @see Rpc#getReturnType()
+   * @see MessageLink#getTarget()
+   */
+  Collection<IEObjectDescription> messagesInScope(Rpc rpc);
 
-  Collection<IEObjectDescription> allPossibleSourcesOf(AbstractCustomOption option);
+  /**
+   * Returns the descriptions of all <code>{@link IndexedElement}</code>s available in scope. The given
+   * <code>{@link AbstractCustomOption}</code> may be using one of the returned {@code IndexedElement}s as its source.
+   * @param option the given {@code AbstractCustomOption}.
+   * @return the descriptions of all {@code IndexedElement}s available in scope.
+   * @see CustomOption#getSource()
+   * @see CustomFieldOption#getSource()
+   * @see OptionSource#getTarget()
+   */
+  Collection<IEObjectDescription> indexedElementsInScope(AbstractCustomOption option);
 
-  Collection<IEObjectDescription> allPossibleNormalFieldsOf(AbstractCustomOption option);
+  /**
+   * Returns the descriptions of all <code>{@link IndexedElement}</code>s available in scope. The given
+   * <code>{@link AbstractCustomOption}</code> may be using some of the returned {@code IndexedElement}s as its fields.
+   * @param option the given {@code AbstractCustomOption}.
+   * @return the descriptions of all {@code IndexedElement}s available in scope.
+   * @see CustomOption#getFields()
+   * @see CustomFieldOption#getFields()
+   * @see MessageOptionField
+   * @see OptionField#getTarget()
+   */
+  Collection<IEObjectDescription> messageFieldsInScope(AbstractCustomOption option);
 
-  Collection<IEObjectDescription> allPossibleExtensionFieldsOf(AbstractCustomOption option);
+  /**
+   * Returns the descriptions of all <code>{@link IndexedElement}</code>s available in scope. The given
+   * <code>{@link AbstractCustomOption}</code> may be using <em>extensions</em> of the returned {@code IndexedElement}s
+   * as its fields.
+   * @param option the given {@code AbstractCustomOption}.
+   * @return the descriptions of all {@code IndexedElement}s available in scope.
+   * @see CustomOption#getFields()
+   * @see CustomFieldOption#getFields()
+   * @see ExtensionOptionField
+   * @see OptionField#getTarget()
+   * @see TypeExtension#getType()
+   */
+  Collection<IEObjectDescription> extensionFieldsInScope(AbstractCustomOption option);
 
   Collection<IEObjectDescription> allPossibleNamesOfNormalFieldsOf(ComplexValue value);
 
