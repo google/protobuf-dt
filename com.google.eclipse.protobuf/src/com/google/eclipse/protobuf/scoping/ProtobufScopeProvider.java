@@ -30,34 +30,34 @@ import java.util.*;
  *
  * @see <a href="http://www.eclipse.org/Xtext/documentation/latest/xtext.html#scoping">Xtext Scoping</a>
  */
-public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider implements Scoping {
+public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider implements ScopeProvider {
   private static final boolean DO_NOT_IGNORE_CASE = false;
 
   @Inject private AstWalker astWalker;
   @Inject private CustomOptionFieldScopeFinder customOptionFieldScopeFinder;
-  @Inject private CustomOptionScopeFinder customOptionScopeFinder;
+  @Inject private ComplexTypeFinder complexTypeFinder;
+  @Inject private CustomOptionFinder customOptionFinder;
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private FieldNotationScopeFinder fieldNotationScopeFinder;
   @Inject private ModelFinder modelFinder;
   @Inject private LiteralDescriptions literalDescriptions;
   @Inject private NativeOptionDescriptions nativeOptionDescriptions;
   @Inject private Options options;
-  @Inject private TypeScopeFinder typeScopeFinder;
 
   @SuppressWarnings("unused")
   public IScope scope_ComplexTypeLink_target(ComplexTypeLink link, EReference r) {
     EObject c = link.eContainer();
     if (c instanceof MessageField) {
       MessageField field = (MessageField) c;
-      Collection<IEObjectDescription> complexTypes = complexTypesInScope(field);
+      Collection<IEObjectDescription> complexTypes = complexTypes(field);
       return createScope(complexTypes);
     }
     return createEmptyScope();
   }
 
   /** {@inheritDoc} */
-  @Override public Collection<IEObjectDescription> complexTypesInScope(MessageField field) {
-    return astWalker.traverseAst(field, typeScopeFinder, ComplexType.class);
+  @Override public Collection<IEObjectDescription> complexTypes(MessageField field) {
+    return astWalker.traverseAst(field, complexTypeFinder, ComplexType.class);
   }
 
   @SuppressWarnings("unused")
@@ -68,13 +68,13 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   }
 
   /** {@inheritDoc} */
-  @Override public Collection<IEObjectDescription> extensibleTypesInScope(TypeExtension extension) {
+  @Override public Collection<IEObjectDescription> extensibleTypes(TypeExtension extension) {
     Protobuf root = modelFinder.rootOf(extension);
     return extensibleTypesInScope(root);
   }
 
   private Collection<IEObjectDescription> extensibleTypesInScope(Protobuf root) {
-    return astWalker.traverseAst(root, typeScopeFinder, ExtensibleType.class);
+    return astWalker.traverseAst(root, complexTypeFinder, ExtensibleType.class);
   }
 
   @SuppressWarnings("unused")
@@ -85,13 +85,13 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   }
 
   /** {@inheritDoc} */
-  @Override public Collection<IEObjectDescription> messagesInScope(Rpc rpc) {
+  @Override public Collection<IEObjectDescription> messages(Rpc rpc) {
     Protobuf root = modelFinder.rootOf(rpc);
     return messagesInScope(root);
   }
 
   private Collection<IEObjectDescription> messagesInScope(Protobuf root) {
-    return astWalker.traverseAst(root, typeScopeFinder, Message.class);
+    return astWalker.traverseAst(root, complexTypeFinder, Message.class);
   }
 
   @SuppressWarnings("unused")
@@ -134,18 +134,18 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     }
     if (c instanceof AbstractCustomOption) {
       AbstractCustomOption option = (AbstractCustomOption) c;
-      return createScope(indexedElementsInScope(option));
+      return createScope(indexedElements(option));
     }
     Set<IEObjectDescription> descriptions = emptySet();
     return createScope(descriptions);
   }
 
   /** {@inheritDoc} */
-  @Override public Collection<IEObjectDescription> indexedElementsInScope(AbstractCustomOption option) {
+  @Override public Collection<IEObjectDescription> indexedElements(AbstractCustomOption option) {
     OptionType optionType = typeOf((AbstractOption) option);
     Collection<IEObjectDescription> descriptions = emptySet();
     if (optionType != null) {
-      descriptions = astWalker.traverseAst(option, customOptionScopeFinder, optionType);
+      descriptions = astWalker.traverseAst(option, customOptionFinder, optionType);
     }
     return descriptions;
   }
@@ -171,12 +171,12 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   }
 
   /** {@inheritDoc} */
-  @Override public Collection<IEObjectDescription> messageFieldsInScope(AbstractCustomOption option) {
+  @Override public Collection<IEObjectDescription> messageFields(AbstractCustomOption option) {
     return customOptionFieldScopeFinder.messageFieldsInScope(option, null);
   }
 
   /** {@inheritDoc} */
-  @Override public Collection<IEObjectDescription> extensionFieldsInScope(AbstractCustomOption option) {
+  @Override public Collection<IEObjectDescription> extensionFields(AbstractCustomOption option) {
     return customOptionFieldScopeFinder.extensionFieldsInScope(option, null);
   }
 

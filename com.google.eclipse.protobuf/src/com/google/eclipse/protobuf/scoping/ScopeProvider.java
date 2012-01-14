@@ -15,9 +15,11 @@ import org.eclipse.xtext.resource.IEObjectDescription;
 import java.util.Collection;
 
 /**
+ * Provides access to model elements visible in some scope.
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public interface Scoping {
+public interface ScopeProvider {
   /**
    * Returns the descriptions of all <code>{@link ComplexType}</code>s available in scope. The given
    * <code>{@link MessageField}</code> may be using one of the returned {@code ComplexType}s as its type.
@@ -26,7 +28,7 @@ public interface Scoping {
    * @see MessageField#getType()
    * @see ComplexTypeLink#getTarget()
    */
-  Collection<IEObjectDescription> complexTypesInScope(MessageField field);
+  Collection<IEObjectDescription> complexTypes(MessageField field);
 
   /**
    * Returns the descriptions of all <code>{@link ExtensibleType}</code>s available in scope. The given
@@ -36,7 +38,7 @@ public interface Scoping {
    * @see TypeExtension#getType()
    * @see ExtensibleTypeLink#getTarget()
    */
-  Collection<IEObjectDescription> extensibleTypesInScope(TypeExtension extension);
+  Collection<IEObjectDescription> extensibleTypes(TypeExtension extension);
 
   /**
    * Returns the descriptions of all <code>{@link Message}</code>s available in scope. The given
@@ -48,7 +50,7 @@ public interface Scoping {
    * @see Rpc#getReturnType()
    * @see MessageLink#getTarget()
    */
-  Collection<IEObjectDescription> messagesInScope(Rpc rpc);
+  Collection<IEObjectDescription> messages(Rpc rpc);
 
   /**
    * Returns the descriptions of all <code>{@link IndexedElement}</code>s available in scope. The given
@@ -59,7 +61,7 @@ public interface Scoping {
    * @see CustomFieldOption#getSource()
    * @see OptionSource#getTarget()
    */
-  Collection<IEObjectDescription> indexedElementsInScope(AbstractCustomOption option);
+  Collection<IEObjectDescription> indexedElements(AbstractCustomOption option);
 
   /**
    * Returns the descriptions of all <code>{@link IndexedElement}</code>s available in scope. The given
@@ -71,7 +73,7 @@ public interface Scoping {
    * @see MessageOptionField
    * @see OptionField#getTarget()
    */
-  Collection<IEObjectDescription> messageFieldsInScope(AbstractCustomOption option);
+  Collection<IEObjectDescription> messageFields(AbstractCustomOption option);
 
   /**
    * Returns the descriptions of all <code>{@link IndexedElement}</code>s available in scope. The given
@@ -85,7 +87,7 @@ public interface Scoping {
    * @see OptionField#getTarget()
    * @see TypeExtension#getType()
    */
-  Collection<IEObjectDescription> extensionFieldsInScope(AbstractCustomOption option);
+  Collection<IEObjectDescription> extensionFields(AbstractCustomOption option);
 
   Collection<IEObjectDescription> allPossibleNamesOfNormalFieldsOf(ComplexValue value);
 

@@ -18,7 +18,7 @@ import com.google.eclipse.protobuf.protobuf.Package;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-interface ScopeFinder {
+interface ElementFinder {
   Collection<IEObjectDescription> imported(Package fromImporter, Package fromImported, Object target, Object criteria);
 
   Collection<IEObjectDescription> inDescriptor(Import anImport, Object criteria);
