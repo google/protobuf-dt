@@ -8,24 +8,25 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Collections.emptySet;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
-
-import java.util.*;
-
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.naming.QualifiedName;
-import org.eclipse.xtext.resource.IEObjectDescription;
 
 import com.google.eclipse.protobuf.naming.LocalNamesProvider;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.inject.Inject;
 
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.resource.IEObjectDescription;
+
+import java.util.*;
+
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class ComplexTypeFinder implements ElementFinder {
+class ComplexTypeFinderDelegate implements ModelElementFinderDelegate {
   @Inject private PackageIntersectionDescriptions packageIntersectionDescriptions;
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private LocalNamesProvider localNamesProvider;
@@ -36,7 +37,7 @@ class ComplexTypeFinder implements ElementFinder {
     if (!isInstance(target, criteria)) {
       return emptySet();
     }
-    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
+    Set<IEObjectDescription> descriptions = newHashSet();
     EObject e = (EObject) target;
     descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(e));
     descriptions.addAll(packageIntersectionDescriptions.intersection(fromImporter, fromImported, e));
@@ -44,7 +45,7 @@ class ComplexTypeFinder implements ElementFinder {
   }
 
   @Override public Collection<IEObjectDescription> inDescriptor(Import anImport, Object criteria) {
-    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
+    Set<IEObjectDescription> descriptions = newHashSet();
     ProtoDescriptor descriptor = descriptorProvider.descriptor(anImport.getImportURI());
     for (ComplexType type : descriptor.allTypes()) {
       if (!isInstance(type, criteria)) {
@@ -60,7 +61,7 @@ class ComplexTypeFinder implements ElementFinder {
       return emptySet();
     }
     EObject e = (EObject) target;
-    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
+    Set<IEObjectDescription> descriptions = newHashSet();
     List<QualifiedName> names = localNamesProvider.namesFor(e);
     int nameCount = names.size();
     for (int i = level; i < nameCount; i++) {

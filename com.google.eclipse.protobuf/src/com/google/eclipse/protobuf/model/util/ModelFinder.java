@@ -9,11 +9,15 @@
 package com.google.eclipse.protobuf.model.util;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Collections.unmodifiableList;
 import static org.eclipse.emf.ecore.util.EcoreUtil.getAllContents;
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
-import java.util.*;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.inject.Singleton;
 
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
@@ -21,10 +25,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.resource.XtextResource;
 
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.inject.Singleton;
+import java.util.*;
 
 /**
  * Utility methods to find elements in a parser proto file.
@@ -43,7 +44,7 @@ import com.google.inject.Singleton;
   }
 
   public Collection<TypeExtension> extensionsOf(Message message, Protobuf root) {
-    Set<TypeExtension> extensions = new HashSet<TypeExtension>();
+    Set<TypeExtension> extensions = newHashSet();
     for (TypeExtension extension : getAllContentsOfType(root, TypeExtension.class)) {
       Message referred = messageFrom(extension);
       if (message.equals(referred)) {

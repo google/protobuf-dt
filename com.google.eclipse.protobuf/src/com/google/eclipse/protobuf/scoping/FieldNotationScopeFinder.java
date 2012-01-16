@@ -8,17 +8,18 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Collections.emptySet;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
-
-import java.util.*;
-
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.resource.IEObjectDescription;
 
 import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.Inject;
+
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.resource.IEObjectDescription;
+
+import java.util.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -63,7 +64,7 @@ class FieldNotationScopeFinder {
   }
 
   private Collection<IEObjectDescription> propertiesInTypeOf(MessageField field) {
-    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
+    Set<IEObjectDescription> descriptions = newHashSet();
     Message fieldType = modelFinder.messageTypeOf(field);
     for (MessageElement element : fieldType.getElements()) {
       if (element instanceof MessageField) {
@@ -75,7 +76,7 @@ class FieldNotationScopeFinder {
   }
 
   private Collection<IEObjectDescription> propertiesInExtendMessageOf(MessageField field) {
-    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
+    Set<IEObjectDescription> descriptions = newHashSet();
     Message fieldType = modelFinder.messageTypeOf(field);
     // check first in descriptor.proto
     for (TypeExtension extension : modelFinder.extensionsOf(fieldType, modelFinder.rootOf(field))) {

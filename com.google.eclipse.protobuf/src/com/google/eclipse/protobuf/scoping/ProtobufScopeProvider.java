@@ -33,12 +33,14 @@ import java.util.*;
 public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider implements ScopeProvider {
   private static final boolean DO_NOT_IGNORE_CASE = false;
 
-  @Inject private AstWalker astWalker;
-  @Inject private CustomOptionFieldScopeFinder customOptionFieldScopeFinder;
-  @Inject private ComplexTypeFinder complexTypeFinder;
-  @Inject private CustomOptionFinder customOptionFinder;
+  @Inject private ComplexTypeFinderDelegate complexTypeFinder;
+  @Inject private CustomOptionFieldFinder customOptionFieldFinder;
+  @Inject private CustomOptionFinderDelegate customOptionFinder;
+  @Inject private ExtensionFieldFinderDelegate extensionFieldFinder;
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private FieldNotationScopeFinder fieldNotationScopeFinder;
+  @Inject private MessageFieldFinderDelegate messageFieldFinder;
+  @Inject private ModelElementFinder modelElementFinder;
   @Inject private ModelFinder modelFinder;
   @Inject private LiteralDescriptions literalDescriptions;
   @Inject private NativeOptionDescriptions nativeOptionDescriptions;
@@ -57,7 +59,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
 
   /** {@inheritDoc} */
   @Override public Collection<IEObjectDescription> complexTypes(MessageField field) {
-    return astWalker.traverseAst(field, complexTypeFinder, ComplexType.class);
+    return modelElementFinder.find(field, complexTypeFinder, ComplexType.class);
   }
 
   @SuppressWarnings("unused")
@@ -74,7 +76,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   }
 
   private Collection<IEObjectDescription> extensibleTypesInScope(Protobuf root) {
-    return astWalker.traverseAst(root, complexTypeFinder, ExtensibleType.class);
+    return modelElementFinder.find(root, complexTypeFinder, ExtensibleType.class);
   }
 
   @SuppressWarnings("unused")
@@ -91,7 +93,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   }
 
   private Collection<IEObjectDescription> messagesInScope(Protobuf root) {
-    return astWalker.traverseAst(root, complexTypeFinder, Message.class);
+    return modelElementFinder.find(root, complexTypeFinder, Message.class);
   }
 
   @SuppressWarnings("unused")
@@ -145,7 +147,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     OptionType optionType = typeOf((AbstractOption) option);
     Collection<IEObjectDescription> descriptions = emptySet();
     if (optionType != null) {
-      descriptions = astWalker.traverseAst(option, customOptionFinder, optionType);
+      descriptions = modelElementFinder.find(option, customOptionFinder, optionType);
     }
     return descriptions;
   }
@@ -163,21 +165,21 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     if (container instanceof AbstractCustomOption) {
       AbstractCustomOption option = (AbstractCustomOption) container;
       if (field instanceof MessageOptionField) {
-        return customOptionFieldScopeFinder.messageFieldsInScope(option, field);
+        return customOptionFieldFinder.findOptionFields(option, messageFieldFinder, field);
       }
-      return customOptionFieldScopeFinder.extensionFieldsInScope(option, field);
+      return customOptionFieldFinder.findOptionFields(option, extensionFieldFinder, field);
     }
     return emptySet();
   }
 
   /** {@inheritDoc} */
   @Override public Collection<IEObjectDescription> messageFields(AbstractCustomOption option) {
-    return customOptionFieldScopeFinder.messageFieldsInScope(option, null);
+    return customOptionFieldFinder.findOptionFields(option, messageFieldFinder);
   }
 
   /** {@inheritDoc} */
   @Override public Collection<IEObjectDescription> extensionFields(AbstractCustomOption option) {
-    return customOptionFieldScopeFinder.extensionFieldsInScope(option, null);
+    return customOptionFieldFinder.findOptionFields(option, extensionFieldFinder);
   }
 
   @SuppressWarnings("unused")

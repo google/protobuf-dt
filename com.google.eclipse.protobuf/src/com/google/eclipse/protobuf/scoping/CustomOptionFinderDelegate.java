@@ -8,13 +8,9 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Collections.emptySet;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
-
-import java.util.*;
-
-import org.eclipse.xtext.naming.QualifiedName;
-import org.eclipse.xtext.resource.IEObjectDescription;
 
 import com.google.eclipse.protobuf.model.util.ModelFinder;
 import com.google.eclipse.protobuf.naming.LocalNamesProvider;
@@ -22,10 +18,15 @@ import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.inject.Inject;
 
+import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.resource.IEObjectDescription;
+
+import java.util.*;
+
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class CustomOptionFinder implements ElementFinder {
+class CustomOptionFinderDelegate implements ModelElementFinderDelegate {
   @Inject private LocalNamesProvider localNamesProvider;
   @Inject private ModelFinder modelFinder;
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
@@ -36,7 +37,7 @@ class CustomOptionFinder implements ElementFinder {
     if (!isExtendingOptionMessage(target, optionType)) {
       return emptySet();
     }
-    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
+    Set<IEObjectDescription> descriptions = newHashSet();
     TypeExtension extension = (TypeExtension) target;
     for (MessageElement e : extension.getElements()) {
       descriptions.addAll(qualifiedNamesDescriptions.qualifiedNamesForOption(e));
@@ -53,7 +54,7 @@ class CustomOptionFinder implements ElementFinder {
     if (!isExtendingOptionMessage(target, optionType)) {
       return emptySet();
     }
-    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
+    Set<IEObjectDescription> descriptions = newHashSet();
     TypeExtension extension = (TypeExtension) target;
     for (MessageElement e : extension.getElements()) {
       List<QualifiedName> names = localNamesProvider.namesForOption(e);

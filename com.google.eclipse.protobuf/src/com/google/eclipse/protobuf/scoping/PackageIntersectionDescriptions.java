@@ -9,18 +9,19 @@
 package com.google.eclipse.protobuf.scoping;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Collections.emptySet;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
-import java.util.*;
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.inject.Inject;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.inject.Inject;
+import java.util.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -57,7 +58,7 @@ class PackageIntersectionDescriptions {
      {
       return emptySet(); // no intersection found.
     }
-    Set<IEObjectDescription> descriptions = new HashSet<IEObjectDescription>();
+    Set<IEObjectDescription> descriptions = newHashSet();
     QualifiedName fqn = nameProvider.getFullyQualifiedName(e);
     List<String> segments = newArrayList(fqn.getSegments());
     for (int i = 0; i < start; i++) {
