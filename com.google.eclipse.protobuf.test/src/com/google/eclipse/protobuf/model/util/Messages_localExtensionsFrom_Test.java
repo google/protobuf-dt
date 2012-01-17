@@ -21,17 +21,17 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link ModelFinder#localExtensionsOf(Message)}</code>.
+ * Tests for <code>{@link Messages#localExtensionsOf(Message)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ModelFinder_localExtensionsFrom_Test {
+public class Messages_localExtensionsFrom_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
-  private ModelFinder finder;
+  private Messages messages;
 
   @Before public void setUp() {
-    finder = xtext.getInstanceOf(ModelFinder.class);
+    messages = xtext.getInstanceOf(Messages.class);
   }
 
   // syntax = "proto2";
@@ -43,7 +43,7 @@ public class ModelFinder_localExtensionsFrom_Test {
   // extend Person {}
   @Test public void should_return_extensions_of_message() {
     Message m = xtext.find("Person", " {", Message.class);
-    List<TypeExtension> extensions = newArrayList(finder.localExtensionsOf(m));
+    List<TypeExtension> extensions = newArrayList(messages.localExtensionsOf(m));
     Message referred = (Message) extensions.get(0).getType().getTarget();
     assertSame(m, referred);
   }

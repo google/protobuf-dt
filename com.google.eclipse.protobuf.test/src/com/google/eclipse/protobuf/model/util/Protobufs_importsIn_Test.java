@@ -21,19 +21,17 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link ModelFinder#importsIn(Protobuf)}</code>.
+ * Tests for <code>{@link Protobufs#importsIn(Protobuf)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ModelFinder_importsIn_Test {
+public class Protobufs_importsIn_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
-  private Protobuf root;
-  private ModelFinder finder;
+  private Protobufs protobufs;
 
   @Before public void setUp() {
-    root = xtext.root();
-    finder = xtext.getInstanceOf(ModelFinder.class);
+    protobufs = xtext.getInstanceOf(Protobufs.class);
   }
 
   // syntax = "proto2";
@@ -41,7 +39,7 @@ public class ModelFinder_importsIn_Test {
   // import "luke.proto";
   // import "leia.proto";
   @Test public void should_return_all_imports() {
-    List<Import> allImports = finder.importsIn(root);
+    List<Import> allImports = protobufs.importsIn(xtext.root());
     assertThat(allImports.size(), equalTo(2));
     assertThat(allImports.get(0).getImportURI(), equalTo("luke.proto"));
     assertThat(allImports.get(1).getImportURI(), equalTo("leia.proto"));
@@ -55,7 +53,7 @@ public class ModelFinder_importsIn_Test {
   //   WORK = 2;
   // }
   @Test public void should_return_empty_if_no_imports_found() {
-    List<Import> allImports = finder.importsIn(root);
+    List<Import> allImports = protobufs.importsIn(xtext.root());
     assertThat(allImports.size(), equalTo(0));
   }
 }

@@ -11,14 +11,14 @@ package com.google.eclipse.protobuf.validation;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.ABSTRACT_OPTION__VALUE;
 import static com.google.eclipse.protobuf.validation.Messages.*;
 
-import org.eclipse.xtext.naming.*;
-import org.eclipse.xtext.nodemodel.INode;
-import org.eclipse.xtext.validation.*;
-
 import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.inject.Inject;
+
+import org.eclipse.xtext.naming.*;
+import org.eclipse.xtext.nodemodel.INode;
+import org.eclipse.xtext.validation.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -31,7 +31,6 @@ public class DataTypeValidator extends AbstractDeclarativeValidator {
 
   @Inject private IQualifiedNameProvider fqnProvider;
   @Inject private MessageFields messageFields;
-  @Inject private ModelFinder modelFinder;
   @Inject private INodes nodes;
 
   @Check public void checkValueOfDefaultTypeMatchesFieldType(DefaultValueFieldOption option) {
@@ -56,7 +55,7 @@ public class DataTypeValidator extends AbstractDeclarativeValidator {
       validateString(option);
       return;
     }
-    Enum anEnum = modelFinder.enumTypeOf(field);
+    Enum anEnum = messageFields.enumTypeOf(field);
     if (anEnum != null) {
       validateEnumLiteral(option, anEnum);
     }

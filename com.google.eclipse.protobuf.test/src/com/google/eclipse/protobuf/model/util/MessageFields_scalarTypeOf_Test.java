@@ -19,17 +19,17 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 
 /**
- * Tests for <code>{@link ModelFinder#scalarTypeOf(MessageField)}</code>.
+ * Tests for <code>{@link MessageFields#scalarTypeOf(MessageField)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ModelFinder_scalarTypeOf_Test {
+public class MessageFields_scalarTypeOf_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
-  private ModelFinder finder;
+  private MessageFields fields;
 
   @Before public void setUp() {
-    finder = xtext.getInstanceOf(ModelFinder.class);
+    fields = xtext.getInstanceOf(MessageFields.class);
   }
 
   // syntax = "proto2";
@@ -39,7 +39,7 @@ public class ModelFinder_scalarTypeOf_Test {
   // }
   @Test public void should_return_scalar_if_field_type_is_scalar() {
     MessageField field = xtext.find("id", MessageField.class);
-    ScalarType type = finder.scalarTypeOf(field);
+    ScalarType type = fields.scalarTypeOf(field);
     assertThat(type.getName(), equalTo("int32"));
   }
 
@@ -56,6 +56,6 @@ public class ModelFinder_scalarTypeOf_Test {
   // }
   @Test public void should_return_null_if_field_type_is_not_scalar() {
     MessageField field = xtext.find("type", MessageField.class);
-    assertNull(finder.scalarTypeOf(field));
+    assertNull(fields.scalarTypeOf(field));
   }
 }

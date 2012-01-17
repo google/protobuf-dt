@@ -13,50 +13,47 @@ import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeMo
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
 
-import org.junit.*;
-
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.eclipse.protobuf.protobuf.Package;
+
+import org.eclipse.emf.ecore.EObject;
+import org.junit.*;
 
 /**
- * Tests for <code>{@link ModelFinder#enumTypeOf(MessageField)}</code>.
+ * Tests for <code>{@link ModelObjects#packageOf(EObject)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ModelFinder_enumTypeOf_Test {
+public class ModelObjects_packageOf_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
-  private ModelFinder finder;
+  private ModelObjects modelObjects;
 
   @Before public void setUp() {
-    finder = xtext.getInstanceOf(ModelFinder.class);
+    modelObjects = xtext.getInstanceOf(ModelObjects.class);
   }
 
   // syntax = "proto2";
   //
-  // enum PhoneType {
-  //   MOBILE = 0;
-  //   HOME = 1;
-  //   WORK = 2;
-  // }
+  // package person.test;
   //
-  // message PhoneNumber {
-  //   optional PhoneType type = 1;
+  // message Person {
+  //   optional int32 id = 1;
   // }
-  @Test public void should_return_enum_if_field_type_is_enum() {
-    MessageField field = xtext.find("type", MessageField.class);
-    Enum anEnum = finder.enumTypeOf(field);
-    assertThat(anEnum.getName(), equalTo("PhoneType"));
+  @Test public void should_return_package_if_proto_has_one() {
+    MessageField field = xtext.find("id", MessageField.class);
+    Package aPackage = modelObjects.packageOf(field);
+    assertThat(aPackage.getName(), equalTo("person.test"));
   }
 
   // syntax = "proto2";
   //
   // message Person {
-  //   optional string name = 1;
+  //   optional int32 id = 1;
   // }
-  @Test public void should_return_null_if_field_type_is_not_enum() {
-    MessageField field = xtext.find("name", MessageField.class);
-    assertNull(finder.enumTypeOf(field));
+  @Test public void should_return_null_if_proto_does_not_have_package() {
+    MessageField field = xtext.find("id", MessageField.class);
+    assertNull(modelObjects.packageOf(field));
   }
 }

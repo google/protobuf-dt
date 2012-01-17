@@ -18,7 +18,15 @@ import static java.util.Collections.*;
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 import static org.eclipse.xtext.util.Strings.*;
 
-import java.util.*;
+import com.google.eclipse.protobuf.grammar.CommonKeyword;
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.eclipse.protobuf.scoping.*;
+import com.google.eclipse.protobuf.ui.grammar.CompoundElement;
+import com.google.eclipse.protobuf.ui.labeling.Images;
+import com.google.eclipse.protobuf.ui.util.Literals;
+import com.google.inject.Inject;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -31,15 +39,7 @@ import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.ui.PluginImageHelper;
 import org.eclipse.xtext.ui.editor.contentassist.*;
 
-import com.google.eclipse.protobuf.grammar.CommonKeyword;
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.eclipse.protobuf.scoping.*;
-import com.google.eclipse.protobuf.ui.grammar.CompoundElement;
-import com.google.eclipse.protobuf.ui.labeling.Images;
-import com.google.eclipse.protobuf.ui.util.Literals;
-import com.google.inject.Inject;
+import java.util.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -49,7 +49,6 @@ import com.google.inject.Inject;
 public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Inject private IEObjectDescriptionChooser descriptionChooser;
   @Inject private ProtoDescriptorProvider descriptorProvider;
-  @Inject private ModelFinder finder;
   @Inject private Images images;
   @Inject private IndexedElements indexedElements;
   @Inject private PluginImageHelper imageHelper;
@@ -295,7 +294,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (field == null || !messageFields.isOptional(field)) {
       return;
     }
-    Enum enumType = finder.enumTypeOf(field);
+    Enum enumType = messageFields.enumTypeOf(field);
     if (enumType != null) {
       proposeAndAccept(enumType, context, acceptor);
     }
@@ -616,7 +615,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (field == null || proposePrimitiveValues(field, context, acceptor)) {
       return;
     }
-    Enum enumType = finder.enumTypeOf(field);
+    Enum enumType = messageFields.enumTypeOf(field);
     if (enumType != null) {
       proposeAndAccept(enumType, context, acceptor);
     }

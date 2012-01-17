@@ -9,13 +9,17 @@
 package com.google.eclipse.protobuf.model.util;
 
 import static org.eclipse.emf.common.util.URI.createURI;
+import static org.eclipse.emf.ecore.util.EcoreUtil.getAllContents;
 
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.*;
-import org.eclipse.xtext.scoping.impl.ImportUriResolver;
-
-import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.Inject;
+
+import org.eclipse.emf.common.util.*;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.*;
+import org.eclipse.xtext.parser.IParseResult;
+import org.eclipse.xtext.resource.XtextResource;
+import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 
 /**
  * Utility methods related to <code>{@link Resource}</code>
@@ -39,5 +43,28 @@ public class Resources {
     } catch (Throwable t) {
       return null;
     }
+  }
+
+  /**
+   * Returns the root element of the given resource.
+   * @param resource the given resource.
+   * @return the root element of the given resource, or {@code null} if the given resource does not have a root element.
+   */
+  public Protobuf rootOf(Resource resource) {
+    if (resource instanceof XtextResource) {
+      IParseResult parseResult = ((XtextResource) resource).getParseResult();
+      if (parseResult != null) {
+        EObject root = parseResult.getRootASTElement();
+        return (Protobuf) root;
+      }
+    }
+    TreeIterator<Object> contents = getAllContents(resource, true);
+    if (contents.hasNext()) {
+      Object next = contents.next();
+      if (next instanceof Protobuf) {
+        return (Protobuf) next;
+      }
+    }
+    return null;
   }
 }

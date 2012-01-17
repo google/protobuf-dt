@@ -25,8 +25,10 @@ import java.util.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class FieldNotationScopeFinder {
+  @Inject private MessageFields messageFields;
+  @Inject private Messages messages;
+  @Inject private ModelObjects modelObjects;
   @Inject private Options options;
-  @Inject private ModelFinder modelFinder;
   @Inject private QualifiedNameDescriptions qualifiedNameDescriptions;
 
   Collection<IEObjectDescription> sourceOfNormalFieldNamesOf(ComplexValue value) {
@@ -65,7 +67,7 @@ class FieldNotationScopeFinder {
 
   private Collection<IEObjectDescription> propertiesInTypeOf(MessageField field) {
     Set<IEObjectDescription> descriptions = newHashSet();
-    Message fieldType = modelFinder.messageTypeOf(field);
+    Message fieldType = messageFields.messageTypeOf(field);
     for (MessageElement element : fieldType.getElements()) {
       if (element instanceof MessageField) {
         String name = ((MessageField) element).getName();
@@ -77,9 +79,9 @@ class FieldNotationScopeFinder {
 
   private Collection<IEObjectDescription> propertiesInExtendMessageOf(MessageField field) {
     Set<IEObjectDescription> descriptions = newHashSet();
-    Message fieldType = modelFinder.messageTypeOf(field);
+    Message fieldType = messageFields.messageTypeOf(field);
     // check first in descriptor.proto
-    for (TypeExtension extension : modelFinder.extensionsOf(fieldType, modelFinder.rootOf(field))) {
+    for (TypeExtension extension : messages.extensionsOf(fieldType, modelObjects.rootOf(field))) {
       for (MessageElement element : extension.getElements()) {
         if (!(element instanceof MessageField)) {
           continue;

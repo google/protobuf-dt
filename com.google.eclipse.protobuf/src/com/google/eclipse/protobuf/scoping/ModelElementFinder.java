@@ -28,8 +28,8 @@ import java.util.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class ModelElementFinder {
-  @Inject private ModelFinder modelFinder;
   @Inject private Imports imports;
+  @Inject private ModelObjects modelObjects;
   @Inject private Packages packages;
   @Inject private Protobufs protobufs;
   @Inject private Resources resources;
@@ -41,7 +41,7 @@ class ModelElementFinder {
       descriptions.addAll(local(current, finder, criteria));
       current = current.eContainer();
     }
-    Protobuf root = modelFinder.rootOf(start);
+    Protobuf root = modelObjects.rootOf(start);
     descriptions.addAll(imported(root, finder, criteria));
     return unmodifiableSet(descriptions);
   }
@@ -70,12 +70,12 @@ class ModelElementFinder {
   }
 
   private Collection<IEObjectDescription> imported(Protobuf start, ModelElementFinderDelegate finder, Object criteria) {
-    List<Import> allImports = modelFinder.importsIn(start);
+    List<Import> allImports = protobufs.importsIn(start);
     if (allImports.isEmpty()) {
       return emptyList();
     }
     ResourceSet resourceSet = start.eResource().getResourceSet();
-    return imported(allImports, modelFinder.packageOf(start), resourceSet, finder, criteria);
+    return imported(allImports, modelObjects.packageOf(start), resourceSet, finder, criteria);
   }
 
   private Collection<IEObjectDescription> imported(List<Import> allImports, Package fromImporter,
@@ -90,7 +90,7 @@ class ModelElementFinder {
       if (imported == null) {
         continue;
       }
-      Protobuf rootOfImported = modelFinder.rootOf(imported);
+      Protobuf rootOfImported = resources.rootOf(imported);
       if (!protobufs.isProto2(rootOfImported)) {
         continue;
       }
@@ -100,7 +100,7 @@ class ModelElementFinder {
           descriptions.addAll(local(rootOfImported, finder, criteria));
           continue;
         }
-        Package packageOfImported = modelFinder.packageOf(rootOfImported);
+        Package packageOfImported = modelObjects.packageOf(rootOfImported);
         descriptions.addAll(imported(fromImporter, packageOfImported, imported, finder, criteria));
       }
     }
@@ -112,16 +112,16 @@ class ModelElementFinder {
     if (!protobufs.isProto2(start)) {
       return emptySet();
     }
-    List<Import> allImports = modelFinder.publicImportsIn(start);
+    List<Import> allImports = protobufs.publicImportsIn(start);
     if (allImports.isEmpty()) {
       return emptyList();
     }
     ResourceSet resourceSet = start.eResource().getResourceSet();
-    return imported(allImports, modelFinder.packageOf(start), resourceSet, finder, criteria);
+    return imported(allImports, modelObjects.packageOf(start), resourceSet, finder, criteria);
   }
 
   private boolean arePackagesRelated(Package aPackage, EObject root) {
-    Package p = modelFinder.packageOf(root);
+    Package p = modelObjects.packageOf(root);
     return packages.areRelated(aPackage, p);
   }
 

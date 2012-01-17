@@ -40,8 +40,9 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private FieldNotationScopeFinder fieldNotationScopeFinder;
   @Inject private MessageFieldFinderDelegate messageFieldFinder;
+  @Inject private MessageFields messageFields;
   @Inject private ModelElementFinder modelElementFinder;
-  @Inject private ModelFinder modelFinder;
+  @Inject private ModelObjects modelObjects;
   @Inject private LiteralDescriptions literalDescriptions;
   @Inject private NativeOptionDescriptions nativeOptionDescriptions;
   @Inject private Options options;
@@ -64,14 +65,14 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
 
   @SuppressWarnings("unused")
   public IScope scope_ExtensibleTypeLink_target(ExtensibleTypeLink link, EReference r) {
-    Protobuf root = modelFinder.rootOf(link);
+    Protobuf root = modelObjects.rootOf(link);
     Collection<IEObjectDescription> extensibleTypes = extensibleTypesInScope(root);
     return createScope(extensibleTypes);
   }
 
   /** {@inheritDoc} */
   @Override public Collection<IEObjectDescription> extensibleTypes(TypeExtension extension) {
-    Protobuf root = modelFinder.rootOf(extension);
+    Protobuf root = modelObjects.rootOf(extension);
     return extensibleTypesInScope(root);
   }
 
@@ -81,14 +82,14 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
 
   @SuppressWarnings("unused")
   public IScope scope_MessageLink_target(MessageLink link, EReference r) {
-    Protobuf root = modelFinder.rootOf(link);
+    Protobuf root = modelObjects.rootOf(link);
     Collection<IEObjectDescription> messages = messagesInScope(root);
     return createScope(messages);
   }
 
   /** {@inheritDoc} */
   @Override public Collection<IEObjectDescription> messages(Rpc rpc) {
-    Protobuf root = modelFinder.rootOf(rpc);
+    Protobuf root = modelObjects.rootOf(rpc);
     return messagesInScope(root);
   }
 
@@ -120,7 +121,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
       container = field.getName().getTarget();
     }
     if (container instanceof MessageField) {
-      anEnum = modelFinder.enumTypeOf((MessageField) container);
+      anEnum = messageFields.enumTypeOf((MessageField) container);
     }
     return createScope(literalDescriptions.literalsOf(anEnum));
   }

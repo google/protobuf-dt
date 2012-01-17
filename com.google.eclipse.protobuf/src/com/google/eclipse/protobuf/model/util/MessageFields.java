@@ -13,6 +13,7 @@ import static com.google.eclipse.protobuf.protobuf.Modifier.OPTIONAL;
 
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.inject.Singleton;
 
 /**
@@ -120,14 +121,66 @@ import com.google.inject.Singleton;
    * @return the name of the type of the given field.
    */
   public String typeNameOf(MessageField field) {
+    ScalarType scalarType = scalarTypeOf(field);
+    if (scalarType != null) {
+      return scalarType.getName();
+    }
+    ComplexType complexType = typeOf(field);
+    if (complexType != null) {
+      return complexType.getName();
+    }
+    return null;
+  }
+
+  /**
+   * Returns the message type of the given field, only if the type of the given field is a message.
+   * @param field the given field.
+   * @return the message type of the given field or {@code null} if the type of the given field is not message.
+   */
+  public Message messageTypeOf(MessageField field) {
+    return fieldType(field, Message.class);
+  }
+
+  /**
+   * Returns the enum type of the given field, only if the type of the given field is an enum.
+   * @param field the given field.
+   * @return the enum type of the given field or {@code null} if the type of the given field is not enum.
+   */
+  public Enum enumTypeOf(MessageField field) {
+    return fieldType(field, Enum.class);
+  }
+
+  private <T extends ComplexType> T fieldType(MessageField field, Class<T> targetType) {
+    ComplexType type = typeOf(field);
+    if (targetType.isInstance(type)) {
+      return targetType.cast(type);
+    }
+    return null;
+  }
+
+  /**
+   * Returns the type of the given field.
+   * @param field the given field.
+   * @return the type of the given field.
+   */
+  public ComplexType typeOf(MessageField field) {
     TypeLink link = field.getType();
-    if (link instanceof ScalarTypeLink) {
-      return ((ScalarTypeLink) link).getTarget().getName();
-    }
     if (link instanceof ComplexTypeLink) {
-      ComplexType type = ((ComplexTypeLink) link).getTarget();
-      return (type == null) ? null : type.getName();
+      return ((ComplexTypeLink) link).getTarget();
     }
-    return link.toString();
+    return null;
+  }
+
+  /**
+   * Returns the scalar type of the given field, only if the type of the given field is a scalar.
+   * @param field the given field.
+   * @return the scalar type of the given field or {@code null} if the type of the given field is not a scalar.
+   */
+  public ScalarType scalarTypeOf(MessageField field) {
+    TypeLink link = (field).getType();
+    if (link instanceof ScalarTypeLink) {
+      return ((ScalarTypeLink) link).getTarget();
+    }
+    return null;
   }
 }

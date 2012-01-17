@@ -34,7 +34,6 @@ import java.util.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ImportValidator extends AbstractDeclarativeValidator {
-  @Inject private ModelFinder finder;
   @Inject private Protobufs protobufs;
   @Inject private Resources resources;
   @Inject private ImportUriResolver uriResolver;
@@ -51,7 +50,7 @@ public class ImportValidator extends AbstractDeclarativeValidator {
   }
 
   private void warnIfNonProto2ImportsFound(Resource resource) {
-    Protobuf root = finder.rootOf(resource);
+    Protobuf root = resources.rootOf(resource);
     if (!protobufs.isProto2(root)) {
       return;
     }
@@ -60,10 +59,10 @@ public class ImportValidator extends AbstractDeclarativeValidator {
     List<Pair<Import, Resource>> resourcesToCheck = newArrayList();
     Set<URI> checked = newHashSet();
     checked.add(resource.getURI());
-    for (Import anImport : finder.importsIn(root)) {
+    for (Import anImport : protobufs.importsIn(root)) {
       Resource imported = resources.importedResource(anImport, resourceSet);
       checked.add(imported.getURI());
-      if (!protobufs.isProto2(finder.rootOf(imported))) {
+      if (!protobufs.isProto2(resources.rootOf(imported))) {
         hasNonProto2 = true;
         warnNonProto2ImportFoundIn(anImport);
         continue;
@@ -82,17 +81,17 @@ public class ImportValidator extends AbstractDeclarativeValidator {
   }
 
   private boolean hasNonProto2(Pair<Import, Resource> toCheck, Set<URI> alreadyChecked, ResourceSet resourceSet) {
-    Protobuf root = finder.rootOf(toCheck.getSecond());
+    Protobuf root = resources.rootOf(toCheck.getSecond());
     if (!protobufs.isProto2(root)) {
       return false;
     }
     List<Pair<Import, Resource>> resourcesToCheck = newArrayList();
-    for (Import anImport : finder.importsIn(root)) {
+    for (Import anImport : protobufs.importsIn(root)) {
       Resource imported = resources.importedResource(anImport, resourceSet);
       if (alreadyChecked.contains(imported.getURI())) {
         continue;
       }
-      if (!protobufs.isProto2(finder.rootOf(imported))) {
+      if (!protobufs.isProto2(resources.rootOf(imported))) {
         return true;
       }
       resourcesToCheck.add(pair(toCheck.getFirst(), imported));

@@ -24,7 +24,8 @@ import java.util.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class ExtensionFieldFinderDelegate implements CustomOptionFieldFinderDelegate {
-  @Inject private ModelFinder modelFinder;
+  @Inject private MessageFields messageFields;
+  @Inject private Messages messages;
   @Inject private Options options;
   @Inject private QualifiedNameDescriptions qualifiedNameDescriptions;
 
@@ -32,12 +33,12 @@ class ExtensionFieldFinderDelegate implements CustomOptionFieldFinderDelegate {
     if (!(e instanceof MessageField)) {
       return emptyList();
     }
-    Message fieldType = modelFinder.messageTypeOf((MessageField) e);
+    Message fieldType = messageFields.messageTypeOf((MessageField) e);
     if (fieldType == null) {
       return emptyList();
     }
     Set<IEObjectDescription> descriptions = newHashSet();
-    for (TypeExtension extension : modelFinder.localExtensionsOf(fieldType)) {
+    for (TypeExtension extension : messages.localExtensionsOf(fieldType)) {
       for (MessageElement element : extension.getElements()) {
         if (!(element instanceof IndexedElement)) {
           continue;

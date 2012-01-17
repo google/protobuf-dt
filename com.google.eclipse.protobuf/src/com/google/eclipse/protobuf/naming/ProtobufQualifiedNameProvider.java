@@ -11,15 +11,15 @@ package com.google.eclipse.protobuf.naming;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 import static org.eclipse.xtext.util.Tuples.pair;
 
-import java.util.List;
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.inject.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.util.*;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.inject.*;
+import java.util.List;
 
 /**
  * Provides fully-qualified names for protobuf elements.
@@ -31,7 +31,7 @@ public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.Abstra
   @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
   @Inject private final IResourceScopeCache cache = IResourceScopeCache.NullImpl.INSTANCE;
 
-  @Inject private ModelFinder finder;
+  @Inject private ModelObjects modelObjects;
   @Inject private NamingStrategies namingStrategies;
   @Inject private Packages packages;
   @Inject private QualifiedNames qualifiedNames;
@@ -68,7 +68,7 @@ public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.Abstra
     if (qualifiedName == null || obj instanceof Package) {
       return qualifiedName;
     }
-    Package p = finder.packageOf(obj);
+    Package p = modelObjects.packageOf(obj);
     if (p == null) {
       return qualifiedName;
     }

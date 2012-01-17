@@ -8,9 +8,14 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
+import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Collections.unmodifiableList;
+
 import com.google.eclipse.protobuf.parser.NonProto2Protobuf;
-import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.Singleton;
+
+import java.util.List;
 
 /**
  * Utility methods related to <code>{@link Protobuf}</code>s.
@@ -26,5 +31,35 @@ import com.google.inject.Singleton;
    */
   public boolean isProto2(Protobuf protobuf) {
     return protobuf != null && !(protobuf instanceof NonProto2Protobuf);
+  }
+
+  /**
+   * Returns all the import definitions in the given proto.
+   * @param root the given proto.
+   * @return all the import definitions in the given proto.
+   */
+  public List<Import> importsIn(Protobuf root) {
+    List<Import> imports = newArrayList();
+    for (ProtobufElement e : root.getElements()) {
+      if (e instanceof Import) {
+        imports.add((Import) e);
+      }
+    }
+    return unmodifiableList(imports);
+  }
+
+  /**
+   * Returns all the public import definitions in the given proto.
+   * @param root the given proto.
+   * @return all the public import definitions in the given proto.
+   */
+  public List<Import> publicImportsIn(Protobuf root) {
+    List<Import> imports = newArrayList();
+    for (ProtobufElement e : root.getElements()) {
+      if (e instanceof PublicImport) {
+        imports.add((Import) e);
+      }
+    }
+    return unmodifiableList(imports);
   }
 }

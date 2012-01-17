@@ -10,27 +10,44 @@ package com.google.eclipse.protobuf.model.util;
 
 import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
-import static org.hamcrest.core.IsSame.sameInstance;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.*;
 
-import org.eclipse.emf.ecore.EObject;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Enum;
 
 /**
- * Tests for <code>{@link ModelFinder#rootOf(EObject)}</code>.
+ * Tests for <code>{@link MessageFields#enumTypeOf(MessageField)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ModelFinder_rootOf_Test {
+public class MessageFields_enumTypeOf_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
-  private ModelFinder finder;
+  private MessageFields fields;
 
   @Before public void setUp() {
-    finder = xtext.getInstanceOf(ModelFinder.class);
+    fields = xtext.getInstanceOf(MessageFields.class);
+  }
+
+  // syntax = "proto2";
+  //
+  // enum PhoneType {
+  //   MOBILE = 0;
+  //   HOME = 1;
+  //   WORK = 2;
+  // }
+  //
+  // message PhoneNumber {
+  //   optional PhoneType type = 1;
+  // }
+  @Test public void should_return_enum_if_field_type_is_enum() {
+    MessageField field = xtext.find("type", MessageField.class);
+    Enum anEnum = fields.enumTypeOf(field);
+    assertThat(anEnum.getName(), equalTo("PhoneType"));
   }
 
   // syntax = "proto2";
@@ -38,8 +55,8 @@ public class ModelFinder_rootOf_Test {
   // message Person {
   //   optional string name = 1;
   // }
-  @Test public void should_return_root_of_proto() {
+  @Test public void should_return_null_if_field_type_is_not_enum() {
     MessageField field = xtext.find("name", MessageField.class);
-    assertThat(finder.rootOf(field), sameInstance(xtext.root()));
+    assertNull(fields.enumTypeOf(field));
   }
 }

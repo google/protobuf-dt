@@ -12,7 +12,7 @@ import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Collections.emptySet;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
-import com.google.eclipse.protobuf.model.util.ModelFinder;
+import com.google.eclipse.protobuf.model.util.TypeExtensions;
 import com.google.eclipse.protobuf.naming.LocalNamesProvider;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
@@ -28,8 +28,8 @@ import java.util.*;
  */
 class CustomOptionFinderDelegate implements ModelElementFinderDelegate {
   @Inject private LocalNamesProvider localNamesProvider;
-  @Inject private ModelFinder modelFinder;
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
+  @Inject private TypeExtensions typeExtensions;
 
   @Override public Collection<IEObjectDescription> imported(Package fromImporter, Package fromImported, Object target,
       Object criteria) {
@@ -78,7 +78,7 @@ class CustomOptionFinderDelegate implements ModelElementFinderDelegate {
     if (!(o instanceof TypeExtension)) {
       return false;
     }
-    Message message = modelFinder.messageFrom((TypeExtension) o);
+    Message message = typeExtensions.messageFrom((TypeExtension) o);
     if (message == null) {
       return false;
     }

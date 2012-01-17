@@ -24,13 +24,13 @@ import java.util.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class MessageFieldFinderDelegate implements CustomOptionFieldFinderDelegate {
-  @Inject private ModelFinder modelFinder;
+  @Inject private MessageFields messageFields;
   @Inject private Options options;
 
   @Override public Collection<IEObjectDescription> findFieldsInType(IndexedElement e) {
     Set<IEObjectDescription> descriptions = newHashSet();
     if (e instanceof MessageField) {
-      Message fieldType = modelFinder.messageTypeOf((MessageField) e);
+      Message fieldType = messageFields.messageTypeOf((MessageField) e);
       for (MessageElement element : fieldType.getElements()) {
         IEObjectDescription d = describe(element);
         if (d != null) {

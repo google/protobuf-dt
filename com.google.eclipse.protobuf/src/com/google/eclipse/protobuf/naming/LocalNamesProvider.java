@@ -13,14 +13,14 @@ import static java.util.Collections.*;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 import static org.eclipse.xtext.util.Tuples.pair;
 
-import java.util.List;
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.inject.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.util.*;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.inject.*;
+import java.util.List;
 
 /**
  * Provides alternative qualified names for protobuf elements.
@@ -59,7 +59,7 @@ public class LocalNamesProvider {
   @Inject private final IResourceScopeCache cache = IResourceScopeCache.NullImpl.INSTANCE;
   @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
 
-  @Inject private ModelFinder finder;
+  @Inject private ModelObjects modelObjects;
   @Inject private NameResolver nameResolver;
   @Inject private NamingStrategies namingStrategies;
   @Inject private Packages packages;
@@ -93,7 +93,7 @@ public class LocalNamesProvider {
           qualifiedName = converter.toQualifiedName(containerName).append(qualifiedName);
           allNames.add(qualifiedName);
         }
-        allNames.addAll(packages.addPackageNameSegments(finder.packageOf(e), qualifiedName));
+        allNames.addAll(packages.addPackageNameSegments(modelObjects.packageOf(e), qualifiedName));
         return unmodifiableList(allNames);
       }
     });
