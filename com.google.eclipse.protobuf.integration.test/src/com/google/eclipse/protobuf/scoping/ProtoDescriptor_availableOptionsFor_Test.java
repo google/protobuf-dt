@@ -23,6 +23,7 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link ProtoDescriptor#availableOptionsFor(EObject)}</code>.
@@ -32,12 +33,12 @@ import com.google.eclipse.protobuf.protobuf.*;
 public class ProtoDescriptor_availableOptionsFor_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
+  @Inject private ProtoDescriptorProvider descriptorProvider;
   private Options options;
   private ProtoDescriptor descriptor;
 
   @Before public void setUp() {
     options = new Options();
-    ProtoDescriptorProvider descriptorProvider = xtext.getInstanceOf(ProtoDescriptorProvider.class);
     descriptor = descriptorProvider.primaryDescriptor();
   }
 

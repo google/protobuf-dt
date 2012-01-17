@@ -18,6 +18,7 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.model.util.QualifiedNames;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link QualifiedNames#addLeadingDot(QualifiedName)}</code>.
@@ -27,11 +28,7 @@ import com.google.eclipse.protobuf.model.util.QualifiedNames;
 public class QualifiedNames_addLeadingDot_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
-  private QualifiedNames qualifiedNames;
-
-  @Before public void setUp() {
-    qualifiedNames = xtext.getInstanceOf(QualifiedNames.class);
-  }
+  @Inject private QualifiedNames qualifiedNames;
 
   @Test public void should_add_leading_dot() {
     QualifiedName name = QualifiedName.create("jedis", "Luke");

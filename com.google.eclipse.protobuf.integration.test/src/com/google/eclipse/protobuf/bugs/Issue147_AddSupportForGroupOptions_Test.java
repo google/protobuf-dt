@@ -25,6 +25,7 @@ import org.junit.*;
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.scoping.*;
+import com.google.inject.Inject;
 
 /**
  * Tests fix for <a href="http://code.google.com/p/protobuf-dt/issues/detail?id=147">Issue 147</a>.
@@ -40,11 +41,8 @@ public class Issue147_AddSupportForGroupOptions_Test {
 
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
-  private ProtobufScopeProvider provider;
-
-  @Before public void setUp() {
-    provider = xtext.getInstanceOf(ProtobufScopeProvider.class);
-  }
+  @Inject private ProtobufScopeProvider scopeProvider;
+  @Inject private ProtoDescriptorProvider descriptorProvider;
 
   // syntax = "proto2";
   //
@@ -55,15 +53,11 @@ public class Issue147_AddSupportForGroupOptions_Test {
   // }
   @Test public void should_provide_fields_for_native_option() {
     NativeFieldOption option = xtext.find("deprecated", NativeFieldOption.class);
-    IScope scope = provider.scope_OptionSource_target(option.getSource(), reference);
+    IScope scope = scopeProvider.scope_OptionSource_target(option.getSource(), reference);
     Group group = xtext.find("membership", Group.class);
-    Collection<MessageField> optionSources = descriptor().availableOptionsFor(group);
+    ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
+    Collection<MessageField> optionSources = descriptor.availableOptionsFor(group);
     assertThat(descriptionsIn(scope), containAll(optionSources));
-  }
-
-  private ProtoDescriptor descriptor() {
-    ProtoDescriptorProvider descriptorProvider = xtext.getInstanceOf(ProtoDescriptorProvider.class);
-    return descriptorProvider.primaryDescriptor();
   }
 
   // syntax = "proto2";
@@ -83,7 +77,7 @@ public class Issue147_AddSupportForGroupOptions_Test {
   // }
   @Test public void should_provide_fields_for_custom_option() {
     CustomFieldOption option = xtext.find("code", ")", CustomFieldOption.class);
-    IScope scope = provider.scope_OptionSource_target(option.getSource(), reference);
+    IScope scope = scopeProvider.scope_OptionSource_target(option.getSource(), reference);
     assertThat(descriptionsIn(scope), containAll("code", "proto.code", "google.proto.code", "com.google.proto.code",
                                                  ".com.google.proto.code",
                                                  "info", "proto.info", "google.proto.info", "com.google.proto.info",

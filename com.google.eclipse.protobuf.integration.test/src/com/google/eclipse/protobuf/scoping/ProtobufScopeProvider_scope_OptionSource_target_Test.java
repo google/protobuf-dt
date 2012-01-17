@@ -25,6 +25,7 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link ProtobufScopeProvider#scope_OptionSource_target(OptionSource, EReference)}</code>
@@ -40,19 +41,17 @@ public class ProtobufScopeProvider_scope_OptionSource_target_Test {
 
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
-  private ProtobufScopeProvider provider;
-
-  @Before public void setUp() {
-    provider = xtext.getInstanceOf(ProtobufScopeProvider.class);
-  }
+  @Inject private ProtobufScopeProvider scopeProvider;
+  @Inject private ProtoDescriptorProvider descriptorProvider;
 
   // syntax = "proto2";
   //
   // option optimize_for = SPEED;
   @Test public void should_provide_sources_for_native_option() {
     Option option = xtext.find("optimize_for", Option.class);
-    IScope scope = provider.scope_OptionSource_target(option.getSource(), reference);
-    Collection<MessageField> optionSources = descriptor().optionsOfType(FILE);
+    IScope scope = scopeProvider.scope_OptionSource_target(option.getSource(), reference);
+    ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
+    Collection<MessageField> optionSources = descriptor.optionsOfType(FILE);
     assertThat(descriptionsIn(scope), containAll(optionSources));
   }
 
@@ -63,14 +62,10 @@ public class ProtobufScopeProvider_scope_OptionSource_target_Test {
   // }
   @Test public void should_provide_sources_for_native_field_option() {
     NativeFieldOption option = xtext.find("ctype", NativeFieldOption.class);
-    IScope scope = provider.scope_OptionSource_target(option.getSource(), reference);
-    Collection<MessageField> optionSources = descriptor().optionsOfType(FIELD);
+    IScope scope = scopeProvider.scope_OptionSource_target(option.getSource(), reference);
+    ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
+    Collection<MessageField> optionSources = descriptor.optionsOfType(FIELD);
     assertThat(descriptionsIn(scope), containAll(optionSources));
-  }
-
-  private ProtoDescriptor descriptor() {
-    ProtoDescriptorProvider descriptorProvider = xtext.getInstanceOf(ProtoDescriptorProvider.class);
-    return descriptorProvider.primaryDescriptor();
   }
 
   // syntax = "proto2";
@@ -86,7 +81,7 @@ public class ProtobufScopeProvider_scope_OptionSource_target_Test {
   // option (code) = 68;
   @Test public void should_provide_sources_for_custom_option() {
     Option option = xtext.find("code", ")", Option.class);
-    IScope scope = provider.scope_OptionSource_target(option.getSource(), reference);
+    IScope scope = scopeProvider.scope_OptionSource_target(option.getSource(), reference);
     assertThat(descriptionsIn(scope), containAll("code", "proto.code", "google.proto.code", "com.google.proto.code",
                                                  ".com.google.proto.code",
                                                  "info", "proto.info", "google.proto.info", "com.google.proto.info",
@@ -112,7 +107,7 @@ public class ProtobufScopeProvider_scope_OptionSource_target_Test {
   // option (test.proto.code) = 68;
   @Test public void should_provide_imported_sources_for_custom_option() {
     Option option = xtext.find("code", ")", Option.class);
-    IScope scope = provider.scope_OptionSource_target(option.getSource(), reference);
+    IScope scope = scopeProvider.scope_OptionSource_target(option.getSource(), reference);
     assertThat(descriptionsIn(scope), containAll("test.proto.code", ".test.proto.code",
                                                  "test.proto.info", ".test.proto.info"));
   }
@@ -136,7 +131,7 @@ public class ProtobufScopeProvider_scope_OptionSource_target_Test {
   // option (code) = 68;
   @Test public void should_provide_imported_sources_for_custom_option_with_equal_package() {
     Option option = xtext.find("code", ")", Option.class);
-    IScope scope = provider.scope_OptionSource_target(option.getSource(), reference);
+    IScope scope = scopeProvider.scope_OptionSource_target(option.getSource(), reference);
     assertThat(descriptionsIn(scope), containAll("code", "proto.code", "google.proto.code", "com.google.proto.code",
                                                  ".com.google.proto.code",
                                                  "info", "proto.info", "google.proto.info", "com.google.proto.info",
@@ -157,7 +152,7 @@ public class ProtobufScopeProvider_scope_OptionSource_target_Test {
   // }
   @Test public void should_provide_sources_for_custom_field_option() {
     CustomFieldOption option = xtext.find("code", ")", CustomFieldOption.class);
-    IScope scope = provider.scope_OptionSource_target(option.getSource(), reference);
+    IScope scope = scopeProvider.scope_OptionSource_target(option.getSource(), reference);
     assertThat(descriptionsIn(scope), containAll("code", "proto.code", "google.proto.code", "com.google.proto.code",
                                                  ".com.google.proto.code",
                                                  "info", "proto.info", "google.proto.info", "com.google.proto.info",

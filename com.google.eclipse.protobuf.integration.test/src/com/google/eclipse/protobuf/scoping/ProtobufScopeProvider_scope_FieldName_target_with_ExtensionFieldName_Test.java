@@ -21,6 +21,7 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link ProtobufScopeProvider#scope_FieldName_target(FieldName, EReference)}</code>.
@@ -36,11 +37,7 @@ public class ProtobufScopeProvider_scope_FieldName_target_with_ExtensionFieldNam
 
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
-  private ProtobufScopeProvider provider;
-
-  @Before public void setUp() {
-    provider = xtext.getInstanceOf(ProtobufScopeProvider.class);
-  }
+  @Inject private ProtobufScopeProvider scopeProvider;
 
   // syntax = "proto2";
   //
@@ -67,7 +64,7 @@ public class ProtobufScopeProvider_scope_FieldName_target_with_ExtensionFieldNam
   @Test public void should_provide_sources_for_aggregate_field() {
     ValueField field = xtext.find("google.proto.test.fileopt", "]", ValueField.class);
     ExtensionFieldName name = (ExtensionFieldName) field.getName();
-    IScope scope = provider.scope_FieldName_target(name, reference);
+    IScope scope = scopeProvider.scope_FieldName_target(name, reference);
     assertThat(descriptionsIn(scope), containAll("google.proto.test.fileopt", ".google.proto.test.fileopt"));
   }
 }

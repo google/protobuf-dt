@@ -19,6 +19,7 @@ import org.junit.*;
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link ProtoDescriptor#enumTypeOf(MessageField)}</code>.
@@ -28,10 +29,10 @@ import com.google.eclipse.protobuf.protobuf.Enum;
 public class ProtoDescriptor_enumTypeOf_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
+  @Inject private ProtoDescriptorProvider descriptorProvider;
   private ProtoDescriptor descriptor;
 
   @Before public void setUp() {
-    ProtoDescriptorProvider descriptorProvider = xtext.getInstanceOf(ProtoDescriptorProvider.class);
     descriptor = descriptorProvider.primaryDescriptor();
   }
 

@@ -22,6 +22,7 @@ import org.junit.*;
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.scoping.ProtobufScopeProvider;
+import com.google.inject.Inject;
 
 /**
  * Tests fix for <a href="http://code.google.com/p/protobuf-dt/issues/detail?id=167">Issue 167</a>.
@@ -37,11 +38,7 @@ public class Issue167_PackageScopingWithNestedTypes_Test {
 
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
-  private ProtobufScopeProvider provider;
-
-  @Before public void setUp() {
-    provider = xtext.getInstanceOf(ProtobufScopeProvider.class);
-  }
+  @Inject private ProtobufScopeProvider scopeProvider;
 
   // // Create file types.proto
   //
@@ -65,7 +62,7 @@ public class Issue167_PackageScopingWithNestedTypes_Test {
   // }
   @Test public void should_include_package_intersection() {
     MessageField field = xtext.find("type", " =", MessageField.class);
-    IScope scope = provider.scope_ComplexTypeLink_target((ComplexTypeLink) field.getType(), reference);
+    IScope scope = scopeProvider.scope_ComplexTypeLink_target((ComplexTypeLink) field.getType(), reference);
     assertThat(descriptionsIn(scope), contain("base.shared.Outer.Type", "proto.base.shared.Outer.Type",
                                               "google.proto.base.shared.Outer.Type",
                                               "com.google.proto.base.shared.Outer.Type"));

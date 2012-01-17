@@ -17,6 +17,7 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link IndexedElements#indexOf(IndexedElement)}</code>
@@ -26,11 +27,7 @@ import com.google.eclipse.protobuf.protobuf.*;
 public class IndexedElements_indexOf_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
-  private IndexedElements indexedElements;
-
-  @Before public void setUp() {
-    indexedElements = xtext.getInstanceOf(IndexedElements.class);
-  }
+  @Inject private IndexedElements indexedElements;
 
   // syntax = "proto2";
   //

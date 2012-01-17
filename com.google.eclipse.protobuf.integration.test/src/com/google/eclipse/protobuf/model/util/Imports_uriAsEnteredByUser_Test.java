@@ -20,6 +20,7 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link Imports#uriAsEnteredByUser(Import)}</code>
@@ -29,11 +30,7 @@ import com.google.eclipse.protobuf.protobuf.*;
 public class Imports_uriAsEnteredByUser_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
-  private Imports imports;
-
-  @Before public void setUp() {
-    imports = xtext.getInstanceOf(Imports.class);
-  }
+  @Inject private Imports imports;
 
   // syntax = "proto2";
   // import "types.proto";

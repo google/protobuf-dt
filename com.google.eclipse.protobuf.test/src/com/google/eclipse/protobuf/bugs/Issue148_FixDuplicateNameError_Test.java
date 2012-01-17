@@ -17,6 +17,7 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.validation.ProtobufJavaValidator;
+import com.google.inject.Inject;
 
 /**
  * Tests fix for <a href="http://code.google.com/p/protobuf-dt/issues/detail?id=91">Issue 91</a>.
@@ -26,11 +27,7 @@ import com.google.eclipse.protobuf.validation.ProtobufJavaValidator;
 public class Issue148_FixDuplicateNameError_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
-  private ProtobufJavaValidator validator;
-
-  @Before public void setUp() {
-    validator = xtext.getInstanceOf(ProtobufJavaValidator.class);
-  }
+  @Inject private ProtobufJavaValidator validator;
 
   // syntax = "proto2";
   //

@@ -19,6 +19,7 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link MessageFields#isPrimitive(MessageField)}</code>.
@@ -28,11 +29,7 @@ import com.google.eclipse.protobuf.protobuf.MessageField;
 public class MessageFields_isPrimitive_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
-  private MessageFields fields;
-
-  @Before public void setUp() {
-    fields = xtext.getInstanceOf(MessageFields.class);
-  }
+  @Inject private MessageFields fields;
 
   // syntax = "proto2";
   //

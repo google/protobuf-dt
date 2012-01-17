@@ -17,6 +17,7 @@ import org.eclipse.xtext.IGrammarAccess;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link Keywords#isKeyword(String)}</code>.
@@ -26,13 +27,8 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 public class Keywords_isKeyword_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
-  private IGrammarAccess grammarAccess;
-  private Keywords keywords;
-
-  @Before public void setUp() {
-    grammarAccess = xtext.getInstanceOf(IGrammarAccess.class);
-    keywords = xtext.getInstanceOf(Keywords.class);
-  }
+  @Inject private IGrammarAccess grammarAccess;
+  @Inject private Keywords keywords;
 
   @Test public void should_return_true_if_given_String_is_keyword() {
     for (String s : getAllKeywords(grammarAccess.getGrammar())) {

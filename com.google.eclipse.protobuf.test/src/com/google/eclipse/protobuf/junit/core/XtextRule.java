@@ -63,6 +63,7 @@ public class XtextRule implements MethodRule {
   }
 
   @Override public Statement apply(Statement base, FrameworkMethod method, Object target) {
+    injector.injectMembers(target);
     root = null;
     String comments = reader.commentsIn(method);
     if (!isEmpty(comments)) {
@@ -124,7 +125,7 @@ public class XtextRule implements MethodRule {
     return resource;
   }
 
-  public <T> T getInstanceOf(Class<T> type) {
+  private <T> T getInstanceOf(Class<T> type) {
     return injector.getInstance(type);
   }
 

@@ -18,6 +18,7 @@ import org.junit.*;
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link MessageFields#enumTypeOf(MessageField)}</code>.
@@ -27,11 +28,7 @@ import com.google.eclipse.protobuf.protobuf.Enum;
 public class MessageFields_enumTypeOf_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
-  private MessageFields fields;
-
-  @Before public void setUp() {
-    fields = xtext.getInstanceOf(MessageFields.class);
-  }
+  @Inject private MessageFields fields;
 
   // syntax = "proto2";
   //

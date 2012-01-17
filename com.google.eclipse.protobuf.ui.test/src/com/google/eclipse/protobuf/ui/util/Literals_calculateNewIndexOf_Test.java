@@ -17,6 +17,7 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.Literal;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link Literals#calculateNewIndexOf(Literal)}</code>.
@@ -26,11 +27,7 @@ import com.google.eclipse.protobuf.protobuf.Literal;
 public class Literals_calculateNewIndexOf_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
-  private Literals literals;
-
-  @Before public void setUp() {
-    literals = xtext.getInstanceOf(Literals.class);
-  }
+  @Inject private Literals literals;
 
   // syntax = "proto2";
   //

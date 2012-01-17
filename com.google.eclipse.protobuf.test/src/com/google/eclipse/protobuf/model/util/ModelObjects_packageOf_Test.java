@@ -13,12 +13,13 @@ import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeMo
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
 
+import org.eclipse.emf.ecore.EObject;
+import org.junit.*;
+
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
-
-import org.eclipse.emf.ecore.EObject;
-import org.junit.*;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link ModelObjects#packageOf(EObject)}</code>.
@@ -28,11 +29,7 @@ import org.junit.*;
 public class ModelObjects_packageOf_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
-  private ModelObjects modelObjects;
-
-  @Before public void setUp() {
-    modelObjects = xtext.getInstanceOf(ModelObjects.class);
-  }
+  @Inject private ModelObjects modelObjects;
 
   // syntax = "proto2";
   //

@@ -19,6 +19,7 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link Messages#localExtensionsOf(Message)}</code>.
@@ -28,11 +29,7 @@ import com.google.eclipse.protobuf.protobuf.*;
 public class Messages_localExtensionsFrom_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
-  private Messages messages;
-
-  @Before public void setUp() {
-    messages = xtext.getInstanceOf(Messages.class);
-  }
+  @Inject private Messages messages;
 
   // syntax = "proto2";
   //

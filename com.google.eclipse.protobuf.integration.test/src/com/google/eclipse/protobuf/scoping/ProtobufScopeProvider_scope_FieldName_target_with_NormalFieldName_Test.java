@@ -21,6 +21,7 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link ProtobufScopeProvider#scope_FieldName_target(FieldName, EReference)}</code>
@@ -36,11 +37,7 @@ public class ProtobufScopeProvider_scope_FieldName_target_with_NormalFieldName_T
 
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
-  private ProtobufScopeProvider provider;
-
-  @Before public void setUp() {
-    provider = xtext.getInstanceOf(ProtobufScopeProvider.class);
-  }
+  @Inject private ProtobufScopeProvider scopeProvider;
 
   // syntax = "proto2";
   //
@@ -60,7 +57,7 @@ public class ProtobufScopeProvider_scope_FieldName_target_with_NormalFieldName_T
   @Test public void should_provide_sources_for_aggregate_field() {
     ValueField field = xtext.find("code", ":", ValueField.class);
     NormalFieldName name = (NormalFieldName) field.getName();
-    IScope scope = provider.scope_FieldName_target(name, reference);
+    IScope scope = scopeProvider.scope_FieldName_target(name, reference);
     Message message = xtext.find("Type", " {", Message.class);
     assertThat(descriptionsIn(scope), containAllFieldsIn(message));
   }
@@ -88,7 +85,7 @@ public class ProtobufScopeProvider_scope_FieldName_target_with_NormalFieldName_T
   @Test public void should_provide_sources_for_nested_field_notation_in_option() {
     ValueField field = xtext.find("value", ":", ValueField.class);
     NormalFieldName name = (NormalFieldName) field.getName();
-    IScope scope = provider.scope_FieldName_target(name, reference);
+    IScope scope = scopeProvider.scope_FieldName_target(name, reference);
     Message message = xtext.find("Names", " {", Message.class);
     assertThat(descriptionsIn(scope), containAllFieldsIn(message));
   }
@@ -111,7 +108,7 @@ public class ProtobufScopeProvider_scope_FieldName_target_with_NormalFieldName_T
   @Test public void should_provide_sources_for_field_notation_in_field_option() {
     ValueField field = xtext.find("code", ":", ValueField.class);
     NormalFieldName name = (NormalFieldName) field.getName();
-    IScope scope = provider.scope_FieldName_target(name, reference);
+    IScope scope = scopeProvider.scope_FieldName_target(name, reference);
     Message message = xtext.find("Type", " {", Message.class);
     assertThat(descriptionsIn(scope), containAllFieldsIn(message));
   }
@@ -139,7 +136,7 @@ public class ProtobufScopeProvider_scope_FieldName_target_with_NormalFieldName_T
   @Test public void should_provide_sources_for_nested_field_notation_in_field_option() {
     ValueField field = xtext.find("value", ":", ValueField.class);
     NormalFieldName name = (NormalFieldName) field.getName();
-    IScope scope = provider.scope_FieldName_target(name, reference);
+    IScope scope = scopeProvider.scope_FieldName_target(name, reference);
     Message message = xtext.find("Names", " {", Message.class);
     assertThat(descriptionsIn(scope), containAllFieldsIn(message));
   }

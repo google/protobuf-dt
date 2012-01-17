@@ -23,6 +23,7 @@ import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 import com.google.eclipse.protobuf.parser.NonProto2Protobuf;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.eclipse.protobuf.ui.ProtobufPlugIn;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link PreferenceDrivenProtobufParser#doParse(String, CharStream, NodeModelBuilder, int)}</code>.
@@ -41,10 +42,10 @@ public class PreferenceDrivenProtobufParser_doParse_Test {
 
   @Rule public XtextRule xtext = createWith(ProtobufPlugIn.injector());
 
+  @Inject private IPreferenceStoreAccess storeAccess;
   private IPreferenceStore store;
 
   @Before public void setUp() {
-    IPreferenceStoreAccess storeAccess = xtext.getInstanceOf(IPreferenceStoreAccess.class);
     store = storeAccess.getWritablePreferenceStore();
   }
 

@@ -20,6 +20,7 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link ProtobufJavaValidator#checkTagNumberIsUnique(IndexedElement)}</code>
@@ -29,12 +30,11 @@ import com.google.eclipse.protobuf.protobuf.*;
 public class ProtobufJavaValidator_checkTagNumberIsUnique_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
+  @Inject private ProtobufJavaValidator validator;
   private ValidationMessageAcceptor messageAcceptor;
-  private ProtobufJavaValidator validator;
 
   @Before public void setUp() {
     messageAcceptor = mock(ValidationMessageAcceptor.class);
-    validator = xtext.getInstanceOf(ProtobufJavaValidator.class);
     validator.setMessageAcceptor(messageAcceptor);
   }
 

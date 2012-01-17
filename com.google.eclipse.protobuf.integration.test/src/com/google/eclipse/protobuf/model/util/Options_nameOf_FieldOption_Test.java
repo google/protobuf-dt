@@ -17,6 +17,7 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.FieldOption;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link Options#nameOf(FieldOption)}</code>.
@@ -26,11 +27,7 @@ import com.google.eclipse.protobuf.protobuf.FieldOption;
 public class Options_nameOf_FieldOption_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
-  private Options options;
-
-  @Before public void setUp() {
-    options = xtext.getInstanceOf(Options.class);
-  }
+  @Inject private Options options;
 
   // syntax = "proto2";
   //

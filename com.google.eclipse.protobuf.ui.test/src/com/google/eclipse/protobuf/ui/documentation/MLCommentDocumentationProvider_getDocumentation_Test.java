@@ -19,6 +19,7 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link MLCommentDocumentationProvider#getDocumentation(EObject)}</code>
@@ -28,11 +29,7 @@ import com.google.eclipse.protobuf.protobuf.MessageField;
 public class MLCommentDocumentationProvider_getDocumentation_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
-  private MLCommentDocumentationProvider provider;
-
-  @Before public void setUp() {
-    provider = xtext.getInstanceOf(MLCommentDocumentationProvider.class);
-  }
+  @Inject private MLCommentDocumentationProvider provider;
 
   // syntax = "proto2";
   //

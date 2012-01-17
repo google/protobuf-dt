@@ -20,6 +20,7 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link INodes#firstNodeForFeature(EObject, EStructuralFeature)}</code>
@@ -29,11 +30,7 @@ import com.google.eclipse.protobuf.protobuf.MessageField;
 public class INodes_firstNodeForFeature_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
-  private INodes nodes;
-
-  @Before public void setUp() {
-    nodes = xtext.getInstanceOf(INodes.class);
-  }
+  @Inject private INodes nodes;
 
   // syntax = "proto2";
   //

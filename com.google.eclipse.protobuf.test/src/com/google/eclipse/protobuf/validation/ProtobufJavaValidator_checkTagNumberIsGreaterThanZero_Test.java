@@ -20,6 +20,7 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link ProtobufJavaValidator#checkTagNumberIsGreaterThanZero(IndexedElement)}</code>
@@ -29,12 +30,11 @@ import com.google.eclipse.protobuf.protobuf.*;
 public class ProtobufJavaValidator_checkTagNumberIsGreaterThanZero_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
+  @Inject private ProtobufJavaValidator validator;
   private ValidationMessageAcceptor messageAcceptor;
-  private ProtobufJavaValidator validator;
 
   @Before public void setUp() {
     messageAcceptor = mock(ValidationMessageAcceptor.class);
-    validator = xtext.getInstanceOf(ProtobufJavaValidator.class);
     validator.setMessageAcceptor(messageAcceptor);
   }
 
@@ -47,7 +47,8 @@ public class ProtobufJavaValidator_checkTagNumberIsGreaterThanZero_Test {
     MessageField field = xtext.find("id", MessageField.class);
     validator.checkTagNumberIsGreaterThanZero(field);
     String message = "Field numbers must be positive integers.";
-    verify(messageAcceptor).acceptError(message, field, MESSAGE_FIELD__INDEX, INSIGNIFICANT_INDEX, INVALID_FIELD_TAG_NUMBER_ERROR);
+    verify(messageAcceptor).acceptError(message, field, MESSAGE_FIELD__INDEX, INSIGNIFICANT_INDEX,
+        INVALID_FIELD_TAG_NUMBER_ERROR);
   }
 
   // syntax = "proto2";
@@ -59,7 +60,8 @@ public class ProtobufJavaValidator_checkTagNumberIsGreaterThanZero_Test {
     MessageField field = xtext.find("id", MessageField.class);
     validator.checkTagNumberIsGreaterThanZero(field);
     String message = "Expected field number.";
-    verify(messageAcceptor).acceptError(message, field, MESSAGE_FIELD__INDEX, INSIGNIFICANT_INDEX, INVALID_FIELD_TAG_NUMBER_ERROR);
+    verify(messageAcceptor).acceptError(message, field, MESSAGE_FIELD__INDEX, INSIGNIFICANT_INDEX,
+        INVALID_FIELD_TAG_NUMBER_ERROR);
   }
 
   // syntax = "proto2";

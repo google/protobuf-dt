@@ -14,11 +14,12 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.naming.*;
+import org.eclipse.xtext.naming.QualifiedName;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link ProtobufQualifiedNameProvider#getFullyQualifiedName(EObject)}</code>.
@@ -28,11 +29,7 @@ import com.google.eclipse.protobuf.protobuf.*;
 public class ProtobufQualifiedNameProvider_getFullyQualifiedName_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
-  private IProtobufQualifiedNameProvider provider;
-
-  @Before public void setUp() {
-    provider = (IProtobufQualifiedNameProvider) xtext.getInstanceOf(IQualifiedNameProvider.class);
-  }
+  @Inject private IProtobufQualifiedNameProvider provider;
 
   // syntax = "proto2";
   //

@@ -21,6 +21,7 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link LocalNamesProvider#namesFor(EObject)}</code>.
@@ -30,11 +31,7 @@ import com.google.eclipse.protobuf.protobuf.Enum;
 public class LocalNamesProvider_namesFor_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
-  private LocalNamesProvider namesProvider;
-
-  @Before public void setUp() {
-    namesProvider = xtext.getInstanceOf(LocalNamesProvider.class);
-  }
+  @Inject private LocalNamesProvider namesProvider;
 
   // syntax = "proto2";
   //

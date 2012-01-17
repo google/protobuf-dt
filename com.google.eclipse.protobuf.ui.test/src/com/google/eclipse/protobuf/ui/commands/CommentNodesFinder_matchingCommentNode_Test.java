@@ -22,6 +22,7 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link CommentNodesFinder#matchingCommentNode(EObject, String...)}</code>.
@@ -31,11 +32,7 @@ import com.google.eclipse.protobuf.protobuf.MessageField;
 public class CommentNodesFinder_matchingCommentNode_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
-  private CommentNodesFinder finder;
-
-  @Before public void setUp() {
-    finder = xtext.getInstanceOf(CommentNodesFinder.class);
-  }
+  @Inject private CommentNodesFinder finder;
 
   // syntax = "proto2";
   //

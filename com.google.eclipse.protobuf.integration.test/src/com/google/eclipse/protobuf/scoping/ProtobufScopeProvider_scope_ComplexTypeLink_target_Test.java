@@ -21,6 +21,7 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link ProtobufScopeProvider#scope_ComplexTypeLink_target(ComplexTypeLink, EReference)}</code>
@@ -36,11 +37,7 @@ public class ProtobufScopeProvider_scope_ComplexTypeLink_target_Test {
 
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
-  private ProtobufScopeProvider provider;
-
-  @Before public void setUp() {
-    provider = xtext.getInstanceOf(ProtobufScopeProvider.class);
-  }
+  @Inject private ProtobufScopeProvider scopeProvider;
 
   // syntax = "proto2";
   // package com.google.proto;
@@ -62,7 +59,7 @@ public class ProtobufScopeProvider_scope_ComplexTypeLink_target_Test {
   // }
   @Test public void should_provide_Types() {
     MessageField field = xtext.find("type", MessageField.class);
-    IScope scope = provider.scope_ComplexTypeLink_target(typeOf(field), reference);
+    IScope scope = scopeProvider.scope_ComplexTypeLink_target(typeOf(field), reference);
     assertThat(descriptionsIn(scope), containAll("Type", "proto.Type", "google.proto.Type", "com.google.proto.Type",
                                                  ".com.google.proto.Type",
                                                  "Address", "proto.Address", "google.proto.Address",
@@ -98,7 +95,7 @@ public class ProtobufScopeProvider_scope_ComplexTypeLink_target_Test {
   // }
   @Test public void should_provide_imported_Types() {
     MessageField field = xtext.find("type", " =", MessageField.class);
-    IScope scope = provider.scope_ComplexTypeLink_target(typeOf(field), reference);
+    IScope scope = scopeProvider.scope_ComplexTypeLink_target(typeOf(field), reference);
     assertThat(descriptionsIn(scope), containAll("test.proto.Type", ".test.proto.Type",
                                                  "test.proto.Address", ".test.proto.Address",
                                                  "Contact", "proto.Contact", "google.proto.Contact",
@@ -132,7 +129,7 @@ public class ProtobufScopeProvider_scope_ComplexTypeLink_target_Test {
   // }
   @Test public void should_provide_imported_Types_with_equal_package() {
     MessageField field = xtext.find("type", " =", MessageField.class);
-    IScope scope = provider.scope_ComplexTypeLink_target(typeOf(field), reference);
+    IScope scope = scopeProvider.scope_ComplexTypeLink_target(typeOf(field), reference);
     assertThat(descriptionsIn(scope), containAll("Type", "proto.Type", "google.proto.Type", "com.google.proto.Type",
                                                  ".com.google.proto.Type",
                                                  "Address", "proto.Address", "google.proto.Address",
@@ -168,7 +165,7 @@ public class ProtobufScopeProvider_scope_ComplexTypeLink_target_Test {
   // }
   @Test public void should_provide_public_imported_Types() {
     MessageField field = xtext.find("type", " =", MessageField.class);
-    IScope scope = provider.scope_ComplexTypeLink_target(typeOf(field), reference);
+    IScope scope = scopeProvider.scope_ComplexTypeLink_target(typeOf(field), reference);
     assertThat(descriptionsIn(scope), containAll("test.proto.Type", ".test.proto.Type",
                                                  "test.proto.Address", ".test.proto.Address",
                                                  "Contact", "proto.Contact", "google.proto.Contact",
@@ -209,7 +206,7 @@ public class ProtobufScopeProvider_scope_ComplexTypeLink_target_Test {
   // }
   @Test public void should_provide_public_imported_Types_with_more_than_one_level() {
     MessageField field = xtext.find("type", " =", MessageField.class);
-    IScope scope = provider.scope_ComplexTypeLink_target(typeOf(field), reference);
+    IScope scope = scopeProvider.scope_ComplexTypeLink_target(typeOf(field), reference);
     assertThat(descriptionsIn(scope), containAll("test.proto.Type", ".test.proto.Type",
                                                  "test.proto.Address", ".test.proto.Address",
                                                  "Contact", "proto.Contact", "google.proto.Contact",

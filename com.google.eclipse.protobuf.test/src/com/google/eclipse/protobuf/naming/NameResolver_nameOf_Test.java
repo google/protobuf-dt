@@ -20,6 +20,7 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link NameResolver#nameOf(EObject)}</code>.
@@ -29,11 +30,7 @@ import com.google.eclipse.protobuf.protobuf.Package;
 public class NameResolver_nameOf_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
-  private NameResolver resolver;
-
-  @Before public void setUp() {
-    resolver = xtext.getInstanceOf(NameResolver.class);
-  }
+  @Inject private NameResolver resolver;
 
   // syntax = "proto2";
   //

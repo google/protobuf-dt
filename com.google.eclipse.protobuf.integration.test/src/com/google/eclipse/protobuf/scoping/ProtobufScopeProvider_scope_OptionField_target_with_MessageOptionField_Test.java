@@ -22,6 +22,7 @@ import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link ProtobufScopeProvider#scope_OptionField_target(OptionField, EReference)}</code>.
@@ -37,11 +38,7 @@ public class ProtobufScopeProvider_scope_OptionField_target_with_MessageOptionFi
 
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
-  private ProtobufScopeProvider provider;
-
-  @Before public void setUp() {
-    provider = xtext.getInstanceOf(ProtobufScopeProvider.class);
-  }
+  @Inject private ProtobufScopeProvider scopeProvider;
 
   // syntax = "proto2";
   //
@@ -60,7 +57,7 @@ public class ProtobufScopeProvider_scope_OptionField_target_with_MessageOptionFi
   @Test public void should_provide_message_fields_for_first_field_in_custom_option() {
     CustomOption option = xtext.find("type", ")", CustomOption.class);
     MessageOptionField codeOptionField = (MessageOptionField) option.getFields().get(0);
-    IScope scope = provider.scope_OptionField_target(codeOptionField, reference);
+    IScope scope = scopeProvider.scope_OptionField_target(codeOptionField, reference);
     Message typeMessage = xtext.find("Type", " {", Message.class);
     assertThat(descriptionsIn(scope), containAllFieldsIn(typeMessage));
   }
@@ -86,7 +83,7 @@ public class ProtobufScopeProvider_scope_OptionField_target_with_MessageOptionFi
   @Test public void should_provide_message_fields_for_field_in_custom_option() {
     CustomOption option = xtext.find("type", ")", CustomOption.class);
     MessageOptionField numberOptionField = (MessageOptionField) option.getFields().get(1);
-    IScope scope = provider.scope_OptionField_target(numberOptionField, reference);
+    IScope scope = scopeProvider.scope_OptionField_target(numberOptionField, reference);
     Message codeMessage = xtext.find("Code", " {", Message.class);
     assertThat(descriptionsIn(scope), containAllFieldsIn(codeMessage));
   }
@@ -106,7 +103,7 @@ public class ProtobufScopeProvider_scope_OptionField_target_with_MessageOptionFi
   @Test public void should_provide_group_fields_for_first_field_in_custom_option() {
     CustomOption option = xtext.find("type", ")", CustomOption.class, IGNORE_CASE);
     MessageOptionField codeOptionField = (MessageOptionField) option.getFields().get(0);
-    IScope scope = provider.scope_OptionField_target(codeOptionField, reference);
+    IScope scope = scopeProvider.scope_OptionField_target(codeOptionField, reference);
     Group groupMessage = xtext.find("Type", " =", Group.class);
     assertThat(descriptionsIn(scope), containAllFieldsIn(groupMessage));
   }
@@ -130,7 +127,7 @@ public class ProtobufScopeProvider_scope_OptionField_target_with_MessageOptionFi
   @Test public void should_provide_message_fields_for_first_field_in_field_custom_option() {
     CustomFieldOption option = xtext.find("type", ")", CustomFieldOption.class);
     MessageOptionField codeOptionField = (MessageOptionField) option.getFields().get(0);
-    IScope scope = provider.scope_OptionField_target(codeOptionField, reference);
+    IScope scope = scopeProvider.scope_OptionField_target(codeOptionField, reference);
     Message typeMessage = xtext.find("Type", " {", Message.class);
     assertThat(descriptionsIn(scope), containAllFieldsIn(typeMessage));
   }
@@ -158,7 +155,7 @@ public class ProtobufScopeProvider_scope_OptionField_target_with_MessageOptionFi
   @Test public void should_provide_message_fields_for_field_in_field_custom_option() {
     CustomFieldOption option = xtext.find("type", ")", CustomFieldOption.class);
     MessageOptionField numberOptionField = (MessageOptionField) option.getFields().get(1);
-    IScope scope = provider.scope_OptionField_target(numberOptionField, reference);
+    IScope scope = scopeProvider.scope_OptionField_target(numberOptionField, reference);
     Message codeMessage = xtext.find("Code", " {", Message.class);
     assertThat(descriptionsIn(scope), containAllFieldsIn(codeMessage));
   }
@@ -180,7 +177,7 @@ public class ProtobufScopeProvider_scope_OptionField_target_with_MessageOptionFi
   @Test public void should_provide_group_fields_for_first_field_in_field_custom_option() {
     CustomFieldOption option = xtext.find("type", ")", CustomFieldOption.class, IGNORE_CASE);
     MessageOptionField codeOptionField = (MessageOptionField) option.getFields().get(0);
-    IScope scope = provider.scope_OptionField_target(codeOptionField, reference);
+    IScope scope = scopeProvider.scope_OptionField_target(codeOptionField, reference);
     Group groupMessage = xtext.find("Type", " =", Group.class);
     assertThat(descriptionsIn(scope), containAllFieldsIn(groupMessage));
   }

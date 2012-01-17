@@ -17,6 +17,7 @@ import org.eclipse.xtext.nodemodel.*;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.inject.Inject;
 
 /**
  * Test for <code>{@link INodes#isCommentOrString(INode)}</code>
@@ -26,11 +27,7 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 public class INodes_isCommentOrString_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
-  private INodes nodes;
-
-  @Before public void setUp() {
-    nodes = xtext.getInstanceOf(INodes.class);
-  }
+  @Inject private INodes nodes;
 
   // syntax = "proto2";
   //
