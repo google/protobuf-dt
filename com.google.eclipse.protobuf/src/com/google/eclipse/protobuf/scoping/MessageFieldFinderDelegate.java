@@ -11,26 +11,26 @@ package com.google.eclipse.protobuf.scoping;
 import static com.google.common.collect.Sets.newHashSet;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.inject.Inject;
+import java.util.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
-import java.util.*;
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.inject.Inject;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class MessageFieldFinderDelegate implements CustomOptionFieldFinderDelegate {
+class MessageFieldFinderDelegate implements CustomOptionFieldFinder.FinderDelegate {
   @Inject private MessageFields messageFields;
   @Inject private Options options;
 
-  @Override public Collection<IEObjectDescription> findFieldsInType(IndexedElement e) {
+  @Override public Collection<IEObjectDescription> findOptionFields(IndexedElement reference) {
     Set<IEObjectDescription> descriptions = newHashSet();
-    if (e instanceof MessageField) {
-      Message fieldType = messageFields.messageTypeOf((MessageField) e);
+    if (reference instanceof MessageField) {
+      Message fieldType = messageFields.messageTypeOf((MessageField) reference);
       for (MessageElement element : fieldType.getElements()) {
         IEObjectDescription d = describe(element);
         if (d != null) {
@@ -38,8 +38,8 @@ class MessageFieldFinderDelegate implements CustomOptionFieldFinderDelegate {
         }
       }
     }
-    if (e instanceof Group) {
-      for (GroupElement element : ((Group) e).getElements()) {
+    if (reference instanceof Group) {
+      for (GroupElement element : ((Group) reference).getElements()) {
         IEObjectDescription d = describe(element);
         if (d != null) {
           descriptions.add(d);

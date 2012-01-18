@@ -12,21 +12,21 @@ import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Collections.emptySet;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
+import java.util.*;
+
+import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.resource.IEObjectDescription;
+
 import com.google.eclipse.protobuf.model.util.TypeExtensions;
 import com.google.eclipse.protobuf.naming.LocalNamesProvider;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.inject.Inject;
 
-import org.eclipse.xtext.naming.QualifiedName;
-import org.eclipse.xtext.resource.IEObjectDescription;
-
-import java.util.*;
-
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class CustomOptionFinderDelegate implements ModelElementFinderDelegate {
+class CustomOptionFinderDelegate implements ModelElementFinder.FinderDelegate {
   @Inject private LocalNamesProvider localNamesProvider;
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
   @Inject private TypeExtensions typeExtensions;

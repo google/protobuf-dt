@@ -10,13 +10,13 @@ package com.google.eclipse.protobuf.scoping;
 
 import static java.util.Collections.emptySet;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.inject.*;
+import java.util.Collection;
 
 import org.eclipse.xtext.resource.IEObjectDescription;
 
-import java.util.Collection;
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.inject.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -25,30 +25,30 @@ class CustomOptionFieldFinder {
   @Inject private OptionFields optionFields;
   @Inject private Options options;
 
-  Collection<IEObjectDescription> findOptionFields(AbstractCustomOption option,
-      CustomOptionFieldFinderDelegate finder) {
-    return findOptionFields(option, finder, null);
+  Collection<IEObjectDescription> findOptionFields(AbstractCustomOption customOption, FinderDelegate finderDelegate) {
+    return findOptionFields(customOption, finderDelegate, null);
   }
 
-  Collection<IEObjectDescription> findOptionFields(final AbstractCustomOption option,
-      CustomOptionFieldFinderDelegate finder, OptionField field) {
+  Collection<IEObjectDescription> findOptionFields(AbstractCustomOption customOption, FinderDelegate finderDelegate,
+      OptionField field) {
     // TODO(alruiz): remove Provider of IndexedElement.
-    IndexedElement e = referredField(option, field, new Provider<IndexedElement>() {
+    final AbstractOption option = (AbstractOption) customOption;
+    IndexedElement e = referredField(customOption, field, new Provider<IndexedElement>() {
       @Override public IndexedElement get() {
-        return options.rootSourceOf((AbstractOption) option);
+        return options.rootSourceOf(option);
       }
     });
     if (e != null) {
-      return finder.findFieldsInType(e);
+      return finderDelegate.findOptionFields(e);
     }
     return emptySet();
   }
 
-  private IndexedElement referredField(AbstractCustomOption option, OptionField field,
+  private IndexedElement referredField(AbstractCustomOption customOption, OptionField field,
       Provider<IndexedElement> provider) {
     OptionField previous = null;
     boolean isFirstField = true;
-    for (OptionField current : options.fieldsOf(option)) {
+    for (OptionField current : options.fieldsOf(customOption)) {
       if (current == field) {
         return (isFirstField) ? provider.get() : optionFields.sourceOf(previous);
       }
@@ -62,5 +62,9 @@ class CustomOptionFieldFinder {
       return optionFields.sourceOf(previous);
     }
     return null;
+  }
+
+  static interface FinderDelegate {
+    Collection<IEObjectDescription> findOptionFields(IndexedElement reference);
   }
 }

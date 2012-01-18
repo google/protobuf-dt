@@ -12,21 +12,21 @@ import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Collections.emptySet;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
-import com.google.eclipse.protobuf.naming.LocalNamesProvider;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.inject.Inject;
+import java.util.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
-import java.util.*;
+import com.google.eclipse.protobuf.naming.LocalNamesProvider;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.inject.Inject;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class ComplexTypeFinderDelegate implements ModelElementFinderDelegate {
+class ComplexTypeFinderDelegate implements ModelElementFinder.FinderDelegate {
   @Inject private PackageIntersectionDescriptions packageIntersectionDescriptions;
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private LocalNamesProvider localNamesProvider;
