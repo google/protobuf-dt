@@ -101,6 +101,10 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       Rpc rpc = (Rpc) model;
       scope = scopeProvider().potentialMessagesFor(rpc);
     }
+    if (model instanceof Stream) {
+      Stream stream = (Stream) model;
+      scope = scopeProvider().potentialMessagesFor(stream);
+    }
     for (IEObjectDescription d : descriptionChooser.shortestQualifiedNamesIn(scope)) {
       Image image = imageHelper.getImage(images.imageFor(d.getEObjectOrProxy()));
       proposeAndAccept(d, image, context, acceptor);

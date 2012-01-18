@@ -8,11 +8,11 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import java.util.Collection;
+import com.google.eclipse.protobuf.protobuf.*;
 
 import org.eclipse.xtext.resource.IEObjectDescription;
 
-import com.google.eclipse.protobuf.protobuf.*;
+import java.util.Collection;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -23,6 +23,8 @@ public interface ScopeProvider {
   Collection<IEObjectDescription> potentialExtensibleTypesFor(TypeExtension extension);
 
   Collection<IEObjectDescription> potentialMessagesFor(Rpc rpc);
+
+  Collection<IEObjectDescription> potentialMessagesFor(Stream stream);
 
   Collection<IEObjectDescription> potentialSourcesFor(AbstractCustomOption option);
 

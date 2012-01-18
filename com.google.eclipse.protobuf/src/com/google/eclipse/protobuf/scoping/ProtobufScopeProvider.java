@@ -92,6 +92,11 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     return allMessages(root);
   }
 
+  @Override public Collection<IEObjectDescription> potentialMessagesFor(Stream stream) {
+    Protobuf root = modelObjects.rootOf(stream);
+    return allMessages(root);
+  }
+
   private Collection<IEObjectDescription> allMessages(Protobuf root) {
     return modelElementFinder.find(root, complexTypeFinderDelegate, Message.class);
   }
