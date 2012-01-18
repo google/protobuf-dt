@@ -11,17 +11,17 @@ package com.google.eclipse.protobuf.scoping;
 import static com.google.eclipse.protobuf.scoping.OptionType.typeOf;
 import static java.util.Collections.emptySet;
 
-import java.util.*;
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.inject.Inject;
 
 import org.eclipse.emf.ecore.*;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.impl.*;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.inject.Inject;
+import java.util.*;
 
 /**
  * Custom scoping description.
@@ -83,16 +83,16 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   @SuppressWarnings("unused")
   public IScope scope_MessageLink_target(MessageLink link, EReference r) {
     Protobuf root = modelObjects.rootOf(link);
-    Collection<IEObjectDescription> messages = messagesInScope(root);
+    Collection<IEObjectDescription> messages = allMessages(root);
     return createScope(messages);
   }
 
   @Override public Collection<IEObjectDescription> potentialMessagesFor(Rpc rpc) {
     Protobuf root = modelObjects.rootOf(rpc);
-    return messagesInScope(root);
+    return allMessages(root);
   }
 
-  private Collection<IEObjectDescription> messagesInScope(Protobuf root) {
+  private Collection<IEObjectDescription> allMessages(Protobuf root) {
     return modelElementFinder.find(root, complexTypeFinderDelegate, Message.class);
   }
 
@@ -171,12 +171,10 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     return emptySet();
   }
 
-  /** {@inheritDoc} */
   @Override public Collection<IEObjectDescription> potentialMessageFieldsFor(AbstractCustomOption option) {
     return customOptionFieldFinder.findOptionFields(option, messageFieldFinderDelegate);
   }
 
-  /** {@inheritDoc} */
   @Override public Collection<IEObjectDescription> potentialExtensionFieldsFor(AbstractCustomOption option) {
     return customOptionFieldFinder.findOptionFields(option, extensionFieldFinderDelegate);
   }

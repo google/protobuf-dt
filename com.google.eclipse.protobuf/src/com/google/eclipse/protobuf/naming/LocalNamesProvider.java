@@ -11,14 +11,12 @@ package com.google.eclipse.protobuf.naming;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.*;
 import static org.eclipse.xtext.util.Strings.isEmpty;
-import static org.eclipse.xtext.util.Tuples.pair;
 
 import com.google.eclipse.protobuf.model.util.*;
-import com.google.inject.*;
+import com.google.inject.Inject;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.*;
-import org.eclipse.xtext.util.*;
 
 import java.util.List;
 
@@ -56,7 +54,6 @@ import java.util.List;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class LocalNamesProvider {
-  @Inject private final IResourceScopeCache cache = IResourceScopeCache.NullImpl.INSTANCE;
   @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
 
   @Inject private ModelObjects modelObjects;
@@ -73,29 +70,24 @@ public class LocalNamesProvider {
   }
 
   private List<QualifiedName> allNames(final EObject e, final NamingStrategy naming) {
-    Pair<EObject, String> key = pair(e, "localFqns");
-    return cache.get(key, e.eResource(), new Provider<List<QualifiedName>>() {
-      @Override public List<QualifiedName> get() {
-        List<QualifiedName> allNames = newArrayList();
-        EObject current = e;
-        String name = naming.nameOf(e);
-        if (isEmpty(name)) {
-          return emptyList();
-        }
-        QualifiedName qualifiedName = converter.toQualifiedName(name);
-        allNames.add(qualifiedName);
-        while (current.eContainer() != null) {
-          current = current.eContainer();
-          String containerName = nameResolver.nameOf(current);
-          if (isEmpty(containerName)) {
-            continue;
-          }
-          qualifiedName = converter.toQualifiedName(containerName).append(qualifiedName);
-          allNames.add(qualifiedName);
-        }
-        allNames.addAll(packages.addPackageNameSegments(modelObjects.packageOf(e), qualifiedName));
-        return unmodifiableList(allNames);
+    List<QualifiedName> allNames = newArrayList();
+    EObject current = e;
+    String name = naming.nameOf(e);
+    if (isEmpty(name)) {
+      return emptyList();
+    }
+    QualifiedName qualifiedName = converter.toQualifiedName(name);
+    allNames.add(qualifiedName);
+    while (current.eContainer() != null) {
+      current = current.eContainer();
+      String containerName = nameResolver.nameOf(current);
+      if (isEmpty(containerName)) {
+        continue;
       }
-    });
+      qualifiedName = converter.toQualifiedName(containerName).append(qualifiedName);
+      allNames.add(qualifiedName);
+    }
+    allNames.addAll(packages.addPackageNameSegments(modelObjects.packageOf(e), qualifiedName));
+    return unmodifiableList(allNames);
   }
 }
