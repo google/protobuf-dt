@@ -30,13 +30,16 @@ PackageName:
   IdOrReservedWord ('.' IdOrReservedWord)*;
 
 Import:
-  NormalImport | PublicImport;
+  NormalImport | PublicImport | WeakImport;
 
 NormalImport:
   'import' importURI=STRING ';';
 
 PublicImport:
   'import' 'public' importURI=STRING ';';
+
+WeakImport:
+  'import' 'weak' importURI=STRING ';';
 
 ComplexType:
   Enum | ExtensibleType;
@@ -222,7 +225,7 @@ SafeReservedWord:
   'package' | 'import' | 'public' | 'option' | 'extend' | 'message' | 'optional' | 'required' | 'repeated' |
   'enum' | 'service' | 'rpc' | 'stream' | 'returns' | 'default' | 'extensions' | 'to' | 'max' | 'true' | 'false' |
   'double' | 'float' | 'int32' | 'int64' | 'uint32' | 'uint64' | 'sint32' | 'sint64' | 'fixed32' | 'fixed64' |
-  'sfixed32' | 'sfixed64' | 'bool' | 'string' | 'bytes';
+  'sfixed32' | 'sfixed64' | 'bool' | 'string' | 'bytes' | 'weak';
 
 SimpleValueLink:
   LiteralLink | BooleanLink | NumberLink | StringLink;
