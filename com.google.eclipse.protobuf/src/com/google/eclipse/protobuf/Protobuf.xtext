@@ -210,7 +210,7 @@ ExtensionFieldName:
   '[' target=[MessageField|QualifiedName] ']';
 
 QualifiedName:
-  '.'? SafeId ('.' SafeId)*;
+  '.'? SafeId ('.' (WS)* SafeId)*;
 
 SafeId:
   ID | SafeReservedWord;

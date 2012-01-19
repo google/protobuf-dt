@@ -16,6 +16,7 @@ import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.inject.Inject;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.validation.*;
@@ -34,7 +35,11 @@ public class DataTypeValidator extends AbstractDeclarativeValidator {
   @Inject private INodes nodes;
 
   @Check public void checkValueOfDefaultTypeMatchesFieldType(DefaultValueFieldOption option) {
-    MessageField field = (MessageField) option.eContainer();
+    EObject container = option.eContainer();
+    if (!(container instanceof MessageField)) {
+      return;
+    }
+    MessageField field = (MessageField) container;
     if (messageFields.isBool(field)) {
       validateBool(option);
       return;

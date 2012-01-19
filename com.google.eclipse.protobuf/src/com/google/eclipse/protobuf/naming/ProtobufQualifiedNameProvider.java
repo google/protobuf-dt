@@ -57,7 +57,9 @@ public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.Abstra
         while (current.eContainer() != null) {
           current = current.eContainer();
           QualifiedName parentsQualifiedName = getFullyQualifiedName(current, naming);
-          if (parentsQualifiedName != null) { return parentsQualifiedName.append(qualifiedName); }
+          if (parentsQualifiedName != null) {
+            return parentsQualifiedName.append(qualifiedName);
+          }
         }
         return addPackage(e, qualifiedName);
       }

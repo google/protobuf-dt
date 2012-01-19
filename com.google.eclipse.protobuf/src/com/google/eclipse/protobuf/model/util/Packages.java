@@ -12,12 +12,12 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.*;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import java.util.*;
+import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.inject.Inject;
 
 import org.eclipse.xtext.naming.*;
 
-import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.inject.Inject;
+import java.util.*;
 
 /**
  * Utility methods related to <code>{@link Package}</code>s.
@@ -25,7 +25,7 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Packages {
-  @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
+  @Inject private IQualifiedNameConverter qualifiedNameConverter;
 
   /**
    * Indicates whether the given packages are "related." "Related" means that the names of the packages are equal or one
@@ -92,6 +92,6 @@ public class Packages {
     if (isEmpty(name)) {
       return null;
     }
-    return converter.toQualifiedName(name);
+    return qualifiedNameConverter.toQualifiedName(name);
   }
 }

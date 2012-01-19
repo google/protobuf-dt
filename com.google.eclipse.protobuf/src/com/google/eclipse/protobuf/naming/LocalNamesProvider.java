@@ -54,11 +54,10 @@ import java.util.List;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class LocalNamesProvider {
-  @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
-
   @Inject private ModelObjects modelObjects;
   @Inject private NameResolver nameResolver;
   @Inject private NamingStrategies namingStrategies;
+  @Inject private IQualifiedNameConverter qualifiedNameConverter;
   @Inject private Packages packages;
 
   public List<QualifiedName> namesFor(EObject target) {
@@ -76,7 +75,7 @@ public class LocalNamesProvider {
     if (isEmpty(name)) {
       return emptyList();
     }
-    QualifiedName qualifiedName = converter.toQualifiedName(name);
+    QualifiedName qualifiedName = qualifiedNameConverter.toQualifiedName(name);
     allNames.add(qualifiedName);
     while (current.eContainer() != null) {
       current = current.eContainer();
@@ -84,7 +83,7 @@ public class LocalNamesProvider {
       if (isEmpty(containerName)) {
         continue;
       }
-      qualifiedName = converter.toQualifiedName(containerName).append(qualifiedName);
+      qualifiedName = qualifiedNameConverter.toQualifiedName(containerName).append(qualifiedName);
       allNames.add(qualifiedName);
     }
     allNames.addAll(packages.addPackageNameSegments(modelObjects.packageOf(e), qualifiedName));

@@ -8,21 +8,21 @@
  */
 package com.google.eclipse.protobuf;
 
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.xtext.conversion.IValueConverterService;
-import org.eclipse.xtext.naming.IQualifiedNameProvider;
-import org.eclipse.xtext.parser.antlr.ISyntaxErrorMessageProvider;
-import org.eclipse.xtext.resource.*;
-import org.eclipse.xtext.scoping.impl.ImportUriResolver;
-import org.eclipse.xtext.validation.IResourceValidator;
-
 import com.google.eclipse.protobuf.conversion.ProtobufTerminalConverters;
 import com.google.eclipse.protobuf.linking.ProtobufResource;
-import com.google.eclipse.protobuf.naming.ProtobufQualifiedNameProvider;
+import com.google.eclipse.protobuf.naming.*;
 import com.google.eclipse.protobuf.resource.ResourceServiceProvider;
 import com.google.eclipse.protobuf.scoping.*;
 import com.google.eclipse.protobuf.validation.*;
 import com.google.inject.Binder;
+
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.xtext.conversion.IValueConverterService;
+import org.eclipse.xtext.naming.*;
+import org.eclipse.xtext.parser.antlr.ISyntaxErrorMessageProvider;
+import org.eclipse.xtext.resource.*;
+import org.eclipse.xtext.scoping.impl.ImportUriResolver;
+import org.eclipse.xtext.validation.IResourceValidator;
 
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
@@ -34,6 +34,10 @@ public class ProtobufRuntimeModule extends AbstractProtobufRuntimeModule {
 
   public Class<? extends ImportUriResolver> bindImportUriResolver() {
     return ProtobufImportUriResolver.class;
+  }
+
+  public Class<? extends IQualifiedNameConverter> bindIQualifiedNameConverter() {
+    return ProtobufQualifiedNameConverter.class;
   }
 
   @Override public Class<? extends IQualifiedNameProvider> bindIQualifiedNameProvider() {
