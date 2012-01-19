@@ -8,24 +8,25 @@
  */
 package com.google.eclipse.protobuf.ui.parser;
 
-import org.antlr.runtime.CharStream;
-import org.eclipse.xtext.nodemodel.*;
-import org.eclipse.xtext.nodemodel.impl.NodeModelBuilder;
-import org.eclipse.xtext.parser.*;
-import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
-
 import com.google.eclipse.protobuf.parser.NonProto2Protobuf;
 import com.google.eclipse.protobuf.parser.antlr.ProtobufParser;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.eclipse.protobuf.ui.preferences.parser.core.ParserChecksPreferences;
 import com.google.inject.Inject;
 
+import org.antlr.runtime.CharStream;
+import org.eclipse.xtext.nodemodel.*;
+import org.eclipse.xtext.nodemodel.impl.NodeModelBuilder;
+import org.eclipse.xtext.parser.*;
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
+
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class PreferenceDrivenProtobufParser extends ProtobufParser {
   private static final String[] ERRORS_TO_LOOK_FOR = { "missing EOF at 'c'", "missing EOF at 'java'",
-      "missing EOF at 'parsed'", "missing EOF at 'python'", "no viable alternative at input '<'" };
+      "missing EOF at 'parsed'", "missing EOF at 'python'", "missing EOF at 'sawzall'",
+      "no viable alternative at input '<'" };
 
   @Inject private IPreferenceStoreAccess storeAccess;
 
