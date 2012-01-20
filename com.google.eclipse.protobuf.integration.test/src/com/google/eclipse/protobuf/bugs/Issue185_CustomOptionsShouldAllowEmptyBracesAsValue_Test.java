@@ -22,7 +22,7 @@ import org.junit.*;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Issue185_CustomOptionsShouldAllowEmptyBracesAsValue {
+public class Issue185_CustomOptionsShouldAllowEmptyBracesAsValue_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
   // syntax = "proto2";

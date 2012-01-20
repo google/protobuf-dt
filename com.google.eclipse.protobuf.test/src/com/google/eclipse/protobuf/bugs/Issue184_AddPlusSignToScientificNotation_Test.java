@@ -24,7 +24,7 @@ import org.junit.*;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Issue184_AddPlusSignToScientificNotation {
+public class Issue184_AddPlusSignToScientificNotation_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
   // syntax = "proto2";

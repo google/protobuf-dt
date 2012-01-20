@@ -19,9 +19,10 @@ import static org.eclipse.xtext.EcoreUtil2.*;
 import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import java.io.*;
-import java.net.URL;
-import java.util.*;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.eclipse.protobuf.model.util.INodes;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Enum;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -29,10 +30,9 @@ import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.parser.*;
 import org.eclipse.xtext.resource.XtextResource;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.eclipse.protobuf.model.util.INodes;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.protobuf.Enum;
+import java.io.*;
+import java.net.URL;
+import java.util.*;
 
 /**
  * Contains the elements from descriptor.proto (provided with protobuf's library.)
@@ -100,7 +100,7 @@ public class ProtoDescriptor {
   }
 
   private void initContents() {
-    allTypes.addAll(getAllContentsOfType(root, Message.class));
+    allTypes.addAll(getAllContentsOfType(root, ComplexType.class));
     for (ComplexType t : allTypes) {
       if (!(t instanceof Message)) {
         continue;
