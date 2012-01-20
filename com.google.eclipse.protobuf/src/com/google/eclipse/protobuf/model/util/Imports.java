@@ -10,14 +10,14 @@ package com.google.eclipse.protobuf.model.util;
 
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
 import static com.google.eclipse.protobuf.util.Strings.*;
-import static org.eclipse.xtext.util.Strings.convertToJavaString;
-
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.xtext.nodemodel.INode;
+import static org.eclipse.xtext.util.Strings.*;
 
 import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider;
 import com.google.inject.Inject;
+
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.xtext.nodemodel.INode;
 
 /**
  * Utility methods related to imports.
@@ -78,4 +78,20 @@ public class Imports {
     }
     return convertToJavaString(unquote(removeLineBreaksFrom(text).trim()), true);
   }
- }
+
+  /**
+   * Indicates whether the URI of the given {@code Import} has been resolved.
+   * @param anImport the given {@code Import}.
+   * @return {@code true} if the URI of the given {@code Import} has been resolved, {@code false} otherwise.
+   */
+  public boolean isResolved(Import anImport) {
+    String importUri = anImport.getImportURI();
+    if (!isEmpty(importUri)) {
+      URI uri = URI.createURI(importUri);
+      if (!isEmpty(uri.scheme())) {
+        return true;
+      }
+    }
+    return false;
+  }
+}

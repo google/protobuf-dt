@@ -8,17 +8,17 @@
  */
 package com.google.eclipse.protobuf.ui.scoping;
 
-import static org.eclipse.xtext.util.Strings.isEmpty;
+import com.google.eclipse.protobuf.model.util.Imports;
+import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.scoping.*;
+import com.google.eclipse.protobuf.ui.preferences.paths.core.PathsPreferences;
+import com.google.eclipse.protobuf.ui.util.Resources;
+import com.google.inject.Inject;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
-
-import com.google.eclipse.protobuf.scoping.*;
-import com.google.eclipse.protobuf.ui.preferences.paths.core.PathsPreferences;
-import com.google.eclipse.protobuf.ui.util.Resources;
-import com.google.inject.Inject;
 
 /**
  * Resolves "import" URIs.
@@ -27,6 +27,7 @@ import com.google.inject.Inject;
  */
 public class FileUriResolver implements IFileUriResolver {
   @Inject private ProtoDescriptorProvider descriptorProvider;
+  @Inject private Imports imports;
   @Inject private Resources resources;
   @Inject private IPreferenceStoreAccess storeAccess;
   @Inject private FileResolverStrategies resolvers;
@@ -46,24 +47,20 @@ public class FileUriResolver implements IFileUriResolver {
    * If we import "folder/proto2.proto" into proto1.proto, proto1.proto will compile fine, but the editor will complain.
    * We need to have the import URI as "platform:/resource/protobuf-test/folder/proto2.proto" for the editor to see it.
    */
-  @Override public String resolveUri(String importUri, Resource declaringResource) {
-    if (hasScheme(importUri)) {
-      return importUri;
+  @Override public String resolveUri(Import anImport) {
+    if (imports.isResolved(anImport)) {
+      return null;
     }
-    String resolved = resolveUri(importUri, declaringResource.getURI());
-    return (resolved == null) ? importUri : resolved;
+    String resolved = resolveUri(anImport.getImportURI(), anImport.eResource());
+    return resolved;
   }
 
-  private boolean hasScheme(String importUri) {
-    String scheme = URI.createURI(importUri).scheme();
-    return !isEmpty(scheme);
-  }
-
-  private String resolveUri(String importUri, URI resourceUri) {
+  private String resolveUri(String importUri, Resource resource) {
     URI location = descriptorProvider.descriptorLocation(importUri);
     if (location != null) {
       return location.toString();
     }
+    URI resourceUri = resource.getURI();
     IProject project = resources.project(resourceUri);
     if (project == null) {
       project = resources.activeProject();

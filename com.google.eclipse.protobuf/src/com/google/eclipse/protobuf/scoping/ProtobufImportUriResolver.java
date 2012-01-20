@@ -8,11 +8,11 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.scoping.impl.ImportUriResolver;
-
 import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.inject.Inject;
+
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 
 /**
  * This implementation mimics how protoc understands URIs of imported files. For example, the URI
@@ -37,13 +37,17 @@ public class ProtobufImportUriResolver extends ImportUriResolver {
   @Override public String apply(EObject from) {
     if (from instanceof Import) {
       Import anImport = (Import) from;
-      anImport.setImportURI(resolveImportUri(anImport));
+      String resolvedUri = resolveImportUri(anImport);
+      if (resolvedUri != null) {
+        anImport.setImportURI(resolvedUri);
+      }
     }
     return super.apply(from);
   }
 
   private String resolveImportUri(Import anImport) {
-    String importURI = anImport.getImportURI();
-    return delegate.resolveUri(importURI, anImport.eResource());
+    return delegate.resolveUri(anImport);
+    // String importURI = anImport.getImportURI();
+    // return delegate.resolveUri(importURI, anImport.eResource());
   }
 }

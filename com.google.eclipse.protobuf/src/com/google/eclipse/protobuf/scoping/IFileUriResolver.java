@@ -8,8 +8,7 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import org.eclipse.emf.ecore.resource.Resource;
-
+import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.scoping.IFileUriResolver.NullFileUriResolver;
 import com.google.inject.ImplementedBy;
 
@@ -21,15 +20,14 @@ import com.google.inject.ImplementedBy;
 @ImplementedBy(NullFileUriResolver.class)
 public interface IFileUriResolver {
   /**
-   * Resolves the given 'import' URI.
-   * @param importUri the 'import' URI.
-   * @param declaringResource the resource declaring the import.
-   * @return the resolved URI, or {@code importUri} if resolution was not successful.
+   * Resolves the URI of the given {@code Import}.
+   * @param anImport the given {@code Import}.
+   * @return the resolved URI, or {@code null} if resolution was either not necessary or not successful.
    */
-  String resolveUri(String importUri, Resource declaringResource);
+  String resolveUri(Import anImport);
 
   class NullFileUriResolver implements IFileUriResolver {
-    @Override public String resolveUri(String importUri, Resource declaringResource) {
+    @Override public String resolveUri(Import anImport) {
       throw new UnsupportedOperationException();
     }
   }

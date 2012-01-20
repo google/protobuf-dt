@@ -10,6 +10,11 @@ package com.google.eclipse.protobuf.ui.editor.hyperlinking;
 
 import static org.eclipse.emf.common.util.URI.createURI;
 
+import com.google.eclipse.protobuf.model.util.Imports;
+import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.ui.editor.FileOpener;
+import com.google.inject.Inject;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.hyperlink.*;
@@ -18,11 +23,6 @@ import org.eclipse.xtext.resource.*;
 import org.eclipse.xtext.ui.editor.hyperlinking.DefaultHyperlinkDetector;
 import org.eclipse.xtext.ui.editor.model.IXtextDocument;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
-
-import com.google.eclipse.protobuf.model.util.Imports;
-import com.google.eclipse.protobuf.protobuf.Import;
-import com.google.eclipse.protobuf.ui.editor.FileOpener;
-import com.google.inject.Inject;
 
 
 /**
@@ -60,6 +60,9 @@ public class ProtobufHyperlinkDetector extends DefaultHyperlinkDetector {
           return NO_HYPERLINKS;
         }
         Import anImport = (Import) resolved;
+        if (!imports.isResolved(anImport)) {
+          return NO_HYPERLINKS;
+        }
         String importUri = imports.uriAsEnteredByUser(anImport);
         if (importUri == null) {
           return NO_HYPERLINKS;

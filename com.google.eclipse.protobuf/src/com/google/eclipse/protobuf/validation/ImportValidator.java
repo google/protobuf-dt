@@ -13,7 +13,6 @@ import static com.google.common.collect.Sets.newHashSet;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
 import static com.google.eclipse.protobuf.validation.Messages.*;
 import static java.lang.String.format;
-import static org.eclipse.xtext.util.Strings.isEmpty;
 import static org.eclipse.xtext.util.Tuples.pair;
 
 import com.google.eclipse.protobuf.model.util.*;
@@ -34,6 +33,7 @@ import java.util.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ImportValidator extends AbstractDeclarativeValidator {
+  @Inject private Imports imports;
   @Inject private Protobufs protobufs;
   @Inject private Resources resources;
   @Inject private ImportUriResolver uriResolver;
@@ -114,23 +114,12 @@ public class ImportValidator extends AbstractDeclarativeValidator {
    * @param anImport the given {@code Import}.
    */
   @Check public void checkUriIsResolved(Import anImport) {
-    if (isResolved(anImport)) {
+    if (imports.isResolved(anImport)) {
       return;
     }
     uriResolver.apply(anImport);
-    if (!isResolved(anImport)) {
+    if (!imports.isResolved(anImport)) {
       error(format(importNotFound, anImport.getImportURI()), IMPORT__IMPORT_URI);
     }
-  }
-
-  private boolean isResolved(Import anImport) {
-    String importUri = anImport.getImportURI();
-    if (!isEmpty(importUri)) {
-      URI uri = URI.createURI(importUri);
-      if (!isEmpty(uri.scheme())) {
-        return true;
-      }
-    }
-    return false;
   }
 }

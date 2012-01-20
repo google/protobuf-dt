@@ -11,13 +11,13 @@ package com.google.eclipse.protobuf.junit.core;
 import static com.google.eclipse.protobuf.junit.core.GeneratedProtoFiles.protoFile;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import java.io.File;
-
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
-
+import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.scoping.IFileUriResolver;
 import com.google.inject.AbstractModule;
+
+import org.eclipse.emf.common.util.URI;
+
+import java.io.File;
 
 /**
  * Guice module for unit testing.
@@ -36,7 +36,8 @@ public class IntegrationTestModule extends AbstractModule {
   }
 
   private static class FileUriResolver implements IFileUriResolver {
-    @Override public String resolveUri(String importUri, Resource declaringResource) {
+    @Override public String resolveUri(Import anImport) {
+      String importUri = anImport.getImportURI();
       URI uri = URI.createURI(importUri);
       if (!isEmpty(uri.scheme()))
        {
