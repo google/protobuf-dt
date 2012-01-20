@@ -257,7 +257,7 @@ DoubleLink:
 terminal DOUBLE returns ecore::EDouble:
   ('-')? (NUMBER)* ('.' (NUMBER)+)? |
   ('-')? (NUMBER)+ ('.') | 
-  ('-')? (NUMBER)+ (('e'|'E')('-')? (NUMBER)+) | 
+  ('-')? (NUMBER)+ (('e'|'E')('-'|'+')? (NUMBER)+) | 
   'nan' | 'inf' | '-inf';
 
 terminal NUMBER:
