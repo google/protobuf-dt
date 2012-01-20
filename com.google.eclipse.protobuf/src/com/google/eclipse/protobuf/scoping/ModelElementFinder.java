@@ -34,30 +34,30 @@ class ModelElementFinder {
   @Inject private Protobufs protobufs;
   @Inject private Resources resources;
 
-  Collection<IEObjectDescription> find(EObject start, FinderDelegate finderDelegate, Object criteria) {
+  Collection<IEObjectDescription> find(EObject start, FinderStrategy finderStrategy, Object criteria) {
     Set<IEObjectDescription> descriptions = newHashSet();
     EObject current = start.eContainer();
     while (current != null) {
-      descriptions.addAll(local(current, finderDelegate, criteria));
+      descriptions.addAll(local(current, finderStrategy, criteria));
       current = current.eContainer();
     }
     Protobuf root = modelObjects.rootOf(start);
-    descriptions.addAll(imported(root, finderDelegate, criteria));
+    descriptions.addAll(imported(root, finderStrategy, criteria));
     return unmodifiableSet(descriptions);
   }
 
-  Collection<IEObjectDescription> find(Protobuf start, FinderDelegate finderDelegate, Object criteria) {
+  Collection<IEObjectDescription> find(Protobuf start, FinderStrategy finderStrategy, Object criteria) {
     Set<IEObjectDescription> descriptions = newHashSet();
-    descriptions.addAll(local(start, finderDelegate, criteria));
-    descriptions.addAll(imported(start, finderDelegate, criteria));
+    descriptions.addAll(local(start, finderStrategy, criteria));
+    descriptions.addAll(imported(start, finderStrategy, criteria));
     return unmodifiableSet(descriptions);
   }
 
-  private Collection<IEObjectDescription> local(EObject start, FinderDelegate finderDelegate, Object criteria) {
-    return local(start, finderDelegate, criteria, 0);
+  private Collection<IEObjectDescription> local(EObject start, FinderStrategy finderStrategy, Object criteria) {
+    return local(start, finderStrategy, criteria, 0);
   }
 
-  private Collection<IEObjectDescription> local(EObject start, FinderDelegate finder, Object criteria, int level) {
+  private Collection<IEObjectDescription> local(EObject start, FinderStrategy finder, Object criteria, int level) {
     Set<IEObjectDescription> descriptions = newHashSet();
     for (EObject element : start.eContents()) {
       descriptions.addAll(finder.local(element, criteria, level));
@@ -68,21 +68,21 @@ class ModelElementFinder {
     return descriptions;
   }
 
-  private Collection<IEObjectDescription> imported(Protobuf start, FinderDelegate finderDelegate, Object criteria) {
+  private Collection<IEObjectDescription> imported(Protobuf start, FinderStrategy finderStrategy, Object criteria) {
     List<Import> allImports = protobufs.importsIn(start);
     if (allImports.isEmpty()) {
       return emptyList();
     }
     ResourceSet resourceSet = start.eResource().getResourceSet();
-    return imported(allImports, modelObjects.packageOf(start), resourceSet, finderDelegate, criteria);
+    return imported(allImports, modelObjects.packageOf(start), resourceSet, finderStrategy, criteria);
   }
 
   private Collection<IEObjectDescription> imported(List<Import> allImports, Package fromImporter,
-      ResourceSet resourceSet, FinderDelegate finderDelegate, Object criteria) {
+      ResourceSet resourceSet, FinderStrategy finderStrategy, Object criteria) {
     Set<IEObjectDescription> descriptions = newHashSet();
     for (Import anImport : allImports) {
       if (imports.isImportingDescriptor(anImport)) {
-        descriptions.addAll(finderDelegate.inDescriptor(anImport, criteria));
+        descriptions.addAll(finderStrategy.inDescriptor(anImport, criteria));
         continue;
       }
       Resource imported = resources.importedResource(anImport, resourceSet);
@@ -94,19 +94,19 @@ class ModelElementFinder {
         continue;
       }
       if (rootOfImported != null) {
-        descriptions.addAll(publicImported(rootOfImported, finderDelegate, criteria));
+        descriptions.addAll(publicImported(rootOfImported, finderStrategy, criteria));
         if (arePackagesRelated(fromImporter, rootOfImported)) {
-          descriptions.addAll(local(rootOfImported, finderDelegate, criteria));
+          descriptions.addAll(local(rootOfImported, finderStrategy, criteria));
           continue;
         }
         Package packageOfImported = modelObjects.packageOf(rootOfImported);
-        descriptions.addAll(imported(fromImporter, packageOfImported, imported, finderDelegate, criteria));
+        descriptions.addAll(imported(fromImporter, packageOfImported, imported, finderStrategy, criteria));
       }
     }
     return descriptions;
   }
 
-  private Collection<IEObjectDescription> publicImported(Protobuf start, FinderDelegate finderDelegate,
+  private Collection<IEObjectDescription> publicImported(Protobuf start, FinderStrategy finderStrategy,
       Object criteria) {
     if (!protobufs.isProto2(start)) {
       return emptySet();
@@ -116,7 +116,7 @@ class ModelElementFinder {
       return emptyList();
     }
     ResourceSet resourceSet = start.eResource().getResourceSet();
-    return imported(allImports, modelObjects.packageOf(start), resourceSet, finderDelegate, criteria);
+    return imported(allImports, modelObjects.packageOf(start), resourceSet, finderStrategy, criteria);
   }
 
   private boolean arePackagesRelated(Package aPackage, EObject root) {
@@ -125,17 +125,17 @@ class ModelElementFinder {
   }
 
   private Collection<IEObjectDescription> imported(Package fromImporter, Package fromImported, Resource resource,
-      FinderDelegate finder, Object criteria) {
+      FinderStrategy finderStrategy, Object criteria) {
     Set<IEObjectDescription> descriptions = newHashSet();
     TreeIterator<Object> contents = getAllContents(resource, true);
     while (contents.hasNext()) {
       Object next = contents.next();
-      descriptions.addAll(finder.imported(fromImporter, fromImported, next, criteria));
+      descriptions.addAll(finderStrategy.imported(fromImporter, fromImported, next, criteria));
     }
     return descriptions;
   }
 
-  static interface FinderDelegate {
+  static interface FinderStrategy {
     Collection<IEObjectDescription> imported(Package fromImporter, Package fromImported, Object target, Object criteria);
 
     Collection<IEObjectDescription> inDescriptor(Import anImport, Object criteria);

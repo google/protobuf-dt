@@ -14,10 +14,10 @@ import static org.eclipse.xtext.resource.EObjectDescription.create;
 
 import java.util.*;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
-import com.google.eclipse.protobuf.model.util.TypeExtensions;
 import com.google.eclipse.protobuf.naming.LocalNamesProvider;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
@@ -26,63 +26,60 @@ import com.google.inject.Inject;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class CustomOptionFinderDelegate implements ModelElementFinder.FinderDelegate {
+class ComplexTypeFinderStrategy implements ModelElementFinder.FinderStrategy {
+  @Inject private PackageIntersectionDescriptions packageIntersectionDescriptions;
+  @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private LocalNamesProvider localNamesProvider;
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
-  @Inject private TypeExtensions typeExtensions;
 
   @Override public Collection<IEObjectDescription> imported(Package fromImporter, Package fromImported, Object target,
       Object criteria) {
-    OptionType optionType = optionTypeFrom(criteria);
-    if (!isExtendingOptionMessage(target, optionType)) {
+    if (!isInstance(target, criteria)) {
       return emptySet();
     }
     Set<IEObjectDescription> descriptions = newHashSet();
-    TypeExtension extension = (TypeExtension) target;
-    for (MessageElement e : extension.getElements()) {
-      descriptions.addAll(qualifiedNamesDescriptions.qualifiedNamesForOption(e));
-    }
+    EObject e = (EObject) target;
+    descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(e));
+    descriptions.addAll(packageIntersectionDescriptions.intersection(fromImporter, fromImported, e));
     return descriptions;
   }
 
   @Override public Collection<IEObjectDescription> inDescriptor(Import anImport, Object criteria) {
-    return emptySet();
-  }
-
-  @Override public Collection<IEObjectDescription> local(Object target, Object criteria, int level) {
-    OptionType optionType = optionTypeFrom(criteria);
-    if (!isExtendingOptionMessage(target, optionType)) {
-      return emptySet();
-    }
     Set<IEObjectDescription> descriptions = newHashSet();
-    TypeExtension extension = (TypeExtension) target;
-    for (MessageElement e : extension.getElements()) {
-      List<QualifiedName> names = localNamesProvider.namesForOption(e);
-      int nameCount = names.size();
-      for (int i = level; i < nameCount; i++) {
-        descriptions.add(create(names.get(i), e));
+    ProtoDescriptor descriptor = descriptorProvider.descriptor(anImport.getImportURI());
+    for (ComplexType type : descriptor.allTypes()) {
+      if (!isInstance(type, criteria)) {
+        continue;
       }
-      descriptions.addAll(qualifiedNamesDescriptions.qualifiedNamesForOption(e));
+      descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(type));
     }
     return descriptions;
   }
 
-  private OptionType optionTypeFrom(Object criteria) {
-    if (!(criteria instanceof OptionType)) {
-      throw new IllegalArgumentException("Search criteria should be OptionType");
+  @Override public Collection<IEObjectDescription> local(Object target, Object criteria, int level) {
+    if (!isInstance(target, criteria)) {
+      return emptySet();
     }
-    return (OptionType) criteria;
+    EObject e = (EObject) target;
+    Set<IEObjectDescription> descriptions = newHashSet();
+    List<QualifiedName> names = localNamesProvider.namesFor(e);
+    int nameCount = names.size();
+    for (int i = level; i < nameCount; i++) {
+      descriptions.add(create(names.get(i), e));
+    }
+    descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(e));
+    return descriptions;
   }
 
-  private boolean isExtendingOptionMessage(Object o, OptionType optionType) {
-    if (!(o instanceof TypeExtension)) {
-      return false;
+  private boolean isInstance(Object target, Object criteria) {
+    Class<?> targetType = targetTypeFrom(criteria);
+    return targetType.isInstance(target);
+  }
+
+  private Class<?> targetTypeFrom(Object criteria) {
+    if (criteria instanceof Class<?>) {
+      return (Class<?>) criteria;
     }
-    Message message = typeExtensions.messageFrom((TypeExtension) o);
-    if (message == null) {
-      return false;
-    }
-    String name = message.getName();
-    return optionType.messageName().equals(name);
+    throw new IllegalArgumentException("Search criteria should be Class<?>");
   }
 }

@@ -25,11 +25,11 @@ class CustomOptionFieldFinder {
   @Inject private OptionFields optionFields;
   @Inject private Options options;
 
-  Collection<IEObjectDescription> findOptionFields(AbstractCustomOption customOption, FinderDelegate finderDelegate) {
-    return findOptionFields(customOption, finderDelegate, null);
+  Collection<IEObjectDescription> findOptionFields(AbstractCustomOption customOption, FinderStrategy finderStrategy) {
+    return findOptionFields(customOption, finderStrategy, null);
   }
 
-  Collection<IEObjectDescription> findOptionFields(AbstractCustomOption customOption, FinderDelegate finderDelegate,
+  Collection<IEObjectDescription> findOptionFields(AbstractCustomOption customOption, FinderStrategy finderStrategy,
       OptionField field) {
     // TODO(alruiz): remove Provider of IndexedElement.
     final AbstractOption option = (AbstractOption) customOption;
@@ -39,7 +39,7 @@ class CustomOptionFieldFinder {
       }
     });
     if (e != null) {
-      return finderDelegate.findOptionFields(e);
+      return finderStrategy.findOptionFields(e);
     }
     return emptySet();
   }
@@ -64,7 +64,7 @@ class CustomOptionFieldFinder {
     return null;
   }
 
-  static interface FinderDelegate {
+  static interface FinderStrategy {
     Collection<IEObjectDescription> findOptionFields(IndexedElement reference);
   }
 }

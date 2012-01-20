@@ -33,18 +33,18 @@ import java.util.*;
 public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider implements ScopeProvider {
   private static final boolean DO_NOT_IGNORE_CASE = false;
 
-  @Inject private ComplexTypeFinderDelegate complexTypeFinderDelegate;
+  @Inject private ComplexTypeFinderStrategy complexTypeFinderDelegate;
   @Inject private CustomOptionFieldFinder customOptionFieldFinder;
   @Inject private CustomOptionFieldNameFinder customOptionFieldNameFinder;
-  @Inject private CustomOptionFinderDelegate customOptionFinderDelegate;
-  @Inject private ExtensionFieldNameFinderDelegate extensionFieldNameFinderDelegate;
-  @Inject private ExtensionFieldFinderDelegate extensionFieldFinderDelegate;
+  @Inject private CustomOptionFinderStrategy customOptionFinderDelegate;
+  @Inject private ExtensionFieldNameFinderStrategy extensionFieldNameFinderDelegate;
+  @Inject private ExtensionFieldFinderStrategy extensionFieldFinderDelegate;
   @Inject private ProtoDescriptorProvider descriptorProvider;
-  @Inject private MessageFieldFinderDelegate messageFieldFinderDelegate;
+  @Inject private MessageFieldFinderStrategy messageFieldFinderDelegate;
   @Inject private MessageFields messageFields;
   @Inject private ModelElementFinder modelElementFinder;
   @Inject private ModelObjects modelObjects;
-  @Inject private NormalFieldNameFinderDelegate normalFieldNameFinderDelegate;
+  @Inject private NormalFieldNameFinderStrategy normalFieldNameFinderDelegate;
   @Inject private LiteralDescriptions literalDescriptions;
   @Inject private NativeOptionDescriptions nativeOptionDescriptions;
   @Inject private Options options;

@@ -22,7 +22,7 @@ import com.google.inject.Inject;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class NormalFieldNameFinderDelegate implements CustomOptionFieldNameFinder.FinderDelegate {
+class NormalFieldNameFinderStrategy implements CustomOptionFieldNameFinder.FinderStrategy {
   @Inject private MessageFields messageFields;
 
   @Override public Collection<IEObjectDescription> findMessageFields(MessageField reference) {

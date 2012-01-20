@@ -23,7 +23,7 @@ import com.google.inject.Inject;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class MessageFieldFinderDelegate implements CustomOptionFieldFinder.FinderDelegate {
+class MessageFieldFinderStrategy implements CustomOptionFieldFinder.FinderStrategy {
   @Inject private MessageFields messageFields;
   @Inject private Options options;
 

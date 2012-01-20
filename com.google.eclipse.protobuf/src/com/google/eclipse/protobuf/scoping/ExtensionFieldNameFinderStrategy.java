@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2012 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -9,8 +9,6 @@
 package com.google.eclipse.protobuf.scoping;
 
 import static com.google.common.collect.Sets.newHashSet;
-import static java.util.Collections.emptyList;
-import static org.eclipse.xtext.resource.EObjectDescription.create;
 
 import java.util.*;
 
@@ -23,30 +21,22 @@ import com.google.inject.Inject;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class ExtensionFieldFinderDelegate implements CustomOptionFieldFinder.FinderDelegate {
+class ExtensionFieldNameFinderStrategy implements CustomOptionFieldNameFinder.FinderStrategy {
   @Inject private MessageFields messageFields;
   @Inject private Messages messages;
-  @Inject private Options options;
+  @Inject private ModelObjects modelObjects;
   @Inject private QualifiedNameDescriptions qualifiedNameDescriptions;
 
-  @Override public Collection<IEObjectDescription> findOptionFields(IndexedElement reference) {
-    if (!(reference instanceof MessageField)) {
-      return emptyList();
-    }
-    Message fieldType = messageFields.messageTypeOf((MessageField) reference);
-    if (fieldType == null) {
-      return emptyList();
-    }
+  @Override public Collection<IEObjectDescription> findMessageFields(MessageField reference) {
     Set<IEObjectDescription> descriptions = newHashSet();
-    for (TypeExtension extension : messages.localExtensionsOf(fieldType)) {
+    Message type = messageFields.messageTypeOf(reference);
+    // check first in descriptor.proto
+    for (TypeExtension extension : messages.extensionsOf(type, modelObjects.rootOf(reference))) {
       for (MessageElement element : extension.getElements()) {
-        if (!(element instanceof IndexedElement)) {
+        if (!(element instanceof MessageField)) {
           continue;
         }
-        IndexedElement current = (IndexedElement) element;
-        descriptions.addAll(qualifiedNameDescriptions.qualifiedNamesForOption(current));
-        String name = options.nameForOption(current);
-        descriptions.add(create(name, current));
+        descriptions.addAll(qualifiedNameDescriptions.qualifiedNames(element));
       }
     }
     return descriptions;

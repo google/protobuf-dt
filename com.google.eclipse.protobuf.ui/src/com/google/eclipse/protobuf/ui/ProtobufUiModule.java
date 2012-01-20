@@ -22,7 +22,7 @@ import org.eclipse.xtext.ui.LanguageSpecific;
 import org.eclipse.xtext.ui.editor.*;
 import org.eclipse.xtext.ui.editor.model.XtextDocumentProvider;
 import org.eclipse.xtext.ui.editor.outline.actions.IOutlineContribution;
-import org.eclipse.xtext.ui.editor.preferences.*;
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
 import org.eclipse.xtext.ui.editor.quickfix.XtextQuickAssistProcessor;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.*;
 import org.eclipse.xtext.ui.validation.IResourceUIValidatorExtension;
@@ -38,7 +38,6 @@ import com.google.eclipse.protobuf.ui.editor.syntaxcoloring.*;
 import com.google.eclipse.protobuf.ui.internal.ProtobufActivator;
 import com.google.eclipse.protobuf.ui.outline.*;
 import com.google.eclipse.protobuf.ui.parser.PreferenceDrivenProtobufParser;
-import com.google.eclipse.protobuf.ui.preferences.PreferenceStoreAccess;
 import com.google.eclipse.protobuf.ui.preferences.compiler.core.CompilerPreferenceStoreInitializer;
 import com.google.eclipse.protobuf.ui.preferences.editor.numerictag.core.NumericTagPreferenceStoreInitializer;
 import com.google.eclipse.protobuf.ui.preferences.editor.save.core.SaveActionsPreferenceStoreInitializer;
@@ -85,10 +84,6 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
 
   public Class<? extends IParser> bindIParser() {
     return PreferenceDrivenProtobufParser.class;
-  }
-
-  public Class<? extends IPreferenceStoreAccess> bindIPreferenceStoreAccess() {
-    return PreferenceStoreAccess.class;
   }
 
   @Override public Class<? extends IReconciler> bindIReconciler() {
