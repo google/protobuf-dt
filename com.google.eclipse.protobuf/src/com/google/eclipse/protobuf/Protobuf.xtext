@@ -191,7 +191,7 @@ Value:
 // { foo: 1, bar: 2 }
 ComplexValue:
   '{'
-  fields+=ValueField ((',')? fields+=ValueField)*
+  (fields+=ValueField ((',')? fields+=ValueField)*)?
   '}';
 
 ValueField:
