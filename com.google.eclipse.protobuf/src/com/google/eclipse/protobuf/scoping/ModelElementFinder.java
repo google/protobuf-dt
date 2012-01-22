@@ -19,6 +19,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.*;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
+import com.google.common.collect.Maps;
 import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
@@ -58,14 +59,23 @@ class ModelElementFinder {
   }
 
   private Collection<IEObjectDescription> local(EObject start, FinderStrategy finder, Object criteria, int level) {
-    Set<IEObjectDescription> descriptions = newHashSet();
+    Map<String, IEObjectDescription> descriptions = Maps.newHashMap();
     for (EObject element : start.eContents()) {
-      descriptions.addAll(finder.local(element, criteria, level));
+      mapDescriptions(finder.local(element, criteria, level), descriptions);
       if (element instanceof Message || element instanceof Group) {
-        descriptions.addAll(local(element, finder, criteria, level + 1));
+        mapDescriptions(local(element, finder, criteria, level + 1), descriptions);
       }
     }
-    return descriptions;
+    return descriptions.values();
+  }
+
+  private void mapDescriptions(Collection<IEObjectDescription> descriptions, Map<String, IEObjectDescription> map) {
+    for (IEObjectDescription description : descriptions) {
+      String name = description.getName().toString();
+      if (!map.containsKey(name)) {
+        map.put(name, description);
+      }
+    }
   }
 
   private Collection<IEObjectDescription> imported(Protobuf start, FinderStrategy finderStrategy, Object criteria) {
