@@ -19,7 +19,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.*;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
-import com.google.common.collect.Maps;
 import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
@@ -37,45 +36,38 @@ class ModelElementFinder {
 
   Collection<IEObjectDescription> find(EObject start, FinderStrategy finderStrategy, Object criteria) {
     Set<IEObjectDescription> descriptions = newHashSet();
-    EObject current = start.eContainer();
-    while (current != null) {
-      descriptions.addAll(local(current, finderStrategy, criteria));
-      current = current.eContainer();
-    }
+    descriptions.addAll(local(start, finderStrategy, criteria));
     Protobuf root = modelObjects.rootOf(start);
     descriptions.addAll(imported(root, finderStrategy, criteria));
     return unmodifiableSet(descriptions);
   }
 
-  Collection<IEObjectDescription> find(Protobuf start, FinderStrategy finderStrategy, Object criteria) {
-    Set<IEObjectDescription> descriptions = newHashSet();
-    descriptions.addAll(local(start, finderStrategy, criteria));
-    descriptions.addAll(imported(start, finderStrategy, criteria));
-    return unmodifiableSet(descriptions);
-  }
-
   private Collection<IEObjectDescription> local(EObject start, FinderStrategy finderStrategy, Object criteria) {
-    return local(start, finderStrategy, criteria, 0);
-  }
-
-  private Collection<IEObjectDescription> local(EObject start, FinderStrategy finder, Object criteria, int level) {
-    Map<String, IEObjectDescription> descriptions = Maps.newHashMap();
-    for (EObject element : start.eContents()) {
-      mapDescriptions(finder.local(element, criteria, level), descriptions);
-      if (element instanceof Message || element instanceof Group) {
-        mapDescriptions(local(element, finder, criteria, level + 1), descriptions);
-      }
+    UniqueDescriptions descriptions = new UniqueDescriptions();
+    EObject current = start.eContainer();
+    while (current != null) {
+      descriptions.addAll(local(current, finderStrategy, criteria, 0));
+      current = current.eContainer();
     }
     return descriptions.values();
   }
 
-  private void mapDescriptions(Collection<IEObjectDescription> descriptions, Map<String, IEObjectDescription> map) {
-    for (IEObjectDescription description : descriptions) {
-      String name = description.getName().toString();
-      if (!map.containsKey(name)) {
-        map.put(name, description);
+  Collection<IEObjectDescription> find(Protobuf start, FinderStrategy finderStrategy, Object criteria) {
+    Set<IEObjectDescription> descriptions = newHashSet();
+    descriptions.addAll(local(start, finderStrategy, criteria, 0));
+    descriptions.addAll(imported(start, finderStrategy, criteria));
+    return unmodifiableSet(descriptions);
+  }
+
+  private Collection<IEObjectDescription> local(EObject start, FinderStrategy finder, Object criteria, int level) {
+    UniqueDescriptions descriptions = new UniqueDescriptions();
+    for (EObject element : start.eContents()) {
+      descriptions.addAll(finder.local(element, criteria, level));
+      if (element instanceof Message || element instanceof Group) {
+        descriptions.addAll(local(element, finder, criteria, level + 1));
       }
     }
+    return descriptions.values();
   }
 
   private Collection<IEObjectDescription> imported(Protobuf start, FinderStrategy finderStrategy, Object criteria) {
@@ -106,7 +98,7 @@ class ModelElementFinder {
       if (rootOfImported != null) {
         descriptions.addAll(publicImported(rootOfImported, finderStrategy, criteria));
         if (arePackagesRelated(fromImporter, rootOfImported)) {
-          descriptions.addAll(local(rootOfImported, finderStrategy, criteria));
+          descriptions.addAll(local(rootOfImported, finderStrategy, criteria, 0));
           continue;
         }
         Package packageOfImported = modelObjects.packageOf(rootOfImported);
