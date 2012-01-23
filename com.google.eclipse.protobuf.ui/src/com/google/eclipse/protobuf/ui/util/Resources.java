@@ -8,8 +8,11 @@
  */
 package com.google.eclipse.protobuf.ui.util;
 
+import static com.google.eclipse.protobuf.ui.util.Workbenches.activeWorkbenchPage;
+
 import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.*;
@@ -62,15 +65,6 @@ import com.google.inject.Singleton;
     }
     IViewReference[] references = page.getViewReferences();
     return (references == null) ? NO_VIEW_REFERENCES : references;
-  }
-
-  private IWorkbenchPage activeWorkbenchPage() {
-    IWorkbench workbench = PlatformUI.getWorkbench();
-    if (workbench == null) {
-      return null;
-    }
-    IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-    return (window == null) ? null : window.getActivePage();
   }
 
   /**

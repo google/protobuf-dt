@@ -8,8 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.editor.model;
 
+import static com.google.common.io.Closeables.closeQuietly;
 import static com.google.eclipse.protobuf.ui.exception.CoreExceptions.error;
-import static com.google.eclipse.protobuf.util.Closeables.closeQuietly;
 
 import java.io.*;
 

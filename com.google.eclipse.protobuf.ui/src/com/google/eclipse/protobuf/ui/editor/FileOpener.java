@@ -8,7 +8,10 @@
  */
 package com.google.eclipse.protobuf.ui.editor;
 
-import org.eclipse.core.filesystem.*;
+import static com.google.eclipse.protobuf.ui.util.Workbenches.activeWorkbenchPage;
+
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
@@ -17,7 +20,8 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 
 import com.google.eclipse.protobuf.ui.util.Resources;
-import com.google.inject.*;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Utility methods related to open file from different type of locations.
@@ -45,7 +49,7 @@ import com.google.inject.*;
   }
 
   private IEditorPart openFile(IEditorInput editorInput) throws PartInitException {
-    IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+    IWorkbenchPage page = activeWorkbenchPage();
     return page.openEditor(editorInput, "com.google.eclipse.protobuf.Protobuf");
   }
 
