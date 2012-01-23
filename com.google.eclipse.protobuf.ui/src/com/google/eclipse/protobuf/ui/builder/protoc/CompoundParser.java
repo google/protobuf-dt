@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.CoreException;
  */
 class CompoundParser implements ProtocOutputParser {
   private static final List<ProtocOutputParser> PARSERS =
-      asList(new LineSpecificErrorParser(), new CodeGenerationErrorParser());
+      asList(new LineSpecificErrorParser(), new CodeGenerationErrorParser(), new OptionBasedErrorParser());
 
   @Override
   public boolean parseAndAddMarkerIfNecessary(String line, ProtocMarkerFactory markerFactory) throws CoreException {

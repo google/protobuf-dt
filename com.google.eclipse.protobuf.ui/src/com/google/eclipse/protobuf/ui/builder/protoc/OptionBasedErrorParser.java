@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2012 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -18,10 +18,10 @@ import org.eclipse.core.runtime.CoreException;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class CodeGenerationErrorParser implements ProtocOutputParser {
+class OptionBasedErrorParser implements ProtocOutputParser {
   /*
-   * (--.*):\\s*(--.*):\\s*(--.*)
-   * --1--- -*- --2--- -*- --3---
+   * (--.*):\\s*(.*):\\s*(.*)
+   * --1--- -*- --2- -*- --3-
    *
    * 1: option (e.g. --java_out)
    * *: whitespace
@@ -29,7 +29,7 @@ class CodeGenerationErrorParser implements ProtocOutputParser {
    * *: whitespace
    * 3: description
    */
-  private static final Pattern ERROR_PATTERN = compile("(--.*):\\s*(--.*):\\s*(--.*)");
+  private static final Pattern ERROR_PATTERN = compile("(--.*):\\s*(.*):\\s*(.*)");
 
   @Override
   public boolean parseAndAddMarkerIfNecessary(String line, ProtocMarkerFactory markerFactory) throws CoreException {

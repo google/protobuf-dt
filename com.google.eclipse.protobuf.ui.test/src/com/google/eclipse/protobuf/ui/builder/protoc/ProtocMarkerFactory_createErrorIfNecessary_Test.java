@@ -29,15 +29,15 @@ public class ProtocMarkerFactory_createErrorIfNecessary_Test {
   private static final String PROTOC = "com.google.eclipse.protobuf.ui.protocMarker";
 
   private FileStub file;
-  private MarkerStub fastValidationMarker;
+  private MarkerStub marker;
   private ProtocMarkerFactory markerFactory;
 
   @Before public void setUp() throws CoreException {
     file = new FileStub();
     file.setLocation(new Path("home/alex/protos/test1.proto"));
     file.createMarker(PROTOC);
-    fastValidationMarker = error(EDITOR_CHECK, "Expected field name.", 68);
-    file.addMarker(fastValidationMarker);
+    marker = error(EDITOR_CHECK, "Expected field name.", 68);
+    file.addMarker(marker);
     markerFactory = new ProtocMarkerFactory(file);
   }
 
@@ -56,8 +56,8 @@ public class ProtocMarkerFactory_createErrorIfNecessary_Test {
   }
 
   @Test public void should_not_create_marker_if_a_similar_one_exists() throws CoreException {
-    markerFactory.createErrorIfNecessary("test1.proto", fastValidationMarker.message(),
-        fastValidationMarker.lineNumber());
+    markerFactory.createErrorIfNecessary("test1.proto", marker.message(),
+        marker.lineNumber());
     assertThat(file.markerCount(PROTOC), equalTo(0));
   }
 }
