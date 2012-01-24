@@ -18,8 +18,8 @@ import com.google.inject.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @SuppressWarnings("restriction")
-public class ExtendedGenerator extends Generator {
-  public ExtendedGenerator() {
+public class ProtobufGenerator extends Generator {
+  public ProtobufGenerator() {
     new XtextStandaloneSetupExtension().createInjectorAndDoEMFRegistration();
   }
   

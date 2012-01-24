@@ -11,13 +11,12 @@ package com.google.eclipse.protobuf.ui.builder.protoc;
 import static com.google.common.io.Closeables.closeQuietly;
 import static com.google.eclipse.protobuf.ui.util.Workbenches.activeWorkbenchPage;
 import static org.eclipse.core.runtime.Status.OK_STATUS;
+import static org.eclipse.ui.console.IConsoleConstants.ID_CONSOLE_VIEW;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.*;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.*;
 import org.eclipse.ui.console.*;
 import org.eclipse.ui.progress.UIJob;
 
@@ -34,8 +33,7 @@ class ConsolePrinter {
     MessageConsole console = findConsole();
     IWorkbenchPage page = activeWorkbenchPage();
     if (page != null) {
-      String id = IConsoleConstants.ID_CONSOLE_VIEW;
-      IConsoleView view = (IConsoleView) page.showView(id);
+      IConsoleView view = (IConsoleView) page.showView(ID_CONSOLE_VIEW);
       view.display(console);
     }
     return new ConsolePrinter(console);
