@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.editor.model;
 
-import static com.google.eclipse.protobuf.util.Closeables.closeQuietly;
+import static com.google.common.io.Closeables.closeQuietly;
 import static com.google.eclipse.protobuf.util.Encodings.UTF_8;
 
 import java.io.*;

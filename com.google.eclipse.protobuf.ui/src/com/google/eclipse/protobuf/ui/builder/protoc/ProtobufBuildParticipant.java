@@ -9,10 +9,11 @@
 package com.google.eclipse.protobuf.ui.builder.protoc;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.io.Closeables.closeQuietly;
+import static com.google.eclipse.protobuf.ui.builder.protoc.ConsolePrinter.createAndDisplayConsole;
 import static com.google.eclipse.protobuf.ui.exception.CoreExceptions.error;
 import static com.google.eclipse.protobuf.ui.preferences.compiler.core.CompilerPreferences.compilerPreferences;
 import static com.google.eclipse.protobuf.ui.util.CommaSeparatedValues.splitCsv;
-import static com.google.eclipse.protobuf.util.Closeables.closeQuietly;
 import static java.util.Collections.*;
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
 
@@ -23,12 +24,13 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.builder.IXtextBuilderParticipant;
-import org.eclipse.xtext.resource.*;
+import org.eclipse.xtext.resource.IResourceDescription;
 import org.eclipse.xtext.resource.IResourceDescription.Delta;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.eclipse.protobuf.ui.preferences.compiler.core.CompilerPreferences;
-import com.google.eclipse.protobuf.ui.preferences.paths.core.*;
+import com.google.eclipse.protobuf.ui.preferences.paths.core.DirectoryPath;
+import com.google.eclipse.protobuf.ui.preferences.paths.core.PathsPreferences;
 import com.google.inject.Inject;
 
 /**
@@ -138,17 +140,24 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
   private void generateSingleProto(IFile source, String protocPath, List<String> importRoots, String descriptorPath,
       OutputDirectories outputDirectories) throws CoreException {
     String command = commandFactory.protocCommand(source, protocPath, importRoots, descriptorPath, outputDirectories);
-    System.out.println(command);
+    ConsolePrinter console = null;
     try {
+      console = createAndDisplayConsole();
+      console.printSignal(command);
       Process process = Runtime.getRuntime().exec(command);
-      processStream(process.getErrorStream(), source);
+      processStream(process.getErrorStream(), source, console);
       process.destroy();
     } catch (Throwable e) {
+      e.printStackTrace();
       throw error(e);
+    } finally {
+      if (console != null) {
+        console.close();
+      }
     }
   }
 
-  private void processStream(InputStream stream, IFile source) throws Throwable {
+  private void processStream(InputStream stream, IFile source, ConsolePrinter console) throws Throwable {
     InputStreamReader reader = null;
     try {
       reader = new InputStreamReader(stream);
@@ -157,7 +166,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
       ProtocMarkerFactory markerFactory = new ProtocMarkerFactory(source);
       while ((line = bufferedReader.readLine()) != null) {
         outputParser.parseAndAddMarkerIfNecessary(line, markerFactory);
-        System.out.println("[protoc] " + line);
+        console.printOutput(line);
       }
     } finally {
       closeQuietly(reader);

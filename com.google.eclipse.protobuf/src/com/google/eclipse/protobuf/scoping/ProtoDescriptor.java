@@ -10,29 +10,30 @@ package com.google.eclipse.protobuf.scoping;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
+import static com.google.common.io.Closeables.closeQuietly;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MESSAGE_FIELD__TYPE;
 import static com.google.eclipse.protobuf.scoping.OptionType.findOptionTypeForLevelOf;
-import static com.google.eclipse.protobuf.util.Closeables.closeQuietly;
 import static com.google.eclipse.protobuf.util.Encodings.UTF_8;
 import static java.util.Collections.*;
 import static org.eclipse.xtext.EcoreUtil2.*;
 import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.eclipse.protobuf.model.util.INodes;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.protobuf.Enum;
+import java.io.*;
+import java.net.URL;
+import java.util.*;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.nodemodel.INode;
-import org.eclipse.xtext.parser.*;
+import org.eclipse.xtext.parser.IParseResult;
+import org.eclipse.xtext.parser.IParser;
 import org.eclipse.xtext.resource.XtextResource;
 
-import java.io.*;
-import java.net.URL;
-import java.util.*;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.eclipse.protobuf.model.util.INodes;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Enum;
 
 /**
  * Contains the elements from descriptor.proto (provided with protobuf's library.)
