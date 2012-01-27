@@ -49,11 +49,11 @@ class ConsolePrinter {
     out = console.newMessageStream();
   }
 
-  void printSignal(String s) {
+  void printCommand(String s) {
     out.println("[command] " + s);
   }
 
-  void printOutput(String s) {
+  void printProtocOutput(String s) {
     out.println("[protoc]  " + s);
   }
 

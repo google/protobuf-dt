@@ -143,7 +143,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
     ConsolePrinter console = null;
     try {
       console = createAndDisplayConsole();
-      console.printSignal(command);
+      console.printCommand(command);
       Process process = Runtime.getRuntime().exec(command);
       processStream(process.getErrorStream(), source, console);
       process.destroy();
@@ -166,7 +166,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
       ProtocMarkerFactory markerFactory = new ProtocMarkerFactory(source);
       while ((line = bufferedReader.readLine()) != null) {
         outputParser.parseAndAddMarkerIfNecessary(line, markerFactory);
-        console.printOutput(line);
+        console.printProtocOutput(line);
       }
     } finally {
       closeQuietly(reader);
