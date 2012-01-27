@@ -8,14 +8,12 @@
  */
 package com.google.eclipse.protobuf.linking;
 
+import static com.google.eclipse.protobuf.linking.ProtobufDiagnosticMatcher.wasCreatedFrom;
 import static org.eclipse.xtext.diagnostics.Severity.WARNING;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
 import org.eclipse.emf.ecore.*;
-import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
 import org.eclipse.xtext.diagnostics.DiagnosticMessage;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.util.*;
@@ -42,12 +40,8 @@ public class ProtobufResource_createDiagnostic_Test {
   }
 
   @Test public void should_create_dianostic() {
-    Diagnostic diagnostic = resource.createDiagnostic(triple, message);
-    assertThat(diagnostic, instanceOf(ProtobufDiagnostic.class));
-    ProtobufDiagnostic d = (ProtobufDiagnostic) diagnostic;
-    assertThat(d.getCode(), equalTo(message.getIssueCode()));
-    assertThat(d.getData(), equalTo(message.getIssueData()));
-    assertThat(d.getMessage(), equalTo(message.getMessage()));
+    ProtobufDiagnostic d = resource.createDiagnostic(triple, message);
+    assertThat(d, wasCreatedFrom(message));
     assertSame(triple.getThird(), d.getNode());
   }
 }

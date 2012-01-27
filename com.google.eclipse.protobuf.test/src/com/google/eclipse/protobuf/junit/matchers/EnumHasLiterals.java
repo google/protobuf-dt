@@ -34,11 +34,11 @@ public class EnumHasLiterals extends BaseMatcher<Enum> {
     this.literalNames = literalNames;
   }
 
-  @Override public boolean matches(Object arg) {
-    if (!(arg instanceof Enum)) {
+  @Override public boolean matches(Object item) {
+    if (!(item instanceof Enum)) {
       return false;
     }
-    Enum anEnum = (Enum) arg;
+    Enum anEnum = (Enum) item;
     List<String> actualNames = newArrayList(literalNames(anEnum));
     for (String name : literalNames) {
       actualNames.remove(name);
