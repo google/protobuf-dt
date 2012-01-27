@@ -18,7 +18,7 @@ import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
 import com.google.eclipse.protobuf.model.util.TypeExtensions;
-import com.google.eclipse.protobuf.naming.LocalNamesProvider;
+import com.google.eclipse.protobuf.naming.*;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.inject.Inject;
@@ -28,6 +28,7 @@ import com.google.inject.Inject;
  */
 class CustomOptionFinderStrategy implements ModelElementFinder.FinderStrategy {
   @Inject private LocalNamesProvider localNamesProvider;
+  @Inject private OptionNamingStrategy namingStrategy;
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
   @Inject private TypeExtensions typeExtensions;
 
@@ -40,7 +41,7 @@ class CustomOptionFinderStrategy implements ModelElementFinder.FinderStrategy {
     Set<IEObjectDescription> descriptions = newHashSet();
     TypeExtension extension = (TypeExtension) target;
     for (MessageElement e : extension.getElements()) {
-      descriptions.addAll(qualifiedNamesDescriptions.qualifiedNamesForOption(e));
+      descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(e, namingStrategy));
     }
     return descriptions;
   }
@@ -57,12 +58,12 @@ class CustomOptionFinderStrategy implements ModelElementFinder.FinderStrategy {
     Set<IEObjectDescription> descriptions = newHashSet();
     TypeExtension extension = (TypeExtension) target;
     for (MessageElement e : extension.getElements()) {
-      List<QualifiedName> names = localNamesProvider.namesForOption(e);
+      List<QualifiedName> names = localNamesProvider.localNames(e, namingStrategy);
       int nameCount = names.size();
       for (int i = level; i < nameCount; i++) {
         descriptions.add(create(names.get(i), e));
       }
-      descriptions.addAll(qualifiedNamesDescriptions.qualifiedNamesForOption(e));
+      descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(e, namingStrategy));
     }
     return descriptions;
   }

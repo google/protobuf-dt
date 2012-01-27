@@ -19,7 +19,7 @@ import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
 import com.google.eclipse.protobuf.model.util.QualifiedNames;
-import com.google.eclipse.protobuf.naming.IProtobufQualifiedNameProvider;
+import com.google.eclipse.protobuf.naming.*;
 import com.google.inject.Inject;
 
 /**
@@ -29,13 +29,8 @@ class QualifiedNameDescriptions {
   @Inject private IProtobufQualifiedNameProvider nameProvider;
   @Inject private QualifiedNames qualifiedNames;
 
-  Collection<IEObjectDescription> qualifiedNames(EObject e) {
-    QualifiedName fqn = nameProvider.getFullyQualifiedName(e);
-    return allQualifiedNames(e, fqn);
-  }
-
-  Collection<IEObjectDescription> qualifiedNamesForOption(EObject e) {
-    QualifiedName fqn = nameProvider.getFullyQualifiedNameForOption(e);
+  Collection<IEObjectDescription> qualifiedNames(EObject e, NamingStrategy namingStrategy) {
+    QualifiedName fqn = nameProvider.getFullyQualifiedName(e, namingStrategy);
     return allQualifiedNames(e, fqn);
   }
 

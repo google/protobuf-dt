@@ -11,7 +11,6 @@ package com.google.eclipse.protobuf.naming;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.*;
 
-import com.google.eclipse.protobuf.protobuf.Group;
 import com.google.inject.ImplementedBy;
 
 /**
@@ -20,10 +19,10 @@ import com.google.inject.ImplementedBy;
 @ImplementedBy(ProtobufQualifiedNameProvider.class)
 public interface IProtobufQualifiedNameProvider extends IQualifiedNameProvider {
   /**
-   * Returns the qualified name of the given object that is being used as the source of an option. If the given object
-   * is a <code>{@link Group}</code>, this method returns the name in lower case.
-   * @param source the source of an option.
-   * @return the qualified name of the given object that is being used as the name of an option.
+   * Returns the qualified name of the given model object.
+   * @param e the given model object.
+   * @param namingStrategy gets the name of the model object.
+   * @return the qualified name of the given model object.
    */
-  QualifiedName getFullyQualifiedNameForOption(EObject source);
+  QualifiedName getFullyQualifiedName(EObject e, NamingStrategy namingStrategy);
 }

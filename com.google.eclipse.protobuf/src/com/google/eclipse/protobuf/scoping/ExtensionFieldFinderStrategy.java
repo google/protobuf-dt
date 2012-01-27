@@ -17,6 +17,7 @@ import java.util.*;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
 import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.naming.OptionNamingStrategy;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.Inject;
 
@@ -26,6 +27,7 @@ import com.google.inject.Inject;
 class ExtensionFieldFinderStrategy implements CustomOptionFieldFinder.FinderStrategy {
   @Inject private MessageFields messageFields;
   @Inject private Messages messages;
+  @Inject private OptionNamingStrategy namingStrategy;
   @Inject private Options options;
   @Inject private QualifiedNameDescriptions qualifiedNameDescriptions;
 
@@ -44,7 +46,7 @@ class ExtensionFieldFinderStrategy implements CustomOptionFieldFinder.FinderStra
           continue;
         }
         IndexedElement current = (IndexedElement) element;
-        descriptions.addAll(qualifiedNameDescriptions.qualifiedNamesForOption(current));
+        descriptions.addAll(qualifiedNameDescriptions.qualifiedNames(current, namingStrategy));
         String name = options.nameForOption(current);
         descriptions.add(create(name, current));
       }

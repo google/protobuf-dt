@@ -18,7 +18,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
-import com.google.eclipse.protobuf.naming.LocalNamesProvider;
+import com.google.eclipse.protobuf.naming.*;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.inject.Inject;
@@ -30,6 +30,7 @@ class ComplexTypeFinderStrategy implements ModelElementFinder.FinderStrategy {
   @Inject private PackageIntersectionDescriptions packageIntersectionDescriptions;
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private LocalNamesProvider localNamesProvider;
+  @Inject private NormalNamingStrategy namingStrategy;
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
 
   @Override public Collection<IEObjectDescription> imported(Package fromImporter, Package fromImported, Object target,
@@ -39,7 +40,7 @@ class ComplexTypeFinderStrategy implements ModelElementFinder.FinderStrategy {
     }
     Set<IEObjectDescription> descriptions = newHashSet();
     EObject e = (EObject) target;
-    descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(e));
+    descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(e, namingStrategy));
     descriptions.addAll(packageIntersectionDescriptions.intersection(fromImporter, fromImported, e));
     return descriptions;
   }
@@ -51,7 +52,7 @@ class ComplexTypeFinderStrategy implements ModelElementFinder.FinderStrategy {
       if (!isInstance(type, criteria)) {
         continue;
       }
-      descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(type));
+      descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(type, namingStrategy));
     }
     return descriptions;
   }
@@ -62,12 +63,12 @@ class ComplexTypeFinderStrategy implements ModelElementFinder.FinderStrategy {
     }
     EObject e = (EObject) target;
     Set<IEObjectDescription> descriptions = newHashSet();
-    List<QualifiedName> names = localNamesProvider.namesFor(e);
+    List<QualifiedName> names = localNamesProvider.localNames(e, namingStrategy);
     int nameCount = names.size();
     for (int i = level; i < nameCount; i++) {
       descriptions.add(create(names.get(i), e));
     }
-    descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(e));
+    descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(e, namingStrategy));
     return descriptions;
   }
 

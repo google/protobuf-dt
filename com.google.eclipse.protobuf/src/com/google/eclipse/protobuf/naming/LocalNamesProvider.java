@@ -12,13 +12,13 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.*;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.inject.Inject;
+import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.*;
 
-import java.util.List;
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.inject.Inject;
 
 /**
  * Provides alternative qualified names for protobuf elements.
@@ -56,22 +56,13 @@ import java.util.List;
 public class LocalNamesProvider {
   @Inject private ModelObjects modelObjects;
   @Inject private NameResolver nameResolver;
-  @Inject private NamingStrategies namingStrategies;
   @Inject private IQualifiedNameConverter qualifiedNameConverter;
   @Inject private Packages packages;
 
-  public List<QualifiedName> namesFor(EObject target) {
-    return allNames(target, namingStrategies.normal());
-  }
-
-  public List<QualifiedName> namesForOption(EObject source) {
-    return allNames(source, namingStrategies.option());
-  }
-
-  private List<QualifiedName> allNames(final EObject e, final NamingStrategy naming) {
+  public List<QualifiedName> localNames(EObject e, NamingStrategy namingStrategy) {
     List<QualifiedName> allNames = newArrayList();
     EObject current = e;
-    String name = naming.nameOf(e);
+    String name = namingStrategy.nameOf(e);
     if (isEmpty(name)) {
       return emptyList();
     }

@@ -24,14 +24,15 @@ import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.inject.Inject;
 
 /**
- * Tests for <code>{@link LocalNamesProvider#namesFor(EObject)}</code>.
+ * Tests for <code>{@link LocalNamesProvider#localNames(EObject, NamingStrategy)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class LocalNamesProvider_namesFor_Test {
+public class LocalNamesProvider_getAllLocalNames_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
   @Inject private LocalNamesProvider namesProvider;
+  @Inject private NormalNamingStrategy normalNamingStrategy;
 
   // syntax = "proto2";
   //
@@ -47,7 +48,7 @@ public class LocalNamesProvider_namesFor_Test {
   // }
   @Test public void should_return_all_possible_local_names() {
     Enum phoneType = xtext.find("PhoneType", " {", Enum.class);
-    List<QualifiedName> names = namesProvider.namesFor(phoneType);
+    List<QualifiedName> names = namesProvider.localNames(phoneType, normalNamingStrategy);
     assertThat(names.get(0).toString(), equalTo("PhoneType"));
     assertThat(names.get(1).toString(), equalTo("PhoneNumber.PhoneType"));
     assertThat(names.get(2).toString(), equalTo("Person.PhoneNumber.PhoneType"));

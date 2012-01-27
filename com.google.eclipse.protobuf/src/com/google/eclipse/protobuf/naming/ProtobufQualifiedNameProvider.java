@@ -10,14 +10,14 @@ package com.google.eclipse.protobuf.naming;
 
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.inject.Inject;
+import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.*;
 
-import java.util.List;
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.inject.Inject;
 
 /**
  * Provides fully-qualified names for protobuf elements.
@@ -29,28 +29,24 @@ public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.Abstra
   @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
 
   @Inject private ModelObjects modelObjects;
-  @Inject private NamingStrategies namingStrategies;
+  @Inject private NormalNamingStrategy normalNamingStrategy;
   @Inject private Packages packages;
   @Inject private QualifiedNames qualifiedNames;
 
   @Override public QualifiedName getFullyQualifiedName(EObject target) {
-    return getFullyQualifiedName(target, namingStrategies.normal());
+    return getFullyQualifiedName(target, normalNamingStrategy);
   }
 
-  @Override public QualifiedName getFullyQualifiedNameForOption(EObject source) {
-    return getFullyQualifiedName(source, namingStrategies.option());
-  }
-
-  private QualifiedName getFullyQualifiedName(final EObject e, final NamingStrategy naming) {
+  @Override public QualifiedName getFullyQualifiedName(EObject e, NamingStrategy namingStrategy) {
     EObject current = e;
-    String name = naming.nameOf(e);
+    String name = namingStrategy.nameOf(e);
     if (isEmpty(name)) {
       return null;
     }
     QualifiedName qualifiedName = converter.toQualifiedName(name);
     while (current.eContainer() != null) {
       current = current.eContainer();
-      QualifiedName parentsQualifiedName = getFullyQualifiedName(current, naming);
+      QualifiedName parentsQualifiedName = getFullyQualifiedName(current, namingStrategy);
       if (parentsQualifiedName != null) {
         return parentsQualifiedName.append(qualifiedName);
       }

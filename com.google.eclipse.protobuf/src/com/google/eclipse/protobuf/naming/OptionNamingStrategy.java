@@ -12,20 +12,25 @@ import org.eclipse.emf.ecore.EObject;
 
 import com.google.eclipse.protobuf.model.util.Options;
 import com.google.eclipse.protobuf.protobuf.IndexedElement;
+import com.google.inject.*;
 
 /**
+ * Returns the name of a model object, to be used as the name of an option.
+ *
  * @author alruiz@google.com (Alex Ruiz)
+ *
+ * @see NameResolver#nameOf(EObject)
+ * @see Options#nameForOption(IndexedElement)
  */
-class OptionNamingStrategy implements NamingStrategy {
-  private final NameResolver nameResolver;
-  private final Options options;
+@Singleton public class OptionNamingStrategy implements NamingStrategy {
+  @Inject private NameResolver nameResolver;
+  @Inject private Options options;
 
-  OptionNamingStrategy(NameResolver nameResolver, Options options) {
-    this.nameResolver = nameResolver;
-    this.options = options;
-  }
-
-
+  /**
+   * Returns the name of the given model object, to be used as the name of an option.
+   * @param e the given model object.
+   * @return the name of the given model object, to be used as the name of an option.
+   */
   @Override public String nameOf(EObject e) {
     if (e instanceof IndexedElement) {
       return options.nameForOption((IndexedElement) e);

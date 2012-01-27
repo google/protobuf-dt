@@ -15,6 +15,7 @@ import java.util.*;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
 import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.naming.NormalNamingStrategy;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.Inject;
 
@@ -25,6 +26,7 @@ class ExtensionFieldNameFinderStrategy implements CustomOptionFieldNameFinder.Fi
   @Inject private MessageFields messageFields;
   @Inject private Messages messages;
   @Inject private ModelObjects modelObjects;
+  @Inject private NormalNamingStrategy namingStrategy;
   @Inject private QualifiedNameDescriptions qualifiedNameDescriptions;
 
   @Override public Collection<IEObjectDescription> findMessageFields(MessageField reference) {
@@ -36,7 +38,7 @@ class ExtensionFieldNameFinderStrategy implements CustomOptionFieldNameFinder.Fi
         if (!(element instanceof MessageField)) {
           continue;
         }
-        descriptions.addAll(qualifiedNameDescriptions.qualifiedNames(element));
+        descriptions.addAll(qualifiedNameDescriptions.qualifiedNames(element, namingStrategy));
       }
     }
     return descriptions;

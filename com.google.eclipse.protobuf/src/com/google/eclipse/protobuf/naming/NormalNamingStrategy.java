@@ -10,16 +10,17 @@ package com.google.eclipse.protobuf.naming;
 
 import org.eclipse.emf.ecore.EObject;
 
+import com.google.inject.*;
+
 /**
+ * Returns the name of a model object obtained from a <code>{@link NameResolver}</code>.
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
-class NormalNamingStrategy implements NamingStrategy {
-  private final NameResolver nameResolver;
+@Singleton public class NormalNamingStrategy implements NamingStrategy {
+  @Inject private NameResolver nameResolver;
 
-  public NormalNamingStrategy(NameResolver nameResolver) {
-    this.nameResolver = nameResolver;
-  }
-
+  /** {@inheritDoc} */
   @Override public String nameOf(EObject e) {
     return nameResolver.nameOf(e);
   }
