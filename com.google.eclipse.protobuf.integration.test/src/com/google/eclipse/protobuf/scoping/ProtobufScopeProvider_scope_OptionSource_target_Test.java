@@ -15,7 +15,6 @@ import static com.google.eclipse.protobuf.junit.matchers.ContainAllFields.contai
 import static com.google.eclipse.protobuf.junit.matchers.ContainAllNames.containAll;
 import static com.google.eclipse.protobuf.scoping.OptionType.*;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
 
 import java.util.Collection;
 
@@ -33,16 +32,11 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufScopeProvider_scope_OptionSource_target_Test {
-  private static EReference reference;
-
-  @BeforeClass public static void setUpOnce() {
-    reference = mock(EReference.class);
-  }
-
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
-  @Inject private ProtobufScopeProvider scopeProvider;
+  @Inject private EReference reference;
   @Inject private ProtoDescriptorProvider descriptorProvider;
+  @Inject private ProtobufScopeProvider scopeProvider;
 
   // syntax = "proto2";
   //

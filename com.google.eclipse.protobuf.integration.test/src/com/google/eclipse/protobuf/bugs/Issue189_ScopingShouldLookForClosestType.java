@@ -12,7 +12,6 @@ import static com.google.eclipse.protobuf.junit.IEObjectDescriptions.description
 import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static org.junit.Assert.assertSame;
-import static org.mockito.Mockito.mock;
 
 import org.eclipse.emf.ecore.*;
 import org.eclipse.xtext.scoping.IScope;
@@ -29,14 +28,9 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Issue189_ScopingShouldLookForClosestType {
-  private static EReference reference;
-
-  @BeforeClass public static void setUpOnce() {
-    reference = mock(EReference.class);
-  }
-
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
+  @Inject private EReference reference;
   @Inject private ProtobufScopeProvider scopeProvider;
 
   // syntax = "proto2";

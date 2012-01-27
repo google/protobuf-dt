@@ -10,14 +10,16 @@ package com.google.eclipse.protobuf.junit.core;
 
 import static com.google.eclipse.protobuf.junit.core.GeneratedProtoFiles.protoFile;
 import static org.eclipse.xtext.util.Strings.isEmpty;
+import static org.mockito.Mockito.mock;
+
+import java.io.File;
+
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EReference;
 
 import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.scoping.IFileUriResolver;
 import com.google.inject.AbstractModule;
-
-import org.eclipse.emf.common.util.URI;
-
-import java.io.File;
 
 /**
  * Guice module for unit testing.
@@ -33,6 +35,7 @@ public class IntegrationTestModule extends AbstractModule {
 
   @Override protected void configure() {
     binder().bind(IFileUriResolver.class).to(FileUriResolver.class);
+    binder().bind(EReference.class).toInstance(mock(EReference.class));
   }
 
   private static class FileUriResolver implements IFileUriResolver {

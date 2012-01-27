@@ -13,16 +13,15 @@ import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integ
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static com.google.eclipse.protobuf.junit.matchers.ContainNames.contain;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
+
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.xtext.scoping.IScope;
+import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.scoping.ProtobufScopeProvider;
 import com.google.inject.Inject;
-
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.xtext.scoping.IScope;
-import org.junit.*;
 
 /**
  * Tests fix for <a href="http://code.google.com/p/protobuf-dt/issues/detail?id=187">Issue 187</a>.
@@ -30,14 +29,9 @@ import org.junit.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Issue187_ExposeAllTypesInDescriptor_Test {
-  private static EReference reference;
-
-  @BeforeClass public static void setUpOnce() {
-    reference = mock(EReference.class);
-  }
-
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
+  @Inject private EReference reference;
   @Inject private ProtobufScopeProvider scopeProvider;
 
   // syntax = "proto2";

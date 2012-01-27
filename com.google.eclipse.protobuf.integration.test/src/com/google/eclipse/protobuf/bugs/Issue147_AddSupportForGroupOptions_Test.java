@@ -14,7 +14,6 @@ import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeMo
 import static com.google.eclipse.protobuf.junit.matchers.ContainAllFields.containAll;
 import static com.google.eclipse.protobuf.junit.matchers.ContainAllNames.containAll;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
 
 import java.util.Collection;
 
@@ -33,16 +32,11 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Issue147_AddSupportForGroupOptions_Test {
-  private static EReference reference;
-
-  @BeforeClass public static void setUpOnce() {
-    reference = mock(EReference.class);
-  }
-
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
-  @Inject private ProtobufScopeProvider scopeProvider;
+  @Inject private EReference reference;
   @Inject private ProtoDescriptorProvider descriptorProvider;
+  @Inject private ProtobufScopeProvider scopeProvider;
 
   // syntax = "proto2";
   //

@@ -8,12 +8,16 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
+import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import org.junit.*;
 
+import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link Packages#areRelated(Package, Package)}</code>.
@@ -21,11 +25,9 @@ import com.google.eclipse.protobuf.protobuf.Package;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Packages_areRelated_Test {
-  private static Packages packages;
+  @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
-  @BeforeClass public static void setUpOnce() {
-    packages = new Packages();
-  }
+  @Inject private Packages packages;
 
   private String baseName;
   private String[] subpackageNames;

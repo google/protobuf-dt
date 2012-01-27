@@ -14,7 +14,6 @@ import static com.google.eclipse.protobuf.junit.core.SearchOption.IGNORE_CASE;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static com.google.eclipse.protobuf.junit.matchers.ContainAllFieldsInMessage.containAllFieldsIn;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
 
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.xtext.scoping.IScope;
@@ -30,14 +29,9 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufScopeProvider_scope_OptionField_target_with_MessageOptionField_Test {
-  private static EReference reference;
-
-  @BeforeClass public static void setUpOnce() {
-    reference = mock(EReference.class);
-  }
-
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
+  @Inject private EReference reference;
   @Inject private ProtobufScopeProvider scopeProvider;
 
   // syntax = "proto2";
