@@ -10,15 +10,10 @@ package com.google.eclipse.protobuf.ui.builder.protoc;
 
 import static com.google.common.io.Closeables.closeQuietly;
 import static com.google.eclipse.protobuf.ui.util.Workbenches.activeWorkbenchPage;
-import static org.eclipse.core.runtime.Status.OK_STATUS;
 import static org.eclipse.ui.console.IConsoleConstants.ID_CONSOLE_VIEW;
 
-import org.eclipse.core.runtime.*;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.*;
 import org.eclipse.ui.console.*;
-import org.eclipse.ui.progress.UIJob;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -26,8 +21,7 @@ import org.eclipse.ui.progress.UIJob;
 class ConsolePrinter {
   private static final String CONSOLE_NAME = "protoc";
 
-  private MessageConsoleStream signalStream;
-  private MessageConsoleStream outputStream;
+  private final MessageConsoleStream out;
 
   static ConsolePrinter createAndDisplayConsole() throws PartInitException {
     MessageConsole console = findConsole();
@@ -52,37 +46,18 @@ class ConsolePrinter {
   }
 
   private ConsolePrinter(MessageConsole console) {
-    signalStream = console.newMessageStream();
-    outputStream = console.newMessageStream();
-    UIJob job = new UIJob("Set colors in protoc console") {
-      @Override public IStatus runInUIThread(IProgressMonitor monitor) {
-        Display display = getDisplay();
-        signalStream.setColor(new Color(display, 0, 0, 255));
-        outputStream.setColor(new Color(display, 255, 0, 0));
-        return OK_STATUS;
-      }
-    };
-    job.schedule();
+    out = console.newMessageStream();
   }
 
   void printSignal(String s) {
-    signalStream.println(s);
+    out.println("[command] " + s);
   }
 
   void printOutput(String s) {
-    outputStream.println(s);
+    out.println("[protoc]  " + s);
   }
 
   void close() {
-    close(signalStream);
-    close(outputStream);
-  }
-
-  private static void close(MessageConsoleStream stream) {
-    Color color = stream.getColor();
-    if (color != null) {
-      color.dispose();
-    }
-    closeQuietly(stream);
+    closeQuietly(out);
   }
 }
