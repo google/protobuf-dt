@@ -32,7 +32,7 @@ class ProtocMarkerFactory {
     markers = file.findMarkers(EDITOR_CHECK, true, DEPTH_INFINITE);
   }
 
-  void createErrorIfNecessary(String fileName, String message, int lineNumber) throws CoreException {
+  void createErrorIfNecessary(String fileName, int lineNumber, String message) throws CoreException {
     String location = file.getLocation().toOSString();
     if (!location.endsWith(fileName) || containsMarker(message, lineNumber)) {
       return;

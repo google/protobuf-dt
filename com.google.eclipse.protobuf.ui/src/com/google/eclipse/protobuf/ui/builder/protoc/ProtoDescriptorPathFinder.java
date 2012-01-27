@@ -8,8 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.builder.protoc;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.io.File.separator;
-import static java.util.Arrays.asList;
 import static org.eclipse.xtext.util.Strings.*;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -26,7 +26,7 @@ import com.google.inject.Singleton;
   }
 
   @VisibleForTesting ProtoDescriptorPathFinder(String fileSeparator) {
-    descriptorFqn = concat(fileSeparator, asList("", "google", "protobuf", "descriptor.proto"));
+    descriptorFqn = concat(fileSeparator, newArrayList("", "google", "protobuf", "descriptor.proto"));
   }
 
   String findRootOf(String descriptorFilePath) {

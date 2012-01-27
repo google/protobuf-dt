@@ -8,8 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.validation;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.eclipse.protobuf.ui.validation.ProtobufResourceUIValidatorExtension.EDITOR_CHECK;
-import static java.util.Arrays.asList;
 import static org.mockito.Mockito.*;
 
 import java.util.List;
@@ -32,7 +32,7 @@ public class ProtobufResourceUIValidatorExtension_createMarkers_Test {
 
   @BeforeClass public static void setUpOnce() {
     file = mock(IFile.class);
-    issues = asList(mock(Issue.class), mock(Issue.class));
+    issues = newArrayList(mock(Issue.class), mock(Issue.class));
     monitor = mock(IProgressMonitor.class);
   }
 

@@ -14,28 +14,28 @@ import org.eclipse.core.runtime.CoreException;
 import org.junit.*;
 
 /**
- * Tests for <code>{@link CodeGenerationErrorParser#parseAndAddMarkerIfNecessary(String, ProtocMarkerFactory)}</code>.
+ * Tests for <code>{@link RegexOutputParser#parseAndAddMarkerIfNecessary(String, ProtocMarkerFactory)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class CodeGenerationErrorParser_parseAndAddMarkerIfNecessary_Test {
+public class RegexOutputParser_parseAndAddMarkerIfNecessary_withLineNumber_Test {
   private ProtocMarkerFactory markerFactory;
-  private CodeGenerationErrorParser outputParser;
+  private RegexOutputParser parser;
 
   @Before public void setUp() {
     markerFactory = mock(ProtocMarkerFactory.class);
-    outputParser = new CodeGenerationErrorParser();
+    parser = new RegexOutputParser("(.*):(.*):(.*)", 1, 2, 3);
   }
 
   @Test public void should_not_create_IMarker_if_line_does_not_match_error_pattern() throws CoreException {
     String line = "Expected field name.";
-    outputParser.parseAndAddMarkerIfNecessary(line, markerFactory);
+    parser.parseAndAddMarkerIfNecessary(line, markerFactory);
     verifyZeroInteractions(markerFactory);
   }
 
   @Test public void should_attempt_to_create_IMarker_if_line_matches_error_pattern() throws CoreException {
-    String line = "person.proto: --java_out: person.proto: Cannot generate Java.";
-    outputParser.parseAndAddMarkerIfNecessary(line, markerFactory);
-    verify(markerFactory).createErrorIfNecessary("person.proto", "--java_out: person.proto: Cannot generate Java.", -1);
+    String line = "person.proto:10:Cannot generate Java.";
+    parser.parseAndAddMarkerIfNecessary(line, markerFactory);
+    verify(markerFactory).createErrorIfNecessary("person.proto", 10, "Cannot generate Java.");
   }
 }

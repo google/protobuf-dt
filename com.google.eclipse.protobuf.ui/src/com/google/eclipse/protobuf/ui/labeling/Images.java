@@ -8,9 +8,9 @@
  */
 package com.google.eclipse.protobuf.ui.labeling;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.eclipse.protobuf.protobuf.Modifier.*;
-import static java.util.Arrays.asList;
 
 import java.util.*;
 
@@ -53,7 +53,7 @@ import com.google.inject.Singleton;
     IMAGES_BY_TYPE.put(Syntax.class, "syntax.gif");
   }
 
-  private static final List<String> STANDALONE_IMAGES = asList("extensions.gif", "imports.gif", "options.gif");
+  private static final List<String> STANDALONE_IMAGES = newArrayList("extensions.gif", "imports.gif", "options.gif");
 
   public String imageFor(Object o) {
     if (o instanceof Keyword) {

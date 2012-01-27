@@ -11,32 +11,31 @@ package com.google.eclipse.protobuf.ui.builder.protoc;
 import static org.mockito.Mockito.*;
 
 import org.eclipse.core.runtime.CoreException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 /**
- * Tests for <code>{@link OptionBasedErrorParser#parseAndAddMarkerIfNecessary(String, ProtocMarkerFactory)}</code>.
+ * Tests for <code>{@link RegexOutputParser#parseAndAddMarkerIfNecessary(String, ProtocMarkerFactory)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class OptionBasedErrorParser_parseAndAddMarkerIfNecessary_Test {
+public class RegexOutputParser_parseAndAddMarkerIfNecessary_withoutLineNumber_Test {
   private ProtocMarkerFactory markerFactory;
-  private OptionBasedErrorParser outputParser;
+  private RegexOutputParser parser;
 
   @Before public void setUp() {
     markerFactory = mock(ProtocMarkerFactory.class);
-    outputParser = new OptionBasedErrorParser();
+    parser = new RegexOutputParser("(.*):(.*)", 1, 2);
   }
 
   @Test public void should_not_create_IMarker_if_line_does_not_match_error_pattern() throws CoreException {
     String line = "Expected field name.";
-    outputParser.parseAndAddMarkerIfNecessary(line, markerFactory);
+    parser.parseAndAddMarkerIfNecessary(line, markerFactory);
     verifyZeroInteractions(markerFactory);
   }
 
   @Test public void should_attempt_to_create_IMarker_if_line_matches_error_pattern() throws CoreException {
-    String line = "--java_out: geocoding.proto: geocoding.proto: Cannot generate Java output.";
-    outputParser.parseAndAddMarkerIfNecessary(line, markerFactory);
-    verify(markerFactory).createErrorIfNecessary("geocoding.proto", "Cannot generate Java output.", -1);
+    String line = "person.proto:Cannot generate Java.";
+    parser.parseAndAddMarkerIfNecessary(line, markerFactory);
+    verify(markerFactory).createErrorIfNecessary("person.proto", -1, "Cannot generate Java.");
   }
 }

@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages.binding;
 
-import static java.util.Arrays.asList;
+import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.Collection;
 
@@ -60,7 +60,7 @@ public class BindingToListItems implements Binding {
 
   /** {@inheritDoc} */
   @Override public void savePreferenceValue() {
-    preference.setValue(asList(list.getItems()));
+    preference.setValue(newArrayList(list.getItems()));
   }
 
   public static class BindingBuilder {

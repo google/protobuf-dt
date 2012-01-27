@@ -10,7 +10,6 @@
 package com.google.eclipse.protobuf.ui.quickfix;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 
 import java.util.List;
@@ -31,7 +30,7 @@ public class ProtobufQuickAssistProcessor extends XtextQuickAssistProcessor {
   @Override public ICompletionProposal[] computeQuickAssistProposals(IQuickAssistInvocationContext context) {
     List<ICompletionProposal> proposals = newArrayList();
     proposals.addAll(spellingFixes(context));
-    proposals.addAll(asList(super.computeQuickAssistProposals(context)));
+    proposals.addAll(newArrayList(super.computeQuickAssistProposals(context)));
     return proposals.toArray(new ICompletionProposal[proposals.size()]);
   }
 
@@ -43,7 +42,7 @@ public class ProtobufQuickAssistProcessor extends XtextQuickAssistProcessor {
     if (spellingFixes.length == 1 && isNoCompletionsProposal(spellingFixes[0])) {
       return emptyList();
     }
-    return asList(spellingFixes);
+    return newArrayList(spellingFixes);
   }
 
   private boolean isNoCompletionsProposal(ICompletionProposal p) {
