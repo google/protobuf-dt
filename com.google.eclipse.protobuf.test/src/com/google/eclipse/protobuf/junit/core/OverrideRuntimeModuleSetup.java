@@ -8,24 +8,27 @@
  */
 package com.google.eclipse.protobuf.junit.core;
 
-import static org.eclipse.xtext.util.Modules2.mixin;
+import static java.util.Arrays.copyOf;
 
 import com.google.eclipse.protobuf.*;
 import com.google.inject.*;
-
+import com.google.inject.util.Modules;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class OverrideRuntimeModuleSetup extends ProtobufStandaloneSetup {
-  private final Module module;
+  private final Module[] modules;
 
-  OverrideRuntimeModuleSetup(Module module) {
-    this.module = module;
+  OverrideRuntimeModuleSetup(Module[] modules) {
+    this.modules = copyOf(modules, modules.length);
   }
 
   @Override public Injector createInjector() {
-    Module mixin = mixin(new ProtobufRuntimeModule(), module);
-    return Guice.createInjector(mixin);
+    Module current = new ProtobufRuntimeModule();
+    for (Module module : modules) {
+      current = Modules.override(current).with(module);
+    }
+    return Guice.createInjector(current);
   }
 }

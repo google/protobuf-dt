@@ -45,8 +45,8 @@ public class XtextRule implements MethodRule {
   private XtextResource resource;
   private Finder finder;
 
-  public static XtextRule overrideRuntimeModuleWith(Module testModule) {
-    return createWith(new OverrideRuntimeModuleSetup(testModule));
+  public static XtextRule overrideRuntimeModuleWith(Module...testModules) {
+    return createWith(new OverrideRuntimeModuleSetup(testModules));
   }
 
   public static XtextRule createWith(ISetup setup) {
@@ -79,7 +79,7 @@ public class XtextRule implements MethodRule {
 
   public void parseText(String text) {
     boolean ignoreSyntaxErrors = shouldIgnoreSyntaxErrorsIn(text);
-    resource = resourceFrom(new StringInputStream(text));
+    resource = createResourceFrom(new StringInputStream(text));
     IParseResult parseResult = resource.getParseResult();
     root = (Protobuf) parseResult.getRootASTElement();
     if (ignoreSyntaxErrors) {
@@ -103,15 +103,15 @@ public class XtextRule implements MethodRule {
     return text.startsWith("// ignore errors");
   }
 
-  private XtextResource resourceFrom(InputStream input) {
-    return resourceFrom(input, createURI("mytestmodel.proto"));
+  private XtextResource createResourceFrom(InputStream input) {
+    return createResourceFrom(input, createURI("file://localhost/project/src/protos/mytestmodel.proto"));
   }
 
-  private XtextResource resourceFrom(InputStream input, URI uri) {
-    XtextResourceSet set = getInstanceOf(XtextResourceSet.class);
-    set.setClasspathURIContext(getClass());
+  private XtextResource createResourceFrom(InputStream input, URI uri) {
+    XtextResourceSet resourceSet = getInstanceOf(XtextResourceSet.class);
+    resourceSet.setClasspathURIContext(getClass());
     XtextResource resource = (XtextResource) getInstanceOf(IResourceFactory.class).createResource(uri);
-    set.getResources().add(resource);
+    resourceSet.getResources().add(resource);
     try {
       resource.load(input, null);
     } catch (IOException e) {
@@ -127,6 +127,10 @@ public class XtextRule implements MethodRule {
 
   private <T> T getInstanceOf(Class<T> type) {
     return injector.getInstance(type);
+  }
+
+  public XtextResource resource() {
+    return resource;
   }
 
   public Protobuf root() {
