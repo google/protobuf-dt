@@ -27,6 +27,12 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ModelObjectDefinitionNavigator_navigateToDefinition_Test {
+  private static String filePath;
+
+  @BeforeClass public static void setUp() {
+    filePath = "/src/protos/test.proto";
+  }
+
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule(), new TestModule());
 
   @Inject private ModelObjectLocationLookup locationLookup;
@@ -36,7 +42,6 @@ public class ModelObjectDefinitionNavigator_navigateToDefinition_Test {
   @Test public void should_navigate_to_model_object_if_URI_is_found() {
     URI uri = createURI("file://localhost/project/src/protos/test.proto");
     String qualifiedName = "com.google.proto.Type";
-    String filePath = "/src/protos/test.proto";
     when(locationLookup.findModelObjectUri(qualifiedName, filePath)).thenReturn(uri);
     navigator.navigateToDefinition(qualifiedName, filePath);
     verify(editorOpener).open(uri, true);
@@ -44,7 +49,6 @@ public class ModelObjectDefinitionNavigator_navigateToDefinition_Test {
 
   @Test public void should_not_navigate_to_model_object_if_URI_is_not_found() {
     String qualifiedName = "com.google.proto.Person";
-    String filePath = "/src/protos/test.proto";
     when(locationLookup.findModelObjectUri(qualifiedName, filePath)).thenReturn(null);
     navigator.navigateToDefinition(qualifiedName, filePath);
     verifyZeroInteractions(editorOpener);
