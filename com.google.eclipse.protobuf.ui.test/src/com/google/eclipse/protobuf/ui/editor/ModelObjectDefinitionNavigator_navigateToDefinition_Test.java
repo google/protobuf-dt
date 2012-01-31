@@ -56,8 +56,8 @@ public class ModelObjectDefinitionNavigator_navigateToDefinition_Test {
 
   private static class TestModule extends AbstractTestModule {
     @Override protected void configure() {
-      createAndBindMock(ModelObjectLocationLookup.class);
-      createAndBindMock(IURIEditorOpener.class);
+      mockAndBind(ModelObjectLocationLookup.class);
+      mockAndBind(IURIEditorOpener.class);
     }
   }
 }

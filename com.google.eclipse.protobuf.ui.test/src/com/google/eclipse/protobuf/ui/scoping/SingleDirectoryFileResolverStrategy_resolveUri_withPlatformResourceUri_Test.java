@@ -14,13 +14,12 @@ import static org.eclipse.emf.common.util.URI.createURI;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
 
-import com.google.eclipse.protobuf.junit.core.*;
-import com.google.eclipse.protobuf.ui.preferences.paths.core.PathsPreferences;
-import com.google.eclipse.protobuf.ui.util.Uris;
-import com.google.inject.Inject;
-
 import org.eclipse.emf.common.util.URI;
 import org.junit.*;
+
+import com.google.eclipse.protobuf.junit.core.*;
+import com.google.eclipse.protobuf.ui.util.Uris;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link SingleDirectoryFileResolverStrategy#resolveUri(String, URI, Iterable)}</code>.
@@ -69,7 +68,6 @@ public class SingleDirectoryFileResolverStrategy_resolveUri_withPlatformResource
 
   private static class TestModule extends AbstractTestModule {
     @Override protected void configure() {
-      createAndBindMock(PathsPreferences.class);
       binder().bind(Uris.class).toInstance(UrisStub.instance());
     }
   }

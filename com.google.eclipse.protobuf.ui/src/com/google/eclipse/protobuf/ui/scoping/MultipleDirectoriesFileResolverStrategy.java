@@ -13,17 +13,15 @@ import static com.google.eclipse.protobuf.ui.util.CommaSeparatedValues.splitCsv;
 import static com.google.eclipse.protobuf.ui.util.Uris.*;
 import static org.eclipse.core.runtime.IPath.SEPARATOR;
 
+import java.util.List;
+
+import org.eclipse.emf.common.util.URI;
+
 import com.google.eclipse.protobuf.ui.preferences.paths.core.*;
 import com.google.eclipse.protobuf.ui.util.Uris;
 import com.google.inject.Inject;
 
-import org.eclipse.emf.common.util.URI;
-
-import java.util.List;
-
 /**
- * TODO test
- *
  * @author alruiz@google.com (Alex Ruiz)
  */
 class MultipleDirectoriesFileResolverStrategy implements FileResolverStrategy {
@@ -43,7 +41,7 @@ class MultipleDirectoriesFileResolverStrategy implements FileResolverStrategy {
 
   private String resolveUri(String importUri, URI declaringResourceUri, PathsPreferences preferences) {
     String directoryPaths = preferences.directoryPaths().getValue();
-    List<String> fileSystemDirectories = newArrayList();
+    List<String> unresolvedWorkspacePaths = newArrayList();
     for (String importRoot : splitCsv(directoryPaths)) {
       DirectoryPath path = DirectoryPath.parse(importRoot, preferences.getProject());
       String resolved = resolveUri(importUri, path);
@@ -51,10 +49,10 @@ class MultipleDirectoriesFileResolverStrategy implements FileResolverStrategy {
         return resolved;
       }
       if (path.isWorkspacePath()) {
-        fileSystemDirectories.add(path.value());
+        unresolvedWorkspacePaths.add(path.value());
       }
     }
-    for (String root : fileSystemDirectories) {
+    for (String root : unresolvedWorkspacePaths) {
       String directoryLocation = mapping.directoryLocation(root);
       String resolved = resolveUriInFileSystem(importUri, directoryLocation);
       if (resolved != null) {

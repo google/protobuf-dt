@@ -11,17 +11,15 @@ package com.google.eclipse.protobuf.ui.util;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.*;
 
-import com.google.inject.*;
-
-import org.eclipse.emf.common.util.URI;
-
 import java.io.File;
 import java.util.List;
 
+import org.eclipse.emf.common.util.URI;
+
+import com.google.inject.*;
+
 /**
  * Utility methods related to URIs.
- *
- * TODO test
  *
  * @author alruiz@google.com (Alex Ruiz)
  */

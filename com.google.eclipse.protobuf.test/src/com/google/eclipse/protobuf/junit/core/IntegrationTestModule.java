@@ -33,7 +33,7 @@ public class IntegrationTestModule extends AbstractTestModule {
 
   @Override protected void configure() {
     binder().bind(IFileUriResolver.class).to(FileUriResolver.class);
-    createAndBindMock(EReference.class);
+    mockAndBind(EReference.class);
   }
 
   private static class FileUriResolver implements IFileUriResolver {

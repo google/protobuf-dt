@@ -16,7 +16,7 @@ import com.google.inject.AbstractModule;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public abstract class AbstractTestModule extends AbstractModule {
-  protected <T> void createAndBindMock(Class<T> classToMock) {
+  protected <T> void mockAndBind(Class<T> classToMock) {
     binder().bind(classToMock).toInstance(mock(classToMock));
   }
 }

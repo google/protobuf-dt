@@ -8,8 +8,6 @@
  */
 package com.google.eclipse.protobuf.ui.editor.model;
 
-import static com.google.eclipse.protobuf.ui.util.Resources.URI_SCHEME_FOR_FILES;
-
 import java.io.File;
 import java.net.URI;
 
@@ -21,6 +19,8 @@ import com.google.inject.Singleton;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton class UriEditorInputs {
+  private static final String URI_SCHEME_FOR_FILES = "file";
+
   File fileFrom(IURIEditorInput input) {
     URI uri = input.getURI();
     String scheme = uri.getScheme();

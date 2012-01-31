@@ -11,8 +11,7 @@ package com.google.eclipse.protobuf.ui.util;
 import static com.google.eclipse.protobuf.ui.util.Workbenches.activeWorkbenchPage;
 
 import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.*;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.*;
@@ -29,16 +28,11 @@ import com.google.inject.Singleton;
 @Singleton public class Resources {
   private static final IViewReference[] NO_VIEW_REFERENCES = new IViewReference[0];
 
-  public static final String URI_SCHEME_FOR_FILES = "file";
-
   /**
    * Returns the project that contains the resource at the given URI.
-   *
-   * @param resourceUri
-   *          the given URI.
-   * @return the project that contains the resource at the given URI, or
-   *         {@code null} if the resource at the given URI is not in a
-   *         workspace.
+   * @param resourceUri the given URI.
+   * @return the project that contains the resource at the given URI, or {@code null} if the resource at the given URI
+   * is not in a workspace.
    */
   public IProject project(URI resourceUri) {
     IFile file = file(resourceUri);
@@ -69,11 +63,8 @@ import com.google.inject.Singleton;
 
   /**
    * Indicates whether the given URI belongs to an existing file.
-   *
-   * @param fileUri
-   *          the URI to check, as a {@code String}.
-   * @return {@code true} if the given URI belongs to an existing file,
-   *         {@code false} otherwise.
+   * @param fileUri the URI to check, as a {@code String}.
+   * @return {@code true} if the given URI belongs to an existing file, {@code false} otherwise.
    */
   public boolean fileExists(URI fileUri) {
     IFile file = file(fileUri);
@@ -82,11 +73,9 @@ import com.google.inject.Singleton;
 
   /**
    * Returns a handle to a workspace file identified by the given URI.
-   *
-   * @param uri
-   *          the given URI.
+   * @param uri the given URI.
    * @return a handle to a workspace file identified by the given URI or
-   *         {@code null} if the URI does not belong to a workspace file.
+   * {@code null} if the URI does not belong to a workspace file.
    */
   public IFile file(URI uri) {
     IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -96,9 +85,7 @@ import com.google.inject.Singleton;
 
   /**
    * Returns the project owning the file displayed in the given editor.
-   *
-   * @param editor
-   *          the given editor.
+   * @param editor the given editor.
    * @return the project owning the file displayed in the given editor.
    */
   public IProject project(IEditorPart editor) {
