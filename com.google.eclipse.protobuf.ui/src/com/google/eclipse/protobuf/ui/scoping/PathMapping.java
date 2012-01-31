@@ -10,28 +10,17 @@ package com.google.eclipse.protobuf.ui.scoping;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.xtext.util.SimpleCache;
-
-import com.google.common.base.Function;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 class PathMapping {
-  private final SimpleCache<String, String> folderPathMapping = new SimpleCache<String, String>(new FolderPathMapper());
-
-  String folderLocation(String workspacePath) {
-    return folderPathMapping.get(workspacePath);
+  String directoryLocation(String workspacePath) {
+    return directory(workspacePath).getLocation().toOSString();
   }
 
-  private static class FolderPathMapper implements Function<String, String> {
-    @Override public String apply(String workspacePath) {
-      return directory(workspacePath).getLocation().toOSString();
-    }
-
-    private static IFolder directory(String workspacePath) {
-      IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-      return root.getFolder(new Path(workspacePath));
-    }
+  private static IFolder directory(String workspacePath) {
+    IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+    return root.getFolder(new Path(workspacePath));
   }
 }

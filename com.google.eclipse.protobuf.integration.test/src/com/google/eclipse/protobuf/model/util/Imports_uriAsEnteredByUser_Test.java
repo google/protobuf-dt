@@ -14,13 +14,13 @@ import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import java.util.List;
-
-import org.junit.*;
-
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.Inject;
+
+import org.junit.*;
+
+import java.util.List;
 
 /**
  * Tests for <code>{@link Imports#uriAsEnteredByUser(Import)}</code>
@@ -37,7 +37,7 @@ public class Imports_uriAsEnteredByUser_Test {
   @Test public void should_return_import_URI_as_entered_by_user() {
     Protobuf root = xtext.root();
     Import anImport = firstImportOf(root);
-    anImport.setImportURI("file://test-protos/types.proto"); // simulate the URI is resolved
+    anImport.setImportURI("file:/test-protos/types.proto"); // simulate the URI is resolved
     assertThat(imports.uriAsEnteredByUser(anImport), equalTo("types.proto"));
   }
 

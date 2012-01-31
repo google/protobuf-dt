@@ -20,14 +20,14 @@ import com.google.inject.ImplementedBy;
 @ImplementedBy(NullFileUriResolver.class)
 public interface IFileUriResolver {
   /**
-   * Resolves the URI of the given {@code Import}.
+   * Resolves the URI of the given {@code Import}. This method will update the URI of the given {@code Import} if it was
+   * successfully resolved.
    * @param anImport the given {@code Import}.
-   * @return the resolved URI, or {@code null} if resolution was either not necessary or not successful.
    */
-  String resolveUri(Import anImport);
+  void resolveAndUpdateUri(Import anImport);
 
   class NullFileUriResolver implements IFileUriResolver {
-    @Override public String resolveUri(Import anImport) {
+    @Override public void resolveAndUpdateUri(Import anImport) {
       throw new UnsupportedOperationException();
     }
   }

@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.bugs;
 
-import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
+import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
@@ -26,7 +26,7 @@ import java.util.List;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Issue188_CustomOptionFieldsMayEndWithComma_Test {
-  @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
+  @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
   // syntax = "proto2";
   //

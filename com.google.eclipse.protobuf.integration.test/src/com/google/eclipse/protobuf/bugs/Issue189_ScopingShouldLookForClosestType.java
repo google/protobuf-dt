@@ -9,18 +9,18 @@
 package com.google.eclipse.protobuf.bugs;
 
 import static com.google.eclipse.protobuf.junit.IEObjectDescriptions.descriptionsIn;
-import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
+import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static org.junit.Assert.assertSame;
-
-import org.eclipse.emf.ecore.*;
-import org.eclipse.xtext.scoping.IScope;
-import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.scoping.ProtobufScopeProvider;
 import com.google.inject.Inject;
+
+import org.eclipse.emf.ecore.*;
+import org.eclipse.xtext.scoping.IScope;
+import org.junit.*;
 
 /**
  * Tests fix for <a href="http://code.google.com/p/protobuf-dt/issues/detail?id=189">Issue 189</a>.
@@ -28,7 +28,7 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Issue189_ScopingShouldLookForClosestType {
-  @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
+  @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
   @Inject private EReference reference;
   @Inject private ProtobufScopeProvider scopeProvider;

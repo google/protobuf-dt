@@ -16,7 +16,8 @@ import static org.eclipse.emf.ecore.util.EcoreUtil.resolveAll;
 import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import java.io.*;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.inject.*;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -29,8 +30,7 @@ import org.eclipse.xtext.util.StringInputStream;
 import org.junit.rules.MethodRule;
 import org.junit.runners.model.*;
 
-import com.google.eclipse.protobuf.protobuf.Protobuf;
-import com.google.inject.*;
+import java.io.*;
 
 /**
  * Rule that performs configuration of a standalone Xtext environment.
@@ -104,7 +104,7 @@ public class XtextRule implements MethodRule {
   }
 
   private XtextResource createResourceFrom(InputStream input) {
-    return createResourceFrom(input, createURI("file://localhost/project/src/protos/mytestmodel.proto"));
+    return createResourceFrom(input, createURI("file:/usr/local/project/src/protos/mytestmodel.proto"));
   }
 
   private XtextResource createResourceFrom(InputStream input, URI uri) {

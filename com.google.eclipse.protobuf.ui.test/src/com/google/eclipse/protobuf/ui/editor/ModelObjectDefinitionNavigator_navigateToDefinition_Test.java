@@ -13,13 +13,13 @@ import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeMo
 import static org.eclipse.emf.common.util.URI.createURI;
 import static org.mockito.Mockito.*;
 
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.xtext.ui.editor.IURIEditorOpener;
-import org.junit.*;
-
 import com.google.eclipse.protobuf.junit.core.*;
 import com.google.eclipse.protobuf.resource.ModelObjectLocationLookup;
 import com.google.inject.Inject;
+
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.xtext.ui.editor.IURIEditorOpener;
+import org.junit.*;
 
 /**
  * Tests for <code>{@link ModelObjectDefinitionNavigator#navigateToDefinition(String, String)}</code>.
@@ -40,7 +40,7 @@ public class ModelObjectDefinitionNavigator_navigateToDefinition_Test {
   @Inject private ModelObjectDefinitionNavigator navigator;
 
   @Test public void should_navigate_to_model_object_if_URI_is_found() {
-    URI uri = createURI("file://localhost/project/src/protos/test.proto");
+    URI uri = createURI("file:/usr/local/project/src/protos/test.proto");
     String qualifiedName = "com.google.proto.Type";
     when(locationLookup.findModelObjectUri(qualifiedName, filePath)).thenReturn(uri);
     navigator.navigateToDefinition(qualifiedName, filePath);

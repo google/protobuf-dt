@@ -28,9 +28,10 @@ import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 public class FileUriResolver implements IFileUriResolver {
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private Imports imports;
+  @Inject private MultipleDirectoriesFileResolverStrategy multipleDirectories;
   @Inject private Resources resources;
+  @Inject private SingleDirectoryFileResolverStrategy singleDirectory;
   @Inject private IPreferenceStoreAccess storeAccess;
-  @Inject private FileResolverStrategies resolvers;
 
   /*
    * The import URI is relative to the file where the import is. Protoc works fine, but the editor doesn't.
@@ -47,12 +48,14 @@ public class FileUriResolver implements IFileUriResolver {
    * If we import "folder/proto2.proto" into proto1.proto, proto1.proto will compile fine, but the editor will complain.
    * We need to have the import URI as "platform:/resource/protobuf-test/folder/proto2.proto" for the editor to see it.
    */
-  @Override public String resolveUri(Import anImport) {
+  @Override public void resolveAndUpdateUri(Import anImport) {
     if (imports.isResolved(anImport)) {
-      return null;
+      return;
     }
     String resolved = resolveUri(anImport.getImportURI(), anImport.eResource());
-    return resolved;
+    if (resolved != null) {
+      anImport.setImportURI(resolved);
+    }
   }
 
   private String resolveUri(String importUri, Resource resource) {
@@ -65,17 +68,14 @@ public class FileUriResolver implements IFileUriResolver {
     if (project == null) {
       project = resources.activeProject();
     }
-    if (project == null) {
-      throw new IllegalStateException("Unable to find current project");
+    PathsPreferences preferences = null;
+    FileResolverStrategy resolver = singleDirectory;
+    if (project != null) {
+      preferences = new PathsPreferences(storeAccess, project);
+      if (!preferences.filesInOneDirectoryOnly().getValue()) {
+        resolver = multipleDirectories;
+      }
     }
-    PathsPreferences preferences = new PathsPreferences(storeAccess, project);
-    return resolver(preferences).resolveUri(importUri, resourceUri, preferences);
-  }
-
-  private FileResolverStrategy resolver(PathsPreferences preferences) {
-    if (preferences.filesInOneDirectoryOnly().getValue()) {
-      return resolvers.singleDirectory();
-    }
-    return resolvers.multipleDirectories();
+    return resolver.resolveUri(importUri, resourceUri, preferences);
   }
 }

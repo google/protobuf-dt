@@ -18,6 +18,6 @@ import org.eclipse.xtext.ui.editor.preferences.*;
 public class ParserChecksPreferenceStoreInitializer implements IPreferenceStoreInitializer {
   @Override public void initialize(IPreferenceStoreAccess storeAccess) {
     ParserChecksPreferences preferences = new ParserChecksPreferences(storeAccess);
-    preferences.enableProto2OnlyChecks().setDefaultValue(false);
+    preferences.enableProto2OnlyChecks().setDefaultValue(true);
   }
 }

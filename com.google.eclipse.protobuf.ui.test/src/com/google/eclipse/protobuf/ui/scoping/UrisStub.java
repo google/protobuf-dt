@@ -8,13 +8,29 @@
  */
 package com.google.eclipse.protobuf.ui.scoping;
 
-import com.google.eclipse.protobuf.ui.preferences.paths.core.PathsPreferences;
+import com.google.eclipse.protobuf.ui.util.Uris;
 
 import org.eclipse.emf.common.util.URI;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-interface FileResolverStrategy {
-  String resolveUri(String importUri, URI declaringResourceUri, PathsPreferences preferences);
+class UrisStub extends Uris {
+  private static final UrisStub INSTANCE = new UrisStub();
+
+  static UrisStub instance() {
+    return INSTANCE;
+  }
+
+  private boolean exist;
+
+  private UrisStub() {}
+
+  void shouldAnyUriExist(boolean shouldExist) {
+    exist = shouldExist;
+  }
+
+  @Override public boolean exists(URI uri) {
+    return exist;
+  }
 }

@@ -37,17 +37,8 @@ public class ProtobufImportUriResolver extends ImportUriResolver {
   @Override public String apply(EObject from) {
     if (from instanceof Import) {
       Import anImport = (Import) from;
-      String resolvedUri = resolveImportUri(anImport);
-      if (resolvedUri != null) {
-        anImport.setImportURI(resolvedUri);
-      }
+      delegate.resolveAndUpdateUri(anImport);
     }
     return super.apply(from);
-  }
-
-  private String resolveImportUri(Import anImport) {
-    return delegate.resolveUri(anImport);
-    // String importURI = anImport.getImportURI();
-    // return delegate.resolveUri(importURI, anImport.eResource());
   }
 }
