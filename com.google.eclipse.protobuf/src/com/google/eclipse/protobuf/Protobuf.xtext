@@ -18,13 +18,13 @@ Protobuf:
   (elements+=ProtobufElement)*;
 
 Syntax:
-  'syntax' '=' name=STRING ';';
+  'syntax' '=' name=STRING (';')+;
 
 ProtobufElement:
   Package | Import | Option | ComplexType | TypeExtension | Service;
 
 Package:
-  'package' name=PackageName ';';
+  'package' name=PackageName (';')+;
 
 PackageName:
   IdOrReservedWord ('.' IdOrReservedWord)*;
@@ -33,13 +33,13 @@ Import:
   NormalImport | PublicImport | WeakImport;
 
 NormalImport:
-  'import' importURI=STRING ';';
+  'import' importURI=STRING (';')+;
 
 PublicImport:
-  'import' 'public' importURI=STRING ';';
+  'import' 'public' importURI=STRING (';')+;
 
 WeakImport:
-  'import' 'weak' importURI=STRING ';';
+  'import' 'weak' importURI=STRING (';')+;
 
 ComplexType:
   Enum | ExtensibleType;
@@ -68,7 +68,7 @@ GroupElement:
   Option | IndexedElement | ComplexType | TypeExtension | Extensions;
 
 Extensions:
-  'extensions' ranges+=Range (',' ranges+=Range)* ';';
+  'extensions' ranges+=Range (',' ranges+=Range)* (';')+;
 
 MessageField:
   =>modifier=Modifier type=TypeLink name=Name '=' index=(LONG | HEX)
@@ -100,7 +100,7 @@ EnumElement:
 
 Literal:
   name=Name '=' index=(LONG | HEX) 
-  ('[' fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)* ']')? ';';
+  ('[' fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)* ']')? (';')+;
 
 terminal HEX returns ecore::ELong:
   ('-')? '0x' (NUMBER | 'a'..'f' | 'A'..'F')+;
@@ -126,11 +126,11 @@ ServiceElement:
 
 Rpc:
   'rpc' name=Name '(' argType=MessageLink ')' 'returns' '(' returnType=MessageLink ')'
-  (('{' options+=Option* '}') (';')? | ';');
+  (('{' options+=Option* '}') (';')? | (';')+);
 
 Stream:
   'stream' name=Name '(' clientMessage=MessageLink ',' serverMessage=MessageLink ')'
-  (('{' options+=Option* '}') (';')? | ';');
+  (('{' options+=Option* '}') (';')? | (';')+);
 
 Name:
   IdOrReservedWord;
@@ -151,11 +151,11 @@ Option:
   NativeOption | CustomOption;
 
 NativeOption:
-  'option' source=OptionSource '=' value=Value ';';
+  'option' source=OptionSource '=' value=Value (';')+;
 
 CustomOption:
   'option' '(' source=OptionSource ')'
-  ('.' fields+=OptionField ('.' fields+=OptionField)*)? '=' value=Value ';';
+  ('.' fields+=OptionField ('.' fields+=OptionField)*)? '=' value=Value (';')+;
  
 FieldOption:
   DefaultValueFieldOption | NativeFieldOption | CustomFieldOption;

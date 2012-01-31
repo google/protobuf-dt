@@ -75,8 +75,8 @@ public class MultipleDirectoriesFileResolverStrategy_resolveUri_Test {
     when(directoryPaths.getValue()).thenReturn("${workspace_loc:/src/protos}");
     // try the first time as resource platform
     when(uris.exists(URI.createURI("platform:/resource/src/protos/imported.proto"))).thenReturn(false);
-    when(mapping.directoryLocation("/src/protos")).thenReturn("/usr/local/project/src/protos");
     // try again, but in the file system this time
+    when(mapping.directoryLocation("/src/protos")).thenReturn("/usr/local/project/src/protos");
     when(uris.exists(URI.createURI(expected))).thenReturn(true);
     String resolved = resolver.resolveUri("imported.proto", declaringResourceUri, allPreferences);
     assertThat(resolved, equalTo(expected));
