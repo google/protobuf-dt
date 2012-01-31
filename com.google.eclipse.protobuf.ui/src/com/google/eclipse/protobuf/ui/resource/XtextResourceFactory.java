@@ -1,8 +1,9 @@
 /*
  * Copyright (c) 2011 Google Inc.
  *
- * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License v1.0 which accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
@@ -16,7 +17,8 @@ import static org.eclipse.xtext.EcoreUtil2.resolveLazyCrossReferences;
 import static org.eclipse.xtext.resource.XtextResource.OPTION_ENCODING;
 import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
 
-import java.io.IOException;
+import com.google.eclipse.protobuf.ui.util.Resources;
+import com.google.inject.*;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -24,8 +26,7 @@ import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.resource.IResourceSetProvider;
 import org.eclipse.xtext.util.StringInputStream;
 
-import com.google.eclipse.protobuf.ui.util.Resources;
-import com.google.inject.*;
+import java.io.IOException;
 
 /**
  * Factory of <code>{@link XtextResource}</code>s.
@@ -38,14 +39,10 @@ import com.google.inject.*;
 
   /**
    * Creates a new <code>{@link XtextResource}</code>.
-   *
-   * @param uri
-   *          the URI of the file containing the EMF model.
-   * @param contents
-   *          the contents of the file.
+   * @param uri the URI of the file containing the EMF model.
+   * @param contents the contents of the file.
    * @return the created {@code XtextResource}.
-   * @throws IOException
-   *           if something goes wrong.
+   * @throws IOException if something goes wrong.
    */
   public XtextResource createResource(String uri, String contents) throws IOException {
     return createResource(createURI(uri), contents);
@@ -53,16 +50,13 @@ import com.google.inject.*;
 
   /**
    * Creates a new <code>{@link XtextResource}</code>.
-   *
-   * @param uri
-   *          the URI of the file containing the EMF model.
-   * @param contents
-   *          the contents of the file.
+   * @param uri the URI of the file containing the EMF model.
+   * @param contents the contents of the file.
    * @return the created {@code XtextResource}.
-   * @throws IOException
-   *           if something goes wrong.
+   * @throws IOException if something goes wrong.
    */
   public XtextResource createResource(URI uri, String contents) throws IOException {
+    // TODO get project from URI.
     ResourceSet resourceSet = resourceSetProvider.get(resources.activeProject());
     XtextResource resource = (XtextResource) resourceSet.createResource(uri, UNSPECIFIED_CONTENT_TYPE);
     resource.load(new StringInputStream(contents), singletonMap(OPTION_ENCODING, UTF_8));

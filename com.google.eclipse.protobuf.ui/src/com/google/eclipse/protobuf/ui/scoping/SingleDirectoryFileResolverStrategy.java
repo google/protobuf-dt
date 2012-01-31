@@ -23,7 +23,8 @@ import org.eclipse.emf.common.util.URI;
 class SingleDirectoryFileResolverStrategy implements FileResolverStrategy {
   @Inject private Uris uris;
 
-  @Override public String resolveUri(String importUri, URI declaringResourceUri, PathsPreferences preferences) {
+  @Override
+  public String resolveUri(String importUri, URI declaringResourceUri, Iterable<PathsPreferences> allPathPreferences) {
     return resolveUri(createURI(importUri), declaringResourceUri);
   }
 

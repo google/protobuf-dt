@@ -13,7 +13,6 @@ import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeMo
 import static org.eclipse.emf.common.util.URI.createURI;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 
 import com.google.eclipse.protobuf.junit.core.*;
 import com.google.eclipse.protobuf.ui.preferences.paths.core.PathsPreferences;
@@ -24,17 +23,15 @@ import org.eclipse.emf.common.util.URI;
 import org.junit.*;
 
 /**
- * Tests for <code>{@link SingleDirectoryFileResolverStrategy#resolveUri(String, URI, PathsPreferences)}</code>.
+ * Tests for <code>{@link SingleDirectoryFileResolverStrategy#resolveUri(String, URI, Iterable)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class SingleDirectoryFileResolverStrategy_resolveUri_withPlatformResourceUri_Test {
   private static URI resourceUri;
-  private static PathsPreferences preferences;
 
   @BeforeClass public static void setUpOnce() {
     resourceUri = createURI("platform:/resource/src/proto/person.proto");
-    preferences = mock(PathsPreferences.class);
   }
 
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule(), new TestModule());
@@ -44,25 +41,25 @@ public class SingleDirectoryFileResolverStrategy_resolveUri_withPlatformResource
 
   @Test public void should_resolve_import_URI_if_missing_scheme() {
     uris().shouldAnyUriExist(true);
-    String resolved = resolver.resolveUri("folder1/address.proto", resourceUri, preferences);
+    String resolved = resolver.resolveUri("folder1/address.proto", resourceUri, null);
     assertThat(resolved, equalTo("platform:/resource/src/proto/folder1/address.proto"));
   }
 
   @Test public void should_resolve_import_URI_when_overlapping_folders_with_resource_URI() {
     uris().shouldAnyUriExist(true);
-    String resolved = resolver.resolveUri("src/proto/folder1/address.proto", resourceUri, preferences);
+    String resolved = resolver.resolveUri("src/proto/folder1/address.proto", resourceUri, null);
     assertThat(resolved, equalTo("platform:/resource/src/proto/folder1/address.proto"));
   }
 
   @Test public void should_resolve_import_URI_when_overlapping_one_folder_only_with_resource_URI() {
     uris().shouldAnyUriExist(true);
-    String resolved = resolver.resolveUri("src/proto/read-only/address.proto", resourceUri, preferences);
+    String resolved = resolver.resolveUri("src/proto/read-only/address.proto", resourceUri, null);
     assertThat(resolved, equalTo("platform:/resource/src/proto/read-only/address.proto"));
   }
 
   @Test public void should_return_null_if_URI_cannot_be_resolved() {
     uris().shouldAnyUriExist(false);
-    String resolved = resolver.resolveUri("src/proto/read-only/person.proto", resourceUri, preferences);
+    String resolved = resolver.resolveUri("src/proto/read-only/person.proto", resourceUri, null);
     assertNull(resolved);
   }
 

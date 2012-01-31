@@ -30,8 +30,18 @@ class MultipleDirectoriesFileResolverStrategy implements FileResolverStrategy {
   @Inject private PathMapping mapping;
   @Inject private Uris uris;
 
-  /** {@inheritDoc} */
-  @Override public String resolveUri(String importUri, URI declaringResourceUri, PathsPreferences preferences) {
+  @Override
+  public String resolveUri(String importUri, URI declaringResourceUri, Iterable<PathsPreferences> allPathPreferences) {
+    for (PathsPreferences preferences : allPathPreferences) {
+      String resolved = resolveUri(importUri, declaringResourceUri, preferences);
+      if (resolved != null) {
+        return resolved;
+      }
+    }
+    return null;
+  }
+
+  private String resolveUri(String importUri, URI declaringResourceUri, PathsPreferences preferences) {
     String directoryPaths = preferences.directoryPaths().getValue();
     List<String> fileSystemDirectories = newArrayList();
     for (String importRoot : splitCsv(directoryPaths)) {

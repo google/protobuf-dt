@@ -21,6 +21,8 @@ import java.util.List;
 /**
  * Utility methods related to URIs.
  *
+ * TODO test
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class Uris {

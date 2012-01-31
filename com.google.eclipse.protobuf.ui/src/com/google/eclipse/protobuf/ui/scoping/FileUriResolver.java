@@ -8,6 +8,9 @@
  */
 package com.google.eclipse.protobuf.ui.scoping;
 
+import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Collections.*;
+
 import com.google.eclipse.protobuf.model.util.Imports;
 import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.scoping.*;
@@ -15,10 +18,13 @@ import com.google.eclipse.protobuf.ui.preferences.paths.core.PathsPreferences;
 import com.google.eclipse.protobuf.ui.util.Resources;
 import com.google.inject.Inject;
 
-import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.*;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.xtext.ui.XtextProjectHelper;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
+
+import java.util.List;
 
 /**
  * Resolves "import" URIs.
@@ -65,17 +71,27 @@ public class FileUriResolver implements IFileUriResolver {
     }
     URI resourceUri = resource.getURI();
     IProject project = resources.project(resourceUri);
+    FileResolverStrategy resolver = multipleDirectories;
     if (project == null) {
-      project = resources.activeProject();
+      return resolver.resolveUri(importUri, resourceUri, preferencesFromAllProjects());
     }
-    PathsPreferences preferences = null;
-    FileResolverStrategy resolver = singleDirectory;
-    if (project != null) {
-      preferences = new PathsPreferences(storeAccess, project);
-      if (!preferences.filesInOneDirectoryOnly().getValue()) {
-        resolver = multipleDirectories;
+    PathsPreferences preferences = new PathsPreferences(storeAccess, project);
+    if (preferences.filesInOneDirectoryOnly().getValue()) {
+      resolver = singleDirectory;
+    }
+    return resolver.resolveUri(importUri, resourceUri, singletonList(preferences));
+  }
+
+  private Iterable<PathsPreferences> preferencesFromAllProjects() {
+    List<PathsPreferences> allPreferences = newArrayList();
+    IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+    for (IProject project : root.getProjects()) {
+      if (project.isHidden() || !project.isAccessible() || !XtextProjectHelper.hasNature(project)) {
+        continue;
       }
+      PathsPreferences preferences = new PathsPreferences(storeAccess, project);
+      allPreferences.add(preferences);
     }
-    return resolver.resolveUri(importUri, resourceUri, preferences);
+    return unmodifiableList(allPreferences);
   }
 }

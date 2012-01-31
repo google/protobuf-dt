@@ -16,5 +16,5 @@ import org.eclipse.emf.common.util.URI;
  * @author alruiz@google.com (Alex Ruiz)
  */
 interface FileResolverStrategy {
-  String resolveUri(String importUri, URI declaringResourceUri, PathsPreferences preferences);
+  String resolveUri(String importUri, URI declaringResourceUri, Iterable<PathsPreferences> allPathPreferences);
 }
