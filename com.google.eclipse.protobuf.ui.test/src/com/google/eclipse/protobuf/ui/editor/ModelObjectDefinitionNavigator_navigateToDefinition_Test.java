@@ -11,6 +11,7 @@ package com.google.eclipse.protobuf.ui.editor;
 import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static com.google.eclipse.protobuf.ui.editor.ModelObjectDefinitionNavigator.Query.query;
+import static java.util.Collections.singletonList;
 import static org.eclipse.core.runtime.Status.*;
 import static org.eclipse.emf.common.util.URI.createURI;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -50,17 +51,17 @@ public class ModelObjectDefinitionNavigator_navigateToDefinition_Test {
 
   @Test public void should_navigate_to_model_object_if_URI_is_found() {
     URI uri = createURI("file:/usr/local/project/src/protos/test.proto");
-    QualifiedName qualifiedName = fqnConverter.toQualifiedName("com.google.proto.Type");
-    when(locationLookup.findModelObjectUri(qualifiedName, filePath)).thenReturn(uri);
-    IStatus result = navigator.navigateToDefinition(query(qualifiedName, filePath));
+    Iterable<QualifiedName> qualifiedNames = singletonList(fqnConverter.toQualifiedName("com.google.proto.Type"));
+    when(locationLookup.findModelObjectUri(qualifiedNames, filePath)).thenReturn(uri);
+    IStatus result = navigator.navigateToDefinition(query(qualifiedNames, filePath));
     assertThat(result, equalTo(OK_STATUS));
     verify(editorOpener).open(uri, true);
   }
 
   @Test public void should_not_navigate_to_model_object_if_URI_is_not_found() {
-    QualifiedName qualifiedName = fqnConverter.toQualifiedName("com.google.proto.Person");
-    when(locationLookup.findModelObjectUri(qualifiedName, filePath)).thenReturn(null);
-    IStatus result = navigator.navigateToDefinition(query(qualifiedName, filePath));
+    Iterable<QualifiedName> qualifiedNames = singletonList(fqnConverter.toQualifiedName("com.google.proto.Person"));
+    when(locationLookup.findModelObjectUri(qualifiedNames, filePath)).thenReturn(null);
+    IStatus result = navigator.navigateToDefinition(query(qualifiedNames, filePath));
     assertThat(result, equalTo(CANCEL_STATUS));
     verifyZeroInteractions(editorOpener);
   }

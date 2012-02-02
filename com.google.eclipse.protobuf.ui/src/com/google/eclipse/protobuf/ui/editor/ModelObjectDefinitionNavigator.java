@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.editor;
 
+import static com.google.common.collect.Lists.newLinkedList;
 import static org.eclipse.core.runtime.Status.*;
 
 import org.eclipse.core.runtime.*;
@@ -28,13 +29,13 @@ public class ModelObjectDefinitionNavigator {
   @Inject private IURIEditorOpener editorOpener;
 
   /**
-   * Navigates to the definition of the model object whose qualified name matches the given one. This method will open
-   * the file containing the model object definition if necessary.
+   * Navigates to the definition of the model object whose qualified name matches any of the given ones. This method
+   * will open the file containing the model object definition if necessary.
    * @param query information needed to find the object model to navigate to.
    * @return the result of the operation.
     */
   public IStatus navigateToDefinition(Query query) {
-    URI uri = locationLookup.findModelObjectUri(query.qualifiedName, query.filePath);
+    URI uri = locationLookup.findModelObjectUri(query.qualifiedNames, query.filePath);
     if (uri != null) {
       editorOpener.open(uri, true);
       return OK_STATUS;
@@ -48,22 +49,22 @@ public class ModelObjectDefinitionNavigator {
    * @author alruiz@google.com (Alex Ruiz)
    */
   public static class Query {
-    final QualifiedName qualifiedName;
+    final Iterable<QualifiedName> qualifiedNames;
     final IPath filePath;
 
     /**
      * Creates a new <code>{@link Query}</code>, to be used by
      * <code>{@link ModelObjectDefinitionNavigator#navigateToDefinition(Query)}</code>.
-     * @param qualifiedName the qualified name to match.
+     * @param qualifiedNames all the possible qualified names the model object to look for may have.
      * @param filePath the path and name of the file where to perform the lookup.
      * @return the created {@code Query}.
      */
-    public static Query query(QualifiedName qualifiedName, IPath filePath) {
-      return new Query(qualifiedName, filePath);
+    public static Query query(Iterable<QualifiedName> qualifiedNames, IPath filePath) {
+      return new Query(qualifiedNames, filePath);
     }
 
-    private Query(QualifiedName qualifiedName, IPath filePath) {
-      this.qualifiedName = qualifiedName;
+    private Query(Iterable<QualifiedName> qualifiedNames, IPath filePath) {
+      this.qualifiedNames = newLinkedList(qualifiedNames);
       this.filePath = filePath;
     }
   }

@@ -10,6 +10,7 @@ package com.google.eclipse.protobuf.resource;
 
 import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
 
@@ -26,7 +27,7 @@ import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.inject.Inject;
 
 /**
- * Tests for <code>{@link ModelObjectLocationLookup#findModelObjectUri(QualifiedName, IPath)}</code>
+ * Tests for <code>{@link ModelObjectLocationLookup#findModelObjectUri(Iterable, IPath)}</code>
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
@@ -46,8 +47,8 @@ public class ModelObjectLocationLookup_findModelObjectUri_Test {
   @Test public void should_find_URI_of_model_object_given_its_qualified_name() {
     XtextResource resource = xtext.resource();
     addToXtextIndex(resource);
-    QualifiedName qualifiedName = fqnConverter.toQualifiedName("com.google.proto.Type");
-    URI foundUri = lookup.findModelObjectUri(qualifiedName, pathOf(resource));
+    Iterable<QualifiedName> qualifiedNames = singletonList(fqnConverter.toQualifiedName("com.google.proto.Type"));
+    URI foundUri = lookup.findModelObjectUri(qualifiedNames, pathOf(resource));
     Enum anEnum = xtext.find("Type", Enum.class);
     String fragment = resource.getURIFragment(anEnum);
     URI expectedUri = resource.getURI().appendFragment(fragment);
@@ -64,8 +65,8 @@ public class ModelObjectLocationLookup_findModelObjectUri_Test {
   // message Person {}
   @Test public void should_return_null_if_file_name_is_equal_but_file_path_is_not() {
     addToXtextIndex(xtext.resource());
-    QualifiedName qualifiedName = fqnConverter.toQualifiedName("com.google.proto.Person");
-    URI foundUri = lookup.findModelObjectUri(qualifiedName, new Path("/test/src/protos/mytestmodel.proto"));
+    Iterable<QualifiedName> qualifiedNames = singletonList(fqnConverter.toQualifiedName("com.google.proto.Person"));
+    URI foundUri = lookup.findModelObjectUri(qualifiedNames, new Path("/test/src/protos/mytestmodel.proto"));
     assertNull(foundUri);
   }
 

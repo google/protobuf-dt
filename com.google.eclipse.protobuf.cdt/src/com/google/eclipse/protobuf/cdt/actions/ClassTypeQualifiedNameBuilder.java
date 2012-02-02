@@ -8,26 +8,28 @@
  */
 package com.google.eclipse.protobuf.cdt.actions;
 
-import static java.util.Collections.*;
+import static java.util.Collections.emptyList;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.cdt.core.dom.IName;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPBase;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*;
 import org.eclipse.xtext.naming.QualifiedName;
 
-import com.google.inject.Singleton;
+import com.google.inject.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 @SuppressWarnings("restriction")
 @Singleton class ClassTypeQualifiedNameBuilder {
-  public Collection<QualifiedName> createQualifiedNamesFrom(CPPClassType classType) {
+  @Inject QualifiedNameFactory qualifiedNameFactory;
+
+  public List<QualifiedName> createQualifiedNamesFrom(CPPClassType classType) {
     if (isMessage(classType)) {
       String[] segments = classType.getQualifiedName();
-      return singletonList(QualifiedName.create(segments));
+      return qualifiedNameFactory.createQualifiedNamesForComplexType(segments);
     }
     return emptyList();
   }
@@ -45,7 +47,7 @@ import com.google.inject.Singleton;
     if (!qualifiedName.isFullyQualified()) {
       return false;
     }
-    String rawSignature = qualifiedName.getRawSignature();
-    return "::google::protobuf::Message".equals(rawSignature);
+    String qualifiedNameAsText = qualifiedName.toString();
+    return "::google::protobuf::Message".equals(qualifiedNameAsText);
   }
 }

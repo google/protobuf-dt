@@ -8,8 +8,6 @@
  */
 package com.google.eclipse.protobuf.cdt.actions;
 
-import java.util.Collection;
-
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
@@ -34,9 +32,9 @@ public class OpenProtoDeclarationAction implements IEditorActionDelegate {
     if (editor == null || selection == null) {
       return;
     }
-    Collection<Query> queries = queryBuilder.buildQueries(editor, selection);
-    if (!queries.isEmpty()) {
-      navigationJobs.scheduleUsing(queries);
+    Query query = queryBuilder.buildQuery(editor, selection);
+    if (query != null) {
+      navigationJobs.scheduleUsing(query);
     }
   }
 

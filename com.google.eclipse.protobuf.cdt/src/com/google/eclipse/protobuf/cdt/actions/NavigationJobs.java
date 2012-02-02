@@ -10,8 +10,6 @@ package com.google.eclipse.protobuf.cdt.actions;
 
 import static org.eclipse.core.runtime.Status.OK_STATUS;
 
-import java.util.Collection;
-
 import org.eclipse.core.runtime.*;
 import org.eclipse.ui.progress.UIJob;
 
@@ -25,15 +23,10 @@ import com.google.inject.Inject;
 class NavigationJobs {
   @Inject private ModelObjectDefinitionNavigator navigator;
 
-  void scheduleUsing(final Collection<Query> queries) {
+  void scheduleUsing(final Query query) {
     UIJob job = new UIJob("Navigating to .proto file") {
       @Override public IStatus runInUIThread(IProgressMonitor monitor) {
-        for (Query query : queries) {
-          IStatus result = navigator.navigateToDefinition(query);
-          if (result.equals(OK_STATUS)) {
-            break;
-          }
-        }
+        navigator.navigateToDefinition(query);
         return OK_STATUS;
       }
     };

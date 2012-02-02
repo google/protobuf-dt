@@ -27,21 +27,23 @@ public class ModelObjectLocationLookup {
   @Inject private IResourceDescriptions xtextIndex;
 
   /**
-   * Finds the URI of a model object whose qualified name matches the given one.
-   * @param qualifiedName the qualified name to match.
+   * Finds the URI of a model object whose qualified name matches any of the given ones.
+   * @param qualifiedNames all the possible qualified names the model object to look for may have.
    * @param filePath the path and name of the file where to perform the lookup.
-   * @return the URI  of a model object whose qualified name matches the given one, or {@code null} if a matching model
-   * object cannot be found.
+   * @return the URI of a model object whose qualified name matches any of the given ones, or {@code null} if a
+   * matching model object cannot be found.
    */
-  public URI findModelObjectUri(QualifiedName qualifiedName, IPath filePath) {
+  public URI findModelObjectUri(Iterable<QualifiedName> qualifiedNames, IPath filePath) {
     for (IResourceDescription resourceDescription : xtextIndex.getAllResourceDescriptions()) {
       URI resourceUri = resourceDescription.getURI();
       if (paths.areReferringToSameFile(filePath, resourceUri)) {
         // we found the resource we are looking for.
         for (IEObjectDescription exported : resourceDescription.getExportedObjects()) {
           QualifiedName modelObjectQualifiedName = exported.getQualifiedName();
-          if (qualifiedName.equals(modelObjectQualifiedName)) {
-            return exported.getEObjectURI();
+          for (QualifiedName qualifiedName : qualifiedNames) {
+            if (qualifiedName.equals(modelObjectQualifiedName)) {
+              return exported.getEObjectURI();
+            }
           }
         }
         break;

@@ -8,14 +8,12 @@
  */
 package com.google.eclipse.protobuf.cdt.actions;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static com.google.eclipse.protobuf.ui.editor.ModelObjectDefinitionNavigator.Query.query;
 import static java.lang.Math.max;
-import static java.util.Collections.emptyList;
 import static org.eclipse.cdt.internal.ui.editor.ASTProvider.WAIT_NO;
 import static org.eclipse.core.runtime.Status.*;
 
-import java.util.*;
+import java.util.Collection;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.cdt.core.dom.ast.*;
@@ -40,16 +38,16 @@ class ModelObjectDefinitionQueryBuilder {
   @Inject private ClassTypeQualifiedNameBuilder nameBuilder;
   @Inject private ProtoFilePathFinder pathFinder;
 
-  Collection<Query> buildQueries(final IEditorPart editor, final ITextSelection selection) {
+  Query buildQuery(final IEditorPart editor, final ITextSelection selection) {
     final IPath protoFilePath = pathFinder.findProtoFilePath(editor);
     if (protoFilePath == null) {
-      return emptyList();
+      return null;
     }
     IWorkingCopy workingCopy = CUIPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(editor.getEditorInput());
     if (workingCopy == null) {
-      return emptyList();
+      return null;
     }
-    final AtomicReference<Collection<Query>> queriesReference = new AtomicReference<Collection<Query>>();
+    final AtomicReference<Query> queriesReference = new AtomicReference<Query>();
     ASTProvider astProvider = ASTProvider.getASTProvider();
     IStatus status = astProvider.runOnAST(workingCopy, WAIT_NO, null, new ASTRunnable() {
       @Override public IStatus runOnAST(ILanguage lang, IASTTranslationUnit ast) throws CoreException {
@@ -70,11 +68,7 @@ class ModelObjectDefinitionQueryBuilder {
             if (qualifiedNames.isEmpty()) {
               return CANCEL_STATUS;
             }
-            List<Query> queries = newArrayList();
-            for (QualifiedName qualifiedName : qualifiedNames) {
-              queries.add(query(qualifiedName, protoFilePath));
-            }
-            queriesReference.set(queries);
+            queriesReference.set(query(qualifiedNames, protoFilePath));
             return OK_STATUS;
           }
         }
@@ -82,7 +76,7 @@ class ModelObjectDefinitionQueryBuilder {
       }
     });
     if (status == CANCEL_STATUS) {
-      return emptyList();
+      return null;
     }
     return queriesReference.get();
   }
