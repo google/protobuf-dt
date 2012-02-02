@@ -42,9 +42,6 @@ public class PreferenceDrivenProtobufParser extends ProtobufParser {
   }
 
   private boolean isNotProto2(IParseResult result) {
-    if (!result.hasSyntaxErrors()) {
-      return false;
-    }
     for (INode node : result.getSyntaxErrors()) {
       if (isNonProto2(node.getSyntaxErrorMessage())) {
         return true;
