@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Protocol Buffer Editor: CDT Integration
+Bundle-SymbolicName: com.google.eclipse.protobuf.cdt;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: com.google.eclipse.protobuf.cdt.ProtobufCdtActivator
+Bundle-Vendor: Google, Inc.
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.cdt.core;bundle-version="5.3.1",
+ org.eclipse.cdt.ui;bundle-version="5.3.1",
+ com.google.eclipse.protobuf;bundle-version="1.2.1",
+ com.google.eclipse.protobuf.ui;bundle-version="1.2.1",
+ org.eclipse.core.resources;bundle-version="3.7.100",
+ org.eclipse.jface.text;bundle-version="3.7.1",
+ org.eclipse.xtext;bundle-version="2.2.1",
+ org.eclipse.xtext.ui;bundle-version="2.2.1"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
