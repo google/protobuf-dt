@@ -10,47 +10,58 @@ package com.google.eclipse.protobuf.ui.editor;
 
 import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
+import static com.google.eclipse.protobuf.ui.editor.ModelObjectDefinitionNavigator.Query.query;
+import static org.eclipse.core.runtime.Status.*;
 import static org.eclipse.emf.common.util.URI.createURI;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
-import com.google.eclipse.protobuf.junit.core.*;
-import com.google.eclipse.protobuf.resource.ModelObjectLocationLookup;
-import com.google.inject.Inject;
-
+import org.eclipse.core.runtime.*;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.xtext.naming.*;
+import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.ui.editor.IURIEditorOpener;
 import org.junit.*;
 
+import com.google.eclipse.protobuf.junit.core.*;
+import com.google.eclipse.protobuf.resource.ModelObjectLocationLookup;
+import com.google.eclipse.protobuf.ui.editor.ModelObjectDefinitionNavigator.Query;
+import com.google.inject.Inject;
+
 /**
- * Tests for <code>{@link ModelObjectDefinitionNavigator#navigateToDefinition(String, String)}</code>.
+ * Tests for <code>{@link ModelObjectDefinitionNavigator#navigateToDefinition(Query)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ModelObjectDefinitionNavigator_navigateToDefinition_Test {
-  private static String filePath;
+  private static IPath filePath;
 
   @BeforeClass public static void setUp() {
-    filePath = "/src/protos/test.proto";
+    filePath = new Path("/src/protos/test.proto");
   }
 
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule(), new TestModule());
 
+  @Inject private IQualifiedNameConverter fqnConverter;
   @Inject private ModelObjectLocationLookup locationLookup;
   @Inject private IURIEditorOpener editorOpener;
   @Inject private ModelObjectDefinitionNavigator navigator;
 
   @Test public void should_navigate_to_model_object_if_URI_is_found() {
     URI uri = createURI("file:/usr/local/project/src/protos/test.proto");
-    String qualifiedName = "com.google.proto.Type";
+    QualifiedName qualifiedName = fqnConverter.toQualifiedName("com.google.proto.Type");
     when(locationLookup.findModelObjectUri(qualifiedName, filePath)).thenReturn(uri);
-    navigator.navigateToDefinition(qualifiedName, filePath);
+    IStatus result = navigator.navigateToDefinition(query(qualifiedName, filePath));
+    assertThat(result, equalTo(OK_STATUS));
     verify(editorOpener).open(uri, true);
   }
 
   @Test public void should_not_navigate_to_model_object_if_URI_is_not_found() {
-    String qualifiedName = "com.google.proto.Person";
+    QualifiedName qualifiedName = fqnConverter.toQualifiedName("com.google.proto.Person");
     when(locationLookup.findModelObjectUri(qualifiedName, filePath)).thenReturn(null);
-    navigator.navigateToDefinition(qualifiedName, filePath);
+    IStatus result = navigator.navigateToDefinition(query(qualifiedName, filePath));
+    assertThat(result, equalTo(CANCEL_STATUS));
     verifyZeroInteractions(editorOpener);
   }
 

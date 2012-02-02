@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui;
+package com.google.eclipse.protobuf.ui.util;
 
 import com.google.eclipse.protobuf.ui.internal.ProtobufActivator;
 import com.google.inject.Injector;

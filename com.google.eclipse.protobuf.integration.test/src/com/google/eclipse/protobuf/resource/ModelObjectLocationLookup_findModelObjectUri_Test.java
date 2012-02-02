@@ -13,7 +13,10 @@ import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeMo
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
 
+import org.eclipse.core.runtime.*;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.xtext.naming.*;
+import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.*;
 import org.eclipse.xtext.resource.impl.ResourceSetBasedResourceDescriptions;
 import org.junit.*;
@@ -23,13 +26,14 @@ import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.inject.Inject;
 
 /**
- * Tests for <code>{@link ModelObjectLocationLookup#findModelObjectUri(String, String)}</code>
+ * Tests for <code>{@link ModelObjectLocationLookup#findModelObjectUri(QualifiedName, IPath)}</code>
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ModelObjectLocationLookup_findModelObjectUri_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
+  @Inject private IQualifiedNameConverter fqnConverter;
   @Inject private ModelObjectLocationLookup lookup;
 
   // syntax = "proto2";
@@ -42,11 +46,16 @@ public class ModelObjectLocationLookup_findModelObjectUri_Test {
   @Test public void should_find_URI_of_model_object_given_its_qualified_name() {
     XtextResource resource = xtext.resource();
     addToXtextIndex(resource);
-    URI foundUri = lookup.findModelObjectUri("com.google.proto.Type", resource.getURI().path());
+    QualifiedName qualifiedName = fqnConverter.toQualifiedName("com.google.proto.Type");
+    URI foundUri = lookup.findModelObjectUri(qualifiedName, pathOf(resource));
     Enum anEnum = xtext.find("Type", Enum.class);
     String fragment = resource.getURIFragment(anEnum);
     URI expectedUri = resource.getURI().appendFragment(fragment);
     assertThat(foundUri, equalTo(expectedUri));
+  }
+
+  private IPath pathOf(XtextResource resource) {
+    return new Path(resource.getURI().path());
   }
 
   // syntax = "proto2";
@@ -55,7 +64,8 @@ public class ModelObjectLocationLookup_findModelObjectUri_Test {
   // message Person {}
   @Test public void should_return_null_if_file_name_is_equal_but_file_path_is_not() {
     addToXtextIndex(xtext.resource());
-    URI foundUri = lookup.findModelObjectUri("com.google.proto.Person", "/test/src/protos/mytestmodel.proto");
+    QualifiedName qualifiedName = fqnConverter.toQualifiedName("com.google.proto.Person");
+    URI foundUri = lookup.findModelObjectUri(qualifiedName, new Path("/test/src/protos/mytestmodel.proto"));
     assertNull(foundUri);
   }
 

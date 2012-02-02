@@ -16,9 +16,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.*;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
-import com.google.eclipse.protobuf.ui.ProtobufPlugIn;
 import com.google.eclipse.protobuf.ui.preferences.general.core.GeneralPreferences;
-import com.google.eclipse.protobuf.ui.util.Resources;
+import com.google.eclipse.protobuf.ui.util.*;
 
 /**
  * Validates a .proto file when it is opened or activated.

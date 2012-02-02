@@ -8,11 +8,13 @@
  */
 package com.google.eclipse.protobuf.resource;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.xtext.naming.*;
+import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.*;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.eclipse.protobuf.util.IPaths;
 import com.google.inject.Inject;
 
 /**
@@ -21,24 +23,24 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ModelObjectLocationLookup {
+  @Inject private IPaths paths;
   @Inject private IResourceDescriptions xtextIndex;
-  @Inject private IQualifiedNameConverter fqnConverter;
 
   /**
    * Finds the URI of a model object whose qualified name matches the given one.
-   * @param qualifiedNameAsText the qualified name to match.
-   * @param filePath the path and name of the file where to perform the lookup. It should not include the host.
+   * @param qualifiedName the qualified name to match.
+   * @param filePath the path and name of the file where to perform the lookup.
    * @return the URI  of a model object whose qualified name matches the given one, or {@code null} if a matching model
    * object cannot be found.
    */
-  public URI findModelObjectUri(String qualifiedNameAsText, String filePath) {
-    QualifiedName qualifiedName = fqnConverter.toQualifiedName(qualifiedNameAsText);
+  public URI findModelObjectUri(QualifiedName qualifiedName, IPath filePath) {
     for (IResourceDescription resourceDescription : xtextIndex.getAllResourceDescriptions()) {
       URI resourceUri = resourceDescription.getURI();
-      if (filePath.equals(resourceUri.path())) {
+      if (paths.areReferringToSameFile(filePath, resourceUri)) {
         // we found the resource we are looking for.
         for (IEObjectDescription exported : resourceDescription.getExportedObjects()) {
-          if (!exported.getEObjectOrProxy().eIsProxy() && qualifiedName.equals(exported.getQualifiedName())) {
+          QualifiedName modelObjectQualifiedName = exported.getQualifiedName();
+          if (qualifiedName.equals(modelObjectQualifiedName)) {
             return exported.getEObjectURI();
           }
         }

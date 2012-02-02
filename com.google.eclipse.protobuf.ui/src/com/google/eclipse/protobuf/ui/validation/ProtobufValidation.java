@@ -23,7 +23,7 @@ import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
 import com.google.eclipse.protobuf.model.util.Imports;
 import com.google.eclipse.protobuf.protobuf.Import;
-import com.google.eclipse.protobuf.ui.ProtobufPlugIn;
+import com.google.eclipse.protobuf.ui.util.ProtobufPlugIn;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

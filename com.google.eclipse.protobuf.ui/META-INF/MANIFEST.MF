@@ -24,6 +24,8 @@ Import-Package: org.apache.commons.logging,
  org.apache.log4j,
  org.eclipse.ui.texteditor.spelling
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: com.google.eclipse.protobuf.ui.contentassist.antlr,
- com.google.eclipse.protobuf.ui.contentassist
+Export-Package: com.google.eclipse.protobuf.ui.contentassist,
+ com.google.eclipse.protobuf.ui.contentassist.antlr,
+ com.google.eclipse.protobuf.ui.editor,
+ com.google.eclipse.protobuf.ui.util
 Bundle-Activator: com.google.eclipse.protobuf.ui.internal.ProtobufActivator
