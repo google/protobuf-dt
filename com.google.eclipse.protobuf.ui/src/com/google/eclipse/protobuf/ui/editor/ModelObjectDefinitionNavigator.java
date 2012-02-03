@@ -14,9 +14,10 @@ import static org.eclipse.core.runtime.Status.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.resource.IResourceDescription;
 import org.eclipse.xtext.ui.editor.IURIEditorOpener;
 
-import com.google.eclipse.protobuf.resource.ModelObjectLocationLookup;
+import com.google.eclipse.protobuf.resource.*;
 import com.google.inject.Inject;
 
 /**
@@ -25,8 +26,9 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ModelObjectDefinitionNavigator {
-  @Inject private ModelObjectLocationLookup locationLookup;
+  @Inject private IndexLookup lookup;
   @Inject private IURIEditorOpener editorOpener;
+  @Inject private ResourceDescriptions resources;
 
   /**
    * Navigates to the definition of the model object whose qualified name matches any of the given ones. This method
@@ -35,10 +37,16 @@ public class ModelObjectDefinitionNavigator {
    * @return the result of the operation.
     */
   public IStatus navigateToDefinition(Query query) {
-    URI uri = locationLookup.findModelObjectUri(query.qualifiedNames, query.filePath);
-    if (uri != null) {
-      editorOpener.open(uri, true);
-      return OK_STATUS;
+    IResourceDescription resource = lookup.resourceIn(query.filePath);
+    if (resource == null) {
+      return CANCEL_STATUS;
+    }
+    for (QualifiedName qualifiedName : query.qualifiedNames) {
+      URI uri = resources.modelObjectUri(resource, qualifiedName);
+      if (uri != null) {
+        editorOpener.open(uri, true);
+        return OK_STATUS;
+      }
     }
     return CANCEL_STATUS;
   }
@@ -59,13 +67,18 @@ public class ModelObjectDefinitionNavigator {
      * @param filePath the path and name of the file where to perform the lookup.
      * @return the created {@code Query}.
      */
-    public static Query query(Iterable<QualifiedName> qualifiedNames, IPath filePath) {
+    public static Query newQuery(Iterable<QualifiedName> qualifiedNames, IPath filePath) {
       return new Query(qualifiedNames, filePath);
     }
 
     private Query(Iterable<QualifiedName> qualifiedNames, IPath filePath) {
       this.qualifiedNames = newLinkedList(qualifiedNames);
       this.filePath = filePath;
+    }
+
+    @Override public String toString() {
+      String format = "%s[qualifiedNames=%s, filePath=%s]";
+      return String.format(format, getClass().getSimpleName(), qualifiedNames, filePath);
     }
   }
 }

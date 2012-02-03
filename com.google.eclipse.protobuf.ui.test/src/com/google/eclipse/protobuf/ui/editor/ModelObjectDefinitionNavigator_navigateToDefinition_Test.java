@@ -10,7 +10,7 @@ package com.google.eclipse.protobuf.ui.editor;
 
 import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
-import static com.google.eclipse.protobuf.ui.editor.ModelObjectDefinitionNavigator.Query.query;
+import static com.google.eclipse.protobuf.ui.editor.ModelObjectDefinitionNavigator.Query.newQuery;
 import static java.util.Collections.singletonList;
 import static org.eclipse.core.runtime.Status.*;
 import static org.eclipse.emf.common.util.URI.createURI;
@@ -22,11 +22,12 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.resource.IResourceDescription;
 import org.eclipse.xtext.ui.editor.IURIEditorOpener;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.*;
-import com.google.eclipse.protobuf.resource.ModelObjectLocationLookup;
+import com.google.eclipse.protobuf.resource.*;
 import com.google.eclipse.protobuf.ui.editor.ModelObjectDefinitionNavigator.Query;
 import com.google.inject.Inject;
 
@@ -38,38 +39,48 @@ import com.google.inject.Inject;
 public class ModelObjectDefinitionNavigator_navigateToDefinition_Test {
   private static IPath filePath;
 
-  @BeforeClass public static void setUp() {
+  @BeforeClass public static void setUpOnce() {
     filePath = new Path("/src/protos/test.proto");
   }
 
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule(), new TestModule());
 
-  @Inject private IQualifiedNameConverter fqnConverter;
-  @Inject private ModelObjectLocationLookup locationLookup;
   @Inject private IURIEditorOpener editorOpener;
+  @Inject private IQualifiedNameConverter fqnConverter;
+  @Inject private IndexLookup indexLookup;
+  @Inject private ResourceDescriptions resources;
   @Inject private ModelObjectDefinitionNavigator navigator;
 
+  private IResourceDescription resource;
+
+  @Before public void setUp() {
+    resource = mock(IResourceDescription.class);
+  }
+
   @Test public void should_navigate_to_model_object_if_URI_is_found() {
+    when(indexLookup.resourceIn(filePath)).thenReturn(resource);
+    QualifiedName qualifiedName = fqnConverter.toQualifiedName("com.google.proto.Type");
     URI uri = createURI("file:/usr/local/project/src/protos/test.proto");
-    Iterable<QualifiedName> qualifiedNames = singletonList(fqnConverter.toQualifiedName("com.google.proto.Type"));
-    when(locationLookup.findModelObjectUri(qualifiedNames, filePath)).thenReturn(uri);
-    IStatus result = navigator.navigateToDefinition(query(qualifiedNames, filePath));
+    when(resources.modelObjectUri(resource, qualifiedName)).thenReturn(uri);
+    IStatus result = navigator.navigateToDefinition(newQuery(singletonList(qualifiedName), filePath));
     assertThat(result, equalTo(OK_STATUS));
     verify(editorOpener).open(uri, true);
   }
 
   @Test public void should_not_navigate_to_model_object_if_URI_is_not_found() {
-    Iterable<QualifiedName> qualifiedNames = singletonList(fqnConverter.toQualifiedName("com.google.proto.Person"));
-    when(locationLookup.findModelObjectUri(qualifiedNames, filePath)).thenReturn(null);
-    IStatus result = navigator.navigateToDefinition(query(qualifiedNames, filePath));
+    when(indexLookup.resourceIn(filePath)).thenReturn(resource);
+    QualifiedName qualifiedName = fqnConverter.toQualifiedName("com.google.proto.Person");
+    when(resources.modelObjectUri(resource, qualifiedName)).thenReturn(null);
+    IStatus result = navigator.navigateToDefinition(newQuery(singletonList(qualifiedName), filePath));
     assertThat(result, equalTo(CANCEL_STATUS));
     verifyZeroInteractions(editorOpener);
   }
 
   private static class TestModule extends AbstractTestModule {
     @Override protected void configure() {
-      mockAndBind(ModelObjectLocationLookup.class);
       mockAndBind(IURIEditorOpener.class);
+      mockAndBind(IndexLookup.class);
+      mockAndBind(ResourceDescriptions.class);
     }
   }
 }

@@ -11,15 +11,15 @@ package com.google.eclipse.protobuf.model.util;
 import static org.eclipse.emf.common.util.URI.createURI;
 import static org.eclipse.emf.ecore.util.EcoreUtil.getAllContents;
 
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.inject.Inject;
-
 import org.eclipse.emf.common.util.*;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.*;
 import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
+
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.inject.Inject;
 
 /**
  * Utility methods related to <code>{@link Resource}</code>
@@ -36,6 +36,7 @@ public class Resources {
    * @return the resource referred by the URI of the given import, or {@code null} is the given {@code ResourceSet} does
    * not contain the resource.
    */
+  // TODO move to class ResourceSets
   public Resource importedResource(Import anImport, ResourceSet resourceSet) {
     try {
       URI importUri = createURI(uriResolver.apply(anImport));

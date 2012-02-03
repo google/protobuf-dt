@@ -9,7 +9,7 @@
 package com.google.eclipse.protobuf.ui.builder.protoc;
 
 import static com.google.eclipse.protobuf.ui.util.Paths.segmentsOf;
-import static java.io.File.separator;
+import static org.eclipse.core.runtime.IPath.SEPARATOR;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
@@ -41,7 +41,7 @@ class OutputDirectory {
         if (!directory.exists()) {
           directory.create(true, true, NO_MONITOR);
         }
-        path.append(separator);
+        path.append(SEPARATOR);
       }
     }
     return directory;

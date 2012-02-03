@@ -21,8 +21,8 @@ import com.google.inject.Binder;
  */
 public class ProtobufCdtModule extends AbstractGenericModule {
   public void configureModelObjectDefinitionNavigator(Binder binder) {
-    bindToProtobufPluginObject(ModelObjectDefinitionNavigator.class, binder);
     bindToProtobufPluginObject(IPreferenceStoreAccess.class, binder);
+    bindToProtobufPluginObject(ModelObjectDefinitionNavigator.class, binder);
   }
 
   private <T> void bindToProtobufPluginObject(Class<T> type, Binder binder) {

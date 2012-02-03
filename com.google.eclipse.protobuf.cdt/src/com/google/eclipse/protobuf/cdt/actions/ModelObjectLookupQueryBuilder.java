@@ -8,25 +8,26 @@
  */
 package com.google.eclipse.protobuf.cdt.actions;
 
-import static com.google.eclipse.protobuf.ui.editor.ModelObjectDefinitionNavigator.Query.query;
-import static java.lang.Math.max;
 import static org.eclipse.cdt.internal.ui.editor.ASTProvider.WAIT_NO;
 import static org.eclipse.core.runtime.Status.*;
 
-import java.util.Collection;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.cdt.core.dom.ast.*;
 import org.eclipse.cdt.core.model.*;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassType;
 import org.eclipse.cdt.internal.core.model.ASTCache.ASTRunnable;
 import org.eclipse.cdt.internal.ui.editor.ASTProvider;
 import org.eclipse.cdt.ui.CUIPlugin;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.jface.viewers.*;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.xtext.naming.QualifiedName;
 
+import com.google.eclipse.protobuf.cdt.fqn.QualifiedNameProvider;
+import com.google.eclipse.protobuf.cdt.path.ProtoFilePathFinder;
 import com.google.eclipse.protobuf.ui.editor.ModelObjectDefinitionNavigator.Query;
 import com.google.inject.Inject;
 
@@ -34,12 +35,17 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @SuppressWarnings("restriction")
-class ModelObjectDefinitionQueryBuilder {
-  @Inject private ClassTypeQualifiedNameBuilder nameBuilder;
+class ModelObjectLookupQueryBuilder {
+  @Inject private QualifiedNameProvider qualifiedNameProvider;
   @Inject private ProtoFilePathFinder pathFinder;
 
-  Query buildQuery(final IEditorPart editor, final ITextSelection selection) {
-    final IPath protoFilePath = pathFinder.findProtoFilePath(editor);
+  Query buildQuery(IEditorPart editor) {
+    final int offset = selectionOffsetOf(editor);
+    if (offset < 0) {
+      return null;
+    }
+    IFile file = (IFile) editor.getEditorInput().getAdapter(IFile.class);
+    final IPath protoFilePath = pathFinder.findProtoFilePath(file);
     if (protoFilePath == null) {
       return null;
     }
@@ -54,21 +60,16 @@ class ModelObjectDefinitionQueryBuilder {
         if (ast == null) {
           return CANCEL_STATUS;
         }
-        int offset = selection.getOffset();
-        int length = max(1, selection.getLength());
         IASTNodeSelector nodeSelector= ast.getNodeSelector(null);
-        IASTName selectedName = nodeSelector.findEnclosingName(offset, length);
+        IASTName selectedName = nodeSelector.findEnclosingName(offset, 1);
         if (selectedName == null) {
           return CANCEL_STATUS;
         }
         if (selectedName.isDefinition()) {
           IBinding binding = selectedName.resolveBinding();
-          if (binding instanceof CPPClassType) {
-            Collection<QualifiedName> qualifiedNames = nameBuilder.createQualifiedNamesFrom((CPPClassType) binding);
-            if (qualifiedNames.isEmpty()) {
-              return CANCEL_STATUS;
-            }
-            queriesReference.set(query(qualifiedNames, protoFilePath));
+          Iterable<QualifiedName> qualifiedNames = qualifiedNameProvider.qualifiedNamesFrom(binding);
+          if (qualifiedNames != null) {
+            queriesReference.set(Query.newQuery(qualifiedNames, protoFilePath));
             return OK_STATUS;
           }
         }
@@ -79,5 +80,15 @@ class ModelObjectDefinitionQueryBuilder {
       return null;
     }
     return queriesReference.get();
+  }
+
+  private int selectionOffsetOf(IEditorPart editor) {
+    ISelectionProvider selectionProvider = ((ITextEditor) editor).getSelectionProvider();
+    ISelection selection = selectionProvider.getSelection();
+    if (selection instanceof ITextSelection) {
+      ITextSelection textSelection = (ITextSelection) selection;
+      return textSelection.getOffset();
+    }
+    return -1;
   }
 }

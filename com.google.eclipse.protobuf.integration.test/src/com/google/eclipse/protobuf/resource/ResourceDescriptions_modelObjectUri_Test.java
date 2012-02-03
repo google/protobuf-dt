@@ -10,14 +10,12 @@ package com.google.eclipse.protobuf.resource;
 
 import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
-import static java.util.Collections.singletonList;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
 
-import org.eclipse.core.runtime.*;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.naming.*;
-import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.*;
 import org.eclipse.xtext.resource.impl.ResourceSetBasedResourceDescriptions;
 import org.junit.*;
@@ -27,15 +25,17 @@ import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.inject.Inject;
 
 /**
- * Tests for <code>{@link ModelObjectLocationLookup#findModelObjectUri(Iterable, IPath)}</code>
+ * Tests for <code>{@link ResourceDescriptions#modelObjectUri(IResourceDescription, QualifiedName)}</code>
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ModelObjectLocationLookup_findModelObjectUri_Test {
+public class ResourceDescriptions_modelObjectUri_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
   @Inject private IQualifiedNameConverter fqnConverter;
-  @Inject private ModelObjectLocationLookup lookup;
+  @Inject private ResourceSetBasedResourceDescriptions index;
+  @Inject private ResourceDescriptions resourceDescriptions;
+
 
   // syntax = "proto2";
   // package com.google.proto;
@@ -46,17 +46,12 @@ public class ModelObjectLocationLookup_findModelObjectUri_Test {
   // }
   @Test public void should_find_URI_of_model_object_given_its_qualified_name() {
     XtextResource resource = xtext.resource();
-    addToXtextIndex(resource);
-    Iterable<QualifiedName> qualifiedNames = singletonList(fqnConverter.toQualifiedName("com.google.proto.Type"));
-    URI foundUri = lookup.findModelObjectUri(qualifiedNames, pathOf(resource));
+    QualifiedName qualifiedName = fqnConverter.toQualifiedName("com.google.proto.Type");
+    URI foundUri = resourceDescriptions.modelObjectUri(describe(resource), qualifiedName);
     Enum anEnum = xtext.find("Type", Enum.class);
     String fragment = resource.getURIFragment(anEnum);
     URI expectedUri = resource.getURI().appendFragment(fragment);
     assertThat(foundUri, equalTo(expectedUri));
-  }
-
-  private IPath pathOf(XtextResource resource) {
-    return new Path(resource.getURI().path());
   }
 
   // syntax = "proto2";
@@ -64,16 +59,13 @@ public class ModelObjectLocationLookup_findModelObjectUri_Test {
   //
   // message Person {}
   @Test public void should_return_null_if_file_name_is_equal_but_file_path_is_not() {
-    addToXtextIndex(xtext.resource());
-    Iterable<QualifiedName> qualifiedNames = singletonList(fqnConverter.toQualifiedName("com.google.proto.Person"));
-    URI foundUri = lookup.findModelObjectUri(qualifiedNames, new Path("/test/src/protos/mytestmodel.proto"));
+    QualifiedName qualifiedName = fqnConverter.toQualifiedName("com.google.proto.Type");
+    URI foundUri = resourceDescriptions.modelObjectUri(describe(xtext.resource()), qualifiedName);
     assertNull(foundUri);
   }
 
-  private void addToXtextIndex(XtextResource resource) {
-    IResourceDescriptions xtextIndex = lookup.getXtextIndex();
-    if (xtextIndex instanceof ResourceSetBasedResourceDescriptions) {
-      ((ResourceSetBasedResourceDescriptions) xtextIndex).setContext(resource);
-    }
+  private IResourceDescription describe(Resource resource) {
+    index.setContext(resource);
+    return index.getResourceDescription(resource.getURI());
   }
 }

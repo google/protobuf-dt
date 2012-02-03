@@ -6,17 +6,15 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.cdt.actions;
+package com.google.eclipse.protobuf.cdt.fqn;
 
+import static com.google.eclipse.protobuf.cdt.fqn.IsQualifiedNameSource.isQualifiedNameSourceWith;
 import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
-import static java.util.Collections.singletonList;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import java.util.List;
-
+import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPBase;
 import org.eclipse.cdt.internal.core.dom.parser.c.CASTName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*;
@@ -28,25 +26,23 @@ import com.google.eclipse.protobuf.junit.core.*;
 import com.google.inject.Inject;
 
 /**
- * Tests for <code>{@link ClassTypeQualifiedNameBuilder#createQualifiedNamesFrom(CPPClassType)}</code>
+ * Tests for <code>{@link ClassTypeQualifiedNameProviderStrategy#qualifiedNamesFrom(IBinding)}</code>
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
 @SuppressWarnings("restriction")
-public class ClassTypeQualifiedNameBuilder_createQualifiedNamesFrom_Test {
+public class ClassTypeQualifiedNameProviderStrategy_qualifiedNamesFrom_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule(), new ProtobufCdtModule(), new TestModule());
 
   @Inject private CPPClassType classType;
-  @Inject private QualifiedNameFactory qualifiedNameFactory;
-  @Inject private ClassTypeQualifiedNameBuilder nameBuilder;
+  @Inject private ClassTypeQualifiedNameProviderStrategy nameBuilder;
 
-  @Test public void should_return_qualified_names_for_class_type() {
+  @Test public void should_return_qualified_names_for_class_type_if_it_extends_proto_file() {
     expectClassTypeToExtendProtoMessage();
     String[] segments = { "com", "google", "proto", "Test" };
     when(classType.getQualifiedName()).thenReturn(segments);
-    List<QualifiedName> expected = singletonList(QualifiedName.create(segments));
-    when(qualifiedNameFactory.createQualifiedNamesForComplexType(segments)).thenReturn(expected);
-    assertThat(nameBuilder.createQualifiedNamesFrom(classType), equalTo(expected));
+    Iterable<QualifiedName> qualifiedNames = nameBuilder.qualifiedNamesFrom(classType);
+    assertThat(qualifiedNames, isQualifiedNameSourceWith(segments));
   }
 
   private void expectClassTypeToExtendProtoMessage() {
@@ -64,10 +60,15 @@ public class ClassTypeQualifiedNameBuilder_createQualifiedNamesFrom_Test {
     return qualifiedName;
   }
 
+  @Test public void should_return_null_if_class_type_does_not_extend_proto_message() {
+    when(classType.getBases()).thenReturn(new ICPPBase[0]);
+    Iterable<QualifiedName> qualifiedNames = nameBuilder.qualifiedNamesFrom(classType);
+    assertNull(qualifiedNames);
+  }
+
   private static class TestModule extends AbstractTestModule {
     @Override protected void configure() {
       mockAndBind(CPPClassType.class);
-      mockAndBind(QualifiedNameFactory.class);
     }
   }
 }
