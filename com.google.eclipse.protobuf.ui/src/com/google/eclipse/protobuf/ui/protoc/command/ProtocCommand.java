@@ -6,9 +6,11 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.builder.protoc.command;
+package com.google.eclipse.protobuf.ui.protoc.command;
 
 import static com.google.eclipse.protobuf.util.CommonWords.space;
+
+import org.eclipse.core.resources.IFile;
 
 /**
  * The command used to call protoc to compile a single .proto file.
@@ -34,5 +36,9 @@ class ProtocCommand {
 
   @Override public String toString() {
     return content.toString();
+  }
+
+  void setFileToCompile(IFile protoFile) {
+    content.append(protoFile.getLocation().toOSString());
   };
 }

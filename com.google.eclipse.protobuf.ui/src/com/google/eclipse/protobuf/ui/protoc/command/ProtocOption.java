@@ -6,14 +6,13 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.builder.protoc.command;
+package com.google.eclipse.protobuf.ui.protoc.command;
 
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-interface OutputDirectoryProtocOption extends ProtocOption {
-  IFolder outputDirectory() throws CoreException;
+interface ProtocOption {
+  void addOptionTo(ProtocCommand command) throws CoreException;
 }

@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.builder.protoc.command;
+package com.google.eclipse.protobuf.ui.protoc.command;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.io.File.separator;
@@ -34,7 +34,7 @@ class DescriptorPathProtocOption implements ProtocOption {
     descriptorFqn = concat(pathSeparator, newArrayList("", "google", "protobuf", "descriptor.proto"));
   }
 
-  @Override public void appendOptionToCommand(ProtocCommand command) {
+  @Override public void addOptionTo(ProtocCommand command) {
     if (!initialized) {
       initialize();
     }

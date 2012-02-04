@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.builder.protoc.command;
+package com.google.eclipse.protobuf.ui.protoc.command;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.eclipse.protobuf.ui.preferences.paths.core.DirectoryPath.parse;
@@ -36,7 +36,7 @@ class ImportRootsProtocOption {
     this.project = project;
   }
 
-  public void appendOptionToCommand(ProtocCommand command, IFile protoFile) {
+  public void addOptionToCommand(ProtocCommand command, IFile protoFile) {
     if (!initialized) {
       initialize();
     }

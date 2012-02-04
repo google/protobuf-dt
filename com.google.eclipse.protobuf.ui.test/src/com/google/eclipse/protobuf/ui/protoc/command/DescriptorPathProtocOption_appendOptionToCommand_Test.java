@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.builder.protoc.command;
+package com.google.eclipse.protobuf.ui.protoc.command;
 
 import static org.junit.rules.ExpectedException.none;
 import static org.mockito.Mockito.*;
@@ -18,7 +18,7 @@ import com.google.eclipse.protobuf.ui.preferences.StringPreference;
 import com.google.eclipse.protobuf.ui.preferences.compiler.core.CompilerPreferences;
 
 /**
- * Tests for <code>{@link DescriptorPathProtocOption#appendOptionToCommand(ProtocCommand)}</code>.
+ * Tests for <code>{@link DescriptorPathProtocOption#addOptionTo(ProtocCommand)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
@@ -39,13 +39,13 @@ public class DescriptorPathProtocOption_appendOptionToCommand_Test {
 
   @Test public void should_not_append_to_command_if_descriptor_path_is_null() {
     expectDescriptorPathToBeEqualTo(null);
-    option.appendOptionToCommand(command);
+    option.addOptionTo(command);
     verifyZeroInteractions(command);
   }
 
   @Test public void should_not_append_to_command_if_descriptor_path_is_empty() {
     expectDescriptorPathToBeEqualTo("");
-    option.appendOptionToCommand(command);
+    option.addOptionTo(command);
     verifyZeroInteractions(command);
   }
 
@@ -53,13 +53,13 @@ public class DescriptorPathProtocOption_appendOptionToCommand_Test {
     thrown.expect(IllegalArgumentException.class);
     thrown.expectMessage("Path '/usr/local/include' does not contain '/google/protobuf/descriptor.proto'");
     expectDescriptorPathToBeEqualTo("/usr/local/include");
-    option.appendOptionToCommand(command);
+    option.addOptionTo(command);
     verifyZeroInteractions(command);
   }
 
   @Test public void should_append_path_of_descriptor_to_command() {
     expectDescriptorPathToBeEqualTo("/usr/local/include/google/protobuf/descriptor.proto");
-    option.appendOptionToCommand(command);
+    option.addOptionTo(command);
     verify(command).appendOption("proto_path", "/usr/local/include");
   }
 

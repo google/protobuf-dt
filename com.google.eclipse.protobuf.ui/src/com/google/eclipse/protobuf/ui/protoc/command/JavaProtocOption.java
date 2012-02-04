@@ -6,9 +6,9 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.builder.protoc.command;
+package com.google.eclipse.protobuf.ui.protoc.command;
 
-import static com.google.eclipse.protobuf.ui.builder.protoc.command.IResources.*;
+import static com.google.eclipse.protobuf.ui.protoc.command.IResources.*;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
@@ -32,7 +32,7 @@ class JavaProtocOption implements OutputDirectoryProtocOption {
     this.project = project;
   }
 
-  @Override public void appendOptionToCommand(ProtocCommand command) throws CoreException {
+  @Override public void addOptionTo(ProtocCommand command) throws CoreException {
     ensureIsInitialized();
     if (enabled) {
       command.appendOption("java_out", outputDirectoryLocation);

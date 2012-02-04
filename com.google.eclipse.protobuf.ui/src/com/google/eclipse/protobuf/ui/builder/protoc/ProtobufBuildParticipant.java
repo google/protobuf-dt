@@ -6,10 +6,10 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.builder.protoc.core;
+package com.google.eclipse.protobuf.ui.builder.protoc;
 
 import static com.google.common.io.Closeables.closeQuietly;
-import static com.google.eclipse.protobuf.ui.builder.protoc.core.ConsolePrinter.createAndDisplayConsole;
+import static com.google.eclipse.protobuf.ui.builder.protoc.ConsolePrinter.createAndDisplayConsole;
 import static com.google.eclipse.protobuf.ui.exception.CoreExceptions.error;
 import static com.google.eclipse.protobuf.ui.preferences.compiler.core.CompilerPreferences.compilerPreferences;
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
@@ -25,10 +25,10 @@ import org.eclipse.xtext.resource.*;
 import org.eclipse.xtext.resource.IResourceDescription.Delta;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
-import com.google.eclipse.protobuf.ui.builder.protoc.command.ProtocCommandBuilder;
-import com.google.eclipse.protobuf.ui.builder.protoc.output.*;
 import com.google.eclipse.protobuf.ui.preferences.compiler.core.CompilerPreferences;
 import com.google.eclipse.protobuf.ui.preferences.paths.core.PathsPreferences;
+import com.google.eclipse.protobuf.ui.protoc.command.ProtocCommandBuilder;
+import com.google.eclipse.protobuf.ui.protoc.output.*;
 import com.google.inject.Inject;
 
 /**

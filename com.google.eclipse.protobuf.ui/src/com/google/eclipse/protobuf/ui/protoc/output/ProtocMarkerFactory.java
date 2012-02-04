@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.builder.protoc.output;
+package com.google.eclipse.protobuf.ui.protoc.output;
 
 import static com.google.eclipse.protobuf.ui.validation.ProtobufResourceUIValidatorExtension.EDITOR_CHECK;
 import static org.eclipse.core.resources.IMarker.*;

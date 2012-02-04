@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.builder.protoc.command;
+package com.google.eclipse.protobuf.ui.protoc.command;
 
 import static com.google.eclipse.protobuf.ui.util.Paths.segmentsOf;
 import static org.eclipse.core.runtime.IPath.SEPARATOR;

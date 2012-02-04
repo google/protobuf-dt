@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.builder.protoc.command;
+package com.google.eclipse.protobuf.ui.protoc.command;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.unmodifiableList;
@@ -49,10 +49,11 @@ public class ProtocCommandBuilder {
    */
   public String buildCommand(IFile protoFile) throws CoreException {
     ProtocCommand command = new ProtocCommand(protocPath);
-    importRootsProtocOption.appendOptionToCommand(command, protoFile);
+    importRootsProtocOption.addOptionToCommand(command, protoFile);
     for (ProtocOption option : options) {
-      option.appendOptionToCommand(command);
+      option.addOptionTo(command);
     }
+    command.setFileToCompile(protoFile);
     return command.toString();
   }
 
@@ -66,7 +67,9 @@ public class ProtocCommandBuilder {
     for (ProtocOption option : options) {
       if (option instanceof OutputDirectoryProtocOption) {
         IFolder outputDirectory = ((OutputDirectoryProtocOption) option).outputDirectory();
-        outputDirectories.add(outputDirectory);
+        if (outputDirectory != null) {
+          outputDirectories.add(outputDirectory);
+        }
       }
     }
     return unmodifiableList(outputDirectories);

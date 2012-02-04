@@ -248,7 +248,7 @@
   </extension>
   <extension point="org.eclipse.xtext.builder.participant">
     <participant
-      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.builder.protoc.core.ProtobufBuildParticipant">
+      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.builder.protoc.ProtobufBuildParticipant">
     </participant>
   </extension>
   <extension
