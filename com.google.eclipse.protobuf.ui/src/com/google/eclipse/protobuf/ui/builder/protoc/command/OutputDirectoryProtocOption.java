@@ -14,6 +14,6 @@ import org.eclipse.core.runtime.CoreException;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-public interface OutputDirectoryProtocOption extends ProtocOption {
+interface OutputDirectoryProtocOption extends ProtocOption {
   IFolder outputDirectory() throws CoreException;
 }
