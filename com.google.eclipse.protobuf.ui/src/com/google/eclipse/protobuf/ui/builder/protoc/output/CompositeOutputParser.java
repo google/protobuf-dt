@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.builder.protoc;
+package com.google.eclipse.protobuf.ui.builder.protoc.output;
 
 import static com.google.common.collect.Lists.newArrayList;
 

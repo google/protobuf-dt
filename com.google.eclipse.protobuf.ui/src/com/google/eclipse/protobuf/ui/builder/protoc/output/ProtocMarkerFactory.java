@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.builder.protoc;
+package com.google.eclipse.protobuf.ui.builder.protoc.output;
 
 import static com.google.eclipse.protobuf.ui.validation.ProtobufResourceUIValidatorExtension.EDITOR_CHECK;
 import static org.eclipse.core.resources.IMarker.*;
@@ -20,24 +20,31 @@ import org.eclipse.core.runtime.CoreException;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-class ProtocMarkerFactory {
+public class ProtocMarkerFactory {
   private static final String PROTOC_CHECK = "com.google.eclipse.protobuf.ui.protocMarker";
 
-  private final IFile file;
+  private final IFile protoFile;
   private final IMarker[] markers;
 
-  ProtocMarkerFactory(IFile file) throws CoreException {
-    this.file = file;
-    file.deleteMarkers(PROTOC_CHECK, true, DEPTH_INFINITE);
-    markers = file.findMarkers(EDITOR_CHECK, true, DEPTH_INFINITE);
+  public ProtocMarkerFactory(IFile protoFile) throws CoreException {
+    this.protoFile = protoFile;
+    protoFile.deleteMarkers(PROTOC_CHECK, true, DEPTH_INFINITE);
+    markers = protoFile.findMarkers(EDITOR_CHECK, true, DEPTH_INFINITE);
   }
 
-  void createErrorIfNecessary(String fileName, int lineNumber, String message) throws CoreException {
-    String location = file.getLocation().toOSString();
+  /**
+   * Creates a new editor marker if the given file name matches the one in this factory.
+   * @param fileName the name of the proto file, obtained from protoc output.
+   * @param lineNumber the line number where to create the editor marker.
+   * @param message the message for the editor marker.
+   * @throws CoreException if something goes wrong.
+   */
+  public void createErrorIfNecessary(String fileName, int lineNumber, String message) throws CoreException {
+    String location = protoFile.getLocation().toOSString();
     if (!location.endsWith(fileName) || containsMarker(message, lineNumber)) {
       return;
     }
-    IMarker marker = file.createMarker(PROTOC_CHECK);
+    IMarker marker = protoFile.createMarker(PROTOC_CHECK);
     marker.setAttribute(SEVERITY, SEVERITY_ERROR);
     marker.setAttribute(MESSAGE, message);
     marker.setAttribute(LINE_NUMBER, lineNumber);
