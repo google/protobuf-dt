@@ -75,8 +75,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
       return null;
     }
     URI uri = resource.getURI();
-    if (!uri.fileExtension().equals("proto"))
-    {
+    if (!uri.fileExtension().equals("proto")) {
       return null;
     }
     if (uri.scheme() == null) {

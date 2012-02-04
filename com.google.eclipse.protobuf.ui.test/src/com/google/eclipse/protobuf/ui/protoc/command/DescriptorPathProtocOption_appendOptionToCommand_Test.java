@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.protoc.command;
 
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.junit.rules.ExpectedException.none;
 import static org.mockito.Mockito.*;
 
@@ -25,28 +27,28 @@ import com.google.eclipse.protobuf.ui.preferences.compiler.core.CompilerPreferen
 public class DescriptorPathProtocOption_appendOptionToCommand_Test {
   @Rule public ExpectedException thrown = none();
 
-  private StringPreference descriptorPath;
   private CompilerPreferences preferences;
+  private StringPreference descriptorPathPreference;
   private ProtocCommand command;
   private DescriptorPathProtocOption option;
 
   @Before public void setUp() {
-    descriptorPath = mock(StringPreference.class);
     preferences = mock(CompilerPreferences.class);
-    command = mock(ProtocCommand.class);
+    descriptorPathPreference = mock(StringPreference.class);
+    command = new ProtocCommand("protoc");
     option = new DescriptorPathProtocOption(preferences, "/");
   }
 
   @Test public void should_not_append_to_command_if_descriptor_path_is_null() {
     expectDescriptorPathToBeEqualTo(null);
     option.addOptionTo(command);
-    verifyZeroInteractions(command);
+    assertThat(command.toString(), equalTo("protoc"));
   }
 
   @Test public void should_not_append_to_command_if_descriptor_path_is_empty() {
     expectDescriptorPathToBeEqualTo("");
     option.addOptionTo(command);
-    verifyZeroInteractions(command);
+    assertThat(command.toString(), equalTo("protoc"));
   }
 
   @Test public void should_throw_error_if_descriptor_path_does_not_contain_descriptor_FQN() {
@@ -54,17 +56,17 @@ public class DescriptorPathProtocOption_appendOptionToCommand_Test {
     thrown.expectMessage("Path '/usr/local/include' does not contain '/google/protobuf/descriptor.proto'");
     expectDescriptorPathToBeEqualTo("/usr/local/include");
     option.addOptionTo(command);
-    verifyZeroInteractions(command);
+    assertThat(command.toString(), equalTo("protoc"));
   }
 
   @Test public void should_append_path_of_descriptor_to_command() {
     expectDescriptorPathToBeEqualTo("/usr/local/include/google/protobuf/descriptor.proto");
     option.addOptionTo(command);
-    verify(command).appendOption("proto_path", "/usr/local/include");
+    assertThat(command.toString(), equalTo("protoc --proto_path=/usr/local/include"));
   }
 
   private void expectDescriptorPathToBeEqualTo(String value) {
-    when(preferences.descriptorPath()).thenReturn(descriptorPath);
-    when(descriptorPath.getValue()).thenReturn(value);
+    when(preferences.descriptorPath()).thenReturn(descriptorPathPreference);
+    when(descriptorPathPreference.getValue()).thenReturn(value);
   }
 }

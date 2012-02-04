@@ -35,7 +35,7 @@ class ProtocCommand {
   }
 
   @Override public String toString() {
-    return content.toString();
+    return content.toString().trim();
   }
 
   void setFileToCompile(IFile protoFile) {
