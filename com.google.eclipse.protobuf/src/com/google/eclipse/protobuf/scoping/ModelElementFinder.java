@@ -14,7 +14,7 @@ import static org.eclipse.emf.ecore.util.EcoreUtil.getAllContents;
 
 import java.util.*;
 
-import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.emf.common.util.*;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.*;
 import org.eclipse.xtext.resource.IEObjectDescription;
@@ -22,6 +22,7 @@ import org.eclipse.xtext.resource.IEObjectDescription;
 import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.eclipse.protobuf.resource.ResourceSets;
 import com.google.inject.Inject;
 
 /**
@@ -33,6 +34,7 @@ class ModelElementFinder {
   @Inject private Packages packages;
   @Inject private Protobufs protobufs;
   @Inject private Resources resources;
+  @Inject private ResourceSets resourceSets;
 
   Collection<IEObjectDescription> find(EObject start, FinderStrategy finderStrategy, Object criteria) {
     Set<IEObjectDescription> descriptions = newHashSet();
@@ -87,7 +89,11 @@ class ModelElementFinder {
         descriptions.addAll(finderStrategy.inDescriptor(anImport, criteria));
         continue;
       }
-      Resource imported = resources.importedResource(anImport, resourceSet);
+      URI resolvedUri = imports.resolvedUriOf(anImport);
+      if (resolvedUri == null) {
+        continue;
+      }
+      Resource imported = resourceSets.findResource(resourceSet, resolvedUri);
       if (imported == null) {
         continue;
       }

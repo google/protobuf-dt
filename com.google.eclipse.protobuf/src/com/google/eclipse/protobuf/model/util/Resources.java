@@ -8,44 +8,23 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
-import static org.eclipse.emf.common.util.URI.createURI;
 import static org.eclipse.emf.ecore.util.EcoreUtil.getAllContents;
 
-import org.eclipse.emf.common.util.*;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.*;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.resource.XtextResource;
-import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.inject.Inject;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.inject.Singleton;
 
 /**
  * Utility methods related to <code>{@link Resource}</code>
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Resources {
-  @Inject private ImportUriResolver uriResolver;
-
-  /**
-   * Finds in the given <code>{@link ResourceSet}</code> the resource referred by the URI of the given import.
-   * @param anImport the given import.
-   * @param resourceSet a collection of resources.
-   * @return the resource referred by the URI of the given import, or {@code null} is the given {@code ResourceSet} does
-   * not contain the resource.
-   */
-  // TODO move to class ResourceSets
-  public Resource importedResource(Import anImport, ResourceSet resourceSet) {
-    try {
-      URI importUri = createURI(uriResolver.apply(anImport));
-      return resourceSet.getResource(importUri, true);
-    } catch (Throwable t) {
-      return null;
-    }
-  }
-
+@Singleton public class Resources {
   /**
    * Returns the root element of the given resource.
    * @param resource the given resource.

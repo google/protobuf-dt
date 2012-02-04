@@ -15,9 +15,7 @@ import static com.google.eclipse.protobuf.validation.Messages.*;
 import static java.lang.String.format;
 import static org.eclipse.xtext.util.Tuples.pair;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.inject.Inject;
+import java.util.*;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.*;
@@ -25,7 +23,10 @@ import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 import org.eclipse.xtext.util.Pair;
 import org.eclipse.xtext.validation.*;
 
-import java.util.*;
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.resource.ResourceSets;
+import com.google.inject.Inject;
 
 /**
  * Verifies that "imports" contain correct values.
@@ -36,6 +37,7 @@ public class ImportValidator extends AbstractDeclarativeValidator {
   @Inject private Imports imports;
   @Inject private Protobufs protobufs;
   @Inject private Resources resources;
+  @Inject private ResourceSets resourceSets;
   @Inject private ImportUriResolver uriResolver;
 
   @Override public void register(EValidatorRegistrar registrar) {}
@@ -60,7 +62,7 @@ public class ImportValidator extends AbstractDeclarativeValidator {
     Set<URI> checked = newHashSet();
     checked.add(resource.getURI());
     for (Import anImport : protobufs.importsIn(root)) {
-      Resource imported = resources.importedResource(anImport, resourceSet);
+      Resource imported = importedResource(resourceSet, anImport);
       checked.add(imported.getURI());
       if (!protobufs.isProto2(resources.rootOf(imported))) {
         hasNonProto2 = true;
@@ -87,7 +89,7 @@ public class ImportValidator extends AbstractDeclarativeValidator {
     }
     List<Pair<Import, Resource>> resourcesToCheck = newArrayList();
     for (Import anImport : protobufs.importsIn(root)) {
-      Resource imported = resources.importedResource(anImport, resourceSet);
+      Resource imported = importedResource(resourceSet, anImport);
       if (alreadyChecked.contains(imported.getURI())) {
         continue;
       }
@@ -102,6 +104,14 @@ public class ImportValidator extends AbstractDeclarativeValidator {
       }
     }
     return false;
+  }
+
+  private Resource importedResource(ResourceSet resourceSet, Import anImport) {
+    URI resolvedUri = imports.resolvedUriOf(anImport);
+    if (resolvedUri != null) {
+      return resourceSets.findResource(resourceSet, resolvedUri);
+    }
+    return null;
   }
 
   private void warnNonProto2ImportFoundIn(Import anImport) {

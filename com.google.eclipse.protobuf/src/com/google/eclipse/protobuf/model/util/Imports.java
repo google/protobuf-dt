@@ -12,12 +12,13 @@ import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPO
 import static com.google.eclipse.protobuf.util.Strings.*;
 import static org.eclipse.xtext.util.Strings.*;
 
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.xtext.nodemodel.INode;
+import org.eclipse.xtext.scoping.impl.ImportUriResolver;
+
 import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider;
 import com.google.inject.Inject;
-
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.xtext.nodemodel.INode;
 
 /**
  * Utility methods related to imports.
@@ -27,6 +28,7 @@ import org.eclipse.xtext.nodemodel.INode;
 public class Imports {
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private INodes nodes;
+  @Inject private ImportUriResolver uriResolver;
 
   /**
    * Indicates whether the URI of the given {@code Import} is equal to the path of the file "descriptor.proto."
@@ -93,5 +95,15 @@ public class Imports {
       }
     }
     return false;
+  }
+
+  /**
+   * Returns the resolved URI of the given {@code Import}.
+   * @param anImport the the given {@code Import}.
+   * @return the resolved URI of the given {@code Import}, or {@code null} if the URI was not successfully resolved.
+   */
+  public URI resolvedUriOf(Import anImport) {
+    String resolvedUri = uriResolver.apply(anImport);
+    return (isEmpty(resolvedUri)) ? null : URI.createURI(resolvedUri);
   }
 }
