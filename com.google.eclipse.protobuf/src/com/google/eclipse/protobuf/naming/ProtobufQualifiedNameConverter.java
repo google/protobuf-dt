@@ -10,19 +10,20 @@ package com.google.eclipse.protobuf.naming;
 
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import com.google.eclipse.protobuf.util.Strings;
+import java.util.regex.Pattern;
 
 import org.eclipse.xtext.naming.IQualifiedNameConverter.DefaultImpl;
 import org.eclipse.xtext.naming.*;
 
-import java.util.regex.Pattern;
+import com.google.eclipse.protobuf.util.Strings;
+import com.google.inject.Singleton;
 
 /**
  * Provides support for multi-line qualified names.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ProtobufQualifiedNameConverter extends DefaultImpl {
+@Singleton public class ProtobufQualifiedNameConverter extends DefaultImpl {
   private final Pattern delimiterPattern = Pattern.compile(delimiterPlusWhitespace());
 
   private String delimiterPlusWhitespace() {

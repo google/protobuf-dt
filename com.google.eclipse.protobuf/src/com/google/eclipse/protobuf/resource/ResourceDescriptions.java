@@ -8,11 +8,17 @@
  */
 package com.google.eclipse.protobuf.resource;
 
+import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Collections.unmodifiableList;
+
+import java.util.List;
+import java.util.regex.*;
+
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.resource.*;
 
-import com.google.inject.Singleton;
+import com.google.inject.*;
 
 /**
  * Utility methods related to <code>{@link IResourceDescription}</code>s.
@@ -20,6 +26,8 @@ import com.google.inject.Singleton;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class ResourceDescriptions {
+  @Inject private IQualifiedNameConverter converter;
+
   /**
    * Finds the URI of a model object in the given resource whose qualified name matches the given one.
    * @param resource the given resource.
@@ -35,5 +43,17 @@ import com.google.inject.Singleton;
       }
     }
     return null;
+  }
+
+  public List<IEObjectDescription> matchingQualifiedNames(IResourceDescription resource, Pattern pattern) {
+    List<IEObjectDescription> descriptions = newArrayList();
+    for (IEObjectDescription exported : resource.getExportedObjects()) {
+      QualifiedName qualifiedName = exported.getQualifiedName();
+      Matcher matcher = pattern.matcher(converter.toString(qualifiedName));
+      if (matcher.matches()) {
+        descriptions.add(exported);
+      }
+    }
+    return unmodifiableList(descriptions);
   }
 }

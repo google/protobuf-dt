@@ -21,7 +21,6 @@ import com.google.inject.Singleton;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class IPaths {
-
   /**
    * Indicates whether the given path and URI refer to the same file.
    * @param p the given path.
@@ -29,13 +28,10 @@ import com.google.inject.Singleton;
    * @return {@code true} if the given path and URI refer to the same file, {@code false} otherwise.
    */
   public boolean areReferringToSameFile(IPath p, URI u) {
-    // TODO test
     int pIndex = p.segmentCount() - 1;
     int uIndex = u.segmentCount() - 1;
     while (pIndex >= 0 && uIndex >= 0) {
-      String pSegment = p.segment(pIndex--);
-      String uSegment = u.segment(uIndex--);
-      if (!equal(pSegment, uSegment)) {
+      if (!equal(p.segment(pIndex--), u.segment(uIndex--))) {
         return false;
       }
     }

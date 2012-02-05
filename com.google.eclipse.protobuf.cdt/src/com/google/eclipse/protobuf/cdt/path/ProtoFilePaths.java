@@ -24,30 +24,27 @@ import com.google.eclipse.protobuf.ui.preferences.compiler.core.CompilerPreferen
 import com.google.inject.Inject;
 
 /**
- * Finds the path of a .proto file, given the path of the generated C++ header file.
+ * Utility methods related to paths of .proto files.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ProtoFilePathFinder {
+public class ProtoFilePaths {
   private static final String PATH_SEPARATOR = new String(new char[] { SEPARATOR });
 
   @Inject private IPreferenceStoreAccess storeAccess;
 
   /**
    * Returns the path of the .proto file used as source of the generated C++ header file.
-   * @param file the given file.
+   * @param cppHeaderFile the generated C++ header file.
    * @return the path of the .proto file used as source of the generated C++ header file, or {@code null} if the given
    * file is not a C++ header file or if C++ code generation is not enabled in the proto editor.
    */
-  public IPath findProtoFilePath(IFile file) {
-    IPath headerFilePath = file.getFullPath();
-    if (!"h".equals(headerFilePath.getFileExtension())) {
-      return null;
-    }
-    IPath cppOutputDirectory = cppOutputDirectory(file.getProject());
+  public IPath protoFilePath(IFile cppHeaderFile) {
+    IPath cppOutputDirectory = cppOutputDirectory(cppHeaderFile.getProject());
     if (cppOutputDirectory == null) {
       return null;
     }
+    IPath headerFilePath = cppHeaderFile.getFullPath();
     List<String> newPathSegments = newArrayList(headerFilePath.segments());
     for (int i = 0; i < headerFilePath.segmentCount() - 1; i++) {
       newPathSegments.remove(0);
@@ -57,7 +54,7 @@ public class ProtoFilePathFinder {
     }
     int fileNameIndex = newPathSegments.size() - 1;
     String fileName = newPathSegments.get(fileNameIndex);
-    newPathSegments.set(fileNameIndex, fileName.replace("pb.h", "proto"));
+    newPathSegments.set(fileNameIndex, fileName.replace(".pb.h", ".proto"));
     return new Path(concat(PATH_SEPARATOR, newPathSegments));
   }
 

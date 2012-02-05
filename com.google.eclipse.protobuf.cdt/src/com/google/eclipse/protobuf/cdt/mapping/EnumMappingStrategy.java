@@ -6,26 +6,29 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.cdt.fqn;
+package com.google.eclipse.protobuf.cdt.mapping;
 
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPEnumeration;
 import org.eclipse.xtext.naming.QualifiedName;
 
+import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.inject.Singleton;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 @SuppressWarnings("restriction")
-@Singleton class EnumQualifiedNameProviderStrategy implements QualifiedNameProviderStrategy<CPPEnumeration> {
-  @Override public Iterable<QualifiedName> qualifiedNamesFrom(IBinding binding) {
-    CPPEnumeration enumeration = supportedBindingType().cast(binding);
+@Singleton class EnumMappingStrategy implements IBindingMappingStrategy<CPPEnumeration> {
+
+  @Override public CppToProtobufMapping createMappingFrom(IBinding binding) {
+    CPPEnumeration enumeration = typeOfSupportedBinding().cast(binding);
     String[] segments = enumeration.getQualifiedName();
-    return new QualifiedNameSource(segments);
+    QualifiedName qualifiedName = QualifiedName.create(segments);
+    return new CppToProtobufMapping(qualifiedName, Enum.class);
   }
 
-  @Override public Class<CPPEnumeration> supportedBindingType() {
+  @Override public Class<CPPEnumeration> typeOfSupportedBinding() {
     return CPPEnumeration.class;
   }
 }

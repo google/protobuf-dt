@@ -10,10 +10,13 @@ package com.google.eclipse.protobuf.cdt;
 
 import static com.google.eclipse.protobuf.cdt.ProtobufObjectsProvider.getfromProtobufPlugin;
 
+import org.eclipse.xtext.naming.IQualifiedNameConverter;
 import org.eclipse.xtext.service.AbstractGenericModule;
+import org.eclipse.xtext.ui.editor.IURIEditorOpener;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
-import com.google.eclipse.protobuf.ui.editor.ModelObjectDefinitionNavigator;
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.resource.*;
 import com.google.inject.Binder;
 
 /**
@@ -21,8 +24,13 @@ import com.google.inject.Binder;
  */
 public class ProtobufCdtModule extends AbstractGenericModule {
   public void configureModelObjectDefinitionNavigator(Binder binder) {
+    bindToProtobufPluginObject(IndexLookup.class, binder);
     bindToProtobufPluginObject(IPreferenceStoreAccess.class, binder);
-    bindToProtobufPluginObject(ModelObjectDefinitionNavigator.class, binder);
+    bindToProtobufPluginObject(IQualifiedNameConverter.class, binder);
+    bindToProtobufPluginObject(IURIEditorOpener.class, binder);
+    bindToProtobufPluginObject(ModelObjects.class, binder);
+    bindToProtobufPluginObject(ResourceDescriptions.class, binder);
+    bindToProtobufPluginObject(Resources.class, binder);
   }
 
   private <T> void bindToProtobufPluginObject(Class<T> type, Binder binder) {

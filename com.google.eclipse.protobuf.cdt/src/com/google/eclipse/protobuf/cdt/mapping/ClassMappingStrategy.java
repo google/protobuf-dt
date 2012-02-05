@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.cdt.fqn;
+package com.google.eclipse.protobuf.cdt.mapping;
 
 import org.eclipse.cdt.core.dom.IName;
 import org.eclipse.cdt.core.dom.ast.IBinding;
@@ -14,18 +14,21 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPBase;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*;
 import org.eclipse.xtext.naming.QualifiedName;
 
+import com.google.eclipse.protobuf.protobuf.Message;
 import com.google.inject.Singleton;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 @SuppressWarnings("restriction")
-@Singleton class ClassTypeQualifiedNameProviderStrategy implements QualifiedNameProviderStrategy<CPPClassType> {
-  @Override public Iterable<QualifiedName> qualifiedNamesFrom(IBinding binding) {
-    CPPClassType classType = supportedBindingType().cast(binding);
+@Singleton class ClassMappingStrategy implements IBindingMappingStrategy<CPPClassType> {
+
+  @Override public CppToProtobufMapping createMappingFrom(IBinding binding) {
+    CPPClassType classType = typeOfSupportedBinding().cast(binding);
     if (isMessage(classType)) {
       String[] segments = classType.getQualifiedName();
-      return new QualifiedNameSource(segments);
+      QualifiedName qualifiedName = QualifiedName.create(segments);
+      return new CppToProtobufMapping(qualifiedName, Message.class);
     }
     return null;
   }
@@ -47,7 +50,7 @@ import com.google.inject.Singleton;
     return "::google::protobuf::Message".equals(qualifiedNameAsText);
   }
 
-  @Override public Class<CPPClassType> supportedBindingType() {
+  @Override public Class<CPPClassType> typeOfSupportedBinding() {
     return CPPClassType.class;
   }
 }

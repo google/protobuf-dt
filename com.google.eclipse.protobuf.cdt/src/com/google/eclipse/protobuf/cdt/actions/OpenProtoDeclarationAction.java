@@ -8,11 +8,12 @@
  */
 package com.google.eclipse.protobuf.cdt.actions;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.*;
+import org.eclipse.xtext.ui.editor.IURIEditorOpener;
 
-import com.google.eclipse.protobuf.ui.editor.ModelObjectDefinitionNavigator.Query;
 import com.google.inject.Inject;
 
 /**
@@ -21,18 +22,18 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class OpenProtoDeclarationAction implements IEditorActionDelegate {
-  private IEditorPart editor;
+  @Inject private IURIEditorOpener editorOpener;
+  @Inject private ProtobufElementUriFinder uriFinder;
 
-  @Inject private ModelObjectLookupQueryBuilder queryBuilder;
-  @Inject private NavigationJobs navigationJobs;
+  private IEditorPart editor;
 
   @Override public void run(IAction action) {
     if (editor == null) {
       return;
     }
-    Query query = queryBuilder.buildQuery(editor);
-    if (query != null) {
-      navigationJobs.scheduleUsing(query);
+    URI foundUri = uriFinder.findProtobufElementUriFromSelectionOf(editor);
+    if (foundUri != null) {
+      editorOpener.open(foundUri, true);
     }
   }
 

@@ -18,42 +18,31 @@ import org.eclipse.cdt.core.model.*;
 import org.eclipse.cdt.internal.core.model.ASTCache.ASTRunnable;
 import org.eclipse.cdt.internal.ui.editor.ASTProvider;
 import org.eclipse.cdt.ui.CUIPlugin;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.*;
-import org.eclipse.jface.text.ITextSelection;
-import org.eclipse.jface.viewers.*;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.xtext.naming.QualifiedName;
 
-import com.google.eclipse.protobuf.cdt.fqn.QualifiedNameProvider;
-import com.google.eclipse.protobuf.cdt.path.ProtoFilePathFinder;
-import com.google.eclipse.protobuf.ui.editor.ModelObjectDefinitionNavigator.Query;
-import com.google.inject.Inject;
+import com.google.eclipse.protobuf.cdt.editor.Editors;
+import com.google.eclipse.protobuf.cdt.mapping.*;
+import com.google.inject.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 @SuppressWarnings("restriction")
-class ModelObjectLookupQueryBuilder {
-  @Inject private QualifiedNameProvider qualifiedNameProvider;
-  @Inject private ProtoFilePathFinder pathFinder;
+@Singleton class AstBasedCppToProtobufMapper {
+  @Inject private Editors editors;
+  @Inject private CppToProtobufMapper delegate;
 
-  Query buildQuery(IEditorPart editor) {
-    final int offset = selectionOffsetOf(editor);
+  CppToProtobufMapping createMappingFromSelectionOf(IEditorPart editor) {
+    final int offset = editors.selectionOffsetOf(editor);
     if (offset < 0) {
-      return null;
-    }
-    IFile file = (IFile) editor.getEditorInput().getAdapter(IFile.class);
-    final IPath protoFilePath = pathFinder.findProtoFilePath(file);
-    if (protoFilePath == null) {
       return null;
     }
     IWorkingCopy workingCopy = CUIPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(editor.getEditorInput());
     if (workingCopy == null) {
       return null;
     }
-    final AtomicReference<Query> queriesReference = new AtomicReference<Query>();
+    final AtomicReference<CppToProtobufMapping> mappingReference = new AtomicReference<CppToProtobufMapping>();
     ASTProvider astProvider = ASTProvider.getASTProvider();
     IStatus status = astProvider.runOnAST(workingCopy, WAIT_NO, null, new ASTRunnable() {
       @Override public IStatus runOnAST(ILanguage lang, IASTTranslationUnit ast) throws CoreException {
@@ -67,11 +56,9 @@ class ModelObjectLookupQueryBuilder {
         }
         if (selectedName.isDefinition()) {
           IBinding binding = selectedName.resolveBinding();
-          Iterable<QualifiedName> qualifiedNames = qualifiedNameProvider.qualifiedNamesFrom(binding);
-          if (qualifiedNames != null) {
-            queriesReference.set(Query.newQuery(qualifiedNames, protoFilePath));
-            return OK_STATUS;
-          }
+          CppToProtobufMapping info = delegate.createMappingFrom(binding);
+          mappingReference.set(info);
+          return OK_STATUS;
         }
         return CANCEL_STATUS;
       }
@@ -79,16 +66,6 @@ class ModelObjectLookupQueryBuilder {
     if (status == CANCEL_STATUS) {
       return null;
     }
-    return queriesReference.get();
-  }
-
-  private int selectionOffsetOf(IEditorPart editor) {
-    ISelectionProvider selectionProvider = ((ITextEditor) editor).getSelectionProvider();
-    ISelection selection = selectionProvider.getSelection();
-    if (selection instanceof ITextSelection) {
-      ITextSelection textSelection = (ITextSelection) selection;
-      return textSelection.getOffset();
-    }
-    return -1;
+    return mappingReference.get();
   }
 }
