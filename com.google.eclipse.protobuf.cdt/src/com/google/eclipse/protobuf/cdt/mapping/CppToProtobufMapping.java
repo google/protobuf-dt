@@ -20,7 +20,7 @@ public class CppToProtobufMapping {
   private final QualifiedName qualifiedName;
   private final Class<? extends EObject> type;
 
-  CppToProtobufMapping(QualifiedName qualifiedName, Class<? extends EObject> type) {
+  public CppToProtobufMapping(QualifiedName qualifiedName, Class<? extends EObject> type) {
     this.qualifiedName = qualifiedName;
     this.type = type;
   }

@@ -36,16 +36,19 @@ public class ProtobufElementMatcher {
   public URI findUriOfMatchingProtobufElement(IResourceDescription resource, CppToProtobufMapping mapping) {
     QualifiedName qualifiedName = mapping.qualifiedName();
     Pattern pattern = patternToMatchFrom(qualifiedName);
-    List<IEObjectDescription> matches = descriptions.matchingQualifiedNames(resource, pattern);
-    if (matches.size() == 1) {
+    List<IEObjectDescription> matches = descriptions.matchingQualifiedNames(resource, pattern, mapping.type());
+    if (!matches.isEmpty()) {
       return matches.get(0).getEObjectURI();
     }
     return null;
   }
 
-  Pattern patternToMatchFrom(QualifiedName qualifiedName) {
+  private Pattern patternToMatchFrom(QualifiedName qualifiedName) {
     String qualifiedNameAsText = converter.toString(qualifiedName);
-    String regex = Pattern.quote(qualifiedNameAsText.replaceAll("_", "."));
+    // escape existing "."
+    // replace "_" with "(\.|_)"
+    String regex = qualifiedNameAsText.replaceAll("\\.", "\\\\.")
+                                      .replaceAll("_", "\\(\\\\.|_\\)");
     return Pattern.compile(regex);
   }
 }

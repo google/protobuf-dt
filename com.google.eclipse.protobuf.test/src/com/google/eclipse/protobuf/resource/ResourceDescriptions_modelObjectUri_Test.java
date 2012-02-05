@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.resource;
 
-import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
+import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
@@ -30,12 +30,11 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ResourceDescriptions_modelObjectUri_Test {
-  @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
+  @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
   @Inject private IQualifiedNameConverter fqnConverter;
   @Inject private ResourceSetBasedResourceDescriptions index;
   @Inject private ResourceDescriptions resourceDescriptions;
-
 
   // syntax = "proto2";
   // package com.google.proto;
@@ -45,13 +44,16 @@ public class ResourceDescriptions_modelObjectUri_Test {
   //   TWO = 2;
   // }
   @Test public void should_find_URI_of_model_object_given_its_qualified_name() {
-    XtextResource resource = xtext.resource();
     QualifiedName qualifiedName = fqnConverter.toQualifiedName("com.google.proto.Type");
-    URI foundUri = resourceDescriptions.modelObjectUri(describe(resource), qualifiedName);
+    URI foundUri = resourceDescriptions.modelObjectUri(descriptionOf(xtext.resource()), qualifiedName);
+    assertThat(foundUri, equalTo(uriOfEnumWithName("Type")));
+  }
+
+  private URI uriOfEnumWithName(String name) {
+    XtextResource resource = xtext.resource();
     Enum anEnum = xtext.find("Type", Enum.class);
     String fragment = resource.getURIFragment(anEnum);
-    URI expectedUri = resource.getURI().appendFragment(fragment);
-    assertThat(foundUri, equalTo(expectedUri));
+    return resource.getURI().appendFragment(fragment);
   }
 
   // syntax = "proto2";
@@ -60,11 +62,11 @@ public class ResourceDescriptions_modelObjectUri_Test {
   // message Person {}
   @Test public void should_return_null_if_file_name_is_equal_but_file_path_is_not() {
     QualifiedName qualifiedName = fqnConverter.toQualifiedName("com.google.proto.Type");
-    URI foundUri = resourceDescriptions.modelObjectUri(describe(xtext.resource()), qualifiedName);
+    URI foundUri = resourceDescriptions.modelObjectUri(descriptionOf(xtext.resource()), qualifiedName);
     assertNull(foundUri);
   }
 
-  private IResourceDescription describe(Resource resource) {
+  private IResourceDescription descriptionOf(Resource resource) {
     index.setContext(resource);
     return index.getResourceDescription(resource.getURI());
   }

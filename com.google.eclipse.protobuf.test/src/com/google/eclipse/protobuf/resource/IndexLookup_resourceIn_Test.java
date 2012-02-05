@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.resource;
 
-import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
+import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
@@ -28,7 +28,7 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class IndexLookup_resourceIn_Test {
-  @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
+  @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
   @Inject private IndexLookup lookup;
 
