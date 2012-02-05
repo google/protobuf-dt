@@ -34,7 +34,7 @@ class ProtobufElementUriFinder {
   @Inject private ProtoFilePaths paths;
 
   URI findProtobufElementUriFromSelectionOf(IEditorPart editor) {
-    IFile file = editors.fileOpenIn(editor);
+    IFile file = editors.fileDisplayedIn(editor);
     IPath protoFilePath = paths.protoFilePath(file);
     if (protoFilePath != null) {
       CppToProtobufMapping mapping = mapper.createMappingFromSelectionOf(editor);

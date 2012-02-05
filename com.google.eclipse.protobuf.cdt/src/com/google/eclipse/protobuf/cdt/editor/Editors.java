@@ -39,11 +39,11 @@ import com.google.inject.Singleton;
   }
 
   /**
-   * Returns the file open in the given editor.
+   * Returns the file displayed in the given editor.
    * @param editor the given editor.
-   * @return the file open in the given editor.
+   * @return the file displayed in the given editor.
    */
-  public IFile fileOpenIn(IEditorPart editor) {
+  public IFile fileDisplayedIn(IEditorPart editor) {
     return (IFile) editor.getEditorInput().getAdapter(IFile.class);
   }
 }
