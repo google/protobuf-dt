@@ -16,7 +16,7 @@ import java.net.URI;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.*;
 
-import com.google.eclipse.protobuf.ui.util.Resources;
+import com.google.eclipse.protobuf.ui.util.Editors;
 import com.google.inject.*;
 
 /**
@@ -27,7 +27,7 @@ import com.google.inject.*;
 @Singleton public class ValidationTrigger {
   private final String PROTO_EDITOR_ID = "com.google.eclipse.protobuf.Protobuf";
 
-  @Inject private Resources resources;
+  @Inject private Editors editors;
 
   /**
    * Triggers validation of all open .proto files belonging to the given project.
@@ -48,7 +48,7 @@ import com.google.inject.*;
       return;
     }
     IEditorPart editor = editorRef.getEditor(true);
-    IProject fileProject = resources.project(editor);
+    IProject fileProject = editors.projectOwningFileDisplayedIn(editor);
     if (fileProject == null || !haveEqualUris(project, fileProject)) {
       return;
     }

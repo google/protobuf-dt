@@ -19,6 +19,7 @@ import static org.eclipse.core.runtime.Status.OK_STATUS;
 import static org.eclipse.core.runtime.SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.log4j.Logger;
 import org.eclipse.compare.rangedifferencer.RangeDifference;
@@ -27,7 +28,6 @@ import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.text.*;
 
-import com.google.eclipse.protobuf.ui.util.SimpleReference;
 import com.google.inject.Singleton;
 
 /**
@@ -36,13 +36,13 @@ import com.google.inject.Singleton;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton public class Editors {
-  private static Logger logger = Logger.getLogger(Editors.class);
+@Singleton public class ChangedLineRegionCalculator {
+  private static Logger logger = Logger.getLogger(ChangedLineRegionCalculator.class);
 
   public IRegion[] calculateChangedLineRegions(final ITextFileBuffer buffer, final IDocument current,
       final IProgressMonitor monitor) throws CoreException {
-    final SimpleReference<IRegion[]> result = new SimpleReference<IRegion[]>();
-    final SimpleReference<IStatus> errorStatus = new SimpleReference<IStatus>(OK_STATUS);
+    final AtomicReference<IRegion[]> result = new AtomicReference<IRegion[]>();
+    final AtomicReference<IStatus> errorStatus = new AtomicReference<IStatus>(OK_STATUS);
     try {
       SafeRunner.run(new ISafeRunnable() {
         @Override public void handleException(Throwable exception) {
@@ -66,9 +66,8 @@ import com.google.inject.Singleton;
         }
 
         /*
-         * Returns regions of all lines which differ comparing {@code old}s
-         * content with {@code current}s content. Successive lines are merged
-         * into one region.
+         * Returns regions of all lines which differ comparing {@code old}s content with {@code current}s content.
+         * Successive lines are merged into one region.
          */
         private IRegion[] getChangedLineRegions(IDocument old) {
           RangeDifference[] differences = differencesWith(old);
@@ -82,8 +81,7 @@ import com.google.inject.Singleton;
               try {
                 startLineRegion = current.getLineInformation(startLine);
                 if (startLine >= endLine) {
-                  // startLine > endLine indicates a deletion of one or more
-                  // lines.
+                  // startLine > endLine indicates a deletion of one or more lines.
                   // Deletions are ignored except at the end of the document.
                   if (startLine == endLine
                       || startLineRegion.getOffset() + startLineRegion.getLength() == current.getLength()) {

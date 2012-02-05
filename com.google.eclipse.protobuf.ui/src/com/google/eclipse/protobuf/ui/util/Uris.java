@@ -14,9 +14,11 @@ import static java.util.Collections.*;
 import java.io.File;
 import java.util.List;
 
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.*;
 import org.eclipse.emf.common.util.URI;
 
-import com.google.inject.*;
+import com.google.inject.Singleton;
 
 /**
  * Utility methods related to URIs.
@@ -27,20 +29,18 @@ import com.google.inject.*;
   public static String PLATFORM_RESOURCE_PREFIX = "platform:/resource";
   public static String FILE_PREFIX = "file:";
 
-  @Inject private Resources resources;
-
   /**
    * Indicates whether the resource or file referred by the given URI exists.
    * @param uri the URI to check.
    * @return {@code true} if the resource or file referred by the given URI exists, {@code false} otherwise.
    */
-  public boolean exists(URI uri) {
+  public boolean referredResourceExists(URI uri) {
     if (uri.isFile()) {
       File file = new File(uri.path());
       return file.exists();
     }
     if (uri.isPlatformResource()) {
-      return resources.fileExists(uri);
+      return referredFileExists(uri);
     }
     return false;
   }
@@ -63,6 +63,16 @@ import com.google.inject.*;
     return unmodifiableList(segments);
   }
 
+  /**
+   * Returns the "prefix" of the given URI as follows:
+   * <ul>
+   * <li><code>{@link #PLATFORM_RESOURCE_PREFIX}</code>, if the URI refers to a platform resource</li>
+   * <li><code>{@link #FILE_PREFIX}</code>, if the URI refers to a file</li>
+   * <li>{@code null} otherwise</li>
+   * </ul>
+   * @param uri the given URI.
+   * @return the "prefix" of the given URI.
+   */
   public String prefixOf(URI uri) {
     if (uri.isFile()) {
       return FILE_PREFIX;
@@ -71,5 +81,43 @@ import com.google.inject.*;
       return PLATFORM_RESOURCE_PREFIX;
     }
     return "";
+  }
+
+  /**
+   * Returns the project that contains the file referred by the given URI.
+   * @param resourceUri the given URI.
+   * @return the project that contains the file referred by the given URI, or {@code null} if the resource referred by
+   * the given URI is not a file in the workspace.
+   */
+  public IProject projectOfReferredFile(URI resourceUri) {
+    IFile file = referredFile(resourceUri);
+    return (file != null) ? file.getProject() : null;
+  }
+
+  /**
+   * Indicates whether the given URI refers to an existing file.
+   * @param fileUri the URI to check, as a {@code String}.
+   * @return {@code true} if the given URI refers to an existing file, {@code false} otherwise.
+   */
+  public boolean referredFileExists(URI fileUri) {
+    IFile file = referredFile(fileUri);
+    return (file != null) ? file.exists() : false;
+  }
+
+  /**
+   * Returns a handle to a workspace file referred by the given URI.
+   * @param uri the given URI.
+   * @return a handle to a workspace file referred by the given URI or {@code null} if the URI does not refer a
+   * workspace file.
+   */
+  public IFile referredFile(URI uri) {
+    IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+    IPath path = pathOf(uri);
+    return (path != null) ? root.getFile(path) : null;
+  }
+
+  private IPath pathOf(URI uri) {
+    String uriAsText = uri.toPlatformString(true);
+    return (uriAsText != null) ? new Path(uriAsText) : null;
   }
 }

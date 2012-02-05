@@ -26,7 +26,7 @@ import org.eclipse.xtext.ui.editor.model.*;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.eclipse.protobuf.ui.preferences.editor.save.core.SaveActionsPreferences;
-import com.google.eclipse.protobuf.ui.util.editor.Editors;
+import com.google.eclipse.protobuf.ui.util.editor.ChangedLineRegionCalculator;
 import com.google.inject.Inject;
 
 /**
@@ -35,7 +35,7 @@ import com.google.inject.Inject;
 public class ProtobufDocumentProvider extends XtextDocumentProvider {
   private static final IRegion[] NO_CHANGE = new IRegion[0];
 
-  @Inject private Editors editors;
+  @Inject private ChangedLineRegionCalculator calculator;
   @Inject private DocumentContentsFactoryRegistry documentContentsFactories;
   @Inject private IPreferenceStoreAccess storeAccess;
   @Inject private SaveActions saveActions;
@@ -112,7 +112,7 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
       return NO_CHANGE;
     }
     if (preferences.inEditedLines().getValue()) {
-      return editors.calculateChangedLineRegions(textFileBuffer(monitor, editorInput), document, monitor);
+      return calculator.calculateChangedLineRegions(textFileBuffer(monitor, editorInput), document, monitor);
     }
     return new IRegion[] { new Region(0, document.getLength()) };
   }

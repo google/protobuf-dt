@@ -17,8 +17,7 @@ import static org.eclipse.xtext.EcoreUtil2.resolveLazyCrossReferences;
 import static org.eclipse.xtext.resource.XtextResource.OPTION_ENCODING;
 import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
 
-import com.google.eclipse.protobuf.ui.util.Resources;
-import com.google.inject.*;
+import java.io.IOException;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -26,7 +25,8 @@ import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.resource.IResourceSetProvider;
 import org.eclipse.xtext.util.StringInputStream;
 
-import java.io.IOException;
+import com.google.eclipse.protobuf.ui.util.IProjects;
+import com.google.inject.*;
 
 /**
  * Factory of <code>{@link XtextResource}</code>s.
@@ -35,7 +35,7 @@ import java.io.IOException;
  */
 @Singleton public class XtextResourceFactory {
   @Inject private IResourceSetProvider resourceSetProvider;
-  @Inject private Resources resources;
+  @Inject private IProjects projects;
 
   /**
    * Creates a new <code>{@link XtextResource}</code>.
@@ -57,7 +57,7 @@ import java.io.IOException;
    */
   public XtextResource createResource(URI uri, String contents) throws IOException {
     // TODO get project from URI.
-    ResourceSet resourceSet = resourceSetProvider.get(resources.activeProject());
+    ResourceSet resourceSet = resourceSetProvider.get(projects.activeProject());
     XtextResource resource = (XtextResource) resourceSet.createResource(uri, UNSPECIFIED_CONTENT_TYPE);
     resource.load(new StringInputStream(contents), singletonMap(OPTION_ENCODING, UTF_8));
     resolveLazyCrossReferences(resource, NullImpl);

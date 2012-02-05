@@ -83,6 +83,6 @@ class MultipleDirectoriesFileResolverStrategy implements FileResolverStrategy {
   }
 
   private String resolveUri(URI uri) {
-    return (uris.exists(uri)) ? uri.toString() : null;
+    return (uris.referredResourceExists(uri)) ? uri.toString() : null;
   }
 }

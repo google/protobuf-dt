@@ -30,7 +30,7 @@ class UrisStub extends Uris {
     exist = shouldExist;
   }
 
-  @Override public boolean exists(URI uri) {
+  @Override public boolean referredResourceExists(URI uri) {
     return exist;
   }
 }

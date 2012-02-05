@@ -44,8 +44,8 @@ public class ValidateFileOnActivation extends AbstractPartListener {
   }
 
   private IProject projectFrom(IEditorPart editor) {
-    Resources resources = ProtobufPlugIn.getInstance(Resources.class);
-    return resources.project(editor);
+    Editors editors = ProtobufPlugIn.getInstance(Editors.class);
+    return editors.projectOwningFileDisplayedIn(editor);
   }
 
   private boolean shouldValidateEditor(IProject project) {

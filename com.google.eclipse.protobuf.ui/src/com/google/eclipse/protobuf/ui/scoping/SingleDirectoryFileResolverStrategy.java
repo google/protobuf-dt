@@ -42,7 +42,7 @@ class SingleDirectoryFileResolverStrategy implements FileResolverStrategy {
       pathBuilder.append(segment).append(SEPARATOR);
     }
     String resolved = createResolvedUri(pathBuilder.toString(), importUri, declaringResourceUri);
-    return uris.exists(createURI(resolved)) ? resolved : null;
+    return uris.referredResourceExists(createURI(resolved)) ? resolved : null;
   }
 
   private String createResolvedUri(String path, URI importUri, URI declaringResourceUri) {

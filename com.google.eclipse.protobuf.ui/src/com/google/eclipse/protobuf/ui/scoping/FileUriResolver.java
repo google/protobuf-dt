@@ -11,12 +11,7 @@ package com.google.eclipse.protobuf.ui.scoping;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.*;
 
-import com.google.eclipse.protobuf.model.util.Imports;
-import com.google.eclipse.protobuf.protobuf.Import;
-import com.google.eclipse.protobuf.scoping.*;
-import com.google.eclipse.protobuf.ui.preferences.paths.core.PathsPreferences;
-import com.google.eclipse.protobuf.ui.util.Resources;
-import com.google.inject.Inject;
+import java.util.List;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.emf.common.util.URI;
@@ -24,7 +19,12 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.ui.XtextProjectHelper;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
-import java.util.List;
+import com.google.eclipse.protobuf.model.util.Imports;
+import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.scoping.*;
+import com.google.eclipse.protobuf.ui.preferences.paths.core.PathsPreferences;
+import com.google.eclipse.protobuf.ui.util.Uris;
+import com.google.inject.Inject;
 
 /**
  * Resolves "import" URIs.
@@ -35,7 +35,7 @@ public class FileUriResolver implements IFileUriResolver {
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private Imports imports;
   @Inject private MultipleDirectoriesFileResolverStrategy multipleDirectories;
-  @Inject private Resources resources;
+  @Inject private Uris uris;
   @Inject private SingleDirectoryFileResolverStrategy singleDirectory;
   @Inject private IPreferenceStoreAccess storeAccess;
 
@@ -70,7 +70,7 @@ public class FileUriResolver implements IFileUriResolver {
       return location.toString();
     }
     URI resourceUri = resource.getURI();
-    IProject project = resources.project(resourceUri);
+    IProject project = uris.projectOfReferredFile(resourceUri);
     FileResolverStrategy resolver = multipleDirectories;
     if (project == null) {
       return resolver.resolveUri(importUri, resourceUri, preferencesFromAllProjects());

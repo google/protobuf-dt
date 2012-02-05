@@ -57,7 +57,7 @@ public class MultipleDirectoriesFileResolverStrategy_resolveUri_Test {
   @Test public void should_resolve_platform_resource_URI() {
     String expected = "platform:/resource/src/protos/imported.proto";
     when(directoryPaths.getValue()).thenReturn("${workspace_loc:/src/protos}");
-    when(uris.exists(URI.createURI(expected))).thenReturn(true);
+    when(uris.referredResourceExists(URI.createURI(expected))).thenReturn(true);
     String resolved = resolver.resolveUri("imported.proto", declaringResourceUri, allPreferences);
     assertThat(resolved, equalTo(expected));
   }
@@ -65,7 +65,7 @@ public class MultipleDirectoriesFileResolverStrategy_resolveUri_Test {
   @Test public void should_resolve_file_URI() {
     String expected = "file:/usr/local/project/src/protos/imported.proto";
     when(directoryPaths.getValue()).thenReturn("/usr/local/project/src/protos");
-    when(uris.exists(URI.createURI(expected))).thenReturn(true);
+    when(uris.referredResourceExists(URI.createURI(expected))).thenReturn(true);
     String resolved = resolver.resolveUri("imported.proto", declaringResourceUri, allPreferences);
     assertThat(resolved, equalTo(expected));
   }
@@ -74,24 +74,24 @@ public class MultipleDirectoriesFileResolverStrategy_resolveUri_Test {
     String expected = "file:/usr/local/project/src/protos/imported.proto";
     when(directoryPaths.getValue()).thenReturn("${workspace_loc:/src/protos}");
     // try the first time as resource platform
-    when(uris.exists(URI.createURI("platform:/resource/src/protos/imported.proto"))).thenReturn(false);
+    when(uris.referredResourceExists(URI.createURI("platform:/resource/src/protos/imported.proto"))).thenReturn(false);
     // try again, but in the file system this time
     when(mapping.directoryLocation("/src/protos")).thenReturn("/usr/local/project/src/protos");
-    when(uris.exists(URI.createURI(expected))).thenReturn(true);
+    when(uris.referredResourceExists(URI.createURI(expected))).thenReturn(true);
     String resolved = resolver.resolveUri("imported.proto", declaringResourceUri, allPreferences);
     assertThat(resolved, equalTo(expected));
   }
 
   @Test public void should_return_null_if_platform_resource_URI_cannot_be_resolved() {
     when(directoryPaths.getValue()).thenReturn("${workspace_loc:/src/protos}");
-    when(uris.exists(any(URI.class))).thenReturn(false);
+    when(uris.referredResourceExists(any(URI.class))).thenReturn(false);
     String resolved = resolver.resolveUri("imported.proto", declaringResourceUri, allPreferences);
     assertNull(resolved);
   }
 
   @Test public void should_return_null_if_file_URI_cannot_be_resolved() {
     when(directoryPaths.getValue()).thenReturn("/usr/local/project/src/protos");
-    when(uris.exists(any(URI.class))).thenReturn(false);
+    when(uris.referredResourceExists(any(URI.class))).thenReturn(false);
     String resolved = resolver.resolveUri("imported.proto", declaringResourceUri, allPreferences);
     assertNull(resolved);
   }
