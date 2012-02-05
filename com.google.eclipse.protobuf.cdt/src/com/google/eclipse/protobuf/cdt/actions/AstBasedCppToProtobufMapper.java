@@ -50,11 +50,9 @@ import com.google.inject.*;
           return CANCEL_STATUS;
         }
         IASTNodeSelector nodeSelector= ast.getNodeSelector(null);
-        IASTName selectedName = nodeSelector.findEnclosingName(offset, 1);
-        if (selectedName == null) {
-          return CANCEL_STATUS;
-        }
-        if (selectedName.isDefinition()) {
+        IASTNode selectedNode = nodeSelector.findEnclosingNode(offset, 1);
+        if (selectedNode instanceof IASTName) {
+          IASTName selectedName = (IASTName) selectedNode;
           IBinding binding = selectedName.resolveBinding();
           CppToProtobufMapping info = delegate.createMappingFrom(binding);
           mappingReference.set(info);

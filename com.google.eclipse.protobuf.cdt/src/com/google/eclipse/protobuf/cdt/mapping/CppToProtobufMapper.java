@@ -13,18 +13,21 @@ import static com.google.common.collect.Maps.newHashMap;
 import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.IBinding;
+import org.eclipse.cdt.internal.core.dom.parser.ProblemBinding;
 
 import com.google.inject.Singleton;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
+@SuppressWarnings("restriction")
 @Singleton public class CppToProtobufMapper {
   private final Map<Class<? extends IBinding>, IBindingMappingStrategy<?>> strategies = newHashMap();
 
   public CppToProtobufMapper() {
     register(new ClassMappingStrategy());
     register(new EnumMappingStrategy());
+    register(new MethodMappingStrategy());
   }
 
   private void register(IBindingMappingStrategy<?> strategy) {
@@ -39,7 +42,18 @@ import com.google.inject.Singleton;
    * element that can be traced back to a protocol buffer element.
    */
   public CppToProtobufMapping createMappingFrom(IBinding binding) {
-    IBindingMappingStrategy<?> strategy = strategies.get(binding.getClass());
-    return (strategy != null) ? strategy.createMappingFrom(binding) : null;
+    IBinding bindingToUse = binding;
+    if (binding instanceof ProblemBinding) {
+      ProblemBinding problemBinding = (ProblemBinding) binding;
+      IBinding[] candidates = problemBinding.getCandidateBindings();
+      if (candidates != null && candidates.length == 1) {
+        bindingToUse = candidates[0];
+      }
+    }
+    IBindingMappingStrategy<?> strategy = strategies.get(bindingToUse.getClass());
+    if (strategy != null) {
+      return strategy.createMappingFrom(bindingToUse);
+    }
+    return null;
   }
 }
