@@ -64,7 +64,7 @@ import com.google.inject.*;
     for (IEObjectDescription exported : resource.getExportedObjects()) {
       QualifiedName qualifiedName = exported.getQualifiedName();
       Matcher matcher = pattern.matcher(converter.toString(qualifiedName));
-      if (matcher.matches() && haveMatchingNames(exported.getEClass(), type)) {
+      if (haveMatchingNames(exported.getEClass(), type) && matcher.matches()) {
         descriptions.add(exported);
       }
     }

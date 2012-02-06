@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.cdt.editor;
+package com.google.eclipse.protobuf.cdt.util;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.ITextSelection;

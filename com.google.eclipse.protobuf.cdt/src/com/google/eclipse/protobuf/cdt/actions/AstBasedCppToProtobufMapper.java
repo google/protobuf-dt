@@ -21,8 +21,8 @@ import org.eclipse.cdt.ui.CUIPlugin;
 import org.eclipse.core.runtime.*;
 import org.eclipse.ui.IEditorPart;
 
-import com.google.eclipse.protobuf.cdt.editor.Editors;
 import com.google.eclipse.protobuf.cdt.mapping.*;
+import com.google.eclipse.protobuf.cdt.util.Editors;
 import com.google.inject.*;
 
 /**

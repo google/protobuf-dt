@@ -8,17 +8,14 @@
  */
 package com.google.eclipse.protobuf.cdt.actions;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IResourceDescription;
 
-import com.google.eclipse.protobuf.cdt.editor.Editors;
 import com.google.eclipse.protobuf.cdt.mapping.CppToProtobufMapping;
 import com.google.eclipse.protobuf.cdt.matching.ProtobufElementMatcher;
-import com.google.eclipse.protobuf.cdt.path.ProtoFilePaths;
 import com.google.eclipse.protobuf.resource.*;
 import com.google.inject.Inject;
 
@@ -28,14 +25,12 @@ import com.google.inject.Inject;
 class ProtobufElementUriFinder {
   @Inject private ProtobufElementMatcher matcher;
   @Inject private ResourceDescriptions descriptions;
-  @Inject private Editors editors;
   @Inject private IndexLookup indexLookup;
   @Inject private AstBasedCppToProtobufMapper mapper;
-  @Inject private ProtoFilePaths paths;
+  @Inject private ProtoFilePathFinder pathFinder;
 
   URI findProtobufElementUriFromSelectionOf(IEditorPart editor) {
-    IFile file = editors.fileDisplayedIn(editor);
-    IPath protoFilePath = paths.protoFilePath(file);
+    IPath protoFilePath = pathFinder.findProtoFilePathIn(editor);
     if (protoFilePath != null) {
       CppToProtobufMapping mapping = mapper.createMappingFromSelectionOf(editor);
       if (mapping != null) {
