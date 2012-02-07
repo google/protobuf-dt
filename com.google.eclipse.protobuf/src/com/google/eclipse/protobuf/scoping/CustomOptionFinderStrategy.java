@@ -26,15 +26,14 @@ import com.google.inject.Inject;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class CustomOptionFinderStrategy implements ModelElementFinder.FinderStrategy {
+class CustomOptionFinderStrategy implements ModelElementFinder.FinderStrategy<OptionType> {
   @Inject private LocalNamesProvider localNamesProvider;
   @Inject private OptionNamingStrategy namingStrategy;
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
   @Inject private TypeExtensions typeExtensions;
 
   @Override public Collection<IEObjectDescription> imported(Package fromImporter, Package fromImported, Object target,
-      Object criteria) {
-    OptionType optionType = optionTypeFrom(criteria);
+      OptionType optionType) {
     if (!isExtendingOptionMessage(target, optionType)) {
       return emptySet();
     }
@@ -46,12 +45,11 @@ class CustomOptionFinderStrategy implements ModelElementFinder.FinderStrategy {
     return descriptions;
   }
 
-  @Override public Collection<IEObjectDescription> inDescriptor(Import anImport, Object criteria) {
+  @Override public Collection<IEObjectDescription> inDescriptor(Import anImport, OptionType criteria) {
     return emptySet();
   }
 
-  @Override public Collection<IEObjectDescription> local(Object target, Object criteria, int level) {
-    OptionType optionType = optionTypeFrom(criteria);
+  @Override public Collection<IEObjectDescription> local(Object target, OptionType optionType, int level) {
     if (!isExtendingOptionMessage(target, optionType)) {
       return emptySet();
     }
@@ -66,13 +64,6 @@ class CustomOptionFinderStrategy implements ModelElementFinder.FinderStrategy {
       descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(e, namingStrategy));
     }
     return descriptions;
-  }
-
-  private OptionType optionTypeFrom(Object criteria) {
-    if (!(criteria instanceof OptionType)) {
-      throw new IllegalArgumentException("Search criteria should be OptionType");
-    }
-    return (OptionType) criteria;
   }
 
   private boolean isExtendingOptionMessage(Object o, OptionType optionType) {

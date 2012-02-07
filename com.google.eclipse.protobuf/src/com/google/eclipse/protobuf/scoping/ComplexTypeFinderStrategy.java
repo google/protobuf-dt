@@ -26,7 +26,7 @@ import com.google.inject.Inject;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class ComplexTypeFinderStrategy implements ModelElementFinder.FinderStrategy {
+class ComplexTypeFinderStrategy implements ModelElementFinder.FinderStrategy<Class<? extends ComplexType>> {
   @Inject private PackageIntersectionDescriptions packageIntersectionDescriptions;
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private LocalNamesProvider localNamesProvider;
@@ -34,8 +34,8 @@ class ComplexTypeFinderStrategy implements ModelElementFinder.FinderStrategy {
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
 
   @Override public Collection<IEObjectDescription> imported(Package fromImporter, Package fromImported, Object target,
-      Object criteria) {
-    if (!isInstance(target, criteria)) {
+      Class<? extends ComplexType> typeOfComplexType) {
+    if (!typeOfComplexType.isInstance(target)) {
       return emptySet();
     }
     Set<IEObjectDescription> descriptions = newHashSet();
@@ -45,20 +45,23 @@ class ComplexTypeFinderStrategy implements ModelElementFinder.FinderStrategy {
     return descriptions;
   }
 
-  @Override public Collection<IEObjectDescription> inDescriptor(Import anImport, Object criteria) {
+  @Override public Collection<IEObjectDescription> inDescriptor(Import anImport,
+      Class<? extends ComplexType> typeOfComplexType) {
     Set<IEObjectDescription> descriptions = newHashSet();
     ProtoDescriptor descriptor = descriptorProvider.descriptor(anImport.getImportURI());
-    for (ComplexType type : descriptor.allTypes()) {
-      if (!isInstance(type, criteria)) {
+    for (ComplexType complexType : descriptor.allTypes()) {
+      if (!typeOfComplexType.isInstance(complexType)) {
         continue;
       }
-      descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(type, namingStrategy));
+      descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(complexType, namingStrategy));
     }
     return descriptions;
   }
 
-  @Override public Collection<IEObjectDescription> local(Object target, Object criteria, int level) {
-    if (!isInstance(target, criteria)) {
+  @Override
+  public Collection<IEObjectDescription> local(Object target, Class<? extends ComplexType> typeOfComplexType,
+      int level) {
+    if (!typeOfComplexType.isInstance(target)) {
       return emptySet();
     }
     EObject e = (EObject) target;
@@ -70,17 +73,5 @@ class ComplexTypeFinderStrategy implements ModelElementFinder.FinderStrategy {
     }
     descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(e, namingStrategy));
     return descriptions;
-  }
-
-  private boolean isInstance(Object target, Object criteria) {
-    Class<?> targetType = targetTypeFrom(criteria);
-    return targetType.isInstance(target);
-  }
-
-  private Class<?> targetTypeFrom(Object criteria) {
-    if (criteria instanceof Class<?>) {
-      return (Class<?>) criteria;
-    }
-    throw new IllegalArgumentException("Search criteria should be Class<?>");
   }
 }
