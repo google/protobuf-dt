@@ -19,6 +19,7 @@ import com.google.eclipse.protobuf.ui.preferences.BooleanPreference;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ParserChecksPreferences {
+  // TODO change name to "googleInternal" or something similar.
   private final BooleanPreference enableProto2OnlyChecks;
 
   /**
