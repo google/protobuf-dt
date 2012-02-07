@@ -54,7 +54,7 @@ import java.util.regex.*;
       }
       String[] comment = rawComment.split(lineSeparator());
       for (String line : comment) {
-        for (Pattern pattern : compile(patternsToMatch, target)) {
+        for (Pattern pattern : compile(patternsToMatch)) {
           Matcher matcher = pattern.matcher(line);
           if (matcher.matches()) {
             return pair(currentNode, matcher);
@@ -65,7 +65,7 @@ import java.util.regex.*;
     return null;
   }
 
-  private List<Pattern> compile(String[] patterns, EObject target) {
+  private List<Pattern> compile(String[] patterns) {
     List<Pattern> compiled = newArrayList();
     for (final String s : patterns) {
       Pattern p = null;
@@ -85,8 +85,8 @@ import java.util.regex.*;
       return compile(key);
     }
 
-    static Pattern compile(String s) {
-      return Pattern.compile(MATCH_ANYTHING + s + MATCH_ANYTHING, CASE_INSENSITIVE);
+    static Pattern compile(String regex) {
+      return Pattern.compile(MATCH_ANYTHING + regex + MATCH_ANYTHING, CASE_INSENSITIVE);
     }
   }
 }
