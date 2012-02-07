@@ -36,57 +36,57 @@ class ModelElementFinder {
   @Inject private Resources resources;
   @Inject private ResourceSets resourceSets;
 
-  Collection<IEObjectDescription> find(EObject start, FinderStrategy finderStrategy, Object criteria) {
+  Collection<IEObjectDescription> find(EObject start, FinderStrategy strategy, Object criteria) {
     Set<IEObjectDescription> descriptions = newHashSet();
-    descriptions.addAll(local(start, finderStrategy, criteria));
+    descriptions.addAll(local(start, strategy, criteria));
     Protobuf root = modelObjects.rootOf(start);
-    descriptions.addAll(imported(root, finderStrategy, criteria));
+    descriptions.addAll(imported(root, strategy, criteria));
     return unmodifiableSet(descriptions);
   }
 
-  private Collection<IEObjectDescription> local(EObject start, FinderStrategy finderStrategy, Object criteria) {
+  private Collection<IEObjectDescription> local(EObject start, FinderStrategy strategy, Object criteria) {
     UniqueDescriptions descriptions = new UniqueDescriptions();
     EObject current = start.eContainer();
     while (current != null) {
-      descriptions.addAll(local(current, finderStrategy, criteria, 0));
+      descriptions.addAll(local(current, strategy, criteria, 0));
       current = current.eContainer();
     }
     return descriptions.values();
   }
 
-  Collection<IEObjectDescription> find(Protobuf start, FinderStrategy finderStrategy, Object criteria) {
+  Collection<IEObjectDescription> find(Protobuf start, FinderStrategy strategy, Object criteria) {
     Set<IEObjectDescription> descriptions = newHashSet();
-    descriptions.addAll(local(start, finderStrategy, criteria, 0));
-    descriptions.addAll(imported(start, finderStrategy, criteria));
+    descriptions.addAll(local(start, strategy, criteria, 0));
+    descriptions.addAll(imported(start, strategy, criteria));
     return unmodifiableSet(descriptions);
   }
 
-  private Collection<IEObjectDescription> local(EObject start, FinderStrategy finder, Object criteria, int level) {
+  private Collection<IEObjectDescription> local(EObject start, FinderStrategy strategy, Object criteria, int level) {
     UniqueDescriptions descriptions = new UniqueDescriptions();
     for (EObject element : start.eContents()) {
-      descriptions.addAll(finder.local(element, criteria, level));
+      descriptions.addAll(strategy.local(element, criteria, level));
       if (element instanceof Message || element instanceof Group) {
-        descriptions.addAll(local(element, finder, criteria, level + 1));
+        descriptions.addAll(local(element, strategy, criteria, level + 1));
       }
     }
     return descriptions.values();
   }
 
-  private Collection<IEObjectDescription> imported(Protobuf start, FinderStrategy finderStrategy, Object criteria) {
+  private Collection<IEObjectDescription> imported(Protobuf start, FinderStrategy strategy, Object criteria) {
     List<Import> allImports = protobufs.importsIn(start);
     if (allImports.isEmpty()) {
       return emptyList();
     }
     ResourceSet resourceSet = start.eResource().getResourceSet();
-    return imported(allImports, modelObjects.packageOf(start), resourceSet, finderStrategy, criteria);
+    return imported(allImports, modelObjects.packageOf(start), resourceSet, strategy, criteria);
   }
 
   private Collection<IEObjectDescription> imported(List<Import> allImports, Package fromImporter,
-      ResourceSet resourceSet, FinderStrategy finderStrategy, Object criteria) {
+      ResourceSet resourceSet, FinderStrategy strategy, Object criteria) {
     Set<IEObjectDescription> descriptions = newHashSet();
     for (Import anImport : allImports) {
       if (imports.isImportingDescriptor(anImport)) {
-        descriptions.addAll(finderStrategy.inDescriptor(anImport, criteria));
+        descriptions.addAll(strategy.inDescriptor(anImport, criteria));
         continue;
       }
       URI resolvedUri = imports.resolvedUriOf(anImport);
@@ -102,20 +102,19 @@ class ModelElementFinder {
         continue;
       }
       if (rootOfImported != null) {
-        descriptions.addAll(publicImported(rootOfImported, finderStrategy, criteria));
+        descriptions.addAll(publicImported(rootOfImported, strategy, criteria));
         if (arePackagesRelated(fromImporter, rootOfImported)) {
-          descriptions.addAll(local(rootOfImported, finderStrategy, criteria, 0));
+          descriptions.addAll(local(rootOfImported, strategy, criteria, 0));
           continue;
         }
         Package packageOfImported = modelObjects.packageOf(rootOfImported);
-        descriptions.addAll(imported(fromImporter, packageOfImported, imported, finderStrategy, criteria));
+        descriptions.addAll(imported(fromImporter, packageOfImported, imported, strategy, criteria));
       }
     }
     return descriptions;
   }
 
-  private Collection<IEObjectDescription> publicImported(Protobuf start, FinderStrategy finderStrategy,
-      Object criteria) {
+  private Collection<IEObjectDescription> publicImported(Protobuf start, FinderStrategy strategy, Object criteria) {
     if (!protobufs.isProto2(start)) {
       return emptySet();
     }
@@ -124,7 +123,7 @@ class ModelElementFinder {
       return emptyList();
     }
     ResourceSet resourceSet = start.eResource().getResourceSet();
-    return imported(allImports, modelObjects.packageOf(start), resourceSet, finderStrategy, criteria);
+    return imported(allImports, modelObjects.packageOf(start), resourceSet, strategy, criteria);
   }
 
   private boolean arePackagesRelated(Package aPackage, EObject root) {
@@ -133,12 +132,12 @@ class ModelElementFinder {
   }
 
   private Collection<IEObjectDescription> imported(Package fromImporter, Package fromImported, Resource resource,
-      FinderStrategy finderStrategy, Object criteria) {
+      FinderStrategy strategy, Object criteria) {
     Set<IEObjectDescription> descriptions = newHashSet();
     TreeIterator<Object> contents = getAllContents(resource, true);
     while (contents.hasNext()) {
       Object next = contents.next();
-      descriptions.addAll(finderStrategy.imported(fromImporter, fromImported, next, criteria));
+      descriptions.addAll(strategy.imported(fromImporter, fromImported, next, criteria));
     }
     return descriptions;
   }

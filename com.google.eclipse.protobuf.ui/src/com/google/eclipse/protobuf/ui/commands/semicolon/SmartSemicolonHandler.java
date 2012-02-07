@@ -54,10 +54,12 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
   private static Logger logger = Logger.getLogger(SmartSemicolonHandler.class);
 
   @Inject private CommentNodesFinder commentNodesFinder;
+  @Inject private ParserBasedContentAssistContextFactory contextFactory;
   @Inject private IndexedElements indexedElements;
   @Inject private Literals literals;
   @Inject private INodes nodes;
-  @Inject private ParserBasedContentAssistContextFactory contextFactory;
+  @Inject private Protobufs protobufs;
+  @Inject private Resources resources;
   @Inject private IPreferenceStoreAccess storeAccess;
 
   private static final String SEMICOLON = CommonKeyword.SEMICOLON.toString();
@@ -80,6 +82,10 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
     try {
       document.modify(new IUnitOfWork.Void<XtextResource>() {
         @Override public void process(XtextResource resource) {
+          Protobuf root = resources.rootOf(resource);
+          if (!protobufs.isProto2(root)) {
+            return;
+          }
           int offset = styledTextAccess.caretOffset();
           ContentAssistContext[] context = contextFactory.create(editor.getInternalSourceViewer(), offset, resource);
           for (ContentAssistContext c : context) {

@@ -25,12 +25,12 @@ import com.google.inject.Inject;
 class CustomOptionFieldNameFinder {
   @Inject private Options options;
 
-  Collection<IEObjectDescription> findFieldNamesSources(ComplexValue value, FinderStrategy finderStrategy) {
+  Collection<IEObjectDescription> findFieldNamesSources(ComplexValue value, FinderStrategy strategy) {
     MessageField source = sourceOf(value);
     if (source == null) {
       return emptySet();
     }
-    return finderStrategy.findMessageFields(source);
+    return strategy.findMessageFields(source);
   }
 
   private MessageField sourceOf(ComplexValue value) {

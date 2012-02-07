@@ -11,11 +11,11 @@ package com.google.eclipse.protobuf.model.util;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.unmodifiableList;
 
+import java.util.List;
+
 import com.google.eclipse.protobuf.parser.NonProto2Protobuf;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.Singleton;
-
-import java.util.List;
 
 /**
  * Utility methods related to <code>{@link Protobuf}</code>s.
@@ -24,7 +24,8 @@ import java.util.List;
  */
 @Singleton public class Protobufs {
   /**
-   * Indicates whether the given <code>{@link Protobuf}</code> is not {@code null} and has "proto2" syntax.
+   * Indicates whether the given <code>{@link Protobuf}</code> is not {@code null} and has "proto2" syntax (not
+   * necessarily in a explicit way.)
    * @param protobuf the {@code Protobuf} to check.
    * @return {@code true} if the given <code>{@link Protobuf}</code> is not {@code null} and has "proto2" syntax,
    * {@code false} otherwise.
