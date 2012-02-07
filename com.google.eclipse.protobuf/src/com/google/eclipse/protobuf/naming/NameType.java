@@ -8,19 +8,9 @@
  */
 package com.google.eclipse.protobuf.naming;
 
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.util.Pair;
-
 /**
- * Knows how to obtain the name of a model object.
- *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public interface NamingStrategy {
-  /**
-   * Returns the name of the given model object.
-   * @param e the given model object.
-   * @return the name of the given model object.
-   */
-  Pair<NameType, String> nameOf(EObject e);
+public enum NameType {
+  NORMAL, OPTION
 }

@@ -8,16 +8,18 @@
  */
 package com.google.eclipse.protobuf.naming;
 
-import static org.eclipse.xtext.util.Strings.isEmpty;
-
-import java.util.List;
-
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.naming.*;
+import static com.google.eclipse.protobuf.naming.NameType.NORMAL;
+import static org.eclipse.xtext.util.Tuples.pair;
 
 import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.inject.Inject;
+import com.google.inject.*;
+
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.naming.*;
+import org.eclipse.xtext.util.*;
+
+import java.util.List;
 
 /**
  * Provides fully-qualified names for protobuf elements.
@@ -26,7 +28,10 @@ import com.google.inject.Inject;
  */
 public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.AbstractImpl implements
     IProtobufQualifiedNameProvider {
+  private static final Pair<NameType, QualifiedName> EMPTY_NAME = pair(NORMAL, null);
+
   @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
+  @Inject private final IResourceScopeCache cache = IResourceScopeCache.NullImpl.INSTANCE;
 
   @Inject private ModelObjects modelObjects;
   @Inject private NormalNamingStrategy normalNamingStrategy;
@@ -37,21 +42,27 @@ public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.Abstra
     return getFullyQualifiedName(target, normalNamingStrategy);
   }
 
-  @Override public QualifiedName getFullyQualifiedName(EObject e, NamingStrategy namingStrategy) {
-    EObject current = e;
-    String name = namingStrategy.nameOf(e);
-    if (isEmpty(name)) {
-      return null;
-    }
-    QualifiedName qualifiedName = converter.toQualifiedName(name);
-    while (current.eContainer() != null) {
-      current = current.eContainer();
-      QualifiedName parentsQualifiedName = getFullyQualifiedName(current, namingStrategy);
-      if (parentsQualifiedName != null) {
-        return parentsQualifiedName.append(qualifiedName);
+  @Override public QualifiedName getFullyQualifiedName(final EObject e, final NamingStrategy namingStrategy) {
+    Pair<EObject, String> key = pair(e, "fqn");
+    Pair<NameType, QualifiedName> cached = cache.get(key, e.eResource(), new Provider<Pair<NameType, QualifiedName>>() {
+      @Override public Pair<NameType, QualifiedName> get() {
+        EObject current = e;
+        Pair<NameType, String> name = namingStrategy.nameOf(e);
+        if (name == null) {
+          return EMPTY_NAME;
+        }
+        QualifiedName qualifiedName = converter.toQualifiedName(name.getSecond());
+        while (current.eContainer() != null) {
+          current = current.eContainer();
+          QualifiedName parentsQualifiedName = getFullyQualifiedName(current, namingStrategy);
+          if (parentsQualifiedName != null) {
+            return pair(name.getFirst(), parentsQualifiedName.append(qualifiedName));
+          }
+        }
+        return pair(name.getFirst(), addPackage(e, qualifiedName));
       }
-    }
-    return addPackage(e, qualifiedName);
+    });
+    return cached.getSecond();
   }
 
   private QualifiedName addPackage(EObject obj, QualifiedName qualifiedName) {

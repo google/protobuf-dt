@@ -12,14 +12,14 @@ import static com.google.eclipse.protobuf.ui.documentation.Patterns.compileAll;
 import static java.util.regex.Pattern.compile;
 import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.getNode;
 
-import java.util.regex.Pattern;
+import com.google.eclipse.protobuf.model.util.INodes;
+import com.google.inject.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
 import org.eclipse.xtext.nodemodel.*;
 
-import com.google.eclipse.protobuf.model.util.INodes;
-import com.google.inject.*;
+import java.util.regex.Pattern;
 
 /**
  * Provides multiple-line comments of a protobuf element as its documentation
@@ -42,7 +42,9 @@ import com.google.inject.*;
   private String findComment(EObject o) {
     String returnValue = null;
     ICompositeNode node = getNode(o);
-    if (node == null) { return null; }
+    if (node == null) {
+      return null;
+    }
     // get the last multiple-line comment before a non hidden leaf node
     for (INode currentNode : node.getAsTreeIterable()) {
       if (!nodes.isHiddenLeafNode(currentNode)) {

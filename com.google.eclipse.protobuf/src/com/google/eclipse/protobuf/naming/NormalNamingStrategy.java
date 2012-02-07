@@ -8,9 +8,14 @@
  */
 package com.google.eclipse.protobuf.naming;
 
-import org.eclipse.emf.ecore.EObject;
+import static com.google.eclipse.protobuf.naming.NameType.NORMAL;
+import static org.eclipse.xtext.util.Strings.isEmpty;
+import static org.eclipse.xtext.util.Tuples.pair;
 
 import com.google.inject.*;
+
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.util.Pair;
 
 /**
  * Returns the name of a model object obtained from a <code>{@link NameResolver}</code>.
@@ -21,7 +26,11 @@ import com.google.inject.*;
   @Inject private NameResolver nameResolver;
 
   /** {@inheritDoc} */
-  @Override public String nameOf(EObject e) {
-    return nameResolver.nameOf(e);
+  @Override public Pair<NameType, String> nameOf(EObject e) {
+    String value = nameResolver.nameOf(e);
+    if (isEmpty(value)) {
+      return null;
+    }
+    return pair(NORMAL, value);
   }
 }

@@ -12,10 +12,6 @@ import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
 import static com.google.eclipse.protobuf.validation.Messages.*;
 import static java.lang.String.format;
 
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.naming.*;
-import org.eclipse.xtext.validation.*;
-
 import com.google.eclipse.protobuf.grammar.Syntaxes;
 import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.naming.NameResolver;
@@ -23,11 +19,15 @@ import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.inject.Inject;
 
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.naming.*;
+import org.eclipse.xtext.validation.*;
+
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-@ComposedChecks(validators = { DataTypeValidator.class, ImportValidator.class }) public class ProtobufJavaValidator
-    extends AbstractProtobufJavaValidator {
+@ComposedChecks(validators = { DataTypeValidator.class, ImportValidator.class })
+public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
   public static final String SYNTAX_IS_NOT_PROTO2_ERROR = "syntaxIsNotProto2";
   public static final String INVALID_FIELD_TAG_NUMBER_ERROR = "invalidFieldTagNumber";
   public static final String MORE_THAN_ONE_PACKAGE_ERROR = "moreThanOnePackage";
@@ -53,8 +53,7 @@ import com.google.inject.Inject;
   }
 
   @Check public void checkTagNumberIsUnique(IndexedElement e) {
-    if (isNameNull(e))
-     {
+    if (isNameNull(e)) {
       return; // we already show an error if name is null, no need to go further.
     }
     long index = indexedElements.indexOf(e);

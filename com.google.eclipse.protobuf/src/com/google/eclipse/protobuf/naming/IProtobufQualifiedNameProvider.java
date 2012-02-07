@@ -21,8 +21,8 @@ public interface IProtobufQualifiedNameProvider extends IQualifiedNameProvider {
   /**
    * Returns the qualified name of the given model object.
    * @param e the given model object.
-   * @param namingStrategy gets the name of the model object.
+   * @param strategy gets the name of the model object.
    * @return the qualified name of the given model object.
    */
-  QualifiedName getFullyQualifiedName(EObject e, NamingStrategy namingStrategy);
+  QualifiedName getFullyQualifiedName(EObject e, NamingStrategy strategy);
 }
