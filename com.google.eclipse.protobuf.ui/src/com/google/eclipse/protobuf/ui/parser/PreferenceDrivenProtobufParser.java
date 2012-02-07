@@ -11,7 +11,7 @@ package com.google.eclipse.protobuf.ui.parser;
 import com.google.eclipse.protobuf.parser.NonProto2Protobuf;
 import com.google.eclipse.protobuf.parser.antlr.ProtobufParser;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
-import com.google.eclipse.protobuf.ui.preferences.parser.core.ParserChecksPreferences;
+import com.google.eclipse.protobuf.ui.preferences.misc.core.MiscellaneousPreferences;
 import com.google.inject.Inject;
 
 import org.antlr.runtime.CharStream;
@@ -28,8 +28,8 @@ public class PreferenceDrivenProtobufParser extends ProtobufParser {
   @Override protected IParseResult doParse(String ruleName, CharStream in, NodeModelBuilder builder,
       int initialLookAhead) {
     IParseResult result = super.doParse(ruleName, in, builder, initialLookAhead);
-    ParserChecksPreferences preferences = new ParserChecksPreferences(storeAccess);
-    if (preferences.enableProto2OnlyChecks().getValue() && isNotProto2(result)) {
+    MiscellaneousPreferences preferences = new MiscellaneousPreferences(storeAccess);
+    if (preferences.isGoogleInternal().getValue() && isNotProto2(result)) {
       return new ParseResult(new NonProto2Protobuf(), result.getRootNode(), false);
     }
     return result;

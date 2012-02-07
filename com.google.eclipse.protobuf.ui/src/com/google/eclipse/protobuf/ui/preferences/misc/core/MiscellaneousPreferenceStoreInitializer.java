@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.preferences.parser.core;
+package com.google.eclipse.protobuf.ui.preferences.misc.core;
 
 import org.eclipse.xtext.ui.editor.preferences.*;
 
@@ -15,9 +15,9 @@ import org.eclipse.xtext.ui.editor.preferences.*;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ParserChecksPreferenceStoreInitializer implements IPreferenceStoreInitializer {
+public class MiscellaneousPreferenceStoreInitializer implements IPreferenceStoreInitializer {
   @Override public void initialize(IPreferenceStoreAccess storeAccess) {
-    ParserChecksPreferences preferences = new ParserChecksPreferences(storeAccess);
-    preferences.enableProto2OnlyChecks().setDefaultValue(false);
+    MiscellaneousPreferences preferences = new MiscellaneousPreferences(storeAccess);
+    preferences.isGoogleInternal().setDefaultValue(false);
   }
 }

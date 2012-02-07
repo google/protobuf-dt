@@ -48,7 +48,7 @@ import com.google.eclipse.protobuf.ui.preferences.compiler.core.CompilerPreferen
 import com.google.eclipse.protobuf.ui.preferences.editor.numerictag.core.NumericTagPreferenceStoreInitializer;
 import com.google.eclipse.protobuf.ui.preferences.editor.save.core.SaveActionsPreferenceStoreInitializer;
 import com.google.eclipse.protobuf.ui.preferences.general.core.GeneralPreferenceStoreInitializer;
-import com.google.eclipse.protobuf.ui.preferences.parser.core.ParserChecksPreferenceStoreInitializer;
+import com.google.eclipse.protobuf.ui.preferences.misc.core.MiscellaneousPreferenceStoreInitializer;
 import com.google.eclipse.protobuf.ui.preferences.paths.core.PathsPreferenceStoreInitializer;
 import com.google.eclipse.protobuf.ui.quickfix.ProtobufQuickAssistProcessor;
 import com.google.eclipse.protobuf.ui.scoping.FileUriResolver;
@@ -136,7 +136,7 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
     configurePreferenceInitializer(binder, "compilerPreferences", CompilerPreferenceStoreInitializer.class);
     configurePreferenceInitializer(binder, "generalPreferences", GeneralPreferenceStoreInitializer.class);
     configurePreferenceInitializer(binder, "numericTagPreferences", NumericTagPreferenceStoreInitializer.class);
-    configurePreferenceInitializer(binder, "parserChecksPreferences", ParserChecksPreferenceStoreInitializer.class);
+    configurePreferenceInitializer(binder, "parserChecksPreferences", MiscellaneousPreferenceStoreInitializer.class);
     configurePreferenceInitializer(binder, "pathsPreferences", PathsPreferenceStoreInitializer.class);
     configurePreferenceInitializer(binder, "saveActionsPreferences", SaveActionsPreferenceStoreInitializer.class);
   }
