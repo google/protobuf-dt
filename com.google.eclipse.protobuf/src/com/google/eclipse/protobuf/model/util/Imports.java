@@ -13,10 +13,12 @@ import static com.google.eclipse.protobuf.util.Strings.*;
 import static org.eclipse.xtext.util.Strings.*;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.*;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 
 import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.resource.ResourceSets;
 import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider;
 import com.google.inject.Inject;
 
@@ -28,6 +30,7 @@ import com.google.inject.Inject;
 public class Imports {
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private INodes nodes;
+  @Inject private ResourceSets resourceSets;
   @Inject private ImportUriResolver uriResolver;
 
   /**
@@ -95,6 +98,21 @@ public class Imports {
       }
     }
     return false;
+  }
+
+  /**
+   * Returns the resource referred by the URI of the given {@code Import}.
+   * @param anImport the given {@code Import}.
+   * @return the resource referred by the URI of the given {@code Import}, or {@code null} if the URI has not been
+   * resolved.
+   */
+  public Resource importedResource(Import anImport) {
+    URI resolvedUri = resolvedUriOf(anImport);
+    if (resolvedUri != null) {
+      ResourceSet resourceSet = anImport.eResource().getResourceSet();
+      return resourceSets.findResource(resourceSet, resolvedUri);
+    }
+    return null;
   }
 
   /**
