@@ -296,10 +296,4 @@
       </command>
     </menuContribution>
   </extension>
-  <extension
-        point="org.eclipse.xtext.ui.shared.overridingGuiceModule">
-     <module
-           class="com.google.eclipse.protobuf.ui.ProtobufSharedModule">
-     </module>
-  </extension>
 </plugin>
