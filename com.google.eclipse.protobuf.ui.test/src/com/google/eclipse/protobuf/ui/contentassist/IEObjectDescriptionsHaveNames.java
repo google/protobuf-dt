@@ -19,7 +19,7 @@ import org.hamcrest.*;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class IEObjectDescriptionsHaveNames extends BaseMatcher<Collection<IEObjectDescription>> {
+public class IEObjectDescriptionsHaveNames extends TypeSafeMatcher<Collection<IEObjectDescription>> {
   private final List<String> qualifiedNames;
 
   public static IEObjectDescriptionsHaveNames containOnly(String...names) {
@@ -30,18 +30,12 @@ public class IEObjectDescriptionsHaveNames extends BaseMatcher<Collection<IEObje
     this.qualifiedNames = newArrayList(qualifiedNames);
   }
 
-  /** {@inheritDoc} */
-  @Override @SuppressWarnings("unchecked")
-  public boolean matches(Object arg) {
-    if (!(arg instanceof Collection)) {
-      return false;
-    }
-    Collection<IEObjectDescription> descriptions = (Collection<IEObjectDescription>) arg;
+  @Override public boolean matchesSafely(Collection<IEObjectDescription> item) {
     List<String> copyOfNames = newArrayList(qualifiedNames);
-    if (copyOfNames.size() != descriptions.size()) {
+    if (copyOfNames.size() != item.size()) {
       return false;
     }
-    for (IEObjectDescription description : descriptions) {
+    for (IEObjectDescription description : item) {
       QualifiedName qualifiedName = description.getName();
       if (qualifiedName == null) {
         continue;

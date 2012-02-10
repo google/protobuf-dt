@@ -24,7 +24,7 @@ import com.google.eclipse.protobuf.protobuf.Enum;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ContainAllLiteralsInEnum extends BaseMatcher<IEObjectDescriptions> {
+public class ContainAllLiteralsInEnum extends TypeSafeMatcher<IEObjectDescriptions> {
   private final Enum anEnum;
 
   public static ContainAllLiteralsInEnum containAllLiteralsIn(Enum anEnum) {
@@ -32,21 +32,18 @@ public class ContainAllLiteralsInEnum extends BaseMatcher<IEObjectDescriptions> 
   }
 
   private ContainAllLiteralsInEnum(Enum anEnum) {
+    super(IEObjectDescriptions.class);
     this.anEnum = anEnum;
   }
 
-  @Override public boolean matches(Object arg) {
-    if (!(arg instanceof IEObjectDescriptions)) {
-      return false;
-    }
-    IEObjectDescriptions descriptions = (IEObjectDescriptions) arg;
+  @Override public boolean matchesSafely(IEObjectDescriptions item) {
     List<Literal> literals = allLiterals();
-    if (descriptions.size() != literals.size()) {
+    if (item.size() != literals.size()) {
       return false;
     }
     for (Literal literal : literals) {
       String name = literal.getName();
-      EObject described = descriptions.objectDescribedAs(name);
+      EObject described = item.objectDescribedAs(name);
       if (described != literal) {
         return false;
       }

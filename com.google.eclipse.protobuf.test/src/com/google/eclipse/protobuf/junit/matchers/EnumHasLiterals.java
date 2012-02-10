@@ -23,7 +23,7 @@ import com.google.eclipse.protobuf.protobuf.Enum;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class EnumHasLiterals extends BaseMatcher<Enum> {
+public class EnumHasLiterals extends TypeSafeMatcher<Enum> {
   private final String[] literalNames;
 
   public static EnumHasLiterals hasLiterals(String... literalNames) {
@@ -31,15 +31,12 @@ public class EnumHasLiterals extends BaseMatcher<Enum> {
   }
 
   private EnumHasLiterals(String... literalNames) {
+    super(Enum.class);
     this.literalNames = literalNames;
   }
 
-  @Override public boolean matches(Object item) {
-    if (!(item instanceof Enum)) {
-      return false;
-    }
-    Enum anEnum = (Enum) item;
-    List<String> actualNames = newArrayList(literalNames(anEnum));
+  @Override public boolean matchesSafely(Enum item) {
+    List<String> actualNames = newArrayList(literalNames(item));
     for (String name : literalNames) {
       actualNames.remove(name);
     }

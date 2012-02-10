@@ -8,19 +8,18 @@
  */
 package com.google.eclipse.protobuf.resource;
 
-import static com.google.common.base.Objects.equal;
+import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.unmodifiableList;
 
 import java.util.List;
-import java.util.regex.*;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.*;
-import org.eclipse.xtext.naming.*;
+import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.*;
 
-import com.google.inject.*;
+import com.google.common.base.Predicate;
+import com.google.inject.Singleton;
 
 /**
  * Utility methods related to <code>{@link IResourceDescription}</code>s.
@@ -28,8 +27,6 @@ import com.google.inject.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class ResourceDescriptions {
-  @Inject private IQualifiedNameConverter converter;
-
   /**
    * Finds the URI of a model object, in the given resource, whose qualified name matches the given one.
    * @param resource the given resource.
@@ -48,30 +45,13 @@ import com.google.inject.*;
   }
 
   /**
-   * Finds the URIs of the model objects, in the given resource, that:
-   * <ol>
-   * <li>have a qualified name that match the given pattern, and</li>
-   * <li>have an {@code EClass} whose name is equal to the simple name of the given type.
-   * </ol>
-   * @param resource the given resource.
-   * @param pattern the pattern to match.
-   * @param type the type of model object we are looking for.
-   * @return the URI of the matching object models, or an empty list if matches could not be found.
+   * Returns the model objects that match the criteria specified in the given filter.
+   * @param resource the resource containing model objects.
+   * @param filter the filter to use.
+   * @return  the model objects that match the criteria specified in the given filter.
    */
-  public List<IEObjectDescription> matchingQualifiedNames(IResourceDescription resource, Pattern pattern,
-      Class<? extends EObject> type) {
-    List<IEObjectDescription> descriptions = newArrayList();
-    for (IEObjectDescription exported : resource.getExportedObjects()) {
-      QualifiedName qualifiedName = exported.getQualifiedName();
-      Matcher matcher = pattern.matcher(converter.toString(qualifiedName));
-      if (haveMatchingNames(exported.getEClass(), type) && matcher.matches()) {
-        descriptions.add(exported);
-      }
-    }
-    return unmodifiableList(descriptions);
-  }
-
-  private boolean haveMatchingNames(EClass eClass, Class<? extends EObject> type) {
-    return equal(eClass.getName(), type.getSimpleName());
+  public List<IEObjectDescription> filterModelObjects(IResourceDescription resource, Predicate<IEObjectDescription> filter) {
+    List<IEObjectDescription> filtered = newArrayList(filter(resource.getExportedObjects(), filter));
+    return unmodifiableList(filtered);
   }
 }

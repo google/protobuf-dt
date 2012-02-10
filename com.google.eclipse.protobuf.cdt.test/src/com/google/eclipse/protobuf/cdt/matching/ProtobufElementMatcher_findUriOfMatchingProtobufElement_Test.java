@@ -10,6 +10,7 @@ package com.google.eclipse.protobuf.cdt.matching;
 
 import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MESSAGE;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
 
@@ -105,7 +106,7 @@ public class ProtobufElementMatcher_findUriOfMatchingProtobufElement_Test {
 
   private CppToProtobufMapping messageMapping(String qualifiedNameAsText) {
     QualifiedName qualifiedName = fqnConverter.toQualifiedName(qualifiedNameAsText);
-    return new CppToProtobufMapping(qualifiedName, Message.class);
+    return new CppToProtobufMapping(qualifiedName, MESSAGE);
   }
 
   private URI uriOfMessageWithName(String name) {

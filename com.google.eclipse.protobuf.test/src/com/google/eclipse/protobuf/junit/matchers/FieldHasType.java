@@ -15,7 +15,7 @@ import com.google.eclipse.protobuf.protobuf.*;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class FieldHasType extends BaseMatcher<MessageField> {
+public class FieldHasType extends TypeSafeMatcher<MessageField> {
   private final String typeName;
 
   public static FieldHasType isBool() {
@@ -31,15 +31,12 @@ public class FieldHasType extends BaseMatcher<MessageField> {
   }
 
   private FieldHasType(String typeName) {
+    super(MessageField.class);
     this.typeName = typeName;
   }
 
-  @Override public boolean matches(Object arg) {
-    if (!(arg instanceof MessageField)) {
-      return false;
-    }
-    MessageField field = (MessageField) arg;
-    return typeName.equals(typeNameOf(field));
+  @Override public boolean matchesSafely(MessageField item) {
+    return typeName.equals(typeNameOf(item));
   }
 
   private String typeNameOf(MessageField field) {

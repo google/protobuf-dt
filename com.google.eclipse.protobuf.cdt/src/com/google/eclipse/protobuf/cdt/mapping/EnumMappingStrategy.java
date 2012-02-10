@@ -8,11 +8,12 @@
  */
 package com.google.eclipse.protobuf.cdt.mapping;
 
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.ENUM;
+
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPEnumeration;
 import org.eclipse.xtext.naming.QualifiedName;
 
-import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.inject.Singleton;
 
 /**
@@ -25,7 +26,7 @@ import com.google.inject.Singleton;
     CPPEnumeration enumeration = typeOfSupportedBinding().cast(binding);
     String[] segments = enumeration.getQualifiedName();
     QualifiedName qualifiedName = QualifiedName.create(segments);
-    return new CppToProtobufMapping(qualifiedName, Enum.class);
+    return new CppToProtobufMapping(qualifiedName, ENUM);
   }
 
   @Override public Class<CPPEnumeration> typeOfSupportedBinding() {

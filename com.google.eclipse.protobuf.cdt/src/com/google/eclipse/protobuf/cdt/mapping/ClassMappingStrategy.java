@@ -8,13 +8,14 @@
  */
 package com.google.eclipse.protobuf.cdt.mapping;
 
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MESSAGE;
+
 import org.eclipse.cdt.core.dom.IName;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPBase;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*;
 import org.eclipse.xtext.naming.QualifiedName;
 
-import com.google.eclipse.protobuf.protobuf.Message;
 import com.google.inject.Singleton;
 
 /**
@@ -28,7 +29,7 @@ import com.google.inject.Singleton;
     if (isMessage(classType)) {
       String[] segments = classType.getQualifiedName();
       QualifiedName qualifiedName = QualifiedName.create(segments);
-      return new CppToProtobufMapping(qualifiedName, Message.class);
+      return new CppToProtobufMapping(qualifiedName, MESSAGE);
     }
     return null;
   }

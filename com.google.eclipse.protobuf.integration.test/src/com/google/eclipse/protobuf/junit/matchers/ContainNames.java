@@ -10,7 +10,7 @@ package com.google.eclipse.protobuf.junit.matchers;
 
 import static java.util.Arrays.asList;
 
-import java.util.List;
+import java.util.*;
 
 import org.hamcrest.*;
 
@@ -19,7 +19,7 @@ import com.google.eclipse.protobuf.junit.IEObjectDescriptions;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ContainNames extends BaseMatcher<IEObjectDescriptions> {
+public class ContainNames extends TypeSafeMatcher<IEObjectDescriptions> {
   private final List<String> expectedNames;
 
   public static ContainNames contain(String... names) {
@@ -27,15 +27,13 @@ public class ContainNames extends BaseMatcher<IEObjectDescriptions> {
   }
 
   private ContainNames(String... names) {
+    super(IEObjectDescriptions.class);
     expectedNames = asList(names);
   }
 
-  @Override public boolean matches(Object arg) {
-    if (!(arg instanceof IEObjectDescriptions)) {
-      return false;
-    }
-    IEObjectDescriptions descriptions = (IEObjectDescriptions) arg;
-    return descriptions.names().containsAll(expectedNames);
+  @Override public boolean matchesSafely(IEObjectDescriptions item) {
+    Collection<String> names = item.names();
+    return names.containsAll(expectedNames);
   }
 
   @Override public void describeTo(Description description) {

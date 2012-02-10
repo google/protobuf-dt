@@ -23,7 +23,7 @@ import com.google.eclipse.protobuf.protobuf.MessageField;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ContainAllFields extends BaseMatcher<IEObjectDescriptions> {
+public class ContainAllFields extends TypeSafeMatcher<IEObjectDescriptions> {
   private final Collection<MessageField> fields = newArrayList();
 
   public static ContainAllFields containAll(Collection<MessageField> fields) {
@@ -31,20 +31,17 @@ public class ContainAllFields extends BaseMatcher<IEObjectDescriptions> {
   }
 
   private ContainAllFields(Collection<MessageField> fields) {
+    super(IEObjectDescriptions.class);
     this.fields.addAll(fields);
   }
 
-  @Override public boolean matches(Object arg) {
-    if (!(arg instanceof IEObjectDescriptions)) {
-      return false;
-    }
-    IEObjectDescriptions descriptions = (IEObjectDescriptions) arg;
-    if (descriptions.size() != fields.size()) {
+  @Override public boolean matchesSafely(IEObjectDescriptions item) {
+    if (item.size() != fields.size()) {
       return false;
     }
     for (MessageField field : fields) {
       String name = field.getName();
-      EObject described = descriptions.objectDescribedAs(name);
+      EObject described = item.objectDescribedAs(name);
       if (described != field) {
         return false;
       }
