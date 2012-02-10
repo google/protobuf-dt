@@ -18,10 +18,10 @@ import static org.eclipse.xtext.validation.CheckMode.KEY;
 import static org.eclipse.xtext.validation.CheckType.FAST;
 import static org.eclipse.xtext.validation.impl.ConcreteSyntaxEValidator.DISABLE_CONCRETE_SYNTAX_EVALIDATOR;
 
-import java.util.*;
+import com.google.eclipse.protobuf.linking.ProtobufDiagnostic;
 
 import org.apache.log4j.Logger;
-import org.eclipse.emf.common.util.Diagnostic;
+import org.eclipse.emf.common.util.*;
 import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.diagnostics.Severity;
@@ -29,7 +29,7 @@ import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.util.*;
 import org.eclipse.xtext.validation.*;
 
-import com.google.eclipse.protobuf.linking.ProtobufDiagnostic;
+import java.util.*;
 
 /**
  * Adds support for converting scoping errors into warnings if non-proto2 files are imported.
@@ -41,7 +41,17 @@ public class ProtobufResourceValidator extends ResourceValidatorImpl {
 
   @Override public List<Issue> validate(Resource resource, CheckMode mode, CancelIndicator indicator) {
     CancelIndicator monitor = indicator == null ? CancelIndicator.NullImpl : indicator;
-    resolveProxies(resource, monitor);
+//    long start = System.currentTimeMillis();
+    URI uri = resource.getURI();
+    if (uri.toString().endsWith("BulkMutatePayloadPseudoService.proto")) {
+      System.out.println("Ignoring validation BulkMutatePayloadPseudoService.proto");
+    } else {
+      resolveProxies(resource, monitor);
+    }
+//    long end = System.currentTimeMillis();
+//    long total = end - start;
+//
+//    System.out.println("Validated: " + resource.getURI() + " in " + total);
     if (monitor.isCanceled()) {
       return null;
     }
