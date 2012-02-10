@@ -8,13 +8,15 @@
  */
 package com.google.eclipse.protobuf.cdt.matching;
 
+import static com.google.eclipse.protobuf.resource.filter.MatchingQualifiedNameAndTypeFilter.matchingQualifiedNameAndType;
+
 import java.util.List;
 import java.util.regex.Pattern;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.resource.*;
 
+import com.google.common.base.Predicate;
 import com.google.eclipse.protobuf.cdt.mapping.CppToProtobufMapping;
 import com.google.eclipse.protobuf.resource.ResourceDescriptions;
 import com.google.inject.Inject;
@@ -23,7 +25,7 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufElementMatcher {
-  @Inject private IQualifiedNameConverter converter;
+  @Inject private PatternBuilder patternBuilder;
   @Inject private ResourceDescriptions descriptions;
 
   /**
@@ -34,21 +36,12 @@ public class ProtobufElementMatcher {
    * @return the found URI, or {@code null} if it was not possible to find a matching protocol buffer element.
    */
   public URI findUriOfMatchingProtobufElement(IResourceDescription resource, CppToProtobufMapping mapping) {
-    QualifiedName qualifiedName = mapping.qualifiedName();
-    Pattern pattern = patternToMatchFrom(qualifiedName);
-    List<IEObjectDescription> matches = descriptions.matchingQualifiedNames(resource, pattern, mapping.type());
+    Pattern pattern = patternBuilder.patternToMatchFrom(mapping);
+    Predicate<IEObjectDescription> filter = matchingQualifiedNameAndType(pattern, mapping.type());
+    List<IEObjectDescription> matches = descriptions.filterModelObjects(resource, filter);
     if (!matches.isEmpty()) {
       return matches.get(0).getEObjectURI();
     }
     return null;
-  }
-
-  private Pattern patternToMatchFrom(QualifiedName qualifiedName) {
-    String qualifiedNameAsText = converter.toString(qualifiedName);
-    // escape existing "."
-    // replace "_" with "(\.|_)"
-    String regex = qualifiedNameAsText.replaceAll("\\.", "\\\\.")
-                                      .replaceAll("_", "\\(\\\\.|_\\)");
-    return Pattern.compile(regex);
   }
 }

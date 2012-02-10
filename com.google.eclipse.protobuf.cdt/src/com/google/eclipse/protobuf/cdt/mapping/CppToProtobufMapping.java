@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.cdt.mapping;
 
-import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.xtext.naming.QualifiedName;
 
 /**
@@ -18,9 +18,9 @@ import org.eclipse.xtext.naming.QualifiedName;
  */
 public class CppToProtobufMapping {
   private final QualifiedName qualifiedName;
-  private final Class<? extends EObject> type;
+  private final EClass type;
 
-  public CppToProtobufMapping(QualifiedName qualifiedName, Class<? extends EObject> type) {
+  public CppToProtobufMapping(QualifiedName qualifiedName, EClass type) {
     this.qualifiedName = qualifiedName;
     this.type = type;
   }
@@ -37,7 +37,7 @@ public class CppToProtobufMapping {
    * Returns the type of the protocol buffer element.
    * @return the type of the protocol buffer element.
    */
-  public Class<? extends EObject> type() {
+  public EClass type() {
     return type;
   }
 }

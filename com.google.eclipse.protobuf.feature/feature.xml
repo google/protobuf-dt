@@ -2,7 +2,7 @@
 <feature
       id="com.google.eclipse.protobuf"
       label="%featureName"
-      version="1.2.2.qualifier"
+      version="1.2.3.qualifier"
       provider-name="%providerName">
 
    <description url="https://code.google.com/p/protobuf-dt/">
@@ -22,6 +22,7 @@
    </url>
 
    <requires>
+      <import plugin="org.eclipse.xtext" version="2.2.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.xtext.util"/>
       <import plugin="org.eclipse.emf.ecore"/>
       <import plugin="org.eclipse.emf.common"/>
@@ -42,7 +43,6 @@
       <import plugin="org.eclipse.compare.core" version="3.5.200" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.console" version="3.5.100" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import plugin="org.eclipse.xtext" version="2.2.1" match="greaterOrEqual"/>
    </requires>
 
    <plugin

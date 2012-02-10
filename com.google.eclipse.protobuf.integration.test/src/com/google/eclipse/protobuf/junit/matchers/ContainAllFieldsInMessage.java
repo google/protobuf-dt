@@ -23,7 +23,7 @@ import com.google.eclipse.protobuf.protobuf.*;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ContainAllFieldsInMessage extends BaseMatcher<IEObjectDescriptions> {
+public class ContainAllFieldsInMessage extends TypeSafeMatcher<IEObjectDescriptions> {
   private final EObject container;
 
   public static ContainAllFieldsInMessage containAllFieldsIn(Group group) {
@@ -35,21 +35,18 @@ public class ContainAllFieldsInMessage extends BaseMatcher<IEObjectDescriptions>
   }
 
   private ContainAllFieldsInMessage(EObject container) {
+    super(IEObjectDescriptions.class);
     this.container = container;
   }
 
-  @Override public boolean matches(Object arg) {
-    if (!(arg instanceof IEObjectDescriptions)) {
-      return false;
-    }
-    IEObjectDescriptions descriptions = (IEObjectDescriptions) arg;
+  @Override public boolean matchesSafely(IEObjectDescriptions item) {
     List<IndexedElement> elements = allIndexedElements();
-    if (descriptions.size() != elements.size()) {
+    if (item.size() != elements.size()) {
       return false;
     }
     for (IndexedElement e : elements) {
       String name = nameOf(e);
-      EObject described = descriptions.objectDescribedAs(name);
+      EObject described = item.objectDescribedAs(name);
       if (described != e) {
         return false;
       }

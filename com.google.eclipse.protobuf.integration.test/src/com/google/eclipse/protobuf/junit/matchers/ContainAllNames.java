@@ -19,7 +19,7 @@ import com.google.eclipse.protobuf.junit.IEObjectDescriptions;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ContainAllNames extends BaseMatcher<IEObjectDescriptions> {
+public class ContainAllNames extends TypeSafeMatcher<IEObjectDescriptions> {
   private final String[] expectedNames;
 
   public static ContainAllNames containAll(String... names) {
@@ -27,15 +27,12 @@ public class ContainAllNames extends BaseMatcher<IEObjectDescriptions> {
   }
 
   private ContainAllNames(String... names) {
+    super(IEObjectDescriptions.class);
     expectedNames = names;
   }
 
-  @Override public boolean matches(Object arg) {
-    if (!(arg instanceof IEObjectDescriptions)) {
-      return false;
-    }
-    IEObjectDescriptions descriptions = (IEObjectDescriptions) arg;
-    List<String> names = newArrayList(descriptions.names());
+  @Override public boolean matchesSafely(IEObjectDescriptions item) {
+    List<String> names = newArrayList(item.names());
     if (names.size() != expectedNames.length) {
       return false;
     }

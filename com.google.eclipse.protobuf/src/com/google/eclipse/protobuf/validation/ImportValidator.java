@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.validation;
 
-import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
 import static com.google.eclipse.protobuf.validation.Messages.*;
@@ -17,15 +17,13 @@ import static org.eclipse.xtext.util.Tuples.pair;
 
 import java.util.*;
 
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.*;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 import org.eclipse.xtext.util.Pair;
 import org.eclipse.xtext.validation.*;
 
 import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.resource.ResourceSets;
 import com.google.inject.Inject;
 
 /**
@@ -37,85 +35,75 @@ public class ImportValidator extends AbstractDeclarativeValidator {
   @Inject private Imports imports;
   @Inject private Protobufs protobufs;
   @Inject private Resources resources;
-  @Inject private ResourceSets resourceSets;
   @Inject private ImportUriResolver uriResolver;
 
   @Override public void register(EValidatorRegistrar registrar) {}
 
   /**
    * Verifies that {@code Import}s in the given root only refer to "proto2" files. If non-proto2 {@code Import}s are
-   * found, this validator will create warning markers for such "imports".
+   * found, this validator will create warning markers for such {@code Import}s.
    * @param root the root containing the imports to check.
    */
   @Check public void checkNonProto2Imports(Protobuf root) {
-    warnIfNonProto2ImportsFound(root.eResource());
-  }
-
-  private void warnIfNonProto2ImportsFound(Resource resource) {
-    Protobuf root = resources.rootOf(resource);
     if (!protobufs.isProto2(root)) {
       return;
     }
-    ResourceSet resourceSet = resource.getResourceSet();
-    boolean hasNonProto2 = false;
-    List<Pair<Import, Resource>> resourcesToCheck = newArrayList();
-    Set<URI> checked = newHashSet();
-    checked.add(resource.getURI());
+    Set<Protobuf> currentlyChecking = newHashSet(root);
+    HashMap<Protobuf, IsProto2> alreadyChecked = newHashMap();
+    hasNonProto2Imports(root, currentlyChecking, alreadyChecked);
+  }
+
+  private boolean hasNonProto2Imports(Protobuf root, Set<Protobuf> currentlyChecking,
+      Map<Protobuf, IsProto2> alreadyChecked) {
+    IsProto2 isProto2 = alreadyChecked.get(root);
+    if (isProto2 != null) {
+      return isProto2 == IsProto2.NO;
+    }
+    currentlyChecking.add(root);
+    Set<Pair<Import, Protobuf>> importsToCheck = newHashSet();
+    boolean hasNonProto2Imports = false;
     for (Import anImport : protobufs.importsIn(root)) {
-      Resource imported = importedResource(resourceSet, anImport);
-      checked.add(imported.getURI());
-      if (!protobufs.isProto2(resources.rootOf(imported))) {
-        hasNonProto2 = true;
+      Resource imported = imports.importedResource(anImport);
+      if (imported == null) {
+        continue;
+      }
+      Protobuf importedRoot = resources.rootOf(imported);
+      isProto2 = alreadyChecked.get(importedRoot);
+      if (isProto2 != null) {
+        // resource was already checked.
+        if (isProto2 == IsProto2.NO) {
+          hasNonProto2Imports = true;
+          warnNonProto2ImportFoundIn(anImport);
+        }
+        continue;
+      }
+      if (!protobufs.isProto2(importedRoot)) {
+        alreadyChecked.put(importedRoot, IsProto2.NO);
+        hasNonProto2Imports = true;
         warnNonProto2ImportFoundIn(anImport);
         continue;
       }
-      resourcesToCheck.add(pair(anImport, imported));
-    }
-    if (hasNonProto2) {
-      return;
-    }
-    for (Pair<Import, Resource> p : resourcesToCheck) {
-      if (hasNonProto2(p, checked, resourceSet)) {
-        warnNonProto2ImportFoundIn(p.getFirst());
-        break;
-      }
-    }
-  }
-
-  private boolean hasNonProto2(Pair<Import, Resource> toCheck, Set<URI> alreadyChecked, ResourceSet resourceSet) {
-    Protobuf root = resources.rootOf(toCheck.getSecond());
-    if (!protobufs.isProto2(root)) {
-      return false;
-    }
-    List<Pair<Import, Resource>> resourcesToCheck = newArrayList();
-    for (Import anImport : protobufs.importsIn(root)) {
-      Resource imported = importedResource(resourceSet, anImport);
-      if (alreadyChecked.contains(imported.getURI())) {
+      // we have a circular dependency
+      if (currentlyChecking.contains(importedRoot)) {
         continue;
       }
-      if (!protobufs.isProto2(resources.rootOf(imported))) {
-        return true;
+      // this is a proto2 file. Need to check its imports.
+      importsToCheck.add(pair(anImport, importedRoot));
+    }
+    for (Pair<Import, Protobuf> importToCheck : importsToCheck) {
+      if (hasNonProto2Imports(importToCheck.getSecond(), currentlyChecking, alreadyChecked)) {
+        hasNonProto2Imports = true;
+        warnNonProto2ImportFoundIn(importToCheck.getFirst());
       }
-      resourcesToCheck.add(pair(toCheck.getFirst(), imported));
     }
-    for (Pair<Import, Resource> p : resourcesToCheck) {
-      if (hasNonProto2(p, alreadyChecked, resourceSet)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private Resource importedResource(ResourceSet resourceSet, Import anImport) {
-    URI resolvedUri = imports.resolvedUriOf(anImport);
-    if (resolvedUri != null) {
-      return resourceSets.findResource(resourceSet, resolvedUri);
-    }
-    return null;
+    isProto2 = hasNonProto2Imports ? IsProto2.NO : IsProto2.YES;
+    alreadyChecked.put(root, isProto2);
+    currentlyChecking.remove(root);
+    return hasNonProto2Imports;
   }
 
   private void warnNonProto2ImportFoundIn(Import anImport) {
-    acceptWarning(importingNonProto2, anImport, IMPORT__IMPORT_URI, INSIGNIFICANT_INDEX, null);
+    warning(importingNonProto2, anImport, IMPORT__IMPORT_URI, INSIGNIFICANT_INDEX);
   }
 
   /**
@@ -131,5 +119,9 @@ public class ImportValidator extends AbstractDeclarativeValidator {
     if (!imports.isResolved(anImport)) {
       error(format(importNotFound, anImport.getImportURI()), IMPORT__IMPORT_URI);
     }
+  }
+
+  private static enum IsProto2 {
+    YES, NO;
   }
 }

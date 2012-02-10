@@ -8,12 +8,12 @@
  */
 package com.google.eclipse.protobuf.cdt.mapping;
 
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MESSAGE_FIELD;
+
 import org.eclipse.cdt.core.dom.ast.*;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPFunctionType;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPMethod;
 import org.eclipse.xtext.naming.QualifiedName;
-
-import com.google.eclipse.protobuf.protobuf.MessageField;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -32,7 +32,7 @@ class MethodMappingStrategy implements IBindingMappingStrategy<CPPMethod> {
       return null;
     }
     QualifiedName qualifiedName = QualifiedName.create(method.getQualifiedName());
-    return new CppToProtobufMapping(qualifiedName, MessageField.class);
+    return new CppToProtobufMapping(qualifiedName, MESSAGE_FIELD);
   }
 
   @Override public Class<CPPMethod> typeOfSupportedBinding() {

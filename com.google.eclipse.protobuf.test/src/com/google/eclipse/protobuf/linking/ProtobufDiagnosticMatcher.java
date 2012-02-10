@@ -18,7 +18,7 @@ import org.hamcrest.*;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class ProtobufDiagnosticMatcher extends BaseMatcher<ProtobufDiagnostic> {
+class ProtobufDiagnosticMatcher extends TypeSafeMatcher<ProtobufDiagnostic> {
   private final DiagnosticMessage message;
 
   static ProtobufDiagnosticMatcher wasCreatedFrom(DiagnosticMessage message) {
@@ -26,16 +26,14 @@ class ProtobufDiagnosticMatcher extends BaseMatcher<ProtobufDiagnostic> {
   }
 
   private ProtobufDiagnosticMatcher(DiagnosticMessage message) {
+    super(ProtobufDiagnostic.class);
     this.message = message;
   }
 
-  @Override public boolean matches(Object item) {
-    if (!(item instanceof ProtobufDiagnostic)) {
-      return false;
-    }
-    ProtobufDiagnostic d = (ProtobufDiagnostic) item;
-    return equal(message.getIssueCode(), d.getCode()) && Arrays.equals(message.getIssueData(), d.getData())
-        && equal(message.getMessage(), d.getMessage());
+  @Override public boolean matchesSafely(ProtobufDiagnostic item) {
+    return equal(message.getIssueCode(), item.getCode()) &&
+        Arrays.equals(message.getIssueData(), item.getData()) &&
+        equal(message.getMessage(), item.getMessage());
   }
 
   @Override public void describeTo(Description description) {
