@@ -8,8 +8,11 @@
  */
 package com.google.eclipse.protobuf.cdt.mapping;
 
+import static com.google.common.collect.ImmutableList.copyOf;
+
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.xtext.naming.QualifiedName;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Information of the protocol buffer element obtained from a generated C++ element.
@@ -17,20 +20,20 @@ import org.eclipse.xtext.naming.QualifiedName;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class CppToProtobufMapping {
-  private final QualifiedName qualifiedName;
+  private final ImmutableList<String> qualifiedNameSegments;
   private final EClass type;
 
-  public CppToProtobufMapping(QualifiedName qualifiedName, EClass type) {
-    this.qualifiedName = qualifiedName;
+  public CppToProtobufMapping(String[] qualifiedNameSegments, EClass type) {
+    this.qualifiedNameSegments = copyOf(qualifiedNameSegments);
     this.type = type;
   }
 
   /**
-   * Returns the possible qualified name of the protocol buffer element.
-   * @return the possible qualified name of the protocol buffer element.
+   * Returns the qualified name segments of the selected C++ element.
+   * @return the qualified name segments of the selected C++ element.
    */
-  public QualifiedName qualifiedName() {
-    return qualifiedName;
+  public ImmutableList<String> qualifiedNameSegments() {
+    return qualifiedNameSegments;
   }
 
   /**

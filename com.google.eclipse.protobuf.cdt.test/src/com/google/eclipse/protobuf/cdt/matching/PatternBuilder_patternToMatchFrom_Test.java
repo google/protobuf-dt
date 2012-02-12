@@ -17,7 +17,6 @@ import static org.junit.Assert.assertThat;
 
 import java.util.regex.Pattern;
 
-import org.eclipse.xtext.naming.IQualifiedNameConverter;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.cdt.mapping.CppToProtobufMapping;
@@ -33,24 +32,23 @@ public class PatternBuilder_patternToMatchFrom_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
   @Inject private PatternBuilder builder;
-  @Inject private IQualifiedNameConverter converter;
 
   @Test public void should_escape_dots() {
-    CppToProtobufMapping mapping = createMessageMapping("com.google.proto.test.Person");
+    CppToProtobufMapping mapping = createMessageMapping("com", "google", "proto", "test", "Person");
     Pattern pattern = builder.patternToMatchFrom(mapping);
     assertThat(pattern.pattern(), equalTo("com\\.google\\.proto\\.test\\.Person"));
     assertThat("com.google.proto.test.Person", matches(pattern));
   }
 
   @Test public void should_escape_underscore() {
-    CppToProtobufMapping mapping = createMessageMapping("com.google.proto.test.Person_PhoneType");
+    CppToProtobufMapping mapping = createMessageMapping("com", "google", "proto", "test", "Person_PhoneType");
     Pattern pattern = builder.patternToMatchFrom(mapping);
     assertThat(pattern.pattern(), equalTo("com\\.google\\.proto\\.test\\.Person(\\.|_)PhoneType"));
     assertThat("com.google.proto.test.Person.PhoneType", matches(pattern));
     assertThat("com.google.proto.test.Person_PhoneType", matches(pattern));
   }
 
-  private CppToProtobufMapping createMessageMapping(String qualifiedNameAsText) {
-    return new CppToProtobufMapping(converter.toQualifiedName(qualifiedNameAsText), MESSAGE);
+  private CppToProtobufMapping createMessageMapping(String... qualifiedNameSegments) {
+    return new CppToProtobufMapping(qualifiedNameSegments, MESSAGE);
   }
 }

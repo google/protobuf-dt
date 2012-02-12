@@ -58,10 +58,9 @@ class ComplexTypeFinderStrategy implements ModelElementFinder.FinderStrategy<Cla
     return descriptions;
   }
 
-  @Override
-  public Collection<IEObjectDescription> local(Object target, Class<? extends ComplexType> typeOfComplexType,
+  @Override public Collection<IEObjectDescription> local(Object target, Class<? extends ComplexType> typeOfComplexType,
       int level) {
-    if (!typeOfComplexType.isInstance(target)) {
+   if (!typeOfComplexType.isInstance(target)) {
       return emptySet();
     }
     EObject e = (EObject) target;

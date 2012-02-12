@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
-import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import java.util.List;
@@ -31,14 +31,10 @@ import com.google.inject.*;
     return option instanceof NativeOption || option instanceof NativeFieldOption;
   }
 
+  @SuppressWarnings("unchecked")
   public List<OptionField> fieldsOf(AbstractCustomOption option) {
-    if (option instanceof CustomOption) {
-      return ((CustomOption) option).getFields();
-    }
-    if (option instanceof CustomFieldOption) {
-      return ((CustomFieldOption) option).getFields();
-    }
-    return emptyList();
+    List<OptionField> fields = modelObjects.valueOfFeature(option, "fields", List.class);
+    return unmodifiableList(fields);
   }
 
   /**

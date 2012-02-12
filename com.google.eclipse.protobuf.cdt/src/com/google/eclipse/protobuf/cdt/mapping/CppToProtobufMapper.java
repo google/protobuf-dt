@@ -15,7 +15,7 @@ import java.util.Map;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.internal.core.dom.parser.ProblemBinding;
 
-import com.google.inject.Singleton;
+import com.google.inject.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -24,10 +24,12 @@ import com.google.inject.Singleton;
 @Singleton public class CppToProtobufMapper {
   private final Map<Class<? extends IBinding>, IBindingMappingStrategy<?>> strategies = newHashMap();
 
-  public CppToProtobufMapper() {
-    register(new ClassMappingStrategy());
-    register(new EnumMappingStrategy());
-    register(new MethodMappingStrategy());
+  @Inject public CppToProtobufMapper(ClassMappingStrategy s1, EnumMappingStrategy s2, MethodMappingStrategy s3,
+      TypeDefMappingStrategy s4) {
+    register(s1);
+    register(s2);
+    register(s3);
+    register(s4);
   }
 
   private void register(IBindingMappingStrategy<?> strategy) {

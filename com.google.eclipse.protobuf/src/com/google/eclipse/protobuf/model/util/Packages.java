@@ -12,12 +12,12 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.*;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.inject.Inject;
+import java.util.*;
 
 import org.eclipse.xtext.naming.*;
 
-import java.util.*;
+import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.inject.Inject;
 
 /**
  * Utility methods related to <code>{@link Package}</code>s.
@@ -64,6 +64,7 @@ public class Packages {
     return true;
   }
 
+  // TODO test and document
   public Collection<QualifiedName> addPackageNameSegments(Package p, QualifiedName name) {
     QualifiedName current = name;
     List<String> segments = segmentsOf(p);

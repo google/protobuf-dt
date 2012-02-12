@@ -24,20 +24,19 @@ import com.google.inject.Singleton;
  */
 @Singleton public class Protobufs {
   /**
-   * Indicates whether the given <code>{@link Protobuf}</code> is not {@code null} and has "proto2" syntax (not
-   * necessarily in a explicit way.)
-   * @param protobuf the {@code Protobuf} to check.
-   * @return {@code true} if the given <code>{@link Protobuf}</code> is not {@code null} and has "proto2" syntax,
-   * {@code false} otherwise.
+   * Indicates whether the given root is not {@code null} and has a "proto2" syntax element.
+   * @param protobuf the given root.
+   * @return {@code true} if the given root is not {@code null} and has a "proto2" syntax element, {@code false}
+   * otherwise.
    */
   public boolean isProto2(Protobuf protobuf) {
     return protobuf != null && !(protobuf instanceof NonProto2Protobuf);
   }
 
   /**
-   * Returns all the import definitions in the given proto.
-   * @param root the given proto.
-   * @return all the import definitions in the given proto.
+   * Returns all the import definitions in the given root.
+   * @param root the given root.
+   * @return all the import definitions in the given root.
    */
   public List<Import> importsIn(Protobuf root) {
     List<Import> imports = newArrayList();
@@ -50,9 +49,9 @@ import com.google.inject.Singleton;
   }
 
   /**
-   * Returns all the public import definitions in the given proto.
-   * @param root the given proto.
-   * @return all the public import definitions in the given proto.
+   * Returns all the public import definitions in the given root.
+   * @param root the given root.
+   * @return all the public import definitions in the given root.
    */
   public List<Import> publicImportsIn(Protobuf root) {
     List<Import> imports = newArrayList();

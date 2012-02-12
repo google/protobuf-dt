@@ -8,10 +8,9 @@
  */
 package com.google.eclipse.protobuf.cdt.cpplang;
 
-import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.ImmutableList.of;
 
-import java.util.List;
-
+import com.google.common.collect.ImmutableList;
 import com.google.inject.Singleton;
 
 /**
@@ -21,7 +20,7 @@ import com.google.inject.Singleton;
  */
 @Singleton public class CppKeywords {
 
-  private static final List<String> KEYWORDS = newArrayList("and", "and_eq", "asm", "auto", "bitand", "bitor", "bool",
+  private static final ImmutableList<String> KEYWORDS = of("and", "and_eq", "asm", "auto", "bitand", "bitor", "bool",
       "break", "case", "catch", "char", "class", "compl", "const", "const_cast", "continue", "default", "delete",
       "double", "dynamic_cast", "else", "enum", "explicit", "export", "extern", "false", "float", "for", "friend",
       "goto", "if", "inline", "int", "long", "mutable", "namespace", "new", "not", "not_eq", "operator", "or", "or_eq",
@@ -30,7 +29,7 @@ import com.google.inject.Singleton;
       "typename", "union", "unsigned", "using", "virtual", "void", "volatile", "wchar_t", "while", "xor", "xor_eq");
 
   @SuppressWarnings("unused")
-  private static final List<String> CPP11_KEYWORDS = newArrayList("alignas", "alignof", "char16_t", "char32_t",
+  private static final ImmutableList<String> CPP11_KEYWORDS = of("alignas", "alignof", "char16_t", "char32_t",
       "constexpr", "decltype", "noexcept", "nullptr", "static_assert", "thread_local");
 
   /**

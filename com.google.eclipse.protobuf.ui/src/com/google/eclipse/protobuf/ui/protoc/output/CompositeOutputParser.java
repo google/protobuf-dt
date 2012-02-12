@@ -8,11 +8,11 @@
  */
 package com.google.eclipse.protobuf.ui.protoc.output;
 
-import static com.google.common.collect.Lists.newArrayList;
-
-import java.util.List;
+import static com.google.common.collect.ImmutableList.of;
 
 import org.eclipse.core.runtime.CoreException;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -52,7 +52,7 @@ class CompositeOutputParser implements ProtocOutputParser {
    */
   private static final ProtocOutputParser PARSER3 = new RegexOutputParser("(--.*):\\s*(.*):\\s*(.*)", 2, 3);
 
-  private static final List<ProtocOutputParser> PARSERS = newArrayList(PARSER1, PARSER2, PARSER3);
+  private static final ImmutableList<ProtocOutputParser> PARSERS = of(PARSER1, PARSER2, PARSER3);
 
   @Override
   public boolean parseAndAddMarkerIfNecessary(String line, ProtocMarkerFactory markerFactory) throws CoreException {
