@@ -13,15 +13,15 @@ import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Collections.emptySet;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.inject.Inject;
+import java.util.*;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
-import java.util.*;
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.inject.Inject;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -54,21 +54,17 @@ class PackageIntersectionDescriptions {
         break;
       }
     }
-    if (start == 0)
-     {
+    if (start == 0) {
       return emptySet(); // no intersection found.
     }
     Set<IEObjectDescription> descriptions = newHashSet();
-    QualifiedName fqn = nameProvider.getFullyQualifiedName(e);
-    List<String> segments = newArrayList(fqn.getSegments());
+    QualifiedName qualifiedName = nameProvider.getFullyQualifiedName(e);
+    List<String> segments = newArrayList(qualifiedName.getSegments());
     for (int i = 0; i < start; i++) {
       segments.remove(0);
-      descriptions.add(create(fqn(segments), e));
+      QualifiedName newQualifiedName = qualifiedNames.createQualifiedName(segments);
+      descriptions.add(create(newQualifiedName, e));
     }
     return descriptions;
-  }
-
-  private QualifiedName fqn(List<String> segments) {
-    return qualifiedNames.createFqn(segments);
   }
 }

@@ -12,21 +12,16 @@ import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.ENUM
 
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPEnumeration;
-import org.eclipse.xtext.naming.QualifiedName;
-
-import com.google.inject.Singleton;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 @SuppressWarnings("restriction")
-@Singleton class EnumMappingStrategy implements IBindingMappingStrategy<CPPEnumeration> {
+class EnumMappingStrategy implements IBindingMappingStrategy<CPPEnumeration> {
 
   @Override public CppToProtobufMapping createMappingFrom(IBinding binding) {
     CPPEnumeration enumeration = typeOfSupportedBinding().cast(binding);
-    String[] segments = enumeration.getQualifiedName();
-    QualifiedName qualifiedName = QualifiedName.create(segments);
-    return new CppToProtobufMapping(qualifiedName, ENUM);
+    return new CppToProtobufMapping(enumeration.getQualifiedName(), ENUM);
   }
 
   @Override public Class<CPPEnumeration> typeOfSupportedBinding() {

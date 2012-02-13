@@ -14,14 +14,14 @@ import static java.util.Collections.emptyList;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 import static org.eclipse.xtext.util.Tuples.pair;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.inject.*;
+import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.*;
 import org.eclipse.xtext.util.*;
 
-import java.util.List;
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.inject.*;
 
 /**
  * Provides alternative qualified names for protobuf elements.
@@ -49,9 +49,6 @@ import java.util.List;
  * <li>{@code names.Person.PhoneType}</li>
  * <li>{@code test.names.Person.PhoneType}</li>
  * </ul>
- * </p>
- * <p>
- * This class provides the non-default qualified names recognized by protoc.
  * </p>
  *
  * @author alruiz@google.com (Alex Ruiz)

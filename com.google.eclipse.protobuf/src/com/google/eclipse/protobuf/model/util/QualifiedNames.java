@@ -14,7 +14,8 @@ import java.util.List;
 
 import org.eclipse.xtext.naming.QualifiedName;
 
-import com.google.inject.Singleton;
+import com.google.eclipse.protobuf.util.StringLists;
+import com.google.inject.*;
 
 /**
  * Utility methods related to <code>{@link QualifiedName}</code>s.
@@ -22,13 +23,7 @@ import com.google.inject.Singleton;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class QualifiedNames {
-  public QualifiedName createFqn(List<String> segments) {
-    return QualifiedName.create(asArray(segments));
-  }
-
-  private String[] asArray(List<String> list) {
-    return list.toArray(new String[list.size()]);
-  }
+  @Inject private StringLists stringLists;
 
   public QualifiedName addLeadingDot(QualifiedName name) {
     if (name.getFirstSegment().equals("")) {
@@ -37,6 +32,10 @@ import com.google.inject.Singleton;
     List<String> segments = newArrayList();
     segments.addAll(name.getSegments());
     segments.add(0, "");
-    return QualifiedName.create(segments.toArray(new String[segments.size()]));
+    return createQualifiedName(segments);
+  }
+
+  public QualifiedName createQualifiedName(List<String> segments) {
+    return QualifiedName.create(stringLists.toArray(segments));
   }
 }

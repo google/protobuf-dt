@@ -13,6 +13,8 @@ import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeMo
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
+import java.util.List;
+
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
@@ -20,11 +22,11 @@ import com.google.eclipse.protobuf.protobuf.*;
 import com.google.inject.Inject;
 
 /**
- * Tests for <code>{@link Options#sourceOfLastFieldIn(AbstractCustomOption)}</code>.
+ * Tests for <code>{@link Options#fieldsOf(AbstractCustomOption)}</code>.
  *
  * alruiz@google.com (Alex Ruiz)
  */
-public class Options_sourceOfLastFieldIn_CustomFieldOption_Test {
+public class Options_fieldsOf_CustomOption_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
   @Inject private Options options;
@@ -37,16 +39,14 @@ public class Options_sourceOfLastFieldIn_CustomFieldOption_Test {
   //   optional int32 count = 1;
   // }
   //
-  // extend google.protobuf.FieldOptions {
+  // extend google.protobuf.FileOptions {
   //   optional Custom custom = 1000;
   // }
   //
-  // message Person {
-  //   optional boolean active = 1 [(custom).count = 6];
-  // }
+  // option (custom).count = 6;
   @Test public void should_return_option_field() {
-    CustomFieldOption option = xtext.find("custom", ").", CustomFieldOption.class);
-    MessageField field = (MessageField) options.sourceOfLastFieldIn(option);
-    assertThat(field.getName(), equalTo("count"));
+    CustomOption option = xtext.find("custom", ")", CustomOption.class);
+    List<OptionField> fields = option.getFields();
+    assertThat(options.fieldsOf(option), equalTo(fields));
   }
 }

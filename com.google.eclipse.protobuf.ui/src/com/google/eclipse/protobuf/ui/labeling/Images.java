@@ -8,14 +8,15 @@
  */
 package com.google.eclipse.protobuf.ui.labeling;
 
-import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.ImmutableList.of;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.eclipse.protobuf.protobuf.Modifier.*;
 
-import java.util.*;
+import java.util.Map;
 
 import org.eclipse.xtext.Keyword;
 
+import com.google.common.collect.ImmutableList;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.protobuf.Package;
@@ -53,7 +54,7 @@ import com.google.inject.Singleton;
     IMAGES_BY_TYPE.put(Syntax.class, "syntax.gif");
   }
 
-  private static final List<String> STANDALONE_IMAGES = newArrayList("extensions.gif", "imports.gif", "options.gif");
+  private static final ImmutableList<String> STANDALONE_IMAGES = of("extensions.gif", "imports.gif", "options.gif");
 
   public String imageFor(Object o) {
     if (o instanceof Keyword) {

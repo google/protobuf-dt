@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.cdt;
 
-import com.google.eclipse.protobuf.ui.util.ProtobufPlugIn;
+import com.google.eclipse.protobuf.ui.util.ProtobufEditorPlugIn;
 import com.google.inject.Provider;
 
 /**
@@ -29,6 +29,6 @@ class ProtobufObjectsProvider<T> implements Provider<T> {
   }
 
   @Override public T get() {
-    return ProtobufPlugIn.getInstance(type);
+    return ProtobufEditorPlugIn.getInstanceOf(type);
   }
 }

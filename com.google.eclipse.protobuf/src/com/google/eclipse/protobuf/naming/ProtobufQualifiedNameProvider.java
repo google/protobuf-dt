@@ -77,7 +77,7 @@ public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.Abstra
     if (segments.isEmpty()) {
       return qualifiedName;
     }
-    QualifiedName packageQualifiedName = qualifiedNames.createFqn(segments);
+    QualifiedName packageQualifiedName = qualifiedNames.createQualifiedName(segments);
     if (qualifiedName.startsWith(packageQualifiedName)) {
       return qualifiedName;
     }

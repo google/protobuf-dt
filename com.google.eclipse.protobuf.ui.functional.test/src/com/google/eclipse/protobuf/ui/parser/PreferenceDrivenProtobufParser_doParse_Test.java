@@ -22,7 +22,7 @@ import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 import com.google.eclipse.protobuf.parser.NonProto2Protobuf;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
-import com.google.eclipse.protobuf.ui.util.ProtobufPlugIn;
+import com.google.eclipse.protobuf.ui.util.ProtobufEditorPlugIn;
 import com.google.inject.Inject;
 
 /**
@@ -40,7 +40,7 @@ public class PreferenceDrivenProtobufParser_doParse_Test {
     proto1 = proto.toString();
   }
 
-  @Rule public XtextRule xtext = createWith(ProtobufPlugIn.injector());
+  @Rule public XtextRule xtext = createWith(ProtobufEditorPlugIn.injector());
 
   @Inject private IPreferenceStoreAccess storeAccess;
   private IPreferenceStore store;

@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.cdt.mapping;
 
+import static com.google.common.collect.ImmutableList.copyOf;
 import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -18,7 +19,6 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPBase;
 import org.eclipse.cdt.internal.core.dom.parser.c.CASTName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*;
-import org.eclipse.xtext.naming.QualifiedName;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.*;
@@ -42,7 +42,7 @@ public class ClassMappingStrategy_createMappingFrom_Test {
     String[] segments = { "com", "google", "proto", "Test" };
     when(classType.getQualifiedName()).thenReturn(segments);
     CppToProtobufMapping mapping = mappingStrategy.createMappingFrom(classType);
-    assertThat(mapping.qualifiedName(), equalTo(QualifiedName.create(segments)));
+    assertThat(mapping.qualifiedNameSegments(), equalTo(copyOf(segments)));
     assertEquals(Message.class, mapping.type());
   }
 

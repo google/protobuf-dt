@@ -8,36 +8,27 @@
  */
 package com.google.eclipse.protobuf.cdt.matching;
 
+import static com.google.common.collect.Lists.newArrayList;
+
+import java.util.List;
 import java.util.regex.Pattern;
 
-import org.eclipse.xtext.naming.IQualifiedNameConverter;
-
 import com.google.eclipse.protobuf.cdt.mapping.CppToProtobufMapping;
-import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class PatternBuilder {
-  @Inject private IQualifiedNameConverter converter;
-
+@Singleton class PatternBuilder {
   Pattern patternToMatchFrom(CppToProtobufMapping mapping) {
-    String qualifiedNameAsText = converter.toString(mapping.qualifiedName());
     StringBuilder regex = new StringBuilder();
-    int size = qualifiedNameAsText.length();
-    // escape existing "."
-    // replace "_" with "(\.|_)"
-    for (int i = 0; i < size; i++) {
-      char c = qualifiedNameAsText.charAt(i);
-      switch (c) {
-        case '.':
-          regex.append("\\.");
-          break;
-        case '_':
-          regex.append("(\\.|_)");
-          break;
-        default:
-          regex.append(c);
+    List<String> segments = newArrayList(mapping.qualifiedNameSegments());
+    int segmentCount = segments.size();
+    for (int i = 0; i < segmentCount; i++) {
+      String segment = segments.get(i);
+      regex.append(segment.replaceAll("_", "(\\\\.|_)"));
+      if (i < segmentCount - 1) {
+        regex.append("\\.");
       }
     }
     return Pattern.compile(regex.toString());

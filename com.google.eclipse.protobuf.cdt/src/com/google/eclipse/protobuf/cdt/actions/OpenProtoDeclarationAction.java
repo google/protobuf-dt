@@ -31,7 +31,7 @@ public class OpenProtoDeclarationAction implements IEditorActionDelegate {
     if (editor == null) {
       return;
     }
-    URI foundUri = uriFinder.findProtobufElementUriFromSelectionOf(editor);
+    URI foundUri = uriFinder.findProtobufElementLocationFromSelectionOf(editor);
     if (foundUri != null) {
       editorOpener.open(foundUri, true);
     }

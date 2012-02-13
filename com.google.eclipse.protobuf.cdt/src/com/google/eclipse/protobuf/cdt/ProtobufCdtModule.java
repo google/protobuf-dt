@@ -10,13 +10,14 @@ package com.google.eclipse.protobuf.cdt;
 
 import static com.google.eclipse.protobuf.cdt.ProtobufObjectsProvider.getfromProtobufPlugin;
 
-import org.eclipse.xtext.naming.IQualifiedNameConverter;
 import org.eclipse.xtext.service.AbstractGenericModule;
 import org.eclipse.xtext.ui.editor.IURIEditorOpener;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
+import org.eclipse.xtext.ui.resource.IResourceSetProvider;
 
 import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.resource.*;
+import com.google.eclipse.protobuf.resource.IndexLookup;
+import com.google.eclipse.protobuf.util.StringLists;
 import com.google.inject.Binder;
 
 /**
@@ -24,16 +25,17 @@ import com.google.inject.Binder;
  */
 public class ProtobufCdtModule extends AbstractGenericModule {
   public void configureModelObjectDefinitionNavigator(Binder binder) {
-    bindToProtobufPluginObject(IndexLookup.class, binder);
-    bindToProtobufPluginObject(IPreferenceStoreAccess.class, binder);
-    bindToProtobufPluginObject(IQualifiedNameConverter.class, binder);
-    bindToProtobufPluginObject(IURIEditorOpener.class, binder);
-    bindToProtobufPluginObject(ModelObjects.class, binder);
-    bindToProtobufPluginObject(ResourceDescriptions.class, binder);
-    bindToProtobufPluginObject(Resources.class, binder);
+    bindToTypeInProtobufPlugin(IndexLookup.class, binder);
+    bindToTypeInProtobufPlugin(IPreferenceStoreAccess.class, binder);
+    bindToTypeInProtobufPlugin(IResourceSetProvider.class, binder);
+    bindToTypeInProtobufPlugin(IURIEditorOpener.class, binder);
+    bindToTypeInProtobufPlugin(ModelObjects.class, binder);
+    bindToTypeInProtobufPlugin(Packages.class, binder);
+    bindToTypeInProtobufPlugin(Resources.class, binder);
+    bindToTypeInProtobufPlugin(StringLists.class, binder);
   }
 
-  private <T> void bindToProtobufPluginObject(Class<T> type, Binder binder) {
+  private <T> void bindToTypeInProtobufPlugin(Class<T> type, Binder binder) {
     binder.bind(type).toProvider(getfromProtobufPlugin(type));
   }
 }

@@ -17,7 +17,7 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-interface IBindingMappingStrategy <T extends IBinding> {
+interface IBindingMappingStrategy<T extends IBinding> {
   CppToProtobufMapping createMappingFrom(IBinding binding);
 
   Class<T> typeOfSupportedBinding();

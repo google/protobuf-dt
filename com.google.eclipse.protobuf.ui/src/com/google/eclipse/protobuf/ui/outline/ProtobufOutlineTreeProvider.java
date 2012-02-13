@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.outline;
 
-import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.ImmutableList.of;
 import static com.google.eclipse.protobuf.ui.outline.Messages.importDeclarations;
 
 import java.util.List;
@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.ui.editor.outline.IOutlineNode;
 import org.eclipse.xtext.ui.editor.outline.impl.*;
 
+import com.google.common.collect.ImmutableList;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
 
@@ -26,13 +27,8 @@ import com.google.eclipse.protobuf.protobuf.Package;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufOutlineTreeProvider extends DefaultOutlineTreeProvider {
-  private static final List<Class<? extends EObject>> IGNORED_ELEMENT_TYPES = newArrayList();
-
-  static {
-    IGNORED_ELEMENT_TYPES.add(BooleanLink.class);
-    IGNORED_ELEMENT_TYPES.add(FieldOption.class);
-    IGNORED_ELEMENT_TYPES.add(MessageLink.class);
-  }
+  private static final ImmutableList<Class<? extends EObject>> IGNORED_ELEMENT_TYPES = of(BooleanLink.class,
+      FieldOption.class, MessageLink.class);
 
   boolean _isLeaf(Extensions extensions) {
     return true;

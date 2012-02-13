@@ -23,7 +23,7 @@ import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
 import com.google.eclipse.protobuf.model.util.Imports;
 import com.google.eclipse.protobuf.protobuf.Import;
-import com.google.eclipse.protobuf.ui.util.ProtobufPlugIn;
+import com.google.eclipse.protobuf.ui.util.ProtobufEditorPlugIn;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -34,7 +34,7 @@ final class ProtobufValidation {
       return;
     }
     XtextEditor xtextEditor = (XtextEditor) editor;
-    if (!ProtobufPlugIn.languageName().equals(xtextEditor.getLanguageName())) {
+    if (!ProtobufEditorPlugIn.languageName().equals(xtextEditor.getLanguageName())) {
       return;
     }
     validate(xtextEditor);
@@ -70,7 +70,7 @@ final class ProtobufValidation {
   }
 
   private static void resetUri(Import anImport) {
-    Imports imports = ProtobufPlugIn.getInstance(Imports.class);
+    Imports imports = ProtobufEditorPlugIn.getInstanceOf(Imports.class);
     String uri = imports.uriAsEnteredByUser(anImport);
     if (uri == null) {
       return;
