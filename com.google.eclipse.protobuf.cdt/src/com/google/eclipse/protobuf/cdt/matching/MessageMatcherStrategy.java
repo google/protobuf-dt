@@ -41,7 +41,7 @@ class MessageMatcherStrategy implements ProtobufElementMatcherStrategy {
             matches.add(uriOf(message));
             break;
           }
-          // go one level deeper.
+          // perfect segment match - go one level deeper.
           contents = contentsOf(message);
           continue;
         }
@@ -53,6 +53,7 @@ class MessageMatcherStrategy implements ProtobufElementMatcherStrategy {
     return unmodifiableList(matches);
   }
 
+  // TODO move to ModelObjects
   private URI uriOf(EObject e) {
     Resource resource = e.eResource();
     URI uri = resource.getURI();

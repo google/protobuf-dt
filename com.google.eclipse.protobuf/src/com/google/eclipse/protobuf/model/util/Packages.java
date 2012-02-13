@@ -64,7 +64,38 @@ public class Packages {
     return true;
   }
 
-  // TODO test and document
+  /**
+   * Adds the segments in the name of the given package to the given qualified name, creating a new qualified name per
+   * segment.
+   * <p>
+   * For example, given the following proto element:
+   *
+   * <pre>
+   * package test.alternative.names;
+   *
+   * message Person {
+   *   optional string name = 1;
+   *
+   *   enum PhoneType {
+   *     HOME = 0;
+   *     WORK = 1;
+   *   }
+   * }
+   * </pre>
+   *
+   * This method will create the following qualified names for {@code PhoneType}:
+   * <ul>
+   * <li>{@code PhoneType}</li>
+   * <li>{@code Person.PhoneType}</li>
+   * <li>{@code names.Person.PhoneType}</li>
+   * <li>{@code test.names.Person.PhoneType}</li>
+   * </ul>
+   * </p>
+   * @param p the given package.
+   * @param name the base name.
+   * @return a collection containing the created qualified names, or an empty list if the name of the given package
+   * contains zero or one segments.
+   */
   public Collection<QualifiedName> addPackageNameSegments(Package p, QualifiedName name) {
     QualifiedName current = name;
     List<String> segments = segmentsOf(p);
@@ -80,6 +111,11 @@ public class Packages {
     return unmodifiableList(allNames);
   }
 
+  /**
+   * Returns the segments in the name of the given package.
+   * @param p the given package.
+   * @return the segments in the name of the given package.
+   */
   public List<String> segmentsOf(Package p) {
     QualifiedName name = (p == null) ? null : nameOf(p);
     if (name == null) {
@@ -90,9 +126,6 @@ public class Packages {
 
   private QualifiedName nameOf(Package p) {
     String name = p.getName();
-    if (isEmpty(name)) {
-      return null;
-    }
-    return qualifiedNameConverter.toQualifiedName(name);
+    return (isEmpty(name)) ? null : qualifiedNameConverter.toQualifiedName(name);
   }
 }
