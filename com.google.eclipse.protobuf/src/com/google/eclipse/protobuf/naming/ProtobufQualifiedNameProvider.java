@@ -12,6 +12,7 @@ import static com.google.eclipse.protobuf.naming.NameType.NORMAL;
 import static org.eclipse.xtext.util.Tuples.pair;
 
 import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.inject.*;
 
@@ -30,6 +31,10 @@ public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.Abstra
     IProtobufQualifiedNameProvider {
   private static final Pair<NameType, QualifiedName> EMPTY_NAME = pair(NORMAL, null);
 
+  private static final Class<?>[] IGNORED_TYPES = { Protobuf.class, Import.class, AbstractOption.class,
+    OptionSource.class, ScalarTypeLink.class, NumberLink.class, BooleanLink.class, StringLink.class, ComplexValue.class,
+    ValueField.class, FieldName.class };
+
   @Inject private final IQualifiedNameConverter converter = new IQualifiedNameConverter.DefaultImpl();
   @Inject private final IResourceScopeCache cache = IResourceScopeCache.NullImpl.INSTANCE;
 
@@ -43,6 +48,9 @@ public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.Abstra
   }
 
   @Override public QualifiedName getFullyQualifiedName(final EObject e, final NamingStrategy namingStrategy) {
+    if (shouldIgnore(e)) {
+      return null;
+    }
     Pair<EObject, String> key = pair(e, "fqn");
     Pair<NameType, QualifiedName> cached = cache.get(key, e.eResource(), new Provider<Pair<NameType, QualifiedName>>() {
       @Override public Pair<NameType, QualifiedName> get() {
@@ -63,6 +71,15 @@ public class ProtobufQualifiedNameProvider extends IQualifiedNameProvider.Abstra
       }
     });
     return cached.getSecond();
+  }
+
+  private boolean shouldIgnore(EObject e) {
+    for (Class<?> ignoredType : IGNORED_TYPES) {
+      if (ignoredType.isInstance(e)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private QualifiedName addPackage(EObject obj, QualifiedName qualifiedName) {
