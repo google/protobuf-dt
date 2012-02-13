@@ -18,7 +18,7 @@ import static org.eclipse.xtext.validation.CheckMode.KEY;
 import static org.eclipse.xtext.validation.CheckType.FAST;
 import static org.eclipse.xtext.validation.impl.ConcreteSyntaxEValidator.DISABLE_CONCRETE_SYNTAX_EVALIDATOR;
 
-import java.util.*;
+import com.google.eclipse.protobuf.linking.ProtobufDiagnostic;
 
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.Diagnostic;
@@ -29,7 +29,7 @@ import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.util.*;
 import org.eclipse.xtext.validation.*;
 
-import com.google.eclipse.protobuf.linking.ProtobufDiagnostic;
+import java.util.*;
 
 /**
  * Adds support for converting scoping errors into warnings if non-proto2 files are imported.
@@ -48,57 +48,39 @@ public class ProtobufResourceValidator extends ResourceValidatorImpl {
     List<Issue> result = newArrayListWithExpectedSize(resource.getErrors().size() + resource.getWarnings().size());
     try {
       IAcceptor<Issue> acceptor = createAcceptor(result);
-      boolean hasNonProto2Import = false;
-      for (EObject element : resource.getContents()) {
-        try {
-          if (monitor.isCanceled()) {
-            return null;
-          }
-          Diagnostic diagnostic = getDiagnostician().validate(element, validationOptions(resource, mode, monitor));
-          if (!diagnostic.getChildren().isEmpty()) {
-            for (Diagnostic child : diagnostic.getChildren()) {
-              if (importingNonProto2.equals(child.getMessage())) {
-                hasNonProto2Import = true;
-              }
-              issueFromEValidatorDiagnostic(child, acceptor);
-            }
-          } else {
-            issueFromEValidatorDiagnostic(diagnostic, acceptor);
-          }
-        } catch (RuntimeException e) {
-          log.error(e.getMessage(), e);
-        }
+      Status status = delegateValidationToDiagnostician(resource, mode, monitor, acceptor);
+      if (status.isCanceled()) {
+        return null;
       }
       if (mode.shouldCheck(FAST)) {
-        for (Resource.Diagnostic error : resource.getErrors()) {
-          if (monitor.isCanceled()) {
-            return null;
-          }
-          Severity severity = ERROR;
-          if (hasNonProto2Import && isUnresolveReferenceError(error)) {
-            severity = WARNING;
-            ProtobufDiagnostic d = (ProtobufDiagnostic) error;
-            if (!d.getMessage().endsWith(scopingError)) {
-              if (!d.getMessage().endsWith(".")) {
-                d.appendToMessage(".");
-              }
-              d.appendToMessage(" ");
-              d.appendToMessage(scopingError);
-            }
-          }
-          issueFromXtextResourceDiagnostic(error, severity, acceptor);
+        status = createErrors(resource, status.hasProto1Imports(), acceptor, monitor);
+        if (status.isCanceled()) {
+          return null;
         }
-        for (Resource.Diagnostic warning : resource.getWarnings()) {
-          if (monitor.isCanceled()) {
-            return null;
-          }
-          issueFromXtextResourceDiagnostic(warning, WARNING, acceptor);
+        status = createWarnings(resource, acceptor, monitor);
+        if (status.isCanceled()) {
+          return null;
         }
       }
     } catch (RuntimeException e) {
       log.error(e.getMessage(), e);
     }
     return result;
+  }
+
+  private Status delegateValidationToDiagnostician(Resource resource, CheckMode mode,
+      CancelIndicator monitor, IAcceptor<Issue> acceptor) {
+    Status hasNonProto2Import = Status.OK;
+    for (EObject element : resource.getContents()) {
+      if (monitor.isCanceled()) {
+        return Status.CANCELED;
+      }
+      Diagnostic diagnostic = getDiagnostician().validate(element, validationOptions(resource, mode, monitor));
+      if (convertIssuesToMarkers(acceptor, diagnostic) == Status.PROTO1_IMPORTS_FOUND) {
+        hasNonProto2Import = Status.PROTO1_IMPORTS_FOUND;
+      }
+    }
+    return hasNonProto2Import;
   }
 
   private Map<Object, Object> validationOptions(Resource resource, CheckMode mode, CancelIndicator monitor) {
@@ -113,14 +95,76 @@ public class ProtobufResourceValidator extends ResourceValidatorImpl {
     return options;
   }
 
-  private boolean isUnresolveReferenceError(Resource.Diagnostic error) {
+  private Status convertIssuesToMarkers(IAcceptor<Issue> acceptor, Diagnostic diagnostic) {
+    Status hasNonProto2Import = Status.OK;
+    if (diagnostic.getChildren().isEmpty()) {
+      issueFromEValidatorDiagnostic(diagnostic, acceptor);
+      return hasNonProto2Import;
+    }
+    for (Diagnostic child : diagnostic.getChildren()) {
+      if (importingNonProto2.equals(child.getMessage())) {
+        hasNonProto2Import = Status.PROTO1_IMPORTS_FOUND;
+      }
+      issueFromEValidatorDiagnostic(child, acceptor);
+    }
+    return hasNonProto2Import;
+  }
+
+  private Status createErrors(Resource resource, boolean proto1ImportsFound, IAcceptor<Issue> acceptor,
+      CancelIndicator monitor) {
+    for (Resource.Diagnostic error : resource.getErrors()) {
+      if (monitor.isCanceled()) {
+        return Status.CANCELED;
+      }
+      Severity severity = ERROR;
+      if (proto1ImportsFound && isUnresolvedReferenceError(error)) {
+        severity = WARNING;
+        ProtobufDiagnostic d = (ProtobufDiagnostic) error;
+        String message = d.getMessage();
+        if (message.endsWith(scopingError)) {
+          continue;
+        }
+        if (!message.endsWith(".")) {
+          d.appendToMessage(".");
+        }
+        d.appendToMessage(" ");
+        d.appendToMessage(scopingError);
+      }
+      issueFromXtextResourceDiagnostic(error, severity, acceptor);
+    }
+    return Status.OK;
+  }
+
+  private boolean isUnresolvedReferenceError(Resource.Diagnostic error) {
     if (!(error instanceof ProtobufDiagnostic)) {
       return false;
     }
     ProtobufDiagnostic d = (ProtobufDiagnostic) error;
-    if (!"org.eclipse.xtext.diagnostics.Diagnostic.Linking".equals(d.getCode())) {
-      return false;
+    if ("org.eclipse.xtext.diagnostics.Diagnostic.Linking".equals(d.getCode())) {
+      return error.getMessage().startsWith("Couldn't resolve");
     }
-    return error.getMessage().startsWith("Couldn't resolve");
+    return false;
+  }
+
+  private Status createWarnings(Resource resource, IAcceptor<Issue> acceptor, CancelIndicator monitor) {
+    for (Resource.Diagnostic warning : resource.getWarnings()) {
+      if (monitor.isCanceled()) {
+        return Status.CANCELED;
+      }
+      issueFromXtextResourceDiagnostic(warning, WARNING, acceptor);
+    }
+    return Status.OK;
+  }
+
+  private static enum Status {
+    OK, CANCELED, PROTO1_IMPORTS_FOUND;
+
+    boolean hasProto1Imports() {
+      return (this == PROTO1_IMPORTS_FOUND);
+    }
+
+    boolean isCanceled() {
+      return (this == CANCELED);
+    }
   }
 }

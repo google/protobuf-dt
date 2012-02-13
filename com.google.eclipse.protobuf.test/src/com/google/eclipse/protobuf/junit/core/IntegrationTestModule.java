@@ -46,7 +46,7 @@ public class IntegrationTestModule extends AbstractTestModule {
       }
       File file = protoFile(importUri);
       if (!file.exists()) {
-        throw new IllegalArgumentException("File: " + importUri + " does not exist.");
+        return; // file does not exist.
       }
       String resolvedUri = file.toURI().toString();
       anImport.setImportURI(resolvedUri);

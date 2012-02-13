@@ -15,16 +15,16 @@ import static com.google.eclipse.protobuf.validation.Messages.*;
 import static java.lang.String.format;
 import static org.eclipse.xtext.util.Tuples.pair;
 
-import java.util.*;
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.inject.Inject;
 
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 import org.eclipse.xtext.util.Pair;
 import org.eclipse.xtext.validation.*;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.inject.Inject;
+import java.util.*;
 
 /**
  * Verifies that "imports" contain correct values.

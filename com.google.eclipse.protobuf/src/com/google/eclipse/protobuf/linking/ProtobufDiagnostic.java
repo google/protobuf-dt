@@ -12,10 +12,10 @@ import static com.google.common.base.Objects.equal;
 import static java.util.Arrays.copyOf;
 import static org.eclipse.xtext.util.Arrays.contains;
 
+import com.google.common.base.Objects;
+
 import org.eclipse.xtext.diagnostics.*;
 import org.eclipse.xtext.nodemodel.INode;
-
-import com.google.common.base.Objects;
 
 /**
  * <code>{@link Diagnostic}</code> that supports appending text to its message.
@@ -29,24 +29,20 @@ public class ProtobufDiagnostic extends AbstractDiagnostic {
   private final INode node;
 
   public ProtobufDiagnostic(String code, String[] data, String message, INode node) {
-    validate(data);
+    if (data == null) {
+      throw new NullPointerException("The given array should not be null");
+    }
+    if (contains(data, null)) {
+      throw new IllegalArgumentException("The given array should not contain null elements");
+    }
     if (node == null) {
-      throw new NullPointerException("node should not be null");
+      throw new NullPointerException("The given node should not be null");
     }
     this.code = code;
     this.data = copyOf(data, data.length);
     this.message = new StringBuilder();
     this.message.append(message);
     this.node = node;
-  }
-
-  private static void validate(String[] data) {
-    if (data == null) {
-      throw new NullPointerException("data should not be a null array");
-    }
-    if (contains(data, null)) {
-      throw new NullPointerException("data should not contain null");
-    }
   }
 
   @Override public String getCode() {
@@ -66,7 +62,7 @@ public class ProtobufDiagnostic extends AbstractDiagnostic {
   }
 
   /**
-   * Appends the given text to the message of this diagnostic.
+   * Appends the given text to this diagnostic's message.
    * @param s the text to append.
    */
   public void appendToMessage(String s) {

@@ -12,15 +12,15 @@ import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPO
 import static com.google.eclipse.protobuf.util.Strings.*;
 import static org.eclipse.xtext.util.Strings.*;
 
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.*;
-import org.eclipse.xtext.nodemodel.INode;
-import org.eclipse.xtext.scoping.impl.ImportUriResolver;
-
 import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.resource.ResourceSets;
 import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider;
 import com.google.inject.Inject;
+
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.*;
+import org.eclipse.xtext.nodemodel.INode;
+import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 
 /**
  * Utility methods related to imports.
@@ -90,10 +90,10 @@ public class Imports {
    * @return {@code true} if the URI of the given {@code Import} has been resolved, {@code false} otherwise.
    */
   public boolean isResolved(Import anImport) {
-    String importUri = anImport.getImportURI();
-    if (!isEmpty(importUri)) {
-      URI uri = URI.createURI(importUri);
-      if (!isEmpty(uri.scheme())) {
+    String uriAsText = anImport.getImportURI();
+    if (!isEmpty(uriAsText)) {
+      URI uri = URI.createURI(uriAsText);
+      if (isResolved(uri)) {
         return true;
       }
     }
@@ -122,6 +122,14 @@ public class Imports {
    */
   public URI resolvedUriOf(Import anImport) {
     String resolvedUri = uriResolver.apply(anImport);
-    return (isEmpty(resolvedUri)) ? null : URI.createURI(resolvedUri);
+    if (isEmpty(resolvedUri)) {
+      return null;
+    }
+    URI uri = URI.createURI(resolvedUri);
+    return (isResolved(uri)) ? uri : null;
+  }
+
+  private boolean isResolved(URI uri) {
+    return !isEmpty(uri.scheme());
   }
 }

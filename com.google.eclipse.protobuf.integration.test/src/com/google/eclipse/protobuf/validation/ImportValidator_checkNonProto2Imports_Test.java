@@ -12,12 +12,12 @@ import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integ
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static org.mockito.Mockito.*;
 
-import org.eclipse.xtext.validation.ValidationMessageAcceptor;
-import org.junit.*;
-
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.inject.Inject;
+
+import org.eclipse.xtext.validation.ValidationMessageAcceptor;
+import org.junit.*;
 
 /**
  * Tests for <code>{@link ImportValidator#checkNonProto2Imports(Protobuf)}</code>
@@ -71,6 +71,14 @@ public class ImportValidator_checkNonProto2Imports_Test {
   // import "B.proto";
   // import "C.proto";
   @Test public void should_not_add_warnings_if_imported_files_are_proto2_even_with_circular_dependencies() {
+    validator.checkNonProto2Imports(xtext.root());
+    verifyNoMoreInteractions(messageAcceptor);
+  }
+
+  // syntax = "proto2";
+  //
+  // import "093651b0-5676-11e1-b86c-0800200c9a66.proto";
+  @Test public void should_not_add_warnings_if_imported_file_does_not_exist() {
     validator.checkNonProto2Imports(xtext.root());
     verifyNoMoreInteractions(messageAcceptor);
   }

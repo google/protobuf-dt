@@ -35,7 +35,7 @@ public class ProtobufDiagnostic_constructor_Test {
     new ProtobufDiagnostic("1000", null, "message", node);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void should_throw_exception_if_data_contains_nulls() {
     new ProtobufDiagnostic("1000", new String[] { null }, "message", node);
   }
