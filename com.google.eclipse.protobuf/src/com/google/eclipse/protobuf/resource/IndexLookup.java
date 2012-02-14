@@ -8,12 +8,13 @@
  */
 package com.google.eclipse.protobuf.resource;
 
+import static com.google.common.base.Objects.equal;
+
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.resource.*;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.eclipse.protobuf.util.IPaths;
 import com.google.inject.Inject;
 
 /**
@@ -22,7 +23,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class IndexLookup {
-  @Inject private IPaths paths;
   @Inject private IResourceDescriptions xtextIndex;
 
   /**
@@ -47,11 +47,22 @@ public class IndexLookup {
   private IResourceDescription segmentMatching(IPath path) {
     for (IResourceDescription description : xtextIndex.getAllResourceDescriptions()) {
       URI resourceUri = description.getURI();
-      if (paths.areReferringToSameFile(path, resourceUri)) {
+      if (areReferringToSameFile(path, resourceUri)) {
         return description;
       }
     }
     return null;
+  }
+
+  @VisibleForTesting boolean areReferringToSameFile(IPath p, URI u) {
+    int pIndex = p.segmentCount() - 1;
+    int uIndex = u.segmentCount() - 1;
+    while (pIndex >= 0 && uIndex >= 0) {
+      if (!equal(p.segment(pIndex--), u.segment(uIndex--))) {
+        return false;
+      }
+    }
+    return true;
   }
 
   @VisibleForTesting IResourceDescriptions getXtextIndex() {

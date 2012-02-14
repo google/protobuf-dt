@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.util;
+package com.google.eclipse.protobuf.model.util;
 
 import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
@@ -16,6 +16,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.model.util.Literals;
 import com.google.eclipse.protobuf.protobuf.Literal;
 import com.google.inject.Inject;
 

@@ -8,19 +8,16 @@
  */
 package com.google.eclipse.protobuf.ui.scoping;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.Path;
+import static com.google.eclipse.protobuf.ui.util.IPaths.directoryLocationInWorkspace;
+
+import org.eclipse.core.runtime.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class PathMapping {
+class ResourceLocations {
   String directoryLocation(String workspacePath) {
-    return directory(workspacePath).getLocation().toOSString();
-  }
-
-  private static IFolder directory(String workspacePath) {
-    IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-    return root.getFolder(new Path(workspacePath));
+    IPath path = new Path(workspacePath);
+    return directoryLocationInWorkspace(path);
   }
 }

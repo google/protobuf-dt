@@ -18,6 +18,6 @@ import org.eclipse.xtext.ui.editor.preferences.*;
 public class MiscellaneousPreferenceStoreInitializer implements IPreferenceStoreInitializer {
   @Override public void initialize(IPreferenceStoreAccess storeAccess) {
     MiscellaneousPreferences preferences = new MiscellaneousPreferences(storeAccess);
-    preferences.isGoogleInternal().setDefaultValue(true);
+    preferences.isGoogleInternal().setDefaultValue(false);
   }
 }

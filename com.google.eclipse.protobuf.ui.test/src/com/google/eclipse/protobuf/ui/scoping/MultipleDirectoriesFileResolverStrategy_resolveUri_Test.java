@@ -39,7 +39,7 @@ public class MultipleDirectoriesFileResolverStrategy_resolveUri_Test {
 
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule(), new TestModule());
 
-  @Inject private PathMapping mapping;
+  @Inject private ResourceLocations locations;
   @Inject private Uris uris;
   @Inject private MultipleDirectoriesFileResolverStrategy resolver;
 
@@ -76,7 +76,7 @@ public class MultipleDirectoriesFileResolverStrategy_resolveUri_Test {
     // try the first time as resource platform
     when(uris.referredResourceExists(URI.createURI("platform:/resource/src/protos/imported.proto"))).thenReturn(false);
     // try again, but in the file system this time
-    when(mapping.directoryLocation("/src/protos")).thenReturn("/usr/local/project/src/protos");
+    when(locations.directoryLocation("/src/protos")).thenReturn("/usr/local/project/src/protos");
     when(uris.referredResourceExists(URI.createURI(expected))).thenReturn(true);
     String resolved = resolver.resolveUri("imported.proto", declaringResourceUri, allPreferences);
     assertThat(resolved, equalTo(expected));
@@ -99,7 +99,7 @@ public class MultipleDirectoriesFileResolverStrategy_resolveUri_Test {
   private static class TestModule extends AbstractTestModule {
     @Override protected void configure() {
       mockAndBind(Uris.class);
-      mockAndBind(PathMapping.class);
+      mockAndBind(ResourceLocations.class);
     }
   }
 }

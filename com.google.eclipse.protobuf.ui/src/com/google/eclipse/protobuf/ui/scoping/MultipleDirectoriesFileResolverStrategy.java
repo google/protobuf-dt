@@ -25,7 +25,7 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 class MultipleDirectoriesFileResolverStrategy implements FileResolverStrategy {
-  @Inject private PathMapping mapping;
+  @Inject private ResourceLocations locations;
   @Inject private Uris uris;
 
   @Override
@@ -53,7 +53,7 @@ class MultipleDirectoriesFileResolverStrategy implements FileResolverStrategy {
       }
     }
     for (String root : unresolvedWorkspacePaths) {
-      String directoryLocation = mapping.directoryLocation(root);
+      String directoryLocation = locations.directoryLocation(root);
       String resolved = resolveUriInFileSystem(importUri, directoryLocation);
       if (resolved != null) {
         return resolved;

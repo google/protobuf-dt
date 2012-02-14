@@ -9,11 +9,12 @@
 package com.google.eclipse.protobuf.ui.preferences.paths.core;
 
 import static com.google.eclipse.protobuf.ui.preferences.paths.core.ProjectVariable.replaceProjectVariableWithProjectName;
+import static com.google.eclipse.protobuf.ui.util.IPaths.directoryLocationInWorkspace;
 
 import java.util.regex.*;
 
 import org.eclipse.core.filesystem.*;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.*;
 
 /**
@@ -75,20 +76,14 @@ public class DirectoryPath {
    * @return the absolute path in the local file system, or {@code null} if no path can be determined.
    */
   public String absolutePathInFileSystem() {
-    Path path = new Path(value);
+    IPath path = new Path(value);
     if (isWorkspacePath()) {
-      return locationOfWorkspaceDirectory(path);
+      return directoryLocationInWorkspace(path);
     }
-    return locationOfFileSystemDirectory(path);
+    return locationInFileSystem(path);
   }
 
-  private String locationOfWorkspaceDirectory(Path path) {
-    IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-    IFolder directory = root.getFolder(path);
-    return directory.getLocation().toOSString();
-  }
-
-  private String locationOfFileSystemDirectory(Path path) {
+  private String locationInFileSystem(IPath path) {
     IFileSystem fileSystem = EFS.getLocalFileSystem();
     IFileInfo fileInfo = fileSystem.getStore(path).fetchInfo();
     if (!fileInfo.isDirectory()) {

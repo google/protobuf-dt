@@ -6,42 +6,45 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.util;
+package com.google.eclipse.protobuf.resource;
 
+import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static org.junit.Assert.*;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.emf.common.util.URI;
 import org.junit.*;
 
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.inject.Inject;
+
 /**
- * Tests for <code>{@link IPaths#areReferringToSameFile(IPath, URI)}</code>
+ * Tests for <code>{@link IndexLookup#areReferringToSameFile(IPath, URI)}</code>
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class IPaths_areReferringToSameFile_Tests {
-  private IPaths paths;
+public class IndexLookup_areReferringToSameFile_Tests {
+  @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());
 
-  @Before public void setUp() {
-    paths = new IPaths();
-  }
+  @Inject private IndexLookup lookup;
 
   @Test public void should_return_true_if_both_have_exactly_equal_segments() {
     String pathValue = "/usr/local/google/proto";
     IPath path = new Path(pathValue);
     URI uri = URI.createPlatformResourceURI(pathValue, false);
-    assertTrue(paths.areReferringToSameFile(path, uri));
+    assertTrue(lookup.areReferringToSameFile(path, uri));
   }
 
   @Test public void should_return_true_if_path_is_subset_of_URI() {
     IPath path = new Path("/google/proto");
     URI uri = URI.createPlatformResourceURI("/usr/local/google/proto", false);
-    assertTrue(paths.areReferringToSameFile(path, uri));
+    assertTrue(lookup.areReferringToSameFile(path, uri));
   }
 
   @Test public void should_return_false_if_last_segments_in_path_and_URI_are_not_equal() {
     IPath path = new Path("/usr/local/google/proto");
     URI uri = URI.createPlatformResourceURI("/usr/local/google/cpp", false);
-    assertFalse(paths.areReferringToSameFile(path, uri));
+    assertFalse(lookup.areReferringToSameFile(path, uri));
   }
 }

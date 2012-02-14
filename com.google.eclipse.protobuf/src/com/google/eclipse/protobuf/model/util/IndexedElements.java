@@ -31,18 +31,16 @@ import com.google.inject.*;
   @Inject private ModelObjects modelObjects;
 
   /**
-   * Calculates the index value for the given element. The calculated index value is the maximum of all the
-   * index values of the given element's siblings, plus one. The minimum index value is 1.
+   * Calculates the index value for the given element. The calculated index value is the maximum of all the index values
+   * of the given element's siblings, plus one. The minimum index value is 1.
    * <p>
    * For example, in the following message:
-   *
    * <pre>
    * message Person {
    *   required string name = 1;
    *   optional string email = 2;
    *   optional PhoneNumber phone =
    * </pre>
-   *
    * The calculated index value for the element {@code PhoneNumber} will be 3.
    * </p>
    * @param e the given element.

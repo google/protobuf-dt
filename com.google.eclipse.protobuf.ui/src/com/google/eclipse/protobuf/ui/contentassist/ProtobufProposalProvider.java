@@ -38,7 +38,6 @@ import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.scoping.*;
 import com.google.eclipse.protobuf.ui.grammar.CompoundElement;
 import com.google.eclipse.protobuf.ui.labeling.Images;
-import com.google.eclipse.protobuf.ui.util.Literals;
 import com.google.inject.Inject;
 
 /**

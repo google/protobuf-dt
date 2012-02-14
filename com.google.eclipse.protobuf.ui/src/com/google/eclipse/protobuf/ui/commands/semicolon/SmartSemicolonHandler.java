@@ -34,7 +34,6 @@ import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.ui.commands.SmartInsertHandler;
 import com.google.eclipse.protobuf.ui.preferences.editor.numerictag.core.NumericTagPreferences;
-import com.google.eclipse.protobuf.ui.util.Literals;
 import com.google.inject.Inject;
 
 /**

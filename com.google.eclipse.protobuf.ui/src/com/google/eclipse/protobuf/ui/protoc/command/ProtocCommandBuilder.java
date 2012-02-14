@@ -65,8 +65,9 @@ public class ProtocCommandBuilder {
   public List<IFolder> outputDirectories() throws CoreException {
     List<IFolder> outputDirectories = newArrayList();
     for (ProtocOption option : options) {
-      if (option instanceof OutputDirectoryProtocOption) {
-        IFolder outputDirectory = ((OutputDirectoryProtocOption) option).outputDirectory();
+      if (option instanceof AbstractOutputDirectoryProtocOption) {
+        AbstractOutputDirectoryProtocOption outputDirectoryProtocOption = (AbstractOutputDirectoryProtocOption) option;
+        IFolder outputDirectory = outputDirectoryProtocOption.outputDirectory();
         if (outputDirectory != null) {
           outputDirectories.add(outputDirectory);
         }

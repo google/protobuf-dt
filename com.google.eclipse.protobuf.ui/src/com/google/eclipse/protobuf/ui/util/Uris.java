@@ -9,6 +9,7 @@
 package com.google.eclipse.protobuf.ui.util;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.eclipse.protobuf.ui.util.Workspaces.workspaceRoot;
 import static java.util.Collections.*;
 
 import java.io.File;
@@ -111,7 +112,7 @@ import com.google.inject.Singleton;
    * workspace file.
    */
   public IFile referredFile(URI uri) {
-    IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+    IWorkspaceRoot root = workspaceRoot();
     IPath path = pathOf(uri);
     return (path != null) ? root.getFile(path) : null;
   }

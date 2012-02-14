@@ -9,6 +9,7 @@
 package com.google.eclipse.protobuf.ui.scoping;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.eclipse.protobuf.ui.util.Workspaces.workspaceRoot;
 import static java.util.Collections.*;
 
 import java.util.List;
@@ -84,7 +85,7 @@ public class FileUriResolver implements IFileUriResolver {
 
   private Iterable<PathsPreferences> preferencesFromAllProjects() {
     List<PathsPreferences> allPreferences = newArrayList();
-    IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+    IWorkspaceRoot root = workspaceRoot();
     for (IProject project : root.getProjects()) {
       if (project.isHidden() || !project.isAccessible() || !XtextProjectHelper.hasNature(project)) {
         continue;

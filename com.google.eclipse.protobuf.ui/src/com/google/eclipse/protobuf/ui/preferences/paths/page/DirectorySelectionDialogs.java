@@ -10,6 +10,7 @@ package com.google.eclipse.protobuf.ui.preferences.paths.page;
 
 import static com.google.eclipse.protobuf.ui.ProtobufUiModule.PLUGIN_ID;
 import static com.google.eclipse.protobuf.ui.preferences.paths.page.Messages.*;
+import static com.google.eclipse.protobuf.ui.util.Workspaces.workspaceRoot;
 import static org.eclipse.core.runtime.IStatus.ERROR;
 import static org.eclipse.core.runtime.Status.OK_STATUS;
 import static org.eclipse.jface.window.Window.OK;
@@ -75,10 +76,6 @@ class DirectorySelectionDialogs {
     }
     dialog.setMessage(selectFileSystemDirectory);
     return dialog.open();
-  }
-
-  private static IWorkspaceRoot workspaceRoot() {
-    return ResourcesPlugin.getWorkspace().getRoot();
   }
 
   private DirectorySelectionDialogs() {}

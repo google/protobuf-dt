@@ -8,55 +8,24 @@
  */
 package com.google.eclipse.protobuf.ui.protoc.command;
 
-import static com.google.eclipse.protobuf.ui.protoc.command.IResources.*;
+import org.eclipse.core.resources.IProject;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.CoreException;
-
+import com.google.eclipse.protobuf.ui.preferences.*;
 import com.google.eclipse.protobuf.ui.preferences.compiler.core.CompilerPreferences;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class JavaProtocOption implements OutputDirectoryProtocOption {
-  private final CompilerPreferences preferences;
-  private final IProject project;
-
-  private boolean initialized;
-  private boolean enabled;
-  private IFolder outputDirectory;
-  private String outputDirectoryLocation;
-
+class JavaProtocOption extends AbstractOutputDirectoryProtocOption {
   JavaProtocOption(CompilerPreferences preferences, IProject project) {
-    this.preferences = preferences;
-    this.project = project;
+    super("java_out", preferences, project);
   }
 
-  @Override public void addOptionTo(ProtocCommand command) throws CoreException {
-    ensureIsInitialized();
-    if (enabled) {
-      command.appendOption("java_out", outputDirectoryLocation);
-    }
+  @Override BooleanPreference isEnabled(CompilerPreferences preferences) {
+    return preferences.javaCodeGenerationEnabled();
   }
 
-  @Override public IFolder outputDirectory() throws CoreException {
-    ensureIsInitialized();
-    return outputDirectory;
-  }
-
-  private void ensureIsInitialized() throws CoreException {
-    if (!initialized) {
-      initialize();
-    }
-  }
-
-  private void initialize() throws CoreException {
-    initialized = true;
-    enabled = preferences.javaCodeGenerationEnabled().getValue();
-    if (enabled) {
-      String directoryName = preferences.javaOutputDirectory().getValue();
-      outputDirectory = findOrCreateDirectory(directoryName, project);
-      outputDirectoryLocation = locationOf(outputDirectory);
-    }
+  @Override StringPreference outputDirectoryName(CompilerPreferences preferences) {
+    return preferences.javaOutputDirectory();
   }
 }

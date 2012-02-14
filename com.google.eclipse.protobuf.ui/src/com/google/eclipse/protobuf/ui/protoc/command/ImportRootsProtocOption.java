@@ -67,15 +67,15 @@ class ImportRootsProtocOption {
   }
 
   private String singleImportRoot(IFile protoFile) {
-    File projectFile = toFile(project);
-    File currentFile = toFile(protoFile);
+    File projectFile = locationAsFileOf(project);
+    File currentFile = locationAsFileOf(protoFile);
     while (!currentFile.getParentFile().equals(projectFile)) {
       currentFile = currentFile.getParentFile();
     }
     return currentFile.toString();
   }
 
-  private File toFile(IResource resource) {
+  private File locationAsFileOf(IResource resource) {
     return resource.getLocation().toFile();
   }
 

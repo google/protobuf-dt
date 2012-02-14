@@ -12,6 +12,7 @@ import static com.google.common.io.Closeables.closeQuietly;
 import static com.google.eclipse.protobuf.ui.builder.protoc.ConsolePrinter.createAndDisplayConsole;
 import static com.google.eclipse.protobuf.ui.exception.CoreExceptions.error;
 import static com.google.eclipse.protobuf.ui.preferences.compiler.core.CompilerPreferences.compilerPreferences;
+import static com.google.eclipse.protobuf.ui.util.Workspaces.workspaceRoot;
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
 
 import java.io.*;
@@ -67,7 +68,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
 
   private IFile protoFile(IResourceDescription resource, IProject project) {
     String path = filePathIfIsProtoFile(resource);
-    return (path == null) ? null : project.getWorkspace().getRoot().getFile(new Path(path));
+    return (path == null) ? null : workspaceRoot().getFile(new Path(path));
   }
 
   private String filePathIfIsProtoFile(IResourceDescription resource) {
@@ -75,19 +76,10 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
       return null;
     }
     URI uri = resource.getURI();
-    if (!uri.fileExtension().equals("proto")) {
+    if (!uri.isPlatformResource() && !uri.fileExtension().equals("proto")) {
       return null;
     }
-    if (uri.scheme() == null) {
-      return uri.toFileString();
-    }
-    StringBuilder b = new StringBuilder();
-    int segmentCount = uri.segmentCount();
-    for (int i = 1; i < segmentCount; i++)
-     {
-      b.append("/").append(uri.segment(i));
-    }
-    return b.length() == 0 ? null : b.toString();
+    return uri.toPlatformString(true);
   }
 
   private void generateSingleProto(String command, IFile protoFile) throws CoreException {
