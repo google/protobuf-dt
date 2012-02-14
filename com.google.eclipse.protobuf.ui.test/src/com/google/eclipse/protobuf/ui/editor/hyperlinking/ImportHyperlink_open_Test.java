@@ -37,14 +37,14 @@ public class ImportHyperlink_open_Test {
   }
 
   @Test public void should_open_file_in_workspace() throws Throwable {
-    URI uri = createPlatformResourceURI("test.proto", false);
+    URI uri = createPlatformResourceURI("test.proto", true);
     hyperlink = new ImportHyperlink(uri, region, fileOpener);
     hyperlink.open();
     verify(fileOpener).openProtoFileInWorkspace(uri);
   }
 
   @Test public void should_open_file_in_plugin() throws Throwable {
-    URI uri = createPlatformPluginURI("test.proto", false);
+    URI uri = createPlatformPluginURI("test.proto", true);
     hyperlink = new ImportHyperlink(uri, region, fileOpener);
     hyperlink.open();
     verify(fileOpener).openProtoFileInPlugin(uri);

@@ -40,7 +40,7 @@ public class IndexLookup {
   }
 
   private IResourceDescription lookup(IPath path) {
-    URI uri = URI.createPlatformResourceURI(path.toOSString(), false);
+    URI uri = URI.createPlatformResourceURI(path.toOSString(), true);
     return xtextIndex.getResourceDescription(uri);
   }
 
