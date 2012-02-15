@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.cdt;
 
-import com.google.eclipse.protobuf.ui.util.ProtobufEditorPlugIn;
+import com.google.eclipse.protobuf.ui.plugin.ProtobufEditorPlugIn;
 import com.google.inject.Provider;
 
 /**

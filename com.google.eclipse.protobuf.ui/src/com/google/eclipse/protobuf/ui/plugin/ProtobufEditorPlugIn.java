@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.util;
+package com.google.eclipse.protobuf.ui.plugin;
 
 import com.google.eclipse.protobuf.ui.internal.ProtobufActivator;
 import com.google.inject.Injector;
@@ -18,14 +18,6 @@ public final class ProtobufEditorPlugIn {
   private static final String LANGUAGE_NAME = "com.google.eclipse.protobuf.Protobuf";
 
   /**
-   * Returns the name of the supported language.
-   * @return "com.google.eclipse.protobuf.Protobuf".
-   */
-  public static String languageName() {
-    return LANGUAGE_NAME;
-  }
-
-  /**
    * Returns the appropriate instance for the given injection type.
    * @param type the given injection type.
    * @return the appropriate instance for the given injection type.
@@ -35,11 +27,19 @@ public final class ProtobufEditorPlugIn {
   }
 
   /**
-   * Returns the plug-in's injector for the language "com.google.eclipse.protobuf.Protobuf".
-   * @return the plug-in's injector for the language "com.google.eclipse.protobuf.Protobuf".
+   * Returns the plug-in's injector for the 'Protocol Buffer' language.
+   * @return the plug-in's injector for the 'Protocol Buffer' language.
    */
   public static Injector injector() {
-    return ProtobufActivator.getInstance().getInjector(languageName());
+    return ProtobufActivator.getInstance().getInjector(protobufLanguageName());
+  }
+
+  /**
+   * Returns the name of the 'Protocol Buffer' language.
+   * @return the name of the 'Protocol Buffer' language.
+   */
+  public static String protobufLanguageName() {
+    return LANGUAGE_NAME;
   }
 
   private ProtobufEditorPlugIn() {}

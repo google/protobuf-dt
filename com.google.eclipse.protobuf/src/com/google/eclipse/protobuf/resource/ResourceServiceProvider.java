@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.resource.IGlobalServiceProvider.ResourceServiceProviderImpl;
 import org.eclipse.xtext.resource.*;
+import org.eclipse.xtext.resource.IResourceServiceProvider.Registry;
 
 import com.google.inject.Inject;
 
@@ -20,19 +21,16 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ResourceServiceProvider extends ResourceServiceProviderImpl {
-  @Inject
-  public ResourceServiceProvider(IResourceServiceProvider.Registry registry, IResourceServiceProvider provider) {
+  @Inject public ResourceServiceProvider(Registry registry, IResourceServiceProvider provider) {
     super(registry, provider);
   }
 
   @Override public <T> T findService(EObject e, Class<T> serviceType) {
     if (e.eIsProxy()) {
-      return findService(((InternalEObject) e).eProxyURI(), serviceType);
+      InternalEObject internalEObject = (InternalEObject) e;
+      return findService(internalEObject.eProxyURI(), serviceType);
     }
     Resource resource = e.eResource();
-    if (resource == null) {
-      return null;
-    }
-    return findService(resource.getURI(), serviceType);
+    return (resource != null) ? findService(resource.getURI(), serviceType) : null;
   }
 }

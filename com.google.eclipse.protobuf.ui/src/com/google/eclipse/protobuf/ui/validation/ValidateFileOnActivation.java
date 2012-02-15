@@ -16,6 +16,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.*;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
+import com.google.eclipse.protobuf.ui.plugin.ProtobufEditorPlugIn;
 import com.google.eclipse.protobuf.ui.preferences.general.core.GeneralPreferences;
 import com.google.eclipse.protobuf.ui.util.*;
 

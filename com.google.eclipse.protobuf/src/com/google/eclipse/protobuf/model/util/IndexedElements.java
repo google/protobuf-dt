@@ -107,9 +107,6 @@ import com.google.inject.*;
    * {@code IndexedElement} is {@code null}.
    */
   public EStructuralFeature indexFeatureOf(IndexedElement e) {
-    if (e != null) {
-      return INDEX_RESOLVER.getAttribute(e);
-    }
-    return null;
+    return (e != null) ? INDEX_RESOLVER.getAttribute(e) : null;
   }
 }
