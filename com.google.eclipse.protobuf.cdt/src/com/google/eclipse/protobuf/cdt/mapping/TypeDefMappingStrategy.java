@@ -20,12 +20,12 @@ import com.google.inject.Inject;
  */
 @SuppressWarnings("restriction")
 class TypeDefMappingStrategy implements IBindingMappingStrategy<CPPTypedef> {
-  @Inject private AstElements astElements;
+  @Inject private IBindings bindings;
 
   @Override public CppToProtobufMapping createMappingFrom(IBinding binding) {
     CPPTypedef typeDef = typeOfSupportedBinding().cast(binding);
     IBinding owner = binding.getOwner();
-    if (!astElements.isMessage(owner)) {
+    if (!bindings.isMessage(owner)) {
       return null;
     }
     String typeName = typeNameOf(typeDef);
@@ -33,7 +33,7 @@ class TypeDefMappingStrategy implements IBindingMappingStrategy<CPPTypedef> {
     if (typeName == null || !typeName.endsWith(typeNameSuffix)) {
       return null;
     }
-    return new CppToProtobufMapping(typeDef.getQualifiedName(), MESSAGE);
+    return new CppToProtobufMapping(bindings.qualifiedNameOf(typeDef), MESSAGE);
   }
 
   private String typeNameOf(CPPTypedef typeDef) {

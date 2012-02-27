@@ -20,12 +20,12 @@ import com.google.inject.Inject;
  */
 @SuppressWarnings("restriction")
 class ClassMappingStrategy implements IBindingMappingStrategy<CPPClassType> {
-  @Inject private AstElements astElements;
+  @Inject private IBindings bindings;
 
   @Override public CppToProtobufMapping createMappingFrom(IBinding binding) {
     CPPClassType classType = typeOfSupportedBinding().cast(binding);
-    if (astElements.isMessage(classType)) {
-      return new CppToProtobufMapping(classType.getQualifiedName(), MESSAGE);
+    if (bindings.isMessage(classType)) {
+      return new CppToProtobufMapping(bindings.qualifiedNameOf(classType), MESSAGE);
     }
     return null;
   }

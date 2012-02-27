@@ -8,21 +8,21 @@
  */
 package com.google.eclipse.protobuf.cdt.mapping;
 
-import static com.google.common.collect.ImmutableList.copyOf;
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MESSAGE;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
 
 import org.eclipse.cdt.core.dom.ast.IBinding;
-import org.eclipse.cdt.core.dom.ast.cpp.ICPPBase;
-import org.eclipse.cdt.internal.core.dom.parser.c.CASTName;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.*;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassType;
 import org.junit.*;
 
 import com.google.eclipse.protobuf.junit.core.*;
-import com.google.eclipse.protobuf.protobuf.Message;
 import com.google.inject.Inject;
 
 /**
@@ -34,41 +34,28 @@ import com.google.inject.Inject;
 public class ClassMappingStrategy_createMappingFrom_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule(), new TestModule());
 
+  @Inject private IBindings bindings;
   @Inject private CPPClassType classType;
   @Inject private ClassMappingStrategy mappingStrategy;
 
-  @Test public void should_return_qualified_name_for_class_type_if_it_extends_proto_file() {
-    expectClassTypeToExtendProtoMessage();
-    String[] segments = { "com", "google", "proto", "Test" };
-    when(classType.getQualifiedName()).thenReturn(segments);
+  @Test public void should_create_mapping_if_class_type_is_message() {
+    when(bindings.isMessage(classType)).thenReturn(true);
+    List<String> segments = newArrayList("com", "google", "proto", "Test");
+    when(bindings.qualifiedNameOf(classType)).thenReturn(segments);
     CppToProtobufMapping mapping = mappingStrategy.createMappingFrom(classType);
-    assertThat(mapping.qualifiedNameSegments(), equalTo(copyOf(segments)));
-    assertEquals(Message.class, mapping.type());
+    assertThat(mapping.qualifiedNameSegments(), equalTo(segments));
+    assertThat(mapping.type(), equalTo(MESSAGE));
   }
 
-  private void expectClassTypeToExtendProtoMessage() {
-    ICPPBase base = mock(ICPPBase.class);
-    when(classType.getBases()).thenReturn(new ICPPBase[] { base });
-    when(base.getBaseClassSpecifierName()).thenReturn(createQualifiedName("google", "protobuf", "Message"));
-  }
-
-  private CPPASTQualifiedName createQualifiedName(String...segments) {
-    CPPASTQualifiedName qualifiedName = new CPPASTQualifiedName();
-    for (String segment : segments) {
-      qualifiedName.addName(new CASTName(segment.toCharArray()));
-    }
-    qualifiedName.setFullyQualified(true);
-    return qualifiedName;
-  }
-
-  @Test public void should_return_null_if_class_type_does_not_extend_proto_message() {
-    when(classType.getBases()).thenReturn(new ICPPBase[0]);
+  @Test public void should_return_null_if_class_type_is_not_message() {
+    when(bindings.isMessage(classType)).thenReturn(false);
     CppToProtobufMapping mapping = mappingStrategy.createMappingFrom(classType);
     assertNull(mapping);
   }
 
   private static class TestModule extends AbstractTestModule {
     @Override protected void configure() {
+      mockAndBind(IBindings.class);
       mockAndBind(CPPClassType.class);
     }
   }

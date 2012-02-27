@@ -14,11 +14,14 @@ import org.eclipse.cdt.core.dom.ast.*;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPFunctionType;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPMethod;
 
+import com.google.inject.Inject;
+
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 @SuppressWarnings("restriction")
 class MethodMappingStrategy implements IBindingMappingStrategy<CPPMethod> {
+  @Inject private IBindings bindings;
 
   @Override public CppToProtobufMapping createMappingFrom(IBinding binding) {
     CPPMethod method = typeOfSupportedBinding().cast(binding);
@@ -30,7 +33,7 @@ class MethodMappingStrategy implements IBindingMappingStrategy<CPPMethod> {
     if (types != null && types.length > 0) {
       return null;
     }
-    return new CppToProtobufMapping(method.getQualifiedName(), MESSAGE_FIELD);
+    return new CppToProtobufMapping(bindings.qualifiedNameOf(method), MESSAGE_FIELD);
   }
 
   @Override public Class<CPPMethod> typeOfSupportedBinding() {

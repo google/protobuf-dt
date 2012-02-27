@@ -13,15 +13,18 @@ import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.ENUM
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPEnumeration;
 
+import com.google.inject.Inject;
+
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 @SuppressWarnings("restriction")
 class EnumMappingStrategy implements IBindingMappingStrategy<CPPEnumeration> {
+  @Inject private IBindings bindings;
 
   @Override public CppToProtobufMapping createMappingFrom(IBinding binding) {
     CPPEnumeration enumeration = typeOfSupportedBinding().cast(binding);
-    return new CppToProtobufMapping(enumeration.getQualifiedName(), ENUM);
+    return new CppToProtobufMapping(bindings.qualifiedNameOf(enumeration), ENUM);
   }
 
   @Override public Class<CPPEnumeration> typeOfSupportedBinding() {

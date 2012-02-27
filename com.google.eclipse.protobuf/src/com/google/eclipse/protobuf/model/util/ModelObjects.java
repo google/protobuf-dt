@@ -8,7 +8,9 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.*;
+import org.eclipse.emf.ecore.resource.Resource;
 
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Package;
@@ -66,5 +68,16 @@ import com.google.inject.Singleton;
       current = current.eContainer();
     }
     return (Protobuf) current;
+  }
+
+  /**
+   * Returns the URI of the given model element.
+   * @param e the given model element.
+   * @return the URI of the given model element.
+   */
+  public URI uriOf(EObject e) {
+    Resource resource = e.eResource();
+    URI uri = resource.getURI();
+    return uri.appendFragment(resource.getURIFragment(e));
   }
 }

@@ -11,13 +11,13 @@ package com.google.eclipse.protobuf.cdt.matching;
 import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 interface ProtobufElementMatcherStrategy {
-  List<URI> matchingProtobufElementLocations(ContentsByType contents, String[] qualifiedNameSegments);
+  List<URI> matchingProtobufElementLocations(EObject root, List<String> qualifiedNameSegments);
 
   EClass supportedType();
 }
