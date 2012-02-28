@@ -43,7 +43,7 @@ public class ClassMappingStrategy_createMappingFrom_Test {
     List<String> segments = newArrayList("com", "google", "proto", "Test");
     when(bindings.qualifiedNameOf(classType)).thenReturn(segments);
     CppToProtobufMapping mapping = mappingStrategy.createMappingFrom(classType);
-    assertThat(mapping.qualifiedNameSegments(), equalTo(segments));
+    assertThat(mapping.qualifiedName(), equalTo(segments));
     assertThat(mapping.type(), equalTo(MESSAGE));
   }
 

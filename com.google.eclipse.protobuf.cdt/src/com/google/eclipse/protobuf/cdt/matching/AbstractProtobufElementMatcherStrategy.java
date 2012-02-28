@@ -13,11 +13,19 @@ import java.util.List;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.*;
 
+import com.google.eclipse.protobuf.cdt.util.ExtendedIterator;
+
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-interface ProtobufElementMatcherStrategy {
-  List<URI> matchingProtobufElementLocations(EObject root, List<String> qualifiedNameSegments);
+abstract class AbstractProtobufElementMatcherStrategy {
+  static final String NESTED_ELEMENT_SEPARATOR = "_";
 
-  EClass supportedType();
+  abstract List<URI> matchingProtobufElementLocations(EObject root, ExtendedIterator<String> qualifiedNameSegments);
+
+  boolean isSupported(EObject o) {
+    return supportedType().equals(o.eClass());
+  }
+
+  abstract EClass supportedType();
 }

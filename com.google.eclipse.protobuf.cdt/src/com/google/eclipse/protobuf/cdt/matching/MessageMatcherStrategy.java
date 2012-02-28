@@ -10,6 +10,7 @@ package com.google.eclipse.protobuf.cdt.matching;
 
 import static com.google.common.base.Objects.equal;
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.eclipse.protobuf.cdt.util.ExtendedListIterator.newIterator;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MESSAGE;
 import static java.util.Collections.unmodifiableList;
 
@@ -18,6 +19,7 @@ import java.util.List;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.*;
 
+import com.google.eclipse.protobuf.cdt.util.ExtendedIterator;
 import com.google.eclipse.protobuf.model.util.ModelObjects;
 import com.google.eclipse.protobuf.protobuf.Message;
 import com.google.inject.Inject;
@@ -25,65 +27,67 @@ import com.google.inject.Inject;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class MessageMatcherStrategy implements ProtobufElementMatcherStrategy {
+class MessageMatcherStrategy extends AbstractProtobufElementMatcherStrategy {
   @Inject private ModelObjects modelObjects;
 
-  @Override public List<URI> matchingProtobufElementLocations(EObject root, List<String> qualifiedName) {
+  @Override public List<URI> matchingProtobufElementLocations(EObject root, ExtendedIterator<String> qualifiedName) {
     List<URI> matches = newArrayList();
-    List<EObject> contents = root.eContents();
-    while (!qualifiedName.isEmpty()) {
-      String segment = qualifiedName.remove(0);
-      for (EObject o : contents) {
+    ExtendedIterator<EObject> contents = newIterator(root.eContents());
+    while (qualifiedName.hasNext()) {
+      String segment = qualifiedName.next();
+      while (contents.hasNext()) {
+        EObject o = contents.next();
         if (!isSupported(o)) {
           continue;
         }
         Message message = (Message) o;
         if (equal(message.getName(), segment)) {
-          if (qualifiedName.isEmpty()) {
+          if (qualifiedName.wasLastListElementRetrieved()) {
             // this is the last segment. This message is a perfect match.
             matches.add(modelObjects.uriOf(message));
           } else {
             // keep looking for match.
-            contents = message.eContents();
+            matches.addAll(matchingProtobufElementLocations(message, qualifiedName.notRetrievedYet()));
           }
-          break;
         }
-        if (segment.contains("_")) {
-          matches.addAll(matchingNestedElementLocations(contents, segment));
-          break;
+        if (segment.contains(NESTED_ELEMENT_SEPARATOR)) {
+          List<Message> matchingNestedElements = matchingNestedElements(message, segment);
+          if (qualifiedName.wasLastListElementRetrieved()) {
+            for (Message m : matchingNestedElements) {
+              matches.add(modelObjects.uriOf(m));
+            }
+          } else {
+            for (Message m : matchingNestedElements) {
+              matches.addAll(matchingProtobufElementLocations(m, qualifiedName.notRetrievedYet()));
+            }
+          }
         }
       }
     }
     return unmodifiableList(matches);
   }
 
-  private List<URI> matchingNestedElementLocations(List<EObject> elements, String nestedQualifiedName) {
-    List<URI> matches = newArrayList();
-    for (EObject o : elements) {
-      if (!isSupported(o)) {
-        continue;
+  private List<Message> matchingNestedElements(Message message, String qualifiedName) {
+    List<Message> matches = newArrayList();
+    String messageName = message.getName();
+    if (qualifiedName.startsWith(messageName)) {
+      String rest = qualifiedName.substring(messageName.length());
+      if (rest.isEmpty()) {
+        matches.add(message);
       }
-      Message message = (Message) o;
-      String messageName = message.getName();
-      if (nestedQualifiedName.startsWith(messageName)) {
-        String rest = nestedQualifiedName.substring(messageName.length());
-        if (rest.isEmpty()) {
-          matches.add(modelObjects.uriOf(message));
+      else {
+        if (rest.startsWith(NESTED_ELEMENT_SEPARATOR)) {
+          rest = rest.substring(1);
         }
-        else {
-          if (rest.startsWith("_")) {
-            rest = rest.substring(1);
+        for (EObject o : message.eContents()) {
+          if (!isSupported(o)) {
+            continue;
           }
-          matches.addAll(matchingNestedElementLocations(message.eContents(), rest));
+          matches.addAll(matchingNestedElements((Message) o, rest));
         }
-        break;
       }
     }
     return matches;
-  }
-
-  private boolean isSupported(EObject o) {
-    return supportedType().equals(o.eClass());
   }
 
   @Override public EClass supportedType() {

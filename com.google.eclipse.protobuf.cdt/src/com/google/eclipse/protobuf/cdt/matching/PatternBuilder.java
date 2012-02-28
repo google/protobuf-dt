@@ -22,7 +22,7 @@ import com.google.inject.Singleton;
 @Singleton class PatternBuilder {
   Pattern patternToMatchFrom(CppToProtobufMapping mapping) {
     StringBuilder regex = new StringBuilder();
-    List<String> segments = newArrayList(mapping.qualifiedNameSegments());
+    List<String> segments = newArrayList(mapping.qualifiedName());
     int segmentCount = segments.size();
     for (int i = 0; i < segmentCount; i++) {
       String segment = segments.get(i);

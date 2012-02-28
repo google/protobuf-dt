@@ -18,20 +18,20 @@ import org.eclipse.emf.ecore.EClass;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class CppToProtobufMapping {
-  private final List<String> qualifiedNameSegments;
+  private final List<String> qualifiedName;
   private final EClass type;
 
-  CppToProtobufMapping(List<String> qualifiedNameSegments, EClass type) {
-    this.qualifiedNameSegments = qualifiedNameSegments;
+  CppToProtobufMapping(List<String> qualifiedName, EClass type) {
+    this.qualifiedName = qualifiedName;
     this.type = type;
   }
 
   /**
-   * Returns the qualified name segments of the selected C++ element.
-   * @return the qualified name segments of the selected C++ element.
+   * Returns the qualified name of the selected C++ element.
+   * @return the qualified name of the selected C++ element.
    */
-  public List<String> qualifiedNameSegments() {
-    return qualifiedNameSegments;
+  public List<String> qualifiedName() {
+    return qualifiedName;
   }
 
   /**

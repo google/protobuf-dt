@@ -9,6 +9,7 @@
 package com.google.eclipse.protobuf.cdt.matching;
 
 import static com.google.common.collect.Maps.newHashMap;
+import static com.google.eclipse.protobuf.cdt.util.ExtendedListIterator.newIterator;
 import static java.util.Collections.emptyList;
 
 import java.util.*;
@@ -26,7 +27,7 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufElementMatchFinder {
-  private final Map<EClass, ProtobufElementMatcherStrategy> strategies = newHashMap();
+  private final Map<EClass, AbstractProtobufElementMatcherStrategy> strategies = newHashMap();
 
   @Inject private Resources resources;
 
@@ -41,10 +42,10 @@ public class ProtobufElementMatchFinder {
   public List<URI> matchingProtobufElementLocations(Resource resource, CppToProtobufMapping mapping) {
     Protobuf root = resources.rootOf(resource);
     // TODO check for proto2?
-    List<String> qualifiedNameSegments = mapping.qualifiedNameSegments();
-    ProtobufElementMatcherStrategy strategy = strategies.get(mapping.type());
+    List<String> qualifiedName = mapping.qualifiedName();
+    AbstractProtobufElementMatcherStrategy strategy = strategies.get(mapping.type());
     if (strategy != null) {
-      return strategy.matchingProtobufElementLocations(root, qualifiedNameSegments);
+      return strategy.matchingProtobufElementLocations(root, newIterator(qualifiedName));
     }
     return emptyList();
   }
