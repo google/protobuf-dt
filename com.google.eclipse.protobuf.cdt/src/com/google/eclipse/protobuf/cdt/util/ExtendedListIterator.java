@@ -8,12 +8,13 @@
  */
 package com.google.eclipse.protobuf.cdt.util;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.*;
 
 import java.util.List;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.*;
+import com.google.common.collect.AbstractIterator;
 
 /**
  * {@code Iterator} for {@code List}s. This implementation keeps track of the index of the current element to be able
@@ -27,11 +28,11 @@ import com.google.common.collect.*;
  */
 public class ExtendedListIterator<T> extends AbstractIterator<T> implements ExtendedIterator<T> {
   private static final ExtendedIterator<Object> EMPTY = newIterator(emptyList());
+  private static final int NOT_STARTED = -1;
 
   private final List<T> list;
-  private final int listSize;
 
-  private int index = -1;
+  private int index = NOT_STARTED;
 
   /**
    * Creates a new <code>{@link ExtendedListIterator}</code>.
@@ -39,26 +40,30 @@ public class ExtendedListIterator<T> extends AbstractIterator<T> implements Exte
    * @return the created {@code ListIterator}.
    */
   public static <T> ExtendedIterator<T> newIterator(T...elements) {
-    return new ExtendedListIterator<T>(Lists.newArrayList(elements));
+    return new ExtendedListIterator<T>(newArrayList(elements));
   }
 
   /**
    * Creates a new <code>{@link ExtendedListIterator}</code>.
    * @param list the {@code List} to iterate.
    * @return the created {@code ListIterator}.
+   * @throws NullPointerException if the given {@code List} is {@code null}.
    */
   public static <T> ExtendedIterator<T> newIterator(List<T> list) {
+    if (list == null) {
+      throw new NullPointerException("The list to iterate should not be null");
+    }
     return new ExtendedListIterator<T>(list);
   }
 
   @VisibleForTesting ExtendedListIterator(List<T> list) {
     this.list = list;
-    listSize = list.size();
   }
 
   /** {@inheritDoc} */
-  @Override @SuppressWarnings("unchecked")
-  public ExtendedIterator<T> notRetrievedYet() {
+  @SuppressWarnings("unchecked")
+  @Override public ExtendedIterator<T> notRetrievedYet() {
+    int listSize = list.size();
     if (listSize == 0) {
       return (ExtendedIterator<T>) EMPTY;
     }
@@ -68,6 +73,10 @@ public class ExtendedListIterator<T> extends AbstractIterator<T> implements Exte
 
   /** {@inheritDoc} */
   @Override public boolean wasLastListElementRetrieved() {
+    if (index == NOT_STARTED) {
+      return false;
+    }
+    int listSize = list.size();
     return listSize > 0 && index == listSize - 1;
   }
 
@@ -77,6 +86,7 @@ public class ExtendedListIterator<T> extends AbstractIterator<T> implements Exte
   }
 
   @Override protected T computeNext() {
+    int listSize = list.size();
     if (index + 1 < listSize && listSize > 0) {
       return list.get(++index);
     }
@@ -90,5 +100,4 @@ public class ExtendedListIterator<T> extends AbstractIterator<T> implements Exte
   @VisibleForTesting List<T> contents() {
     return unmodifiableList(list);
   }
-
 }

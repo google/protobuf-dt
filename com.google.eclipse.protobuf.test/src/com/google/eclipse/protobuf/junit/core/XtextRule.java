@@ -16,12 +16,12 @@ import static org.eclipse.emf.ecore.util.EcoreUtil.resolveAll;
 import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import com.google.eclipse.protobuf.protobuf.Protobuf;
-import com.google.inject.*;
+import java.io.*;
+import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.ISetup;
+import org.eclipse.xtext.*;
 import org.eclipse.xtext.linking.lazy.LazyLinkingResource;
 import org.eclipse.xtext.nodemodel.*;
 import org.eclipse.xtext.parser.IParseResult;
@@ -30,7 +30,8 @@ import org.eclipse.xtext.util.StringInputStream;
 import org.junit.rules.MethodRule;
 import org.junit.runners.model.*;
 
-import java.io.*;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.inject.*;
 
 /**
  * Rule that performs configuration of a standalone Xtext environment.
@@ -151,5 +152,10 @@ public class XtextRule implements MethodRule {
 
   public ILeafNode find(String text) {
     return finder.find(text);
+  }
+
+  public <T extends EObject> T findFirst(Class<T> type) {
+    List<T> contents = EcoreUtil2.getAllContentsOfType(root, type);
+    return (contents.isEmpty()) ? null : contents.get(0);
   }
 }

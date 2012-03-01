@@ -8,18 +8,17 @@
  */
 package com.google.eclipse.protobuf.ui.labeling;
 
-import static com.google.common.collect.ImmutableList.of;
-import static com.google.common.collect.Maps.newHashMap;
+import static com.google.common.collect.Sets.newHashSet;
 import static com.google.eclipse.protobuf.protobuf.Modifier.*;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
 
-import java.util.Map;
+import java.util.Set;
 
+import org.eclipse.emf.ecore.*;
 import org.eclipse.xtext.Keyword;
 
-import com.google.common.collect.ImmutableList;
+import com.google.eclipse.protobuf.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.inject.Singleton;
 
 /**
@@ -28,84 +27,80 @@ import com.google.inject.Singleton;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class Images {
-  private static final String GIF_EXTENSION = ".gif";
+  private static final String IMAGE_FILE_NAME_FORMAT = "%s.gif";
   private static final String DEFAULT_IMAGE = "empty.gif";
 
-  private static final Map<Modifier, String> IMAGES_BY_MODIFIER = newHashMap();
+  private static final Set<String> IMAGES = newHashSet();
   static {
-    IMAGES_BY_MODIFIER.put(OPTIONAL, "field-opt.gif");
-    IMAGES_BY_MODIFIER.put(REPEATED, "field-rep.gif");
-    IMAGES_BY_MODIFIER.put(REQUIRED, "field-req.gif");
+    addImages(OPTIONAL, REPEATED, REQUIRED);
+    addImages(ENUM, TYPE_EXTENSION, EXTENSIONS, GROUP, IMPORT, LITERAL, MESSAGE, OPTION, PACKAGE, RPC, SERVICE, SYNTAX);
+    addImages("imports", "options");
   }
 
-  private static final Map<Class<?>, String> IMAGES_BY_TYPE = newHashMap();
-  static {
-    IMAGES_BY_TYPE.put(Enum.class, "enum.gif");
-    IMAGES_BY_TYPE.put(TypeExtension.class, "extend.gif");
-    IMAGES_BY_TYPE.put(Extensions.class, "extensions.gif");
-    IMAGES_BY_TYPE.put(Group.class, "group.gif");
-    IMAGES_BY_TYPE.put(Import.class, "import.gif");
-    IMAGES_BY_TYPE.put(Literal.class, "literal.gif");
-    IMAGES_BY_TYPE.put(Message.class, "message.gif");
-    IMAGES_BY_TYPE.put(Option.class, "option.gif");
-    IMAGES_BY_TYPE.put(Package.class, "package.gif");
-    IMAGES_BY_TYPE.put(Rpc.class, "rpc.gif");
-    IMAGES_BY_TYPE.put(Service.class, "service.gif");
-    IMAGES_BY_TYPE.put(Syntax.class, "syntax.gif");
+  private static void addImages(Modifier...modifiers) {
+    for (Modifier m : modifiers) {
+      addImage(imageNameFrom(m));
+    }
   }
 
-  private static final ImmutableList<String> STANDALONE_IMAGES = of("extensions.gif", "imports.gif", "options.gif");
+  private static void addImages(EClass...eClasses) {
+    for (EClass c : eClasses) {
+      addImage(imageNameFrom(c));
+    }
+  }
+
+  private static void addImages(String...imageNames) {
+    for (String s : imageNames) {
+      addImage(s);
+    }
+  }
+
+  private static void addImage(String imageName) {
+    IMAGES.add(imageFileName(imageName));
+  }
 
   public String imageFor(Object o) {
+    String imageName = null;
     if (o instanceof Keyword) {
-      Keyword k = (Keyword) o;
-      return imageFor(k);
+      Keyword keyword = (Keyword) o;
+      imageName = keyword.getValue().toLowerCase();
+    } else if (o instanceof CommonKeyword) {
+      CommonKeyword keyword = (CommonKeyword) o;
+      imageName = keyword.toString();
+    } else if (o instanceof String) {
+      imageName = (String) o;
+    } else if (o instanceof MessageField) {
+      MessageField field = (MessageField) o;
+      Modifier modifier = field.getModifier();
+      imageName = imageNameFrom(modifier);
+    } else if (o instanceof Option) {
+      imageName = imageNameFrom(OPTION);
+    } else if (o instanceof Import) {
+      imageName = imageNameFrom(IMPORT);
+    } else if (o instanceof EClass) {
+      EClass eClass = (EClass) o;
+      imageName = imageNameFrom(eClass);
+    } else if (o instanceof EObject) {
+      EObject modelObject = (EObject) o;
+      imageName = imageNameFrom(modelObject.eClass());
     }
-    if (o instanceof MessageField) {
-      MessageField f = (MessageField) o;
-      return imageFor(f.getModifier());
+    String imageFileName = null;
+    if (imageName != null) {
+      imageFileName = imageFileName(imageName);
     }
-    if (o instanceof String) {
-      return o + GIF_EXTENSION;
-    }
-    if (o instanceof Option) {
-      return imageFor(Option.class);
-    }
-    return imageFor(o.getClass());
+    return (IMAGES.contains(imageFileName)) ? imageFileName : defaultImage();
   }
 
-  public String imageFor(Class<?> type) {
-    String image = IMAGES_BY_TYPE.get(type);
-    if (image != null) {
-      return image;
-    }
-    Class<?>[] interfaces = type.getInterfaces();
-    if (interfaces == null || interfaces.length == 0) {
-      return DEFAULT_IMAGE;
-    }
-    return imageFor(interfaces[0]);
+  private static String imageNameFrom(Modifier modifier) {
+    return modifier.getName().toLowerCase();
   }
 
-  private String imageFor(Keyword keyword) {
-    String value = keyword.getValue();
-    Modifier m = Modifier.getByName(value);
-    String image = IMAGES_BY_MODIFIER.get(m);
-    if (image != null) {
-      return image;
-    }
-    String imageName = value + GIF_EXTENSION;
-    if (IMAGES_BY_TYPE.containsValue(imageName) || STANDALONE_IMAGES.contains(imageName)) {
-      return imageName;
-    }
-    return DEFAULT_IMAGE;
+  private static String imageNameFrom(EClass eClass) {
+    return eClass.getName().toLowerCase();
   }
 
-  private String imageFor(Modifier modifier) {
-    String image = IMAGES_BY_MODIFIER.get(modifier);
-    if (image != null) {
-      return image;
-    }
-    return "field.gif";
+  private static String imageFileName(String imageName) {
+    return String.format(IMAGE_FILE_NAME_FORMAT, imageName);
   }
 
   public String defaultImage() {

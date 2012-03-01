@@ -10,7 +10,9 @@ package com.google.eclipse.protobuf.ui.contentassist;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.*;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.SYNTAX;
 import static com.google.eclipse.protobuf.protobuf.Modifier.*;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
 import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.*;
 import static com.google.eclipse.protobuf.util.CommonWords.space;
 import static java.lang.String.valueOf;
@@ -40,6 +42,7 @@ import com.google.eclipse.protobuf.ui.grammar.CompoundElement;
 import com.google.eclipse.protobuf.ui.labeling.Images;
 import com.google.inject.Inject;
 
+
 /**
  * @author alruiz@google.com (Alex Ruiz)
  *
@@ -66,7 +69,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Override public void complete_Syntax(EObject model, RuleCall ruleCall, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     String proposal = SYNTAX + space() + EQUAL_PROTO2_IN_QUOTES;
-    proposeAndAccept(proposal, imageHelper.getImage(images.imageFor(Syntax.class)), context, acceptor);
+    proposeAndAccept(proposal, imageHelper.getImage(images.imageFor(SYNTAX)), context, acceptor);
   }
 
   @Override public void completeComplexTypeLink_Target(EObject model, Assignment assignment,
@@ -528,7 +531,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   }
 
   private Image imageForOption() {
-    return imageHelper.getImage(images.imageFor(Option.class));
+    return imageHelper.getImage(images.imageFor(OPTION));
   }
 
   private void proposeAndAccept(IEObjectDescription d, Image image, ContentAssistContext context,
@@ -625,7 +628,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   }
 
   private void proposeAndAccept(Enum enumType, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    Image image = imageHelper.getImage(images.imageFor(Literal.class));
+    Image image = imageHelper.getImage(images.imageFor(LITERAL));
     for (Literal literal : getAllContentsOfType(enumType, Literal.class)) {
       proposeAndAccept(literal.getName(), image, context, acceptor);
     }

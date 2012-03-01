@@ -51,13 +51,13 @@ class MessageMatcherStrategy extends AbstractProtobufElementMatcherStrategy {
           }
         }
         if (segment.contains(NESTED_ELEMENT_SEPARATOR)) {
-          List<Message> matchingNestedElements = matchingNestedElements(message, segment);
+          List<Message> nestedMessages = matchingNestedMessages(message, segment);
           if (qualifiedName.wasLastListElementRetrieved()) {
-            for (Message m : matchingNestedElements) {
+            for (Message m : nestedMessages) {
               matches.add(modelObjects.uriOf(m));
             }
           } else {
-            for (Message m : matchingNestedElements) {
+            for (Message m : nestedMessages) {
               matches.addAll(matchingProtobufElementLocations(m, qualifiedName.notRetrievedYet()));
             }
           }
@@ -67,23 +67,23 @@ class MessageMatcherStrategy extends AbstractProtobufElementMatcherStrategy {
     return unmodifiableList(matches);
   }
 
-  private List<Message> matchingNestedElements(Message message, String qualifiedName) {
+  private List<Message> matchingNestedMessages(Message root, String qualifiedName) {
     List<Message> matches = newArrayList();
-    String messageName = message.getName();
+    String messageName = root.getName();
     if (qualifiedName.startsWith(messageName)) {
       String rest = qualifiedName.substring(messageName.length());
       if (rest.isEmpty()) {
-        matches.add(message);
+        matches.add(root);
       }
       else {
         if (rest.startsWith(NESTED_ELEMENT_SEPARATOR)) {
           rest = rest.substring(1);
         }
-        for (EObject o : message.eContents()) {
+        for (EObject o : root.eContents()) {
           if (!isSupported(o)) {
             continue;
           }
-          matches.addAll(matchingNestedElements((Message) o, rest));
+          matches.addAll(matchingNestedMessages((Message) o, rest));
         }
       }
     }
