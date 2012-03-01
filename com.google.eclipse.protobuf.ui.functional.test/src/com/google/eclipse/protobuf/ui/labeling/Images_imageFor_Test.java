@@ -265,4 +265,10 @@ public class Images_imageFor_Test {
     assertThat(image, equalTo("syntax.gif"));
     assertThat(image, existsInProject());
   }
+
+  @Test public void should_contain_default_image() {
+    String image = images.defaultImage();
+    assertThat(image, equalTo("empty.gif"));
+    assertThat(image, existsInProject());
+  }
 }
