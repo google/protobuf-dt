@@ -57,6 +57,10 @@ public class Labels {
       Rpc rpc = (Rpc) o;
       return labelFor(rpc);
     }
+    if (o instanceof Stream) {
+      Stream stream = (Stream) o;
+      return labelFor(stream);
+    }
     if (o instanceof TypeExtension) {
       TypeExtension extension = (TypeExtension) o;
       return labelFor(extension);
@@ -132,12 +136,19 @@ public class Labels {
 
   private Object labelFor(Rpc rpc) {
     StyledString text = new StyledString(nameResolver.nameOf(rpc));
-    String types = String.format(" : %s > %s", messageName(rpc.getArgType()), messageName(rpc.getReturnType()));
+    String types = String.format(" : %s > %s", nameOf(rpc.getArgType()), nameOf(rpc.getReturnType()));
     text.append(types, DECORATIONS_STYLER);
     return text;
   }
 
-  private String messageName(MessageLink link) {
+  private Object labelFor(Stream stream) {
+    StyledString text = new StyledString(nameResolver.nameOf(stream));
+    String types = String.format(" (%s, %s)", nameOf(stream.getClientMessage()), nameOf(stream.getServerMessage()));
+    text.append(types, DECORATIONS_STYLER);
+    return text;
+  }
+
+  private String nameOf(MessageLink link) {
     return nameOf(link.getTarget());
   }
 

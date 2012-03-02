@@ -33,7 +33,8 @@ import com.google.inject.Singleton;
   private static final Set<String> IMAGES = newHashSet();
   static {
     addImages(OPTIONAL, REPEATED, REQUIRED);
-    addImages(ENUM, TYPE_EXTENSION, EXTENSIONS, GROUP, IMPORT, LITERAL, MESSAGE, OPTION, PACKAGE, RPC, SERVICE, SYNTAX);
+    addImages(ENUM, TYPE_EXTENSION, EXTENSIONS, GROUP, IMPORT, LITERAL, MESSAGE, OPTION, PACKAGE, RPC, SERVICE, STREAM,
+        SYNTAX);
     addImages("imports", "options");
   }
 

@@ -183,6 +183,64 @@ public class Labels_labelFor_Test {
 
   // syntax = "proto2";
   //
+  // service PersonService {}
+  @Test public void should_return_label_for_service() {
+    Service service = xtext.findFirst(Service.class);
+    Object label = labels.labelFor(service);
+    assertThat(label, instanceOf(String.class));
+    String labelText = (String) label;
+    assertThat(labelText, equalTo("PersonService"));
+  }
+
+  // syntax = "proto2";
+  //
+  // message Person {}
+  //
+  // message Type {}
+  //
+  // service PersonService {
+  //   stream PersonStream (Person, Type);
+  // }
+  @Test public void should_return_label_for_stream() {
+    Stream stream = xtext.findFirst(Stream.class);
+    Object label = labels.labelFor(stream);
+    assertThat(label, instanceOf(StyledString.class));
+    StyledString labelText = (StyledString) label;
+    assertThat(labelText.getString(), equalTo("PersonStream (Person, Type)"));
+  }
+
+  // syntax = "proto2";
+  //
+  // message Type {}
+  //
+  // service PersonService {
+  //   stream PersonStream (Person, Type);
+  // }
+  @Test public void should_return_label_for_stream_with_unresolved_client_message() {
+    Stream stream = xtext.findFirst(Stream.class);
+    Object label = labels.labelFor(stream);
+    assertThat(label, instanceOf(StyledString.class));
+    StyledString labelText = (StyledString) label;
+    assertThat(labelText.getString(), equalTo("PersonStream (<unresolved>, Type)"));
+  }
+
+  // syntax = "proto2";
+  //
+  // message Person {}
+  //
+  // service PersonService {
+  //   stream PersonStream (Person, Type);
+  // }
+  @Test public void should_return_label_for_stream_with_unresolved_server_message() {
+    Stream stream = xtext.findFirst(Stream.class);
+    Object label = labels.labelFor(stream);
+    assertThat(label, instanceOf(StyledString.class));
+    StyledString labelText = (StyledString) label;
+    assertThat(labelText.getString(), equalTo("PersonStream (Person, <unresolved>)"));
+  }
+
+  // syntax = "proto2";
+  //
   // message Person {}
   //
   // extend Person {}

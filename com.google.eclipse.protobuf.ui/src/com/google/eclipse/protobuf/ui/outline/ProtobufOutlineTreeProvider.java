@@ -27,23 +27,14 @@ import com.google.eclipse.protobuf.protobuf.Package;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufOutlineTreeProvider extends DefaultOutlineTreeProvider {
-  private static final ImmutableList<Class<? extends EObject>> IGNORED_ELEMENT_TYPES = of(BooleanLink.class,
-      FieldOption.class, MessageLink.class);
+  private static final ImmutableList<Class<? extends EObject>> IGNORED_ELEMENT_TYPES =
+      of(BooleanLink.class, FieldOption.class, MessageLink.class);
 
-  boolean _isLeaf(Extensions extensions) {
-    return true;
-  }
+  private static final ImmutableList<Class<? extends EObject>> LEAF_TYPES =
+      of(Extensions.class, Import.class, MessageField.class, Option.class, Package.class, Stream.class);
 
-  boolean _isLeaf(MessageField field) {
-    return true;
-  }
-
-  boolean _isLeaf(Option option) {
-    return true;
-  }
-
-  boolean _isLeaf(Package aPackage) {
-    return true;
+  @Override protected boolean _isLeaf(EObject e) {
+    return isInstanceOfAny(e, LEAF_TYPES);
   }
 
   protected void _createChildren(DocumentRootNode parent, Protobuf protobuf) {
@@ -68,16 +59,20 @@ public class ProtobufOutlineTreeProvider extends DefaultOutlineTreeProvider {
     }
   }
 
-  @Override protected void createNode(IOutlineNode parent, EObject modelElement) {
-    if (isIgnored(modelElement)) {
+  @Override protected void createNode(IOutlineNode parent, EObject e) {
+    if (isIgnored(e)) {
       return;
     }
-    super.createNode(parent, modelElement);
+    super.createNode(parent, e);
   }
 
-  private boolean isIgnored(EObject modelElement) {
-    for (Class<? extends EObject> ignoredType : IGNORED_ELEMENT_TYPES) {
-      if (ignoredType.isInstance(modelElement)) {
+  private boolean isIgnored(EObject e) {
+    return isInstanceOfAny(e, IGNORED_ELEMENT_TYPES);
+  }
+
+  private boolean isInstanceOfAny(EObject e, List<Class<? extends EObject>> types) {
+    for (Class<? extends EObject> type : types) {
+      if (type.isInstance(e)) {
         return true;
       }
     }

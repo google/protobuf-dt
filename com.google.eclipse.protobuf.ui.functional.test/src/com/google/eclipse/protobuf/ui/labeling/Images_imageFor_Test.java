@@ -199,6 +199,22 @@ public class Images_imageFor_Test {
   }
 
   // syntax = "proto2";
+  //
+  // message Person {}
+  //
+  // message Type {}
+  //
+  // service PersonService {
+  //   stream PersonStream (Person, Type);
+  // }
+  @Test public void should_return_image_for_stream() {
+    Stream stream = xtext.findFirst(Stream.class);
+    String image = images.imageFor(stream);
+    assertThat(image, equalTo("stream.gif"));
+    assertThat(image, existsInProject());
+  }
+
+  // syntax = "proto2";
   @Test public void should_return_image_for_syntax() {
     Syntax syntax = xtext.findFirst(Syntax.class);
     String image = images.imageFor(syntax);
