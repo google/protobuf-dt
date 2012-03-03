@@ -1,9 +1,8 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2012 Google Inc.
  *
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License v1.0 which accompanies this distribution, and is available at
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
@@ -12,6 +11,7 @@ package com.google.eclipse.protobuf.junit.core;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 import static java.io.File.separator;
+import static java.util.Collections.emptyList;
 
 import java.io.*;
 import java.util.*;
@@ -21,32 +21,26 @@ import org.junit.runners.model.FrameworkMethod;
 import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 
 /**
+ * Reads the comments of test methods.
+ *
  * @author alruiz@google.com (Alex Ruiz)
  */
-class TestSourceReader {
+public class CommentReader {
   private static final String COMMENT_START = "//";
 
-  private final Map<String, List<String>> comments = newHashMap();
-  private final CommentProcessor processor = new CommentProcessor();
-
+  private final Map<String, List<String>> commentsByMethod = newHashMap();
   private boolean initialized;
 
   private final Object lock = new Object();
 
-  String commentsIn(FrameworkMethod method) {
+  public List<String> commentsIn(FrameworkMethod method) {
     synchronized (lock) {
       ensureCommentsAreRead(method.getMethod().getDeclaringClass());
-      List<String> allComments = comments.get(method.getName());
-      if (allComments == null || allComments.isEmpty()) {
-        return null;
+      List<String> comments = commentsByMethod.get(method.getName());
+      if (comments != null) {
+        return comments;
       }
-      for (String comment : allComments) {
-        Object processed = processor.processComment(comment);
-        if (processed instanceof String) {
-          return (String) processed;
-        }
-      }
-      return null;
+      return emptyList();
     }
   }
 
@@ -64,7 +58,7 @@ class TestSourceReader {
     String classFile = fqn + ".java";
     File file = new File("src" + separator + classFile);
     Scanner scanner = null;
-    List<String> allComments = newArrayList();
+    List<String> comments = newArrayList();
     MultiLineTextBuilder comment = new MultiLineTextBuilder();
     try {
       scanner = new Scanner(new FileInputStream(file));
@@ -81,14 +75,14 @@ class TestSourceReader {
         line = line.trim();
         String testName = testName(line);
         if (line.length() == 0 || testName != null) {
-          if (!allComments.contains(comment)) {
-            allComments.add(comment.toString());
+          if (!comments.contains(comment)) {
+            comments.add(comment.toString());
           }
           comment = new MultiLineTextBuilder();
         }
         if (testName != null) {
-          comments.put(testName, allComments);
-          allComments = newArrayList();
+          commentsByMethod.put(testName, comments);
+          comments = newArrayList();
         }
       }
     } catch (IOException e) {

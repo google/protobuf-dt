@@ -34,7 +34,7 @@ public class INodes_isCommentOrString_Test {
   // // This is a test.
   // message Person {}
   @Test public void should_return_true_if_node_belongs_to_single_line_comment() {
-    ILeafNode commentNode = xtext.find("// This is a test.");
+    ILeafNode commentNode = xtext.findNode("// This is a test.");
     assertTrue(nodes.isCommentOrString(commentNode));
   }
 
@@ -43,7 +43,7 @@ public class INodes_isCommentOrString_Test {
   // /* This is a test. */
   // message Person {}
   @Test public void should_return_true_if_node_belongs_to_multiple_line_comment() {
-    ILeafNode commentNode = xtext.find("/* This is a test. */");
+    ILeafNode commentNode = xtext.findNode("/* This is a test. */");
     assertTrue(nodes.isCommentOrString(commentNode));
   }
 
@@ -53,7 +53,7 @@ public class INodes_isCommentOrString_Test {
   //   optional string name = 1 [default = 'Alex'];
   // }
   @Test public void should_return_true_if_node_belongs_to_string() {
-    ILeafNode node = xtext.find("'Alex'");
+    ILeafNode node = xtext.findNode("'Alex'");
     assertTrue(nodes.isCommentOrString(node));
   }
 

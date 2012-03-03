@@ -34,13 +34,21 @@ import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.inject.*;
 
 /**
- * Rule that performs configuration of a standalone Xtext environment.
+ * JUnit <code>{@link MethodRule}</code> that:
+ * <ol>
+ * <li>Performs configuration of a standalone Xtext environment</li>
+ * <li>Creates an <code>{@link XtextResource}</code> from method-level comments</li>
+ * <li>Creates .proto files in the file system based on method-level comments (if the comment starts with
+ * "// Create file" followed by the name of the file to create)</li>
+ * <li>Finds model objects and nodes in the created <code>{@link XtextResource}</code> (from #2)</li>
+ * </ol>
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class XtextRule implements MethodRule {
   private final Injector injector;
-  private final TestSourceReader reader;
+  private final CommentProcessor processor;
+  private final CommentReader reader;
 
   private Protobuf root;
   private XtextResource resource;
@@ -60,13 +68,14 @@ public class XtextRule implements MethodRule {
 
   private XtextRule(Injector injector) {
     this.injector = injector;
-    reader = new TestSourceReader();
+    processor = new CommentProcessor();
+    reader = new CommentReader();
   }
 
   @Override public Statement apply(Statement base, FrameworkMethod method, Object target) {
     injector.injectMembers(target);
     root = null;
-    String comments = reader.commentsIn(method);
+    String comments = commentsIn(method);
     if (!isEmpty(comments)) {
       parseText(comments);
       finder = new Finder(resource.getParseResult().getRootNode(), comments);
@@ -74,8 +83,14 @@ public class XtextRule implements MethodRule {
     return base;
   }
 
-  public Injector injector() {
-    return injector;
+  private String commentsIn(FrameworkMethod method) {
+    for (String comment : reader.commentsIn(method)) {
+      Object processed = processor.processComment(comment);
+      if (processed instanceof String) {
+        return (String) processed;
+      }
+    }
+    return null;
   }
 
   public void parseText(String text) {
@@ -130,6 +145,10 @@ public class XtextRule implements MethodRule {
     return injector.getInstance(type);
   }
 
+  public Injector injector() {
+    return injector;
+  }
+
   public XtextResource resource() {
     return resource;
   }
@@ -150,7 +169,7 @@ public class XtextRule implements MethodRule {
     return finder.find(text, count, type, asList(options));
   }
 
-  public ILeafNode find(String text) {
+  public ILeafNode findNode(String text) {
     return finder.find(text);
   }
 

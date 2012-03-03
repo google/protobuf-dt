@@ -35,7 +35,7 @@ public class INodes_isString_Test {
   //   optional string name = 1 [default = 'Alex'];
   // }
   @Test public void should_return_true_if_node_belongs_to_string() {
-    ILeafNode node = xtext.find("'Alex'");
+    ILeafNode node = xtext.findNode("'Alex'");
     assertTrue(nodes.isString(node));
   }
 

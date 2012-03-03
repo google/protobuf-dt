@@ -34,7 +34,7 @@ public class INodes_isSingleLineComment_Test {
   // // This is a test.
   // message Person {}
   @Test public void should_return_true_if_node_belongs_to_single_line_comment() {
-    ILeafNode commentNode = xtext.find("// This is a test.");
+    ILeafNode commentNode = xtext.findNode("// This is a test.");
     assertTrue(nodes.isSingleLineComment(commentNode));
   }
 

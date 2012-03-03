@@ -17,7 +17,9 @@ import org.eclipse.xtext.formatting.impl.*;
 import com.google.eclipse.protobuf.services.ProtobufGrammarAccess;
 
 /**
- * This class provides custom formatting.
+ * Provides custom formatting.
+ *
+ * @author alruiz@google.com (Alex Ruiz)
  *
  * @see <a href="http://www.eclipse.org/Xtext/documentation/2_0_0/105-formatting.php">Xtext Formatting</a>
  */
@@ -26,9 +28,10 @@ public class ProtobufFormatter extends AbstractDeclarativeFormatter {
     ProtobufGrammarAccess g = (ProtobufGrammarAccess) getGrammarAccess();
     c.setLinewrap(0, 1, 2).before(g.getSL_COMMENTRule());
     c.setLinewrap(1).after(g.getPackageRule());
+    c.setLinewrap(1).after(g.getNormalImportRule());
+    c.setLinewrap(1).after(g.getPublicImportRule());
     c.setLinewrap(1).after(g.getNativeOptionRule());
     c.setLinewrap(1).after(g.getCustomOptionRule());
-    c.setLinewrap(1).after(g.getImportRule());
     c.setLinewrap(1).after(g.getGroupRule());
     c.setLinewrap(1).after(g.getMessageFieldRule());
     c.setLinewrap(1).after(g.getEnumRule());
