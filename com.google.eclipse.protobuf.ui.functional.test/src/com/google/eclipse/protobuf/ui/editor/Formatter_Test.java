@@ -13,6 +13,7 @@ import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEclipseEditor;
 import org.junit.*;
@@ -31,7 +32,7 @@ public class Formatter_Test {
 
   public @Rule CommentReaderRule commentReader = new CommentReaderRule();
 
-  @BeforeClass public static void setUpOnce() throws Exception {
+  @BeforeClass public static void setUpOnce() throws CoreException {
     robot = new ProtobufBot();
     robot.resetAll();
     robot.createGeneralProject("FormatterTest");
@@ -40,11 +41,37 @@ public class Formatter_Test {
     editor.saveAndClose();
   }
 
+  // syntax = 'proto2';import 'google/protobuf/descriptor.proto';
+
+  // syntax = 'proto2';
+  //
+  // import 'google/protobuf/descriptor.proto';
+  @Test public void should_format_syntax() {
+    SWTBotEclipseEditor editor = robot.createFile("formatSyntax.proto");
+    Comments comments = commentsAbove();
+    editor.setText(comments.beforeFormatting);
+    formatAndSave(editor);
+    assertThat(editor.getText(), equalTo(comments.expected));
+  }
+
+  // package com.google.proto.test;import 'google/protobuf/descriptor.proto';
+
+  // package com.google.proto.test;
+  //
+  // import 'google/protobuf/descriptor.proto';
+  @Test public void should_format_package() {
+    SWTBotEclipseEditor editor = robot.createFile("formatPackage.proto");
+    Comments comments = commentsAbove();
+    editor.setText(comments.beforeFormatting);
+    formatAndSave(editor);
+    assertThat(editor.getText(), equalTo(comments.expected));
+  }
+
   // import 'dummy.proto';import 'google/protobuf/descriptor.proto';
 
   // import 'dummy.proto';
   // import 'google/protobuf/descriptor.proto';
-  @Test public void should_add_line_wrap_after_normal_import() throws Exception {
+  @Test public void should_format_normal_import() {
     SWTBotEclipseEditor editor = robot.createFile("formatNormalImport.proto");
     Comments comments = commentsAbove();
     editor.setText(comments.beforeFormatting);
@@ -56,8 +83,32 @@ public class Formatter_Test {
 
   // import public 'dummy.proto';
   // import 'google/protobuf/descriptor.proto';
-  @Test public void should_add_line_wrap_after_public_import() throws Exception {
+  @Test public void should_format_public_import() {
     SWTBotEclipseEditor editor = robot.createFile("formatPublicImport.proto");
+    Comments comments = commentsAbove();
+    editor.setText(comments.beforeFormatting);
+    formatAndSave(editor);
+    assertThat(editor.getText(), equalTo(comments.expected));
+  }
+
+  // import weak 'dummy.proto';import 'google/protobuf/descriptor.proto';
+
+  // import weak 'dummy.proto';
+  // import 'google/protobuf/descriptor.proto';
+  @Test public void should_format_weak_import() {
+    SWTBotEclipseEditor editor = robot.createFile("formatWeakImport.proto");
+    Comments comments = commentsAbove();
+    editor.setText(comments.beforeFormatting);
+    formatAndSave(editor);
+    assertThat(editor.getText(), equalTo(comments.expected));
+  }
+
+  // option java_package = "com.foo.bar";option optimize_for = CODE_SIZE;
+
+  // option java_package = "com.foo.bar";
+  // option optimize_for = CODE_SIZE;
+  @Test public void should_format_native_option() {
+    SWTBotEclipseEditor editor = robot.createFile("formatNativeOption.proto");
     Comments comments = commentsAbove();
     editor.setText(comments.beforeFormatting);
     formatAndSave(editor);

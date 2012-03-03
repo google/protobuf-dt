@@ -27,9 +27,11 @@ public class ProtobufFormatter extends AbstractDeclarativeFormatter {
   @Override protected void configureFormatting(FormattingConfig c) {
     ProtobufGrammarAccess g = (ProtobufGrammarAccess) getGrammarAccess();
     c.setLinewrap(0, 1, 2).before(g.getSL_COMMENTRule());
-    c.setLinewrap(1).after(g.getPackageRule());
+    c.setLinewrap(2).after(g.getSyntaxRule());
+    c.setLinewrap(2).after(g.getPackageRule());
     c.setLinewrap(1).after(g.getNormalImportRule());
     c.setLinewrap(1).after(g.getPublicImportRule());
+    c.setLinewrap(1).after(g.getWeakImportRule());
     c.setLinewrap(1).after(g.getNativeOptionRule());
     c.setLinewrap(1).after(g.getCustomOptionRule());
     c.setLinewrap(1).after(g.getGroupRule());
