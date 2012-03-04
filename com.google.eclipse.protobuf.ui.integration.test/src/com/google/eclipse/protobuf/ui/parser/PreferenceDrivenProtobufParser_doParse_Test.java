@@ -50,14 +50,14 @@ public class PreferenceDrivenProtobufParser_doParse_Test {
   }
 
   @Test public void should_recognize_proto1_syntax() {
-    store.setValue("parser.checkProto2Only", true);
+    store.setValue("misc.googleInternal", true);
     xtext.parseText(proto1);
     Protobuf root = xtext.root();
     assertThat(root, instanceOf(NonProto2Protobuf.class));
   }
 
   @Test public void should_not_recognize_proto1_syntax() {
-    store.setValue("parser.checkProto2Only", false);
+    store.setValue("misc.googleInternal", false);
     xtext.parseText(proto1);
     Protobuf root = xtext.root();
     assertNull(root);

@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Integration tests for com.google.eclipse.protobuf.ui
+Bundle-SymbolicName: com.google.eclipse.protobuf.ui.integration.test
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Google Inc.
+Fragment-Host: com.google.eclipse.protobuf.ui;bundle-version="1.2.3"
+Require-Bundle: org.junit4;bundle-version="4.8.1",
+ org.mockito;bundle-version="1.8.5",
+ org.hamcrest;bundle-version="1.1.0",
+ org.hamcrest.library;bundle-version="1.1.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
