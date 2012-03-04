@@ -32,20 +32,20 @@ public class ProjectVariable_replaceProjectVariableWithProjectName_Test {
     when(project.getName()).thenReturn("test");
     IPath path = new Path("/${project}/src/test");
     IPath newPath = ProjectVariable.replaceProjectVariableWithProjectName(path, project);
-    assertThat(newPath.toOSString(), equalTo("/test/src/test"));
+    assertThat(newPath.toPortableString(), equalTo("/test/src/test"));
   }
 
   @Test public void should_not_use_project_name_if_path_does_not_contain_variable() {
     when(project.getName()).thenReturn("test");
     IPath path = new Path("/main/src/test");
     IPath newPath = ProjectVariable.replaceProjectVariableWithProjectName(path, project);
-    assertThat(newPath.toOSString(), equalTo("/main/src/test"));
+    assertThat(newPath.toPortableString(), equalTo("/main/src/test"));
   }
 
   @Test public void should_not_use_project_name_if_path_already_contains_it() {
     when(project.getName()).thenReturn("test");
     IPath path = new Path("/test/src/test");
     IPath newPath = ProjectVariable.replaceProjectVariableWithProjectName(path, project);
-    assertThat(newPath.toOSString(), equalTo("/test/src/test"));
+    assertThat(newPath.toPortableString(), equalTo("/test/src/test"));
   }
 }

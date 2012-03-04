@@ -44,7 +44,8 @@ public class DirectoryPath {
       isWorkspacePath = true;
       if (project != null) {
         IPath newPath = replaceProjectVariableWithProjectName(new Path(actualPath), project);
-        actualPath = newPath.toOSString();
+        // Issue 204: we'll create an URI from this path. It must not have OS-specific path separators.
+        actualPath = newPath.toPortableString();
       }
     }
     return new DirectoryPath(actualPath, isWorkspacePath);

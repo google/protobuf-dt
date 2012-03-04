@@ -27,15 +27,15 @@ import com.google.inject.Singleton;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class Uris {
-  public static String PLATFORM_RESOURCE_PREFIX = "platform:/resource";
-  public static String FILE_PREFIX = "file:";
-
   /**
    * Indicates whether the resource or file referred by the given URI exists.
-   * @param uri the URI to check.
+   * @param uri the URI to check. It may be {@code null}.
    * @return {@code true} if the resource or file referred by the given URI exists, {@code false} otherwise.
    */
   public boolean referredResourceExists(URI uri) {
+    if (uri == null) {
+      return false;
+    }
     if (uri.isFile()) {
       File file = new File(uri.path());
       return file.exists();
@@ -67,19 +67,19 @@ import com.google.inject.Singleton;
   /**
    * Returns the "prefix" of the given URI as follows:
    * <ul>
-   * <li><code>{@link #PLATFORM_RESOURCE_PREFIX}</code>, if the URI refers to a platform resource</li>
-   * <li><code>{@link #FILE_PREFIX}</code>, if the URI refers to a file</li>
-   * <li>{@code null} otherwise</li>
+   * <li>"platform:/resource", if the URI refers to a platform resource</li>
+   * <li>"file:", if the URI refers to a file</li>
+   * <li>an empty {@code String} otherwise</li>
    * </ul>
    * @param uri the given URI.
    * @return the "prefix" of the given URI.
    */
   public String prefixOf(URI uri) {
     if (uri.isFile()) {
-      return FILE_PREFIX;
+      return "file:";
     }
     if (uri.isPlatformResource()) {
-      return PLATFORM_RESOURCE_PREFIX;
+      return "platform:/resource";
     }
     return "";
   }

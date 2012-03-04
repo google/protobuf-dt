@@ -16,8 +16,11 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
+import java.io.*;
+
 import org.eclipse.emf.common.util.URI;
 import org.junit.*;
+import org.junit.rules.TemporaryFolder;
 
 import com.google.eclipse.protobuf.junit.core.*;
 import com.google.eclipse.protobuf.ui.preferences.StringPreference;
@@ -38,6 +41,7 @@ public class MultipleDirectoriesFileResolverStrategy_resolveUri_Test {
   }
 
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule(), new TestModule());
+  @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
   @Inject private ResourceLocations locations;
   @Inject private Uris uris;
@@ -62,35 +66,30 @@ public class MultipleDirectoriesFileResolverStrategy_resolveUri_Test {
     assertThat(resolved, equalTo(expected));
   }
 
-  @Test public void should_resolve_file_URI() {
-    String expected = "file:/usr/local/project/src/protos/imported.proto";
-    when(directoryPaths.getValue()).thenReturn("/usr/local/project/src/protos");
+  @Test public void should_resolve_file_URI() throws IOException {
+    File file = temporaryFolder.newFile("imported.proto");
+    String expected = file.toURI().toString();
+    when(directoryPaths.getValue()).thenReturn(temporaryFolder.getRoot().toString());
     when(uris.referredResourceExists(URI.createURI(expected))).thenReturn(true);
-    String resolved = resolver.resolveUri("imported.proto", declaringResourceUri, allPreferences);
+    String resolved = resolver.resolveUri(file.getName(), declaringResourceUri, allPreferences);
     assertThat(resolved, equalTo(expected));
   }
 
-  @Test public void should_fall_back_to_file_system_if_platform_resource_URI_cannot_be_resolved() {
-    String expected = "file:/usr/local/project/src/protos/imported.proto";
+  @Test public void should_fall_back_to_file_system_if_platform_resource_URI_cannot_be_resolved() throws IOException {
+    File file = temporaryFolder.newFile("imported.proto");
+    String expected = file.toURI().toString();
     when(directoryPaths.getValue()).thenReturn("${workspace_loc:/src/protos}");
     // try the first time as resource platform
     when(uris.referredResourceExists(URI.createURI("platform:/resource/src/protos/imported.proto"))).thenReturn(false);
     // try again, but in the file system this time
-    when(locations.directoryLocation("/src/protos")).thenReturn("/usr/local/project/src/protos");
+    when(locations.directoryLocation("/src/protos")).thenReturn(temporaryFolder.getRoot().toString());
     when(uris.referredResourceExists(URI.createURI(expected))).thenReturn(true);
-    String resolved = resolver.resolveUri("imported.proto", declaringResourceUri, allPreferences);
+    String resolved = resolver.resolveUri(file.getName(), declaringResourceUri, allPreferences);
     assertThat(resolved, equalTo(expected));
   }
 
-  @Test public void should_return_null_if_platform_resource_URI_cannot_be_resolved() {
+  @Test public void should_return_null_if_URI_cannot_be_resolved() {
     when(directoryPaths.getValue()).thenReturn("${workspace_loc:/src/protos}");
-    when(uris.referredResourceExists(any(URI.class))).thenReturn(false);
-    String resolved = resolver.resolveUri("imported.proto", declaringResourceUri, allPreferences);
-    assertNull(resolved);
-  }
-
-  @Test public void should_return_null_if_file_URI_cannot_be_resolved() {
-    when(directoryPaths.getValue()).thenReturn("/usr/local/project/src/protos");
     when(uris.referredResourceExists(any(URI.class))).thenReturn(false);
     String resolved = resolver.resolveUri("imported.proto", declaringResourceUri, allPreferences);
     assertNull(resolved);
