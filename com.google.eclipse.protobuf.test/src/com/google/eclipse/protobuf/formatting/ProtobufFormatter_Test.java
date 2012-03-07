@@ -36,7 +36,7 @@ public class ProtobufFormatter_Test {
   //
   // import 'google/protobuf/descriptor.proto';
   @Test public void should_format_syntax() {
-    assertThat(formatText(), equalTo(commentReader.expectedText()));
+    assertThatFormattingWorksCorrectly();
   }
 
   // package com.google.proto.test;import 'google/protobuf/descriptor.proto';
@@ -45,7 +45,7 @@ public class ProtobufFormatter_Test {
   //
   // import 'google/protobuf/descriptor.proto';
   @Test public void should_format_package() {
-    assertThat(formatText(), equalTo(commentReader.expectedText()));
+    assertThatFormattingWorksCorrectly();
   }
 
   // import 'dummy.proto';import 'google/protobuf/descriptor.proto';
@@ -53,7 +53,7 @@ public class ProtobufFormatter_Test {
   // import 'dummy.proto';
   // import 'google/protobuf/descriptor.proto';
   @Test public void should_format_normal_import() {
-    assertThat(formatText(), equalTo(commentReader.expectedText()));
+    assertThatFormattingWorksCorrectly();
   }
 
   // import public 'dummy.proto';import 'google/protobuf/descriptor.proto';
@@ -61,7 +61,7 @@ public class ProtobufFormatter_Test {
   // import public 'dummy.proto';
   // import 'google/protobuf/descriptor.proto';
   @Test public void should_format_public_import() {
-    assertThat(formatText(), equalTo(commentReader.expectedText()));
+    assertThatFormattingWorksCorrectly();
   }
 
   // import weak 'dummy.proto';import 'google/protobuf/descriptor.proto';
@@ -69,7 +69,7 @@ public class ProtobufFormatter_Test {
   // import weak 'dummy.proto';
   // import 'google/protobuf/descriptor.proto';
   @Test public void should_format_weak_import() {
-    assertThat(formatText(), equalTo(commentReader.expectedText()));
+    assertThatFormattingWorksCorrectly();
   }
 
   // option java_package = "com.foo.bar";option optimize_for = CODE_SIZE;
@@ -77,12 +77,13 @@ public class ProtobufFormatter_Test {
   // option java_package = "com.foo.bar";
   // option optimize_for = CODE_SIZE;
   @Test public void should_format_native_option() {
-    assertThat(formatText(), equalTo(commentReader.expectedText()));
+    assertThatFormattingWorksCorrectly();
   }
 
-  private String formatText() {
+  private void assertThatFormattingWorksCorrectly() {
     ICompositeNode rootNode = commentReader.rootNode();
     IFormattedRegion region = formatter.format(rootNode, 0, rootNode.getText().length());
-    return region.getFormattedText();
+    String formatted = region.getFormattedText();
+    assertThat(formatted, equalTo(commentReader.expectedText()));
   }
 }
