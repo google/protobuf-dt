@@ -16,6 +16,8 @@ import static com.google.eclipse.protobuf.util.SystemProperties.lineSeparator;
 public class MultiLineTextBuilder {
   private final StringBuilder builder = new StringBuilder();
 
+  private int currentLineCount;
+
   public MultiLineTextBuilder() {}
 
   public MultiLineTextBuilder(String initialContent) {
@@ -23,7 +25,10 @@ public class MultiLineTextBuilder {
   }
 
   public MultiLineTextBuilder append(String s) {
-    builder.append(s).append(lineSeparator());
+    if (currentLineCount++ > 0) {
+      builder.append(lineSeparator());
+    }
+    builder.append(s);
     return this;
   }
 

@@ -18,17 +18,17 @@ import java.util.regex.*;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-class CommentProcessor {
+class FileCreator {
   private static final Pattern CREATE_FILE_PATTERN = compile("// Create file (.*)");
 
-  Object processComment(String comment) {
+  File createFileFrom(String comment) {
     Scanner scanner = new Scanner(comment);
     String fileName = null;
     while (scanner.hasNextLine()) {
       String line = scanner.nextLine();
       Matcher matcher = CREATE_FILE_PATTERN.matcher(line);
       if (!matcher.matches()) {
-        return comment;
+        return null;
       }
       fileName = matcher.group(1);
       break;

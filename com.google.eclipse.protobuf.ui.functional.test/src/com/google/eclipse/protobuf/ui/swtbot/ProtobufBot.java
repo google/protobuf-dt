@@ -10,8 +10,6 @@ package com.google.eclipse.protobuf.ui.swtbot;
 
 import static com.google.eclipse.protobuf.ui.util.Workspaces.workspaceRoot;
 
-import java.util.List;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.*;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
@@ -63,8 +61,7 @@ public class ProtobufBot extends SWTWorkbenchBot {
   }
 
   public void saveAndCloseAllEditors() {
-    List<? extends SWTBotEditor> editors = editors();
-    for (SWTBotEditor editor : editors) {
+    for (SWTBotEditor editor : editors()) {
       editor.saveAndClose();
     }
   }

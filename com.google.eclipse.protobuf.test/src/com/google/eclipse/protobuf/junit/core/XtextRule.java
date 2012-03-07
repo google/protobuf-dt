@@ -9,24 +9,17 @@
  */
 package com.google.eclipse.protobuf.junit.core;
 
-import static com.google.eclipse.protobuf.util.SystemProperties.lineSeparator;
 import static java.util.Arrays.asList;
-import static org.eclipse.emf.common.util.URI.createURI;
-import static org.eclipse.emf.ecore.util.EcoreUtil.resolveAll;
-import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import java.io.*;
+import java.io.File;
 import java.util.List;
 
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.*;
-import org.eclipse.xtext.linking.lazy.LazyLinkingResource;
-import org.eclipse.xtext.nodemodel.*;
+import org.eclipse.xtext.nodemodel.ILeafNode;
 import org.eclipse.xtext.parser.IParseResult;
-import org.eclipse.xtext.resource.*;
-import org.eclipse.xtext.util.StringInputStream;
+import org.eclipse.xtext.resource.XtextResource;
 import org.junit.rules.MethodRule;
 import org.junit.runners.model.*;
 
@@ -47,8 +40,10 @@ import com.google.inject.*;
  */
 public class XtextRule implements MethodRule {
   private final Injector injector;
-  private final CommentProcessor processor;
-  private final CommentReader reader;
+
+  private final CommentReader commentReader;
+  private final FileCreator fileCreator;
+  private final ProtoParser protoParser;
 
   private Protobuf root;
   private XtextResource resource;
@@ -68,8 +63,9 @@ public class XtextRule implements MethodRule {
 
   private XtextRule(Injector injector) {
     this.injector = injector;
-    processor = new CommentProcessor();
-    reader = new CommentReader();
+    commentReader = new CommentReader();
+    fileCreator = new FileCreator();
+    protoParser = new ProtoParser(injector);
   }
 
   @Override public Statement apply(Statement base, FrameworkMethod method, Object target) {
@@ -84,65 +80,22 @@ public class XtextRule implements MethodRule {
   }
 
   private String commentsIn(FrameworkMethod method) {
-    for (String comment : reader.commentsIn(method)) {
-      Object processed = processor.processComment(comment);
-      if (processed instanceof String) {
-        return (String) processed;
+    for (String comment : commentReader.commentsIn(method)) {
+      File protoFile = fileCreator.createFileFrom(comment);
+      if (protoFile == null) {
+        return comment;
       }
     }
     return null;
   }
 
   public void parseText(String text) {
-    boolean ignoreSyntaxErrors = shouldIgnoreSyntaxErrorsIn(text);
-    resource = createResourceFrom(new StringInputStream(text));
-    IParseResult parseResult = resource.getParseResult();
+    IParseResult parseResult = protoParser.parseText(text);
     root = (Protobuf) parseResult.getRootASTElement();
-    if (ignoreSyntaxErrors) {
-      return;
+    if (root.getSyntax() == null) {
+      throw new IllegalStateException("Please specify 'proto2' syntax");
     }
-    if (!parseResult.hasSyntaxErrors()) {
-      if (root.getSyntax() == null) {
-        throw new IllegalStateException("Please specify 'proto2' syntax");
-      }
-      return;
-    }
-    StringBuilder builder = new StringBuilder();
-    builder.append("Syntax errors:");
-    for (INode error : parseResult.getSyntaxErrors()) {
-      builder.append(lineSeparator()).append("- ").append(error.getSyntaxErrorMessage());
-    }
-    throw new IllegalStateException(builder.toString());
-  }
-
-  private boolean shouldIgnoreSyntaxErrorsIn(String text) {
-    return text.startsWith("// ignore errors");
-  }
-
-  private XtextResource createResourceFrom(InputStream input) {
-    return createResourceFrom(input, createURI("file:/usr/local/project/src/protos/mytestmodel.proto"));
-  }
-
-  private XtextResource createResourceFrom(InputStream input, URI uri) {
-    XtextResourceSet resourceSet = getInstanceOf(XtextResourceSet.class);
-    resourceSet.setClasspathURIContext(getClass());
-    XtextResource resource = (XtextResource) getInstanceOf(IResourceFactory.class).createResource(uri);
-    resourceSet.getResources().add(resource);
-    try {
-      resource.load(input, null);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-    if (resource instanceof LazyLinkingResource) {
-      ((LazyLinkingResource) resource).resolveLazyCrossReferences(NullImpl);
-      return resource;
-    }
-    resolveAll(resource);
-    return resource;
-  }
-
-  private <T> T getInstanceOf(Class<T> type) {
-    return injector.getInstance(type);
+    resource = (XtextResource) root.eResource();
   }
 
   public Injector injector() {

@@ -20,7 +20,7 @@ import com.google.inject.util.Modules;
 public class OverrideRuntimeModuleSetup extends ProtobufStandaloneSetup {
   private final Module[] modules;
 
-  OverrideRuntimeModuleSetup(Module[] modules) {
+  public OverrideRuntimeModuleSetup(Module[] modules) {
     this.modules = copyOf(modules, modules.length);
   }
 

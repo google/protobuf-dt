@@ -48,11 +48,11 @@ public class CommentReader {
     if (initialized) {
       return;
     }
-    doReadComments(testClass);
+    readComments(testClass);
     initialized = true;
   }
 
-  private void doReadComments(Class<?> testClass) {
+  private void readComments(Class<?> testClass) {
     String fqn = testClass.getName().replace('.', '/');
     fqn = fqn.indexOf("$") == -1 ? fqn : fqn.substring(0, fqn.indexOf("$"));
     String classFile = fqn + ".java";
