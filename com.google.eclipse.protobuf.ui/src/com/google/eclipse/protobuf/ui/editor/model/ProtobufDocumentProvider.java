@@ -9,11 +9,16 @@
  */
 package com.google.eclipse.protobuf.ui.editor.model;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static com.google.eclipse.protobuf.ui.exception.CoreExceptions.error;
 import static com.google.eclipse.protobuf.util.Encodings.UTF_8;
 import static org.eclipse.core.filebuffers.FileBuffers.getTextFileBufferManager;
 import static org.eclipse.core.filebuffers.LocationKind.*;
 import static org.eclipse.text.undo.DocumentUndoManagerRegistry.getDocumentUndoManager;
+
+import com.google.eclipse.protobuf.ui.preferences.editor.save.core.SaveActionsPreferences;
+import com.google.eclipse.protobuf.ui.util.editor.ChangedLineRegionCalculator;
+import com.google.inject.Inject;
 
 import org.eclipse.core.filebuffers.*;
 import org.eclipse.core.runtime.*;
@@ -25,9 +30,7 @@ import org.eclipse.ui.*;
 import org.eclipse.xtext.ui.editor.model.*;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
-import com.google.eclipse.protobuf.ui.preferences.editor.save.core.SaveActionsPreferences;
-import com.google.eclipse.protobuf.ui.util.editor.ChangedLineRegionCalculator;
-import com.google.inject.Inject;
+import java.util.List;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -36,12 +39,17 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
   private static final IRegion[] NO_CHANGE = new IRegion[0];
 
   @Inject private ChangedLineRegionCalculator calculator;
-  @Inject private DocumentContentsFactoryRegistry documentContentsFactories;
   @Inject private IPreferenceStoreAccess storeAccess;
   @Inject private SaveActions saveActions;
 
+  private final List<DocumentContentsFactory> documentFactories;
+
+  @Inject public ProtobufDocumentProvider(FileStoreDocumentContentsFactory f1, UriDocumentContentsFactory f2) {
+    documentFactories = newArrayList(f1, f2);
+  }
+
   @Override protected ElementInfo createElementInfo(Object element) throws CoreException {
-    if (documentContentsFactories.findFactory(element) != null) {
+    if (findDocumentFactory(element) != null) {
       return createElementInfo((IEditorInput) element);
     }
     return super.createElementInfo(element);
@@ -67,13 +75,24 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
   }
 
   @Override protected IDocument createDocument(Object element) throws CoreException {
-    DocumentContentsFactory factory = documentContentsFactories.findFactory(element);
+    DocumentContentsFactory factory = findDocumentFactory(element);
     if (factory != null) {
       return createDocument(factory, element);
     }
     return super.createDocument(element);
   }
 
+  private DocumentContentsFactory findDocumentFactory(Object element) {
+    if (element instanceof IEditorInput) {
+      IEditorInput input = (IEditorInput) element;
+      for (DocumentContentsFactory factory : documentFactories) {
+        if (factory.supportsEditorInputType(input)) {
+          return factory;
+        }
+      }
+    }
+    return null;
+  }
   private IDocument createDocument(DocumentContentsFactory contentsFactory, Object element) throws CoreException {
     XtextDocument document = createEmptyDocument();
     contentsFactory.createContents(document, element);

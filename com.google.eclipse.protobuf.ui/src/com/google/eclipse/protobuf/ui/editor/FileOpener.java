@@ -10,6 +10,9 @@ package com.google.eclipse.protobuf.ui.editor;
 
 import static com.google.eclipse.protobuf.ui.util.Workbenches.activeWorkbenchPage;
 
+import com.google.eclipse.protobuf.ui.util.Uris;
+import com.google.inject.*;
+
 import org.eclipse.core.filesystem.*;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Path;
@@ -17,9 +20,6 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.ui.*;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
-
-import com.google.eclipse.protobuf.ui.util.Uris;
-import com.google.inject.*;
 
 /**
  * Utility methods related to open file from different type of locations.
@@ -30,24 +30,35 @@ import com.google.inject.*;
   @Inject private Uris uris;
 
   public IEditorPart openProtoFileInWorkspace(URI uri) throws PartInitException {
+    IWorkbenchPage page = activeWorkbenchPage();
+    if (page == null) {
+      return null;
+    }
     IFile file = uris.referredFile(uri);
     IEditorInput editorInput = new FileEditorInput(file);
-    return openFile(editorInput);
+    return openFile(editorInput, page);
   }
 
   public IEditorPart openProtoFileInFileSystem(URI uri) throws PartInitException {
+    IWorkbenchPage page = activeWorkbenchPage();
+    if (page == null) {
+      return null;
+    }
     IFileStore fileStore = EFS.getLocalFileSystem().getStore(new Path(uri.toFileString()));
     IEditorInput editorInput = new FileStoreEditorInput(fileStore);
-    return openFile(editorInput/* "org.eclipse.ui.DefaultTextEditor" */);
+    return openFile(editorInput, page);
   }
 
   public IEditorPart openProtoFileInPlugin(URI uri) throws PartInitException {
+    IWorkbenchPage page = activeWorkbenchPage();
+    if (page == null) {
+      return null;
+    }
     IEditorInput editorInput = new UriEditorInput(uri);
-    return openFile(editorInput);
+    return openFile(editorInput, page);
   }
 
-  private IEditorPart openFile(IEditorInput editorInput) throws PartInitException {
-    IWorkbenchPage page = activeWorkbenchPage();
+  private IEditorPart openFile(IEditorInput editorInput, IWorkbenchPage page) throws PartInitException {
     return page.openEditor(editorInput, "com.google.eclipse.protobuf.Protobuf");
   }
 
