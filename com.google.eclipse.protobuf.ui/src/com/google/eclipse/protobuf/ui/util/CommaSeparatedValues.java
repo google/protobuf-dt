@@ -8,13 +8,15 @@
  */
 package com.google.eclipse.protobuf.ui.util;
 
+import java.util.regex.Pattern;
+
 /**
  * Utility methods related to comma-separated values.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public final class CommaSeparatedValues {
-  private static final String CSV_PATTERN = "[\\s]*,[\\s]*";
+  private static final Pattern CSV_PATTERN = Pattern.compile("[\\s]*,[\\s]*");
 
   /**
    * Splits the given {@code String} containing comma-separated values.
@@ -22,7 +24,7 @@ public final class CommaSeparatedValues {
    * @return an array containing an element per value in the given {@code String}.
    */
   public static String[] splitCsv(String s) {
-    return s.split(CSV_PATTERN);
+    return CSV_PATTERN.split(s);
   }
 
   private CommaSeparatedValues() {}
