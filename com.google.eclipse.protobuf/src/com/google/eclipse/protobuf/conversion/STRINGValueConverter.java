@@ -8,14 +8,14 @@
  */
 package com.google.eclipse.protobuf.conversion;
 
-import static com.google.eclipse.protobuf.util.Strings.unquote;
+import static com.google.eclipse.protobuf.util.Strings.*;
 import static org.eclipse.xtext.util.Strings.convertToJavaString;
-
-import java.util.Scanner;
 
 import org.eclipse.xtext.conversion.ValueConverterException;
 import org.eclipse.xtext.conversion.impl.AbstractLexerBasedConverter;
 import org.eclipse.xtext.nodemodel.INode;
+
+import com.google.common.base.Function;
 
 /**
  * Converts multi-line strings to {@code String}s.
@@ -50,16 +50,18 @@ public class STRINGValueConverter extends AbstractLexerBasedConverter<String> {
   }
 
   private String toValue(String string) {
-    StringBuilder valueBuilder = new StringBuilder();
-    Scanner scanner = new Scanner(string);
-    while (scanner.hasNextLine()) {
-      String line = scanner.nextLine();
-      valueBuilder.append(convertToJavaString(unquote(line.trim()), true));
-    }
-    return valueBuilder.toString();
+    return removeLineBreaks(string, LineTransformation.INSTANCE);
   }
 
   private ValueConverterException parsingError(String string, INode node, Exception cause) {
     return new ValueConverterException("Couldn't convert '" + string + "' to String.", node, cause);
+  }
+
+  private static class LineTransformation implements Function<String, String> {
+    private static final LineTransformation INSTANCE = new LineTransformation();
+
+    @Override public String apply(String input) {
+      return convertToJavaString(unquote(input), true);
+    }
   }
 }

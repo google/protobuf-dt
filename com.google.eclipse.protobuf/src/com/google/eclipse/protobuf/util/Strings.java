@@ -12,6 +12,8 @@ import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import java.util.Scanner;
 
+import com.google.common.base.Function;
+
 /**
  * Utility methods related to {@code String}.s
  *
@@ -58,16 +60,32 @@ public final class Strings {
    * is {@code null}.
    */
   public static String removeLineBreaksFrom(String s) {
+    return removeLineBreaks(s, null);
+  }
+
+  /**
+   * Returns a {@code String} containing the given one without line breaks.
+   * @param s the given {@code String}, may be {@code null}.
+   * @param transformation any modifications to apply to each line in the given {@code String}, may be {@code null}.
+   * @return a {@code String} containing the given one without line breaks, or {@code null} if the given {@code String}
+   * is {@code null}.
+   */
+  public static String removeLineBreaks(String s, Function<String, String> transformation) {
     if (isEmpty(s)) {
       return s;
     }
     StringBuilder valueBuilder = new StringBuilder();
     Scanner scanner = new Scanner(s);
     while (scanner.hasNextLine()) {
-      String line = scanner.nextLine();
-      valueBuilder.append(line.trim());
+      String line = scanner.nextLine().trim();
+      if (transformation != null) {
+        line = transformation.apply(line);
+      }
+      valueBuilder.append(line);
     }
+    scanner.close();
     return valueBuilder.toString();
   }
+
   private Strings() {}
 }
