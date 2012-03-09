@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.naming;
 
+import static com.google.eclipse.protobuf.util.Strings.removeLineBreaksFrom;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import java.util.regex.Pattern;
@@ -15,7 +16,6 @@ import java.util.regex.Pattern;
 import org.eclipse.xtext.naming.IQualifiedNameConverter.DefaultImpl;
 import org.eclipse.xtext.naming.*;
 
-import com.google.eclipse.protobuf.util.Strings;
 import com.google.inject.Singleton;
 
 /**
@@ -39,7 +39,7 @@ import com.google.inject.Singleton;
     if (isEmpty(s)) {
       throw new IllegalArgumentException("Qualified name cannot be null or empty");
     }
-    String withoutLineBreaks = Strings.removeLineBreaksFrom(s);
+    String withoutLineBreaks = removeLineBreaksFrom(s);
     String[] segments = delimiterPattern.split(withoutLineBreaks);
     return QualifiedName.create(segments);
   }

@@ -8,8 +8,10 @@
  */
 package com.google.eclipse.protobuf.conversion;
 
-import static com.google.eclipse.protobuf.util.Strings.*;
+import static com.google.eclipse.protobuf.util.Strings.unquote;
 import static org.eclipse.xtext.util.Strings.convertToJavaString;
+
+import java.util.Scanner;
 
 import org.eclipse.xtext.conversion.ValueConverterException;
 import org.eclipse.xtext.conversion.impl.AbstractLexerBasedConverter;
@@ -26,14 +28,14 @@ public class STRINGValueConverter extends AbstractLexerBasedConverter<String> {
       return null;
     }
     // TODO check if we really need to quote
-    return '"' + convertToJavaString(removeLineBreaksFrom(value), false) + '"';
+    return '"' + toValue(value) + '"';
   }
 
   /**
    * Creates a {@code String} from the given input, if the given input represents a multiple-line string.
    * @param string the given input.
    * @param node the parsed node including hidden parts.
-   * @return the new integer.
+   * @return the new {@code String}.
    * @throws ValueConverterException if the given input has illegal characters.
    */
   @Override public String toValue(String string, INode node) throws ValueConverterException {
@@ -41,10 +43,20 @@ public class STRINGValueConverter extends AbstractLexerBasedConverter<String> {
       return null;
     }
     try {
-      return convertToJavaString(unquote(removeLineBreaksFrom(string).trim()), true);
-    } catch (IllegalArgumentException e) {
+      return toValue(string);
+    } catch (RuntimeException e) {
       throw parsingError(string, node, e);
     }
+  }
+
+  private String toValue(String string) {
+    StringBuilder valueBuilder = new StringBuilder();
+    Scanner scanner = new Scanner(string);
+    while (scanner.hasNextLine()) {
+      String line = scanner.nextLine();
+      valueBuilder.append(convertToJavaString(unquote(line.trim()), true));
+    }
+    return valueBuilder.toString();
   }
 
   private ValueConverterException parsingError(String string, INode node, Exception cause) {

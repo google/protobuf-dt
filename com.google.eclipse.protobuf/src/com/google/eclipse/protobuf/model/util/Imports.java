@@ -9,18 +9,18 @@
 package com.google.eclipse.protobuf.model.util;
 
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
-import static com.google.eclipse.protobuf.util.Strings.*;
-import static org.eclipse.xtext.util.Strings.*;
-
-import com.google.eclipse.protobuf.protobuf.Import;
-import com.google.eclipse.protobuf.resource.ResourceSets;
-import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider;
-import com.google.inject.Inject;
+import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.*;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
+
+import com.google.eclipse.protobuf.conversion.STRINGValueConverter;
+import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.resource.ResourceSets;
+import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider;
+import com.google.inject.Inject;
 
 /**
  * Utility methods related to imports.
@@ -31,6 +31,7 @@ public class Imports {
   @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private INodes nodes;
   @Inject private ResourceSets resourceSets;
+  @Inject private STRINGValueConverter converter;
   @Inject private ImportUriResolver uriResolver;
 
   /**
@@ -81,7 +82,7 @@ public class Imports {
     if (text == null) {
       return null;
     }
-    return convertToJavaString(unquote(removeLineBreaksFrom(text).trim()), true);
+    return converter.toValue(text, node);
   }
 
   /**

@@ -8,22 +8,23 @@
  */
 package com.google.eclipse.protobuf.ui.editor.hyperlinking;
 
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
 import static org.eclipse.emf.common.util.URI.createURI;
-
-import com.google.eclipse.protobuf.model.util.Imports;
-import com.google.eclipse.protobuf.protobuf.Import;
-import com.google.eclipse.protobuf.ui.editor.FileOpener;
-import com.google.inject.Inject;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.hyperlink.*;
 import org.eclipse.xtext.CrossReference;
+import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.resource.*;
 import org.eclipse.xtext.ui.editor.hyperlinking.DefaultHyperlinkDetector;
 import org.eclipse.xtext.ui.editor.model.IXtextDocument;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
+import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.ui.editor.FileOpener;
+import com.google.inject.Inject;
 
 /**
  * Represents an implementation of interface <code>{@link IHyperlinkDetector}</code> to find and convert
@@ -34,6 +35,7 @@ import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 public class ProtobufHyperlinkDetector extends DefaultHyperlinkDetector {
   private static final IHyperlink[] NO_HYPERLINKS = null;
 
+  @Inject private INodes nodes;
   @Inject private EObjectAtOffsetHelper eObjectAtOffsetHelper;
   @Inject private FileOpener fileOpener;
   @Inject private Imports imports;
@@ -63,31 +65,15 @@ public class ProtobufHyperlinkDetector extends DefaultHyperlinkDetector {
         if (!imports.isResolved(anImport)) {
           return NO_HYPERLINKS;
         }
-        String importUri = imports.uriAsEnteredByUser(anImport);
-        if (importUri == null) {
+        INode importUriNode = nodes.firstNodeForFeature(anImport, IMPORT__IMPORT_URI);
+        int importUriLength = importUriNode.getLength();
+        if (importUriLength == 0) {
           return NO_HYPERLINKS;
         }
-        IRegion importUriRegion;
-        try {
-          importUriRegion = importUriRegion(document, region.getOffset(), importUri);
-        } catch (BadLocationException e) {
-          return NO_HYPERLINKS;
-        }
-        if (importUriRegion == null) {
-          return NO_HYPERLINKS;
-        }
+        IRegion importUriRegion = new Region(importUriNode.getOffset(), importUriLength);
         IHyperlink hyperlink = new ImportHyperlink(createURI(anImport.getImportURI()), importUriRegion, fileOpener);
         return new IHyperlink[] { hyperlink };
       }
     });
-  }
-
-  private IRegion importUriRegion(IXtextDocument document, int offset, String importUri) throws BadLocationException {
-    int lineNumber = document.getLineOfOffset(offset);
-    int lineLength = document.getLineLength(lineNumber);
-    int lineOffset = document.getLineOffset(lineNumber);
-    String line = document.get(lineOffset, lineLength);
-    int uriIndex = line.indexOf(importUri);
-    return new Region(lineOffset + uriIndex, importUri.length());
   }
 }

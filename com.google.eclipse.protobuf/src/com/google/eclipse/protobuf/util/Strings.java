@@ -8,10 +8,9 @@
  */
 package com.google.eclipse.protobuf.util;
 
-import static java.util.regex.Pattern.compile;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import java.util.regex.Pattern;
+import java.util.Scanner;
 
 /**
  * Utility methods related to {@code String}.s
@@ -19,8 +18,6 @@ import java.util.regex.Pattern;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public final class Strings {
-  private static final Pattern LINE_BREAK = compile("\"[\t\r\n]+\"|'[\t\r\n]+'");
-
   /**
    * Returns a {@code String} containing the given one in double quotes.
    * @param s the given {@code String}, may be {@code null}.
@@ -64,7 +61,13 @@ public final class Strings {
     if (isEmpty(s)) {
       return s;
     }
-    return LINE_BREAK.matcher(s).replaceAll("");
+    StringBuilder valueBuilder = new StringBuilder();
+    Scanner scanner = new Scanner(s);
+    while (scanner.hasNextLine()) {
+      String line = scanner.nextLine();
+      valueBuilder.append(line.trim());
+    }
+    return valueBuilder.toString();
   }
   private Strings() {}
 }
