@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.exception;
 
+import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.eclipse.protobuf.ui.ProtobufUiModule.PLUGIN_ID;
 import static org.eclipse.core.runtime.IStatus.ERROR;
 
@@ -20,10 +21,7 @@ import org.eclipse.core.runtime.*;
  */
 public final class CoreExceptions {
   public static CoreException error(Throwable cause) {
-    String message = cause.getMessage();
-    if (message == null) {
-      message = "";
-    }
+    String message = nullToEmpty(cause.getMessage());
     return new CoreException(new Status(ERROR, PLUGIN_ID, message, cause));
   }
 

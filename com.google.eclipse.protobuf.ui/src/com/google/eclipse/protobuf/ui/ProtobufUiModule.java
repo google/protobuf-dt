@@ -51,7 +51,7 @@ import org.eclipse.xtext.ui.editor.syntaxcoloring.*;
 import org.eclipse.xtext.ui.validation.IResourceUIValidatorExtension;
 
 /**
- * Use this class to register components to be used within the IDE.
+ * Registers components to be used within the IDE.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
