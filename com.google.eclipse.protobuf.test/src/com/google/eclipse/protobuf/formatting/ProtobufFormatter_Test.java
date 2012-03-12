@@ -10,8 +10,7 @@ package com.google.eclipse.protobuf.formatting;
 
 import static com.google.eclipse.protobuf.formatting.CommentReaderRule.overrideRuntimeModuleWith;
 import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import org.eclipse.xtext.formatting.*;
 import org.eclipse.xtext.formatting.INodeModelFormatter.IFormattedRegion;
@@ -92,11 +91,37 @@ public class ProtobufFormatter_Test {
     assertThatFormattingWorksCorrectly();
   }
 
+  // message Person { optional group address = 1 { optional int32
+  // number = 2; optional string street = 3; } }
+
+  // message Person {
+  //   optional group address = 1 {
+  //     optional int32 number = 2;
+  //     optional string street = 3;
+  //   }
+  // }
+  @Test public void should_format_groups() {
+    assertThatFormattingWorksCorrectly();
+  }
+
+  // message Person {}
+  // service PersonService { rpc PersonRpc (Person) returns (Person); }
+
+  // message Person {
+  // }
+  //
+  // service PersonService {
+  //   rpc PersonRpc ( Person ) returns ( Person );
+  // }
+  @Test public void should_format_service() {
+    assertThatFormattingWorksCorrectly();
+  }
+
   private void assertThatFormattingWorksCorrectly() {
     ICompositeNode rootNode = commentReader.rootNode();
     IFormattedRegion region = formatter.format(rootNode, 0, rootNode.getText().length());
     String formatted = region.getFormattedText();
-    assertThat(formatted, equalTo(commentReader.expectedText()));
+    assertEquals(commentReader.expectedText(), formatted);
   }
 
   private static class TestModule extends AbstractTestModule {

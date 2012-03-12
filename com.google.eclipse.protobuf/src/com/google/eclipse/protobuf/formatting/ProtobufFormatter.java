@@ -34,11 +34,13 @@ public class ProtobufFormatter extends AbstractDeclarativeFormatter {
     c.setLinewrap(1).after(g.getWeakImportRule());
     c.setLinewrap(1).after(g.getNativeOptionRule());
     c.setLinewrap(1).after(g.getCustomOptionRule());
-    c.setLinewrap(1).after(g.getGroupRule());
+    c.setLinewrap(2).after(g.getMessageRule());
     c.setLinewrap(1).after(g.getMessageFieldRule());
-    c.setLinewrap(1).after(g.getEnumRule());
+    c.setLinewrap(1).after(g.getGroupRule());
+    c.setLinewrap(2).after(g.getEnumRule());
     c.setLinewrap(1).after(g.getEnumElementRule());
     c.setLinewrap(1).after(g.getRpcRule());
+    c.setLinewrap(2).after(g.getServiceRule());
     for (Keyword k : g.findKeywords(EQUAL.toString())) {
       c.setSpace(space()).around(k);
     }
@@ -51,7 +53,7 @@ public class ProtobufFormatter extends AbstractDeclarativeFormatter {
     }
     for (Keyword k : g.findKeywords(CLOSING_CURLY_BRACKET.toString())) {
       c.setIndentationDecrement().before(k);
-      c.setLinewrap(2).after(k);
+      c.setLinewrap(1).after(k);
     }
     for (Keyword k : g.findKeywords(OPENING_BRACKET.toString())) {
       c.setNoSpace().after(k);
