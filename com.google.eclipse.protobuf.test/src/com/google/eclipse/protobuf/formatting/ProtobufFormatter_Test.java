@@ -18,6 +18,7 @@ import org.eclipse.xtext.formatting.INodeModelFormatter.IFormattedRegion;
 import org.eclipse.xtext.nodemodel.ICompositeNode;
 import org.junit.*;
 
+import com.google.eclipse.protobuf.junit.core.AbstractTestModule;
 import com.google.inject.Inject;
 
 /**
@@ -26,7 +27,7 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufFormatter_Test {
-  @Rule public CommentReaderRule commentReader = overrideRuntimeModuleWith(unitTestModule());
+  @Rule public CommentReaderRule commentReader = overrideRuntimeModuleWith(unitTestModule(), new TestModule());
 
   @Inject private INodeModelFormatter formatter;
 
@@ -80,10 +81,31 @@ public class ProtobufFormatter_Test {
     assertThatFormattingWorksCorrectly();
   }
 
+  // message Person { optional string name = 1; optional bool active = 2
+  // [default = true]; }
+
+  // message Person {
+  //   optional string name = 1;
+  //   optional bool active = 2 [default = true];
+  // }
+  @Test public void should_format_message_fields() {
+    assertThatFormattingWorksCorrectly();
+  }
+
   private void assertThatFormattingWorksCorrectly() {
     ICompositeNode rootNode = commentReader.rootNode();
     IFormattedRegion region = formatter.format(rootNode, 0, rootNode.getText().length());
     String formatted = region.getFormattedText();
     assertThat(formatted, equalTo(commentReader.expectedText()));
+  }
+
+  private static class TestModule extends AbstractTestModule {
+    @Override protected void configure() {
+      binder().bind(IIndentationInformation.class).toInstance(new IIndentationInformation() {
+        @Override public String getIndentString() {
+          return "  ";
+        }
+      });
+    }
   }
 }

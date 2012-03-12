@@ -27,10 +27,10 @@ import com.google.inject.Injector;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ProtoParser {
+public class ProtobufInTestsParser {
   private final Injector injector;
 
-  public ProtoParser(Injector injector) {
+  public ProtobufInTestsParser(Injector injector) {
     this.injector = injector;
   }
 

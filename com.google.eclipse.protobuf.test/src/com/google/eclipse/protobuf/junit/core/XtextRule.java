@@ -43,7 +43,7 @@ public class XtextRule implements MethodRule {
 
   private final CommentReader commentReader;
   private final FileCreator fileCreator;
-  private final ProtoParser protoParser;
+  private final ProtobufInTestsParser protobufParser;
 
   private Protobuf root;
   private XtextResource resource;
@@ -65,7 +65,7 @@ public class XtextRule implements MethodRule {
     this.injector = injector;
     commentReader = new CommentReader();
     fileCreator = new FileCreator();
-    protoParser = new ProtoParser(injector);
+    protobufParser = new ProtobufInTestsParser(injector);
   }
 
   @Override public Statement apply(Statement base, FrameworkMethod method, Object target) {
@@ -90,12 +90,11 @@ public class XtextRule implements MethodRule {
   }
 
   public void parseText(String text) {
-    IParseResult parseResult = protoParser.parseText(text);
+    IParseResult parseResult = protobufParser.parseText(text);
     root = (Protobuf) parseResult.getRootASTElement();
-    if (root.getSyntax() == null) {
-      throw new IllegalStateException("Please specify 'proto2' syntax");
+    if (root != null) {
+      resource = (XtextResource) root.eResource();
     }
-    resource = (XtextResource) root.eResource();
   }
 
   public Injector injector() {

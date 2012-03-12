@@ -27,7 +27,7 @@ class CommentReaderRule implements MethodRule {
   private final Injector injector;
 
   private final CommentReader commentReader;
-  private final ProtoParser protoParser;
+  private final ProtobufInTestsParser protobufParser;
 
   private ICompositeNode rootNode;
   private String expectedText;
@@ -41,7 +41,7 @@ class CommentReaderRule implements MethodRule {
   private CommentReaderRule(Injector injector) {
     this.injector = injector;
     commentReader = new CommentReader();
-    protoParser = new ProtoParser(injector);
+    protobufParser = new ProtobufInTestsParser(injector);
   }
 
   @Override public Statement apply(Statement base, FrameworkMethod method, Object target) {
@@ -56,7 +56,7 @@ class CommentReaderRule implements MethodRule {
   }
 
   void parseText(String text) {
-    IParseResult parseResult = protoParser.parseText(text);
+    IParseResult parseResult = protobufParser.parseText(text);
     rootNode = parseResult.getRootNode();
   }
 

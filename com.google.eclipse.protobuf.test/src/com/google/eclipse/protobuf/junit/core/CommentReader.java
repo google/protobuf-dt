@@ -66,7 +66,11 @@ public class CommentReader {
       while (scanner.hasNextLine()) {
         line = scanner.nextLine().replaceFirst("^\\s*", "");
         if (line.startsWith(COMMENT_START)) {
-          comment.append(line.substring(COMMENT_START.length()).trim());
+          String text = line.substring(COMMENT_START.length());
+          if (text.startsWith(" ")) {
+            text = text.substring(1);
+          }
+          comment.append(text);
           continue;
         }
         if (comment.isEmpty()) {
