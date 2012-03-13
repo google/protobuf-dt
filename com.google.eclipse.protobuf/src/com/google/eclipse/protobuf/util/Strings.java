@@ -10,9 +10,9 @@ package com.google.eclipse.protobuf.util;
 
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import java.util.Scanner;
-
 import com.google.common.base.Function;
+
+import java.util.Scanner;
 
 /**
  * Utility methods related to {@code String}.s
@@ -76,14 +76,19 @@ public final class Strings {
     }
     StringBuilder valueBuilder = new StringBuilder();
     Scanner scanner = new Scanner(s);
-    while (scanner.hasNextLine()) {
-      String line = scanner.nextLine().trim();
-      if (transformation != null) {
-        line = transformation.apply(line);
+    try {
+      while (scanner.hasNextLine()) {
+        String line = scanner.nextLine().trim();
+        if (transformation != null) {
+          line = transformation.apply(line);
+        }
+        valueBuilder.append(line);
       }
-      valueBuilder.append(line);
+    } finally {
+      try {
+        scanner.close();
+      } catch (RuntimeException ignored) {}
     }
-    scanner.close();
     return valueBuilder.toString();
   }
 

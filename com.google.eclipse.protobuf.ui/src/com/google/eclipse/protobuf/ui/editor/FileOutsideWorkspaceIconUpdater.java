@@ -11,6 +11,8 @@ package com.google.eclipse.protobuf.ui.editor;
 import static org.eclipse.core.runtime.Status.OK_STATUS;
 import static org.eclipse.xtext.ui.editor.Messages.XtextEditorErrorTickUpdater_JobName;
 
+import com.google.inject.Inject;
+
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
@@ -21,19 +23,15 @@ import org.eclipse.xtext.ui.PluginImageHelper;
 import org.eclipse.xtext.ui.editor.IXtextEditorCallback.NullImpl;
 import org.eclipse.xtext.ui.editor.*;
 
-import com.google.inject.Inject;
-
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class FileOutsideWorkspaceIconUpdater extends NullImpl {
   private static final ISchedulingRule SEQUENCE_RULE = SchedulingRuleFactory.INSTANCE.newSequence();
 
-  @Inject
-  private PluginImageHelper imageHelper;
+  @Inject private PluginImageHelper imageHelper;
 
-  @Override
-  public void afterSetInput(XtextEditor editor) {
+  @Override public void afterSetInput(XtextEditor editor) {
     IEditorInput editorInput = editor.getEditorInput();
     IResource resource = (IResource) editorInput.getAdapter(IResource.class);
     if (resource == null) {
@@ -51,8 +49,7 @@ public class FileOutsideWorkspaceIconUpdater extends NullImpl {
       setRule(SEQUENCE_RULE);
     }
 
-    @Override
-    public IStatus runInUIThread(final IProgressMonitor monitor) {
+    @Override public IStatus runInUIThread(final IProgressMonitor monitor) {
       IEditorSite site = null != editor ? editor.getEditorSite() : null;
       if (site != null) {
         if (!monitor.isCanceled() && titleImage != null && !titleImage.isDisposed() && editor != null) {
