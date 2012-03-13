@@ -105,15 +105,59 @@ public class ProtobufFormatter_Test {
   }
 
   // message Person {}
-  // service PersonService { rpc PersonRpc (Person) returns (Person); }
+  // service PersonService {}
 
   // message Person {
   // }
   //
   // service PersonService {
-  //   rpc PersonRpc ( Person ) returns ( Person );
   // }
   @Test public void should_format_service() {
+    assertThatFormattingWorksCorrectly();
+  }
+
+  // message Person {}
+  // service PersonService { rpc PersonRpc ( Person ) returns ( Person ); }
+
+  // message Person {
+  // }
+  //
+  // service PersonService {
+  //   rpc PersonRpc (Person) returns (Person);
+  // }
+  @Test public void should_format_rpc() {
+    assertThatFormattingWorksCorrectly();
+  }
+
+  // message Person {}
+  //
+  // service PersonService { stream PersonStream ( Person,Person ); }
+
+  // message Person {
+  // }
+  //
+  // service PersonService {
+  //   stream PersonStream (Person, Person);
+  // }
+  @Test public void should_format_stream() {
+    assertThatFormattingWorksCorrectly();
+  }
+
+  // syntax = 'proto2';package com.google.protobuf.test;import 'google/protobuf/descriptor.proto';import
+  // public 'address.proto';import weak 'salary.proto';option java_package = "com.foo.bar";option
+  // optimize_for = CODE_SIZE;
+
+  // syntax = 'proto2';
+  //
+  // package com.google.protobuf.test;
+  //
+  // import 'google/protobuf/descriptor.proto';
+  // import public 'address.proto';
+  // import weak 'salary.proto';
+  //
+  // option java_package = "com.foo.bar";
+  // option optimize_for = CODE_SIZE;
+  @Ignore public void should_format() {
     assertThatFormattingWorksCorrectly();
   }
 
