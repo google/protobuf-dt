@@ -170,11 +170,13 @@ public class ProtobufFormatter_Test {
 
   private static class TestModule extends AbstractTestModule {
     @Override protected void configure() {
-      binder().bind(IIndentationInformation.class).toInstance(new IIndentationInformation() {
-        @Override public String getIndentString() {
-          return "  ";
-        }
-      });
+      binder().bind(IIndentationInformation.class).toInstance(new IndentationInformationStub());
+    }
+  }
+
+  private static class IndentationInformationStub implements IIndentationInformation {
+    @Override public String getIndentString() {
+      return "  ";
     }
   }
 }

@@ -55,7 +55,7 @@ class CommentReaderRule implements MethodRule {
     return base;
   }
 
-  void parseText(String text) {
+  private void parseText(String text) {
     IParseResult parseResult = protobufParser.parseText(text);
     rootNode = parseResult.getRootNode();
   }

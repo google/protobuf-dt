@@ -51,6 +51,13 @@ public class ProtobufBot extends SWTWorkbenchBot {
     button("Finish").click();
   }
 
+  public SWTBotEclipseEditor createFileWithText(String name, String text) {
+    SWTBotEclipseEditor file = createFile(name);
+    file.setText(text);
+    file.save();
+    return file;
+  }
+
   public SWTBotEclipseEditor createFile(String name) {
     menu("File").menu("New").menu("File").click();
     SWTBotShell shell = shell("New File");
