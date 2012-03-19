@@ -11,7 +11,8 @@ package com.google.eclipse.protobuf.ui.editor.model;
 import static com.google.common.io.Closeables.closeQuietly;
 import static com.google.eclipse.protobuf.ui.exception.CoreExceptions.error;
 
-import java.io.*;
+import com.google.eclipse.protobuf.ui.resource.XtextResourceFactory;
+import com.google.inject.Inject;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IEditorInput;
@@ -19,20 +20,18 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.model.XtextDocument;
 
-import com.google.eclipse.protobuf.ui.resource.XtextResourceFactory;
-import com.google.inject.Inject;
+import java.io.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 class FileStoreDocumentContentsFactory implements DocumentContentsFactory {
   @Inject private ContentReader contentReader;
-  @Inject private UriEditorInputs files;
   @Inject private XtextResourceFactory resourceFactory;
 
   @Override public void createContents(XtextDocument document, Object element) throws CoreException {
     FileStoreEditorInput input = supportedEditorInputType().cast(element);
-    File file = files.fileFrom(input);
+    File file = new File(input.getURI());
     try {
       String contents = contentsOf(file);
       document.set(contents);
