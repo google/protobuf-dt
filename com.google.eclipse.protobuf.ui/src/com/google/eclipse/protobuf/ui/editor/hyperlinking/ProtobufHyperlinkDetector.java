@@ -9,7 +9,6 @@
 package com.google.eclipse.protobuf.ui.editor.hyperlinking;
 
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
-import static org.eclipse.emf.common.util.URI.createURI;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.text.*;
@@ -23,8 +22,7 @@ import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
 import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.Import;
-import com.google.eclipse.protobuf.ui.editor.FileOpener;
-import com.google.inject.Inject;
+import com.google.inject.*;
 
 /**
  * Represents an implementation of interface <code>{@link IHyperlinkDetector}</code> to find and convert
@@ -37,8 +35,8 @@ public class ProtobufHyperlinkDetector extends DefaultHyperlinkDetector {
 
   @Inject private INodes nodes;
   @Inject private EObjectAtOffsetHelper eObjectAtOffsetHelper;
-  @Inject private FileOpener fileOpener;
   @Inject private Imports imports;
+  @Inject private Provider<ImportHyperlink> importHyperlinkProvider;
 
   @Override public IHyperlink[] detectHyperlinks(ITextViewer textViewer, final IRegion region,
       final boolean canShowMultipleHyperlinks) {
@@ -66,12 +64,11 @@ public class ProtobufHyperlinkDetector extends DefaultHyperlinkDetector {
           return NO_HYPERLINKS;
         }
         INode importUriNode = nodes.firstNodeForFeature(anImport, IMPORT__IMPORT_URI);
-        int importUriLength = importUriNode.getLength();
-        if (importUriLength == 0) {
+        if (importUriNode.getLength() == 0) {
           return NO_HYPERLINKS;
         }
-        IRegion importUriRegion = new Region(importUriNode.getOffset(), importUriLength);
-        IHyperlink hyperlink = new ImportHyperlink(createURI(anImport.getImportURI()), importUriRegion, fileOpener);
+        ImportHyperlink hyperlink = importHyperlinkProvider.get();
+        hyperlink.update(anImport, importUriNode);
         return new IHyperlink[] { hyperlink };
       }
     });

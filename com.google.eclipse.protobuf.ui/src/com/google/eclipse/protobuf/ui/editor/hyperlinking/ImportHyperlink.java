@@ -8,13 +8,18 @@
  */
 package com.google.eclipse.protobuf.ui.editor.hyperlinking;
 
+import static org.eclipse.emf.common.util.URI.createURI;
+
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.xtext.nodemodel.INode;
 
+import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.ui.editor.FileOpener;
+import com.google.inject.Inject;
 
 /**
  * A hyperlink for imported .proto files.
@@ -24,14 +29,14 @@ import com.google.eclipse.protobuf.ui.editor.FileOpener;
 class ImportHyperlink implements IHyperlink {
   private static Logger logger = Logger.getLogger(ImportHyperlink.class);
 
-  private final URI importUri;
-  private final IRegion region;
-  private final FileOpener fileOpener;
+  @Inject private FileOpener fileOpener;
 
-  ImportHyperlink(URI importUri, IRegion region, FileOpener fileOpener) {
-    this.importUri = importUri;
-    this.region = region;
-    this.fileOpener = fileOpener;
+  private URI importUri;
+  private IRegion region;
+
+  void update(Import anImport, INode importUriNode) {
+    importUri = createURI(anImport.getImportURI());
+    region = new Region(importUriNode.getOffset(), importUriNode.getLength());
   }
 
   @Override public void open() {
