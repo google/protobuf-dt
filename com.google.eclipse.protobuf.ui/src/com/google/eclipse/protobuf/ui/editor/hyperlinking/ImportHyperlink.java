@@ -39,6 +39,7 @@ class ImportHyperlink implements IHyperlink {
     region = new Region(importUriNode.getOffset(), importUriNode.getLength());
   }
 
+  // TODO(alruiz): Test
   @Override public void open() {
     try {
       if (importUri.isPlatformResource()) {
