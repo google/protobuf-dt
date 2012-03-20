@@ -17,27 +17,27 @@ import org.eclipse.xtext.util.Strings;
 import org.junit.Test;
 
 /**
- * Tests for <code>{@link AbstractOutputDirectoryProtocOption#segmentsOf(String)}</code>.
+ * Tests for <code>{@link CodeGenerationProtocOption#segmentsOf(String)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class AbstractOutputDirectoryProtocOption_segmentsOf_Test {
   @Test(expected = NullPointerException.class)
   public void should_throw_error_if_path_is_null() {
-    AbstractOutputDirectoryProtocOption.segmentsOf(null);
+    CodeGenerationProtocOption.segmentsOf(null);
   }
 
   @Test public void should_separate_segments_using_system_file_separator() {
     String[] expected = { "folder1" , "folder1_1", "folder1_1_1" };
     String path = pathFrom(expected);
-    String[] segments = AbstractOutputDirectoryProtocOption.segmentsOf(path);
+    String[] segments = CodeGenerationProtocOption.segmentsOf(path);
     assertThat(segments, equalTo(expected));
   }
 
   @Test public void should_separate_segments_for_path_ending_with_system_file_separator() {
     String[] expected = { "folder1" , "folder1_1" };
     String path = pathFrom(expected);
-    String[] segments = AbstractOutputDirectoryProtocOption.segmentsOf(path);
+    String[] segments = CodeGenerationProtocOption.segmentsOf(path);
     assertThat(segments, equalTo(expected));
   }
 

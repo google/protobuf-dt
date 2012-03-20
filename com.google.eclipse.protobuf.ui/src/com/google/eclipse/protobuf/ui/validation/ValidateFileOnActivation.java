@@ -9,7 +9,7 @@
  */
 package com.google.eclipse.protobuf.ui.validation;
 
-import static com.google.eclipse.protobuf.ui.preferences.general.core.GeneralPreferences.generalPreferences;
+import static com.google.eclipse.protobuf.ui.preferences.general.GeneralPreferences.generalPreferences;
 import static com.google.eclipse.protobuf.ui.validation.ProtobufValidation.validate;
 
 import org.eclipse.core.resources.IProject;
@@ -17,8 +17,8 @@ import org.eclipse.ui.*;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.eclipse.protobuf.ui.plugin.ProtobufEditorPlugIn;
-import com.google.eclipse.protobuf.ui.preferences.general.core.GeneralPreferences;
-import com.google.eclipse.protobuf.ui.util.*;
+import com.google.eclipse.protobuf.ui.preferences.general.GeneralPreferences;
+import com.google.eclipse.protobuf.ui.util.Editors;
 
 /**
  * Validates a .proto file when it is opened or activated.
@@ -52,6 +52,6 @@ public class ValidateFileOnActivation extends AbstractPartListener {
   private boolean shouldValidateEditor(IProject project) {
     IPreferenceStoreAccess storeAccess = ProtobufEditorPlugIn.getInstanceOf(IPreferenceStoreAccess.class);
     GeneralPreferences preferences = generalPreferences(storeAccess, project);
-    return preferences.validateFilesOnActivation().getValue();
+    return preferences.shouldValidateFilesOnActivation();
   }
 }

@@ -11,7 +11,7 @@ package com.google.eclipse.protobuf.ui.builder.protoc;
 import static com.google.common.io.Closeables.closeQuietly;
 import static com.google.eclipse.protobuf.ui.builder.protoc.ConsolePrinter.createAndDisplayConsole;
 import static com.google.eclipse.protobuf.ui.exception.CoreExceptions.error;
-import static com.google.eclipse.protobuf.ui.preferences.compiler.core.CompilerPreferences.compilerPreferences;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferences.compilerPreferences;
 import static com.google.eclipse.protobuf.ui.util.Workspaces.workspaceRoot;
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
 
@@ -26,8 +26,8 @@ import org.eclipse.xtext.resource.*;
 import org.eclipse.xtext.resource.IResourceDescription.Delta;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
-import com.google.eclipse.protobuf.ui.preferences.compiler.core.CompilerPreferences;
-import com.google.eclipse.protobuf.ui.preferences.paths.core.PathsPreferences;
+import com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferences;
+import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
 import com.google.eclipse.protobuf.ui.protoc.command.ProtocCommandBuilder;
 import com.google.eclipse.protobuf.ui.protoc.output.*;
 import com.google.inject.Inject;
@@ -48,7 +48,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
     }
     IProject project = context.getBuiltProject();
     CompilerPreferences compilerPreferences = compilerPreferences(storeAccess, project);
-    if (!compilerPreferences.compileProtoFiles().getValue()) {
+    if (!compilerPreferences.shouldCompileProtoFiles()) {
       return;
     }
     PathsPreferences pathsPreferences = new PathsPreferences(storeAccess, project);
@@ -60,9 +60,8 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
       }
       generateSingleProto(commandBuilder.buildCommand(protoFile), protoFile);
     }
-    if (compilerPreferences.refreshResources().getValue()) {
-      boolean refreshProject = compilerPreferences.refreshProject().getValue();
-      refresh(project, commandBuilder.outputDirectories(), refreshProject, monitor);
+    if (compilerPreferences.refreshResources()) {
+      refresh(project, commandBuilder.outputDirectories(), compilerPreferences.refreshProject(), monitor);
     }
   }
 

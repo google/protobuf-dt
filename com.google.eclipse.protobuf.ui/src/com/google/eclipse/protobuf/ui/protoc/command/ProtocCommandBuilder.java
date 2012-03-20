@@ -16,8 +16,8 @@ import java.util.List;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 
-import com.google.eclipse.protobuf.ui.preferences.compiler.core.CompilerPreferences;
-import com.google.eclipse.protobuf.ui.preferences.paths.core.PathsPreferences;
+import com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferences;
+import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
 
 /**
  * Builds the command to call protoc to compile a single .proto file.
@@ -32,12 +32,11 @@ public class ProtocCommandBuilder {
 
   public ProtocCommandBuilder(CompilerPreferences compilerPreferences, PathsPreferences pathsPreferences,
       IProject project) {
-    boolean useProtocInSystemPath = compilerPreferences.useProtocInSystemPath().getValue();
-    protocPath = useProtocInSystemPath ? "protoc" : compilerPreferences.protocPath().getValue();
+    protocPath = compilerPreferences.protocPath();
     options.add(new DescriptorPathProtocOption(compilerPreferences));
-    options.add(new JavaProtocOption(compilerPreferences, project));
-    options.add(new CppProtocOption(compilerPreferences, project));
-    options.add(new PythonProtocOption(compilerPreferences, project));
+    options.add(new CodeGenerationProtocOption("java_out", compilerPreferences.javaCodeGeneration(), project));
+    options.add(new CodeGenerationProtocOption("cpp_out", compilerPreferences.cppCodeGeneration(), project));
+    options.add(new CodeGenerationProtocOption("python_out", compilerPreferences.pythonCodeGeneration(), project));
     importRootsProtocOption = new ImportRootsProtocOption(pathsPreferences, project);
   }
 
@@ -65,8 +64,8 @@ public class ProtocCommandBuilder {
   public List<IFolder> outputDirectories() throws CoreException {
     List<IFolder> outputDirectories = newArrayList();
     for (ProtocOption option : options) {
-      if (option instanceof AbstractOutputDirectoryProtocOption) {
-        AbstractOutputDirectoryProtocOption outputDirectoryProtocOption = (AbstractOutputDirectoryProtocOption) option;
+      if (option instanceof CodeGenerationProtocOption) {
+        CodeGenerationProtocOption outputDirectoryProtocOption = (CodeGenerationProtocOption) option;
         IFolder outputDirectory = outputDirectoryProtocOption.outputDirectory();
         if (outputDirectory != null) {
           outputDirectories.add(outputDirectory);

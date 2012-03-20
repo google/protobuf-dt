@@ -9,27 +9,21 @@
 package com.google.eclipse.protobuf.ui.scoping;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.eclipse.protobuf.ui.util.CommaSeparatedValues.splitCsv;
-import static org.eclipse.core.runtime.IPath.SEPARATOR;
-import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
 
-import com.google.eclipse.protobuf.ui.preferences.paths.core.*;
-import com.google.eclipse.protobuf.ui.util.Uris;
+import com.google.common.base.Function;
+import com.google.eclipse.protobuf.ui.preferences.paths.*;
 import com.google.inject.Inject;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 class MultipleDirectoriesFileResolverStrategy implements FileResolverStrategy {
-  private static final String PATH_SEPARATOR = new String(new char[] { SEPARATOR });
-  
-  @Inject private FileSystemPathResolver pathResolver;
+  @Inject private UriResolver uriResolver;
   @Inject private ResourceLocations locations;
-  @Inject private Uris uris;
 
   @Override
   public String resolveUri(String importUri, URI declaringResourceUri, Iterable<PathsPreferences> allPathPreferences) {
@@ -42,70 +36,27 @@ class MultipleDirectoriesFileResolverStrategy implements FileResolverStrategy {
     return null;
   }
 
-  private String resolveUri(String importUri, URI declaringResourceUri, PathsPreferences preferences) {
-    String directoryPaths = preferences.directoryPaths().getValue();
-    List<String> unresolvedWorkspacePaths = newArrayList();
-    for (String importRoot : splitCsv(directoryPaths)) {
-      DirectoryPath path = DirectoryPath.parse(importRoot, preferences.getProject());
-      String resolved = resolveUri(importUri, path);
-      if (resolved != null) {
-        return resolved;
+  private String resolveUri(final String importUri, URI declaringResourceUri, PathsPreferences preferences) {
+    final List<String> unresolvedWorkspacePaths = newArrayList();
+    String resolved = preferences.applyToEachDirectoryPath(new Function<DirectoryPath, String>() {
+      @Override public String apply(DirectoryPath path) {
+        String uri = uriResolver.resolveUri(importUri, path);
+        if (uri == null && path.isWorkspacePath()) {
+          unresolvedWorkspacePaths.add(path.value());
+        }
+        return uri;
       }
-      if (path.isWorkspacePath()) {
-        unresolvedWorkspacePaths.add(path.value());
-      }
+    });
+    if (resolved != null) {
+      return resolved;
     }
     for (String root : unresolvedWorkspacePaths) {
       String directoryLocation = locations.directoryLocation(root);
-      String resolved = resolveUriInFileSystem(importUri, directoryLocation);
-      if (resolved != null) {
-        return resolved;
+      String uri = uriResolver.resolveUriInFileSystem(importUri, directoryLocation);
+      if (uri != null) {
+        return uri;
       }
     }
     return null;
-  }
-
-  private String resolveUri(String importUri, DirectoryPath importRootPath) {
-    URI uri = uri(importUri, importRootPath.value(), importRootPath.isWorkspacePath());
-    return resolveUri(uri);
-  }
-
-  private String resolveUriInFileSystem(String importUri, String importRootPath) {
-    URI uri = fileUri(importUri, importRootPath);
-    return resolveUri(uri);
-  }
-
-  private URI uri(String importUri, String importRootPath, boolean isWorkspacePath) {
-    if (isWorkspacePath) {
-      return platformResourceUri(importUri, importRootPath);
-    }
-    return fileUri(importUri, importRootPath);
-  }
-  
-  private URI platformResourceUri(String importUri, String importRootPath) {
-    String path = buildUriPath(importUri, importRootPath);
-    return URI.createPlatformResourceURI(path, true);
-  }
-  
-  private URI fileUri(String importUri, String importRootPath) {
-    String resolvedImportRootPath = pathResolver.resolvePath(importRootPath);
-    if (isEmpty(resolvedImportRootPath)) {
-      return null;
-    }
-    String path = buildUriPath(importUri, resolvedImportRootPath);
-    return URI.createFileURI(path);
-  }
-  
-  private String buildUriPath(String importUri, String importRootPath) {
-    StringBuilder pathBuilder = new StringBuilder().append(importRootPath);
-    if (!importRootPath.endsWith(PATH_SEPARATOR)) {
-      pathBuilder.append(PATH_SEPARATOR);
-    }
-    pathBuilder.append(importUri);
-    return pathBuilder.toString();
-  }
-
-  private String resolveUri(URI uri) {
-    return (uris.referredResourceExists(uri)) ? uri.toString() : null;
   }
 }

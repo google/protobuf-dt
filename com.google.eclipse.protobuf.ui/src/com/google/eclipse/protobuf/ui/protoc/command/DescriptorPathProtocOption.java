@@ -13,7 +13,7 @@ import static java.io.File.separator;
 import static org.eclipse.xtext.util.Strings.*;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.eclipse.protobuf.ui.preferences.compiler.core.CompilerPreferences;
+import com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferences;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -45,7 +45,7 @@ class DescriptorPathProtocOption implements ProtocOption {
 
   private void initialize() {
     initialized = true;
-    String fullPath = preferences.descriptorPath().getValue();
+    String fullPath = preferences.descriptorPath();
     if (!isEmpty(fullPath)) {
       int indexOfDescriptorFqn = fullPath.indexOf(descriptorFqn);
       if (indexOfDescriptorFqn == -1) {

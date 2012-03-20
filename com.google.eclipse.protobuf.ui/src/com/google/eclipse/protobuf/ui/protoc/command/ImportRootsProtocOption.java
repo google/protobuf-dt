@@ -9,8 +9,6 @@
 package com.google.eclipse.protobuf.ui.protoc.command;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.eclipse.protobuf.ui.preferences.paths.core.DirectoryPath.parse;
-import static com.google.eclipse.protobuf.ui.util.CommaSeparatedValues.splitCsv;
 import static java.util.Collections.emptyList;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
@@ -19,7 +17,8 @@ import java.util.List;
 
 import org.eclipse.core.resources.*;
 
-import com.google.eclipse.protobuf.ui.preferences.paths.core.*;
+import com.google.common.base.Function;
+import com.google.eclipse.protobuf.ui.preferences.paths.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -51,19 +50,20 @@ class ImportRootsProtocOption {
 
   private void initialize() {
     initialized = true;
-    if (!preferences.filesInMultipleDirectories().getValue()) {
+    if (!preferences.areFilesInMultipleDirectories()) {
       importRoots =  emptyList();
       return;
     }
     importRoots = newArrayList();
-    String directoryPaths = preferences.directoryPaths().getValue();
-    for (String importRoot : splitCsv(directoryPaths)) {
-      DirectoryPath path = parse(importRoot, project);
-      String location = path.absolutePathInFileSystem();
-      if (!isEmpty(location)) {
-        importRoots.add(location);
+    preferences.applyToEachDirectoryPath(new Function<DirectoryPath, Void>() {
+      @Override public Void apply(DirectoryPath path) {
+        String location = path.absolutePathInFileSystem();
+        if (!isEmpty(location)) {
+          importRoots.add(location);
+        }
+        return null;
       }
-    }
+    });
   }
 
   private String singleImportRoot(IFile protoFile) {

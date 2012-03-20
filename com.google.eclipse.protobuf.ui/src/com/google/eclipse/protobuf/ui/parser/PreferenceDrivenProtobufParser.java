@@ -8,16 +8,16 @@
  */
 package com.google.eclipse.protobuf.ui.parser;
 
-import com.google.eclipse.protobuf.parser.NonProto2Protobuf;
-import com.google.eclipse.protobuf.parser.antlr.ProtobufParser;
-import com.google.eclipse.protobuf.protobuf.Protobuf;
-import com.google.eclipse.protobuf.ui.preferences.misc.core.MiscellaneousPreferences;
-import com.google.inject.Inject;
-
 import org.antlr.runtime.CharStream;
 import org.eclipse.xtext.nodemodel.impl.NodeModelBuilder;
 import org.eclipse.xtext.parser.*;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
+
+import com.google.eclipse.protobuf.parser.NonProto2Protobuf;
+import com.google.eclipse.protobuf.parser.antlr.ProtobufParser;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.eclipse.protobuf.ui.preferences.misc.MiscellaneousPreferences;
+import com.google.inject.Inject;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -29,7 +29,7 @@ public class PreferenceDrivenProtobufParser extends ProtobufParser {
       int initialLookAhead) {
     IParseResult result = super.doParse(ruleName, in, builder, initialLookAhead);
     MiscellaneousPreferences preferences = new MiscellaneousPreferences(storeAccess);
-    if (preferences.isGoogleInternal().getValue() && isNotProto2(result)) {
+    if (preferences.isGoogleInternal() && isNotProto2(result)) {
       return new ParseResult(new NonProto2Protobuf(), result.getRootNode(), false);
     }
     return result;

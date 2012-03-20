@@ -15,6 +15,8 @@ import static org.mockito.Mockito.*;
 import org.eclipse.core.resources.IProject;
 import org.junit.*;
 
+import com.google.eclipse.protobuf.ui.preferences.paths.DirectoryPath;
+
 /**
  * Tests for <code>{@link DirectoryPath#parse(String, IProject)}</code>
  *

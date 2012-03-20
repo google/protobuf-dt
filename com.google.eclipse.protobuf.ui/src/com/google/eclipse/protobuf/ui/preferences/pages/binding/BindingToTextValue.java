@@ -8,71 +8,49 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages.binding;
 
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Text;
 
-import com.google.eclipse.protobuf.ui.preferences.StringPreference;
 
 /**
- * Binds a {@code String} value from a <code>{@link IPreferenceStore}</code> to the value of a
- * <code>{@link Text}</code>.
- *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class BindingToTextValue implements Binding {
   private final Text text;
-  private final StringPreference preference;
+  private final Preference<String> preference;
 
   public static BindingBuilder bindTextOf(Text text) {
     return new BindingBuilder(text);
   }
 
-  /**
-   * Creates a new </code>{@link BindingToTextValue}</code>.
-   * @param text the control to bind to the preference.
-   * @param preference the given preference.
-   */
-  private BindingToTextValue(Text text, StringPreference preference) {
+  private BindingToTextValue(Text text, Preference<String> preference) {
     this.text = text;
     this.preference = preference;
   }
 
-  /** {@inheritDoc} */
   @Override public void applyPreferenceValueToTarget() {
-    apply(preference.getValue());
+    apply(preference.value());
   }
 
-  /** {@inheritDoc} */
   @Override public void applyDefaultPreferenceValueToTarget() {
-    apply(preference.getDefaultValue());
+    apply(preference.defaultValue());
   }
 
   private void apply(String value) {
     text.setText(value);
   }
 
-  /** {@inheritDoc} */
   @Override public void savePreferenceValue() {
-    preference.setValue(text.getText());
+    preference.updateValue(text.getText());
   }
 
   public static class BindingBuilder {
     private final Text text;
 
-    /**
-     * Creates a new </code>{@link BindingBuilder}</code>.
-     * @param text the text whose value will be bound to a preference value.
-     */
-    public BindingBuilder(Text text) {
+    BindingBuilder(Text text) {
       this.text = text;
     }
 
-    /**
-     * Creates a new <code>{@link BindingToTextValue}</code>.
-     * @param preference the preference to bind to the value of this builder's text.
-     * @return the created binding.
-     */
-    public BindingToTextValue to(StringPreference preference) {
+    public BindingToTextValue to(Preference<String> preference) {
       return new BindingToTextValue(text, preference);
     }
   }

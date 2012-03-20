@@ -8,47 +8,36 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages.binding;
 
-import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.ImmutableList.copyOf;
 
 import java.util.Collection;
 
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.List;
 
-import com.google.eclipse.protobuf.ui.preferences.StringListPreference;
+import com.google.common.collect.ImmutableList;
 
 /**
- * Binds a {@code String} value from a <code>{@link IPreferenceStore}</code> to a list of items of a
- * <code>{@link List}</code>.
- *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class BindingToListItems implements Binding {
   private final List list;
-  private final StringListPreference preference;
+  private final Preference<ImmutableList<String>> preference;
 
   public static BindingBuilder bindItemsOf(List list) {
     return new BindingBuilder(list);
   }
 
-  /**
-   * Creates a new </code>{@link BindingToListItems}</code>.
-   * @param list the control to bind to the preference.
-   * @param preference the given preference.
-   */
-  private BindingToListItems(List list, StringListPreference preference) {
+  private BindingToListItems(List list, Preference<ImmutableList<String>> preference) {
     this.list = list;
     this.preference = preference;
   }
 
-  /** {@inheritDoc} */
   @Override public void applyPreferenceValueToTarget() {
-    apply(preference.getValue());
+    apply(preference.value());
   }
 
-  /** {@inheritDoc} */
   @Override public void applyDefaultPreferenceValueToTarget() {
-    apply(preference.getDefaultValue());
+    apply(preference.defaultValue());
   }
 
   private void apply(Collection<String> value) {
@@ -58,28 +47,18 @@ public class BindingToListItems implements Binding {
     }
   }
 
-  /** {@inheritDoc} */
   @Override public void savePreferenceValue() {
-    preference.setValue(newArrayList(list.getItems()));
+    preference.updateValue(copyOf(list.getItems()));
   }
 
   public static class BindingBuilder {
     private final List list;
 
-    /**
-     * Creates a new </code>{@link BindingBuilder}</code>.
-     * @param list the list whose items will be bound to a preference value.
-     */
-    public BindingBuilder(List list) {
+    BindingBuilder(List list) {
       this.list = list;
     }
 
-    /**
-     * Creates a new <code>{@link BindingToListItems}</code>.
-     * @param preference the preference to bind to the value of this builder's list.
-     * @return the created binding.
-     */
-    public BindingToListItems to(StringListPreference preference) {
+    public BindingToListItems to(Preference<ImmutableList<String>> preference) {
       return new BindingToListItems(list, preference);
     }
   }

@@ -12,28 +12,6 @@ import static com.google.eclipse.protobuf.ui.util.Workbenches.activeWorkbenchWin
 import static com.google.inject.name.Names.named;
 import static org.eclipse.ui.PlatformUI.isWorkbenchRunning;
 
-import com.google.eclipse.protobuf.scoping.IFileUriResolver;
-import com.google.eclipse.protobuf.ui.builder.nature.AutoAddNatureEditorCallback;
-import com.google.eclipse.protobuf.ui.documentation.ProtobufDocumentationProvider;
-import com.google.eclipse.protobuf.ui.editor.*;
-import com.google.eclipse.protobuf.ui.editor.hyperlinking.ProtobufHyperlinkDetector;
-import com.google.eclipse.protobuf.ui.editor.model.ProtobufDocumentProvider;
-import com.google.eclipse.protobuf.ui.editor.spelling.ProtobufReconciler;
-import com.google.eclipse.protobuf.ui.editor.syntaxcoloring.*;
-import com.google.eclipse.protobuf.ui.internal.ProtobufActivator;
-import com.google.eclipse.protobuf.ui.outline.*;
-import com.google.eclipse.protobuf.ui.parser.PreferenceDrivenProtobufParser;
-import com.google.eclipse.protobuf.ui.preferences.compiler.core.CompilerPreferenceStoreInitializer;
-import com.google.eclipse.protobuf.ui.preferences.editor.numerictag.core.NumericTagPreferenceStoreInitializer;
-import com.google.eclipse.protobuf.ui.preferences.editor.save.core.SaveActionsPreferenceStoreInitializer;
-import com.google.eclipse.protobuf.ui.preferences.general.core.GeneralPreferenceStoreInitializer;
-import com.google.eclipse.protobuf.ui.preferences.misc.core.MiscellaneousPreferenceStoreInitializer;
-import com.google.eclipse.protobuf.ui.preferences.paths.core.PathsPreferenceStoreInitializer;
-import com.google.eclipse.protobuf.ui.quickfix.ProtobufQuickAssistProcessor;
-import com.google.eclipse.protobuf.ui.scoping.FileUriResolver;
-import com.google.eclipse.protobuf.ui.validation.*;
-import com.google.inject.Binder;
-
 import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -49,6 +27,28 @@ import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
 import org.eclipse.xtext.ui.editor.quickfix.XtextQuickAssistProcessor;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.*;
 import org.eclipse.xtext.ui.validation.IResourceUIValidatorExtension;
+
+import com.google.eclipse.protobuf.scoping.IFileUriResolver;
+import com.google.eclipse.protobuf.ui.builder.nature.AutoAddNatureEditorCallback;
+import com.google.eclipse.protobuf.ui.documentation.ProtobufDocumentationProvider;
+import com.google.eclipse.protobuf.ui.editor.*;
+import com.google.eclipse.protobuf.ui.editor.hyperlinking.ProtobufHyperlinkDetector;
+import com.google.eclipse.protobuf.ui.editor.model.ProtobufDocumentProvider;
+import com.google.eclipse.protobuf.ui.editor.spelling.ProtobufReconciler;
+import com.google.eclipse.protobuf.ui.editor.syntaxcoloring.*;
+import com.google.eclipse.protobuf.ui.internal.ProtobufActivator;
+import com.google.eclipse.protobuf.ui.outline.*;
+import com.google.eclipse.protobuf.ui.parser.PreferenceDrivenProtobufParser;
+import com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferences;
+import com.google.eclipse.protobuf.ui.preferences.editor.numerictag.NumericTagPreferences;
+import com.google.eclipse.protobuf.ui.preferences.editor.save.SaveActionsPreferences;
+import com.google.eclipse.protobuf.ui.preferences.general.GeneralPreferences;
+import com.google.eclipse.protobuf.ui.preferences.misc.MiscellaneousPreferences;
+import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
+import com.google.eclipse.protobuf.ui.quickfix.ProtobufQuickAssistProcessor;
+import com.google.eclipse.protobuf.ui.scoping.FileUriResolver;
+import com.google.eclipse.protobuf.ui.validation.*;
+import com.google.inject.Binder;
 
 /**
  * Registers components to be used within the IDE.
@@ -127,12 +127,12 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
   }
 
   public void configurePreferencesInitializers(Binder binder) {
-    configurePreferenceInitializer(binder, "compilerPreferences", CompilerPreferenceStoreInitializer.class);
-    configurePreferenceInitializer(binder, "generalPreferences", GeneralPreferenceStoreInitializer.class);
-    configurePreferenceInitializer(binder, "numericTagPreferences", NumericTagPreferenceStoreInitializer.class);
-    configurePreferenceInitializer(binder, "parserChecksPreferences", MiscellaneousPreferenceStoreInitializer.class);
-    configurePreferenceInitializer(binder, "pathsPreferences", PathsPreferenceStoreInitializer.class);
-    configurePreferenceInitializer(binder, "saveActionsPreferences", SaveActionsPreferenceStoreInitializer.class);
+    configurePreferenceInitializer(binder, "compilerPreferences", CompilerPreferences.Initializer.class);
+    configurePreferenceInitializer(binder, "generalPreferences", GeneralPreferences.Initializer.class);
+    configurePreferenceInitializer(binder, "numericTagPreferences", NumericTagPreferences.Initializer.class);
+    configurePreferenceInitializer(binder, "miscellaneousPreferences", MiscellaneousPreferences.Initializer.class);
+    configurePreferenceInitializer(binder, "pathsPreferences", PathsPreferences.Initializer.class);
+    configurePreferenceInitializer(binder, "saveActionsPreferences", SaveActionsPreferences.Initializer.class);
   }
 
   private void configurePreferenceInitializer(Binder binder, String name,

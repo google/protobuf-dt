@@ -33,7 +33,7 @@ import com.google.eclipse.protobuf.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.model.util.*;
 import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.ui.commands.SmartInsertHandler;
-import com.google.eclipse.protobuf.ui.preferences.editor.numerictag.core.NumericTagPreferences;
+import com.google.eclipse.protobuf.ui.preferences.editor.numerictag.NumericTagPreferences;
 import com.google.inject.Inject;
 
 /**
@@ -142,7 +142,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
       return;
     }
     NumericTagPreferences preferences = new NumericTagPreferences(storeAccess);
-    for (String pattern : preferences.patterns().getValue()) {
+    for (String pattern : preferences.patterns()) {
       Pair<INode, Matcher> match = commentNodesFinder.matchingCommentNode(parent, pattern);
       if (match == null) {
         return;

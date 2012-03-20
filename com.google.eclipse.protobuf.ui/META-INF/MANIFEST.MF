@@ -29,6 +29,6 @@ Export-Package: com.google.eclipse.protobuf.ui.contentassist,
  com.google.eclipse.protobuf.ui.editor,
  com.google.eclipse.protobuf.ui.plugin,
  com.google.eclipse.protobuf.ui.preferences,
- com.google.eclipse.protobuf.ui.preferences.compiler.core,
+ com.google.eclipse.protobuf.ui.preferences.compiler,
  com.google.eclipse.protobuf.ui.util
 Bundle-Activator: com.google.eclipse.protobuf.ui.internal.ProtobufActivator

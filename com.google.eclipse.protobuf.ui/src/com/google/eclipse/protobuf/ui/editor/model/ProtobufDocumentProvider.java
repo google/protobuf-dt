@@ -16,9 +16,7 @@ import static org.eclipse.core.filebuffers.FileBuffers.getTextFileBufferManager;
 import static org.eclipse.core.filebuffers.LocationKind.*;
 import static org.eclipse.text.undo.DocumentUndoManagerRegistry.getDocumentUndoManager;
 
-import com.google.eclipse.protobuf.ui.preferences.editor.save.core.SaveActionsPreferences;
-import com.google.eclipse.protobuf.ui.util.editor.ChangedLineRegionCalculator;
-import com.google.inject.Inject;
+import java.util.List;
 
 import org.eclipse.core.filebuffers.*;
 import org.eclipse.core.runtime.*;
@@ -30,7 +28,9 @@ import org.eclipse.ui.*;
 import org.eclipse.xtext.ui.editor.model.*;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
-import java.util.List;
+import com.google.eclipse.protobuf.ui.preferences.editor.save.SaveActionsPreferences;
+import com.google.eclipse.protobuf.ui.util.editor.ChangedLineRegionCalculator;
+import com.google.inject.Inject;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -127,13 +127,13 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
   private IRegion[] changedRegions(IProgressMonitor monitor, IFileEditorInput editorInput, IDocument document)
       throws CoreException {
     SaveActionsPreferences preferences = new SaveActionsPreferences(storeAccess);
-    if (!preferences.removeTrailingWhitespace().getValue()) {
+    if (!preferences.shouldRemoveTrailingWhitespace()) {
       return NO_CHANGE;
     }
-    if (preferences.inEditedLines().getValue()) {
-      return calculator.calculateChangedLineRegions(textFileBuffer(monitor, editorInput), document, monitor);
+    if (preferences.shouldRemoveTrailingWhitespaceInAllLines()) {
+      return new IRegion[] { new Region(0, document.getLength()) };
     }
-    return new IRegion[] { new Region(0, document.getLength()) };
+    return calculator.calculateChangedLineRegions(textFileBuffer(monitor, editorInput), document, monitor);
   }
 
   private ITextFileBuffer textFileBuffer(IProgressMonitor monitor, IFileEditorInput editorInput) throws CoreException {

@@ -23,7 +23,7 @@ import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 import com.google.eclipse.protobuf.model.util.Imports;
 import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.scoping.*;
-import com.google.eclipse.protobuf.ui.preferences.paths.core.PathsPreferences;
+import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
 import com.google.eclipse.protobuf.ui.util.Uris;
 import com.google.inject.Inject;
 
@@ -77,7 +77,7 @@ public class FileUriResolver implements IFileUriResolver {
       return resolver.resolveUri(importUri, resourceUri, preferencesFromAllProjects());
     }
     PathsPreferences preferences = new PathsPreferences(storeAccess, project);
-    if (preferences.filesInOneDirectoryOnly().getValue()) {
+    if (!preferences.areFilesInMultipleDirectories()) {
       resolver = singleDirectory;
     }
     return resolver.resolveUri(importUri, resourceUri, singletonList(preferences));

@@ -13,19 +13,19 @@ import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeMo
 import static java.util.Collections.singletonList;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.io.*;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 
 import com.google.eclipse.protobuf.junit.core.*;
-import com.google.eclipse.protobuf.ui.preferences.StringPreference;
-import com.google.eclipse.protobuf.ui.preferences.paths.core.PathsPreferences;
-import com.google.eclipse.protobuf.ui.util.Uris;
+import com.google.eclipse.protobuf.ui.preferences.paths.*;
 import com.google.inject.Inject;
 
 /**
@@ -44,60 +44,67 @@ public class MultipleDirectoriesFileResolverStrategy_resolveUri_Test {
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
   @Inject private ResourceLocations locations;
-  @Inject private Uris uris;
-  @Inject private MultipleDirectoriesFileResolverStrategy resolver;
+  @Inject private UriResolver uriResolver;
 
-  private StringPreference directoryPaths;
+  @Inject private MultipleDirectoriesFileResolverStrategy strategy;
+
+  private IPreferenceStore store;
   private PathsPreferences preferences;
   private Iterable<PathsPreferences> allPreferences;
 
   @Before public void setUp() {
-    directoryPaths = mock(StringPreference.class);
-    preferences = mock(PathsPreferences.class);
+    IPreferenceStoreAccess storeAccess = mock(IPreferenceStoreAccess.class);
+    store = mock(IPreferenceStore.class);
+    when(storeAccess.getWritablePreferenceStore(null)).thenReturn(store);
+    preferences = new PathsPreferences(storeAccess , null);
     allPreferences = singletonList(preferences);
-    when(preferences.directoryPaths()).thenReturn(directoryPaths);
   }
 
   @Test public void should_resolve_platform_resource_URI() {
-    String expected = "platform:/resource/src/protos/imported.proto";
-    when(directoryPaths.getValue()).thenReturn("${workspace_loc:/src/protos}");
-    when(uris.referredResourceExists(URI.createURI(expected))).thenReturn(true);
-    String resolved = resolver.resolveUri("imported.proto", declaringResourceUri, allPreferences);
+    String importUri = "imported.proto";
+    String expected = "platform:/resource/src/protos/" + importUri;
+    when(store.getString("paths.directoryPaths")).thenReturn("${workspace_loc:/src/protos}");
+    when(uriResolver.resolveUri(eq(importUri), any(DirectoryPath.class))).thenReturn(expected);
+    String resolved = strategy.resolveUri(importUri, declaringResourceUri, allPreferences);
     assertThat(resolved, equalTo(expected));
   }
 
   @Test public void should_resolve_file_URI() throws IOException {
-    File file = temporaryFolder.newFile("imported.proto");
+    String importUri = "imported.proto";
+    File file = temporaryFolder.newFile(importUri);
     String expected = file.toURI().toString();
-    when(directoryPaths.getValue()).thenReturn(temporaryFolder.getRoot().toString());
-    when(uris.referredResourceExists(URI.createURI(expected))).thenReturn(true);
-    String resolved = resolver.resolveUri(file.getName(), declaringResourceUri, allPreferences);
+    when(store.getString("paths.directoryPaths")).thenReturn(temporaryFolder.getRoot().toString());
+    when(uriResolver.resolveUri(eq(importUri), any(DirectoryPath.class))).thenReturn(expected);
+    String resolved = strategy.resolveUri(importUri, declaringResourceUri, allPreferences);
     assertThat(resolved, equalTo(expected));
   }
 
   @Test public void should_fall_back_to_file_system_if_platform_resource_URI_cannot_be_resolved() throws IOException {
-    File file = temporaryFolder.newFile("imported.proto");
+    String importUri = "imported.proto";
+    File file = temporaryFolder.newFile(importUri);
     String expected = file.toURI().toString();
-    when(directoryPaths.getValue()).thenReturn("${workspace_loc:/src/protos}");
+    when(store.getString("paths.directoryPaths")).thenReturn("${workspace_loc:/src/protos}");
     // try the first time as resource platform
-    when(uris.referredResourceExists(URI.createURI("platform:/resource/src/protos/imported.proto"))).thenReturn(false);
+    when(uriResolver.resolveUri(eq(importUri), any(DirectoryPath.class))).thenReturn(null);
     // try again, but in the file system this time
-    when(locations.directoryLocation("/src/protos")).thenReturn(temporaryFolder.getRoot().toString());
-    when(uris.referredResourceExists(URI.createURI(expected))).thenReturn(true);
-    String resolved = resolver.resolveUri(file.getName(), declaringResourceUri, allPreferences);
+    String directoryLocation = temporaryFolder.getRoot().toString();
+    when(locations.directoryLocation("/src/protos")).thenReturn(directoryLocation);
+    when(uriResolver.resolveUriInFileSystem(importUri, directoryLocation)).thenReturn(expected);
+    String resolved = strategy.resolveUri(importUri, declaringResourceUri, allPreferences);
     assertThat(resolved, equalTo(expected));
   }
 
   @Test public void should_return_null_if_URI_cannot_be_resolved() {
-    when(directoryPaths.getValue()).thenReturn("${workspace_loc:/src/protos}");
-    when(uris.referredResourceExists(any(URI.class))).thenReturn(false);
-    String resolved = resolver.resolveUri("imported.proto", declaringResourceUri, allPreferences);
+    when(store.getString("paths.directoryPaths")).thenReturn("${workspace_loc:/src/protos}");
+    String importUri = "imported.proto";
+    when(uriResolver.resolveUri(eq(importUri), any(DirectoryPath.class))).thenReturn(null);
+    String resolved = strategy.resolveUri(importUri, declaringResourceUri, allPreferences);
     assertNull(resolved);
   }
 
   private static class TestModule extends AbstractTestModule {
     @Override protected void configure() {
-      mockAndBind(Uris.class);
+      mockAndBind(UriResolver.class);
       mockAndBind(ResourceLocations.class);
     }
   }

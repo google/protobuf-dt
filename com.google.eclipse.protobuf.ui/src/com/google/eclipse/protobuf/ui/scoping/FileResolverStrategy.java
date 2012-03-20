@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.scoping;
 
-import com.google.eclipse.protobuf.ui.preferences.paths.core.PathsPreferences;
+import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
 
 import org.eclipse.emf.common.util.URI;
 

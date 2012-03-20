@@ -25,8 +25,7 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.*;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
-import com.google.eclipse.protobuf.ui.preferences.BooleanPreference;
-import com.google.eclipse.protobuf.ui.preferences.pages.binding.PreferenceBinder;
+import com.google.eclipse.protobuf.ui.preferences.pages.binding.*;
 import com.google.inject.Inject;
 
 /**
@@ -49,10 +48,11 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
   @Override protected Control createContents(Composite parent) {
     Composite contents = contentParent(parent);
     doCreateContents(contents);
+    PreferenceFactory preferenceFactory = new PreferenceFactory(getPreferenceStore());
     if (isPropertyPage()) {
-      setupBindingOfBtnEnabledProjectSettings();
+      setupBindingOfBtnEnabledProjectSettings(preferenceFactory);
     }
-    setupBinding(preferenceBinder);
+    setupBinding(preferenceBinder, preferenceFactory);
     preferenceBinder.applyValues();
     updateContents();
     return contents;
@@ -122,12 +122,12 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
    */
   protected abstract void doCreateContents(Composite parent);
 
-  private void setupBindingOfBtnEnabledProjectSettings() {
+  private void setupBindingOfBtnEnabledProjectSettings(PreferenceFactory factory) {
     String preferenceName = enableProjectSettingsPreferenceName();
     if (isEmpty(preferenceName)) {
       return;
     }
-    BooleanPreference preference = new BooleanPreference(preferenceName, getPreferenceStore());
+    Preference<Boolean> preference = factory.newBooleanPreference(preferenceName);
     preferenceBinder.add(bindSelectionOf(btnEnableProjectSettings).to(preference));
   }
 
@@ -141,9 +141,10 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
 
   /**
    * Sets up data binding.
-   * @param preferenceBinder the preference binder;
+   * @param binder binds preferences to widgets.
+   * @param factory factory of preferences.
    */
-  protected abstract void setupBinding(PreferenceBinder preferenceBinder);
+  protected abstract void setupBinding(PreferenceBinder binder, PreferenceFactory factory);
 
   /**
    * Returns the id of this preference page.
