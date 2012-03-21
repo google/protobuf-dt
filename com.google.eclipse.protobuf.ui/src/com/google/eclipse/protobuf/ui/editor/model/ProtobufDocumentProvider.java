@@ -26,11 +26,10 @@ import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.undo.IDocumentUndoManager;
 import org.eclipse.ui.*;
 import org.eclipse.xtext.ui.editor.model.*;
-import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.eclipse.protobuf.ui.preferences.editor.save.SaveActionsPreferences;
 import com.google.eclipse.protobuf.ui.util.editor.ChangedLineRegionCalculator;
-import com.google.inject.Inject;
+import com.google.inject.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -39,7 +38,7 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
   private static final IRegion[] NO_CHANGE = new IRegion[0];
 
   @Inject private ChangedLineRegionCalculator calculator;
-  @Inject private IPreferenceStoreAccess storeAccess;
+  @Inject private Provider<SaveActionsPreferences> preferencesProvider;
   @Inject private SaveActions saveActions;
 
   private final List<DocumentContentsFactory> documentFactories;
@@ -126,14 +125,14 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
 
   private IRegion[] changedRegions(IProgressMonitor monitor, IFileEditorInput editorInput, IDocument document)
       throws CoreException {
-    SaveActionsPreferences preferences = new SaveActionsPreferences(storeAccess);
+    SaveActionsPreferences preferences = preferencesProvider.get();
     if (!preferences.shouldRemoveTrailingWhitespace()) {
       return NO_CHANGE;
     }
-    if (preferences.shouldRemoveTrailingWhitespaceInAllLines()) {
-      return new IRegion[] { new Region(0, document.getLength()) };
+    if (preferences.shouldRemoveTrailingWhitespaceInEditedLines()) {
+      return calculator.calculateChangedLineRegions(textFileBuffer(monitor, editorInput), document, monitor);
     }
-    return calculator.calculateChangedLineRegions(textFileBuffer(monitor, editorInput), document, monitor);
+    return new IRegion[] { new Region(0, document.getLength()) };
   }
 
   private ITextFileBuffer textFileBuffer(IProgressMonitor monitor, IFileEditorInput editorInput) throws CoreException {

@@ -26,34 +26,39 @@ import com.google.inject.Singleton;
   private static Logger logger = Logger.getLogger(SaveActions.class);
 
   TextEdit createSaveAction(IDocument document, IRegion[] changedRegions) {
-    TextEdit rootEdit = null;
     try {
-      for (IRegion region : changedRegions) {
-        int lastLine = document.getLineOfOffset(region.getOffset() + region.getLength());
-        for (int line = firstLine(region, document); line <= lastLine; line++) {
-          IRegion lineRegion = document.getLineInformation(line);
-          if (lineRegion.getLength() == 0) {
-            continue;
-          }
-          int lineStart = lineRegion.getOffset();
-          int lineEnd = lineStart + lineRegion.getLength();
-          int charPos = rightMostNonWhitespaceChar(document, lineStart, lineEnd);
-          if (charPos >= lineEnd) {
-            continue;
-          }
-          // check partition - don't remove whitespace inside strings
-          ITypedRegion partition = getPartition(document, DEFAULT_PARTITIONING, charPos, false);
-          if ("__string".equals(partition.getType())) {
-            continue;
-          }
-          if (rootEdit == null) {
-            rootEdit = new MultiTextEdit();
-          }
-          rootEdit.addChild(new DeleteEdit(charPos, lineEnd - charPos));
-        }
-      }
+      return doCreateSaveAction(document, changedRegions);
     } catch (BadLocationException e) {
       logger.error("Unable to create save actions", e);
+    }
+    return null;
+  }
+
+  private TextEdit doCreateSaveAction(IDocument document, IRegion[] changedRegions) throws BadLocationException {
+    TextEdit rootEdit = null;
+    for (IRegion region : changedRegions) {
+      int lastLine = document.getLineOfOffset(region.getOffset() + region.getLength());
+      for (int line = firstLine(region, document); line <= lastLine; line++) {
+        IRegion lineRegion = document.getLineInformation(line);
+        if (lineRegion.getLength() == 0) {
+          continue;
+        }
+        int lineStart = lineRegion.getOffset();
+        int lineEnd = lineStart + lineRegion.getLength();
+        int charPos = rightMostNonWhitespaceChar(document, lineStart, lineEnd);
+        if (charPos >= lineEnd) {
+          continue;
+        }
+        // check partition - don't remove whitespace inside strings
+        ITypedRegion partition = getPartition(document, DEFAULT_PARTITIONING, charPos, false);
+        if ("__string".equals(partition.getType())) {
+          continue;
+        }
+        if (rootEdit == null) {
+          rootEdit = new MultiTextEdit();
+        }
+        rootEdit.addChild(new DeleteEdit(charPos, lineEnd - charPos));
+      }
     }
     return rootEdit;
   }

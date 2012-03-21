@@ -9,9 +9,11 @@
 package com.google.eclipse.protobuf.ui.swtbot;
 
 import static com.google.eclipse.protobuf.ui.util.Workspaces.workspaceRoot;
+import static org.eclipse.ui.dialogs.PreferencesUtil.createPreferenceDialogOn;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.*;
+import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.*;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
@@ -71,5 +73,19 @@ public class ProtobufBot extends SWTWorkbenchBot {
     for (SWTBotEditor editor : editors()) {
       editor.saveAndClose();
     }
+  }
+
+  public void openPreferencePage(final String preferencePageId) {
+    runInUiThread(new Runnable() {
+      @Override public void run() {
+        PreferenceDialog dialog = createPreferenceDialogOn(activeShell().widget, preferencePageId, null, null);
+        dialog.setBlockOnOpen(false);
+        dialog.open();
+      }
+    });
+  }
+
+  public void runInUiThread(Runnable r) {
+    activeShell().display.syncExec(r);
   }
 }

@@ -13,13 +13,15 @@ import static com.google.eclipse.protobuf.ui.preferences.editor.save.PreferenceN
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.xtext.ui.editor.preferences.*;
 
+import com.google.inject.Inject;
+
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class SaveActionsPreferences {
   private final IPreferenceStore store;
 
-  public SaveActionsPreferences(IPreferenceStoreAccess storeAccess) {
+  @Inject public SaveActionsPreferences(IPreferenceStoreAccess storeAccess) {
     this.store = storeAccess.getWritablePreferenceStore();
   }
 
@@ -27,8 +29,8 @@ public class SaveActionsPreferences {
     return store.getBoolean(REMOVE_TRAILING_WHITESPACE);
   }
 
-  public boolean shouldRemoveTrailingWhitespaceInAllLines() {
-    return store.getBoolean(IN_ALL_LINES);
+  public boolean shouldRemoveTrailingWhitespaceInEditedLines() {
+    return store.getBoolean(IN_EDITED_LINES);
   }
 
   public static class Initializer implements IPreferenceStoreInitializer {

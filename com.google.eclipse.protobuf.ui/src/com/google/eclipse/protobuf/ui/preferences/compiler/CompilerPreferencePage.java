@@ -403,6 +403,7 @@ public class CompilerPreferencePage extends PreferenceAndPropertyPage {
     String fileName = file.getName();
     return expectedFileName.equals(fileName);
   }
+
   @Override protected String preferencePageId() {
     return PREFERENCE_PAGE_ID;
   }

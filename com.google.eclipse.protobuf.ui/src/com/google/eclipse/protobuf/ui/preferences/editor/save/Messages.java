@@ -14,6 +14,8 @@ import org.eclipse.osgi.util.NLS;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Messages extends NLS {
+  public static String inAllLines;
+  public static String inEditedLines;
   public static String removeTrailingWhitespace;
 
   static {

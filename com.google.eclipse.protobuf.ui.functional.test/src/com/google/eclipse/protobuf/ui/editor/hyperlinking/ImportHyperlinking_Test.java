@@ -24,9 +24,6 @@ import com.google.eclipse.protobuf.ui.swtbot.ProtobufBot;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ImportHyperlinking_Test {
-  @Rule public CommentReaderRule commentReader = new CommentReaderRule();
-  @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
   private static ProtobufBot robot;
 
   @BeforeClass public static void setUpOnce() throws CoreException {
@@ -34,6 +31,9 @@ public class ImportHyperlinking_Test {
     robot.resetAll();
     robot.createGeneralProject("ImportHyperlinkingTest");
   }
+
+  @Rule public CommentReaderRule commentReader = new CommentReaderRule();
+  @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
   // import 'google/protobuf/descriptor.proto';
   @Test public void should_open_file_in_plugIn() throws InterruptedException {

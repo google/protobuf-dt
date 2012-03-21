@@ -9,7 +9,7 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.editor.save;
 
-import static com.google.eclipse.protobuf.ui.preferences.editor.save.Messages.removeTrailingWhitespace;
+import static com.google.eclipse.protobuf.ui.preferences.editor.save.Messages.*;
 import static com.google.eclipse.protobuf.ui.preferences.editor.save.PreferenceNames.*;
 import static com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToButtonSelection.bindSelectionOf;
 
@@ -34,7 +34,7 @@ public class SaveActionsPreferencePage extends PreferencePage implements IWorkbe
 
   private final PreferenceBinder preferenceBinder = new PreferenceBinder();
 
-  private Button btnRemoveTrailingwhitespace;
+  private Button btnRemoveTrailingWhitespace;
   private Button btnInEditedLines;
   private Button btnInAllLines;
 
@@ -43,19 +43,19 @@ public class SaveActionsPreferencePage extends PreferencePage implements IWorkbe
   @Override protected Control createContents(Composite parent) {
     Composite contents = new Composite(parent, NONE);
     contents.setLayout(new GridLayout(1, false));
-    btnRemoveTrailingwhitespace = new Button(contents, SWT.CHECK);
-    btnRemoveTrailingwhitespace.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false, 1, 1));
-    btnRemoveTrailingwhitespace.setText(removeTrailingWhitespace);
+    btnRemoveTrailingWhitespace = new Button(contents, SWT.CHECK);
+    btnRemoveTrailingWhitespace.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false, 1, 1));
+    btnRemoveTrailingWhitespace.setText(removeTrailingWhitespace);
 
     Composite composite = new Composite(contents, SWT.NONE);
     composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
     composite.setLayout(new GridLayout(1, false));
 
     btnInEditedLines = new Button(composite, SWT.RADIO);
-    btnInEditedLines.setText("In edited lines");
+    btnInEditedLines.setText(inEditedLines);
 
     btnInAllLines = new Button(composite, SWT.RADIO);
-    btnInAllLines.setText("In all lines");
+    btnInAllLines.setText(inAllLines);
 
     setUpBinding();
     preferenceBinder.applyValues();
@@ -67,14 +67,14 @@ public class SaveActionsPreferencePage extends PreferencePage implements IWorkbe
   private void setUpBinding() {
     PreferenceFactory factory = new PreferenceFactory(getPreferenceStore());
     preferenceBinder.addAll(
-        bindSelectionOf(btnRemoveTrailingwhitespace).to(factory.newBooleanPreference(REMOVE_TRAILING_WHITESPACE)),
+        bindSelectionOf(btnRemoveTrailingWhitespace).to(factory.newBooleanPreference(REMOVE_TRAILING_WHITESPACE)),
         bindSelectionOf(btnInAllLines).to(factory.newBooleanPreference(IN_ALL_LINES)),
         bindSelectionOf(btnInEditedLines).to(factory.newBooleanPreference(IN_EDITED_LINES))
     );
   }
 
   private void addEventListeners() {
-    btnRemoveTrailingwhitespace.addSelectionListener(new SelectionAdapter() {
+    btnRemoveTrailingWhitespace.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
         updateContents();
       }
@@ -82,7 +82,7 @@ public class SaveActionsPreferencePage extends PreferencePage implements IWorkbe
   }
 
   private void updateContents() {
-    boolean enabled = btnRemoveTrailingwhitespace.getSelection();
+    boolean enabled = btnRemoveTrailingWhitespace.getSelection();
     btnInAllLines.setEnabled(enabled);
     btnInEditedLines.setEnabled(enabled);
   }
