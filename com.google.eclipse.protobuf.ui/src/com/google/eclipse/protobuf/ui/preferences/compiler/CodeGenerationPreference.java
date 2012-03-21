@@ -8,27 +8,11 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.compiler;
 
-import org.eclipse.jface.preference.IPreferenceStore;
-
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class CodeGenerationPreference {
-  private final IPreferenceStore store;
-  private final String enabledPreferenceName;
-  private final String outputDirectoryPreferenceName;
+public interface CodeGenerationPreference {
+  boolean isEnabled();
 
-  CodeGenerationPreference(IPreferenceStore store, String enabledPreferenceName, String outputDirectoryPreferenceName) {
-    this.store = store;
-    this.enabledPreferenceName = enabledPreferenceName;
-    this.outputDirectoryPreferenceName = outputDirectoryPreferenceName;
-  }
-
-  public boolean isEnabled() {
-    return store.getBoolean(enabledPreferenceName);
-  }
-
-  public String outputDirectory() {
-    return store.getString(outputDirectoryPreferenceName);
-  }
+  String outputDirectory();
 }

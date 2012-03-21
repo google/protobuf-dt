@@ -28,15 +28,15 @@ public class CompilerPreferences {
   }
 
   private final IPreferenceStore store;
-  private final CodeGenerationPreference java;
-  private final CodeGenerationPreference cpp;
-  private final CodeGenerationPreference python;
+  private final CodeGenerationPreference javaCodeGenerationPreference;
+  private final CodeGenerationPreference cppCodeGenerationPreference;
+  private final CodeGenerationPreference pythonCodeGenerationPreference;
 
   private CompilerPreferences(IPreferenceStore store) {
     this.store = store;
-    java = new CodeGenerationPreference(store, JAVA_CODE_GENERATION_ENABLED, JAVA_OUTPUT_DIRECTORY);
-    cpp = new CodeGenerationPreference(store, CPP_CODE_GENERATION_ENABLED, CPP_OUTPUT_DIRECTORY);
-    python = new CodeGenerationPreference(store, PYTHON_CODE_GENERATION_ENABLED, PYTHON_OUTPUT_DIRECTORY);
+    javaCodeGenerationPreference = new JavaCodeGenerationPreference(store);
+    cppCodeGenerationPreference = new CppCodeGenerationPreference(store);
+    pythonCodeGenerationPreference = new PythonCodeGenerationPreference(store);
   }
 
   public boolean shouldCompileProtoFiles() {
@@ -56,15 +56,15 @@ public class CompilerPreferences {
   }
 
   public CodeGenerationPreference javaCodeGeneration() {
-    return java;
+    return javaCodeGenerationPreference;
   }
 
   public CodeGenerationPreference cppCodeGeneration() {
-    return cpp;
+    return cppCodeGenerationPreference;
   }
 
   public CodeGenerationPreference pythonCodeGeneration() {
-    return python;
+    return pythonCodeGenerationPreference;
   }
 
   public boolean refreshResources() {
