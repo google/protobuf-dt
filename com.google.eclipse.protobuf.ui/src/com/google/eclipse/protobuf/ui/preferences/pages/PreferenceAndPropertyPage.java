@@ -239,6 +239,7 @@ public abstract class PreferenceAndPropertyPage extends PreferencePage implement
   @Override protected final void performDefaults() {
     preferenceBinder.applyDefaults();
     updateContents();
+    pageIsNowValid();
     super.performDefaults();
   }
 
