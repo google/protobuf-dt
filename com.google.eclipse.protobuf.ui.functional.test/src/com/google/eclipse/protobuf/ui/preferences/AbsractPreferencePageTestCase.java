@@ -8,13 +8,10 @@
  */
 package com.google.eclipse.protobuf.ui.preferences;
 
-import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-
 import org.eclipse.core.runtime.CoreException;
 import org.junit.*;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.ui.plugin.ProtobufEditorPlugIn;
+import com.google.eclipse.protobuf.ui.junit.XtextRule;
 import com.google.eclipse.protobuf.ui.swtbot.ProtobufBot;
 
 /**
@@ -28,7 +25,7 @@ public abstract class AbsractPreferencePageTestCase {
     robot.resetAll();
   }
 
-  @Rule public XtextRule xtext = createWith(ProtobufEditorPlugIn.injector());
+  @Rule public XtextRule xtext = new XtextRule();
 
   @Before public void restoreDefaults() {
     robot.button("Restore Defaults").click();

@@ -18,10 +18,10 @@ import com.google.inject.Inject;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class SaveActionsTestPreferences {
+public class SaveActionsWritablePreferences {
   private final IPreferenceStore store;
 
-  @Inject public SaveActionsTestPreferences(IPreferenceStoreAccess storeAccess) {
+  @Inject public SaveActionsWritablePreferences(IPreferenceStoreAccess storeAccess) {
     store = storeAccess.getWritablePreferenceStore();
   }
 

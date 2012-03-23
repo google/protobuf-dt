@@ -8,18 +8,16 @@
  */
 package com.google.eclipse.protobuf.ui.editor.model;
 
-import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.ui.preferences.editor.save.SaveActionsTestPreferences.RemoveTrailingWhitespace.*;
+import static com.google.eclipse.protobuf.ui.preferences.editor.save.SaveActionsWritablePreferences.RemoveTrailingWhitespace.*;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEclipseEditor;
 import org.junit.*;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
-import com.google.eclipse.protobuf.ui.plugin.ProtobufEditorPlugIn;
-import com.google.eclipse.protobuf.ui.preferences.editor.save.SaveActionsTestPreferences;
+import com.google.eclipse.protobuf.ui.junit.XtextRule;
+import com.google.eclipse.protobuf.ui.preferences.editor.save.SaveActionsWritablePreferences;
 import com.google.eclipse.protobuf.ui.swtbot.ProtobufBot;
 import com.google.inject.Inject;
 
@@ -39,9 +37,9 @@ public class ProtobufDocumentProvider_Test {
     editor = robot.createFile("test.proto");
   }
 
-  @Rule public XtextRule xtext = createWith(ProtobufEditorPlugIn.injector());
+  @Rule public XtextRule xtext = new XtextRule();
 
-  @Inject private SaveActionsTestPreferences preferences;
+  @Inject private SaveActionsWritablePreferences preferences;
 
   @Test public void should_remove_trailing_whitespace_in_edited_lines_only() {
     initEditor();
