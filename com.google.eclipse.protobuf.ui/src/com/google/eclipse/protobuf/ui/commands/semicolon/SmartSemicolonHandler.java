@@ -82,7 +82,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
       document.modify(new IUnitOfWork.Void<XtextResource>() {
         @Override public void process(XtextResource resource) {
           Protobuf root = resources.rootOf(resource);
-          if (!protobufs.isProto2(root) || !resource.getErrors().isEmpty()) {
+          if (!protobufs.isProto2(root) /*|| !resource.getErrors().isEmpty()*/) {
             return;
           }
           int offset = styledTextAccess.caretOffset();
@@ -118,6 +118,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
         }
       });
     } catch (Throwable t) {
+      shouldInsertSemicolon.set(true);
       logger.error("Unable to generate tag number", t);
     }
     if (shouldInsertSemicolon.get()) {
