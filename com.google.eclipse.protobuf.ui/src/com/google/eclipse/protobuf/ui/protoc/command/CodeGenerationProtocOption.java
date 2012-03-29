@@ -25,17 +25,15 @@ class CodeGenerationProtocOption implements ProtocOption {
 
   private final String optionName;
   private final CodeGenerationPreference preferences;
-  private final IProject project;
 
   private boolean initialized;
   private boolean enabled;
   private IFolder outputDirectory;
   private String outputDirectoryLocation;
 
-  CodeGenerationProtocOption(String optionName, CodeGenerationPreference preferences, IProject project) {
+  CodeGenerationProtocOption(String optionName, CodeGenerationPreference preferences) {
     this.optionName = optionName;
     this.preferences = preferences;
-    this.project = project;
   }
 
   @Override public final void addOptionTo(ProtocCommand command) throws CoreException {
@@ -68,6 +66,7 @@ class CodeGenerationProtocOption implements ProtocOption {
   private IFolder findOrCreateDirectory(String directoryName) throws CoreException {
     IFolder directory = null;
     StringBuilder path = new StringBuilder();
+    IProject project = preferences.project();
     for (String segment : segmentsOf(directoryName)) {
       path.append(segment);
       directory = project.getFolder(path.toString());

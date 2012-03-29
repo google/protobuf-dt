@@ -24,19 +24,21 @@ public class CompilerPreferences {
     if (!enableProjectSettings) {
       store = storeAccess.getWritablePreferenceStore();
     }
-    return new CompilerPreferences(store);
+    return new CompilerPreferences(store, project);
   }
 
   private final IPreferenceStore store;
+  private final IProject project;
   private final CodeGenerationPreference javaCodeGenerationPreference;
   private final CodeGenerationPreference cppCodeGenerationPreference;
   private final CodeGenerationPreference pythonCodeGenerationPreference;
 
-  private CompilerPreferences(IPreferenceStore store) {
+  private CompilerPreferences(IPreferenceStore store, IProject project) {
     this.store = store;
-    javaCodeGenerationPreference = new JavaCodeGenerationPreference(store);
-    cppCodeGenerationPreference = new CppCodeGenerationPreference(store);
-    pythonCodeGenerationPreference = new PythonCodeGenerationPreference(store);
+    this.project = project;
+    javaCodeGenerationPreference = new JavaCodeGenerationPreference(store, project);
+    cppCodeGenerationPreference = new CppCodeGenerationPreference(store, project);
+    pythonCodeGenerationPreference = new PythonCodeGenerationPreference(store, project);
   }
 
   public boolean shouldCompileProtoFiles() {
@@ -73,6 +75,10 @@ public class CompilerPreferences {
 
   public boolean refreshProject() {
     return store.getBoolean(REFRESH_PROJECT);
+  }
+
+  public IProject project() {
+    return project;
   }
 
   public static class Initializer implements IPreferenceStoreInitializer {

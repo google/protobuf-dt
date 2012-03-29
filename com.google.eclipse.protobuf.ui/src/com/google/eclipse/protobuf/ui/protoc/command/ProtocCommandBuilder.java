@@ -30,14 +30,13 @@ public class ProtocCommandBuilder {
   private final String protocPath;
   private final ImportRootsProtocOption importRootsProtocOption;
 
-  public ProtocCommandBuilder(CompilerPreferences compilerPreferences, PathsPreferences pathsPreferences,
-      IProject project) {
+  public ProtocCommandBuilder(CompilerPreferences compilerPreferences, PathsPreferences pathsPreferences) {
     protocPath = compilerPreferences.protocPath();
     options.add(new DescriptorPathProtocOption(compilerPreferences));
-    options.add(new CodeGenerationProtocOption("java_out", compilerPreferences.javaCodeGeneration(), project));
-    options.add(new CodeGenerationProtocOption("cpp_out", compilerPreferences.cppCodeGeneration(), project));
-    options.add(new CodeGenerationProtocOption("python_out", compilerPreferences.pythonCodeGeneration(), project));
-    importRootsProtocOption = new ImportRootsProtocOption(pathsPreferences, project);
+    options.add(new CodeGenerationProtocOption("java_out", compilerPreferences.javaCodeGeneration()));
+    options.add(new CodeGenerationProtocOption("cpp_out", compilerPreferences.cppCodeGeneration()));
+    options.add(new CodeGenerationProtocOption("python_out", compilerPreferences.pythonCodeGeneration()));
+    importRootsProtocOption = new ImportRootsProtocOption(pathsPreferences);
   }
 
   /**
@@ -57,8 +56,8 @@ public class ProtocCommandBuilder {
   }
 
   /**
-   * Returns the output directories where generated code is stored.
-   * @return the output directories where generated code is stored.
+   * Returns the directories where to store generated code.
+   * @return the directories where to store generated code.
    * @throws CoreException if something goes wrong.
    */
   public List<IFolder> outputDirectories() throws CoreException {

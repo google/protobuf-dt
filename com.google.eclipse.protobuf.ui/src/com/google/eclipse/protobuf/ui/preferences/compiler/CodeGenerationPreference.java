@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.compiler;
 
+import org.eclipse.core.resources.IProject;
+
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
@@ -15,4 +17,6 @@ public interface CodeGenerationPreference {
   boolean isEnabled();
 
   String outputDirectory();
+
+  IProject project();
 }

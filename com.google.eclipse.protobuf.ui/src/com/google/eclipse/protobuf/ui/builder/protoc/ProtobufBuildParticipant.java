@@ -52,7 +52,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
       return;
     }
     PathsPreferences pathsPreferences = new PathsPreferences(storeAccess, project);
-    ProtocCommandBuilder commandBuilder = new ProtocCommandBuilder(compilerPreferences, pathsPreferences, project);
+    ProtocCommandBuilder commandBuilder = new ProtocCommandBuilder(compilerPreferences, pathsPreferences);
     for (Delta d : deltas) {
       IFile protoFile = protoFile(d.getNew(), project);
       if (protoFile == null) {

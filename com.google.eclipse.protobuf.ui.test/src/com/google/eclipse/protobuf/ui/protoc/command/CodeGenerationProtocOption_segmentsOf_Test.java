@@ -21,7 +21,7 @@ import org.junit.Test;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class AbstractOutputDirectoryProtocOption_segmentsOf_Test {
+public class CodeGenerationProtocOption_segmentsOf_Test {
   @Test(expected = NullPointerException.class)
   public void should_throw_error_if_path_is_null() {
     CodeGenerationProtocOption.segmentsOf(null);

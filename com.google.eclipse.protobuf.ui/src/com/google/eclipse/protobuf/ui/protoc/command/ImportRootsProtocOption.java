@@ -9,7 +9,7 @@
 package com.google.eclipse.protobuf.ui.protoc.command;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import java.io.File;
@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.*;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.eclipse.protobuf.ui.preferences.paths.*;
 
@@ -25,33 +26,27 @@ import com.google.eclipse.protobuf.ui.preferences.paths.*;
  */
 class ImportRootsProtocOption {
   private final PathsPreferences preferences;
-  private final IProject project;
 
   private boolean initialized;
   private List<String> importRoots;
 
-  ImportRootsProtocOption(PathsPreferences preferences, IProject project) {
+  ImportRootsProtocOption(PathsPreferences preferences) {
     this.preferences = preferences;
-    this.project = project;
   }
 
   public void addOptionToCommand(ProtocCommand command, IFile protoFile) {
     if (!initialized) {
-      initialize();
+      initialize(protoFile);
     }
-    if (!importRoots.isEmpty()) {
-      for (String importRoot : importRoots) {
-        appendToCommand(command, importRoot);
-      }
-      return;
+    for (String importRoot : importRoots) {
+      appendToCommand(command, importRoot);
     }
-    appendToCommand(command, singleImportRoot(protoFile));
   }
 
-  private void initialize() {
+  private void initialize(IFile protoFile) {
     initialized = true;
     if (!preferences.areFilesInMultipleDirectories()) {
-      importRoots =  emptyList();
+      importRoots = singletonList(singleImportRoot(protoFile));
       return;
     }
     importRoots = newArrayList();
@@ -67,15 +62,21 @@ class ImportRootsProtocOption {
   }
 
   private String singleImportRoot(IFile protoFile) {
-    File projectFile = locationAsFileOf(project);
-    File currentFile = locationAsFileOf(protoFile);
-    while (!currentFile.getParentFile().equals(projectFile)) {
-      currentFile = currentFile.getParentFile();
-    }
-    return currentFile.toString();
+    return singleImportRoot(locationOf(preferences.project()), locationOf(protoFile));
   }
 
-  private File locationAsFileOf(IResource resource) {
+  @VisibleForTesting static String singleImportRoot(File projectLocation, File protoFileLocation) {
+    if (protoFileLocation.getParentFile().equals(projectLocation)) {
+      return projectLocation.toString();
+    }
+    File current = protoFileLocation;
+    while (!current.getParentFile().equals(projectLocation)) {
+      current = current.getParentFile();
+    }
+    return current.toString();
+  }
+
+  private File locationOf(IResource resource) {
     return resource.getLocation().toFile();
   }
 

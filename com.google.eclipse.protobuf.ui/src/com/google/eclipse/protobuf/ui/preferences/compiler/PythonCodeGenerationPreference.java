@@ -10,6 +10,7 @@ package com.google.eclipse.protobuf.ui.preferences.compiler;
 
 import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.*;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
@@ -17,9 +18,11 @@ import org.eclipse.jface.preference.IPreferenceStore;
  */
 class PythonCodeGenerationPreference implements CodeGenerationPreference {
   private final IPreferenceStore store;
+  private final IProject project;
 
-  PythonCodeGenerationPreference(IPreferenceStore store) {
+  PythonCodeGenerationPreference(IPreferenceStore store, IProject project) {
     this.store = store;
+    this.project = project;
   }
 
   @Override public boolean isEnabled() {
@@ -28,5 +31,9 @@ class PythonCodeGenerationPreference implements CodeGenerationPreference {
 
   @Override public String outputDirectory() {
     return store.getString(PYTHON_OUTPUT_DIRECTORY);
+  }
+
+  @Override public IProject project() {
+    return project;
   }
 }

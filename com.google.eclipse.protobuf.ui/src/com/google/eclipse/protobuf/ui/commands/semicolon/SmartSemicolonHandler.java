@@ -37,9 +37,9 @@ import com.google.eclipse.protobuf.ui.preferences.editor.numerictag.NumericTagPr
 import com.google.inject.Inject;
 
 /**
- * Inserts a semicolon at the end of a line, regardless of the current position of the caret in the editor. If the
- * line of code being edited is a field or enum literal and if it does not have an index yet, this handler will
- * insert an index with a proper value as well.
+ * Inserts a semicolon at the end of a line, regardless of the current position of the caret in the editor. If the line
+ * of code being edited is a field or enum literal and if it does not have an index yet, this handler will insert an
+ * index with a proper value as well.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
