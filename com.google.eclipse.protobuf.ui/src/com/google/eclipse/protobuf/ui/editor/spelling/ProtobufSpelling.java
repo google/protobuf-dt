@@ -17,6 +17,7 @@ import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.source.*;
 import org.eclipse.ui.texteditor.spelling.*;
 import org.eclipse.xtext.nodemodel.*;
+import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.model.XtextDocument;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
@@ -51,7 +52,10 @@ class ProtobufSpelling extends SpellingReconcileStrategy {
   private void removeUnwantedAnnotations(final IAnnotationModel model) {
     xtextDocument().readOnly(new IUnitOfWork.Void<XtextResource>() {
       @Override public void process(XtextResource resource) throws Exception {
-        removeUnwantedAnnotations(resource.getParseResult().getRootNode(), model);
+        IParseResult parseResult = resource.getParseResult();
+        if (parseResult != null) {
+          removeUnwantedAnnotations(parseResult.getRootNode(), model);
+        }
       }
     });
   }

@@ -6,10 +6,12 @@
       class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
       contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
       default="true"
-      extensions="proto,protodevel"
       icon="icons/pb.gif"
       id="com.google.eclipse.protobuf.Protobuf"
       name="%editor.name">
+       <contentTypeBinding
+             contentTypeId="com.google.eclipse.protobuf.Protobuf">
+       </contentTypeBinding>
     </editor>
   </extension>
   <extension point="org.eclipse.ui.handlers">

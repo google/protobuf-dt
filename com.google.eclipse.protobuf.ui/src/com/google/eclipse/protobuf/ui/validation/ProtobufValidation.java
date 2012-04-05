@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.impl.ListBasedDiagnosticConsumer;
 import org.eclipse.xtext.ui.editor.XtextEditor;
@@ -59,7 +60,11 @@ final class ProtobufValidation {
   }
 
   private static EObject rootOf(XtextResource resource) {
-    return resource == null ? null : resource.getParseResult().getRootASTElement();
+    if (resource == null) {
+      return null;
+    }
+    IParseResult parseResult = resource.getParseResult();
+    return parseResult == null ? null : parseResult.getRootASTElement();
   }
 
   private static void resetUriInImports(EObject root) {

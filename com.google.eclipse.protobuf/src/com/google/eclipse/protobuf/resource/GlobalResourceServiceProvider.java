@@ -20,8 +20,8 @@ import com.google.inject.Inject;
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ResourceServiceProvider extends ResourceServiceProviderImpl {
-  @Inject public ResourceServiceProvider(Registry registry, IResourceServiceProvider provider) {
+public class GlobalResourceServiceProvider extends ResourceServiceProviderImpl {
+  @Inject public GlobalResourceServiceProvider(Registry registry, IResourceServiceProvider provider) {
     super(registry, provider);
   }
 
