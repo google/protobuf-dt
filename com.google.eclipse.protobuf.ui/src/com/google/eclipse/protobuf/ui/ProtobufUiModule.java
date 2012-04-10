@@ -13,7 +13,6 @@ import static com.google.inject.name.Names.named;
 import static org.eclipse.ui.PlatformUI.isWorkbenchRunning;
 
 import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
-import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -25,9 +24,8 @@ import org.eclipse.xtext.ui.editor.*;
 import org.eclipse.xtext.ui.editor.model.XtextDocumentProvider;
 import org.eclipse.xtext.ui.editor.outline.actions.IOutlineContribution;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
-import org.eclipse.xtext.ui.editor.quickfix.XtextQuickAssistProcessor;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.*;
-import org.eclipse.xtext.ui.validation.IResourceUIValidatorExtension;
+import org.eclipse.xtext.ui.validation.MarkerTypeProvider;
 
 import com.google.eclipse.protobuf.resource.IResourceVerifier;
 import com.google.eclipse.protobuf.scoping.IFileUriResolver;
@@ -36,7 +34,6 @@ import com.google.eclipse.protobuf.ui.documentation.ProtobufDocumentationProvide
 import com.google.eclipse.protobuf.ui.editor.*;
 import com.google.eclipse.protobuf.ui.editor.hyperlinking.ProtobufHyperlinkDetector;
 import com.google.eclipse.protobuf.ui.editor.model.ProtobufDocumentProvider;
-import com.google.eclipse.protobuf.ui.editor.spelling.ProtobufReconciler;
 import com.google.eclipse.protobuf.ui.editor.syntaxcoloring.*;
 import com.google.eclipse.protobuf.ui.internal.ProtobufActivator;
 import com.google.eclipse.protobuf.ui.outline.*;
@@ -48,7 +45,6 @@ import com.google.eclipse.protobuf.ui.preferences.editor.save.SaveActionsPrefere
 import com.google.eclipse.protobuf.ui.preferences.general.GeneralPreferences;
 import com.google.eclipse.protobuf.ui.preferences.misc.MiscellaneousPreferences;
 import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
-import com.google.eclipse.protobuf.ui.quickfix.ProtobufQuickAssistProcessor;
 import com.google.eclipse.protobuf.ui.resource.*;
 import com.google.eclipse.protobuf.ui.scoping.FileUriResolver;
 import com.google.eclipse.protobuf.ui.validation.*;
@@ -91,20 +87,12 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
     return PreferenceDrivenProtobufParser.class;
   }
 
-  @Override public Class<? extends IReconciler> bindIReconciler() {
-    return ProtobufReconciler.class;
-  }
-
   public Class<? extends IResourceServiceProvider> bindIResourceServiceProvider() {
     return ProtobufServiceProvider.class;
   }
 
   public Class<? extends IResourceVerifier> bindIResourceVerifier() {
     return ResourceVerifier.class;
-  }
-
-  public Class<? extends IResourceUIValidatorExtension> bindIResourceUIValidatorExtension() {
-    return ProtobufResourceUIValidatorExtension.class;
   }
 
   public Class<? extends ISemanticHighlightingCalculator> bindISemanticHighlightingCalculator() {
@@ -115,12 +103,12 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
     return AutoAddNatureEditorCallback.class;
   }
 
-  public Class<? extends XtextDocumentProvider> bindXtextDocumentProvider() {
-    return ProtobufDocumentProvider.class;
+  @Override public Class<? extends MarkerTypeProvider> bindMarkerTypeProvider() {
+    return ProtobufMarkerTypeProvider.class;
   }
 
-  public Class<? extends XtextQuickAssistProcessor> bindXtextQuickAssistProcessor(){
-    return ProtobufQuickAssistProcessor.class;
+  public Class<? extends XtextDocumentProvider> bindXtextDocumentProvider() {
+    return ProtobufDocumentProvider.class;
   }
 
   public void configureFileOutsideWorkspaceIconUpdater(Binder binder) {

@@ -10,6 +10,7 @@ package com.google.eclipse.protobuf.ui.preferences.editor.numerictag;
 
 import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.AddOrEditPatternDialog.*;
 import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.Messages.*;
+import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.PreferenceNames.NUMERIC_TAG_PATTERNS;
 import static com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToListItems.bindItemsOf;
 import static org.eclipse.jface.window.Window.OK;
 
@@ -19,7 +20,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
-import com.google.eclipse.protobuf.ui.preferences.*;
+import com.google.eclipse.protobuf.ui.preferences.StringSplitter;
 import com.google.eclipse.protobuf.ui.preferences.pages.PreferenceAndPropertyPage;
 import com.google.eclipse.protobuf.ui.preferences.pages.binding.*;
 
@@ -119,7 +120,7 @@ public class NumericTagPreferencePage extends PreferenceAndPropertyPage {
 
   @Override protected void setupBinding(PreferenceBinder binder, PreferenceFactory factory) {
     StringSplitter splitter = NumericTagPatternSplitter.instance();
-    binder.add(bindItemsOf(lstPaths).to(factory.newStringListPreference(PREFERENCE_PAGE_ID, splitter)));
+    binder.add(bindItemsOf(lstPaths).to(factory.newStringListPreference(NUMERIC_TAG_PATTERNS, splitter)));
   }
 
   @Override protected void onProjectSettingsActivation(boolean projectSettingsActive) {}

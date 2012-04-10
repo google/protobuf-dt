@@ -543,4 +543,9 @@ public class FileStub implements IFile {
     }
     markers.add(marker);
   }
+
+  /** {@inheritDoc} */
+  @Override public void accept(IResourceProxyVisitor visitor, int depth, int memberFlags) throws CoreException {
+    throw new UnsupportedOperationException();
+  }
 }
