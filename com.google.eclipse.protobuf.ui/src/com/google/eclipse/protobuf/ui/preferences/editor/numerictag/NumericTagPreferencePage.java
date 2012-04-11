@@ -10,6 +10,7 @@ package com.google.eclipse.protobuf.ui.preferences.editor.numerictag;
 
 import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.AddOrEditPatternDialog.*;
 import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.Messages.*;
+import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.PreferenceNames.NUMERIC_TAG_PATTERNS;
 import static com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToListItems.bindItemsOf;
 import static org.eclipse.jface.window.Window.OK;
 
@@ -19,7 +20,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
-import com.google.eclipse.protobuf.ui.preferences.*;
+import com.google.eclipse.protobuf.ui.preferences.StringSplitter;
 import com.google.eclipse.protobuf.ui.preferences.pages.PreferenceAndPropertyPage;
 import com.google.eclipse.protobuf.ui.preferences.pages.binding.*;
 
@@ -31,7 +32,7 @@ import com.google.eclipse.protobuf.ui.preferences.pages.binding.*;
 public class NumericTagPreferencePage extends PreferenceAndPropertyPage {
   private static final String PREFERENCE_PAGE_ID = NumericTagPreferencePage.class.getName();
 
-  private List lstPaths;
+  private List lstPatterns;
   private Button btnAdd;
   private Button btnEdit;
   private Button btnRemove;
@@ -44,11 +45,11 @@ public class NumericTagPreferencePage extends PreferenceAndPropertyPage {
     lblDescription.setText(pageDescription);
     new Label(parent, SWT.NONE);
 
-    ListViewer lstVwrPaths = new ListViewer(parent, SWT.BORDER | SWT.V_SCROLL);
-    lstPaths = lstVwrPaths.getList();
+    ListViewer lstVwrPatterns = new ListViewer(parent, SWT.BORDER | SWT.V_SCROLL);
+    lstPatterns = lstVwrPatterns.getList();
     gridData = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
     gridData.heightHint = 127;
-    lstPaths.setLayoutData(gridData);
+    lstPatterns.setLayoutData(gridData);
 
     Composite composite = new Composite(parent, SWT.NONE);
     composite.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, false, false, 1, 1));
@@ -72,7 +73,7 @@ public class NumericTagPreferencePage extends PreferenceAndPropertyPage {
   }
 
   private void addEventListeners() {
-    lstPaths.addSelectionListener(new SelectionAdapter() {
+    lstPatterns.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
         enableButtonsDependingOnListSelection();
       }
@@ -81,33 +82,33 @@ public class NumericTagPreferencePage extends PreferenceAndPropertyPage {
       @Override public void widgetSelected(SelectionEvent e) {
         AddOrEditPatternDialog dialog = addPattern(getShell());
         if (dialog.open() == OK) {
-          lstPaths.add(dialog.pattern());
+          lstPatterns.add(dialog.pattern());
         }
       }
     });
     btnEdit.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
-        int selectionIndex = lstPaths.getSelectionIndex();
-        AddOrEditPatternDialog dialog = editPattern(lstPaths.getItem(selectionIndex), getShell());
+        int selectionIndex = lstPatterns.getSelectionIndex();
+        AddOrEditPatternDialog dialog = editPattern(lstPatterns.getItem(selectionIndex), getShell());
         if (dialog.open() == OK) {
-          lstPaths.setItem(selectionIndex, dialog.pattern());
+          lstPatterns.setItem(selectionIndex, dialog.pattern());
         }
       }
     });
     btnRemove.addSelectionListener(new SelectionAdapter() {
       @Override public void widgetSelected(SelectionEvent e) {
-        int index = lstPaths.getSelectionIndex();
+        int index = lstPatterns.getSelectionIndex();
         if (index < 0) {
           return;
         }
-        lstPaths.remove(index);
+        lstPatterns.remove(index);
         enableButtonsDependingOnListSelection();
       }
     });
   }
 
   private void enableButtonsDependingOnListSelection() {
-    int selectionIndex = lstPaths.getSelectionIndex();
+    int selectionIndex = lstPatterns.getSelectionIndex();
     boolean hasSelection = selectionIndex >= 0;
     btnEdit.setEnabled(hasSelection);
     btnRemove.setEnabled(hasSelection);
@@ -119,7 +120,7 @@ public class NumericTagPreferencePage extends PreferenceAndPropertyPage {
 
   @Override protected void setupBinding(PreferenceBinder binder, PreferenceFactory factory) {
     StringSplitter splitter = NumericTagPatternSplitter.instance();
-    binder.add(bindItemsOf(lstPaths).to(factory.newStringListPreference(PREFERENCE_PAGE_ID, splitter)));
+    binder.add(bindItemsOf(lstPatterns).to(factory.newStringListPreference(NUMERIC_TAG_PATTERNS, splitter)));
   }
 
   @Override protected void onProjectSettingsActivation(boolean projectSettingsActive) {}
