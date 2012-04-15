@@ -26,11 +26,11 @@ class JavaCodeGenerationPreference implements CodeGenerationPreference {
   }
 
   @Override public boolean isEnabled() {
-    return store.getBoolean(CPP_CODE_GENERATION_ENABLED);
+    return store.getBoolean(JAVA_CODE_GENERATION_ENABLED);
   }
 
   @Override public String outputDirectory() {
-    return store.getString(CPP_OUTPUT_DIRECTORY);
+    return store.getString(JAVA_OUTPUT_DIRECTORY);
   }
 
   @Override public IProject project() {
