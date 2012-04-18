@@ -10,8 +10,8 @@ package com.google.eclipse.protobuf.ui.builder.protoc;
 
 import static com.google.common.io.Closeables.closeQuietly;
 import static com.google.eclipse.protobuf.ui.builder.protoc.ConsolePrinter.createAndDisplayConsole;
-import static com.google.eclipse.protobuf.ui.exception.CoreExceptions.error;
 import static com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferences.compilerPreferences;
+import static com.google.eclipse.protobuf.ui.util.IStatusFactory.error;
 import static com.google.eclipse.protobuf.ui.util.Workspaces.workspaceRoot;
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
 
@@ -91,7 +91,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
       process.destroy();
     } catch (Throwable e) {
       e.printStackTrace();
-      throw error(e);
+      throw new CoreException(error(e));
     } finally {
       if (console != null) {
         console.close();

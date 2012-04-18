@@ -8,10 +8,9 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.paths;
 
-import static com.google.eclipse.protobuf.ui.ProtobufUiModule.PLUGIN_ID;
 import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.*;
+import static com.google.eclipse.protobuf.ui.util.IStatusFactory.error;
 import static com.google.eclipse.protobuf.ui.util.Workspaces.workspaceRoot;
-import static org.eclipse.core.runtime.IStatus.ERROR;
 import static org.eclipse.core.runtime.Status.OK_STATUS;
 import static org.eclipse.jface.window.Window.OK;
 import static org.eclipse.ui.views.navigator.ResourceComparator.NAME;
@@ -55,7 +54,7 @@ class DirectorySelectionDialogs {
     dialog.setValidator(new ISelectionStatusValidator() {
       @Override public IStatus validate(Object[] selection) {
         if (selection != null && selection.length > 0 && selection[0] instanceof IFile) {
-          return new Status(ERROR, PLUGIN_ID, errorElementIsNotDirectory);
+          return error(errorElementIsNotDirectory);
         }
         return OK_STATUS;
       }

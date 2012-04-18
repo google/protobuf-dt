@@ -9,11 +9,11 @@
 package com.google.eclipse.protobuf.ui.preferences.paths;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.eclipse.protobuf.ui.ProtobufUiModule.PLUGIN_ID;
 import static com.google.eclipse.protobuf.ui.preferences.pages.ButtonGroup.with;
 import static com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToButtonSelection.bindSelectionOf;
 import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.*;
 import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.*;
+import static com.google.eclipse.protobuf.ui.util.IStatusFactory.error;
 import static java.util.Collections.unmodifiableList;
 import static org.eclipse.core.resources.IncrementalProjectBuilder.FULL_BUILD;
 import static org.eclipse.core.runtime.Status.OK_STATUS;
@@ -22,7 +22,6 @@ import static org.eclipse.xtext.util.Strings.*;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
@@ -42,8 +41,6 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class PathsPreferencePage extends PreferenceAndPropertyPage {
-  private static Logger logger = Logger.getLogger(PathsPreferencePage.class);
-
   private static final String COMMA_DELIMITER = ",";
   private static final String PREFERENCE_PAGE_ID = PathsPreferencePage.class.getName();
 
@@ -198,8 +195,7 @@ public class PathsPreferencePage extends PreferenceAndPropertyPage {
         try {
           project().build(FULL_BUILD, monitor);
         } catch (CoreException e) {
-          logger.error(e.getMessage(), e);
-          return new Status(ERROR, PLUGIN_ID, ERROR, e.getMessage(), e);
+          return error(e);
         }
         return OK_STATUS;
       }

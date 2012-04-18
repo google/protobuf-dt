@@ -15,6 +15,7 @@ import com.google.inject.Injector;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public final class ProtobufEditorPlugIn {
+  private static final String PLUGIN_ID = "com.google.eclipse.protobuf.ui";
   private static final String LANGUAGE_NAME = "com.google.eclipse.protobuf.Protobuf";
 
   /**
@@ -34,12 +35,12 @@ public final class ProtobufEditorPlugIn {
     return ProtobufActivator.getInstance().getInjector(protobufLanguageName());
   }
 
-  /**
-   * Returns the name of the 'Protocol Buffer' language.
-   * @return the name of the 'Protocol Buffer' language.
-   */
   public static String protobufLanguageName() {
     return LANGUAGE_NAME;
+  }
+
+  public static String protobufPluginId() {
+    return PLUGIN_ID;
   }
 
   private ProtobufEditorPlugIn() {}
