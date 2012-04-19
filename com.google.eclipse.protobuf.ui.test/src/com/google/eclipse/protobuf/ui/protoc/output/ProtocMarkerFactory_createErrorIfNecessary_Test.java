@@ -9,7 +9,7 @@
 package com.google.eclipse.protobuf.ui.protoc.output;
 
 import static com.google.eclipse.protobuf.junit.stubs.resources.MarkerStub.error;
-import static com.google.eclipse.protobuf.ui.validation.ProtobufResourceUIValidatorExtension.EDITOR_CHECK;
+import static com.google.eclipse.protobuf.ui.validation.MarkerTypes.EDITOR_CHECK;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 

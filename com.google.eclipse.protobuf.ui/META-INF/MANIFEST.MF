@@ -2,11 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
-Bundle-Version: 1.2.5.qualifier
+Bundle-Version: 1.3.1.qualifier
 Bundle-SymbolicName: com.google.eclipse.protobuf.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: com.google.eclipse.protobuf;visibility:=reexport,
- org.eclipse.xtext.ui,
+ org.eclipse.xtext.ui;bundle-version="2.3.0",
  org.eclipse.ui.editors;bundle-version="3.7.0",
  org.eclipse.ui.ide;bundle-version="3.7.0",
  org.eclipse.xtext.ui.shared,
@@ -17,9 +17,9 @@ Require-Bundle: com.google.eclipse.protobuf;visibility:=reexport,
  com.ibm.icu,
  org.eclipse.emf.databinding,
  org.eclipse.core.resources,
- org.eclipse.core.filesystem;bundle-version="1.3.100",
- org.eclipse.compare.core;bundle-version="3.5.200",
- org.eclipse.ui.console;bundle-version="3.5.100"
+ org.eclipse.core.filesystem,
+ org.eclipse.compare.core,
+ org.eclipse.ui.console
 Import-Package: org.apache.commons.logging,
  org.apache.log4j,
  org.eclipse.ui.texteditor.spelling

@@ -13,7 +13,6 @@ import static org.eclipse.swtbot.swt.finder.keyboard.Keystrokes.F3;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEclipseEditor;
 import org.junit.*;
-import org.junit.rules.TemporaryFolder;
 
 import com.google.eclipse.protobuf.ui.junit.CommentReaderRule;
 import com.google.eclipse.protobuf.ui.swtbot.ProtobufBot;
@@ -33,7 +32,6 @@ public class ImportHyperlinking_Test {
   }
 
   @Rule public CommentReaderRule commentReader = new CommentReaderRule();
-  @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
   // import 'google/protobuf/descriptor.proto';
   @Test public void should_open_file_in_plugIn() throws InterruptedException {
@@ -45,6 +43,8 @@ public class ImportHyperlinking_Test {
 
   private void navigateToImportedFile(SWTBotEclipseEditor editor) {
     editor.navigateTo(0, 10);
+    // for "F3" to work on Mac OS, go to "System Preferences" > "Keyboard" and ensure
+    // "Use all F1, F2, etc keys as standard function keys" is checked
     editor.pressShortcut(F3);
   }
 }

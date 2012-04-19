@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.protoc.output;
 
-import static com.google.eclipse.protobuf.ui.validation.ProtobufResourceUIValidatorExtension.EDITOR_CHECK;
+import static com.google.eclipse.protobuf.ui.validation.MarkerTypes.*;
 import static org.eclipse.core.resources.IMarker.*;
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
 
@@ -21,8 +21,6 @@ import org.eclipse.core.runtime.CoreException;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtocMarkerFactory {
-  private static final String PROTOC_CHECK = "com.google.eclipse.protobuf.ui.protocMarker";
-
   private final IFile protoFile;
   private final IMarker[] markers;
 
