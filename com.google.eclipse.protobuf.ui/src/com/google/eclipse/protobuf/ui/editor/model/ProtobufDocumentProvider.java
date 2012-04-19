@@ -10,7 +10,7 @@
 package com.google.eclipse.protobuf.ui.editor.model;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.eclipse.protobuf.ui.exception.CoreExceptions.error;
+import static com.google.eclipse.protobuf.ui.util.IStatusFactory.error;
 import static com.google.eclipse.protobuf.util.Encodings.UTF_8;
 import static org.eclipse.core.filebuffers.FileBuffers.getTextFileBufferManager;
 import static org.eclipse.core.filebuffers.LocationKind.*;
@@ -119,7 +119,7 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
       edit.apply(document);
       manager.endCompoundChange();
     } catch (Throwable t) {
-      throw error(t);
+      throw new CoreException(error(t));
     }
   }
 

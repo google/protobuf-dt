@@ -9,10 +9,9 @@
 package com.google.eclipse.protobuf.ui.editor.model;
 
 import static com.google.common.io.Closeables.closeQuietly;
-import static com.google.eclipse.protobuf.ui.exception.CoreExceptions.error;
+import static com.google.eclipse.protobuf.ui.util.IStatusFactory.error;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 
 import org.eclipse.core.runtime.CoreException;
@@ -41,7 +40,7 @@ class UriDocumentContentsFactory implements DocumentContentsFactory {
       XtextResource resource = resourceFactory.createResource(uri, contents);
       document.setInput(resource);
     } catch (Throwable t) {
-      throw error(t);
+      throw new CoreException(error(t));
     }
   }
 

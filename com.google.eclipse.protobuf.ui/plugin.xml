@@ -298,4 +298,18 @@
       </command>
     </menuContribution>
   </extension>
+  <extension
+        point="org.eclipse.ui.newWizards">
+     <category
+           id="com.google.eclipse.protobuf.ui"
+           name="Protocol Buffer">
+     </category>
+     <wizard
+           category="com.google.eclipse.protobuf.ui"
+           class="com.google.eclipse.protobuf.ui.wizards.NewProtoFileWizard"
+           icon="icons/pb.gif"
+           id="com.google.eclipse.protobuf.ui.wizards.NewProtoFileWizard"
+           name="Protocol Buffer Descriptor File">
+     </wizard>
+  </extension>
 </plugin>

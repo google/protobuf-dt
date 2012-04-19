@@ -9,10 +9,9 @@
 package com.google.eclipse.protobuf.ui.editor.model;
 
 import static com.google.common.io.Closeables.closeQuietly;
-import static com.google.eclipse.protobuf.ui.exception.CoreExceptions.error;
+import static com.google.eclipse.protobuf.ui.util.IStatusFactory.error;
 
-import com.google.eclipse.protobuf.ui.resource.XtextResourceFactory;
-import com.google.inject.Inject;
+import java.io.*;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IEditorInput;
@@ -20,7 +19,8 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.model.XtextDocument;
 
-import java.io.*;
+import com.google.eclipse.protobuf.ui.resource.XtextResourceFactory;
+import com.google.inject.Inject;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -38,7 +38,7 @@ class FileStoreDocumentContentsFactory implements DocumentContentsFactory {
       XtextResource resource = resourceFactory.createResource(file.toURI().toString(), contents);
       document.setInput(resource);
     } catch (Throwable t) {
-      throw error(t);
+      throw new CoreException(error(t));
     }
   }
 

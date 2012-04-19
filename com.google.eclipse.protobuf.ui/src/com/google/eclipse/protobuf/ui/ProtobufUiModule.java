@@ -56,8 +56,6 @@ import com.google.inject.Binder;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufUiModule extends AbstractProtobufUiModule {
-  public static final String PLUGIN_ID = "com.google.eclipse.protobuf.ui";
-
   public ProtobufUiModule(AbstractUIPlugin plugin) {
     super(plugin);
     setValidationTrigger(activeWorkbenchWindow(), plugin);

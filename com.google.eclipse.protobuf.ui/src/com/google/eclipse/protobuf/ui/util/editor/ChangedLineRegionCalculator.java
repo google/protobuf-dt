@@ -1,20 +1,18 @@
 /*
  * Copyright (c) 2011 Google Inc.
  *
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License v1.0 which accompanies this distribution, and is available at
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.ui.util.editor;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.eclipse.protobuf.ui.ProtobufUiModule.PLUGIN_ID;
+import static com.google.eclipse.protobuf.ui.util.IStatusFactory.error;
 import static com.google.eclipse.protobuf.ui.util.editor.Messages.*;
 import static org.eclipse.compare.rangedifferencer.RangeDifferencer.findDifferences;
 import static org.eclipse.core.filebuffers.FileBuffers.createTextFileBufferManager;
-import static org.eclipse.core.runtime.IStatus.ERROR;
 import static org.eclipse.core.runtime.Status.OK_STATUS;
 import static org.eclipse.core.runtime.SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK;
 
@@ -47,7 +45,7 @@ import com.google.inject.Singleton;
       SafeRunner.run(new ISafeRunnable() {
         @Override public void handleException(Throwable exception) {
           logger.error(exception.getMessage(), exception);
-          errorStatus.set(new Status(ERROR, PLUGIN_ID, 0, errorCalculatingChangedRegions, exception));
+          errorStatus.set(error(errorCalculatingChangedRegions, exception));
           result.set(null);
         }
 
