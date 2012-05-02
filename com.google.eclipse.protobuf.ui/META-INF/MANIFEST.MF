@@ -26,6 +26,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: com.google.eclipse.protobuf.ui.contentassist,
  com.google.eclipse.protobuf.ui.contentassist.antlr,
  com.google.eclipse.protobuf.ui.editor,
+ com.google.eclipse.protobuf.ui.editor.logging,
  com.google.eclipse.protobuf.ui.plugin,
  com.google.eclipse.protobuf.ui.preferences,
  com.google.eclipse.protobuf.ui.preferences.compiler,

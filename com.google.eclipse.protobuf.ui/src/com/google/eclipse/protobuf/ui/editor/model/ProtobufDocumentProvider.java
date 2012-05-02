@@ -16,7 +16,10 @@ import static org.eclipse.core.filebuffers.FileBuffers.getTextFileBufferManager;
 import static org.eclipse.core.filebuffers.LocationKind.*;
 import static org.eclipse.text.undo.DocumentUndoManagerRegistry.getDocumentUndoManager;
 
-import java.util.List;
+import com.google.eclipse.protobuf.ui.editor.logging.*;
+import com.google.eclipse.protobuf.ui.preferences.editor.save.SaveActionsPreferences;
+import com.google.eclipse.protobuf.ui.util.editor.ChangedLineRegionCalculator;
+import com.google.inject.*;
 
 import org.eclipse.core.filebuffers.*;
 import org.eclipse.core.runtime.*;
@@ -27,9 +30,7 @@ import org.eclipse.text.undo.IDocumentUndoManager;
 import org.eclipse.ui.*;
 import org.eclipse.xtext.ui.editor.model.*;
 
-import com.google.eclipse.protobuf.ui.preferences.editor.save.SaveActionsPreferences;
-import com.google.eclipse.protobuf.ui.util.editor.ChangedLineRegionCalculator;
-import com.google.inject.*;
+import java.util.List;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -39,6 +40,7 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
 
   @Inject private ChangedLineRegionCalculator calculator;
   @Inject private Provider<SaveActionsPreferences> preferencesProvider;
+  @Inject private RemoteLogger logger;
   @Inject private SaveActions saveActions;
 
   private final List<DocumentContentsFactory> documentFactories;
@@ -48,10 +50,20 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
   }
 
   @Override protected ElementInfo createElementInfo(Object element) throws CoreException {
+    logEditorUsage(element);
     if (findDocumentFactory(element) != null) {
       return createElementInfo((IEditorInput) element);
     }
     return super.createElementInfo(element);
+  }
+
+  private void logEditorUsage(Object element) {
+    EditorUsageLogger editorUsageLogger = logger.editorUsage();
+    IEditorInput editorInput = null;
+    if (element instanceof IEditorInput) {
+      editorInput = (IEditorInput) element;
+    }
+    editorUsageLogger.logDocumentCreation(editorInput);
   }
 
   private ElementInfo createElementInfo(IEditorInput input) throws CoreException {
