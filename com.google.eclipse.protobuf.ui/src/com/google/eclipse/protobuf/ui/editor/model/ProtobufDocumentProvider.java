@@ -11,25 +11,23 @@ package com.google.eclipse.protobuf.ui.editor.model;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.eclipse.protobuf.ui.util.IStatusFactory.error;
-import static com.google.eclipse.protobuf.util.Encodings.UTF_8;
 import static org.eclipse.core.filebuffers.FileBuffers.getTextFileBufferManager;
 import static org.eclipse.core.filebuffers.LocationKind.*;
 import static org.eclipse.text.undo.DocumentUndoManagerRegistry.getDocumentUndoManager;
 
-import java.util.List;
+import com.google.eclipse.protobuf.ui.preferences.editor.save.SaveActionsPreferences;
+import com.google.eclipse.protobuf.ui.util.editor.ChangedLineRegionCalculator;
+import com.google.inject.*;
 
 import org.eclipse.core.filebuffers.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.text.*;
-import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.undo.IDocumentUndoManager;
 import org.eclipse.ui.*;
 import org.eclipse.xtext.ui.editor.model.*;
 
-import com.google.eclipse.protobuf.ui.preferences.editor.save.SaveActionsPreferences;
-import com.google.eclipse.protobuf.ui.util.editor.ChangedLineRegionCalculator;
-import com.google.inject.*;
+import java.util.List;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -47,38 +45,16 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
     documentFactories = newArrayList(f1, f2);
   }
 
-  @Override protected ElementInfo createElementInfo(Object element) throws CoreException {
-    if (findDocumentFactory(element) != null) {
-      return createElementInfo((IEditorInput) element);
-    }
-    return super.createElementInfo(element);
-  }
-
-  private ElementInfo createElementInfo(IEditorInput input) throws CoreException {
-    IDocument document = null;
-    IStatus status = null;
-    try {
-      document = createDocument(input);
-    } catch (CoreException e) {
-      handleCoreException(e, "ProtobufDocumentProvider.createElementInfo");
-      document = createEmptyDocument();
-      status = e.getStatus();
-    }
-    IAnnotationModel model = createAnnotationModel(input);
-    // new FileSynchronizer(input).install();
-    FileInfo info = new FileInfo(document, model, null);
-    info.fStatus = status;
-    info.fEncoding = UTF_8;
-    cacheEncodingState(input);
-    return info;
-  }
-
   @Override protected IDocument createDocument(Object element) throws CoreException {
+    IDocument document = super.createDocument(element);
+    if (document != null) {
+      return document;
+    }
     DocumentContentsFactory factory = findDocumentFactory(element);
     if (factory != null) {
       return createDocument(factory, element);
     }
-    return super.createDocument(element);
+    return null;
   }
 
   private DocumentContentsFactory findDocumentFactory(Object element) {
@@ -92,6 +68,7 @@ public class ProtobufDocumentProvider extends XtextDocumentProvider {
     }
     return null;
   }
+
   private IDocument createDocument(DocumentContentsFactory contentsFactory, Object element) throws CoreException {
     XtextDocument document = createEmptyDocument();
     contentsFactory.createContents(document, element);
