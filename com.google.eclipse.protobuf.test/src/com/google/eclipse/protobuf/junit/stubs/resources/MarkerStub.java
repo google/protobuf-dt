@@ -13,11 +13,11 @@ import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 import static java.util.Collections.unmodifiableMap;
 
-import java.util.*;
+import com.google.common.base.Objects;
 
 import org.eclipse.core.resources.*;
 
-import com.google.common.base.Objects;
+import java.util.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -40,27 +40,22 @@ public class MarkerStub implements IMarker {
     creationTime = System.currentTimeMillis();
   }
 
-  /** {@inheritDoc} */
   @Override @SuppressWarnings("rawtypes") public Object getAdapter(Class adapter) {
     throw new UnsupportedOperationException();
   }
 
-  /** {@inheritDoc} */
   @Override public void delete() {
     throw new UnsupportedOperationException();
   }
 
-  /** {@inheritDoc} */
   @Override public boolean exists() {
     throw new UnsupportedOperationException();
   }
 
-  /** {@inheritDoc} */
   @Override public Object getAttribute(String attributeName) {
     return attributes.get(attributeName);
   }
 
-  /** {@inheritDoc} */
   @Override public int getAttribute(String attributeName, int defaultValue) {
     Object attribute = attributes.get(attributeName);
     if (attribute instanceof Integer) {
@@ -69,7 +64,6 @@ public class MarkerStub implements IMarker {
     return defaultValue;
   }
 
-  /** {@inheritDoc} */
   @Override public String getAttribute(String attributeName, String defaultValue) {
     Object attribute = attributes.get(attributeName);
     if (attribute instanceof String) {
@@ -78,7 +72,6 @@ public class MarkerStub implements IMarker {
     return defaultValue;
   }
 
-  /** {@inheritDoc} */
   @Override public boolean getAttribute(String attributeName, boolean defaultValue) {
     Object attribute = attributes.get(attributeName);
     if (attribute instanceof Boolean) {
@@ -87,12 +80,10 @@ public class MarkerStub implements IMarker {
     return defaultValue;
   }
 
-  /** {@inheritDoc} */
   @Override public Map<String, Object> getAttributes() {
     return unmodifiableMap(attributes);
   }
 
-  /** {@inheritDoc} */
   @Override public Object[] getAttributes(String[] attributeNames) {
     List<Object> values = newArrayList();
     for (String name : attributeNames) {
@@ -101,52 +92,42 @@ public class MarkerStub implements IMarker {
     return values.toArray();
   }
 
-  /** {@inheritDoc} */
   @Override public long getCreationTime() {
     return creationTime;
   }
 
-  /** {@inheritDoc} */
   @Override public long getId() {
     throw new UnsupportedOperationException();
   }
 
-  /** {@inheritDoc} */
   @Override public IResource getResource() {
     throw new UnsupportedOperationException();
   }
 
-  /** {@inheritDoc} */
   @Override public String getType() {
     return type;
   }
 
-  /** {@inheritDoc} */
   @Override public boolean isSubtypeOf(String superType) {
     throw new UnsupportedOperationException();
   }
 
-  /** {@inheritDoc} */
   @Override public void setAttribute(String attributeName, int value) {
     attributes.put(attributeName, value);
   }
 
-  /** {@inheritDoc} */
   @Override public void setAttribute(String attributeName, Object value) {
     attributes.put(attributeName, value);
   }
 
-  /** {@inheritDoc} */
   @Override public void setAttribute(String attributeName, boolean value) {
     attributes.put(attributeName, value);
   }
 
-  /** {@inheritDoc} */
   @Override public void setAttributes(String[] attributeNames, Object[] values) {
     throw new UnsupportedOperationException();
   }
 
-  /** {@inheritDoc} */
   @Override public void setAttributes(Map<String, ? extends Object> attributes) {
     this.attributes.putAll(attributes);
   }
