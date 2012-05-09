@@ -2,7 +2,7 @@
 <?eclipse version="3.0"?>
 <plugin>
   <extension point="org.eclipse.ui.editors">
-    <editor class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
+    <editor class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.editor.ProtobufEditor"
       contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor" default="true" icon="icons/pb.gif"
       id="com.google.eclipse.protobuf.Protobuf" name="%editor.name">
       <contentTypeBinding contentTypeId="com.google.eclipse.protobuf.Protobuf">
