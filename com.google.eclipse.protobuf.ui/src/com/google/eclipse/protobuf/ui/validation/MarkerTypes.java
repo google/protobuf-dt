@@ -12,7 +12,7 @@ package com.google.eclipse.protobuf.ui.validation;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public final class MarkerTypes {
-  public static final String EDITOR_CHECK = "com.google.eclipse.protobuf.ui.editorMarker";
+  public static final String EDITOR_CHECK = "com.google.eclipse.protobuf.ui.protobuf.check.fast";
   public static final String PROTOC_CHECK = "com.google.eclipse.protobuf.ui.protocMarker";
 
   private MarkerTypes() {}

@@ -11,7 +11,7 @@ package com.google.eclipse.protobuf.ui.validation;
 import static com.google.eclipse.protobuf.ui.validation.MarkerTypes.EDITOR_CHECK;
 
 import org.eclipse.xtext.ui.validation.MarkerTypeProvider;
-import org.eclipse.xtext.validation.Issue;
+import org.eclipse.xtext.validation.*;
 
 import com.google.inject.Singleton;
 
@@ -22,5 +22,9 @@ import com.google.inject.Singleton;
 public class ProtobufMarkerTypeProvider extends MarkerTypeProvider {
   @Override public String getMarkerType(Issue issue) {
     return EDITOR_CHECK;
+  }
+
+  @Override public CheckType getCheckType(String markerType) {
+    return CheckType.FAST;
   }
 }

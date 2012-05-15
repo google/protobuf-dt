@@ -25,7 +25,6 @@ import org.eclipse.xtext.ui.editor.model.XtextDocumentProvider;
 import org.eclipse.xtext.ui.editor.outline.actions.IOutlineContribution;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.*;
-import org.eclipse.xtext.ui.validation.MarkerTypeProvider;
 
 import com.google.eclipse.protobuf.resource.IResourceVerifier;
 import com.google.eclipse.protobuf.scoping.IFileUriResolver;
@@ -47,7 +46,7 @@ import com.google.eclipse.protobuf.ui.preferences.misc.MiscellaneousPreferences;
 import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
 import com.google.eclipse.protobuf.ui.resource.*;
 import com.google.eclipse.protobuf.ui.scoping.FileUriResolver;
-import com.google.eclipse.protobuf.ui.validation.*;
+import com.google.eclipse.protobuf.ui.validation.ValidateFileOnActivation;
 import com.google.inject.Binder;
 
 /**
@@ -99,10 +98,6 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
 
   @Override public Class<? extends IXtextEditorCallback> bindIXtextEditorCallback() {
     return AutoAddNatureEditorCallback.class;
-  }
-
-  @Override public Class<? extends MarkerTypeProvider> bindMarkerTypeProvider() {
-    return ProtobufMarkerTypeProvider.class;
   }
 
   public Class<? extends XtextDocumentProvider> bindXtextDocumentProvider() {
