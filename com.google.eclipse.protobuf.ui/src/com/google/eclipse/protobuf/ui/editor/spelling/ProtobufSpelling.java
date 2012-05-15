@@ -36,8 +36,10 @@ class ProtobufSpelling extends SpellingReconcileStrategy {
     this.nodes = nodes;
   }
 
-  @Override public void setDocument(IDocument document) {
-    super.setDocument(document);
+  @Override public void initialReconcile() {
+    if (getDocument() != null) {
+      super.initialReconcile();
+    }
   }
 
   @Override public void reconcile(IRegion region) {
