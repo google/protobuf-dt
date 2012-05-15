@@ -169,15 +169,29 @@
   </extension>
   <!-- quickfix marker resolution generator -->
   <extension point="org.eclipse.ui.ide.markerResolution">
-    <markerResolutionGenerator
-      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator">
+    <markerResolutionGenerator class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
+      markerType="com.google.eclipse.protobuf.ui.protobuf.check.fast">
+      <attribute name="FIXABLE_KEY" value="true">
+      </attribute>
+    </markerResolutionGenerator>
+    <markerResolutionGenerator class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
+      markerType="com.google.eclipse.protobuf.ui.protobuf.check.normal">
+      <attribute name="FIXABLE_KEY" value="true">
+      </attribute>
+    </markerResolutionGenerator>
+    <markerResolutionGenerator class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:org.eclipse.xtext.ui.editor.quickfix.MarkerResolutionGenerator"
+      markerType="com.google.eclipse.protobuf.ui.protobuf.check.expensive">
+      <attribute name="FIXABLE_KEY" value="true">
+      </attribute>
     </markerResolutionGenerator>
   </extension>
+  <!-- Command Bindings -->
   <extension point="org.eclipse.ui.bindings">
     <key commandId="com.google.eclipse.protobuf.ui.smartSemicolon" contextId="org.eclipse.xtext.ui.XtextEditorScope"
       schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" sequence=";">
     </key>
   </extension>
+  <!-- Property Pages -->
   <extension point="org.eclipse.ui.propertyPages">
     <page
       class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.general.GeneralPreferencePage"
@@ -215,13 +229,18 @@
     <persistent value="true">
     </persistent>
   </extension>
-  <extension id="editorMarker" name="%editor.marker.name" point="org.eclipse.core.resources.markers">
-    <super type="org.eclipse.core.resources.problemmarker">
-    </super>
-    <super type="org.eclipse.core.resources.textmarker">
-    </super>
-    <persistent value="true">
-    </persistent>
+    <!-- marker definitions for com.google.eclipse.protobuf.Protobuf -->
+  <extension id="protobuf.check.fast" name="%editor.marker.name" point="org.eclipse.core.resources.markers">
+    <super type="org.eclipse.xtext.ui.check.fast"/>
+    <persistent value="true"/>
+  </extension>
+  <extension id="protobuf.check.normal" name="%editor.marker.name" point="org.eclipse.core.resources.markers">
+     <super type="org.eclipse.xtext.ui.check.normal"/>
+     <persistent value="true"/>
+  </extension>
+  <extension id="protobuf.check.expensive" name="%editor.marker.name" point="org.eclipse.core.resources.markers">
+     <super type="org.eclipse.xtext.ui.check.expensive"/>
+     <persistent value="true"/>
   </extension>
   <!-- Rename Refactoring -->
   <extension point="org.eclipse.ui.handlers">
