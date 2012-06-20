@@ -12,20 +12,6 @@ import static com.google.eclipse.protobuf.ui.util.Workbenches.activeWorkbenchWin
 import static com.google.inject.name.Names.named;
 import static org.eclipse.ui.PlatformUI.isWorkbenchRunning;
 
-import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
-import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
-import org.eclipse.xtext.parser.IParser;
-import org.eclipse.xtext.resource.IResourceServiceProvider;
-import org.eclipse.xtext.ui.LanguageSpecific;
-import org.eclipse.xtext.ui.editor.*;
-import org.eclipse.xtext.ui.editor.model.XtextDocumentProvider;
-import org.eclipse.xtext.ui.editor.outline.actions.IOutlineContribution;
-import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
-import org.eclipse.xtext.ui.editor.syntaxcoloring.*;
-
 import com.google.eclipse.protobuf.resource.IResourceVerifier;
 import com.google.eclipse.protobuf.scoping.IFileUriResolver;
 import com.google.eclipse.protobuf.ui.builder.nature.AutoAddNatureEditorCallback;
@@ -48,6 +34,21 @@ import com.google.eclipse.protobuf.ui.resource.*;
 import com.google.eclipse.protobuf.ui.scoping.FileUriResolver;
 import com.google.eclipse.protobuf.ui.validation.ValidateFileOnActivation;
 import com.google.inject.Binder;
+
+import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
+import org.eclipse.xtext.parser.IParser;
+import org.eclipse.xtext.resource.IResourceServiceProvider;
+import org.eclipse.xtext.ui.LanguageSpecific;
+import org.eclipse.xtext.ui.editor.*;
+import org.eclipse.xtext.ui.editor.model.XtextDocumentProvider;
+import org.eclipse.xtext.ui.editor.outline.actions.IOutlineContribution;
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
+import org.eclipse.xtext.ui.editor.syntaxcoloring.*;
+import org.eclipse.xtext.ui.resource.*;
 
 /**
  * Registers components to be used within the IDE.
@@ -86,6 +87,10 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
 
   public Class<? extends IResourceServiceProvider> bindIResourceServiceProvider() {
     return ProtobufServiceProvider.class;
+  }
+
+  @Override public Class<? extends IResourceSetProvider> bindIResourceSetProvider() {
+    return SimpleResourceSetProvider.class;
   }
 
   public Class<? extends IResourceVerifier> bindIResourceVerifier() {
