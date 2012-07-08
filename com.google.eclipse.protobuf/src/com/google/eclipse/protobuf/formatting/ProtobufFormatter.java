@@ -39,6 +39,7 @@ public class ProtobufFormatter extends AbstractDeclarativeFormatter {
     c.setLinewrap(1).after(g.getGroupRule());
     c.setLinewrap(2).after(g.getEnumRule());
     c.setLinewrap(1).after(g.getEnumElementRule());
+    c.setLinewrap(1).after(g.getExtensionsRule());
     c.setLinewrap(1).after(g.getRpcRule());
     c.setLinewrap(2).after(g.getServiceRule());
     c.setLinewrap(1).after(g.getStreamRule());

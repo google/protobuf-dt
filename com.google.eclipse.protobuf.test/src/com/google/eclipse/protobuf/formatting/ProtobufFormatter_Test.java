@@ -143,6 +143,15 @@ public class ProtobufFormatter_Test {
     assertThatFormattingWorksCorrectly();
   }
 
+  // message TestMessage { extensions 1 to 10; }
+
+  // message TestMessage {
+  //   extensions 1 to 10;
+  // }
+  @Test public void should_format_extensions() {
+    assertThatFormattingWorksCorrectly();
+  }
+
   // syntax = 'proto2';package com.google.protobuf.test;import 'google/protobuf/descriptor.proto';import
   // public 'address.proto';import weak 'salary.proto';option java_package = "com.foo.bar";option
   // optimize_for = CODE_SIZE;
