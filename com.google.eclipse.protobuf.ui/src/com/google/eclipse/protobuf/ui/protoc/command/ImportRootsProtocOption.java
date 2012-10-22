@@ -9,13 +9,14 @@
 package com.google.eclipse.protobuf.ui.protoc.command;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static java.util.Collections.singletonList;
+import static org.eclipse.core.resources.IResource.CHECK_ANCESTORS;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import java.io.File;
 import java.util.List;
 
 import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.IPath;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
@@ -45,11 +46,16 @@ class ImportRootsProtocOption {
 
   private void initialize(IFile protoFile) {
     initialized = true;
+    importRoots = newArrayList();
     if (!preferences.areFilesInMultipleDirectories()) {
-      importRoots = singletonList(singleImportRoot(protoFile));
+      if (protoFile.isLinked(CHECK_ANCESTORS)) {
+        importRoots.add(locationAsText(protoFile.getProject()));
+        importRoots.add(locationAsText(protoFile.getParent()));
+        return;
+      }
+      importRoots.add(singleImportRoot(protoFile));
       return;
     }
-    importRoots = newArrayList();
     preferences.applyToEachDirectoryPath(new Function<DirectoryPath, Void>() {
       @Override public Void apply(DirectoryPath path) {
         String location = path.absolutePathInFileSystem();
@@ -61,10 +67,15 @@ class ImportRootsProtocOption {
     });
   }
 
-  private String singleImportRoot(IFile protoFile) {
-    return singleImportRoot(locationOf(preferences.project()), locationOf(protoFile));
+  private String locationAsText(IResource resource) {
+    return resource.getLocation().toOSString();
   }
 
+  private String singleImportRoot(IFile protoFile) {
+    return singleImportRoot(locationAsFile(protoFile.getProject()), locationAsFile(protoFile));
+  }
+
+  // TODO(alruiz): Remove usage of java.io.File.
   @VisibleForTesting static String singleImportRoot(File projectLocation, File protoFileLocation) {
     if (protoFileLocation.getParentFile().equals(projectLocation)) {
       return projectLocation.toString();
@@ -76,8 +87,9 @@ class ImportRootsProtocOption {
     return current.toString();
   }
 
-  private File locationOf(IResource resource) {
-    return resource.getLocation().toFile();
+  private File locationAsFile(IResource resource) {
+    IPath location = resource.getLocation();
+    return location.toFile();
   }
 
   private void appendToCommand(ProtocCommand command, String importRoot) {

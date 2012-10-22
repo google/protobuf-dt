@@ -17,7 +17,7 @@ import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 
 /**
- * Tests for <code>{@link ImportRootsProtocOption#singleImportRoot(File, File)}</code>
+ * Tests for <code>{@link ImportRootsProtocOption#singleImportRoot(File, File)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */

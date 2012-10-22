@@ -48,10 +48,6 @@ public class PathsPreferences {
     return null;
   }
 
-  public IProject project() {
-    return project;
-  }
-
   public static class Initializer implements IPreferenceStoreInitializer {
     @Override public void initialize(IPreferenceStoreAccess access) {
       IPreferenceStore store = access.getWritablePreferenceStore();
