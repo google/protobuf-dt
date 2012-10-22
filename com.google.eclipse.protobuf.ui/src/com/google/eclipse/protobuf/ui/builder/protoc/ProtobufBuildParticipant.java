@@ -75,10 +75,10 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
       return null;
     }
     URI uri = resource.getURI();
-    if (!uri.isPlatformResource() && !"proto".equals(uri.fileExtension())) {
-      return null;
+    if (uri.isPlatformResource() && "proto".equals(uri.fileExtension())) {
+      return uri.toPlatformString(true);
     }
-    return uri.toPlatformString(true);
+    return null;
   }
 
   private void generateSingleProto(String command, IFile protoFile) throws CoreException {
