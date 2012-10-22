@@ -8,6 +8,14 @@
  */
 package com.google.eclipse.protobuf;
 
+import com.google.eclipse.protobuf.conversion.ProtobufTerminalConverters;
+import com.google.eclipse.protobuf.linking.ProtobufResource;
+import com.google.eclipse.protobuf.naming.*;
+import com.google.eclipse.protobuf.resource.*;
+import com.google.eclipse.protobuf.scoping.*;
+import com.google.eclipse.protobuf.validation.*;
+import com.google.inject.Binder;
+
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.xtext.conversion.IValueConverterService;
 import org.eclipse.xtext.naming.*;
@@ -15,14 +23,6 @@ import org.eclipse.xtext.parser.antlr.ISyntaxErrorMessageProvider;
 import org.eclipse.xtext.resource.*;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 import org.eclipse.xtext.validation.IResourceValidator;
-
-import com.google.eclipse.protobuf.conversion.ProtobufTerminalConverters;
-import com.google.eclipse.protobuf.linking.ProtobufResource;
-import com.google.eclipse.protobuf.naming.*;
-import com.google.eclipse.protobuf.resource.GlobalResourceServiceProvider;
-import com.google.eclipse.protobuf.scoping.*;
-import com.google.eclipse.protobuf.validation.*;
-import com.google.inject.Binder;
 
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
@@ -58,6 +58,10 @@ public class ProtobufRuntimeModule extends AbstractProtobufRuntimeModule {
 
   @Override public Class<? extends XtextResource> bindXtextResource() {
     return ProtobufResource.class;
+  }
+
+  @Override public Class<? extends XtextResourceSet> bindXtextResourceSet() {
+    return FastXtextResourceSet.class;
   }
 
   public void configureExtensionRegistry(Binder binder) {
