@@ -8,11 +8,15 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages.binding;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import static com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToListItems.bindItemsOf;
-import static org.mockito.Mockito.*;
 
 import org.eclipse.swt.widgets.List;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
 

@@ -10,7 +10,8 @@ package com.google.eclipse.protobuf.cdt.util;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.ITextSelection;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 

@@ -10,13 +10,19 @@ package com.google.eclipse.protobuf.scoping;
 
 import static com.google.common.collect.Sets.newHashSet;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Set;
 
 import org.eclipse.xtext.resource.IEObjectDescription;
 
-import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.model.util.MessageFields;
+import com.google.eclipse.protobuf.model.util.Messages;
+import com.google.eclipse.protobuf.model.util.ModelObjects;
 import com.google.eclipse.protobuf.naming.NormalNamingStrategy;
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Message;
+import com.google.eclipse.protobuf.protobuf.MessageElement;
+import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.eclipse.protobuf.protobuf.TypeExtension;
 import com.google.inject.Inject;
 
 /**

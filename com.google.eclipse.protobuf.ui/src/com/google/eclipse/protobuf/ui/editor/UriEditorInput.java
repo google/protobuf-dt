@@ -13,7 +13,8 @@ import static com.google.common.base.Objects.equal;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.*;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IPersistableElement;
 
 import com.google.common.base.Objects;
 

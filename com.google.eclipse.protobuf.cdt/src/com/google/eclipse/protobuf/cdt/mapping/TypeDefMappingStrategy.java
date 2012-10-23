@@ -10,8 +10,10 @@ package com.google.eclipse.protobuf.cdt.mapping;
 
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MESSAGE;
 
-import org.eclipse.cdt.core.dom.ast.*;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.*;
+import org.eclipse.cdt.core.dom.ast.IBinding;
+import org.eclipse.cdt.core.dom.ast.IType;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassType;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPTypedef;
 
 import com.google.inject.Inject;
 

@@ -9,6 +9,7 @@
 package com.google.eclipse.protobuf.model.util;
 
 import static java.lang.Math.max;
+
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
 import java.util.List;

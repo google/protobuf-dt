@@ -8,10 +8,13 @@
  */
 package com.google.eclipse.protobuf.ui.contentassist;
 
-import static com.google.common.collect.Maps.newHashMap;
-import static java.util.Collections.*;
+import static java.util.Collections.emptySet;
+import static java.util.Collections.unmodifiableCollection;
 
-import java.util.*;
+import static com.google.common.collect.Maps.newHashMap;
+
+import java.util.Collection;
+import java.util.Map;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.QualifiedName;

@@ -8,19 +8,21 @@
  */
 package com.google.eclipse.protobuf.naming;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
-import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.inject.Inject;
-
-import org.eclipse.xtext.naming.QualifiedName;
-import org.junit.*;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 
 import java.util.List;
+
+import org.eclipse.xtext.naming.QualifiedName;
+import org.junit.Rule;
+import org.junit.Test;
+
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link ProtobufQualifiedNameConverter#toQualifiedName(String)}</code>.

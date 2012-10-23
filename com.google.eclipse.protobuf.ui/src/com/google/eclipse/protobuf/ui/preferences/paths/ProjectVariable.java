@@ -9,7 +9,8 @@
 package com.google.eclipse.protobuf.ui.preferences.paths;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 
 /**
  * ${project} variable.

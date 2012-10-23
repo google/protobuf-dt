@@ -10,12 +10,18 @@
 package com.google.eclipse.protobuf.ui.editor.model;
 
 import static java.lang.Character.isWhitespace;
+
 import static org.eclipse.jface.text.IDocumentExtension3.DEFAULT_PARTITIONING;
 import static org.eclipse.jface.text.TextUtilities.getPartition;
 
 import org.apache.log4j.Logger;
-import org.eclipse.jface.text.*;
-import org.eclipse.text.edits.*;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.ITypedRegion;
+import org.eclipse.text.edits.DeleteEdit;
+import org.eclipse.text.edits.MultiTextEdit;
+import org.eclipse.text.edits.TextEdit;
 
 import com.google.inject.Singleton;
 

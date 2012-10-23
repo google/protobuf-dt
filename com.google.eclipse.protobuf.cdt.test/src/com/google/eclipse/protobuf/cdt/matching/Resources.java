@@ -8,8 +8,9 @@
  */
 package com.google.eclipse.protobuf.cdt.matching;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.unmodifiableList;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.List;
 

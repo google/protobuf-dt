@@ -8,18 +8,33 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.paths;
 
-import static com.google.eclipse.protobuf.ui.preferences.pages.TextWidgets.setEditable;
-import static com.google.eclipse.protobuf.ui.preferences.paths.DirectorySelectionDialogs.*;
-import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.*;
 import static org.eclipse.jface.dialogs.IDialogConstants.OK_ID;
 import static org.eclipse.xtext.util.Strings.isEmpty;
+
+import static com.google.eclipse.protobuf.ui.preferences.pages.TextWidgets.setEditable;
+import static com.google.eclipse.protobuf.ui.preferences.paths.DirectorySelectionDialogs.showFileSystemDirectorySelectionDialog;
+import static com.google.eclipse.protobuf.ui.preferences.paths.DirectorySelectionDialogs.showWorkspaceDirectorySelectionDialog;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.addDirectoryPath;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.browseFileSystem;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.browseWorkspace;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.directory;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.isWorkspacePathCheck;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 import com.google.eclipse.protobuf.ui.preferences.pages.InputDialog;
 

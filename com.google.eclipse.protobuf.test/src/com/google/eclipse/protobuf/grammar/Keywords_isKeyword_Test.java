@@ -8,13 +8,16 @@
  */
 package com.google.eclipse.protobuf.grammar;
 
+import static org.eclipse.xtext.GrammarUtil.getAllKeywords;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
-import static org.eclipse.xtext.GrammarUtil.getAllKeywords;
-import static org.junit.Assert.*;
 
 import org.eclipse.xtext.IGrammarAccess;
-import org.junit.*;
+import org.junit.Rule;
+import org.junit.Test;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.inject.Inject;

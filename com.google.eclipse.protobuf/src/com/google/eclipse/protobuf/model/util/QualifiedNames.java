@@ -15,7 +15,8 @@ import java.util.List;
 import org.eclipse.xtext.naming.QualifiedName;
 
 import com.google.eclipse.protobuf.util.StringLists;
-import com.google.inject.*;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Utility methods related to <code>{@link QualifiedName}</code>s.

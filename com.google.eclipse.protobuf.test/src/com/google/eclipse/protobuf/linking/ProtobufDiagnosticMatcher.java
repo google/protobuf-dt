@@ -13,7 +13,8 @@ import static com.google.common.base.Objects.equal;
 import java.util.Arrays;
 
 import org.eclipse.xtext.diagnostics.DiagnosticMessage;
-import org.hamcrest.*;
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

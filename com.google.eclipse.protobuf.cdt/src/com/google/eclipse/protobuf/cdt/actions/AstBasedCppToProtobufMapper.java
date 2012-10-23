@@ -9,21 +9,30 @@
 package com.google.eclipse.protobuf.cdt.actions;
 
 import static org.eclipse.cdt.internal.ui.editor.ASTProvider.WAIT_NO;
-import static org.eclipse.core.runtime.Status.*;
+import static org.eclipse.core.runtime.Status.CANCEL_STATUS;
+import static org.eclipse.core.runtime.Status.OK_STATUS;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.eclipse.cdt.core.dom.ast.*;
-import org.eclipse.cdt.core.model.*;
+import org.eclipse.cdt.core.dom.ast.IASTName;
+import org.eclipse.cdt.core.dom.ast.IASTNode;
+import org.eclipse.cdt.core.dom.ast.IASTNodeSelector;
+import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
+import org.eclipse.cdt.core.dom.ast.IBinding;
+import org.eclipse.cdt.core.model.ILanguage;
+import org.eclipse.cdt.core.model.IWorkingCopy;
 import org.eclipse.cdt.internal.core.model.ASTCache.ASTRunnable;
 import org.eclipse.cdt.internal.ui.editor.ASTProvider;
 import org.eclipse.cdt.ui.CUIPlugin;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ui.IEditorPart;
 
-import com.google.eclipse.protobuf.cdt.mapping.*;
+import com.google.eclipse.protobuf.cdt.mapping.CppToProtobufMapper;
+import com.google.eclipse.protobuf.cdt.mapping.CppToProtobufMapping;
 import com.google.eclipse.protobuf.cdt.util.Editors;
-import com.google.inject.*;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

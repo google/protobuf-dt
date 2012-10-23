@@ -8,27 +8,34 @@
  */
 package com.google.eclipse.protobuf.ui.commands.semicolon;
 
-import static com.google.common.cache.CacheBuilder.newBuilder;
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.eclipse.protobuf.util.Strings.quote;
-import static com.google.eclipse.protobuf.util.SystemProperties.lineSeparator;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
+
 import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.getNode;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 import static org.eclipse.xtext.util.Tuples.pair;
 
-import com.google.common.cache.*;
-import com.google.eclipse.protobuf.model.util.INodes;
-import com.google.inject.*;
-
-import org.apache.log4j.Logger;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.nodemodel.*;
-import org.eclipse.xtext.util.Pair;
+import static com.google.common.cache.CacheBuilder.newBuilder;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.eclipse.protobuf.util.Strings.quote;
+import static com.google.eclipse.protobuf.util.SystemProperties.lineSeparator;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.log4j.Logger;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.nodemodel.ICompositeNode;
+import org.eclipse.xtext.nodemodel.ILeafNode;
+import org.eclipse.xtext.nodemodel.INode;
+import org.eclipse.xtext.util.Pair;
+
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheLoader;
+import com.google.eclipse.protobuf.model.util.INodes;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

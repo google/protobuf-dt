@@ -8,18 +8,23 @@
  */
 package com.google.eclipse.protobuf.ui.documentation;
 
-import static com.google.eclipse.protobuf.ui.documentation.Patterns.compileAll;
 import static java.util.regex.Pattern.compile;
+
 import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.getNode;
 
-import com.google.eclipse.protobuf.model.util.INodes;
-import com.google.inject.*;
+import static com.google.eclipse.protobuf.ui.documentation.Patterns.compileAll;
+
+import java.util.regex.Pattern;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
-import org.eclipse.xtext.nodemodel.*;
+import org.eclipse.xtext.nodemodel.ICompositeNode;
+import org.eclipse.xtext.nodemodel.ILeafNode;
+import org.eclipse.xtext.nodemodel.INode;
 
-import java.util.regex.Pattern;
+import com.google.eclipse.protobuf.model.util.INodes;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Provides multiple-line comments of a protobuf element as its documentation

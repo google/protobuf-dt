@@ -8,14 +8,17 @@
  */
 package com.google.eclipse.protobuf.ui.outline;
 
-import static com.google.common.collect.Collections2.filter;
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.singletonList;
 
-import java.util.*;
+import static com.google.common.collect.Collections2.filter;
+import static com.google.common.collect.Lists.newArrayList;
+
+import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.xtext.ui.editor.outline.IOutlineNode;
-import org.eclipse.xtext.ui.editor.outline.impl.*;
+import org.eclipse.xtext.ui.editor.outline.impl.DocumentRootNode;
+import org.eclipse.xtext.ui.editor.outline.impl.OutlinePage;
 
 import com.google.common.base.Predicate;
 

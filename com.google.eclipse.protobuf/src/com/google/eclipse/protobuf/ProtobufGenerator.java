@@ -8,11 +8,13 @@
  */
 package com.google.eclipse.protobuf;
 
-import org.eclipse.xtext.*;
+import org.eclipse.xtext.XtextRuntimeModule;
+import org.eclipse.xtext.XtextStandaloneSetup;
 import org.eclipse.xtext.generator.Generator;
 import org.eclipse.xtext.xtext.ecoreInference.IXtext2EcorePostProcessor;
 
-import com.google.inject.*;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

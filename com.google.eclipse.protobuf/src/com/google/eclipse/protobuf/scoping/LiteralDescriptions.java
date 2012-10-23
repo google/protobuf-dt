@@ -8,17 +8,20 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.emptyList;
+
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
-import java.util.*;
+import static com.google.common.collect.Lists.newArrayList;
+
+import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.xtext.resource.IEObjectDescription;
 
-import com.google.eclipse.protobuf.protobuf.*;
 import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.eclipse.protobuf.protobuf.Literal;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

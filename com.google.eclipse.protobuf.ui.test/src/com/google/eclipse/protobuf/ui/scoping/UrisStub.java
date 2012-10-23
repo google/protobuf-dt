@@ -8,9 +8,9 @@
  */
 package com.google.eclipse.protobuf.ui.scoping;
 
-import com.google.eclipse.protobuf.ui.util.Uris;
-
 import org.eclipse.emf.common.util.URI;
+
+import com.google.eclipse.protobuf.ui.util.Uris;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

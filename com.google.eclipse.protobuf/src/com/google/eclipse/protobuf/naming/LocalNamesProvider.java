@@ -8,20 +8,26 @@
  */
 package com.google.eclipse.protobuf.naming;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.eclipse.protobuf.naming.NameType.NORMAL;
 import static java.util.Collections.emptyList;
+
 import static org.eclipse.xtext.util.Strings.isEmpty;
 import static org.eclipse.xtext.util.Tuples.pair;
+
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.eclipse.protobuf.naming.NameType.NORMAL;
 
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.naming.*;
-import org.eclipse.xtext.util.*;
+import org.eclipse.xtext.naming.IQualifiedNameConverter;
+import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.util.IResourceScopeCache;
+import org.eclipse.xtext.util.Pair;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.inject.*;
+import com.google.eclipse.protobuf.model.util.ModelObjects;
+import com.google.eclipse.protobuf.model.util.Packages;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 /**
  * Provides alternative qualified names for protobuf elements.

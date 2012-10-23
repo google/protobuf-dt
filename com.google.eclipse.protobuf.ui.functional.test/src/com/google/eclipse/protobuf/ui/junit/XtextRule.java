@@ -10,7 +10,8 @@
 package com.google.eclipse.protobuf.ui.junit;
 
 import org.junit.rules.MethodRule;
-import org.junit.runners.model.*;
+import org.junit.runners.model.FrameworkMethod;
+import org.junit.runners.model.Statement;
 
 import com.google.eclipse.protobuf.ui.plugin.ProtobufEditorPlugIn;
 import com.google.inject.Injector;

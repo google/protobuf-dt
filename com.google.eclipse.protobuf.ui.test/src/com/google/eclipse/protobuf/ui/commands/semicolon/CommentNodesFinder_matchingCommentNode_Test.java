@@ -8,21 +8,25 @@
  */
 package com.google.eclipse.protobuf.ui.commands.semicolon;
 
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+
 import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.*;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.MessageField;
-import com.google.inject.Inject;
+import java.util.regex.Matcher;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.util.Pair;
-import org.junit.*;
+import org.junit.Rule;
+import org.junit.Test;
 
-import java.util.regex.Matcher;
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link CommentNodesFinder#matchingCommentNode(EObject, String...)}</code>.

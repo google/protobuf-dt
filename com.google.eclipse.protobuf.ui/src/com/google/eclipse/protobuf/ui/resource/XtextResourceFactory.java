@@ -9,13 +9,15 @@
  */
 package com.google.eclipse.protobuf.ui.resource;
 
-import static com.google.eclipse.protobuf.util.Encodings.UTF_8;
 import static java.util.Collections.singletonMap;
+
 import static org.eclipse.emf.common.util.URI.createURI;
 import static org.eclipse.emf.ecore.resource.ContentHandler.UNSPECIFIED_CONTENT_TYPE;
 import static org.eclipse.xtext.EcoreUtil2.resolveLazyCrossReferences;
 import static org.eclipse.xtext.resource.XtextResource.OPTION_ENCODING;
 import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
+
+import static com.google.eclipse.protobuf.util.Encodings.UTF_8;
 
 import java.io.IOException;
 
@@ -26,7 +28,8 @@ import org.eclipse.xtext.ui.resource.IResourceSetProvider;
 import org.eclipse.xtext.util.StringInputStream;
 
 import com.google.eclipse.protobuf.ui.util.IProjects;
-import com.google.inject.*;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Factory of <code>{@link XtextResource}</code>s.

@@ -8,21 +8,33 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.paths;
 
-import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.*;
-import static com.google.eclipse.protobuf.ui.util.IStatusFactory.error;
-import static com.google.eclipse.protobuf.ui.util.Workspaces.workspaceRoot;
 import static org.eclipse.core.runtime.Status.OK_STATUS;
 import static org.eclipse.jface.window.Window.OK;
 import static org.eclipse.ui.views.navigator.ResourceComparator.NAME;
 
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.directorySelection;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.errorElementIsNotDirectory;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.selectFileSystemDirectory;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.selectWorkspaceDirectory;
+import static com.google.eclipse.protobuf.ui.util.IStatusFactory.error;
+import static com.google.eclipse.protobuf.util.Workspaces.workspaceRoot;
+
 import java.net.URI;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.*;
-import org.eclipse.ui.dialogs.*;
-import org.eclipse.ui.model.*;
+import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
+import org.eclipse.ui.dialogs.ISelectionStatusValidator;
+import org.eclipse.ui.model.WorkbenchContentProvider;
+import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.views.navigator.ResourceComparator;
 
 /**

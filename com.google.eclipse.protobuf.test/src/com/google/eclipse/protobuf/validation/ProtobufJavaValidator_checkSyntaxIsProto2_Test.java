@@ -8,13 +8,18 @@
  */
 package com.google.eclipse.protobuf.validation;
 
+import static org.eclipse.xtext.validation.ValidationMessageAcceptor.INSIGNIFICANT_INDEX;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
+
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.SYNTAX__NAME;
 import static com.google.eclipse.protobuf.validation.ProtobufJavaValidator.SYNTAX_IS_NOT_PROTO2_ERROR;
-import static org.eclipse.xtext.validation.ValidationMessageAcceptor.INSIGNIFICANT_INDEX;
-import static org.mockito.Mockito.*;
 
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.google.eclipse.protobuf.protobuf.Syntax;
 

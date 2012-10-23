@@ -8,19 +8,22 @@
  */
 package com.google.eclipse.protobuf.ui.protoc.command;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static org.eclipse.core.resources.IResource.CHECK_ANCESTORS;
 import static org.eclipse.xtext.util.Strings.isEmpty;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 import java.io.File;
 import java.util.List;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
-import com.google.eclipse.protobuf.ui.preferences.paths.*;
+import com.google.eclipse.protobuf.ui.preferences.paths.DirectoryPath;
+import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

@@ -8,19 +8,22 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
-import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
-import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.inject.Inject;
-
-import org.junit.*;
+import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 
 import java.util.List;
+
+import org.junit.Rule;
+import org.junit.Test;
+
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link Imports#uriAsEnteredByUser(Import)}</code>

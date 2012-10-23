@@ -8,9 +8,12 @@
  */
 package com.google.eclipse.protobuf.ui.builder.nature;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.xtext.builder.nature.*;
-import org.eclipse.xtext.ui.editor.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.xtext.builder.nature.ToggleXtextNatureAction;
+import org.eclipse.xtext.builder.nature.XtextNature;
+import org.eclipse.xtext.ui.editor.AbstractDirtyStateAwareEditorCallback;
+import org.eclipse.xtext.ui.editor.XtextEditor;
 
 import com.google.inject.Inject;
 

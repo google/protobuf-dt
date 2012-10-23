@@ -9,16 +9,34 @@
 package com.google.eclipse.protobuf.ui.labeling;
 
 import static com.google.common.collect.Sets.newHashSet;
-import static com.google.eclipse.protobuf.protobuf.Modifier.*;
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
+import static com.google.eclipse.protobuf.protobuf.Modifier.OPTIONAL;
+import static com.google.eclipse.protobuf.protobuf.Modifier.REPEATED;
+import static com.google.eclipse.protobuf.protobuf.Modifier.REQUIRED;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.ENUM;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.EXTENSIONS;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.GROUP;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.LITERAL;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MESSAGE;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.OPTION;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.PACKAGE;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.RPC;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.SERVICE;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.STREAM;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.SYNTAX;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.TYPE_EXTENSION;
 
 import java.util.Set;
 
-import org.eclipse.emf.ecore.*;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.Keyword;
 
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.eclipse.protobuf.protobuf.Modifier;
+import com.google.eclipse.protobuf.protobuf.Option;
 import com.google.inject.Singleton;
 
 /**

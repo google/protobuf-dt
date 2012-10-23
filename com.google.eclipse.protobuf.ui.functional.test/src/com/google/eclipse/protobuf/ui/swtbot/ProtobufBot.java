@@ -8,14 +8,17 @@
  */
 package com.google.eclipse.protobuf.ui.swtbot;
 
-import static com.google.eclipse.protobuf.ui.util.Workspaces.workspaceRoot;
 import static org.eclipse.ui.dialogs.PreferencesUtil.createPreferenceDialogOn;
 
+import static com.google.eclipse.protobuf.util.Workspaces.workspaceRoot;
+
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
-import org.eclipse.swtbot.eclipse.finder.widgets.*;
+import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEclipseEditor;
+import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEditor;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 

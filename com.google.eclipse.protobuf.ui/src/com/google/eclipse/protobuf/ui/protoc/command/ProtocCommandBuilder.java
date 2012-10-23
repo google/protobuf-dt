@@ -8,12 +8,14 @@
  */
 package com.google.eclipse.protobuf.ui.protoc.command;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.unmodifiableList;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.List;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 
 import com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferences;

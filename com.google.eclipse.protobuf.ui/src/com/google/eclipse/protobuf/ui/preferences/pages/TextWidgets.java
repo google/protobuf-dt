@@ -10,7 +10,8 @@ package com.google.eclipse.protobuf.ui.preferences.pages;
 
 import static com.google.eclipse.protobuf.ui.preferences.pages.SystemColors.getSystemColor;
 
-import org.eclipse.swt.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Text;
 
 /**

@@ -9,14 +9,21 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.editor.general;
 
-import static com.google.eclipse.protobuf.ui.preferences.editor.general.Messages.header;
 import static org.eclipse.ui.dialogs.PreferencesUtil.createPreferenceDialogOn;
+
+import static com.google.eclipse.protobuf.ui.preferences.editor.general.Messages.header;
 
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
-import org.eclipse.ui.*;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
  * General editor preferences.

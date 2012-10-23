@@ -8,10 +8,12 @@
  */
 package com.google.eclipse.protobuf.linking;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 
-import org.eclipse.emf.ecore.*;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.xtext.diagnostics.DiagnosticMessage;
 import org.eclipse.xtext.linking.lazy.LazyLinkingResource;
 import org.eclipse.xtext.nodemodel.INode;

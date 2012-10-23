@@ -8,11 +8,15 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages.binding;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import static com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToTextValue.bindTextOf;
-import static org.mockito.Mockito.*;
 
 import org.eclipse.swt.widgets.Text;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests for <code>{@link BindingToTextValue}</code>.

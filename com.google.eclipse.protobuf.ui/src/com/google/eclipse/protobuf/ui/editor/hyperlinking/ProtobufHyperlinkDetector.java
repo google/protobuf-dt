@@ -11,18 +11,23 @@ package com.google.eclipse.protobuf.ui.editor.hyperlinking;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.jface.text.*;
-import org.eclipse.jface.text.hyperlink.*;
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.hyperlink.IHyperlink;
+import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.eclipse.xtext.CrossReference;
 import org.eclipse.xtext.nodemodel.INode;
-import org.eclipse.xtext.resource.*;
+import org.eclipse.xtext.resource.EObjectAtOffsetHelper;
+import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.hyperlinking.DefaultHyperlinkDetector;
 import org.eclipse.xtext.ui.editor.model.IXtextDocument;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
-import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.model.util.INodes;
+import com.google.eclipse.protobuf.model.util.Imports;
 import com.google.eclipse.protobuf.protobuf.Import;
-import com.google.inject.*;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 /**
  * Represents an implementation of interface <code>{@link IHyperlinkDetector}</code> to find and convert

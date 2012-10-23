@@ -8,14 +8,18 @@
  */
 package com.google.eclipse.protobuf.ui.util;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
-import static org.junit.Assert.*;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 
 import org.eclipse.emf.common.util.URI;
-import org.junit.*;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;

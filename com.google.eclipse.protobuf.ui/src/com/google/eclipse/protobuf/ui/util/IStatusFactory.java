@@ -8,11 +8,13 @@
  */
 package com.google.eclipse.protobuf.ui.util;
 
-import static com.google.common.base.Strings.nullToEmpty;
-import static com.google.eclipse.protobuf.ui.plugin.ProtobufEditorPlugIn.protobufPluginId;
 import static org.eclipse.core.runtime.IStatus.ERROR;
 
-import org.eclipse.core.runtime.*;
+import static com.google.common.base.Strings.nullToEmpty;
+import static com.google.eclipse.protobuf.ui.plugin.ProtobufEditorPlugIn.protobufPluginId;
+
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 
 /**
  * Factory of <code>{@link IStatus}</code>.

@@ -12,7 +12,8 @@ import static org.eclipse.emf.common.util.URI.createURI;
 
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.jface.text.*;
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.xtext.nodemodel.INode;

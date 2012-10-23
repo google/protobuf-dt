@@ -11,7 +11,8 @@ package com.google.eclipse.protobuf.cdt;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import com.google.inject.*;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 /**
  * Controls the plug-in life cycle.

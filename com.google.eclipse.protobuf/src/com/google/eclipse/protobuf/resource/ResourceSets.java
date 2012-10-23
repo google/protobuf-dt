@@ -9,7 +9,8 @@
 package com.google.eclipse.protobuf.resource;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.*;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import com.google.inject.Singleton;
 

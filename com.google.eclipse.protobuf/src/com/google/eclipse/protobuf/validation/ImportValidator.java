@@ -8,23 +8,33 @@
  */
 package com.google.eclipse.protobuf.validation;
 
+import static java.lang.String.format;
+
+import static org.eclipse.xtext.util.Tuples.pair;
+
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
-import static com.google.eclipse.protobuf.validation.Messages.*;
-import static java.lang.String.format;
-import static org.eclipse.xtext.util.Tuples.pair;
+import static com.google.eclipse.protobuf.validation.Messages.importNotFound;
+import static com.google.eclipse.protobuf.validation.Messages.importingNonProto2;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 import org.eclipse.xtext.util.Pair;
-import org.eclipse.xtext.validation.*;
+import org.eclipse.xtext.validation.AbstractDeclarativeValidator;
+import org.eclipse.xtext.validation.Check;
+import org.eclipse.xtext.validation.EValidatorRegistrar;
 
-import java.util.*;
+import com.google.eclipse.protobuf.model.util.Imports;
+import com.google.eclipse.protobuf.model.util.Protobufs;
+import com.google.eclipse.protobuf.model.util.Resources;
+import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.inject.Inject;
 
 /**
  * Verifies that "imports" contain correct values.

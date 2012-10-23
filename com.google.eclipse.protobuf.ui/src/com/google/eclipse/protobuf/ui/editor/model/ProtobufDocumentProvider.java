@@ -9,25 +9,35 @@
  */
 package com.google.eclipse.protobuf.ui.editor.model;
 
+import static org.eclipse.core.filebuffers.FileBuffers.getTextFileBufferManager;
+import static org.eclipse.core.filebuffers.LocationKind.IFILE;
+import static org.eclipse.core.filebuffers.LocationKind.NORMALIZE;
+import static org.eclipse.text.undo.DocumentUndoManagerRegistry.getDocumentUndoManager;
+
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.eclipse.protobuf.ui.util.IStatusFactory.error;
-import static org.eclipse.core.filebuffers.FileBuffers.getTextFileBufferManager;
-import static org.eclipse.core.filebuffers.LocationKind.*;
-import static org.eclipse.text.undo.DocumentUndoManagerRegistry.getDocumentUndoManager;
+
+import java.util.List;
+
+import org.eclipse.core.filebuffers.ITextFileBuffer;
+import org.eclipse.core.filebuffers.ITextFileBufferManager;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.Region;
+import org.eclipse.text.edits.TextEdit;
+import org.eclipse.text.undo.IDocumentUndoManager;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.xtext.ui.editor.model.XtextDocument;
+import org.eclipse.xtext.ui.editor.model.XtextDocumentProvider;
 
 import com.google.eclipse.protobuf.ui.preferences.editor.save.SaveActionsPreferences;
 import com.google.eclipse.protobuf.ui.util.editor.ChangedLineRegionCalculator;
-import com.google.inject.*;
-
-import org.eclipse.core.filebuffers.*;
-import org.eclipse.core.runtime.*;
-import org.eclipse.jface.text.*;
-import org.eclipse.text.edits.TextEdit;
-import org.eclipse.text.undo.IDocumentUndoManager;
-import org.eclipse.ui.*;
-import org.eclipse.xtext.ui.editor.model.*;
-
-import java.util.List;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

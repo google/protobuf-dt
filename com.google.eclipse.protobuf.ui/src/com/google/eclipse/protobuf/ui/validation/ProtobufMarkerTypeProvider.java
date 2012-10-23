@@ -11,7 +11,8 @@ package com.google.eclipse.protobuf.ui.validation;
 import static com.google.eclipse.protobuf.ui.validation.MarkerTypes.EDITOR_CHECK;
 
 import org.eclipse.xtext.ui.validation.MarkerTypeProvider;
-import org.eclipse.xtext.validation.*;
+import org.eclipse.xtext.validation.CheckType;
+import org.eclipse.xtext.validation.Issue;
 
 import com.google.inject.Singleton;
 

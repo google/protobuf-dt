@@ -8,19 +8,27 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Collections.emptySet;
+
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
-import java.util.*;
+import static com.google.common.collect.Sets.newHashSet;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
 import com.google.eclipse.protobuf.model.util.TypeExtensions;
-import com.google.eclipse.protobuf.naming.*;
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.naming.LocalNamesProvider;
+import com.google.eclipse.protobuf.naming.OptionNamingStrategy;
+import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.protobuf.Message;
+import com.google.eclipse.protobuf.protobuf.MessageElement;
 import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.eclipse.protobuf.protobuf.TypeExtension;
 import com.google.inject.Inject;
 
 /**

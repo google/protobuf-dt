@@ -8,7 +8,10 @@
  */
 package com.google.eclipse.protobuf;
 
-import org.eclipse.emf.ecore.*;
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.xtext.GeneratedMetamodel;
 import org.eclipse.xtext.xtext.ecoreInference.IXtext2EcorePostProcessor;
 

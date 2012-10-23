@@ -8,19 +8,25 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-import com.google.eclipse.protobuf.junit.core.*;
-import com.google.eclipse.protobuf.protobuf.Import;
-import com.google.inject.Inject;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
+import com.google.eclipse.protobuf.junit.core.AbstractTestModule;
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link Imports#resolvedUriOf(Import)}</code>

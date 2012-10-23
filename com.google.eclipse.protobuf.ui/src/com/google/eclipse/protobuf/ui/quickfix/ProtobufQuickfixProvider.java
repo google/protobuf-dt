@@ -8,29 +8,49 @@
  */
 package com.google.eclipse.protobuf.ui.quickfix;
 
-import static com.google.eclipse.protobuf.grammar.Syntaxes.proto2;
-import static com.google.eclipse.protobuf.protobuf.BOOL.*;
-import static com.google.eclipse.protobuf.ui.quickfix.Messages.*;
-import static com.google.eclipse.protobuf.util.Strings.quote;
-import static com.google.eclipse.protobuf.validation.DataTypeValidator.*;
-import static com.google.eclipse.protobuf.validation.ProtobufJavaValidator.*;
 import static org.eclipse.emf.ecore.util.EcoreUtil.remove;
 import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.findActualNodeFor;
+
+import static com.google.eclipse.protobuf.grammar.Syntaxes.proto2;
+import static com.google.eclipse.protobuf.protobuf.BOOL.FALSE;
+import static com.google.eclipse.protobuf.protobuf.BOOL.TRUE;
+import static com.google.eclipse.protobuf.ui.quickfix.Messages.changeValueDescription;
+import static com.google.eclipse.protobuf.ui.quickfix.Messages.changeValueLabel;
+import static com.google.eclipse.protobuf.ui.quickfix.Messages.regenerateTagNumberDescription;
+import static com.google.eclipse.protobuf.ui.quickfix.Messages.regenerateTagNumberLabel;
+import static com.google.eclipse.protobuf.ui.quickfix.Messages.removeDuplicatePackageLabel;
+import static com.google.eclipse.protobuf.util.Strings.quote;
+import static com.google.eclipse.protobuf.validation.DataTypeValidator.EXPECTED_BOOL_ERROR;
+import static com.google.eclipse.protobuf.validation.DataTypeValidator.EXPECTED_STRING_ERROR;
+import static com.google.eclipse.protobuf.validation.ProtobufJavaValidator.INVALID_FIELD_TAG_NUMBER_ERROR;
+import static com.google.eclipse.protobuf.validation.ProtobufJavaValidator.MORE_THAN_ONE_PACKAGE_ERROR;
+import static com.google.eclipse.protobuf.validation.ProtobufJavaValidator.SYNTAX_IS_NOT_PROTO2_ERROR;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.model.IXtextDocument;
-import org.eclipse.xtext.ui.editor.model.edit.*;
-import org.eclipse.xtext.ui.editor.quickfix.*;
+import org.eclipse.xtext.ui.editor.model.edit.IModificationContext;
+import org.eclipse.xtext.ui.editor.model.edit.ISemanticModification;
+import org.eclipse.xtext.ui.editor.quickfix.DefaultQuickfixProvider;
+import org.eclipse.xtext.ui.editor.quickfix.Fix;
+import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionAcceptor;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 import org.eclipse.xtext.validation.Issue;
 
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
-import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.model.util.INodes;
+import com.google.eclipse.protobuf.model.util.IndexedElements;
 import com.google.eclipse.protobuf.naming.NameResolver;
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.BOOL;
+import com.google.eclipse.protobuf.protobuf.BooleanLink;
+import com.google.eclipse.protobuf.protobuf.FieldOption;
+import com.google.eclipse.protobuf.protobuf.IndexedElement;
 import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.eclipse.protobuf.protobuf.ProtobufFactory;
+import com.google.eclipse.protobuf.protobuf.StringLink;
+import com.google.eclipse.protobuf.protobuf.Syntax;
+import com.google.eclipse.protobuf.protobuf.Value;
 import com.google.inject.Inject;
 
 /**

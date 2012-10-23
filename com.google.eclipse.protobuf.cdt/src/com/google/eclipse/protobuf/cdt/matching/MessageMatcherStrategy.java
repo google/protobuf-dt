@@ -8,16 +8,18 @@
  */
 package com.google.eclipse.protobuf.cdt.matching;
 
+import static java.util.Collections.unmodifiableList;
+
 import static com.google.common.base.Objects.equal;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.eclipse.protobuf.cdt.util.ExtendedListIterator.newIterator;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MESSAGE;
-import static java.util.Collections.unmodifiableList;
 
 import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.*;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 
 import com.google.eclipse.protobuf.cdt.util.ExtendedIterator;
 import com.google.eclipse.protobuf.model.util.ModelObjects;

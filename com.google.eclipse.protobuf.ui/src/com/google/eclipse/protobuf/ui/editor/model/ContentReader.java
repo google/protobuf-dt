@@ -11,7 +11,11 @@ package com.google.eclipse.protobuf.ui.editor.model;
 import static com.google.common.io.Closeables.closeQuietly;
 import static com.google.eclipse.protobuf.util.Encodings.UTF_8;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 import com.google.inject.Singleton;
 

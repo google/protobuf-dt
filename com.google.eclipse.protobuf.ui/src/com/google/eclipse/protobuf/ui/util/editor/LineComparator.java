@@ -11,7 +11,9 @@ package com.google.eclipse.protobuf.ui.util.editor;
 
 import org.apache.log4j.Logger;
 import org.eclipse.compare.rangedifferencer.IRangeComparator;
-import org.eclipse.jface.text.*;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
 
 /**
  * Adapted from CDT's {@code org.eclipse.cdt.internal.ui.text.LineSeparator}.

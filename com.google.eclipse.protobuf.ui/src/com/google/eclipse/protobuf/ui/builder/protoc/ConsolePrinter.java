@@ -8,12 +8,19 @@
  */
 package com.google.eclipse.protobuf.ui.builder.protoc;
 
-import static com.google.common.io.Closeables.closeQuietly;
-import static com.google.eclipse.protobuf.ui.util.Workbenches.activeWorkbenchPage;
 import static org.eclipse.ui.console.IConsoleConstants.ID_CONSOLE_VIEW;
 
-import org.eclipse.ui.*;
-import org.eclipse.ui.console.*;
+import static com.google.common.io.Closeables.closeQuietly;
+import static com.google.eclipse.protobuf.ui.util.Workbenches.activeWorkbenchPage;
+
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsole;
+import org.eclipse.ui.console.IConsoleManager;
+import org.eclipse.ui.console.IConsoleView;
+import org.eclipse.ui.console.MessageConsole;
+import org.eclipse.ui.console.MessageConsoleStream;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

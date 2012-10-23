@@ -14,7 +14,8 @@ import java.util.Set;
 
 import org.eclipse.xtext.IGrammarAccess;
 
-import com.google.inject.*;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Utility methods related to grammar keywords.

@@ -8,16 +8,20 @@
  */
 package com.google.eclipse.protobuf.validation;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+
 import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
-import static org.mockito.Mockito.*;
+
+import org.eclipse.xtext.validation.ValidationMessageAcceptor;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.inject.Inject;
-
-import org.eclipse.xtext.validation.ValidationMessageAcceptor;
-import org.junit.*;
 
 /**
  * Tests for <code>{@link ImportValidator#checkNonProto2Imports(Protobuf)}</code>

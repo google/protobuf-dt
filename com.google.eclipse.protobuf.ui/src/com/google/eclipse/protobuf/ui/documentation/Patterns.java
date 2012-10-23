@@ -10,7 +10,8 @@ package com.google.eclipse.protobuf.ui.documentation;
 
 import static com.google.common.collect.Lists.newArrayList;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**

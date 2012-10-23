@@ -8,11 +8,13 @@
  */
 package com.google.eclipse.protobuf.ui.labeling;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
-import org.hamcrest.*;
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
 
 import com.google.eclipse.protobuf.ui.internal.ProtobufActivator;
 

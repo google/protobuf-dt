@@ -15,7 +15,9 @@ import org.eclipse.xtext.ui.editor.IURIEditorOpener;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 import org.eclipse.xtext.ui.resource.IResourceSetProvider;
 
-import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.model.util.ModelObjects;
+import com.google.eclipse.protobuf.model.util.Packages;
+import com.google.eclipse.protobuf.model.util.Resources;
 import com.google.eclipse.protobuf.resource.IndexLookup;
 import com.google.eclipse.protobuf.util.StringLists;
 import com.google.inject.Binder;

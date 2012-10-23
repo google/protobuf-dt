@@ -15,11 +15,20 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.ui.editor.outline.IOutlineNode;
-import org.eclipse.xtext.ui.editor.outline.impl.*;
+import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider;
+import org.eclipse.xtext.ui.editor.outline.impl.DocumentRootNode;
 
 import com.google.common.collect.ImmutableList;
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.BooleanLink;
+import com.google.eclipse.protobuf.protobuf.Extensions;
+import com.google.eclipse.protobuf.protobuf.FieldOption;
+import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.eclipse.protobuf.protobuf.MessageLink;
+import com.google.eclipse.protobuf.protobuf.Option;
 import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.eclipse.protobuf.protobuf.Stream;
 
 /**
  * Customization of the default outline structure.

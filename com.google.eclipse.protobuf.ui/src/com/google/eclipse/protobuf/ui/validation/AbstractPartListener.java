@@ -8,7 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.validation;
 
-import org.eclipse.ui.*;
+import org.eclipse.ui.IPartListener2;
+import org.eclipse.ui.IWorkbenchPartReference;
 
 /**
  * Base class for implementations of <code>{@link IPartListener2}</code>.

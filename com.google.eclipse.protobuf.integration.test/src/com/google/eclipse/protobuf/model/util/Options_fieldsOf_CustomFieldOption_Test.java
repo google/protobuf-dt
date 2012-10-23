@@ -8,17 +8,21 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
-import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
-import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
+import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
+
 import java.util.List;
 
-import org.junit.*;
+import org.junit.Rule;
+import org.junit.Test;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.AbstractCustomOption;
+import com.google.eclipse.protobuf.protobuf.CustomFieldOption;
+import com.google.eclipse.protobuf.protobuf.OptionField;
 import com.google.inject.Inject;
 
 /**

@@ -12,7 +12,9 @@ import static org.eclipse.swtbot.swt.finder.keyboard.Keystrokes.F3;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEclipseEditor;
-import org.junit.*;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
 
 import com.google.eclipse.protobuf.ui.junit.CommentReaderRule;
 import com.google.eclipse.protobuf.ui.swtbot.ProtobufBot;

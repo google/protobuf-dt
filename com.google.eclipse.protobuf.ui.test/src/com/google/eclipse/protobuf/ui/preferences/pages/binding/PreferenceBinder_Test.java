@@ -8,9 +8,11 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages.binding;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests for <code>{@link PreferenceBinder}</code>.

@@ -8,15 +8,20 @@
  */
 package com.google.eclipse.protobuf.ui.parser;
 
-import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+
+import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 
 import org.antlr.runtime.CharStream;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.xtext.nodemodel.impl.NodeModelBuilder;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;

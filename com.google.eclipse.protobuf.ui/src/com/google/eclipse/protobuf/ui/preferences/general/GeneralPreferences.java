@@ -8,11 +8,13 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.general;
 
-import static com.google.eclipse.protobuf.ui.preferences.general.PreferenceNames.*;
+import static com.google.eclipse.protobuf.ui.preferences.general.PreferenceNames.ENABLE_PROJECT_SETTINGS_PREFERENCE_NAME;
+import static com.google.eclipse.protobuf.ui.preferences.general.PreferenceNames.VALIDATE_FILES_ON_ACTIVATION;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.xtext.ui.editor.preferences.*;
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

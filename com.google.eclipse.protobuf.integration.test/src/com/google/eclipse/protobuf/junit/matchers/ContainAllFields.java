@@ -14,7 +14,8 @@ import static com.google.common.collect.Lists.newArrayList;
 import java.util.Collection;
 
 import org.eclipse.emf.ecore.EObject;
-import org.hamcrest.*;
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
 
 import com.google.common.base.Function;
 import com.google.eclipse.protobuf.junit.IEObjectDescriptions;

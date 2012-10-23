@@ -8,11 +8,13 @@
  */
 package com.google.eclipse.protobuf.cdt.matching;
 
-import static com.google.common.collect.Maps.newHashMap;
-import static com.google.eclipse.protobuf.cdt.util.ExtendedListIterator.newIterator;
 import static java.util.Collections.emptyList;
 
-import java.util.*;
+import static com.google.common.collect.Maps.newHashMap;
+import static com.google.eclipse.protobuf.cdt.util.ExtendedListIterator.newIterator;
+
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;

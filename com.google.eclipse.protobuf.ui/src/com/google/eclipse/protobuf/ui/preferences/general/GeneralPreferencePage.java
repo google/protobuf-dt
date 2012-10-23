@@ -8,16 +8,23 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.general;
 
-import static com.google.eclipse.protobuf.ui.preferences.general.Messages.*;
-import static com.google.eclipse.protobuf.ui.preferences.general.PreferenceNames.*;
+import static com.google.eclipse.protobuf.ui.preferences.general.Messages.contentValidation;
+import static com.google.eclipse.protobuf.ui.preferences.general.Messages.validateFilesOnActivation;
+import static com.google.eclipse.protobuf.ui.preferences.general.PreferenceNames.ENABLE_PROJECT_SETTINGS_PREFERENCE_NAME;
+import static com.google.eclipse.protobuf.ui.preferences.general.PreferenceNames.VALIDATE_FILES_ON_ACTIVATION;
 import static com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToButtonSelection.bindSelectionOf;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 
 import com.google.eclipse.protobuf.ui.preferences.pages.PreferenceAndPropertyPage;
-import com.google.eclipse.protobuf.ui.preferences.pages.binding.*;
+import com.google.eclipse.protobuf.ui.preferences.pages.binding.PreferenceBinder;
+import com.google.eclipse.protobuf.ui.preferences.pages.binding.PreferenceFactory;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

@@ -8,13 +8,17 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.unmodifiableList;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.List;
 
 import com.google.eclipse.protobuf.parser.NonProto2Protobuf;
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.eclipse.protobuf.protobuf.ProtobufElement;
+import com.google.eclipse.protobuf.protobuf.PublicImport;
 import com.google.inject.Singleton;
 
 /**

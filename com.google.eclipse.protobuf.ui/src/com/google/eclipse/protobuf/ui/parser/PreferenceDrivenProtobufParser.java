@@ -10,7 +10,8 @@ package com.google.eclipse.protobuf.ui.parser;
 
 import org.antlr.runtime.CharStream;
 import org.eclipse.xtext.nodemodel.impl.NodeModelBuilder;
-import org.eclipse.xtext.parser.*;
+import org.eclipse.xtext.parser.IParseResult;
+import org.eclipse.xtext.parser.ParseResult;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.eclipse.protobuf.parser.NonProto2Protobuf;

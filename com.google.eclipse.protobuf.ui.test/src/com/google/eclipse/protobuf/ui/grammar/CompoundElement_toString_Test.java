@@ -8,9 +8,10 @@
  */
 package com.google.eclipse.protobuf.ui.grammar;
 
-import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.DEFAULT_EQUAL;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+
+import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.DEFAULT_EQUAL;
 
 import org.junit.Test;
 

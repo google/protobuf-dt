@@ -8,7 +8,9 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.IndexedElement;
+import com.google.eclipse.protobuf.protobuf.Option;
+import com.google.eclipse.protobuf.protobuf.OptionField;
 import com.google.inject.Singleton;
 
 /**

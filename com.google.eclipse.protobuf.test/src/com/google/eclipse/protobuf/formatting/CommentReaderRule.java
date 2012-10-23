@@ -15,10 +15,14 @@ import org.eclipse.xtext.ISetup;
 import org.eclipse.xtext.nodemodel.ICompositeNode;
 import org.eclipse.xtext.parser.IParseResult;
 import org.junit.rules.MethodRule;
-import org.junit.runners.model.*;
+import org.junit.runners.model.FrameworkMethod;
+import org.junit.runners.model.Statement;
 
-import com.google.eclipse.protobuf.junit.core.*;
-import com.google.inject.*;
+import com.google.eclipse.protobuf.junit.core.CommentReader;
+import com.google.eclipse.protobuf.junit.core.OverrideRuntimeModuleSetup;
+import com.google.eclipse.protobuf.junit.core.ProtobufInTestsParser;
+import com.google.inject.Injector;
+import com.google.inject.Module;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

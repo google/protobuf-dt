@@ -14,10 +14,15 @@ import static com.google.eclipse.protobuf.ui.validation.ProtobufValidation.valid
 import java.net.URI;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.ui.*;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 
 import com.google.eclipse.protobuf.ui.util.Editors;
-import com.google.inject.*;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Triggers validation of .proto files.

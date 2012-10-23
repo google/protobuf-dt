@@ -8,9 +8,14 @@
  */
 package com.google.eclipse.protobuf.junit.matchers;
 
-import org.hamcrest.*;
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
 
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.ComplexType;
+import com.google.eclipse.protobuf.protobuf.ComplexTypeLink;
+import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.eclipse.protobuf.protobuf.ScalarTypeLink;
+import com.google.eclipse.protobuf.protobuf.TypeLink;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

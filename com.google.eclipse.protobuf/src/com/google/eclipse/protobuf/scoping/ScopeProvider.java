@@ -8,11 +8,16 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import com.google.eclipse.protobuf.protobuf.*;
+import java.util.Collection;
 
 import org.eclipse.xtext.resource.IEObjectDescription;
 
-import java.util.Collection;
+import com.google.eclipse.protobuf.protobuf.AbstractCustomOption;
+import com.google.eclipse.protobuf.protobuf.ComplexValue;
+import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.eclipse.protobuf.protobuf.Rpc;
+import com.google.eclipse.protobuf.protobuf.Stream;
+import com.google.eclipse.protobuf.protobuf.TypeExtension;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

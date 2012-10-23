@@ -8,16 +8,17 @@
  */
 package com.google.eclipse.protobuf.junit.core;
 
-import static com.google.eclipse.protobuf.junit.core.GeneratedProtoFiles.protoFile;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import com.google.eclipse.protobuf.protobuf.Import;
-import com.google.eclipse.protobuf.scoping.IFileUriResolver;
+import static com.google.eclipse.protobuf.junit.core.GeneratedProtoFiles.protoFile;
+
+import java.io.File;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EReference;
 
-import java.io.File;
+import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.scoping.IFileUriResolver;
 
 /**
  * Guice module for unit testing.

@@ -9,19 +9,30 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.editor.save;
 
-import static com.google.eclipse.protobuf.ui.preferences.editor.save.Messages.*;
-import static com.google.eclipse.protobuf.ui.preferences.editor.save.PreferenceNames.*;
+import static com.google.eclipse.protobuf.ui.preferences.editor.save.Messages.inAllLines;
+import static com.google.eclipse.protobuf.ui.preferences.editor.save.Messages.inEditedLines;
+import static com.google.eclipse.protobuf.ui.preferences.editor.save.Messages.removeTrailingWhitespace;
+import static com.google.eclipse.protobuf.ui.preferences.editor.save.PreferenceNames.IN_ALL_LINES;
+import static com.google.eclipse.protobuf.ui.preferences.editor.save.PreferenceNames.IN_EDITED_LINES;
+import static com.google.eclipse.protobuf.ui.preferences.editor.save.PreferenceNames.REMOVE_TRAILING_WHITESPACE;
 import static com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToButtonSelection.bindSelectionOf;
 
-import org.eclipse.jface.preference.*;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
-import org.eclipse.ui.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
-import com.google.eclipse.protobuf.ui.preferences.pages.binding.*;
+import com.google.eclipse.protobuf.ui.preferences.pages.binding.PreferenceBinder;
+import com.google.eclipse.protobuf.ui.preferences.pages.binding.PreferenceFactory;
 import com.google.inject.Inject;
 
 /**

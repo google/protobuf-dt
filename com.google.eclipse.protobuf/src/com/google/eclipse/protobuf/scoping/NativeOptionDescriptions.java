@@ -8,15 +8,20 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static java.util.Collections.*;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
+
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
-import java.util.*;
+import static com.google.common.collect.Lists.newArrayList;
+
+import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.xtext.resource.IEObjectDescription;
 
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.AbstractOption;
+import com.google.eclipse.protobuf.protobuf.MessageField;
 import com.google.inject.Inject;
 
 /**

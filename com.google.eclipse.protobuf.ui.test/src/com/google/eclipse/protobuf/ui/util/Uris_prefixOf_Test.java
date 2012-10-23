@@ -8,13 +8,15 @@
  */
 package com.google.eclipse.protobuf.ui.util;
 
-import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
-import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
+import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
+
 import org.eclipse.emf.common.util.URI;
-import org.junit.*;
+import org.junit.Rule;
+import org.junit.Test;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.inject.Inject;

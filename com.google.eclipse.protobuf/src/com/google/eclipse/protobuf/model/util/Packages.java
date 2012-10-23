@@ -8,13 +8,18 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static java.util.Collections.*;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
+
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import java.util.*;
+import static com.google.common.collect.Lists.newArrayList;
 
-import org.eclipse.xtext.naming.*;
+import java.util.Collection;
+import java.util.List;
+
+import org.eclipse.xtext.naming.IQualifiedNameConverter;
+import org.eclipse.xtext.naming.QualifiedName;
 
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.inject.Inject;

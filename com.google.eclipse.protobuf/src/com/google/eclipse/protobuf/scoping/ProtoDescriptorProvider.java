@@ -8,19 +8,24 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.common.collect.Maps.newLinkedHashMap;
 import static java.util.Collections.unmodifiableCollection;
+
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import java.util.*;
+import static com.google.common.collect.Maps.newLinkedHashMap;
+
+import java.util.Collection;
+import java.util.Map;
 import java.util.Map.Entry;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.parser.IParser;
 
 import com.google.eclipse.protobuf.model.util.INodes;
-import com.google.inject.*;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Provider of <code>{@link ProtoDescriptor}</code>s.

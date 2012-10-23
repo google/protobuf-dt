@@ -8,20 +8,26 @@
  */
 package com.google.eclipse.protobuf.conversion;
 
-import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
-import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
-import static java.lang.Double.*;
+import static java.lang.Double.NEGATIVE_INFINITY;
+import static java.lang.Double.NaN;
+import static java.lang.Double.POSITIVE_INFINITY;
 import static java.util.Arrays.asList;
+
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
+import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
+
 import java.util.Collection;
 
 import org.eclipse.xtext.nodemodel.INode;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.*;
+import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;

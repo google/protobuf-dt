@@ -6,9 +6,10 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.util;
+package com.google.eclipse.protobuf.util;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 
 /**
  * Utility methods related to workspaces.
@@ -16,7 +17,6 @@ import org.eclipse.core.resources.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public final class Workspaces {
-
   /**
    * Returns the root of the workspace.
    * @return the root of the workspace.

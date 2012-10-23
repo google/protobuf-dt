@@ -10,11 +10,13 @@ package com.google.eclipse.protobuf.ui.outline;
 
 import java.util.Map;
 
-import org.eclipse.xtext.ui.editor.outline.actions.*;
+import org.eclipse.xtext.ui.editor.outline.actions.LinkWithEditorOutlineContribution;
+import org.eclipse.xtext.ui.editor.outline.actions.OutlineWithEditorLinker;
 import org.eclipse.xtext.ui.editor.outline.impl.OutlinePage;
 
 import com.google.common.collect.Maps;
-import com.google.inject.*;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

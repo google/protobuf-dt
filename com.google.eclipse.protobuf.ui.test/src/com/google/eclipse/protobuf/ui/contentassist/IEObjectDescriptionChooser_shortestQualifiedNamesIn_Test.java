@@ -8,18 +8,24 @@
  */
 package com.google.eclipse.protobuf.ui.contentassist;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.eclipse.protobuf.ui.contentassist.IEObjectDescriptionsHaveNames.containOnly;
 import static java.util.Collections.emptyMap;
+
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
-import java.util.*;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.eclipse.protobuf.ui.contentassist.IEObjectDescriptionsHaveNames.containOnly;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.QualifiedName;
-import org.eclipse.xtext.resource.*;
-import org.junit.*;
+import org.eclipse.xtext.resource.EObjectDescription;
+import org.eclipse.xtext.resource.IEObjectDescription;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.google.eclipse.protobuf.protobuf.Message;
 

@@ -10,9 +10,11 @@ package com.google.eclipse.protobuf.junit.matchers;
 
 import static com.google.common.collect.Lists.newArrayList;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
-import org.hamcrest.*;
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
 
 import com.google.eclipse.protobuf.junit.IEObjectDescriptions;
 

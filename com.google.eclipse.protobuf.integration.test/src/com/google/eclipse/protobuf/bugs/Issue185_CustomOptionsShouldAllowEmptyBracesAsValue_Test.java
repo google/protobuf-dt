@@ -8,14 +8,16 @@
  */
 package com.google.eclipse.protobuf.bugs;
 
+import static org.junit.Assert.assertNull;
+
 import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
-import static org.junit.Assert.assertNull;
+
+import org.junit.Rule;
+import org.junit.Test;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.CustomFieldOption;
-
-import org.junit.*;
 
 /**
  * Tests fix for <a href="http://code.google.com/p/protobuf-dt/issues/detail?id=185">Issue 185</a>.

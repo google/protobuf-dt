@@ -15,7 +15,8 @@ import org.eclipse.emf.common.util.URI;
 
 import com.google.eclipse.protobuf.ui.preferences.paths.DirectoryPath;
 import com.google.eclipse.protobuf.ui.util.Uris;
-import com.google.inject.*;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

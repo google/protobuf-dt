@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.util;
 
-import static com.google.eclipse.protobuf.ui.util.Workspaces.workspaceRoot;
+import static com.google.eclipse.protobuf.util.Workspaces.workspaceRoot;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IPath;

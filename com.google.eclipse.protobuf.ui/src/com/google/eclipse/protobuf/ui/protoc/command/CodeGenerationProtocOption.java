@@ -9,10 +9,13 @@
 package com.google.eclipse.protobuf.ui.protoc.command;
 
 import static java.io.File.separator;
+
 import static org.eclipse.core.runtime.IPath.SEPARATOR;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.eclipse.protobuf.ui.preferences.compiler.CodeGenerationPreference;

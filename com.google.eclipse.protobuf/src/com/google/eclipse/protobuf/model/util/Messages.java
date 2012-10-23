@@ -8,15 +8,24 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Collections.unmodifiableList;
+
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.inject.*;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.newHashSet;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
+import com.google.eclipse.protobuf.protobuf.Message;
+import com.google.eclipse.protobuf.protobuf.MessageElement;
+import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.eclipse.protobuf.protobuf.TypeExtension;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Utility methods related to <code>{@link Message}</code>s.

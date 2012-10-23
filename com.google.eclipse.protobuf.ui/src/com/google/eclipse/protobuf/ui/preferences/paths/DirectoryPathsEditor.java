@@ -8,20 +8,38 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.paths;
 
-import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.*;
 import static java.util.Collections.unmodifiableList;
+
 import static org.eclipse.jface.window.Window.OK;
 
-import java.util.*;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.add;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.directories;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.down;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.remove;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.up;
+
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.xtext.ui.PluginImageHelper;
 
 import com.google.eclipse.protobuf.ui.preferences.pages.DataChangedListener;

@@ -8,18 +8,22 @@
  */
 package com.google.eclipse.protobuf.junit.core;
 
-import static com.google.eclipse.protobuf.util.SystemProperties.lineSeparator;
 import static org.eclipse.emf.common.util.URI.createURI;
 import static org.eclipse.emf.ecore.util.EcoreUtil.resolveAll;
 import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
 
-import java.io.*;
+import static com.google.eclipse.protobuf.util.SystemProperties.lineSeparator;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.linking.lazy.LazyLinkingResource;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.parser.IParseResult;
-import org.eclipse.xtext.resource.*;
+import org.eclipse.xtext.resource.IResourceFactory;
+import org.eclipse.xtext.resource.XtextResource;
+import org.eclipse.xtext.resource.XtextResourceSet;
 import org.eclipse.xtext.util.StringInputStream;
 
 import com.google.inject.Injector;

@@ -8,8 +8,14 @@
  */
 package com.google.eclipse.protobuf.ui.grammar;
 
-import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.DEFAULT_EQUAL;
+import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.DEFAULT_EQUAL_IN_BRACKETS;
+import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.DEFAULT_EQUAL_STRING;
+import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.DEFAULT_EQUAL_STRING_IN_BRACKETS;
+import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.EMPTY_STRING;
 
 import org.junit.Test;
 

@@ -8,15 +8,17 @@
  */
 package com.google.eclipse.protobuf.ui.documentation;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static org.eclipse.xtext.util.Strings.isEmpty;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
 
-import com.google.inject.*;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Provides single-line and multi-line comments as documentation of a protobuf

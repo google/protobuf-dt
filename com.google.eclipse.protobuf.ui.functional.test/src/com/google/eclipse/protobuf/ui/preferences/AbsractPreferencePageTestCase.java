@@ -9,7 +9,9 @@
 package com.google.eclipse.protobuf.ui.preferences;
 
 import org.eclipse.core.runtime.CoreException;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Rule;
 
 import com.google.eclipse.protobuf.ui.junit.XtextRule;
 import com.google.eclipse.protobuf.ui.swtbot.ProtobufBot;

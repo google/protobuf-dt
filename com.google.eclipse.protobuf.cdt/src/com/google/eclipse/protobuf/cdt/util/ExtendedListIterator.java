@@ -8,8 +8,10 @@
  */
 package com.google.eclipse.protobuf.cdt.util;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
+
 import static com.google.common.collect.Lists.newArrayList;
-import static java.util.Collections.*;
 
 import java.util.List;
 

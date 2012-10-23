@@ -10,7 +10,8 @@ package com.google.eclipse.protobuf.ui.commands;
 
 import static org.eclipse.xtext.ui.editor.utils.EditorUtils.getActiveXtextEditor;
 
-import org.eclipse.core.commands.*;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.xtext.ui.editor.XtextEditor;

@@ -11,7 +11,8 @@ package com.google.eclipse.protobuf.ui.preferences.misc;
 import static com.google.eclipse.protobuf.ui.preferences.misc.PreferenceNames.IS_GOOGLE_INTERNAL;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.xtext.ui.editor.preferences.*;
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
 
 /**
  * "Miscellaneous" preferences, retrieved from an <code>{@link IPreferenceStore}</code>.

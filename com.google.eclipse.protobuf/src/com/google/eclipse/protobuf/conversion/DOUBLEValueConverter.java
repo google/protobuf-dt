@@ -8,9 +8,13 @@
  */
 package com.google.eclipse.protobuf.conversion;
 
-import static com.google.common.collect.Maps.newHashMap;
-import static java.lang.Double.*;
+import static java.lang.Double.NEGATIVE_INFINITY;
+import static java.lang.Double.NaN;
+import static java.lang.Double.POSITIVE_INFINITY;
+
 import static org.eclipse.xtext.util.Strings.isEmpty;
+
+import static com.google.common.collect.Maps.newHashMap;
 
 import java.util.Map;
 

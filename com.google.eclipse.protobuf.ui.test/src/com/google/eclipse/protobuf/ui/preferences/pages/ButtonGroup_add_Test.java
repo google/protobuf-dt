@@ -8,13 +8,14 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
-import org.junit.*;
-
-import com.google.eclipse.protobuf.ui.preferences.pages.ButtonGroup;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests for <code>{@link ButtonGroup#add(SelectionListener)}</code>.

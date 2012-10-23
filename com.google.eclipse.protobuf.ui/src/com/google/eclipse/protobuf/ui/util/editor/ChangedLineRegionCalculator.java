@@ -8,23 +8,35 @@
  */
 package com.google.eclipse.protobuf.ui.util.editor;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.eclipse.protobuf.ui.util.IStatusFactory.error;
-import static com.google.eclipse.protobuf.ui.util.editor.Messages.*;
 import static org.eclipse.compare.rangedifferencer.RangeDifferencer.findDifferences;
 import static org.eclipse.core.filebuffers.FileBuffers.createTextFileBufferManager;
 import static org.eclipse.core.runtime.Status.OK_STATUS;
 import static org.eclipse.core.runtime.SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK;
+
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.eclipse.protobuf.ui.util.IStatusFactory.error;
+import static com.google.eclipse.protobuf.ui.util.editor.Messages.calculatingChangedRegions;
+import static com.google.eclipse.protobuf.ui.util.editor.Messages.errorCalculatingChangedRegions;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.log4j.Logger;
 import org.eclipse.compare.rangedifferencer.RangeDifference;
-import org.eclipse.core.filebuffers.*;
+import org.eclipse.core.filebuffers.ITextFileBuffer;
+import org.eclipse.core.filebuffers.ITextFileBufferManager;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.runtime.*;
-import org.eclipse.jface.text.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.ISafeRunnable;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.Region;
 
 import com.google.inject.Singleton;
 

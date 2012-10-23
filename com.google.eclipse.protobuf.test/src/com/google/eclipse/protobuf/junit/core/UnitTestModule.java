@@ -12,7 +12,8 @@ import static org.mockito.Mockito.mock;
 
 import org.eclipse.core.runtime.IExtensionRegistry;
 
-import com.google.inject.*;
+import com.google.inject.AbstractModule;
+import com.google.inject.Provider;
 
 /**
  * Guice module for unit testing.

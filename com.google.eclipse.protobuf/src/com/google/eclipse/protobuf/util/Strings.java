@@ -10,9 +10,9 @@ package com.google.eclipse.protobuf.util;
 
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import com.google.common.base.Function;
-
 import java.util.Scanner;
+
+import com.google.common.base.Function;
 
 /**
  * Utility methods related to {@code String}.s

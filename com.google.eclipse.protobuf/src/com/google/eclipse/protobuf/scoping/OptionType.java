@@ -10,11 +10,18 @@ package com.google.eclipse.protobuf.scoping;
 
 import static com.google.common.collect.Maps.newHashMap;
 
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.protobuf.Enum;
-
-import java.util.*;
+import java.util.Map;
 import java.util.Map.Entry;
+
+import com.google.eclipse.protobuf.protobuf.AbstractOption;
+import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.eclipse.protobuf.protobuf.IndexedElement;
+import com.google.eclipse.protobuf.protobuf.Literal;
+import com.google.eclipse.protobuf.protobuf.Message;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.eclipse.protobuf.protobuf.Rpc;
+import com.google.eclipse.protobuf.protobuf.Service;
+import com.google.eclipse.protobuf.protobuf.Stream;
 
 /**
  * Types of options (by location.)

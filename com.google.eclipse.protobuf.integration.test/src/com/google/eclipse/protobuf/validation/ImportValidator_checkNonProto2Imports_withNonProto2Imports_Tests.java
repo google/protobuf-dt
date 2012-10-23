@@ -8,23 +8,30 @@
  */
 package com.google.eclipse.protobuf.validation;
 
+import static org.eclipse.xtext.validation.ValidationMessageAcceptor.INSIGNIFICANT_INDEX;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
 import static com.google.eclipse.protobuf.validation.Messages.importingNonProto2;
-import static org.eclipse.xtext.validation.ValidationMessageAcceptor.INSIGNIFICANT_INDEX;
-import static org.mockito.Mockito.*;
 
 import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.validation.ValidationMessageAcceptor;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
-import com.google.eclipse.protobuf.junit.core.*;
+import com.google.eclipse.protobuf.junit.core.AbstractTestModule;
+import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.model.util.Protobufs;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.inject.*;
+import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Tests for <code>{@link ImportValidator#checkNonProto2Imports(Protobuf)}</code>

@@ -8,15 +8,20 @@
  */
 package com.google.eclipse.protobuf.ui.outline;
 
-import static com.google.common.collect.Maps.newLinkedHashMap;
 import static java.util.Collections.unmodifiableList;
 
-import java.util.*;
+import static com.google.common.collect.Maps.newLinkedHashMap;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.emf.ecore.EObject;
 
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.eclipse.protobuf.protobuf.ProtobufElement;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

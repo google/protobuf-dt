@@ -9,6 +9,7 @@
 package com.google.eclipse.protobuf.junit.core;
 
 import static java.io.File.separator;
+
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;

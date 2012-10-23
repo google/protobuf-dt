@@ -8,20 +8,30 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableCollection;
+import static java.util.Collections.unmodifiableList;
+
+import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
+import static org.eclipse.xtext.EcoreUtil2.resolveLazyCrossReferences;
+import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
+import static org.eclipse.xtext.util.Strings.isEmpty;
+
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.io.Closeables.closeQuietly;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MESSAGE_FIELD__TYPE;
 import static com.google.eclipse.protobuf.scoping.OptionType.findOptionTypeForLevelOf;
 import static com.google.eclipse.protobuf.util.Encodings.UTF_8;
-import static java.util.Collections.*;
-import static org.eclipse.xtext.EcoreUtil2.*;
-import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
-import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -32,8 +42,13 @@ import org.eclipse.xtext.resource.XtextResource;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.eclipse.protobuf.model.util.INodes;
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.ComplexType;
 import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.eclipse.protobuf.protobuf.Message;
+import com.google.eclipse.protobuf.protobuf.MessageElement;
+import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.eclipse.protobuf.protobuf.NativeOption;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
 
 /**
  * Contains the elements from descriptor.proto (provided with protobuf's library.)

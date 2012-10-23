@@ -8,8 +8,10 @@
  */
 package com.google.eclipse.protobuf.validation;
 
-import static com.google.eclipse.protobuf.validation.Messages.*;
 import static org.eclipse.xtext.diagnostics.Diagnostic.SYNTAX_DIAGNOSTIC;
+
+import static com.google.eclipse.protobuf.validation.Messages.expectedFieldName;
+import static com.google.eclipse.protobuf.validation.Messages.missingFieldNumber;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.nodemodel.SyntaxErrorMessage;

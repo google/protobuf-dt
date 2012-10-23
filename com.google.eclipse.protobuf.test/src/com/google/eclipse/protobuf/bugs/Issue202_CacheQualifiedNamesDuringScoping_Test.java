@@ -8,20 +8,29 @@
  */
 package com.google.eclipse.protobuf.bugs;
 
-import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
-import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static org.eclipse.xtext.util.Tuples.pair;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.naming.*;
-import com.google.eclipse.protobuf.protobuf.Message;
-import com.google.inject.Inject;
+import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 
 import org.eclipse.xtext.naming.QualifiedName;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.naming.IProtobufQualifiedNameProvider;
+import com.google.eclipse.protobuf.naming.NameType;
+import com.google.eclipse.protobuf.naming.NamingStrategy;
+import com.google.eclipse.protobuf.protobuf.Message;
+import com.google.inject.Inject;
 
 /**
  * Tests fix for <a href="http://code.google.com/p/protobuf-dt/issues/detail?id=202">Issue 202</a>.

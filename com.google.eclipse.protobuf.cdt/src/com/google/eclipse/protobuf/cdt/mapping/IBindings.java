@@ -8,16 +8,21 @@
  */
 package com.google.eclipse.protobuf.cdt.mapping;
 
+import static java.util.Collections.unmodifiableList;
+
 import static com.google.common.collect.ImmutableList.of;
 import static com.google.common.collect.Lists.newArrayList;
-import static java.util.Collections.unmodifiableList;
 
 import java.util.List;
 
 import org.eclipse.cdt.core.dom.IName;
 import org.eclipse.cdt.core.dom.ast.IBinding;
-import org.eclipse.cdt.core.dom.ast.cpp.*;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.*;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPBase;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPEnumeration;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPFunction;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPNamespace;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassType;
 
 import com.google.common.collect.ImmutableList;
 

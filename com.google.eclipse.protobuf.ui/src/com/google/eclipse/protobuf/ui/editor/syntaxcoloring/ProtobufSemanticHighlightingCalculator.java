@@ -9,19 +9,64 @@
  */
 package com.google.eclipse.protobuf.ui.editor.syntaxcoloring;
 
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
-import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.HighlightingConfiguration.*;
+import static org.eclipse.xtext.ui.editor.syntaxcoloring.DefaultHighlightingConfiguration.DEFAULT_ID;
+import static org.eclipse.xtext.ui.editor.syntaxcoloring.DefaultHighlightingConfiguration.NUMBER_ID;
+
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.ABSTRACT_OPTION__VALUE;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.LITERAL__INDEX;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MESSAGE_FIELD__TYPE;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.OPTION__SOURCE;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.RPC__ARG_TYPE;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.RPC__RETURN_TYPE;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.TYPE_EXTENSION__TYPE;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.HighlightingConfiguration.ENUM_DEFINITION_ID;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.HighlightingConfiguration.ENUM_ID;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.HighlightingConfiguration.ENUM_LITERAL_DEFINITION;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.HighlightingConfiguration.ENUM_LITERAL_ID;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.HighlightingConfiguration.ENUM_LITERAL_INDEX_ID;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.HighlightingConfiguration.MESSAGE_DEFINITION_ID;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.HighlightingConfiguration.MESSAGE_FIELD_INDEX_ID;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.HighlightingConfiguration.MESSAGE_ID;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.HighlightingConfiguration.RPC_ARGUMENT_ID;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.HighlightingConfiguration.RPC_DEFINITION_ID;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.HighlightingConfiguration.RPC_RETURN_TYPE_ID;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.HighlightingConfiguration.SERVICE_DEFINITION_ID;
 
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.*;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.resource.XtextResource;
-import org.eclipse.xtext.ui.editor.syntaxcoloring.*;
+import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightedPositionAcceptor;
+import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculator;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.model.util.INodes;
+import com.google.eclipse.protobuf.model.util.IndexedElements;
+import com.google.eclipse.protobuf.model.util.Options;
+import com.google.eclipse.protobuf.protobuf.ComplexType;
+import com.google.eclipse.protobuf.protobuf.ComplexTypeLink;
 import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.eclipse.protobuf.protobuf.EnumElement;
+import com.google.eclipse.protobuf.protobuf.FieldOption;
+import com.google.eclipse.protobuf.protobuf.Group;
+import com.google.eclipse.protobuf.protobuf.GroupElement;
+import com.google.eclipse.protobuf.protobuf.IndexedElement;
+import com.google.eclipse.protobuf.protobuf.Literal;
+import com.google.eclipse.protobuf.protobuf.LiteralLink;
+import com.google.eclipse.protobuf.protobuf.Message;
+import com.google.eclipse.protobuf.protobuf.MessageElement;
+import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.eclipse.protobuf.protobuf.NumberLink;
+import com.google.eclipse.protobuf.protobuf.Option;
 import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.eclipse.protobuf.protobuf.ProtobufElement;
+import com.google.eclipse.protobuf.protobuf.Rpc;
+import com.google.eclipse.protobuf.protobuf.Service;
+import com.google.eclipse.protobuf.protobuf.ServiceElement;
+import com.google.eclipse.protobuf.protobuf.TypeExtension;
+import com.google.eclipse.protobuf.protobuf.TypeLink;
+import com.google.eclipse.protobuf.protobuf.Value;
 import com.google.inject.Inject;
 
 /**

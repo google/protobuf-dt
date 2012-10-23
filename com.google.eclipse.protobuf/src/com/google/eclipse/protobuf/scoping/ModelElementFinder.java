@@ -8,20 +8,35 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.common.collect.Sets.newHashSet;
-import static java.util.Collections.*;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
+import static java.util.Collections.unmodifiableSet;
+
 import static org.eclipse.emf.ecore.util.EcoreUtil.getAllContents;
 
-import java.util.*;
+import static com.google.common.collect.Sets.newHashSet;
 
-import org.eclipse.emf.common.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
+import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.*;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.model.util.Imports;
+import com.google.eclipse.protobuf.model.util.ModelObjects;
+import com.google.eclipse.protobuf.model.util.Packages;
+import com.google.eclipse.protobuf.model.util.Protobufs;
+import com.google.eclipse.protobuf.model.util.Resources;
+import com.google.eclipse.protobuf.protobuf.Group;
+import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.protobuf.Message;
 import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.eclipse.protobuf.resource.ResourceSets;
 import com.google.inject.Inject;
 

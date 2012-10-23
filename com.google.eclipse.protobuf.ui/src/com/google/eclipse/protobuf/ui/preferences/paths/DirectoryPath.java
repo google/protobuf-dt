@@ -11,11 +11,15 @@ package com.google.eclipse.protobuf.ui.preferences.paths;
 import static com.google.eclipse.protobuf.ui.preferences.paths.ProjectVariable.replaceProjectVariableWithProjectName;
 import static com.google.eclipse.protobuf.ui.util.IPaths.directoryLocationInWorkspace;
 
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.eclipse.core.filesystem.*;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileSystem;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 
 /**
  * Represents the path of a directory.

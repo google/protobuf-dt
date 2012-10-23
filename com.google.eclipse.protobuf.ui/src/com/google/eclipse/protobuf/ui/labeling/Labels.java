@@ -9,16 +9,32 @@
  */
 package com.google.eclipse.protobuf.ui.labeling;
 
-import static com.google.eclipse.protobuf.ui.labeling.Messages.unresolved;
 import static org.eclipse.jface.viewers.StyledString.DECORATIONS_STYLER;
+
+import static com.google.eclipse.protobuf.ui.labeling.Messages.unresolved;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.viewers.StyledString;
 
-import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.model.util.Imports;
+import com.google.eclipse.protobuf.model.util.MessageFields;
+import com.google.eclipse.protobuf.model.util.Options;
 import com.google.eclipse.protobuf.naming.NameResolver;
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.AbstractCustomOption;
+import com.google.eclipse.protobuf.protobuf.AbstractOption;
+import com.google.eclipse.protobuf.protobuf.ExtensibleTypeLink;
+import com.google.eclipse.protobuf.protobuf.Extensions;
+import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.protobuf.IndexedElement;
+import com.google.eclipse.protobuf.protobuf.Literal;
+import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.eclipse.protobuf.protobuf.MessageLink;
+import com.google.eclipse.protobuf.protobuf.OptionField;
+import com.google.eclipse.protobuf.protobuf.Range;
+import com.google.eclipse.protobuf.protobuf.Rpc;
+import com.google.eclipse.protobuf.protobuf.Stream;
+import com.google.eclipse.protobuf.protobuf.TypeExtension;
 import com.google.inject.Inject;
 
 /**

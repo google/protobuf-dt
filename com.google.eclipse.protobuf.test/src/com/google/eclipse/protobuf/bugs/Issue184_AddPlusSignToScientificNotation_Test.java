@@ -8,16 +8,20 @@
  */
 package com.google.eclipse.protobuf.bugs;
 
-import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
-import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
 
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.*;
+import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 
-import org.junit.*;
+import org.junit.Rule;
+import org.junit.Test;
+
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.DefaultValueFieldOption;
+import com.google.eclipse.protobuf.protobuf.DoubleLink;
+import com.google.eclipse.protobuf.protobuf.Value;
 
 /**
  * Tests fix for <a href="http://code.google.com/p/protobuf-dt/issues/detail?id=184">Issue 184</a>.

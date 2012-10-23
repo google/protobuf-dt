@@ -10,12 +10,17 @@ package com.google.eclipse.protobuf.cdt.actions;
 
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import java.io.*;
-import java.util.regex.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.eclipse.cdt.core.model.*;
+import org.eclipse.cdt.core.model.ICElement;
+import org.eclipse.cdt.core.model.ITranslationUnit;
 import org.eclipse.cdt.internal.ui.editor.CEditor;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.IEditorPart;
 
 import com.google.inject.Singleton;

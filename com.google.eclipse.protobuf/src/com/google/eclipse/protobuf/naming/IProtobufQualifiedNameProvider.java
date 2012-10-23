@@ -9,7 +9,8 @@
 package com.google.eclipse.protobuf.naming;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.naming.*;
+import org.eclipse.xtext.naming.IQualifiedNameProvider;
+import org.eclipse.xtext.naming.QualifiedName;
 
 import com.google.inject.ImplementedBy;
 

@@ -8,24 +8,35 @@
  */
 package com.google.eclipse.protobuf.ui.scoping;
 
+import static java.util.Collections.singletonList;
+
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
-import static java.util.Collections.singletonList;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import com.google.eclipse.protobuf.junit.core.*;
-import com.google.eclipse.protobuf.ui.preferences.paths.*;
+import com.google.eclipse.protobuf.junit.core.AbstractTestModule;
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.ui.preferences.paths.DirectoryPath;
+import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
 import com.google.inject.Inject;
 
 /**

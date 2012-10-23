@@ -11,7 +11,8 @@ package com.google.eclipse.protobuf.cdt.matching;
 import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.*;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 
 import com.google.eclipse.protobuf.cdt.util.ExtendedIterator;
 

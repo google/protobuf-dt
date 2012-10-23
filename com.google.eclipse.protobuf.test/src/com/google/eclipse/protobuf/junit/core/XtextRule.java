@@ -10,21 +10,25 @@
 package com.google.eclipse.protobuf.junit.core;
 
 import static java.util.Arrays.asList;
+
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import java.io.File;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.*;
+import org.eclipse.xtext.EcoreUtil2;
+import org.eclipse.xtext.ISetup;
 import org.eclipse.xtext.nodemodel.ILeafNode;
 import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.resource.XtextResource;
 import org.junit.rules.MethodRule;
-import org.junit.runners.model.*;
+import org.junit.runners.model.FrameworkMethod;
+import org.junit.runners.model.Statement;
 
 import com.google.eclipse.protobuf.protobuf.Protobuf;
-import com.google.inject.*;
+import com.google.inject.Injector;
+import com.google.inject.Module;
 
 /**
  * JUnit <code>{@link MethodRule}</code> that:

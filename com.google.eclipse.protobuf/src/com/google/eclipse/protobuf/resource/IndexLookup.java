@@ -12,7 +12,8 @@ import static com.google.common.base.Objects.equal;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.xtext.resource.*;
+import org.eclipse.xtext.resource.IResourceDescription;
+import org.eclipse.xtext.resource.IResourceDescriptions;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Inject;

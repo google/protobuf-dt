@@ -8,7 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.compiler;
 
-import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.*;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.CPP_CODE_GENERATION_ENABLED;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.CPP_OUTPUT_DIRECTORY;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;

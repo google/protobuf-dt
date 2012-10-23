@@ -8,8 +8,21 @@
  */
 package com.google.eclipse.protobuf.grammar;
 
-import static com.google.eclipse.protobuf.grammar.CommonKeyword.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.BOOL;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.BYTES;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.CLOSING_BRACKET;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.CLOSING_CURLY_BRACKET;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.DEFAULT;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.EQUAL;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.FALSE;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.OPENING_BRACKET;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.OPENING_CURLY_BRACKET;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.SEMICOLON;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.STRING;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.TRUE;
 
 import org.junit.Test;
 

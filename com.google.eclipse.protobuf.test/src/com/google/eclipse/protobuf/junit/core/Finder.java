@@ -12,14 +12,18 @@ package com.google.eclipse.protobuf.junit.core;
 import static com.google.eclipse.protobuf.junit.core.SearchOption.IGNORE_CASE;
 import static com.google.eclipse.protobuf.util.SystemProperties.lineSeparator;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
 
-import org.eclipse.emf.ecore.*;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.naming.QualifiedName;
-import org.eclipse.xtext.nodemodel.*;
+import org.eclipse.xtext.nodemodel.BidiTreeIterator;
+import org.eclipse.xtext.nodemodel.ILeafNode;
+import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.nodemodel.impl.AbstractNode;
 
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.DefaultValueFieldOption;
 import com.google.eclipse.protobuf.protobuf.Package;
 
 /**

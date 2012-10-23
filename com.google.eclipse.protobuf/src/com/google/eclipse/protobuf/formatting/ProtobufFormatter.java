@@ -8,11 +8,17 @@
  */
 package com.google.eclipse.protobuf.formatting;
 
-import static com.google.eclipse.protobuf.grammar.CommonKeyword.*;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.CLOSING_BRACKET;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.CLOSING_CURLY_BRACKET;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.EQUAL;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.OPENING_BRACKET;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.OPENING_CURLY_BRACKET;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.SEMICOLON;
 import static com.google.eclipse.protobuf.util.CommonWords.space;
 
 import org.eclipse.xtext.Keyword;
-import org.eclipse.xtext.formatting.impl.*;
+import org.eclipse.xtext.formatting.impl.AbstractDeclarativeFormatter;
+import org.eclipse.xtext.formatting.impl.FormattingConfig;
 
 import com.google.eclipse.protobuf.services.ProtobufGrammarAccess;
 

@@ -8,10 +8,12 @@
  */
 package com.google.eclipse.protobuf.junit;
 
-import static com.google.common.collect.Maps.newLinkedHashMap;
 import static java.util.Collections.unmodifiableSet;
 
-import java.util.*;
+import static com.google.common.collect.Maps.newLinkedHashMap;
+
+import java.util.Collection;
+import java.util.Map;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.naming.QualifiedName;

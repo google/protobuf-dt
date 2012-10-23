@@ -15,7 +15,8 @@ import java.util.List;
 import org.eclipse.emf.common.util.URI;
 
 import com.google.common.base.Function;
-import com.google.eclipse.protobuf.ui.preferences.paths.*;
+import com.google.eclipse.protobuf.ui.preferences.paths.DirectoryPath;
+import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
 import com.google.inject.Inject;
 
 /**

@@ -10,10 +10,12 @@ package com.google.eclipse.protobuf.model.util;
 
 import static com.google.common.collect.Lists.newArrayList;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.xtext.naming.QualifiedName;
-import org.hamcrest.*;
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

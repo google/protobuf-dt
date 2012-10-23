@@ -16,7 +16,12 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
 import com.google.eclipse.protobuf.model.util.Options;
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.AbstractCustomOption;
+import com.google.eclipse.protobuf.protobuf.ComplexValue;
+import com.google.eclipse.protobuf.protobuf.ComplexValueField;
+import com.google.eclipse.protobuf.protobuf.FieldName;
+import com.google.eclipse.protobuf.protobuf.IndexedElement;
+import com.google.eclipse.protobuf.protobuf.MessageField;
 import com.google.inject.Inject;
 
 /**

@@ -9,12 +9,14 @@
  */
 package com.google.eclipse.protobuf.ui.junit;
 
-import static java.util.Collections.*;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 
 import java.util.List;
 
 import org.junit.rules.MethodRule;
-import org.junit.runners.model.*;
+import org.junit.runners.model.FrameworkMethod;
+import org.junit.runners.model.Statement;
 
 import com.google.eclipse.protobuf.junit.core.CommentReader;
 

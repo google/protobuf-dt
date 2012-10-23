@@ -8,28 +8,36 @@
  */
 package com.google.eclipse.protobuf.validation;
 
-import static com.google.common.collect.Lists.newArrayListWithExpectedSize;
-import static com.google.common.collect.Maps.newHashMap;
-import static com.google.eclipse.protobuf.validation.Messages.*;
-import static org.eclipse.xtext.diagnostics.Severity.*;
+import static org.eclipse.xtext.diagnostics.Severity.ERROR;
+import static org.eclipse.xtext.diagnostics.Severity.WARNING;
 import static org.eclipse.xtext.validation.AbstractInjectableValidator.CURRENT_LANGUAGE_NAME;
 import static org.eclipse.xtext.validation.CancelableDiagnostician.CANCEL_INDICATOR;
 import static org.eclipse.xtext.validation.CheckMode.KEY;
 import static org.eclipse.xtext.validation.CheckType.FAST;
 import static org.eclipse.xtext.validation.impl.ConcreteSyntaxEValidator.DISABLE_CONCRETE_SYNTAX_EVALIDATOR;
 
-import com.google.eclipse.protobuf.linking.ProtobufDiagnostic;
+import static com.google.common.collect.Lists.newArrayListWithExpectedSize;
+import static com.google.common.collect.Maps.newHashMap;
+import static com.google.eclipse.protobuf.validation.Messages.importingNonProto2;
+import static com.google.eclipse.protobuf.validation.Messages.scopingError;
+
+import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.Diagnostic;
-import org.eclipse.emf.ecore.*;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EValidator;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.diagnostics.Severity;
 import org.eclipse.xtext.resource.XtextResource;
-import org.eclipse.xtext.util.*;
-import org.eclipse.xtext.validation.*;
+import org.eclipse.xtext.util.CancelIndicator;
+import org.eclipse.xtext.util.IAcceptor;
+import org.eclipse.xtext.validation.CheckMode;
+import org.eclipse.xtext.validation.Issue;
+import org.eclipse.xtext.validation.ResourceValidatorImpl;
 
-import java.util.*;
+import com.google.eclipse.protobuf.linking.ProtobufDiagnostic;
 
 /**
  * Adds support for converting scoping errors into warnings if non-proto2 files are imported.

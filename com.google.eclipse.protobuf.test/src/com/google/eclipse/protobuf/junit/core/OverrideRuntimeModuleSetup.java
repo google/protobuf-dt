@@ -10,8 +10,11 @@ package com.google.eclipse.protobuf.junit.core;
 
 import static java.util.Arrays.copyOf;
 
-import com.google.eclipse.protobuf.*;
-import com.google.inject.*;
+import com.google.eclipse.protobuf.ProtobufRuntimeModule;
+import com.google.eclipse.protobuf.ProtobufStandaloneSetup;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
 import com.google.inject.util.Modules;
 
 /**

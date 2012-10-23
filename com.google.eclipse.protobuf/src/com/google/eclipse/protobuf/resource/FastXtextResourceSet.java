@@ -2,13 +2,21 @@ package com.google.eclipse.protobuf.resource;
 
 import static org.eclipse.xtext.resource.ClasspathUriUtil.isClasspathUri;
 
+import static com.google.eclipse.protobuf.util.Workspaces.workspaceRoot;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.URIConverter;
 import org.eclipse.emf.ecore.resource.impl.ExtensibleURIConverterImpl;
-import org.eclipse.xtext.resource.*;
-
-import java.io.*;
-import java.util.Map;
+import org.eclipse.xtext.resource.ClasspathUriResolutionException;
+import org.eclipse.xtext.resource.SynchronizedXtextResourceSet;
 
 public class FastXtextResourceSet extends SynchronizedXtextResourceSet {
   @Override public URIConverter getURIConverter() {
@@ -42,7 +50,12 @@ public class FastXtextResourceSet extends SynchronizedXtextResourceSet {
           }
           if ("proto".equals(uri.fileExtension())) {
             if (uri.isPlatformResource()) {
-              return getClass().getResourceAsStream(uri.path());
+              String platformUri = uri.toPlatformString(true);
+              IFile file = workspaceRoot().getFile(Path.fromOSString(platformUri));
+              if (file != null && file.exists()) {
+                IPath location = file.getLocation();
+                return new FileInputStream(location.toFile());
+              }
             }
             if (uri.isFile()) {
               return new FileInputStream(uri.path());

@@ -8,24 +8,37 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages;
 
-import static com.google.eclipse.protobuf.ui.preferences.pages.Messages.*;
-import static com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToButtonSelection.bindSelectionOf;
 import static org.eclipse.ui.dialogs.PreferencesUtil.createPreferenceDialogOn;
 import static org.eclipse.xtext.util.Strings.isEmpty;
+
+import static com.google.eclipse.protobuf.ui.preferences.pages.Messages.configureWorkspaceSettings;
+import static com.google.eclipse.protobuf.ui.preferences.pages.Messages.enableProjectSettings;
+import static com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToButtonSelection.bindSelectionOf;
 
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.jface.preference.*;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
-import org.eclipse.ui.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.IWorkbenchPropertyPage;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
-import com.google.eclipse.protobuf.ui.preferences.pages.binding.*;
+import com.google.eclipse.protobuf.ui.preferences.pages.binding.Preference;
+import com.google.eclipse.protobuf.ui.preferences.pages.binding.PreferenceBinder;
+import com.google.eclipse.protobuf.ui.preferences.pages.binding.PreferenceFactory;
 import com.google.inject.Inject;
 
 /**

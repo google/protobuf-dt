@@ -8,10 +8,13 @@
  */
 package com.google.eclipse.protobuf.ui.protoc.output;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 
 import org.eclipse.core.runtime.CoreException;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests for <code>{@link RegexOutputParser#parseAndAddMarkerIfNecessary(String, ProtocMarkerFactory)}</code>.

@@ -11,10 +11,12 @@ package com.google.eclipse.protobuf.ui.editor.model;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.eclipse.xtext.util.StringInputStream;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests for <code>{@link ContentReader#contentsOf(InputStream)}</code>.

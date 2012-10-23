@@ -8,18 +8,24 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Collections.emptySet;
+
 import static org.eclipse.xtext.resource.EObjectDescription.create;
 
-import java.util.*;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.newHashSet;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.naming.*;
+import org.eclipse.xtext.naming.IQualifiedNameProvider;
+import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
-import com.google.eclipse.protobuf.model.util.*;
+import com.google.eclipse.protobuf.model.util.Packages;
+import com.google.eclipse.protobuf.model.util.QualifiedNames;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.inject.Inject;
 

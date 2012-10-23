@@ -15,7 +15,8 @@ import java.util.Map;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.internal.core.dom.parser.ProblemBinding;
 
-import com.google.inject.*;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

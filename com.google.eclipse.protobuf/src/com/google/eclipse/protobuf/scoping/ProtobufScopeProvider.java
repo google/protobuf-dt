@@ -8,20 +8,48 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.eclipse.protobuf.scoping.OptionType.typeOf;
 import static java.util.Collections.emptySet;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.inject.Inject;
+import static com.google.eclipse.protobuf.scoping.OptionType.typeOf;
 
-import org.eclipse.emf.ecore.*;
+import java.util.Collection;
+import java.util.Set;
+
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.IScope;
-import org.eclipse.xtext.scoping.impl.*;
+import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider;
+import org.eclipse.xtext.scoping.impl.SimpleScope;
 
-import java.util.*;
+import com.google.eclipse.protobuf.model.util.MessageFields;
+import com.google.eclipse.protobuf.model.util.ModelObjects;
+import com.google.eclipse.protobuf.model.util.Options;
+import com.google.eclipse.protobuf.protobuf.AbstractCustomOption;
+import com.google.eclipse.protobuf.protobuf.AbstractOption;
+import com.google.eclipse.protobuf.protobuf.ComplexType;
+import com.google.eclipse.protobuf.protobuf.ComplexTypeLink;
+import com.google.eclipse.protobuf.protobuf.ComplexValue;
+import com.google.eclipse.protobuf.protobuf.DefaultValueFieldOption;
+import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.eclipse.protobuf.protobuf.ExtensibleType;
+import com.google.eclipse.protobuf.protobuf.ExtensibleTypeLink;
+import com.google.eclipse.protobuf.protobuf.FieldName;
+import com.google.eclipse.protobuf.protobuf.IndexedElement;
+import com.google.eclipse.protobuf.protobuf.LiteralLink;
+import com.google.eclipse.protobuf.protobuf.Message;
+import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.eclipse.protobuf.protobuf.MessageLink;
+import com.google.eclipse.protobuf.protobuf.MessageOptionField;
+import com.google.eclipse.protobuf.protobuf.NormalFieldName;
+import com.google.eclipse.protobuf.protobuf.OptionField;
+import com.google.eclipse.protobuf.protobuf.OptionSource;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.eclipse.protobuf.protobuf.Rpc;
+import com.google.eclipse.protobuf.protobuf.SimpleValueField;
+import com.google.eclipse.protobuf.protobuf.Stream;
+import com.google.eclipse.protobuf.protobuf.TypeExtension;
+import com.google.inject.Inject;
 
 /**
  * Custom scoping description.

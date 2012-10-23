@@ -8,24 +8,64 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.compiler;
 
-import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.*;
-import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.*;
+import static org.eclipse.xtext.util.Strings.isEmpty;
+
+import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.browseCustomPath;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.compileOnSave;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.descriptorLocation;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.errorInvalidDescriptor;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.errorInvalidProtoc;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.errorNoLanguageSelected;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.errorNoSelection;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.protocInCustomPath;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.protocInSystemPath;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.protocLocation;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.refreshOutputProject;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.refreshProject;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.refreshResources;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.tabMain;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.Messages.tabRefresh;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.COMPILE_PROTO_FILES;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.CPP_CODE_GENERATION_ENABLED;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.CPP_OUTPUT_DIRECTORY;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.DESCRIPTOR_FILE_PATH;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.ENABLE_PROJECT_SETTINGS_PREFERENCE_NAME;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.JAVA_CODE_GENERATION_ENABLED;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.JAVA_OUTPUT_DIRECTORY;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.PROTOC_FILE_PATH;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.PYTHON_CODE_GENERATION_ENABLED;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.PYTHON_OUTPUT_DIRECTORY;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.REFRESH_OUTPUT_DIRECTORY;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.REFRESH_PROJECT;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.REFRESH_RESOURCES;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.USE_PROTOC_IN_CUSTOM_PATH;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.USE_PROTOC_IN_SYSTEM_PATH;
 import static com.google.eclipse.protobuf.ui.preferences.pages.ButtonGroup.with;
 import static com.google.eclipse.protobuf.ui.preferences.pages.LabelWidgets.setEnabled;
-import static com.google.eclipse.protobuf.ui.preferences.pages.TextWidgets.*;
+import static com.google.eclipse.protobuf.ui.preferences.pages.TextWidgets.setEditable;
+import static com.google.eclipse.protobuf.ui.preferences.pages.TextWidgets.setEnabled;
 import static com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToButtonSelection.bindSelectionOf;
 import static com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToTextValue.bindTextOf;
-import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import java.io.File;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.swt.widgets.Text;
 
 import com.google.eclipse.protobuf.ui.preferences.pages.PreferenceAndPropertyPage;
-import com.google.eclipse.protobuf.ui.preferences.pages.binding.*;
+import com.google.eclipse.protobuf.ui.preferences.pages.binding.PreferenceBinder;
+import com.google.eclipse.protobuf.ui.preferences.pages.binding.PreferenceFactory;
 
 /**
  * Preference page for protobuf compiler.

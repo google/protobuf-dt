@@ -8,8 +8,10 @@
  */
 package com.google.eclipse.protobuf.conversion;
 
-import static com.google.eclipse.protobuf.util.Strings.*;
 import static org.eclipse.xtext.util.Strings.convertToJavaString;
+
+import static com.google.eclipse.protobuf.util.Strings.removeLineBreaks;
+import static com.google.eclipse.protobuf.util.Strings.unquote;
 
 import org.eclipse.xtext.conversion.ValueConverterException;
 import org.eclipse.xtext.conversion.impl.AbstractLexerBasedConverter;

@@ -8,21 +8,30 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
-import static com.google.eclipse.protobuf.junit.matchers.FieldHasType.*;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
+import static com.google.eclipse.protobuf.junit.matchers.FieldHasType.isBool;
+import static com.google.eclipse.protobuf.junit.matchers.FieldHasType.isString;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
 
 import org.eclipse.emf.ecore.EObject;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.protobuf.Message;
+import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.inject.Inject;
 
 /**

@@ -9,16 +9,18 @@
  */
 package com.google.eclipse.protobuf.naming;
 
-import static com.google.eclipse.protobuf.naming.NameType.OPTION;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 import static org.eclipse.xtext.util.Tuples.create;
 
-import com.google.eclipse.protobuf.model.util.Options;
-import com.google.eclipse.protobuf.protobuf.IndexedElement;
-import com.google.inject.*;
+import static com.google.eclipse.protobuf.naming.NameType.OPTION;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.util.Pair;
+
+import com.google.eclipse.protobuf.model.util.Options;
+import com.google.eclipse.protobuf.protobuf.IndexedElement;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Returns the name of a model object, to be used as the name of an option.

@@ -8,14 +8,16 @@
  */
 package com.google.eclipse.protobuf.naming;
 
-import static com.google.eclipse.protobuf.naming.NameType.NORMAL;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 import static org.eclipse.xtext.util.Tuples.pair;
 
-import com.google.inject.*;
+import static com.google.eclipse.protobuf.naming.NameType.NORMAL;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.util.Pair;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Returns the name of a model object obtained from a <code>{@link NameResolver}</code>.

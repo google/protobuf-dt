@@ -9,11 +9,15 @@
 package com.google.eclipse.protobuf.ui.preferences.paths.core;
 
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.eclipse.core.resources.IProject;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.google.eclipse.protobuf.ui.preferences.paths.DirectoryPath;
 

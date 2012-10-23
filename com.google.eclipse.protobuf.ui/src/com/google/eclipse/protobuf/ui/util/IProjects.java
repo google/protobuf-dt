@@ -10,9 +10,12 @@ package com.google.eclipse.protobuf.ui.util;
 
 import static com.google.eclipse.protobuf.ui.util.Workbenches.activeWorkbenchPage;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.ui.*;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IViewReference;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.views.navigator.ResourceNavigator;
 
 import com.google.inject.Singleton;

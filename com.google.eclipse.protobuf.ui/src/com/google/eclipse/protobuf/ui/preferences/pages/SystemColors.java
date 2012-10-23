@@ -8,7 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages;
 
-import org.eclipse.swt.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 

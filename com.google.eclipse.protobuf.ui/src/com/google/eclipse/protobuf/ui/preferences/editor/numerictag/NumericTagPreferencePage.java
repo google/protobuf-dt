@@ -8,21 +8,32 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.editor.numerictag;
 
-import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.AddOrEditPatternDialog.*;
-import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.Messages.*;
+import static org.eclipse.jface.window.Window.OK;
+
+import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.AddOrEditPatternDialog.addPattern;
+import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.AddOrEditPatternDialog.editPattern;
+import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.Messages.add;
+import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.Messages.edit;
+import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.Messages.pageDescription;
+import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.Messages.remove;
 import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.PreferenceNames.NUMERIC_TAG_PATTERNS;
 import static com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToListItems.bindItemsOf;
-import static org.eclipse.jface.window.Window.OK;
 
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.List;
 
 import com.google.eclipse.protobuf.ui.preferences.StringSplitter;
 import com.google.eclipse.protobuf.ui.preferences.pages.PreferenceAndPropertyPage;
-import com.google.eclipse.protobuf.ui.preferences.pages.binding.*;
+import com.google.eclipse.protobuf.ui.preferences.pages.binding.PreferenceBinder;
+import com.google.eclipse.protobuf.ui.preferences.pages.binding.PreferenceFactory;
 
 /**
  * Preference page where users can specify the patterns to use to match comments where "the next id" is being tracked.

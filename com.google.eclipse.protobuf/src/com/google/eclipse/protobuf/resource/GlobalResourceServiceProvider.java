@@ -9,10 +9,11 @@
  */
 package com.google.eclipse.protobuf.resource;
 
-import org.eclipse.emf.ecore.*;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.resource.IGlobalServiceProvider.ResourceServiceProviderImpl;
-import org.eclipse.xtext.resource.*;
+import org.eclipse.xtext.resource.IResourceServiceProvider;
 import org.eclipse.xtext.resource.IResourceServiceProvider.Registry;
 
 import com.google.inject.Inject;

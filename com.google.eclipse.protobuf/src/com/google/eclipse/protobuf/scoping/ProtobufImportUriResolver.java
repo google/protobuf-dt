@@ -8,11 +8,11 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import com.google.eclipse.protobuf.protobuf.Import;
-import com.google.inject.Inject;
-
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.scoping.impl.ImportUriResolver;
+
+import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.inject.Inject;
 
 /**
  * This implementation mimics how protoc understands URIs of imported files. For example, the URI

@@ -8,19 +8,35 @@
  */
 package com.google.eclipse.protobuf.ui.labeling;
 
-import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.OPTION;
-import static com.google.eclipse.protobuf.ui.labeling.ProjectFileExists.existsInProject;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import org.junit.*;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.OPTION;
+import static com.google.eclipse.protobuf.ui.labeling.ProjectFileExists.existsInProject;
+
+import org.junit.Rule;
+import org.junit.Test;
 
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.CustomOption;
 import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.eclipse.protobuf.protobuf.Extensions;
+import com.google.eclipse.protobuf.protobuf.Group;
+import com.google.eclipse.protobuf.protobuf.Literal;
+import com.google.eclipse.protobuf.protobuf.Message;
+import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.eclipse.protobuf.protobuf.NativeOption;
+import com.google.eclipse.protobuf.protobuf.NormalImport;
 import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.eclipse.protobuf.protobuf.PublicImport;
+import com.google.eclipse.protobuf.protobuf.Rpc;
+import com.google.eclipse.protobuf.protobuf.Service;
+import com.google.eclipse.protobuf.protobuf.Stream;
+import com.google.eclipse.protobuf.protobuf.Syntax;
+import com.google.eclipse.protobuf.protobuf.TypeExtension;
+import com.google.eclipse.protobuf.protobuf.WeakImport;
 import com.google.eclipse.protobuf.ui.plugin.ProtobufEditorPlugIn;
 import com.google.inject.Inject;
 

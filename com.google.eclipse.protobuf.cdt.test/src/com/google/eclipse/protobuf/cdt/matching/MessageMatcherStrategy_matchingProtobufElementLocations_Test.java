@@ -8,18 +8,20 @@
  */
 package com.google.eclipse.protobuf.cdt.matching;
 
+import static org.hamcrest.collection.IsCollectionContaining.hasItems;
+import static org.junit.Assert.assertThat;
+
 import static com.google.eclipse.protobuf.cdt.matching.Resources.eObjects;
 import static com.google.eclipse.protobuf.cdt.util.ExtendedListIterator.newIterator;
 import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
-import static org.hamcrest.collection.IsCollectionContaining.hasItems;
-import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.junit.*;
+import org.junit.Rule;
+import org.junit.Test;
 
 import com.google.eclipse.protobuf.cdt.util.ExtendedIterator;
 import com.google.eclipse.protobuf.junit.core.XtextRule;

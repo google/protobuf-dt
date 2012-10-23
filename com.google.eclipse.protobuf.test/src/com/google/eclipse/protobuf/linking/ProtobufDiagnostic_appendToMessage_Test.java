@@ -13,7 +13,8 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
 import org.eclipse.xtext.nodemodel.INode;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests for <code>{@link ProtobufDiagnostic#appendToMessage(String)}</code>

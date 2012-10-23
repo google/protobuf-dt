@@ -8,7 +8,11 @@
  */
 package com.google.eclipse.protobuf.ui.grammar;
 
-import static com.google.eclipse.protobuf.grammar.CommonKeyword.*;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.CLOSING_BRACKET;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.DEFAULT;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.EQUAL;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.OPENING_BRACKET;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.SEMICOLON;
 import static com.google.eclipse.protobuf.grammar.Syntaxes.proto2;
 import static com.google.eclipse.protobuf.util.CommonWords.space;
 

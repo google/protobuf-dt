@@ -8,19 +8,36 @@
  */
 package com.google.eclipse.protobuf.naming;
 
-import static com.google.eclipse.protobuf.naming.NameType.NORMAL;
 import static org.eclipse.xtext.util.Tuples.pair;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.inject.*;
-
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.naming.*;
-import org.eclipse.xtext.util.*;
+import static com.google.eclipse.protobuf.naming.NameType.NORMAL;
 
 import java.util.List;
+
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.naming.IQualifiedNameConverter;
+import org.eclipse.xtext.naming.IQualifiedNameProvider;
+import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.util.IResourceScopeCache;
+import org.eclipse.xtext.util.Pair;
+
+import com.google.eclipse.protobuf.model.util.ModelObjects;
+import com.google.eclipse.protobuf.model.util.Packages;
+import com.google.eclipse.protobuf.model.util.QualifiedNames;
+import com.google.eclipse.protobuf.protobuf.AbstractOption;
+import com.google.eclipse.protobuf.protobuf.BooleanLink;
+import com.google.eclipse.protobuf.protobuf.ComplexValue;
+import com.google.eclipse.protobuf.protobuf.FieldName;
+import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.protobuf.NumberLink;
+import com.google.eclipse.protobuf.protobuf.OptionSource;
+import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.eclipse.protobuf.protobuf.ScalarTypeLink;
+import com.google.eclipse.protobuf.protobuf.StringLink;
+import com.google.eclipse.protobuf.protobuf.ValueField;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 /**
  * Provides fully-qualified names for protobuf elements.

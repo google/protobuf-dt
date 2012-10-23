@@ -8,11 +8,15 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import org.eclipse.xtext.nodemodel.*;
-import org.junit.*;
+import org.eclipse.xtext.nodemodel.ILeafNode;
+import org.eclipse.xtext.nodemodel.INode;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests for <code>{@link INodes#isHiddenLeafNode(INode)}</code>

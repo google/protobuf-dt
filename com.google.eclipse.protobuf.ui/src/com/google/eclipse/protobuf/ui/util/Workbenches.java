@@ -8,7 +8,10 @@
  */
 package com.google.eclipse.protobuf.ui.util;
 
-import org.eclipse.ui.*;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * Utility methods related to Eclipse workbenches.

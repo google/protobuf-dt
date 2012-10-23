@@ -8,12 +8,17 @@
  */
 package com.google.eclipse.protobuf.ui.editor.model;
 
-import static com.google.eclipse.protobuf.ui.preferences.editor.save.SaveActionsWritablePreferences.RemoveTrailingWhitespace.*;
 import static org.junit.Assert.assertEquals;
+
+import static com.google.eclipse.protobuf.ui.preferences.editor.save.SaveActionsWritablePreferences.RemoveTrailingWhitespace.ALL_LINES;
+import static com.google.eclipse.protobuf.ui.preferences.editor.save.SaveActionsWritablePreferences.RemoveTrailingWhitespace.EDITED_LINES;
+import static com.google.eclipse.protobuf.ui.preferences.editor.save.SaveActionsWritablePreferences.RemoveTrailingWhitespace.NONE;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEclipseEditor;
-import org.junit.*;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
 
 import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
 import com.google.eclipse.protobuf.ui.junit.XtextRule;

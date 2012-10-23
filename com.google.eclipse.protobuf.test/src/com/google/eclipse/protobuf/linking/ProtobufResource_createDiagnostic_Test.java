@@ -8,16 +8,22 @@
  */
 package com.google.eclipse.protobuf.linking;
 
-import static com.google.eclipse.protobuf.linking.ProtobufDiagnosticMatcher.wasCreatedFrom;
 import static org.eclipse.xtext.diagnostics.Severity.WARNING;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
-import org.eclipse.emf.ecore.*;
+import static com.google.eclipse.protobuf.linking.ProtobufDiagnosticMatcher.wasCreatedFrom;
+
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.xtext.diagnostics.DiagnosticMessage;
 import org.eclipse.xtext.nodemodel.INode;
-import org.eclipse.xtext.util.*;
-import org.junit.*;
+import org.eclipse.xtext.util.Triple;
+import org.eclipse.xtext.util.Tuples;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Tests for <code>{@link ProtobufResource#createDiagnostic(Triple, DiagnosticMessage)}</code>

@@ -9,7 +9,8 @@
 package com.google.eclipse.protobuf.conversion;
 
 import org.eclipse.xtext.common.services.DefaultTerminalConverters;
-import org.eclipse.xtext.conversion.*;
+import org.eclipse.xtext.conversion.IValueConverter;
+import org.eclipse.xtext.conversion.ValueConverter;
 
 import com.google.inject.Inject;
 

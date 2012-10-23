@@ -11,11 +11,11 @@ package com.google.eclipse.protobuf.ui.scoping;
 import static org.eclipse.core.runtime.IPath.SEPARATOR;
 import static org.eclipse.emf.common.util.URI.createURI;
 
+import org.eclipse.emf.common.util.URI;
+
 import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
 import com.google.eclipse.protobuf.ui.util.Uris;
 import com.google.inject.Inject;
-
-import org.eclipse.emf.common.util.URI;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

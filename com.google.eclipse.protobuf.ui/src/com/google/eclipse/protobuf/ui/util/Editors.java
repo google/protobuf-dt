@@ -8,7 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.util;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.ui.IEditorPart;
 
 import com.google.inject.Singleton;

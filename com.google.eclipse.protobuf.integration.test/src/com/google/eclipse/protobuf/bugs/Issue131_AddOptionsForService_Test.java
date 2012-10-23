@@ -8,15 +8,17 @@
  */
 package com.google.eclipse.protobuf.bugs;
 
+import static org.junit.Assert.assertThat;
+
 import static com.google.eclipse.protobuf.junit.IEObjectDescriptions.descriptionsIn;
 import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static com.google.eclipse.protobuf.junit.matchers.ContainAllNames.containAll;
-import static org.junit.Assert.assertThat;
 
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.xtext.scoping.IScope;
-import org.junit.*;
+import org.junit.Rule;
+import org.junit.Test;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.Option;

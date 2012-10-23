@@ -8,9 +8,11 @@
  */
 package com.google.eclipse.protobuf.ui.wizards;
 
-import static com.google.eclipse.protobuf.ui.wizards.Messages.*;
+import static com.google.eclipse.protobuf.ui.wizards.Messages.pageDescription;
+import static com.google.eclipse.protobuf.ui.wizards.Messages.pageTitle;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;

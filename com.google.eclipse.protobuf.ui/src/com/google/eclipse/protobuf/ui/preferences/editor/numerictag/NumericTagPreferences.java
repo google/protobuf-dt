@@ -13,7 +13,8 @@ import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.Prefe
 import java.util.List;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.xtext.ui.editor.preferences.*;
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

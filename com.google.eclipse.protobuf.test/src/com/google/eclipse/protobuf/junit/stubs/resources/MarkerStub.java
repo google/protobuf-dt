@@ -8,16 +8,19 @@
  */
 package com.google.eclipse.protobuf.junit.stubs.resources;
 
+import static java.util.Collections.unmodifiableMap;
+
 import static com.google.common.base.Objects.equal;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
-import static java.util.Collections.unmodifiableMap;
+
+import java.util.List;
+import java.util.Map;
+
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
 
 import com.google.common.base.Objects;
-
-import org.eclipse.core.resources.*;
-
-import java.util.*;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

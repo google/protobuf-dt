@@ -8,24 +8,40 @@
  */
 package com.google.eclipse.protobuf.bugs;
 
+import static java.util.Arrays.asList;
+
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyZeroInteractions;
+
 import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.*;
-
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.naming.*;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.inject.Inject;
-
-import org.eclipse.emf.ecore.EObject;
-import org.junit.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.*;
-import org.junit.runners.Parameterized.Parameters;
 
 import java.util.Collection;
+
+import org.eclipse.emf.ecore.EObject;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.naming.IProtobufQualifiedNameProvider;
+import com.google.eclipse.protobuf.naming.NamingStrategy;
+import com.google.eclipse.protobuf.protobuf.AbstractOption;
+import com.google.eclipse.protobuf.protobuf.BooleanLink;
+import com.google.eclipse.protobuf.protobuf.ComplexValue;
+import com.google.eclipse.protobuf.protobuf.FieldName;
+import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.protobuf.NumberLink;
+import com.google.eclipse.protobuf.protobuf.OptionSource;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.eclipse.protobuf.protobuf.ScalarTypeLink;
+import com.google.eclipse.protobuf.protobuf.StringLink;
+import com.google.eclipse.protobuf.protobuf.ValueField;
+import com.google.inject.Inject;
 
 /**
  * Tests fix for <a href="http://code.google.com/p/protobuf-dt/issues/detail?id=202">Issue 202</a>.

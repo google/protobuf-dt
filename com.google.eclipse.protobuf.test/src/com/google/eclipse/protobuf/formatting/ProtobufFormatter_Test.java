@@ -8,14 +8,18 @@
  */
 package com.google.eclipse.protobuf.formatting;
 
-import static com.google.eclipse.protobuf.formatting.CommentReaderRule.overrideRuntimeModuleWith;
-import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
 import static org.junit.Assert.assertEquals;
 
-import org.eclipse.xtext.formatting.*;
+import static com.google.eclipse.protobuf.formatting.CommentReaderRule.overrideRuntimeModuleWith;
+import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
+
+import org.eclipse.xtext.formatting.IIndentationInformation;
+import org.eclipse.xtext.formatting.INodeModelFormatter;
 import org.eclipse.xtext.formatting.INodeModelFormatter.IFormattedRegion;
 import org.eclipse.xtext.nodemodel.ICompositeNode;
-import org.junit.*;
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.Test;
 
 import com.google.eclipse.protobuf.junit.core.AbstractTestModule;
 import com.google.inject.Inject;

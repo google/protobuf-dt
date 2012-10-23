@@ -10,15 +10,19 @@ package com.google.eclipse.protobuf.model.util;
 
 import static java.lang.Math.max;
 import static java.util.Collections.emptyList;
+
 import static org.eclipse.xtext.util.SimpleAttributeResolver.newResolver;
 
 import java.util.List;
 
-import org.eclipse.emf.ecore.*;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.util.SimpleAttributeResolver;
 
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.inject.*;
+import com.google.eclipse.protobuf.protobuf.FieldOption;
+import com.google.eclipse.protobuf.protobuf.IndexedElement;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Utility methods related to <code>{@link IndexedElement}</code>s.

@@ -8,10 +8,12 @@
  */
 package com.google.eclipse.protobuf.naming;
 
-import static com.google.eclipse.protobuf.grammar.CommonKeyword.DEFAULT;
 import static org.eclipse.xtext.util.SimpleAttributeResolver.NAME_RESOLVER;
 
-import org.eclipse.emf.ecore.*;
+import static com.google.eclipse.protobuf.grammar.CommonKeyword.DEFAULT;
+
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 
 import com.google.eclipse.protobuf.protobuf.DefaultValueFieldOption;
 import com.google.inject.Singleton;

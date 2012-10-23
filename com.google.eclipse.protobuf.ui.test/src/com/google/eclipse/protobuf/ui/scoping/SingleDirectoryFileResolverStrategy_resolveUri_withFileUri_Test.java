@@ -8,18 +8,22 @@
  */
 package com.google.eclipse.protobuf.ui.scoping;
 
-import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
-import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static org.eclipse.emf.common.util.URI.createURI;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import com.google.eclipse.protobuf.junit.core.*;
-import com.google.eclipse.protobuf.ui.util.Uris;
-import com.google.inject.Inject;
+import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 
 import org.eclipse.emf.common.util.URI;
-import org.junit.*;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
+
+import com.google.eclipse.protobuf.junit.core.AbstractTestModule;
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.ui.util.Uris;
+import com.google.inject.Inject;
 
 /**
  * Tests for <code>{@link SingleDirectoryFileResolverStrategy#resolveUri(String, URI, Iterable)}</code>.

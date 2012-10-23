@@ -8,17 +8,23 @@
  */
 package com.google.eclipse.protobuf.junit.matchers;
 
-import static com.google.common.collect.Collections2.transform;
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 
-import java.util.*;
+import static com.google.common.collect.Collections2.transform;
+
+import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
-import org.hamcrest.*;
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
 
 import com.google.common.base.Function;
 import com.google.eclipse.protobuf.junit.IEObjectDescriptions;
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Group;
+import com.google.eclipse.protobuf.protobuf.IndexedElement;
+import com.google.eclipse.protobuf.protobuf.Message;
+import com.google.eclipse.protobuf.protobuf.MessageField;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

@@ -8,7 +8,10 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.ExtensibleType;
+import com.google.eclipse.protobuf.protobuf.ExtensibleTypeLink;
+import com.google.eclipse.protobuf.protobuf.Message;
+import com.google.eclipse.protobuf.protobuf.TypeExtension;
 
 /**
  * Utility methods related to <code>{@link TypeExtension}</code>s.

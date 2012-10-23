@@ -8,11 +8,17 @@
  */
 package com.google.eclipse.protobuf.ui.protoc.output;
 
-import static com.google.eclipse.protobuf.ui.validation.MarkerTypes.*;
-import static org.eclipse.core.resources.IMarker.*;
+import static org.eclipse.core.resources.IMarker.LINE_NUMBER;
+import static org.eclipse.core.resources.IMarker.MESSAGE;
+import static org.eclipse.core.resources.IMarker.SEVERITY;
+import static org.eclipse.core.resources.IMarker.SEVERITY_ERROR;
 import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
 
-import org.eclipse.core.resources.*;
+import static com.google.eclipse.protobuf.ui.validation.MarkerTypes.EDITOR_CHECK;
+import static com.google.eclipse.protobuf.ui.validation.MarkerTypes.PROTOC_CHECK;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 
 /**

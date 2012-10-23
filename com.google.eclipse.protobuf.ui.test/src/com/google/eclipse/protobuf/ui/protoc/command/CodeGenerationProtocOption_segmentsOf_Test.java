@@ -8,10 +8,12 @@
  */
 package com.google.eclipse.protobuf.ui.protoc.command;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.io.File.separator;
+
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 import org.eclipse.xtext.util.Strings;
 import org.junit.Test;

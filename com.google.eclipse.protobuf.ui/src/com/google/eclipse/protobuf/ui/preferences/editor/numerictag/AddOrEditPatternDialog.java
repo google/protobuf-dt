@@ -8,19 +8,34 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.editor.numerictag;
 
-import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.Messages.*;
-import static com.google.eclipse.protobuf.ui.preferences.pages.SystemColors.widgetBackgroundColor;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
+
 import static org.eclipse.jface.dialogs.IDialogConstants.OK_ID;
-import static org.eclipse.swt.layout.GridData.*;
+import static org.eclipse.swt.layout.GridData.GRAB_HORIZONTAL;
+import static org.eclipse.swt.layout.GridData.HORIZONTAL_ALIGN_FILL;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import java.util.regex.*;
+import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.Messages.addNewPattern;
+import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.Messages.editPattern;
+import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.Messages.match;
+import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.Messages.noMatch;
+import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.Messages.testPattern;
+import static com.google.eclipse.protobuf.ui.preferences.pages.SystemColors.widgetBackgroundColor;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 import com.google.eclipse.protobuf.ui.preferences.pages.InputDialog;
 

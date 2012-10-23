@@ -8,14 +8,17 @@
  */
 package com.google.eclipse.protobuf.linking;
 
-import static com.google.common.base.Objects.equal;
 import static java.util.Arrays.copyOf;
+
 import static org.eclipse.xtext.util.Arrays.contains;
 
-import com.google.common.base.Objects;
+import static com.google.common.base.Objects.equal;
 
-import org.eclipse.xtext.diagnostics.*;
+import org.eclipse.xtext.diagnostics.AbstractDiagnostic;
+import org.eclipse.xtext.diagnostics.Diagnostic;
 import org.eclipse.xtext.nodemodel.INode;
+
+import com.google.common.base.Objects;
 
 /**
  * <code>{@link Diagnostic}</code> that supports appending text to its message.

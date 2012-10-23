@@ -8,19 +8,21 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
 import static org.eclipse.xtext.util.Strings.isEmpty;
+
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
+
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.xtext.nodemodel.INode;
+import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 
 import com.google.eclipse.protobuf.conversion.STRINGValueConverter;
 import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.resource.ResourceSets;
 import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider;
 import com.google.inject.Inject;
-
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.*;
-import org.eclipse.xtext.nodemodel.INode;
-import org.eclipse.xtext.scoping.impl.ImportUriResolver;
 
 /**
  * Utility methods related to imports.

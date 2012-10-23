@@ -8,12 +8,19 @@
  */
 package com.google.eclipse.protobuf.junit.core;
 
-import static com.google.eclipse.protobuf.junit.core.GeneratedProtoFiles.*;
 import static java.util.regex.Pattern.compile;
 
-import java.io.*;
+import static com.google.eclipse.protobuf.junit.core.GeneratedProtoFiles.ensureParentDirectoryExists;
+import static com.google.eclipse.protobuf.junit.core.GeneratedProtoFiles.protoFile;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.Scanner;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

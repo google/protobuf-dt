@@ -8,7 +8,9 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.editor.save;
 
-import static com.google.eclipse.protobuf.ui.preferences.editor.save.PreferenceNames.*;
+import static com.google.eclipse.protobuf.ui.preferences.editor.save.PreferenceNames.IN_ALL_LINES;
+import static com.google.eclipse.protobuf.ui.preferences.editor.save.PreferenceNames.IN_EDITED_LINES;
+import static com.google.eclipse.protobuf.ui.preferences.editor.save.PreferenceNames.REMOVE_TRAILING_WHITESPACE;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;

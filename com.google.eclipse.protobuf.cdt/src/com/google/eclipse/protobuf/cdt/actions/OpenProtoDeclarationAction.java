@@ -11,7 +11,8 @@ package com.google.eclipse.protobuf.cdt.actions;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.*;
+import org.eclipse.ui.IEditorActionDelegate;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.xtext.ui.editor.IURIEditorOpener;
 
 import com.google.inject.Inject;

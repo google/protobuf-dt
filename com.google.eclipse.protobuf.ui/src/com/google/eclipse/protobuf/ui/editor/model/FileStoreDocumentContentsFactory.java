@@ -11,7 +11,10 @@ package com.google.eclipse.protobuf.ui.editor.model;
 import static com.google.common.io.Closeables.closeQuietly;
 import static com.google.eclipse.protobuf.ui.util.IStatusFactory.error;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IEditorInput;

@@ -9,13 +9,26 @@
 package com.google.eclipse.protobuf.model.util;
 
 import static java.util.Collections.unmodifiableList;
+
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import java.util.List;
 
 import com.google.eclipse.protobuf.naming.NameResolver;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.inject.*;
+import com.google.eclipse.protobuf.protobuf.AbstractCustomOption;
+import com.google.eclipse.protobuf.protobuf.AbstractOption;
+import com.google.eclipse.protobuf.protobuf.DefaultValueFieldOption;
+import com.google.eclipse.protobuf.protobuf.FieldOption;
+import com.google.eclipse.protobuf.protobuf.Group;
+import com.google.eclipse.protobuf.protobuf.IndexedElement;
+import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.eclipse.protobuf.protobuf.NativeFieldOption;
+import com.google.eclipse.protobuf.protobuf.NativeOption;
+import com.google.eclipse.protobuf.protobuf.Option;
+import com.google.eclipse.protobuf.protobuf.OptionField;
+import com.google.eclipse.protobuf.protobuf.OptionSource;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Utility methods related to <code>{@link Option}</code>s.

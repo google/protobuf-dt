@@ -8,14 +8,18 @@
  */
 package com.google.eclipse.protobuf.cdt.util;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.collection.IsCollectionContaining.hasItems;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.List;
 
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests for <code>{@link ExtendedListIterator}</code>.

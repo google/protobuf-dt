@@ -8,13 +8,18 @@
  */
 package com.google.eclipse.protobuf.junit.core;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Maps.newHashMap;
 import static java.io.File.separator;
 import static java.util.Collections.emptyList;
 
-import java.io.*;
-import java.util.*;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newHashMap;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 import org.junit.runners.model.FrameworkMethod;
 

@@ -8,15 +8,20 @@
  */
 package com.google.eclipse.protobuf.ui.commands.semicolon;
 
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
 import static java.util.regex.Pattern.compile;
+
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.LITERAL__INDEX;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MESSAGE_FIELD__INDEX;
+
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
-import org.eclipse.emf.ecore.*;
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.xtext.nodemodel.INode;
@@ -30,8 +35,15 @@ import org.eclipse.xtext.util.Pair;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.model.util.INodes;
+import com.google.eclipse.protobuf.model.util.IndexedElements;
+import com.google.eclipse.protobuf.model.util.Literals;
+import com.google.eclipse.protobuf.model.util.Protobufs;
+import com.google.eclipse.protobuf.model.util.Resources;
+import com.google.eclipse.protobuf.protobuf.FieldOption;
+import com.google.eclipse.protobuf.protobuf.Literal;
+import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.eclipse.protobuf.ui.commands.SmartInsertHandler;
 import com.google.eclipse.protobuf.ui.preferences.editor.numerictag.NumericTagPreferences;
 import com.google.inject.Inject;

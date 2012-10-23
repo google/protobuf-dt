@@ -15,7 +15,9 @@ import java.io.File;
 import java.util.UUID;
 
 import org.hamcrest.core.IsEqual;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 /**

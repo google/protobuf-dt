@@ -10,7 +10,8 @@ package com.google.eclipse.protobuf.ui.scoping;
 
 import static com.google.eclipse.protobuf.ui.util.IPaths.directoryLocationInWorkspace;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

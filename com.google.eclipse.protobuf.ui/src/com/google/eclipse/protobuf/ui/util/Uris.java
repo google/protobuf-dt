@@ -8,15 +8,20 @@
  */
 package com.google.eclipse.protobuf.ui.util;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
+
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.eclipse.protobuf.ui.util.Workspaces.workspaceRoot;
-import static java.util.Collections.*;
+import static com.google.eclipse.protobuf.util.Workspaces.workspaceRoot;
 
 import java.io.File;
 import java.util.List;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
 
 import com.google.inject.Singleton;

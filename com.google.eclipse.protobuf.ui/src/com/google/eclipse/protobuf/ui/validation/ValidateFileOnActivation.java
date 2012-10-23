@@ -13,7 +13,9 @@ import static com.google.eclipse.protobuf.ui.preferences.general.GeneralPreferen
 import static com.google.eclipse.protobuf.ui.validation.ProtobufValidation.validate;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.ui.*;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.eclipse.protobuf.ui.plugin.ProtobufEditorPlugIn;

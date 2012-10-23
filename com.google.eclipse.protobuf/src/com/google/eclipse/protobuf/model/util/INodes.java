@@ -12,9 +12,13 @@ import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.findNodesForFeatur
 
 import java.util.List;
 
-import org.eclipse.emf.ecore.*;
-import org.eclipse.xtext.*;
-import org.eclipse.xtext.nodemodel.*;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.xtext.AbstractRule;
+import org.eclipse.xtext.RuleCall;
+import org.eclipse.xtext.TerminalRule;
+import org.eclipse.xtext.nodemodel.ILeafNode;
+import org.eclipse.xtext.nodemodel.INode;
 
 import com.google.inject.Singleton;
 

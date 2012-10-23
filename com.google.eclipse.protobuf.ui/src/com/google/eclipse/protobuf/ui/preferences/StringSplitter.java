@@ -8,8 +8,9 @@
  */
 package com.google.eclipse.protobuf.ui.preferences;
 
-import static com.google.common.collect.ImmutableList.copyOf;
 import static org.eclipse.xtext.util.Strings.split;
+
+import static com.google.common.collect.ImmutableList.copyOf;
 
 import com.google.common.collect.ImmutableList;
 

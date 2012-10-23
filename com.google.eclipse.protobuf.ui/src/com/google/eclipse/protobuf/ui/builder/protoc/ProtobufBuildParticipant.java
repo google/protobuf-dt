@@ -8,28 +8,36 @@
  */
 package com.google.eclipse.protobuf.ui.builder.protoc;
 
+import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
+
 import static com.google.common.io.Closeables.closeQuietly;
 import static com.google.eclipse.protobuf.ui.builder.protoc.ConsolePrinter.createAndDisplayConsole;
 import static com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferences.compilerPreferences;
 import static com.google.eclipse.protobuf.ui.util.IStatusFactory.error;
-import static com.google.eclipse.protobuf.ui.util.Workspaces.workspaceRoot;
-import static org.eclipse.core.resources.IResource.DEPTH_INFINITE;
+import static com.google.eclipse.protobuf.util.Workspaces.workspaceRoot;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.builder.IXtextBuilderParticipant;
-import org.eclipse.xtext.resource.*;
+import org.eclipse.xtext.resource.IResourceDescription;
 import org.eclipse.xtext.resource.IResourceDescription.Delta;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferences;
 import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
 import com.google.eclipse.protobuf.ui.protoc.command.ProtocCommandBuilder;
-import com.google.eclipse.protobuf.ui.protoc.output.*;
+import com.google.eclipse.protobuf.ui.protoc.output.ProtocMarkerFactory;
+import com.google.eclipse.protobuf.ui.protoc.output.ProtocOutputParser;
 import com.google.inject.Inject;
 
 /**
@@ -67,7 +75,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
 
   private IFile protoFile(IResourceDescription resource, IProject project) {
     String path = filePathIfIsProtoFile(resource);
-    return (path == null) ? null : workspaceRoot().getFile(new Path(path));
+    return (path == null) ? null : workspaceRoot().getFile(Path.fromOSString(path));
   }
 
   private String filePathIfIsProtoFile(IResourceDescription resource) {

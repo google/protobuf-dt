@@ -9,12 +9,15 @@
 package com.google.eclipse.protobuf.ui.preferences.paths;
 
 import static com.google.eclipse.protobuf.ui.preferences.paths.DirectoryPath.parse;
-import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.*;
+import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.DIRECTORY_PATHS;
+import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.FILES_IN_MULTIPLE_DIRECTORIES;
+import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.FILES_IN_ONE_DIRECTORY_ONLY;
 import static com.google.eclipse.protobuf.ui.util.CommaSeparatedValues.splitCsv;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.xtext.ui.editor.preferences.*;
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
 
 import com.google.common.base.Function;
 

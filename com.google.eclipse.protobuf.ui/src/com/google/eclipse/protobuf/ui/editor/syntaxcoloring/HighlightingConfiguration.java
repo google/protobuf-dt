@@ -9,9 +9,28 @@
  */
 package com.google.eclipse.protobuf.ui.editor.syntaxcoloring;
 
-import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.Messages.*;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.Messages.comments;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.Messages.defaults;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.Messages.enumDefinitions;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.Messages.enumLiteralDefinitions;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.Messages.enumLiteralIndices;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.Messages.enumLiterals;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.Messages.enums;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.Messages.invalidSymbols;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.Messages.keywords;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.Messages.messageDefinitions;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.Messages.messageFieldIndices;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.Messages.messages;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.Messages.numbers;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.Messages.punctuationCharacters;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.Messages.rpcArguments;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.Messages.rpcDefinitions;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.Messages.rpcReturnTypes;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.Messages.serviceDefinitions;
+import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.Messages.strings;
 
-import org.eclipse.xtext.ui.editor.syntaxcoloring.*;
+import org.eclipse.xtext.ui.editor.syntaxcoloring.DefaultHighlightingConfiguration;
+import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfigurationAcceptor;
 import org.eclipse.xtext.ui.editor.utils.TextStyle;
 
 /**

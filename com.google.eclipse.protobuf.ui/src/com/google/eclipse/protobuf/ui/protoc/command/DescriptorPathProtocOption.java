@@ -8,9 +8,12 @@
  */
 package com.google.eclipse.protobuf.ui.protoc.command;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.io.File.separator;
-import static org.eclipse.xtext.util.Strings.*;
+
+import static org.eclipse.xtext.util.Strings.concat;
+import static org.eclipse.xtext.util.Strings.isEmpty;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferences;

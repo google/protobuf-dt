@@ -8,9 +8,11 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 
-import com.google.inject.*;
+import com.google.inject.Provider;
+import com.google.inject.Singleton;
 
 /**
  * Provider of instances of <code>{@link IExtensionRegistry}</code>.

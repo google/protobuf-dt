@@ -9,17 +9,36 @@
 package com.google.eclipse.protobuf.validation;
 
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.ABSTRACT_OPTION__VALUE;
-import static com.google.eclipse.protobuf.validation.Messages.*;
-
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.inject.Inject;
+import static com.google.eclipse.protobuf.validation.Messages.expectedIdentifier;
+import static com.google.eclipse.protobuf.validation.Messages.expectedInteger;
+import static com.google.eclipse.protobuf.validation.Messages.expectedNumber;
+import static com.google.eclipse.protobuf.validation.Messages.expectedPositiveNumber;
+import static com.google.eclipse.protobuf.validation.Messages.expectedString;
+import static com.google.eclipse.protobuf.validation.Messages.expectedTrueOrFalse;
+import static com.google.eclipse.protobuf.validation.Messages.literalNotInEnum;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.naming.*;
+import org.eclipse.xtext.naming.IQualifiedNameProvider;
+import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.nodemodel.INode;
-import org.eclipse.xtext.validation.*;
+import org.eclipse.xtext.validation.AbstractDeclarativeValidator;
+import org.eclipse.xtext.validation.Check;
+import org.eclipse.xtext.validation.EValidatorRegistrar;
+
+import com.google.eclipse.protobuf.model.util.INodes;
+import com.google.eclipse.protobuf.model.util.MessageFields;
+import com.google.eclipse.protobuf.protobuf.BooleanLink;
+import com.google.eclipse.protobuf.protobuf.DefaultValueFieldOption;
+import com.google.eclipse.protobuf.protobuf.DoubleLink;
+import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.eclipse.protobuf.protobuf.HexNumberLink;
+import com.google.eclipse.protobuf.protobuf.Literal;
+import com.google.eclipse.protobuf.protobuf.LiteralLink;
+import com.google.eclipse.protobuf.protobuf.LongLink;
+import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.eclipse.protobuf.protobuf.StringLink;
+import com.google.eclipse.protobuf.protobuf.Value;
+import com.google.inject.Inject;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

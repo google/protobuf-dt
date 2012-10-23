@@ -8,13 +8,16 @@
  */
 package com.google.eclipse.protobuf.ui.scoping;
 
+import static java.util.Collections.singletonList;
+import static java.util.Collections.unmodifiableList;
+
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.eclipse.protobuf.ui.util.Workspaces.workspaceRoot;
-import static java.util.Collections.*;
+import static com.google.eclipse.protobuf.util.Workspaces.workspaceRoot;
 
 import java.util.List;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.ui.XtextProjectHelper;
@@ -22,7 +25,8 @@ import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.eclipse.protobuf.model.util.Imports;
 import com.google.eclipse.protobuf.protobuf.Import;
-import com.google.eclipse.protobuf.scoping.*;
+import com.google.eclipse.protobuf.scoping.IFileUriResolver;
+import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider;
 import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
 import com.google.eclipse.protobuf.ui.util.Uris;
 import com.google.inject.Inject;

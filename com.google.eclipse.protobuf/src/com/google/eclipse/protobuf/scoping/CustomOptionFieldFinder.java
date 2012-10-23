@@ -14,9 +14,14 @@ import java.util.Collection;
 
 import org.eclipse.xtext.resource.IEObjectDescription;
 
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.inject.*;
+import com.google.eclipse.protobuf.model.util.OptionFields;
+import com.google.eclipse.protobuf.model.util.Options;
+import com.google.eclipse.protobuf.protobuf.AbstractCustomOption;
+import com.google.eclipse.protobuf.protobuf.AbstractOption;
+import com.google.eclipse.protobuf.protobuf.IndexedElement;
+import com.google.eclipse.protobuf.protobuf.OptionField;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

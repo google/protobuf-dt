@@ -8,11 +8,26 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.compiler;
 
-import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.*;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.COMPILE_PROTO_FILES;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.CPP_CODE_GENERATION_ENABLED;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.CPP_OUTPUT_DIRECTORY;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.DESCRIPTOR_FILE_PATH;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.ENABLE_PROJECT_SETTINGS_PREFERENCE_NAME;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.JAVA_CODE_GENERATION_ENABLED;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.JAVA_OUTPUT_DIRECTORY;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.PROTOC_FILE_PATH;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.PYTHON_CODE_GENERATION_ENABLED;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.PYTHON_OUTPUT_DIRECTORY;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.REFRESH_OUTPUT_DIRECTORY;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.REFRESH_PROJECT;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.REFRESH_RESOURCES;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.USE_PROTOC_IN_CUSTOM_PATH;
+import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.USE_PROTOC_IN_SYSTEM_PATH;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.xtext.ui.editor.preferences.*;
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

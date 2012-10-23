@@ -8,30 +8,52 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.paths;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.eclipse.protobuf.ui.preferences.pages.ButtonGroup.with;
-import static com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToButtonSelection.bindSelectionOf;
-import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.*;
-import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.*;
-import static com.google.eclipse.protobuf.ui.util.IStatusFactory.error;
 import static java.util.Collections.unmodifiableList;
+
 import static org.eclipse.core.resources.IncrementalProjectBuilder.FULL_BUILD;
 import static org.eclipse.core.runtime.Status.OK_STATUS;
 import static org.eclipse.core.runtime.jobs.Job.BUILD;
-import static org.eclipse.xtext.util.Strings.*;
+import static org.eclipse.xtext.util.Strings.concat;
+import static org.eclipse.xtext.util.Strings.isEmpty;
+import static org.eclipse.xtext.util.Strings.split;
+
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.eclipse.protobuf.ui.preferences.pages.ButtonGroup.with;
+import static com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToButtonSelection.bindSelectionOf;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.errorNoDirectoryNames;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.filesInMultipleDirectories;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.filesInOneDirectoryOnly;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.importedFilesPathResolution;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.rebuildProjectNow;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.settingsChanged;
+import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.DIRECTORY_PATHS;
+import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.FILES_IN_MULTIPLE_DIRECTORIES;
+import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.FILES_IN_ONE_DIRECTORY_ONLY;
+import static com.google.eclipse.protobuf.ui.util.IStatusFactory.error;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.xtext.ui.PluginImageHelper;
 
-import com.google.eclipse.protobuf.ui.preferences.pages.*;
-import com.google.eclipse.protobuf.ui.preferences.pages.binding.*;
+import com.google.eclipse.protobuf.ui.preferences.pages.DataChangedListener;
+import com.google.eclipse.protobuf.ui.preferences.pages.PreferenceAndPropertyPage;
+import com.google.eclipse.protobuf.ui.preferences.pages.binding.Binding;
+import com.google.eclipse.protobuf.ui.preferences.pages.binding.Preference;
+import com.google.eclipse.protobuf.ui.preferences.pages.binding.PreferenceBinder;
+import com.google.eclipse.protobuf.ui.preferences.pages.binding.PreferenceFactory;
 import com.google.eclipse.protobuf.ui.validation.ValidationTrigger;
 import com.google.inject.Inject;
 

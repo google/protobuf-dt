@@ -8,11 +8,15 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.pages.binding;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import static com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToButtonSelection.bindSelectionOf;
-import static org.mockito.Mockito.*;
 
 import org.eclipse.swt.widgets.Button;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests for <code>{@link BindingToButtonSelection}</code>.

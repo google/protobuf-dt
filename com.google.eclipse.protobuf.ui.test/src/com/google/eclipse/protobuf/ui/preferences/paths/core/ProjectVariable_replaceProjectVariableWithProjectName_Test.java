@@ -10,11 +10,14 @@ package com.google.eclipse.protobuf.ui.preferences.paths.core;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.*;
-import org.junit.*;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.google.eclipse.protobuf.ui.preferences.paths.ProjectVariable;
 

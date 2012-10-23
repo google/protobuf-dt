@@ -10,7 +10,8 @@ package com.google.eclipse.protobuf.ui.protoc.output;
 
 import static java.lang.Integer.parseInt;
 
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.CoreException;
 

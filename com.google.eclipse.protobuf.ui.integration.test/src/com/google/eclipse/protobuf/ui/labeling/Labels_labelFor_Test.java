@@ -8,16 +8,27 @@
  */
 package com.google.eclipse.protobuf.ui.labeling;
 
-import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
+import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
+
 import org.eclipse.jface.viewers.StyledString;
-import org.junit.*;
+import org.junit.Rule;
+import org.junit.Test;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.CustomOption;
+import com.google.eclipse.protobuf.protobuf.Extensions;
+import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.protobuf.Literal;
+import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.eclipse.protobuf.protobuf.NativeOption;
+import com.google.eclipse.protobuf.protobuf.Rpc;
+import com.google.eclipse.protobuf.protobuf.Service;
+import com.google.eclipse.protobuf.protobuf.Stream;
+import com.google.eclipse.protobuf.protobuf.TypeExtension;
 import com.google.eclipse.protobuf.ui.plugin.ProtobufEditorPlugIn;
 import com.google.inject.Inject;
 

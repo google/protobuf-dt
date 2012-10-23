@@ -8,20 +8,36 @@
  */
 package com.google.eclipse.protobuf.validation;
 
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.*;
-import static com.google.eclipse.protobuf.validation.Messages.*;
 import static java.lang.String.format;
 
-import com.google.eclipse.protobuf.grammar.Syntaxes;
-import com.google.eclipse.protobuf.model.util.*;
-import com.google.eclipse.protobuf.naming.NameResolver;
-import com.google.eclipse.protobuf.protobuf.*;
-import com.google.eclipse.protobuf.protobuf.Package;
-import com.google.inject.Inject;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.PACKAGE__NAME;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.SYNTAX__NAME;
+import static com.google.eclipse.protobuf.validation.Messages.expectedFieldNumber;
+import static com.google.eclipse.protobuf.validation.Messages.expectedSyntaxIdentifier;
+import static com.google.eclipse.protobuf.validation.Messages.fieldNumberAlreadyUsed;
+import static com.google.eclipse.protobuf.validation.Messages.fieldNumbersMustBePositive;
+import static com.google.eclipse.protobuf.validation.Messages.multiplePackages;
+import static com.google.eclipse.protobuf.validation.Messages.nonProto2;
+import static com.google.eclipse.protobuf.validation.Messages.unrecognizedSyntaxIdentifier;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.naming.*;
-import org.eclipse.xtext.validation.*;
+import org.eclipse.xtext.naming.IQualifiedNameProvider;
+import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.validation.Check;
+import org.eclipse.xtext.validation.ComposedChecks;
+
+import com.google.eclipse.protobuf.grammar.Syntaxes;
+import com.google.eclipse.protobuf.model.util.IndexedElements;
+import com.google.eclipse.protobuf.model.util.Protobufs;
+import com.google.eclipse.protobuf.naming.NameResolver;
+import com.google.eclipse.protobuf.protobuf.IndexedElement;
+import com.google.eclipse.protobuf.protobuf.Message;
+import com.google.eclipse.protobuf.protobuf.MessageElement;
+import com.google.eclipse.protobuf.protobuf.Package;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.eclipse.protobuf.protobuf.ProtobufElement;
+import com.google.eclipse.protobuf.protobuf.Syntax;
+import com.google.inject.Inject;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

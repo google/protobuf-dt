@@ -10,16 +10,21 @@ package com.google.eclipse.protobuf.ui.editor;
 
 import static com.google.eclipse.protobuf.ui.util.Workbenches.activeWorkbenchPage;
 
-import com.google.eclipse.protobuf.ui.util.Uris;
-import com.google.inject.*;
-
-import org.eclipse.core.filesystem.*;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.ui.*;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
+
+import com.google.eclipse.protobuf.ui.util.Uris;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Utility methods related to open file from different type of locations.
