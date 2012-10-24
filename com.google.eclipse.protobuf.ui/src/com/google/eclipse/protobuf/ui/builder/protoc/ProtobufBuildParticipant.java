@@ -14,6 +14,7 @@ import static com.google.common.io.Closeables.closeQuietly;
 import static com.google.eclipse.protobuf.ui.builder.protoc.ConsolePrinter.createAndDisplayConsole;
 import static com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferences.compilerPreferences;
 import static com.google.eclipse.protobuf.ui.util.IStatusFactory.error;
+import static com.google.eclipse.protobuf.util.Strings.quote;
 import static com.google.eclipse.protobuf.util.Workspaces.workspaceRoot;
 
 import java.io.BufferedReader;
@@ -26,10 +27,11 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.xtext.builder.IXtextBuilderParticipant;
-import org.eclipse.xtext.resource.IResourceDescription;
 import org.eclipse.xtext.resource.IResourceDescription.Delta;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
@@ -56,6 +58,10 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
     if (deltas.isEmpty()) {
       return;
     }
+    if (monitor.isCanceled()) {
+      throw new OperationCanceledException();
+    }
+    SubMonitor subMonitor = SubMonitor.convert(monitor, deltas.size() * 2 + 2);
     IProject project = context.getBuiltProject();
     CompilerPreferences compilerPreferences = compilerPreferences(storeAccess, project);
     if (!compilerPreferences.shouldCompileProtoFiles()) {
@@ -63,30 +69,33 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
     }
     PathsPreferences pathsPreferences = new PathsPreferences(storeAccess, project);
     ProtocCommandBuilder commandBuilder = new ProtocCommandBuilder(compilerPreferences, pathsPreferences);
-    for (Delta d : deltas) {
-      IFile protoFile = protoFile(d.getNew(), project);
-      if (protoFile == null) {
-        continue;
+    for (Delta delta : deltas) {
+      if (subMonitor.isCanceled()) {
+        throw new OperationCanceledException();
       }
-      generateSingleProto(commandBuilder.buildCommand(protoFile), protoFile);
+      IFile protoFile = protoFile(delta.getUri(), project);
+      subMonitor.worked(1);
+      if (protoFile != null) {
+        subMonitor.subTask("Compiling " + protoFile.getName() + " with protoc");
+        generateSingleProto(commandBuilder.buildCommand(protoFile), protoFile);
+      }
+      subMonitor.worked(1);
     }
     if (compilerPreferences.refreshResources()) {
-      refresh(project, commandBuilder.outputDirectories(), compilerPreferences.refreshProject(), monitor);
+      List<IFolder> outputDirectories = commandBuilder.outputDirectories();
+      boolean refreshProject = compilerPreferences.refreshProject();
+      refresh(project, outputDirectories, refreshProject, subMonitor.newChild(outputDirectories.size() + 1));
     }
   }
 
-  private IFile protoFile(IResourceDescription resource, IProject project) {
-    String path = filePathIfIsProtoFile(resource);
+  private IFile protoFile(URI resourceUri, IProject project) {
+    String path = filePathIfIsProtoFile(resourceUri);
     return (path == null) ? null : workspaceRoot().getFile(Path.fromOSString(path));
   }
 
-  private String filePathIfIsProtoFile(IResourceDescription resource) {
-    if (resource == null) {
-      return null;
-    }
-    URI uri = resource.getURI();
-    if (uris.hasProtoExtension(uri) && uri.isPlatformResource()) {
-      return uri.toPlatformString(true);
+  private String filePathIfIsProtoFile(URI resourceUri) {
+    if (uris.hasProtoExtension(resourceUri) && resourceUri.isPlatformResource()) {
+      return resourceUri.toPlatformString(true);
     }
     return null;
   }
@@ -128,11 +137,15 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
   private void refresh(IProject project, List<IFolder> outputDirectories, boolean refreshProject,
       IProgressMonitor monitor) throws CoreException {
     if (refreshProject) {
+      monitor.subTask("Refreshing project " + quote(project.getName()));
       project.refreshLocal(DEPTH_INFINITE, monitor);
+      monitor.worked(1);
       return;
     }
     for (IFolder outputDirectory : outputDirectories) {
+      monitor.subTask("Refreshing folder " + quote(outputDirectory.getName()));
       outputDirectory.refreshLocal(DEPTH_INFINITE, monitor);
+      monitor.worked(1);
     }
   }
 }
