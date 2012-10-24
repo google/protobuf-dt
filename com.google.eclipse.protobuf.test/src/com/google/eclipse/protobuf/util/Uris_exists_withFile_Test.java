@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.util;
+package com.google.eclipse.protobuf.util;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.util.Uris;
 import com.google.inject.Inject;
 
 /**

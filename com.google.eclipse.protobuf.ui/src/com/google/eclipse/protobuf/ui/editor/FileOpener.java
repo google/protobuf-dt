@@ -22,7 +22,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 
-import com.google.eclipse.protobuf.ui.util.Uris;
+import com.google.eclipse.protobuf.util.Uris;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -49,7 +49,7 @@ import com.google.inject.Singleton;
     if (page == null) {
       return null;
     }
-    IFileStore fileStore = EFS.getLocalFileSystem().getStore(new Path(uri.toFileString()));
+    IFileStore fileStore = EFS.getLocalFileSystem().getStore(Path.fromOSString(uri.toFileString()));
     IEditorInput editorInput = new FileStoreEditorInput(fileStore);
     return openFile(editorInput, page);
   }

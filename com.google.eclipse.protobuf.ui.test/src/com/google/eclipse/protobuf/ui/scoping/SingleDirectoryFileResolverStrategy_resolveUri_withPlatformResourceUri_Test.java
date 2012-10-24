@@ -23,7 +23,7 @@ import org.junit.Test;
 
 import com.google.eclipse.protobuf.junit.core.AbstractTestModule;
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.ui.util.Uris;
+import com.google.eclipse.protobuf.util.Uris;
 import com.google.inject.Inject;
 
 /**

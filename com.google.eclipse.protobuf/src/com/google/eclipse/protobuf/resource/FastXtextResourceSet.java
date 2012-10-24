@@ -2,8 +2,6 @@ package com.google.eclipse.protobuf.resource;
 
 import static org.eclipse.xtext.resource.ClasspathUriUtil.isClasspathUri;
 
-import static com.google.eclipse.protobuf.util.Workspaces.workspaceRoot;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,14 +9,18 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.URIConverter;
 import org.eclipse.emf.ecore.resource.impl.ExtensibleURIConverterImpl;
 import org.eclipse.xtext.resource.ClasspathUriResolutionException;
 import org.eclipse.xtext.resource.SynchronizedXtextResourceSet;
 
+import com.google.eclipse.protobuf.util.Uris;
+import com.google.inject.Inject;
+
 public class FastXtextResourceSet extends SynchronizedXtextResourceSet {
+  @Inject private Uris uris;
+
   @Override public URIConverter getURIConverter() {
     if (uriConverter == null) {
       uriConverter = new ExtensibleURIConverterImpl() {
@@ -48,10 +50,9 @@ public class FastXtextResourceSet extends SynchronizedXtextResourceSet {
           if (isClasspathUri(uri)) {
             return getClass().getResourceAsStream(uri.path());
           }
-          if ("proto".equals(uri.fileExtension())) {
+          if (uris.hasProtoExtension(uri)) {
             if (uri.isPlatformResource()) {
-              String platformUri = uri.toPlatformString(true);
-              IFile file = workspaceRoot().getFile(Path.fromOSString(platformUri));
+              IFile file = uris.referredFile(uri);
               if (file != null && file.exists()) {
                 IPath location = file.getLocation();
                 return new FileInputStream(location.toFile());

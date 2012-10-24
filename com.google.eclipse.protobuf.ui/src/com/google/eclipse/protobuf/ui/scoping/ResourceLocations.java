@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.Path;
  */
 class ResourceLocations {
   String directoryLocation(String workspacePath) {
-    IPath path = new Path(workspacePath);
+    IPath path = Path.fromOSString(workspacePath);
     return directoryLocationInWorkspace(path);
   }
 }

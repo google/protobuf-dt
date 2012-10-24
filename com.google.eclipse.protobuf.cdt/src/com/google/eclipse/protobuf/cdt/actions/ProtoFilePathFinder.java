@@ -73,6 +73,6 @@ import com.google.inject.Singleton;
       return null;
     }
     String path = matcher.group(1);
-    return (!isEmpty(path)) ? new Path(path) : null;
+    return (!isEmpty(path)) ? Path.fromOSString(path) : null;
   }
 }

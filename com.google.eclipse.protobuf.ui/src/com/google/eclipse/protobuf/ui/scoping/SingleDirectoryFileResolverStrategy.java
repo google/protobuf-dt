@@ -14,7 +14,7 @@ import static org.eclipse.emf.common.util.URI.createURI;
 import org.eclipse.emf.common.util.URI;
 
 import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
-import com.google.eclipse.protobuf.ui.util.Uris;
+import com.google.eclipse.protobuf.util.Uris;
 import com.google.inject.Inject;
 
 /**

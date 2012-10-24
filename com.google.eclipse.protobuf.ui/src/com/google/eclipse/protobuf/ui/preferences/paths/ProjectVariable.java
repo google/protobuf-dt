@@ -32,7 +32,7 @@ public class ProjectVariable {
     if (!currentSegment.equals(path.segment(0))) {
       return path;
     }
-    IPath newPath = new Path(newSegment);
+    IPath newPath = Path.fromOSString(newSegment);
     newPath = newPath.append(path.removeFirstSegments(1));
     if (path.isAbsolute()) {
       newPath = newPath.makeAbsolute();

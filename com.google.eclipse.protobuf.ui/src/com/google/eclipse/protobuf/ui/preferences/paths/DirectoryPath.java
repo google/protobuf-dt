@@ -47,7 +47,7 @@ public class DirectoryPath {
       actualPath = matcher.group(1);
       isWorkspacePath = true;
       if (project != null) {
-        IPath newPath = replaceProjectVariableWithProjectName(new Path(actualPath), project);
+        IPath newPath = replaceProjectVariableWithProjectName(Path.fromOSString(actualPath), project);
         // Issue 204: we'll create an URI from this path. It must not have OS-specific path separators.
         actualPath = newPath.toPortableString();
       }
@@ -81,7 +81,7 @@ public class DirectoryPath {
    * @return the absolute path in the local file system, or {@code null} if no path can be determined.
    */
   public String absolutePathInFileSystem() {
-    IPath path = new Path(value);
+    IPath path = Path.fromOSString(value);
     if (isWorkspacePath()) {
       return directoryLocationInWorkspace(path);
     }

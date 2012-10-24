@@ -35,19 +35,19 @@ public class IndexLookup_areReferringToSameFile_Tests {
 
   @Test public void should_return_true_if_both_have_exactly_equal_segments() {
     String pathValue = "/usr/local/google/proto";
-    IPath path = new Path(pathValue);
+    IPath path = Path.fromOSString(pathValue);
     URI uri = URI.createPlatformResourceURI(pathValue, false);
     assertTrue(lookup.areReferringToSameFile(path, uri));
   }
 
   @Test public void should_return_true_if_path_is_subset_of_URI() {
-    IPath path = new Path("/google/proto");
+    IPath path = Path.fromOSString("/google/proto");
     URI uri = URI.createPlatformResourceURI("/usr/local/google/proto", true);
     assertTrue(lookup.areReferringToSameFile(path, uri));
   }
 
   @Test public void should_return_false_if_last_segments_in_path_and_URI_are_not_equal() {
-    IPath path = new Path("/usr/local/google/proto");
+    IPath path = Path.fromOSString("/usr/local/google/proto");
     URI uri = URI.createPlatformResourceURI("/usr/local/google/cpp", true);
     assertFalse(lookup.areReferringToSameFile(path, uri));
   }

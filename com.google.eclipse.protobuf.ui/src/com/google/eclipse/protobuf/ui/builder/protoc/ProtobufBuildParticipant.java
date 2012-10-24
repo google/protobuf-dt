@@ -38,6 +38,7 @@ import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
 import com.google.eclipse.protobuf.ui.protoc.command.ProtocCommandBuilder;
 import com.google.eclipse.protobuf.ui.protoc.output.ProtocMarkerFactory;
 import com.google.eclipse.protobuf.ui.protoc.output.ProtocOutputParser;
+import com.google.eclipse.protobuf.util.Uris;
 import com.google.inject.Inject;
 
 /**
@@ -48,6 +49,7 @@ import com.google.inject.Inject;
 public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
   @Inject private ProtocOutputParser outputParser;
   @Inject private IPreferenceStoreAccess storeAccess;
+  @Inject private Uris uris;
 
   @Override public void build(IBuildContext context, IProgressMonitor monitor) throws CoreException {
     List<Delta> deltas = context.getDeltas();
@@ -83,7 +85,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
       return null;
     }
     URI uri = resource.getURI();
-    if (uri.isPlatformResource() && "proto".equals(uri.fileExtension())) {
+    if (uris.hasProtoExtension(uri) && uri.isPlatformResource()) {
       return uri.toPlatformString(true);
     }
     return null;

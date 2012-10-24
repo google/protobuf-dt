@@ -14,7 +14,7 @@ import static org.eclipse.xtext.util.Strings.isEmpty;
 import org.eclipse.emf.common.util.URI;
 
 import com.google.eclipse.protobuf.ui.preferences.paths.DirectoryPath;
-import com.google.eclipse.protobuf.ui.util.Uris;
+import com.google.eclipse.protobuf.util.Uris;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 

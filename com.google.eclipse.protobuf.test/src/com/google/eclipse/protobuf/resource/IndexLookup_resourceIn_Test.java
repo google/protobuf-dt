@@ -46,7 +46,8 @@ public class IndexLookup_resourceIn_Test {
     XtextResource resource = xtext.resource();
     addToXtextIndex(resource);
     URI resourceUri = resource.getURI();
-    IResourceDescription description = lookup.resourceIn(new Path(resourceUri.path()));
+    IPath path = Path.fromOSString(resourceUri.path());
+    IResourceDescription description = lookup.resourceIn(path);
     assertThat(description.getURI(), equalTo(resourceUri));
   }
 
@@ -61,7 +62,7 @@ public class IndexLookup_resourceIn_Test {
     String[] segments = resourceUri.segments();
     int segmentCount = segments.length;
     String path = segments[segmentCount - 2] + "/" + segments[segmentCount - 1]; // last two segments.
-    IResourceDescription description = lookup.resourceIn(new Path(path));
+    IResourceDescription description = lookup.resourceIn(Path.fromOSString(path));
     assertThat(description.getURI(), equalTo(resourceUri));
   }
 
@@ -72,7 +73,7 @@ public class IndexLookup_resourceIn_Test {
   @Test public void should_return_null_if_matching_URI_was_not_found() {
     XtextResource resource = xtext.resource();
     addToXtextIndex(resource);
-    IResourceDescription description = lookup.resourceIn(new Path("some/crazy/path"));
+    IResourceDescription description = lookup.resourceIn(Path.fromOSString("some/crazy/path"));
     assertNull(description);
   }
 

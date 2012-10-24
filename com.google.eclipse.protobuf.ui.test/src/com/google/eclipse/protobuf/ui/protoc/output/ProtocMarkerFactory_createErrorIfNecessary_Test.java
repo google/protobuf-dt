@@ -39,7 +39,7 @@ public class ProtocMarkerFactory_createErrorIfNecessary_Test {
   @Before public void setUp() throws CoreException {
     marker = error(EDITOR_CHECK, "Expected field name.", 68);
     file = new FileStub();
-    file.setLocation(new Path("home/alex/protos/test1.proto"));
+    file.setLocation(Path.fromOSString("home/alex/protos/test1.proto"));
     file.createMarker(PROTOC);
     file.addMarker(marker);
     markerFactory = new ProtocMarkerFactory(file);

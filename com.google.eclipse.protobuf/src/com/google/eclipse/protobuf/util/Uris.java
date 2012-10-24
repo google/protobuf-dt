@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.util;
+package com.google.eclipse.protobuf.util;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
@@ -32,6 +32,15 @@ import com.google.inject.Singleton;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class Uris {
+  /**
+   * Indicates whether the resource at the given URI has extension "proto".
+   * @param uri the given URI.
+   * @return {@code true} if the resource has extension "proto", {@code false} otherwise.
+   */
+  public boolean hasProtoExtension(URI uri) {
+    return "proto".equals(uri.fileExtension());
+  }
+
   /**
    * Indicates whether the resource or file referred by the given URI exists.
    * @param uri the URI to check. It may be {@code null}.
@@ -123,7 +132,7 @@ import com.google.inject.Singleton;
   }
 
   private IPath pathOf(URI uri) {
-    String uriAsText = uri.toPlatformString(true);
-    return (uriAsText != null) ? new Path(uriAsText) : null;
+    String platformString = uri.toPlatformString(true);
+    return platformString != null ? Path.fromOSString(platformString) : null;
   }
 }

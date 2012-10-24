@@ -28,7 +28,7 @@ import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.scoping.IFileUriResolver;
 import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider;
 import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
-import com.google.eclipse.protobuf.ui.util.Uris;
+import com.google.eclipse.protobuf.util.Uris;
 import com.google.inject.Inject;
 
 /**
