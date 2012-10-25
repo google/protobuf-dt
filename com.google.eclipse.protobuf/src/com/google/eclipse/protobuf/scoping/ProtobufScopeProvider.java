@@ -94,17 +94,14 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
 
   @SuppressWarnings("unused")
   public IScope scope_ExtensibleTypeLink_target(ExtensibleTypeLink link, EReference r) {
-    Protobuf root = modelObjects.rootOf(link);
-    Collection<IEObjectDescription> extensibleTypes = extensibleTypes(root);
+    EObject c = link.eContainer();
+    Collection<IEObjectDescription> extensibleTypes =
+        modelElementFinder.find(c, complexTypeFinderDelegate, ExtensibleType.class);
     return createScope(extensibleTypes);
   }
 
   @Override public Collection<IEObjectDescription> potentialExtensibleTypesFor(TypeExtension extension) {
     Protobuf root = modelObjects.rootOf(extension);
-    return extensibleTypes(root);
-  }
-
-  private Collection<IEObjectDescription> extensibleTypes(Protobuf root) {
     return modelElementFinder.find(root, complexTypeFinderDelegate, ExtensibleType.class);
   }
 
