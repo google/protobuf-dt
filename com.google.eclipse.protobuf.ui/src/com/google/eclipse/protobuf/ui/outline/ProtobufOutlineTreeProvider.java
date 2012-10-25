@@ -20,6 +20,7 @@ import org.eclipse.xtext.ui.editor.outline.impl.DocumentRootNode;
 
 import com.google.common.collect.ImmutableList;
 import com.google.eclipse.protobuf.protobuf.BooleanLink;
+import com.google.eclipse.protobuf.protobuf.ExtensibleTypeLink;
 import com.google.eclipse.protobuf.protobuf.Extensions;
 import com.google.eclipse.protobuf.protobuf.FieldOption;
 import com.google.eclipse.protobuf.protobuf.Import;
@@ -37,7 +38,7 @@ import com.google.eclipse.protobuf.protobuf.Stream;
  */
 public class ProtobufOutlineTreeProvider extends DefaultOutlineTreeProvider {
   private static final ImmutableList<Class<? extends EObject>> IGNORED_ELEMENT_TYPES =
-      of(BooleanLink.class, FieldOption.class, MessageLink.class);
+      of(BooleanLink.class, FieldOption.class, MessageLink.class, ExtensibleTypeLink.class);
 
   private static final ImmutableList<Class<? extends EObject>> LEAF_TYPES =
       of(Extensions.class, Import.class, MessageField.class, Option.class, Package.class, Stream.class);
