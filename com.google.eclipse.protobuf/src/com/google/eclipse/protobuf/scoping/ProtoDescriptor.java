@@ -8,47 +8,31 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.unmodifiableCollection;
-import static java.util.Collections.unmodifiableList;
-
-import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
-import static org.eclipse.xtext.EcoreUtil2.resolveLazyCrossReferences;
-import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
-import static org.eclipse.xtext.util.Strings.isEmpty;
-
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.io.Closeables.closeQuietly;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MESSAGE_FIELD__TYPE;
 import static com.google.eclipse.protobuf.scoping.OptionType.findOptionTypeForLevelOf;
 import static com.google.eclipse.protobuf.util.Encodings.UTF_8;
+import static java.util.Collections.*;
+import static org.eclipse.xtext.EcoreUtil2.*;
+import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.eclipse.protobuf.model.util.INodes;
+import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.Enum;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.nodemodel.INode;
-import org.eclipse.xtext.parser.IParseResult;
-import org.eclipse.xtext.parser.IParser;
+import org.eclipse.xtext.parser.*;
 import org.eclipse.xtext.resource.XtextResource;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.eclipse.protobuf.model.util.INodes;
-import com.google.eclipse.protobuf.protobuf.ComplexType;
-import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.eclipse.protobuf.protobuf.Message;
-import com.google.eclipse.protobuf.protobuf.MessageElement;
-import com.google.eclipse.protobuf.protobuf.MessageField;
-import com.google.eclipse.protobuf.protobuf.NativeOption;
-import com.google.eclipse.protobuf.protobuf.Protobuf;
+import java.io.*;
+import java.net.URL;
+import java.util.*;
 
 /**
  * Contains the elements from descriptor.proto (provided with protobuf's library.)
@@ -196,11 +180,15 @@ public class ProtoDescriptor {
       return null;
     }
     String typeName = node.getText();
-    return (isEmpty(typeName)) ? null : enumByName(typeName.trim());
+    return (isNullOrEmpty(typeName)) ? null : enumByName(typeName.trim());
   }
 
-  @VisibleForTesting Enum enumByName(String name) {
-    return enumsByName.get(name);
+  @VisibleForTesting Enum enumByName(String qualifiedName) {
+    String[] segments = qualifiedName.split("\\.");
+    if (segments == null || segments.length == 0) {
+      return null;
+    }
+    return enumsByName.get(segments[segments.length - 1]);
   }
 
   /**
