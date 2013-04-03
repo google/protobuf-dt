@@ -60,7 +60,7 @@ RangeMax:
 
 Group:
   modifier=Modifier 'group' name=Name '=' index=(LONG | HEX)
-  ('[' (fieldOptions+=BoolOrValueFieldOption (',' fieldOptions+=BoolOrValueFieldOption)*) ']')? '{'
+  ('[' (fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)*) ']')? '{'
   elements+=GroupElement*
   '}' (';')?;
 
@@ -72,7 +72,7 @@ Extensions:
 
 MessageField:
   =>modifier=Modifier type=TypeLink name=Name '=' index=(LONG | HEX)
-  ('[' (fieldOptions+=BoolOrValueFieldOption (',' fieldOptions+=BoolOrValueFieldOption)*)? ']')? (';')+;
+  ('[' (fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)*)? ']')? (';')+;
 
 enum Modifier:
   required | optional | repeated;
@@ -100,7 +100,7 @@ EnumElement:
 
 Literal:
   name=Name '=' index=(LONG | HEX) 
-  ('[' fieldOptions+=BoolOrValueFieldOption (',' fieldOptions+=BoolOrValueFieldOption)* ']')? (';')+;
+  ('[' fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)* ']')? (';')+;
 
 terminal HEX returns ecore::ELong:
   ('-')? '0x' (NUMBER | 'a'..'f' | 'A'..'F')+;
@@ -156,10 +156,7 @@ NativeOption:
 CustomOption:
   'option' '(' source=OptionSource ')'
   ('.' fields+=OptionField ('.' fields+=OptionField)*)? '=' value=Value (';')+;
-
-BoolOrValueFieldOption:
-  FieldOption | DeprecatedFieldOption | PackedFieldOption;
-  
+ 
 FieldOption:
   DefaultValueFieldOption | NativeFieldOption | CustomFieldOption;
 
@@ -172,12 +169,6 @@ NativeFieldOption:
 CustomFieldOption:
   '(' source=OptionSource ')'
   ('.' fields+=OptionField ('.' fields+=OptionField)*)? '=' value=Value;
-
-DeprecatedFieldOption:
-  'deprecated' '=' value=BOOL;
-
-PackedFieldOption:
-  'packed' '=' value=BOOL;
 
 OptionSource:
   target=[IndexedElement|QualifiedName];
