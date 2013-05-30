@@ -177,7 +177,7 @@ OptionField:
   MessageOptionField | '(' ExtensionOptionField ')';
 
 MessageOptionField:
-  target=[IndexedElement];  
+  target=[IndexedElement|Name];  
 
 ExtensionOptionField:
   target=[IndexedElement|QualifiedName];
