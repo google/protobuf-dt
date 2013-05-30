@@ -103,7 +103,7 @@ Literal:
   ('[' fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)* ']')? (';')+;
 
 terminal HEX returns ecore::ELong:
-  ('-')? '0x' (NUMBER | 'a'..'f' | 'A'..'F')+;
+  ('-')? '0' ('x' | 'X') (NUMBER | 'a'..'f' | 'A'..'F')+;
 
 TypeExtension:
   =>'extend' type=ExtensibleTypeLink '{'
