@@ -207,7 +207,7 @@ FieldName:
   NormalFieldName | ExtensionFieldName;
 
 NormalFieldName:
-  target=[MessageField];
+  target=[MessageField|Name];
 
 ExtensionFieldName:
   '[' target=[MessageField|QualifiedName] ']';

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
-Bundle-Version: 1.3.3.qualifier
+Bundle-Version: 1.3.5.qualifier
 Bundle-SymbolicName: com.google.eclipse.protobuf.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: com.google.eclipse.protobuf;visibility:=reexport,
@@ -29,5 +29,6 @@ Export-Package: com.google.eclipse.protobuf.ui.contentassist,
  com.google.eclipse.protobuf.ui.plugin,
  com.google.eclipse.protobuf.ui.preferences,
  com.google.eclipse.protobuf.ui.preferences.compiler,
- com.google.eclipse.protobuf.ui.util
+ com.google.eclipse.protobuf.ui.util,
+ com.google.eclipse.protobuf.ui.quickfix
 Bundle-Activator: com.google.eclipse.protobuf.ui.internal.ProtobufActivator
