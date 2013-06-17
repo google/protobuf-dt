@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 
 import com.google.eclipse.protobuf.protobuf.AbstractOption;
 import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.eclipse.protobuf.protobuf.Group;
 import com.google.eclipse.protobuf.protobuf.IndexedElement;
 import com.google.eclipse.protobuf.protobuf.Literal;
 import com.google.eclipse.protobuf.protobuf.Message;
@@ -70,11 +71,17 @@ enum OptionType {
   }
 
   static OptionType findOptionTypeForLevelOf(Object container) {
+    // Special handling for Groups: delegate to the parent
+    if (container instanceof Group) {
+      return findOptionTypeForLevelOf(((Group) container).eContainer());
+    }
+    
     for (Entry<Class<?>, OptionType> optionTypeByContainer : OPTION_TYPES_BY_CONTAINER.entrySet()) {
       if (optionTypeByContainer.getKey().isInstance(container)) {
         return optionTypeByContainer.getValue();
       }
     }
+
     return null;
   }
 }
