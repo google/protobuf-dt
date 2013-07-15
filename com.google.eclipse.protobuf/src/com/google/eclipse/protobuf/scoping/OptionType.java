@@ -71,11 +71,6 @@ enum OptionType {
   }
 
   static OptionType findOptionTypeForLevelOf(Object container) {
-    // Special handling for Groups: delegate to the parent
-    if (container instanceof Group) {
-      return findOptionTypeForLevelOf(((Group) container).eContainer());
-    }
-    
     for (Entry<Class<?>, OptionType> optionTypeByContainer : OPTION_TYPES_BY_CONTAINER.entrySet()) {
       if (optionTypeByContainer.getKey().isInstance(container)) {
         return optionTypeByContainer.getValue();

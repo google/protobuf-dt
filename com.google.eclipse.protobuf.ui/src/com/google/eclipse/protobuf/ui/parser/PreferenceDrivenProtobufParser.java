@@ -9,6 +9,7 @@
 package com.google.eclipse.protobuf.ui.parser;
 
 import org.antlr.runtime.CharStream;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.nodemodel.impl.NodeModelBuilder;
 import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.parser.ParseResult;
@@ -37,7 +38,12 @@ public class PreferenceDrivenProtobufParser extends ProtobufParser {
   }
 
   private boolean isNotProto2(IParseResult result) {
-    Protobuf root = (Protobuf) result.getRootASTElement();
-    return root == null || root.getSyntax() == null;
+    EObject rootObj = result.getRootASTElement();
+    if (rootObj instanceof Protobuf) {
+      Protobuf root = (Protobuf) result.getRootASTElement();
+      return root == null || root.getSyntax() == null;
+    }
+    
+    return false;
   }
 }

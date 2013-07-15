@@ -2,26 +2,25 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
-Bundle-Version: 1.4.1.qualifier
+Bundle-Version: 1.4.3.qualifier
 Bundle-SymbolicName: com.google.eclipse.protobuf.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: com.google.eclipse.protobuf;visibility:=reexport,
- org.eclipse.xtext.ui;bundle-version="2.3.0",
- org.eclipse.ui.editors;bundle-version="3.7.0",
- org.eclipse.ui.ide;bundle-version="3.7.0",
- org.eclipse.xtext.ui.shared,
- org.eclipse.ui,
- org.eclipse.xtext.builder,
- org.antlr.runtime,
- org.eclipse.core.runtime,
  com.ibm.icu,
- org.eclipse.core.resources,
- org.eclipse.core.filesystem,
- org.eclipse.compare.core,
- org.eclipse.ui.console
-Import-Package: org.apache.commons.logging,
+ org.antlr.runtime,
+ org.apache.commons.logging,
  org.apache.log4j,
- org.eclipse.ui.texteditor.spelling
+ org.eclipse.compare.core,
+ org.eclipse.core.filesystem,
+ org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.eclipse.ui.console,
+ org.eclipse.ui.editors,
+ org.eclipse.ui.ide,
+ org.eclipse.xtext.builder,
+ org.eclipse.xtext.ui;bundle-version="[2.4.0,2.4.3)",
+ org.eclipse.xtext.ui.shared
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: com.google.eclipse.protobuf.ui.contentassist,
  com.google.eclipse.protobuf.ui.contentassist.antlr,
