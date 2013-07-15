@@ -8,19 +8,8 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static java.util.Collections.emptySet;
-
 import static com.google.eclipse.protobuf.scoping.OptionType.typeOf;
-
-import java.util.Collection;
-import java.util.Set;
-
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.xtext.resource.IEObjectDescription;
-import org.eclipse.xtext.scoping.IScope;
-import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider;
-import org.eclipse.xtext.scoping.impl.SimpleScope;
+import static java.util.Collections.emptySet;
 
 import com.google.eclipse.protobuf.model.util.MessageFields;
 import com.google.eclipse.protobuf.model.util.ModelObjects;
@@ -35,6 +24,8 @@ import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.protobuf.ExtensibleType;
 import com.google.eclipse.protobuf.protobuf.ExtensibleTypeLink;
 import com.google.eclipse.protobuf.protobuf.FieldName;
+import com.google.eclipse.protobuf.protobuf.Group;
+import com.google.eclipse.protobuf.protobuf.GroupElement;
 import com.google.eclipse.protobuf.protobuf.IndexedElement;
 import com.google.eclipse.protobuf.protobuf.LiteralLink;
 import com.google.eclipse.protobuf.protobuf.Message;
@@ -50,6 +41,18 @@ import com.google.eclipse.protobuf.protobuf.SimpleValueField;
 import com.google.eclipse.protobuf.protobuf.Stream;
 import com.google.eclipse.protobuf.protobuf.TypeExtension;
 import com.google.inject.Inject;
+
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.xtext.nodemodel.util.NodeModelUtils;
+import org.eclipse.xtext.resource.IEObjectDescription;
+import org.eclipse.xtext.scoping.IScope;
+import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider;
+import org.eclipse.xtext.scoping.impl.SimpleScope;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * Custom scoping description.
@@ -166,6 +169,17 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     }
     if (c instanceof AbstractCustomOption) {
       AbstractCustomOption option = (AbstractCustomOption) c;
+
+      if (c instanceof GroupElement) {
+        EObject container = c.eContainer();
+        if (container instanceof Group) {
+          OptionType optionType = OptionType.findOptionTypeForLevelOf(container.eContainer());
+          return createScope(optionType != null 
+              ? modelElementFinder.find(option, customOptionFinderDelegate, optionType)
+              : Collections.<IEObjectDescription>emptySet());
+        }
+      }
+
       return createScope(potentialSourcesFor(option));
     }
     Set<IEObjectDescription> descriptions = emptySet();
