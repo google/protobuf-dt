@@ -22,10 +22,13 @@ import java.util.Set;
 import com.google.eclipse.protobuf.protobuf.Message;
 import com.google.eclipse.protobuf.protobuf.MessageElement;
 import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.eclipse.protobuf.protobuf.OneOf;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.eclipse.protobuf.protobuf.TypeExtension;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
+import org.eclipse.emf.ecore.EObject;
 
 /**
  * Utility methods related to <code>{@link Message}</code>s.
@@ -64,11 +67,23 @@ import com.google.inject.Singleton;
    */
   public Collection<MessageField> fieldsOf(Message message) {
     List<MessageField> fields = newArrayList();
-    for (MessageElement e : message.getElements()) {
-      if (e instanceof MessageField) {
-        fields.add((MessageField) e);
+    fieldsOf(message, fields);
+    return unmodifiableList(fields);
+  }
+
+  private void fieldsOf(EObject message, List<MessageField> fields) {
+    if (message instanceof Message) {
+      for (MessageElement e : ((Message) message).getElements()) {
+        if (e instanceof MessageField) {
+          fields.add((MessageField) e);
+        }
+      }
+    } else if (message instanceof OneOf) {
+      for (MessageElement e : ((OneOf) message).getElements()) {
+        if (e instanceof MessageField) {
+          fields.add((MessageField) e);
+        }
       }
     }
-    return unmodifiableList(fields);
   }
 }

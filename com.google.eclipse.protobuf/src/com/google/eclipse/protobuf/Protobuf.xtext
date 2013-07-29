@@ -50,7 +50,7 @@ Message:
   '}' (';')?;
 
 MessageElement:
-  Option | Extensions | ComplexType | MessageField | TypeExtension;
+  Option | Extensions | ComplexType | MessageField | TypeExtension | OneOf;
 
 Range:
   from=LONG ('to' to=RangeMax)?;
@@ -66,12 +66,24 @@ Group:
 
 GroupElement:
   Option | IndexedElement | ComplexType | TypeExtension | Extensions;
+  
+OneOf:
+  'oneof' name=Name '{'
+  elements+=OneOfElement*
+  '}' (';')?;
+  
+OneOfElement returns MessageElement:
+  Extensions | UnmodifiedMessageField;
 
 Extensions:
   'extensions' ranges+=Range (',' ranges+=Range)* (';')+;
 
 MessageField:
   =>modifier=Modifier type=TypeLink name=Name '=' index=(LONG | HEX)
+  ('[' (fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)*)? ']')? (';')+;
+
+UnmodifiedMessageField returns MessageField:
+  type=TypeLink name=Name '=' index=(LONG | HEX)
   ('[' (fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)*)? ']')? (';')+;
 
 enum Modifier:
@@ -219,7 +231,7 @@ SafeId:
   ID | SafeReservedWord;
   
 ReservedWord:  
-  SafeReservedWord | 'group';
+  SafeReservedWord | 'group' | 'oneof';
 
 SafeReservedWord:
   'package' | 'import' | 'public' | 'option' | 'extend' | 'message' | 'optional' | 'required' | 'repeated' |

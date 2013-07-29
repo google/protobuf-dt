@@ -12,6 +12,7 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.xtext.conversion.IValueConverterService;
 import org.eclipse.xtext.naming.IQualifiedNameConverter;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
+import org.eclipse.xtext.parser.IAstFactory;
 import org.eclipse.xtext.parser.antlr.ISyntaxErrorMessageProvider;
 import org.eclipse.xtext.resource.IGlobalServiceProvider;
 import org.eclipse.xtext.resource.XtextResource;
@@ -23,6 +24,7 @@ import com.google.eclipse.protobuf.conversion.ProtobufTerminalConverters;
 import com.google.eclipse.protobuf.linking.ProtobufResource;
 import com.google.eclipse.protobuf.naming.ProtobufQualifiedNameConverter;
 import com.google.eclipse.protobuf.naming.ProtobufQualifiedNameProvider;
+import com.google.eclipse.protobuf.parser.ProtobufAstFactory;
 import com.google.eclipse.protobuf.resource.FastXtextResourceSet;
 import com.google.eclipse.protobuf.resource.GlobalResourceServiceProvider;
 import com.google.eclipse.protobuf.scoping.ExtensionRegistryProvider;
@@ -45,6 +47,10 @@ public class ProtobufRuntimeModule extends AbstractProtobufRuntimeModule {
 
   public Class<? extends IQualifiedNameConverter> bindIQualifiedNameConverter() {
     return ProtobufQualifiedNameConverter.class;
+  }
+  
+  @Override public Class<? extends IAstFactory> bindIAstFactory() {
+    return ProtobufAstFactory.class;
   }
 
   @Override public Class<? extends IQualifiedNameProvider> bindIQualifiedNameProvider() {

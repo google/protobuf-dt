@@ -33,6 +33,7 @@ import com.google.eclipse.protobuf.naming.NameResolver;
 import com.google.eclipse.protobuf.protobuf.IndexedElement;
 import com.google.eclipse.protobuf.protobuf.Message;
 import com.google.eclipse.protobuf.protobuf.MessageElement;
+import com.google.eclipse.protobuf.protobuf.OneOf;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.eclipse.protobuf.protobuf.ProtobufElement;
@@ -72,27 +73,39 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
     if (isNameNull(e)) {
       return; // we already show an error if name is null, no need to go further.
     }
-    long index = indexedElements.indexOf(e);
+    
     EObject container = e.eContainer();
     if (container instanceof Message) {
       Message message = (Message) container;
-      for (MessageElement element : message.getElements()) {
-        if (!(element instanceof IndexedElement)) {
-          continue;
+      Iterable<MessageElement> elements = message.getElements();
+      checkTagNumerIsUnique(e, message, elements);
+    }
+  }
+
+  private boolean checkTagNumerIsUnique(IndexedElement e, EObject message, 
+      Iterable<MessageElement> elements) {
+    long index = indexedElements.indexOf(e);
+
+    for (MessageElement element : elements) {
+      if (element instanceof OneOf) {
+        if (!checkTagNumerIsUnique(e, message, ((OneOf) element).getElements())) {
+          return false;
         }
+      } else if (element instanceof IndexedElement) {
         IndexedElement other = (IndexedElement) element;
         if (other == e) {
-          break;
+          return true;
         }
-        if (indexedElements.indexOf(other) != index) {
-          continue;
+        if (indexedElements.indexOf(other) == index) {
+          QualifiedName messageName = qualifiedNameProvider.getFullyQualifiedName(message);
+          String msg = format(fieldNumberAlreadyUsed, index, messageName.toString(), nameResolver.nameOf(other));
+          invalidTagNumberError(msg, e);
+          return false;
         }
-        QualifiedName messageName = qualifiedNameProvider.getFullyQualifiedName(message);
-        String msg = format(fieldNumberAlreadyUsed, index, messageName.toString(), nameResolver.nameOf(other));
-        invalidTagNumberError(msg, e);
-        break;
       }
     }
+    
+    return true;
   }
 
   @Check public void checkTagNumberIsGreaterThanZero(IndexedElement e) {

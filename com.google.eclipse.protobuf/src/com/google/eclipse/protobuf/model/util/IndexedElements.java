@@ -21,6 +21,8 @@ import org.eclipse.xtext.util.SimpleAttributeResolver;
 
 import com.google.eclipse.protobuf.protobuf.FieldOption;
 import com.google.eclipse.protobuf.protobuf.IndexedElement;
+import com.google.eclipse.protobuf.protobuf.MessageElement;
+import com.google.eclipse.protobuf.protobuf.OneOf;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -51,15 +53,23 @@ import com.google.inject.Singleton;
    * @return the calculated value for the index of the given element.
    */
   public long calculateNewIndexFor(IndexedElement e) {
-    long index = 0;
     EObject type = e.eContainer();
-    for (EObject o : type.eContents()) {
-      if (o == e || !(o instanceof IndexedElement)) {
-        continue;
-      }
-      index = max(index, indexOf((IndexedElement) o));
-    }
+    long index = findMaxIndex(type.eContents());
     return ++index;
+  }
+  
+  private long findMaxIndex(Iterable<? extends EObject> elements) {
+    long maxIndex = 0;
+
+    for (EObject e : elements) {
+      if (e instanceof OneOf) {
+        maxIndex = max(maxIndex, findMaxIndex(((OneOf) e).getElements()));
+      } else if (e instanceof IndexedElement) {
+        maxIndex  = max(maxIndex, indexOf((IndexedElement) e));
+      }
+    }
+    
+    return maxIndex;
   }
 
   /**
