@@ -64,16 +64,22 @@ Group:
   elements+=GroupElement*
   '}' (';')?;
 
+UnmodifiedGroup returns Group:
+  =>'group' name=Name '=' index=(LONG | HEX)
+  ('[' (fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)*) ']')? '{'
+  elements+=GroupElement*
+  '}' (';')?;
+
 GroupElement:
   Option | IndexedElement | ComplexType | TypeExtension | Extensions;
-  
+
 OneOf:
-  'oneof' name=Name '{'
-  elements+=OneOfElement*
+  (isRepeated?='repeated')? 'oneof' name=Name '{'
+  elements+=OneOfElement+
   '}' (';')?;
-  
+
 OneOfElement returns MessageElement:
-  Extensions | UnmodifiedMessageField;
+  Extensions | UnmodifiedGroup | UnmodifiedMessageField;
 
 Extensions:
   'extensions' ranges+=Range (',' ranges+=Range)* (';')+;
@@ -87,7 +93,7 @@ UnmodifiedMessageField returns MessageField:
   ('[' (fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)*)? ']')? (';')+;
 
 enum Modifier:
-  required | optional | repeated;
+  optional | required | repeated;
 
 TypeLink:
   ScalarTypeLink | ComplexTypeLink;

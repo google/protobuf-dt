@@ -75,6 +75,9 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
     }
     
     EObject container = e.eContainer();
+    if (container instanceof OneOf) {
+      container = container.eContainer();  
+    }
     if (container instanceof Message) {
       Message message = (Message) container;
       Iterable<MessageElement> elements = message.getElements();

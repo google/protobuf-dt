@@ -40,7 +40,7 @@ public class IndexedElements_calculateNewIndexFor_Test {
   @Test public void should_return_one_for_first_and_only_field() {
     MessageField field = xtext.find("name", MessageField.class);
     long index = indexedElements.calculateNewIndexFor(field);
-    assertThat(index, equalTo(1L));
+    assertThat(index, equalTo(3L));
   }
 
   // syntax = "proto2";
@@ -52,6 +52,6 @@ public class IndexedElements_calculateNewIndexFor_Test {
   @Test public void should_return_max_index_value_plus_one_for_new_field() {
     MessageField field = xtext.find("id", MessageField.class);
     long index = indexedElements.calculateNewIndexFor(field);
-    assertThat(index, equalTo(7L));
+    assertThat(index, equalTo(9L));
   }
 }

@@ -8,23 +8,10 @@
  */
 package com.google.eclipse.protobuf;
 
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.xtext.conversion.IValueConverterService;
-import org.eclipse.xtext.naming.IQualifiedNameConverter;
-import org.eclipse.xtext.naming.IQualifiedNameProvider;
-import org.eclipse.xtext.parser.IAstFactory;
-import org.eclipse.xtext.parser.antlr.ISyntaxErrorMessageProvider;
-import org.eclipse.xtext.resource.IGlobalServiceProvider;
-import org.eclipse.xtext.resource.XtextResource;
-import org.eclipse.xtext.resource.XtextResourceSet;
-import org.eclipse.xtext.scoping.impl.ImportUriResolver;
-import org.eclipse.xtext.validation.IResourceValidator;
-
 import com.google.eclipse.protobuf.conversion.ProtobufTerminalConverters;
 import com.google.eclipse.protobuf.linking.ProtobufResource;
 import com.google.eclipse.protobuf.naming.ProtobufQualifiedNameConverter;
 import com.google.eclipse.protobuf.naming.ProtobufQualifiedNameProvider;
-import com.google.eclipse.protobuf.parser.ProtobufAstFactory;
 import com.google.eclipse.protobuf.resource.FastXtextResourceSet;
 import com.google.eclipse.protobuf.resource.GlobalResourceServiceProvider;
 import com.google.eclipse.protobuf.scoping.ExtensionRegistryProvider;
@@ -32,6 +19,17 @@ import com.google.eclipse.protobuf.scoping.ProtobufImportUriResolver;
 import com.google.eclipse.protobuf.validation.ProtobufResourceValidator;
 import com.google.eclipse.protobuf.validation.ProtobufSyntaxErrorMessageProvider;
 import com.google.inject.Binder;
+
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.xtext.conversion.IValueConverterService;
+import org.eclipse.xtext.naming.IQualifiedNameConverter;
+import org.eclipse.xtext.naming.IQualifiedNameProvider;
+import org.eclipse.xtext.parser.antlr.ISyntaxErrorMessageProvider;
+import org.eclipse.xtext.resource.IGlobalServiceProvider;
+import org.eclipse.xtext.resource.XtextResource;
+import org.eclipse.xtext.resource.XtextResourceSet;
+import org.eclipse.xtext.scoping.impl.ImportUriResolver;
+import org.eclipse.xtext.validation.IResourceValidator;
 
 /**
  * Use this class to register components to be used at runtime / without the Equinox extension registry.
@@ -49,10 +47,6 @@ public class ProtobufRuntimeModule extends AbstractProtobufRuntimeModule {
     return ProtobufQualifiedNameConverter.class;
   }
   
-  @Override public Class<? extends IAstFactory> bindIAstFactory() {
-    return ProtobufAstFactory.class;
-  }
-
   @Override public Class<? extends IQualifiedNameProvider> bindIQualifiedNameProvider() {
     return ProtobufQualifiedNameProvider.class;
   }
