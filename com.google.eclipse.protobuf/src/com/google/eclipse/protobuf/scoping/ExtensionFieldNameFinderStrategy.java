@@ -15,10 +15,13 @@ import java.util.Set;
 
 import org.eclipse.xtext.resource.IEObjectDescription;
 
+import com.google.common.base.Strings;
 import com.google.eclipse.protobuf.model.util.MessageFields;
 import com.google.eclipse.protobuf.model.util.Messages;
 import com.google.eclipse.protobuf.model.util.ModelObjects;
 import com.google.eclipse.protobuf.naming.NormalNamingStrategy;
+import com.google.eclipse.protobuf.protobuf.Group;
+import com.google.eclipse.protobuf.protobuf.IndexedElement;
 import com.google.eclipse.protobuf.protobuf.Message;
 import com.google.eclipse.protobuf.protobuf.MessageElement;
 import com.google.eclipse.protobuf.protobuf.MessageField;
@@ -35,16 +38,22 @@ class ExtensionFieldNameFinderStrategy implements CustomOptionFieldNameFinder.Fi
   @Inject private NormalNamingStrategy namingStrategy;
   @Inject private QualifiedNameDescriptions qualifiedNameDescriptions;
 
-  @Override public Collection<IEObjectDescription> findMessageFields(MessageField reference) {
+  @Override public Collection<IEObjectDescription> findMessageFields(IndexedElement reference) {
     Set<IEObjectDescription> descriptions = newHashSet();
-    Message type = messageFields.messageTypeOf(reference);
-    // check first in descriptor.proto
-    for (TypeExtension extension : messages.extensionsOf(type, modelObjects.rootOf(reference))) {
-      for (MessageElement element : extension.getElements()) {
-        if (!(element instanceof MessageField)) {
-          continue;
+    if (reference instanceof MessageField) {
+      Message type = messageFields.messageTypeOf((MessageField) reference);
+      // check first in descriptor.proto
+      for (TypeExtension extension : messages.extensionsOf(type, modelObjects.rootOf(reference))) {
+        for (MessageElement element : extension.getElements()) {
+          if (element instanceof IndexedElement) {
+            descriptions.addAll(qualifiedNameDescriptions.qualifiedNames(element, namingStrategy));
+          }
         }
-        descriptions.addAll(qualifiedNameDescriptions.qualifiedNames(element, namingStrategy));
+      }
+    } else if (reference instanceof Group) {
+      String name = ((Group) reference).getName();
+      if (!Strings.isNullOrEmpty(name)) {
+        descriptions.addAll(qualifiedNameDescriptions.qualifiedNames(reference, namingStrategy));
       }
     }
     return descriptions;

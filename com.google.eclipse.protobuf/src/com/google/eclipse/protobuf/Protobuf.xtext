@@ -212,13 +212,13 @@ ComplexValue:
 // { foo: 1, bar: 2 }
 ComplexValueCurlyBracket:
   '{'
-  (fields+=ValueField (',')? (fields+=ValueField (',')?)*)?
+  fields+=ValueField ((',')? fields+=ValueField)* (',')?
   '}';
-  
+
 // < foo: 1, bar: 2 >
 ComplexValueAngleBracket:
   '<'
-  (fields+=ValueField (',')? (fields+=ValueField (',')?)*)?
+  fields+=ValueField ((',')? fields+=ValueField)* (',')?
   '>';
 
 ValueField:
@@ -234,10 +234,10 @@ FieldName:
   NormalFieldName | ExtensionFieldName;
 
 NormalFieldName:
-  target=[MessageField|Name];
+  target=[IndexedElement|Name];
 
 ExtensionFieldName:
-  '[' target=[MessageField|QualifiedName] ']';
+  '[' target=[IndexedElement|QualifiedName] ']';
 
 QualifiedName:
   '.'? SafeId ('.' (WS)* SafeId)*;

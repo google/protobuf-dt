@@ -8,14 +8,6 @@
  */
 package com.google.eclipse.protobuf.ui.contentassist;
 
-import static java.lang.String.valueOf;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptySet;
-
-import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
-import static org.eclipse.xtext.util.Strings.isEmpty;
-import static org.eclipse.xtext.util.Strings.toFirstLower;
-
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.CLOSING_BRACKET;
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.DEFAULT;
@@ -38,24 +30,12 @@ import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.EMPTY_STRIN
 import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.EQUAL_PROTO2_IN_QUOTES;
 import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.PROTO2_IN_QUOTES;
 import static com.google.eclipse.protobuf.util.CommonWords.space;
-
-import java.util.Collection;
-import java.util.List;
-
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.jface.text.contentassist.ICompletionProposal;
-import org.eclipse.jface.viewers.StyledString;
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.xtext.Assignment;
-import org.eclipse.xtext.Keyword;
-import org.eclipse.xtext.RuleCall;
-import org.eclipse.xtext.naming.QualifiedName;
-import org.eclipse.xtext.resource.IEObjectDescription;
-import org.eclipse.xtext.ui.PluginImageHelper;
-import org.eclipse.xtext.ui.editor.contentassist.ConfigurableCompletionProposal;
-import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
-import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor;
+import static java.lang.String.valueOf;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
+import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
+import static org.eclipse.xtext.util.Strings.isEmpty;
+import static org.eclipse.xtext.util.Strings.toFirstLower;
 
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.model.util.IndexedElements;
@@ -89,6 +69,24 @@ import com.google.eclipse.protobuf.scoping.ScopeProvider;
 import com.google.eclipse.protobuf.ui.grammar.CompoundElement;
 import com.google.eclipse.protobuf.ui.labeling.Images;
 import com.google.inject.Inject;
+
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.xtext.Assignment;
+import org.eclipse.xtext.Keyword;
+import org.eclipse.xtext.RuleCall;
+import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.resource.IEObjectDescription;
+import org.eclipse.xtext.ui.PluginImageHelper;
+import org.eclipse.xtext.ui.editor.contentassist.ConfigurableCompletionProposal;
+import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
+import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor;
+
+import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -696,7 +694,10 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       SimpleValueField field = (SimpleValueField) model;
       FieldName name = field.getName();
       if (name != null) {
-        proposeFieldValue(name.getTarget(), context, acceptor);
+        IndexedElement target = name.getTarget();
+        if (target instanceof MessageField) {
+          proposeFieldValue((MessageField) target, context, acceptor);
+        }
       }
     }
   }
