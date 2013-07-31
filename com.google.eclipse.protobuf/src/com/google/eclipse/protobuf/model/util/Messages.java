@@ -19,6 +19,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.base.Strings;
+import com.google.eclipse.protobuf.protobuf.Group;
 import com.google.eclipse.protobuf.protobuf.Message;
 import com.google.eclipse.protobuf.protobuf.MessageElement;
 import com.google.eclipse.protobuf.protobuf.MessageField;
@@ -58,32 +60,5 @@ import org.eclipse.emf.ecore.EObject;
       }
     }
     return extensions;
-  }
-
-  /**
-   * Returns all the fields of the given <code>{@link Message}</code>.
-   * @param message the given message.
-   * @return all the fields of the given {@code Message}.
-   */
-  public Collection<MessageField> fieldsOf(Message message) {
-    List<MessageField> fields = newArrayList();
-    fieldsOf(message, fields);
-    return unmodifiableList(fields);
-  }
-
-  private void fieldsOf(EObject message, List<MessageField> fields) {
-    if (message instanceof Message) {
-      for (MessageElement e : ((Message) message).getElements()) {
-        if (e instanceof MessageField) {
-          fields.add((MessageField) e);
-        }
-      }
-    } else if (message instanceof OneOf) {
-      for (MessageElement e : ((OneOf) message).getElements()) {
-        if (e instanceof MessageField) {
-          fields.add((MessageField) e);
-        }
-      }
-    }
   }
 }
