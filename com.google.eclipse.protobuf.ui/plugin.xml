@@ -275,4 +275,7 @@
       <newWizardShortcut id="com.google.eclipse.protobuf.ui.wizards.NewProtoFileWizard" />
     </perspectiveExtension>
   </extension>
+    <extension point="org.eclipse.xtext.ui.shared.overridingGuiceModule">
+    <module class="com.google.eclipse.protobuf.ui.SharedModuleOverrides"/>
+  </extension>
 </plugin>

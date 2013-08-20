@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
-Bundle-Version: 1.5.1.qualifier
+Bundle-Version: 1.5.3.qualifier
 Bundle-Activator: com.google.eclipse.protobuf.ui.internal.ProtobufActivator
 Bundle-SymbolicName: com.google.eclipse.protobuf.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
@@ -14,6 +14,7 @@ Require-Bundle: com.google.eclipse.protobuf,
  org.eclipse.core.filesystem,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
+ org.eclipse.jdt.core;resolution:=optional,
  org.eclipse.ui,
  org.eclipse.ui.console,
  org.eclipse.ui.editors,
