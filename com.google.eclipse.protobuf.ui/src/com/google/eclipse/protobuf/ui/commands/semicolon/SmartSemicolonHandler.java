@@ -41,6 +41,7 @@ import com.google.eclipse.protobuf.model.util.Literals;
 import com.google.eclipse.protobuf.model.util.Protobufs;
 import com.google.eclipse.protobuf.model.util.Resources;
 import com.google.eclipse.protobuf.protobuf.FieldOption;
+import com.google.eclipse.protobuf.protobuf.IndexedElement;
 import com.google.eclipse.protobuf.protobuf.Literal;
 import com.google.eclipse.protobuf.protobuf.MessageField;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
@@ -119,7 +120,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
             }
             if (model instanceof MessageField) {
               MessageField field = (MessageField) model;
-              if (shouldCalculateIndex(field, MESSAGE_FIELD__INDEX)) {
+              if (shouldCalculateIndex(field)) {
                 long index = indexedElements.calculateNewIndexFor(field);
                 field.setIndex(index);
                 updateIndexInCommentOfParent(field, index, document);
@@ -141,6 +142,10 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
   private boolean shouldCalculateIndex(EObject target, EAttribute indexAttribute) {
     INode node = nodes.firstNodeForFeature(target, indexAttribute);
     return node == null || isEmpty(node.getText());
+  }
+  
+  private boolean shouldCalculateIndex(IndexedElement target) {
+    return indexedElements.indexOf(target) <= 0;
   }
 
   private EObject modelFrom(ContentAssistContext c) {
