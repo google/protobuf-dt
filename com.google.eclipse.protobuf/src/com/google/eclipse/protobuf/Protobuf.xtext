@@ -225,10 +225,10 @@ ValueField:
   SimpleValueField | ComplexValueField;
 
 SimpleValueField:
-  name=FieldName ':' value=SimpleValueLink;
+  name=FieldName ':' value=SimpleValueLink ';'?;
 
 ComplexValueField:
-  name=FieldName ':'? values=ComplexValue;
+  name=FieldName ':'? values=ComplexValue ';'?;
 
 FieldName:
   NormalFieldName | ExtensionFieldName;
