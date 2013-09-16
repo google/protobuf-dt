@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.bugs;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
@@ -17,7 +17,9 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.ComplexValue;
 import com.google.eclipse.protobuf.protobuf.CustomFieldOption;
+import com.google.eclipse.protobuf.protobuf.Value;
 
 /**
  * Tests fix for <a href="http://code.google.com/p/protobuf-dt/issues/detail?id=185">Issue 185</a>.
@@ -47,6 +49,8 @@ public class Issue185_CustomOptionsShouldAllowEmptyBracesAsValue_Test {
   // }
   @Test public void should_allow_empty_braces_as_value() {
     CustomFieldOption option = xtext.find("fileopt", ")", CustomFieldOption.class);
-    assertNull(option.getValue());
+    Value value = option.getValue();
+    ComplexValue complexValue = value instanceof ComplexValue ? (ComplexValue) value : null;
+    assertTrue(complexValue != null && complexValue.getFields().isEmpty());
   }
 }

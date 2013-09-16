@@ -211,15 +211,11 @@ ComplexValue:
 
 // { foo: 1, bar: 2 }
 ComplexValueCurlyBracket:
-  '{'
-  fields+=ValueField ((',')? fields+=ValueField)* (',')?
-  '}';
+  '{' {ComplexValueCurlyBracket} (fields+=ValueField (',')?)* '}';
 
 // < foo: 1, bar: 2 >
 ComplexValueAngleBracket:
-  '<'
-  fields+=ValueField ((',')? fields+=ValueField)* (',')?
-  '>';
+  '<' {ComplexValueAngleBracket} (fields+=ValueField (',')?)* '>';
 
 ValueField:
   SimpleValueField | ComplexValueField;
