@@ -14,7 +14,7 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.hamcrest.Description;
-import org.hamcrest.TypeSafeMatcher;
+import org.junit.internal.matchers.TypeSafeMatcher;
 
 import com.google.eclipse.protobuf.ui.internal.ProtobufActivator;
 

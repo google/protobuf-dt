@@ -21,8 +21,6 @@ import com.google.eclipse.protobuf.ui.swtbot.ProtobufBot;
 
 /**
  * Tests for "import" hyperlinking.
- *
- * @author alruiz@google.com (Alex Ruiz)
  */
 public class ImportHyperlinking_Test {
   private static ProtobufBot robot;
@@ -36,7 +34,7 @@ public class ImportHyperlinking_Test {
   @Rule public CommentReaderRule commentReader = new CommentReaderRule();
 
   // import 'google/protobuf/descriptor.proto';
-  @Test public void should_open_file_in_plugIn() throws InterruptedException {
+  @Test public void should_open_file_in_plugIn() {
     String text = commentReader.comments().get(0);
     SWTBotEclipseEditor editor = robot.createFileWithText("importDescriptor.proto", text);
     navigateToImportedFile(editor);

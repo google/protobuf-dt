@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.bugs;
 
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;

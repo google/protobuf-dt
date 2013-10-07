@@ -13,7 +13,9 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -30,7 +32,11 @@ public class ImportRootsProtocOption_singleImportRoot_Test {
   private File project;
 
   @Before public void setUp() {
-    project = temporaryFolder.newFolder("project");
+    try {
+      project = temporaryFolder.newFolder("project");
+    } catch (IOException e) {
+      Assert.fail(e.toString());
+    }
   }
 
   @Test public void should_return_project_directory_if_file_is_underneath_it() {

@@ -8,25 +8,25 @@
  */
 package com.google.eclipse.protobuf.cdt.matching;
 
-import static org.hamcrest.collection.IsCollectionContaining.hasItems;
-import static org.junit.Assert.assertThat;
-
 import static com.google.eclipse.protobuf.cdt.matching.Resources.eObjects;
 import static com.google.eclipse.protobuf.cdt.util.ExtendedListIterator.newIterator;
 import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
-
-import java.util.List;
-
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
-import org.junit.Rule;
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.junit.Assert.assertThat;
 
 import com.google.eclipse.protobuf.cdt.util.ExtendedIterator;
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.Message;
 import com.google.inject.Inject;
+
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
+import org.hamcrest.CoreMatchers;
+import org.junit.Rule;
+import org.junit.Test;
+
+import java.util.List;
 
 /**
  * Tests for <code>{@link MessageMatcherStrategy#matchingProtobufElementLocations(EObject, ExtendedIterator)}</code>
@@ -46,7 +46,7 @@ public class MessageMatcherStrategy_matchingProtobufElementLocations_Test {
   @Test public void should_find_top_level_perfect_match() {
     List<URI> locations = matcher.matchingProtobufElementLocations(xtext.root(), newIterator("Address"));
     EObject message = xtext.find("Address", Message.class);
-    assertThat(eObjectsFrom(locations), hasItems(message));
+    assertThat(eObjectsFrom(locations), CoreMatchers.hasItems(message));
   }
 
   // syntax = "proto2";
