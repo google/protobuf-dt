@@ -8,32 +8,11 @@
  */
 package com.google.eclipse.protobuf.ui.commands.semicolon;
 
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.LITERAL__INDEX;
 import static java.util.regex.Pattern.compile;
-
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.LITERAL__INDEX;
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MESSAGE_FIELD__INDEX;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.log4j.Logger;
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.xtext.nodemodel.INode;
-import org.eclipse.xtext.resource.XtextResource;
-import org.eclipse.xtext.ui.editor.XtextEditor;
-import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
-import org.eclipse.xtext.ui.editor.contentassist.antlr.ParserBasedContentAssistContextFactory;
-import org.eclipse.xtext.ui.editor.model.IXtextDocument;
-import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
-import org.eclipse.xtext.util.Pair;
-import org.eclipse.xtext.util.concurrent.IUnitOfWork;
-
+import com.google.common.collect.Lists;
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.model.util.INodes;
 import com.google.eclipse.protobuf.model.util.IndexedElements;
@@ -49,12 +28,31 @@ import com.google.eclipse.protobuf.ui.commands.SmartInsertHandler;
 import com.google.eclipse.protobuf.ui.preferences.editor.numerictag.NumericTagPreferences;
 import com.google.inject.Inject;
 
+import org.apache.log4j.Logger;
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.xtext.nodemodel.INode;
+import org.eclipse.xtext.resource.XtextResource;
+import org.eclipse.xtext.ui.editor.XtextEditor;
+import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
+import org.eclipse.xtext.ui.editor.contentassist.antlr.ParserBasedContentAssistContextFactory;
+import org.eclipse.xtext.ui.editor.model.IXtextDocument;
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
+import org.eclipse.xtext.util.Pair;
+import org.eclipse.xtext.util.Tuples;
+import org.eclipse.xtext.util.concurrent.IUnitOfWork;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Inserts a semicolon at the end of a line, regardless of the current position of the caret in the editor. If the line
  * of code being edited is a field or enum literal and if it does not have an index yet, this handler will insert an
  * index with a proper value as well.
- *
- * @author alruiz@google.com (Alex Ruiz)
  */
 public class SmartSemicolonHandler extends SmartInsertHandler {
   private static final Pattern NUMBERS_PATTERN = compile("[\\d]+");
@@ -90,8 +88,15 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
   private void insertContent(final XtextEditor editor, final StyledTextAccess styledTextAccess) {
     final AtomicBoolean shouldInsertSemicolon = new AtomicBoolean(true);
     final IXtextDocument document = editor.getDocument();
+    final List<Pair<EObject, Long>> commentsToUpdate = Lists.newLinkedList();
+
     document.readOnly(NULL_UNIT_OF_WORK); // wait for reconciler to finish its work.
     try {
+      /*
+       * Textual and semantic updates cannot be done in the same IUnitOfWork (throws an 
+       * IllegalStateException), so index updates (semantic) are done first and tracked in the 
+       * commentsToUpdate list, then a 2nd IUnitOfWork processes the comment updates (textual).
+       */
       document.modify(new IUnitOfWork.Void<XtextResource>() {
         @Override public void process(XtextResource resource) {
           Protobuf root = resources.rootOf(resource);
@@ -114,7 +119,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
               if (shouldCalculateIndex(literal, LITERAL__INDEX)) {
                 long index = literals.calculateNewIndexOf(literal);
                 literal.setIndex(index);
-                updateIndexInCommentOfParent(literal, index, document);
+                commentsToUpdate.add(Tuples.create(model, index));
                 shouldInsertSemicolon.set(false);
               }
             }
@@ -123,13 +128,23 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
               if (shouldCalculateIndex(field)) {
                 long index = indexedElements.calculateNewIndexFor(field);
                 field.setIndex(index);
-                updateIndexInCommentOfParent(field, index, document);
+                commentsToUpdate.add(Tuples.create(model, index));
                 shouldInsertSemicolon.set(false);
               }
             }
           }
         }
       });
+
+      if (!commentsToUpdate.isEmpty()) {
+        document.modify(new IUnitOfWork.Void<XtextResource>() {
+          @Override public void process(XtextResource resource) {
+            for (Pair<EObject, Long> updateInfo : commentsToUpdate) {
+              updateIndexInCommentOfParent(updateInfo.getFirst(), updateInfo.getSecond(), document);
+            }
+          }
+        });
+      }
     } catch (Throwable t) {
       shouldInsertSemicolon.set(true);
       logger.error("Unable to generate tag number", t);
