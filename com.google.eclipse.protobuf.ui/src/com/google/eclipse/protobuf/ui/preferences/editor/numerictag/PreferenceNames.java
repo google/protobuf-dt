@@ -13,6 +13,7 @@ package com.google.eclipse.protobuf.ui.preferences.editor.numerictag;
  */
 final class PreferenceNames {
   static final String NUMERIC_TAG_PATTERNS = "numericTag.patterns";
+  static final String ENABLE_SMART_SEMICOLON = "numericTag.enableSmartSemicolon";
 
   private PreferenceNames() {}
 }

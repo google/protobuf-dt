@@ -57,10 +57,6 @@ import java.util.regex.Pattern;
 public class SmartSemicolonHandler extends SmartInsertHandler {
   private static final Pattern NUMBERS_PATTERN = compile("[\\d]+");
 
-  private static final IUnitOfWork.Void<XtextResource> NULL_UNIT_OF_WORK = new IUnitOfWork.Void<XtextResource>() {
-    @Override public void process(XtextResource resource) {}
-  };
-
   private static Logger logger = Logger.getLogger(SmartSemicolonHandler.class);
 
   @Inject private CommentNodesFinder commentNodesFinder;
@@ -71,13 +67,15 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
   @Inject private Protobufs protobufs;
   @Inject private Resources resources;
   @Inject private IPreferenceStoreAccess storeAccess;
+  private NumericTagPreferences preferences;
 
   private static final String SEMICOLON = CommonKeyword.SEMICOLON.toString();
 
   @Override protected void insertContent(XtextEditor editor, StyledText styledText) {
+    preferences = new NumericTagPreferences(storeAccess);
     StyledTextAccess styledTextAccess = new StyledTextAccess(styledText);
     String line = styledTextAccess.lineAtCaretOffset();
-    if (line.endsWith(SEMICOLON)) {
+    if (!preferences.isSmartSemicolonEnabled() || line.endsWith(SEMICOLON)) {
       styledTextAccess.insert(SEMICOLON);
       return;
     }
@@ -89,15 +87,11 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
     final AtomicBoolean shouldInsertSemicolon = new AtomicBoolean(true);
     final IXtextDocument document = editor.getDocument();
     final List<Pair<EObject, Long>> commentsToUpdate = Lists.newLinkedList();
+    final List<Pair<Literal, Long>> indexesToUpdate1 = Lists.newLinkedList();
+    final List<Pair<MessageField, Long>> indexesToUpdate2 = Lists.newLinkedList();
 
-    document.readOnly(NULL_UNIT_OF_WORK); // wait for reconciler to finish its work.
     try {
-      /*
-       * Textual and semantic updates cannot be done in the same IUnitOfWork (throws an 
-       * IllegalStateException), so index updates (semantic) are done first and tracked in the 
-       * commentsToUpdate list, then a 2nd IUnitOfWork processes the comment updates (textual).
-       */
-      document.modify(new IUnitOfWork.Void<XtextResource>() {
+      document.readOnly(new IUnitOfWork.Void<XtextResource>() {
         @Override public void process(XtextResource resource) {
           Protobuf root = resources.rootOf(resource);
           if (!protobufs.isProto2(root) /*|| !resource.getErrors().isEmpty()*/) {
@@ -118,7 +112,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
               Literal literal = (Literal) model;
               if (shouldCalculateIndex(literal, LITERAL__INDEX)) {
                 long index = literals.calculateNewIndexOf(literal);
-                literal.setIndex(index);
+                indexesToUpdate1.add(Tuples.create(literal, index));
                 commentsToUpdate.add(Tuples.create(model, index));
                 shouldInsertSemicolon.set(false);
               }
@@ -127,7 +121,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
               MessageField field = (MessageField) model;
               if (shouldCalculateIndex(field)) {
                 long index = indexedElements.calculateNewIndexFor(field);
-                field.setIndex(index);
+                indexesToUpdate2.add(Tuples.create(field, index));
                 commentsToUpdate.add(Tuples.create(model, index));
                 shouldInsertSemicolon.set(false);
               }
@@ -136,14 +130,34 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
         }
       });
 
+      /*
+       * Textual and semantic updates cannot be done in the same IUnitOfWork (throws an
+       * IllegalStateException), so index updates (semantic) are done first and tracked in the
+       * commentsToUpdate list, then a 2nd IUnitOfWork processes the comment updates (textual).
+       */
+      if (!indexesToUpdate1.isEmpty() || !indexesToUpdate2.isEmpty()) {
+        document.modify(new IUnitOfWork.Void<XtextResource>() {
+            @Override public void process(XtextResource resource) {
+              for (Pair<Literal, Long> indexUpdate : indexesToUpdate1) {
+                indexUpdate.getFirst().setIndex(indexUpdate.getSecond());
+              }
+
+              for (Pair<MessageField, Long> indexUpdate : indexesToUpdate2) {
+                indexUpdate.getFirst().setIndex(indexUpdate.getSecond());
+              }
+            }
+          });
+      }
+
       if (!commentsToUpdate.isEmpty()) {
         document.modify(new IUnitOfWork.Void<XtextResource>() {
-          @Override public void process(XtextResource resource) {
-            for (Pair<EObject, Long> updateInfo : commentsToUpdate) {
-              updateIndexInCommentOfParent(updateInfo.getFirst(), updateInfo.getSecond(), document);
+            @Override
+            public void process(XtextResource resource) {
+              for (Pair<EObject, Long> updateInfo : commentsToUpdate) {
+                updateIndexInCommentOfParent(updateInfo.getFirst(), updateInfo.getSecond(), document);
+              }
             }
-          }
-        });
+          });
       }
     } catch (Throwable t) {
       shouldInsertSemicolon.set(true);
@@ -158,7 +172,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
     INode node = nodes.firstNodeForFeature(target, indexAttribute);
     return node == null || isEmpty(node.getText());
   }
-  
+
   private boolean shouldCalculateIndex(IndexedElement target) {
     return indexedElements.indexOf(target) <= 0;
   }
@@ -174,7 +188,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
     if (parent == null) {
       return;
     }
-    NumericTagPreferences preferences = new NumericTagPreferences(storeAccess);
+
     for (String pattern : preferences.patterns()) {
       Pair<INode, Matcher> match = commentNodesFinder.matchingCommentNode(parent, pattern);
       if (match == null) {

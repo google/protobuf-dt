@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.editor.numerictag;
 
+import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.PreferenceNames.ENABLE_SMART_SEMICOLON;
 import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.PreferenceNames.NUMERIC_TAG_PATTERNS;
 
 import java.util.List;
@@ -31,10 +32,15 @@ public class NumericTagPreferences {
     return NumericTagPatternSplitter.instance().splitIntoList(value);
   }
 
+  public boolean isSmartSemicolonEnabled() {
+    return store.getBoolean(ENABLE_SMART_SEMICOLON);
+  }
+
   public static class Initializer implements IPreferenceStoreInitializer {
     @Override public void initialize(IPreferenceStoreAccess storeAccess) {
       IPreferenceStore store = storeAccess.getWritablePreferenceStore();
       store.setDefault(NUMERIC_TAG_PATTERNS, "Next[\\s]+Id:[\\s]+[\\d]+");
+      store.setDefault(ENABLE_SMART_SEMICOLON, true);
     }
   }
 }
