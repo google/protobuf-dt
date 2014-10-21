@@ -3,18 +3,22 @@ Bundle-ManifestVersion: 2
 Eclipse-ExtensibleAPI: true
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
-Bundle-Version: 1.5.3.qualifier
+Bundle-Version: 2.0.0.qualifier
 Bundle-SymbolicName: com.google.eclipse.protobuf; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.antlr.runtime,
  org.apache.commons.logging,
  org.apache.log4j,
+ org.eclipse.emf.mwe2.launch;resolution:=optional,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.eclipse.xtext,
  org.eclipse.xtext.generator;resolution:=optional,
- org.eclipse.xtext.util
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+ org.eclipse.emf.common,
+ org.eclipse.xtext.ui,
+ org.eclipse.xtext.util,
+ org.eclipse.emf.ecore
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: com.google.eclipse.protobuf,
  com.google.eclipse.protobuf.conversion,
  com.google.eclipse.protobuf.formatting,
@@ -24,6 +28,7 @@ Export-Package: com.google.eclipse.protobuf,
  com.google.eclipse.protobuf.parser,
  com.google.eclipse.protobuf.parser.antlr,
  com.google.eclipse.protobuf.parser.antlr.internal,
+ com.google.eclipse.protobuf.preferences.descriptor,
  com.google.eclipse.protobuf.protobuf,
  com.google.eclipse.protobuf.protobuf.impl,
  com.google.eclipse.protobuf.protobuf.util,

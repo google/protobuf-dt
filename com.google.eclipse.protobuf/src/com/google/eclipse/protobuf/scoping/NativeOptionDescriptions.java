@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2011, 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -10,18 +10,18 @@ package com.google.eclipse.protobuf.scoping;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
-
 import static org.eclipse.xtext.resource.EObjectDescription.create;
-
 import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.xtext.resource.IEObjectDescription;
 
 import com.google.eclipse.protobuf.protobuf.AbstractOption;
 import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.eclipse.protobuf.util.EResources;
 import com.google.inject.Inject;
 
 /**
@@ -31,7 +31,8 @@ class NativeOptionDescriptions {
   @Inject private ProtoDescriptorProvider descriptorProvider;
 
   Collection<IEObjectDescription> sources(AbstractOption option) {
-    ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
+    IProject project = EResources.getProjectOf(option.eResource());
+    ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor(project);
     Collection<MessageField> optionSources = descriptor.availableOptionsFor(option.eContainer());
     if (optionSources.isEmpty()) {
       return emptyList();

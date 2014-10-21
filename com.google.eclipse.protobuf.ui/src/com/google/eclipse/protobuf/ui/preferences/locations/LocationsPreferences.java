@@ -6,12 +6,12 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.preferences.paths;
+package com.google.eclipse.protobuf.ui.preferences.locations;
 
-import static com.google.eclipse.protobuf.ui.preferences.paths.DirectoryPath.parse;
-import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.DIRECTORY_PATHS;
-import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.FILES_IN_MULTIPLE_DIRECTORIES;
-import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.FILES_IN_ONE_DIRECTORY_ONLY;
+import static com.google.eclipse.protobuf.ui.preferences.locations.DirectoryPath.parse;
+import static com.google.eclipse.protobuf.ui.preferences.locations.PreferenceNames.DIRECTORY_PATHS;
+import static com.google.eclipse.protobuf.ui.preferences.locations.PreferenceNames.FILES_IN_MULTIPLE_DIRECTORIES;
+import static com.google.eclipse.protobuf.ui.preferences.locations.PreferenceNames.FILES_IN_ONE_DIRECTORY_ONLY;
 import static com.google.eclipse.protobuf.ui.util.CommaSeparatedValues.splitCsv;
 
 import org.eclipse.core.resources.IProject;
@@ -22,15 +22,15 @@ import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
 import com.google.common.base.Function;
 
 /**
- * "Paths" preferences, retrieved from an <code>{@link IPreferenceStore}</code>.
+ * "Locations" preferences, retrieved from an <code>{@link IPreferenceStore}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class PathsPreferences {
+public class LocationsPreferences {
   private final IProject project;
   private final IPreferenceStore store;
 
-  public PathsPreferences(IPreferenceStoreAccess storeAccess, IProject project) {
+  public LocationsPreferences(IPreferenceStoreAccess storeAccess, IProject project) {
     this.store = storeAccess.getWritablePreferenceStore(project);
     this.project = project;
   }

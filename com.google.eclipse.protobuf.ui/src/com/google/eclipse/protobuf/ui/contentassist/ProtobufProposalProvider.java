@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2011, 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -68,6 +68,7 @@ import com.google.eclipse.protobuf.scoping.ProtobufScopeProvider;
 import com.google.eclipse.protobuf.scoping.ScopeProvider;
 import com.google.eclipse.protobuf.ui.grammar.CompoundElement;
 import com.google.eclipse.protobuf.ui.labeling.Images;
+import com.google.eclipse.protobuf.util.EResources;
 import com.google.inject.Inject;
 
 import org.eclipse.emf.ecore.EObject;
@@ -161,7 +162,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   @Override public void completeNativeOption_Source(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
+    ProtoDescriptor descriptor =
+        descriptorProvider.primaryDescriptor(EResources.getProjectOf(model.eResource()));
     Collection<MessageField> optionProperties = descriptor.availableOptionsFor(model);
     if (!optionProperties.isEmpty()) {
       proposeOptions(optionProperties, context, acceptor);
@@ -182,7 +184,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     if (optionSource == null) {
       return;
     }
-    ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
+    ProtoDescriptor descriptor =
+        descriptorProvider.primaryDescriptor(EResources.getProjectOf(model.eResource()));
     Enum enumType = descriptor.enumTypeOf(optionSource);
     if (enumType != null) {
       proposeAndAccept(enumType, context, acceptor);
@@ -406,7 +409,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ICompletionProposalAcceptor acceptor) {
     List<String> optionNames = existingFieldOptionNames(field);
     proposeDefaultKeyword(field, optionNames, context, acceptor);
-    ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
+    ProtoDescriptor descriptor =
+        descriptorProvider.primaryDescriptor(EResources.getProjectOf(context.getResource()));
     for (MessageField optionSource : descriptor.availableOptionsFor(field)) {
       String optionName = optionSource.getName();
       if (optionNames.contains(optionName) || ("packed".equals(optionName) && !canBePacked(field))) {
@@ -499,7 +503,8 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     if (model instanceof NativeFieldOption) {
       NativeFieldOption option = (NativeFieldOption) model;
-      ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
+      ProtoDescriptor descriptor =
+          descriptorProvider.primaryDescriptor(EResources.getProjectOf(context.getResource()));
       MessageField field = (MessageField) options.rootSourceOf(option);
       Enum enumType = descriptor.enumTypeOf(field);
       if (enumType != null) {

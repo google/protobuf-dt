@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.preferences.paths;
+package com.google.eclipse.protobuf.ui.preferences.locations;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)

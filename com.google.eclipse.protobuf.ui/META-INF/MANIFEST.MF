@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
-Bundle-Version: 1.5.3.qualifier
+Bundle-Version: 2.0.0.qualifier
 Bundle-Activator: com.google.eclipse.protobuf.ui.internal.ProtobufActivator
 Bundle-SymbolicName: com.google.eclipse.protobuf.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
@@ -22,7 +22,7 @@ Require-Bundle: com.google.eclipse.protobuf,
  org.eclipse.xtext.builder,
  org.eclipse.xtext.ui,
  org.eclipse.xtext.ui.shared
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: com.google.eclipse.protobuf.ui.contentassist,
  com.google.eclipse.protobuf.ui.contentassist.antlr,
  com.google.eclipse.protobuf.ui.editor,
@@ -31,3 +31,4 @@ Export-Package: com.google.eclipse.protobuf.ui.contentassist,
  com.google.eclipse.protobuf.ui.preferences.compiler,
  com.google.eclipse.protobuf.ui.util,
  com.google.eclipse.protobuf.ui.quickfix
+Import-Package: org.apache.log4j

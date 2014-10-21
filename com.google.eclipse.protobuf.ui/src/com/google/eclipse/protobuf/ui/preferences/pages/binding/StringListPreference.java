@@ -22,7 +22,7 @@ import com.google.eclipse.protobuf.ui.preferences.StringSplitter;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-class StringListPreference extends AbstractPreference<ImmutableList<String>> {
+public class StringListPreference extends AbstractPreference<ImmutableList<String>> {
   private final StringSplitter splitter;
 
   StringListPreference(String name, StringSplitter splitter, IPreferenceStore store) {

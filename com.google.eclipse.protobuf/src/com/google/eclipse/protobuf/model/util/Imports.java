@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2011, 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -9,9 +9,9 @@
 package com.google.eclipse.protobuf.model.util;
 
 import static org.eclipse.xtext.util.Strings.isEmpty;
-
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -22,6 +22,7 @@ import com.google.eclipse.protobuf.conversion.STRINGValueConverter;
 import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.resource.ResourceSets;
 import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider;
+import com.google.eclipse.protobuf.util.EResources;
 import com.google.inject.Inject;
 
 /**
@@ -47,7 +48,9 @@ public class Imports {
     if (anImport == null) {
       return false;
     }
-    URI descriptorLocation = descriptorProvider.descriptorLocation(anImport.getImportURI());
+    IProject project = EResources.getProjectOf(anImport.eResource());
+    URI descriptorLocation =
+        descriptorProvider.descriptorLocation(project, anImport.getImportURI());
     return descriptorLocation != null;
   }
 
@@ -64,7 +67,8 @@ public class Imports {
       return false;
     }
     String importUri = anImport.getImportURI();
-    for (URI locationUri : descriptorProvider.allDescriptorLocations()) {
+    IProject project = EResources.getProjectOf(anImport.eResource());
+    for (URI locationUri : descriptorProvider.allDescriptorLocations(project)) {
       String location = locationUri.toString();
       if (location.equals(importUri)) {
         return true;

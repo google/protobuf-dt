@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2011 Google Inc.
+* Copyright (c) 2011, 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -18,7 +18,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EReference;
 
 import com.google.eclipse.protobuf.protobuf.Import;
-import com.google.eclipse.protobuf.scoping.IFileUriResolver;
+import com.google.eclipse.protobuf.scoping.IImportResolver;
 
 /**
  * Guice module for unit testing.
@@ -33,11 +33,11 @@ public class IntegrationTestModule extends AbstractTestModule {
   private IntegrationTestModule( ) {}
 
   @Override protected void configure() {
-    binder().bind(IFileUriResolver.class).to(FileUriResolver.class);
+    binder().bind(IImportResolver.class).to(ImportResolver.class);
     mockAndBind(EReference.class);
   }
 
-  private static class FileUriResolver implements IFileUriResolver {
+  private static class ImportResolver implements IImportResolver {
     @Override public void resolveAndUpdateUri(Import anImport) {
       String importUri = anImport.getImportURI();
       URI uri = URI.createURI(importUri);

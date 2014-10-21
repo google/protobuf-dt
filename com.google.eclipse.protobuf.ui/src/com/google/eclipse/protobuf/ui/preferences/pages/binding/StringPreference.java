@@ -15,7 +15,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-class StringPreference extends AbstractPreference<String> {
+public class StringPreference extends AbstractPreference<String> {
   StringPreference(String name, IPreferenceStore store) {
     super(name, store);
   }

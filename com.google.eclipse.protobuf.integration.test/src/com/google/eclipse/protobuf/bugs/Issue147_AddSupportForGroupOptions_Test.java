@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2011, 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -9,7 +9,6 @@
 package com.google.eclipse.protobuf.bugs;
 
 import static org.junit.Assert.assertThat;
-
 import static com.google.eclipse.protobuf.junit.IEObjectDescriptions.descriptionsIn;
 import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
@@ -31,6 +30,7 @@ import com.google.eclipse.protobuf.protobuf.NativeFieldOption;
 import com.google.eclipse.protobuf.scoping.ProtoDescriptor;
 import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider;
 import com.google.eclipse.protobuf.scoping.ProtobufScopeProvider;
+import com.google.eclipse.protobuf.util.EResources;
 import com.google.inject.Inject;
 
 /**
@@ -56,7 +56,8 @@ public class Issue147_AddSupportForGroupOptions_Test {
     NativeFieldOption option = xtext.find("deprecated", NativeFieldOption.class);
     IScope scope = scopeProvider.scope_OptionSource_target(option.getSource(), reference);
     Group group = xtext.find("membership", Group.class);
-    ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
+    ProtoDescriptor descriptor =
+        descriptorProvider.primaryDescriptor(EResources.getProjectOf(option.eResource()));
     Collection<MessageField> optionSources = descriptor.availableOptionsFor(group);
     assertThat(descriptionsIn(scope), containAll(optionSources));
   }

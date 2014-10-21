@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Google Inc.
+ * Copyright (c) 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -8,66 +8,57 @@
  */
 package com.google.eclipse.protobuf.ui.scoping;
 
-import static org.eclipse.core.runtime.IPath.SEPARATOR;
-import static org.eclipse.xtext.util.Strings.isEmpty;
+import static com.google.eclipse.protobuf.util.Workspaces.workspaceRoot;
+import static java.util.Collections.unmodifiableList;
 
-import org.eclipse.emf.common.util.URI;
-
-import com.google.eclipse.protobuf.ui.preferences.paths.DirectoryPath;
-import com.google.eclipse.protobuf.util.Uris;
+import com.google.common.collect.ImmutableList;
+import com.google.eclipse.protobuf.scoping.IUriResolver;
+import com.google.eclipse.protobuf.ui.preferences.locations.LocationsPreferences;
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
+
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.xtext.ui.XtextProjectHelper;
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * @author alruiz@google.com (Alex Ruiz)
+ * Resolves URIs.
  */
-@Singleton class UriResolver {
-  private static final String PATH_SEPARATOR = new String(new char[] { SEPARATOR });
+public class UriResolver implements IUriResolver {
+  @Inject private MultipleDirectoriesUriResolver multipleDirectories;
+  @Inject private SingleDirectoryUriResolver singleDirectory;
+  @Inject private IPreferenceStoreAccess storeAccess;
 
-  @Inject private FileSystemPathResolver pathResolver;
-  @Inject private Uris uris;
-
-  String resolveUri(String importUri, DirectoryPath importRootPath) {
-    URI uri = resolveUri(importUri, importRootPath.value(), importRootPath.isWorkspacePath());
-    return resolveUri(uri);
+  @Override
+  public String resolveUri(String importUri, URI declaringResourceUri, IProject project) {
+    return resolveUriInternal(importUri, declaringResourceUri, project);
   }
 
-  String resolveUriInFileSystem(String importUri, String importRootPath) {
-    URI uri = resolveFileUri(importUri, importRootPath);
-    return resolveUri(uri);
-  }
-
-  private URI resolveUri(String importUri, String importRootPath, boolean isWorkspacePath) {
-    if (isWorkspacePath) {
-      return resolvePlatformResourceUri(importUri, importRootPath);
+  private String resolveUriInternal(String importUri, URI declaringResourceUri, IProject project) {
+    if (project == null) {
+      return multipleDirectories.resolveUri(importUri, preferencesFromAllProjects());
     }
-    return resolveFileUri(importUri, importRootPath);
-  }
-
-  private URI resolvePlatformResourceUri(String importUri, String importRootPath) {
-    String path = buildUriPath(importUri, importRootPath);
-    return URI.createPlatformResourceURI(path, true);
-  }
-
-  private URI resolveFileUri(String importUri, String importRootPath) {
-    String resolvedImportRootPath = pathResolver.resolvePath(importRootPath);
-    if (isEmpty(resolvedImportRootPath)) {
-      return null;
+    LocationsPreferences locations = new LocationsPreferences(storeAccess, project);
+    if (locations.areFilesInMultipleDirectories()) {
+      return multipleDirectories.resolveUri(importUri, ImmutableList.of(locations));
     }
-    String path = buildUriPath(importUri, resolvedImportRootPath);
-    return URI.createFileURI(path);
+    return singleDirectory.resolveUri(importUri, declaringResourceUri);
   }
 
-  private String buildUriPath(String importUri, String importRootPath) {
-    StringBuilder pathBuilder = new StringBuilder().append(importRootPath);
-    if (!importRootPath.endsWith(PATH_SEPARATOR)) {
-      pathBuilder.append(PATH_SEPARATOR);
+  private Iterable<LocationsPreferences> preferencesFromAllProjects() {
+    List<LocationsPreferences> allPreferences = new ArrayList<>();
+    IWorkspaceRoot root = workspaceRoot();
+    for (IProject project : root.getProjects()) {
+      if (project.isHidden() || !project.isAccessible() || !XtextProjectHelper.hasNature(project)) {
+        continue;
+      }
+      LocationsPreferences preferences = new LocationsPreferences(storeAccess, project);
+      allPreferences.add(preferences);
     }
-    pathBuilder.append(importUri);
-    return pathBuilder.toString();
-  }
-
-  private String resolveUri(URI uri) {
-    return (uris.referredResourceExists(uri)) ? uri.toString() : null;
+    return unmodifiableList(allPreferences);
   }
 }

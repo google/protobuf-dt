@@ -15,5 +15,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text;bundle-version="3.7.1",
  org.eclipse.xtext;bundle-version="2.2.1",
  org.eclipse.xtext.ui;bundle-version="2.2.1"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy

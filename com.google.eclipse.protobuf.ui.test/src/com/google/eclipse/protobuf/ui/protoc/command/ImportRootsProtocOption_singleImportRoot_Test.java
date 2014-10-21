@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Google Inc.
+ * Copyright (c) 2012, 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -29,7 +30,7 @@ public class ImportRootsProtocOption_singleImportRoot_Test {
 
   private File project;
 
-  @Before public void setUp() {
+  @Before public void setUp() throws IOException {
     project = temporaryFolder.newFolder("project");
   }
 

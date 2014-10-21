@@ -19,7 +19,7 @@ import org.eclipse.core.resources.IProject;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.eclipse.protobuf.ui.preferences.paths.DirectoryPath;
+import com.google.eclipse.protobuf.ui.preferences.locations.DirectoryPath;
 
 /**
  * Tests for <code>{@link DirectoryPath#parse(String, IProject)}</code>

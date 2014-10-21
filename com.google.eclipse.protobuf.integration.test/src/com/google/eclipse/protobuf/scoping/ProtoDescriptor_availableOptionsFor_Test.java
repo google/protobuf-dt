@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2011, 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -8,24 +8,15 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static com.google.eclipse.protobuf.junit.matchers.FieldHasType.isBool;
 import static com.google.eclipse.protobuf.junit.matchers.FieldHasType.isString;
-
-import java.util.Collection;
-import java.util.Map;
-
-import org.eclipse.emf.ecore.EObject;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.Import;
@@ -33,6 +24,14 @@ import com.google.eclipse.protobuf.protobuf.Message;
 import com.google.eclipse.protobuf.protobuf.MessageField;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.inject.Inject;
+
+import org.eclipse.emf.ecore.EObject;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * Tests for <code>{@link ProtoDescriptor#availableOptionsFor(EObject)}</code>.
@@ -48,7 +47,7 @@ public class ProtoDescriptor_availableOptionsFor_Test {
 
   @Before public void setUp() {
     options = new Options();
-    descriptor = descriptorProvider.primaryDescriptor();
+    descriptor = descriptorProvider.primaryDescriptor(null);
   }
 
   @Test public void should_return_all_file_options() {

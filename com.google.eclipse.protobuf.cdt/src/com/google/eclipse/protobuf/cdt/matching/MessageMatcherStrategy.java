@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Google Inc.
+ * Copyright (c) 2012, 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -51,8 +51,7 @@ class MessageMatcherStrategy extends AbstractProtobufElementMatcherStrategy {
             // keep looking for match.
             matches.addAll(matchingProtobufElementLocations(message, qualifiedName.notRetrievedYet()));
           }
-        }
-        if (segment.contains(NESTED_ELEMENT_SEPARATOR)) {
+        } else if (segment.contains(NESTED_ELEMENT_SEPARATOR)) {
           List<Message> nestedMessages = matchingNestedMessages(message, segment);
           if (qualifiedName.wasLastListElementRetrieved()) {
             for (Message m : nestedMessages) {
@@ -76,8 +75,7 @@ class MessageMatcherStrategy extends AbstractProtobufElementMatcherStrategy {
       String rest = qualifiedName.substring(messageName.length());
       if (rest.isEmpty()) {
         matches.add(root);
-      }
-      else {
+      } else {
         if (rest.startsWith(NESTED_ELEMENT_SEPARATOR)) {
           rest = rest.substring(1);
         }

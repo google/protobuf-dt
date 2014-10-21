@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2011, 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -9,7 +9,6 @@
 package com.google.eclipse.protobuf.scoping;
 
 import static org.junit.Assert.assertThat;
-
 import static com.google.eclipse.protobuf.junit.IEObjectDescriptions.descriptionsIn;
 import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
@@ -25,6 +24,7 @@ import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.protobuf.FieldOption;
 import com.google.eclipse.protobuf.protobuf.LiteralLink;
 import com.google.eclipse.protobuf.protobuf.Option;
+import com.google.eclipse.protobuf.util.EResources;
 import com.google.inject.Inject;
 
 /**
@@ -62,7 +62,8 @@ public class ProtobufScopeProvider_scope_LiteralLink_target_Test {
   @Test public void should_provide_Literals_for_native_option() {
     Option option = xtext.find("optimize_for", Option.class);
     IScope scope = scopeProvider.scope_LiteralLink_target(valueOf(option), reference);
-    Enum optimizeModeEnum = descriptorProvider.primaryDescriptor().enumByName("OptimizeMode");
+    Enum optimizeModeEnum = descriptorProvider.primaryDescriptor(
+        EResources.getProjectOf(xtext.root().eResource())).enumByName("OptimizeMode");
     assertThat(descriptionsIn(scope), containAllLiteralsIn(optimizeModeEnum));
   }
 
@@ -124,7 +125,8 @@ public class ProtobufScopeProvider_scope_LiteralLink_target_Test {
   @Test public void should_provide_Literals_for_source_of_native_field_option() {
     FieldOption option = xtext.find("ctype", FieldOption.class);
     IScope scope = scopeProvider.scope_LiteralLink_target(valueOf(option), reference);
-    ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
+    ProtoDescriptor descriptor =
+        descriptorProvider.primaryDescriptor(EResources.getProjectOf(xtext.resource()));
     Enum cTypeEnum = descriptor.enumByName("CType");
     assertThat(descriptionsIn(scope), containAllLiteralsIn(cTypeEnum));
   }

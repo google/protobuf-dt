@@ -6,9 +6,9 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.preferences.paths;
+package com.google.eclipse.protobuf.ui.preferences.locations;
 
-import static com.google.eclipse.protobuf.ui.preferences.paths.ProjectVariable.replaceProjectVariableWithProjectName;
+import static com.google.eclipse.protobuf.ui.preferences.locations.ProjectVariable.replaceProjectVariableWithProjectName;
 import static com.google.eclipse.protobuf.ui.util.IPaths.directoryLocationInWorkspace;
 
 import java.util.regex.Matcher;

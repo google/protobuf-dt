@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2011, 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -8,24 +8,33 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static java.util.Collections.unmodifiableCollection;
+import static com.google.eclipse.protobuf.preferences.descriptor.PreferenceNames.DESCRIPTOR_PROTO_PATH;
 
-import static org.eclipse.xtext.util.Strings.isEmpty;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.collect.ImmutableList;
+import com.google.eclipse.protobuf.model.util.INodes;
+import com.google.eclipse.protobuf.preferences.descriptor.DescriptorPreferences;
+import com.google.eclipse.protobuf.preferences.descriptor.PreferenceNames;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
-import static com.google.common.collect.Maps.newLinkedHashMap;
-
-import java.util.Collection;
-import java.util.Map;
-import java.util.Map.Entry;
-
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.xtext.parser.IParser;
+import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
-import com.google.eclipse.protobuf.model.util.INodes;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Provider of <code>{@link ProtoDescriptor}</code>s.
@@ -35,81 +44,151 @@ import com.google.inject.Singleton;
 @Singleton public class ProtoDescriptorProvider {
   private static final String EXTENSION_ID = "com.google.eclipse.protobuf.descriptorSource";
 
-  @Inject private IParser parser;
-  @Inject private INodes nodes;
-  @Inject private IExtensionRegistry registry;
+  private final IPreferenceStoreAccess storeAccess;
+  private final IExtensionRegistry registry;
+  private final IParser parser;
+  private final INodes nodes;
+  private final IUriResolver resolver;
 
-  private Map<String, URI> descriptorInfos;
-  private Map<String, ProtoDescriptor> descriptors;
-  private String primaryImportUri;
+  private static final URI DEFAULT_DESCRIPTOR_LOCATION =
+      URI.createURI("platform:/plugin/com.google.eclipse.protobuf/descriptor.proto");
+  private final ProtoDescriptorInfo openSourceProtoDescriptorInfo;
+  private final ProtoDescriptorInfo extensionPointDescriptorInfo;
 
-  private final Object lock = new Object();
+  private static final Logger LOG =
+      Logger.getLogger(ProtoDescriptorProvider.class.getCanonicalName());
 
-  public ProtoDescriptor primaryDescriptor() {
-    ensureProtoDescriptorsAreCreated();
-    return descriptors.get(primaryImportUri);
+  private final
+      LoadingCache<IProject, Map<String, ProtoDescriptorInfo>> descriptorCache = CacheBuilder
+          .newBuilder().build(new CacheLoader<IProject, Map<String, ProtoDescriptorInfo>>() {
+        @Override
+        public Map<String, ProtoDescriptorInfo> load(final IProject project) {
+          return loadDescriptorInfos(project);
+        }
+      });
+
+  @Inject
+  ProtoDescriptorProvider(IPreferenceStoreAccess storeAccess, IExtensionRegistry registry,
+      IParser parser, INodes nodes, IUriResolver resolver) {
+    this.storeAccess = storeAccess;
+    this.registry = registry;
+    this.parser = parser;
+    this.nodes = nodes;
+    this.resolver = resolver;
+    this.openSourceProtoDescriptorInfo = getOpenSourceProtoDescriptorInfo();
+    this.extensionPointDescriptorInfo = getExtensionPointDescriptorInfo();
   }
 
-  public ProtoDescriptor descriptor(String importUri) {
-    ensureProtoDescriptorsAreCreated();
-    ProtoDescriptor protoDescriptor = descriptors.get(importUri);
-    if (protoDescriptor != null) {
-      return protoDescriptor;
+  public ProtoDescriptor primaryDescriptor(IProject project) {
+    Map<String, ProtoDescriptorInfo> descriptorInfos = getDescriptorInfosFor(project);
+    for (ProtoDescriptorInfo descriptorInfo : descriptorInfos.values()) {
+      return descriptorInfo.protoDescriptor;
     }
-    // URI could have been resolved
+    return openSourceProtoDescriptorInfo.protoDescriptor;
+  }
+
+  public ProtoDescriptor descriptor(IProject project, String importUri) {
+    Map<String, ProtoDescriptorInfo> descriptorInfos = getDescriptorInfosFor(project);
+    ProtoDescriptorInfo descriptorInfo = descriptorInfos.get(importUri);
+    if (descriptorInfo != null) {
+      return descriptorInfo.protoDescriptor;
+    }
     URI uri = URI.createURI(importUri);
-    for (Entry<String, URI> info : descriptorInfos.entrySet()) {
-      if (info.getValue().equals(uri)) {
-        return descriptor(info.getKey());
+    for (Entry<String, ProtoDescriptorInfo> info : descriptorInfos.entrySet()) {
+      if (info.getValue().location.equals(uri)) {
+        return descriptor(project, info.getKey());
       }
     }
     return null;
   }
 
-  private void ensureProtoDescriptorsAreCreated() {
-    synchronized (lock) {
-      if (descriptors == null) {
-        descriptors = newLinkedHashMap();
-        ensureProtoDescriptorInfosAreCreated();
-        for (Entry<String, URI> entry : descriptorInfos.entrySet()) {
-          String importUri = entry.getKey();
-          ProtoDescriptor descriptor = new ProtoDescriptor(importUri, entry.getValue(), parser, nodes);
-          descriptors.put(importUri, descriptor);
-        }
+  public ImmutableList<URI> allDescriptorLocations(IProject project) {
+    Map<String, ProtoDescriptorInfo> descriptorInfos = getDescriptorInfosFor(project);
+    ImmutableList.Builder<URI> descriptorLocations = ImmutableList.builder();
+    for (ProtoDescriptorInfo descriptorInfo : descriptorInfos.values()) {
+      descriptorLocations.add(descriptorInfo.location);
+    }
+    return descriptorLocations.build();
+  }
+
+  public URI descriptorLocation(IProject project, String importUri) {
+    Map<String, ProtoDescriptorInfo> descriptorInfos = getDescriptorInfosFor(project);
+    for (ProtoDescriptorInfo descriptorInfo : descriptorInfos.values()) {
+      if (descriptorInfo.importUri.equals(importUri)) {
+        return descriptorInfo.location;
       }
+    }
+    return null;
+  }
+
+  private Map<String, ProtoDescriptorInfo> loadDescriptorInfos(final IProject project) {
+    Map<String, ProtoDescriptorInfo> descriptorInfos =
+        new LinkedHashMap<String, ProtoDescriptorProvider.ProtoDescriptorInfo>();
+
+    // Add descriptor.proto from preferences
+    DescriptorPreferences preferences = new DescriptorPreferences(storeAccess, project);
+    String descriptorProtoUri = preferences.getDescriptorProtoPath();
+    if (!PreferenceNames.DEFAULT_DESCRIPTOR_PATH.equals(descriptorProtoUri)) {
+      URI descriptorProtoLocation =
+          URI.createURI(resolver.resolveUri(descriptorProtoUri, null, project));
+      if (descriptorProtoLocation != null) {
+        ProtoDescriptor protoDescriptor =
+            new ProtoDescriptor(descriptorProtoUri, descriptorProtoLocation, parser, nodes);
+        ProtoDescriptorInfo descriptorInfo =
+            new ProtoDescriptorInfo(descriptorProtoUri, descriptorProtoLocation, protoDescriptor);
+        descriptorInfos.put(descriptorProtoUri, descriptorInfo);
+      }
+    }
+
+    // Add the extension point descriptor proto
+    if (extensionPointDescriptorInfo != null) {
+      if (!descriptorInfos.containsKey(extensionPointDescriptorInfo.importUri)) {
+        descriptorInfos.put(extensionPointDescriptorInfo.importUri, extensionPointDescriptorInfo);
+      }
+    }
+
+    // Add the open source descriptor proto
+    if (!descriptorInfos.containsKey(PreferenceNames.DEFAULT_DESCRIPTOR_PATH)) {
+      descriptorInfos.put(PreferenceNames.DEFAULT_DESCRIPTOR_PATH,
+          openSourceProtoDescriptorInfo);
+    }
+
+    // Set property change listener for this project
+    storeAccess.getContextPreferenceStore(project).addPropertyChangeListener(
+        new IPropertyChangeListener() {
+          @Override
+          public void propertyChange(PropertyChangeEvent event) {
+            if (event.getProperty().contains(DESCRIPTOR_PROTO_PATH)) {
+              descriptorCache.invalidate(project);
+            }
+          }
+        });
+    return descriptorInfos;
+  }
+
+  private Map<String, ProtoDescriptorInfo> getDescriptorInfosFor(IProject project) {
+    if (project == null) {
+      Map<String, ProtoDescriptorInfo> descriptorInfos =
+          new LinkedHashMap<>();
+      descriptorInfos.put(PreferenceNames.DEFAULT_DESCRIPTOR_PATH, openSourceProtoDescriptorInfo);
+      return descriptorInfos;
+    }
+    try {
+      return descriptorCache.get(project);
+    } catch (ExecutionException e) {
+      LOG.log(Level.SEVERE, "Error while trying to determine descriptor.proto for project", e);
+      return null;
     }
   }
 
-  public Collection<URI> allDescriptorLocations() {
-    ensureProtoDescriptorInfosAreCreated();
-    return unmodifiableCollection(descriptorInfos.values());
+  private ProtoDescriptorInfo getOpenSourceProtoDescriptorInfo() {
+    ProtoDescriptor descriptor = new ProtoDescriptor(PreferenceNames.DEFAULT_DESCRIPTOR_PATH,
+        DEFAULT_DESCRIPTOR_LOCATION, parser, nodes);
+    return new ProtoDescriptorInfo(PreferenceNames.DEFAULT_DESCRIPTOR_PATH,
+        DEFAULT_DESCRIPTOR_LOCATION, descriptor);
   }
 
-  public URI primaryDescriptorLocation() {
-    return descriptorLocation(primaryImportUri);
-  }
-
-  public URI descriptorLocation(String importUri) {
-    ensureProtoDescriptorInfosAreCreated();
-    return descriptorInfos.get(importUri);
-  }
-
-  private void ensureProtoDescriptorInfosAreCreated() {
-    synchronized (lock) {
-      if (descriptorInfos == null) {
-        descriptorInfos = newLinkedHashMap();
-        add(defaultDescriptorInfo());
-        add(descriptorInfoFromExtensionPoint());
-      }
-    }
-  }
-
-  private static ProtoDescriptorInfo defaultDescriptorInfo() {
-    URI location = URI.createURI("platform:/plugin/com.google.eclipse.protobuf/descriptor.proto");
-    return new ProtoDescriptorInfo("google/protobuf/descriptor.proto", location);
-  }
-
-  private ProtoDescriptorInfo descriptorInfoFromExtensionPoint() {
+  private ProtoDescriptorInfo getExtensionPointDescriptorInfo() {
     IConfigurationElement[] config = registry.getConfigurationElementsFor(EXTENSION_ID);
     if (config == null) {
       return null;
@@ -123,21 +202,28 @@ import com.google.inject.Singleton;
     return null;
   }
 
-  private static ProtoDescriptorInfo descriptorInfo(IConfigurationElement e) {
+  private ProtoDescriptorInfo descriptorInfo(IConfigurationElement e) {
     String importUri = e.getAttribute("importUri");
-    if (isEmpty(importUri)) {
+    if (importUri.isEmpty()) {
       return null;
     }
     URI location = descriptorLocation(e);
     if (location == null) {
       return null;
     }
-    return new ProtoDescriptorInfo(importUri, location);
+    try {
+      return new ProtoDescriptorInfo(importUri, location,
+          new ProtoDescriptor(importUri, location, parser, nodes));
+    } catch (IllegalStateException exception) {
+      LOG.log(Level.WARNING, "Error when initializing descriptor proto from extension point",
+          exception);
+      return null;
+    }
   }
 
   private static URI descriptorLocation(IConfigurationElement e) {
     String path = e.getAttribute("path");
-    if (isEmpty(path)) {
+    if (path.isEmpty()) {
       return null;
     }
     StringBuilder uri = new StringBuilder();
@@ -145,21 +231,15 @@ import com.google.inject.Singleton;
     return URI.createURI(uri.toString());
   }
 
-  private void add(ProtoDescriptorInfo descriptorInfo) {
-    if (descriptorInfo == null) {
-      return;
-    }
-    primaryImportUri = descriptorInfo.importUri;
-    descriptorInfos.put(primaryImportUri, descriptorInfo.location);
-  }
-
   private static class ProtoDescriptorInfo {
     final String importUri;
     final URI location;
+    final ProtoDescriptor protoDescriptor;
 
-    ProtoDescriptorInfo(String importUri, URI location) {
+    ProtoDescriptorInfo(String importUri, URI location, ProtoDescriptor protoDescriptor) {
       this.importUri = importUri;
       this.location = location;
+      this.protoDescriptor = protoDescriptor;
     }
   }
 }

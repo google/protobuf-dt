@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2011, 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
 package com.google.eclipse.protobuf.scoping;
 
 import com.google.eclipse.protobuf.protobuf.Import;
-import com.google.eclipse.protobuf.scoping.IFileUriResolver.NullFileUriResolver;
+import com.google.eclipse.protobuf.scoping.IImportResolver.NullImportResolver;
 import com.google.inject.ImplementedBy;
 
 /**
@@ -17,8 +17,8 @@ import com.google.inject.ImplementedBy;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@ImplementedBy(NullFileUriResolver.class)
-public interface IFileUriResolver {
+@ImplementedBy(NullImportResolver.class)
+public interface IImportResolver {
   /**
    * Resolves the URI of the given {@code Import}. This method will update the URI of the given {@code Import} if it was
    * successfully resolved.
@@ -26,7 +26,7 @@ public interface IFileUriResolver {
    */
   void resolveAndUpdateUri(Import anImport);
 
-  class NullFileUriResolver implements IFileUriResolver {
+  class NullImportResolver implements IImportResolver {
     @Override public void resolveAndUpdateUri(Import anImport) {
       throw new UnsupportedOperationException();
     }

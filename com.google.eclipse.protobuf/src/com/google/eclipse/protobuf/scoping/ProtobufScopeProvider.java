@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2011, 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -40,11 +40,12 @@ import com.google.eclipse.protobuf.protobuf.Rpc;
 import com.google.eclipse.protobuf.protobuf.SimpleValueField;
 import com.google.eclipse.protobuf.protobuf.Stream;
 import com.google.eclipse.protobuf.protobuf.TypeExtension;
+import com.google.eclipse.protobuf.util.EResources;
 import com.google.inject.Inject;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
-import org.eclipse.xtext.nodemodel.util.NodeModelUtils;
 import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider;
@@ -139,7 +140,8 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     if (container instanceof AbstractOption) {
       AbstractOption option = (AbstractOption) container;
       if (options.isNative(option)) {
-        ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
+        IProject project = EResources.getProjectOf(option.eResource());
+        ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor(project);
         IndexedElement e = options.rootSourceOf(option);
         anEnum = descriptor.enumTypeOf((MessageField) e);
       }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Google Inc.
+ * Copyright (c) 2012, 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -8,25 +8,24 @@
  */
 package com.google.eclipse.protobuf.cdt.matching;
 
-import static org.hamcrest.collection.IsCollectionContaining.hasItems;
-import static org.junit.Assert.assertThat;
-
 import static com.google.eclipse.protobuf.cdt.matching.Resources.eObjects;
 import static com.google.eclipse.protobuf.cdt.util.ExtendedListIterator.newIterator;
 import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
+import static org.junit.Assert.assertThat;
 
-import java.util.List;
+import com.google.eclipse.protobuf.cdt.util.ExtendedIterator;
+import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.Message;
+import com.google.inject.Inject;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.Rule;
 import org.junit.Test;
 
-import com.google.eclipse.protobuf.cdt.util.ExtendedIterator;
-import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.Message;
-import com.google.inject.Inject;
+import java.util.List;
 
 /**
  * Tests for <code>{@link MessageMatcherStrategy#matchingProtobufElementLocations(EObject, ExtendedIterator)}</code>
@@ -46,7 +45,7 @@ public class MessageMatcherStrategy_matchingProtobufElementLocations_Test {
   @Test public void should_find_top_level_perfect_match() {
     List<URI> locations = matcher.matchingProtobufElementLocations(xtext.root(), newIterator("Address"));
     EObject message = xtext.find("Address", Message.class);
-    assertThat(eObjectsFrom(locations), hasItems(message));
+    assertThat(eObjectsFrom(locations), containsInAnyOrder(message));
   }
 
   // syntax = "proto2";
@@ -57,7 +56,7 @@ public class MessageMatcherStrategy_matchingProtobufElementLocations_Test {
   @Test public void should_find_nested_perfect_match() {
     List<URI> locations = matcher.matchingProtobufElementLocations(xtext.root(), newIterator("Person", "Address"));
     EObject message = xtext.find("Address", Message.class);
-    assertThat(eObjectsFrom(locations), hasItems(message));
+    assertThat(eObjectsFrom(locations), containsInAnyOrder(message));
   }
 
   // syntax = "proto2";
@@ -70,7 +69,7 @@ public class MessageMatcherStrategy_matchingProtobufElementLocations_Test {
   @Test public void should_find_nested_match_1() {
     List<URI> locations = matcher.matchingProtobufElementLocations(xtext.root(), newIterator("Person_Address_Type"));
     EObject message = xtext.find("Type", Message.class);
-    assertThat(eObjectsFrom(locations), hasItems(message));
+    assertThat(eObjectsFrom(locations), containsInAnyOrder(message));
   }
 
   // syntax = "proto2";
@@ -81,7 +80,7 @@ public class MessageMatcherStrategy_matchingProtobufElementLocations_Test {
   @Test public void should_find_nested_match_2() {
     List<URI> locations = matcher.matchingProtobufElementLocations(xtext.root(), newIterator("Person_Address_Type"));
     EObject message = xtext.find("Type", Message.class);
-    assertThat(eObjectsFrom(locations), hasItems(message));
+    assertThat(eObjectsFrom(locations), containsInAnyOrder(message));
   }
 
   // syntax = "proto2";
@@ -92,7 +91,7 @@ public class MessageMatcherStrategy_matchingProtobufElementLocations_Test {
   @Test public void should_find_nested_match_3() {
     List<URI> locations = matcher.matchingProtobufElementLocations(xtext.root(), newIterator("Person_Address_Type"));
     EObject message = xtext.find("Address_Type", Message.class);
-    assertThat(eObjectsFrom(locations), hasItems(message));
+    assertThat(eObjectsFrom(locations), containsInAnyOrder(message));
   }
 
   // syntax = "proto2";
@@ -106,7 +105,7 @@ public class MessageMatcherStrategy_matchingProtobufElementLocations_Test {
   @Test public void should_find_nested_match_4() {
     List<URI> locations = matcher.matchingProtobufElementLocations(xtext.root(), newIterator("Person_Address", "Type"));
     EObject message = xtext.find("Type", Message.class);
-    assertThat(eObjectsFrom(locations), hasItems(message));
+    assertThat(eObjectsFrom(locations), containsInAnyOrder(message));
   }
 
   // syntax = "proto2";
@@ -123,7 +122,7 @@ public class MessageMatcherStrategy_matchingProtobufElementLocations_Test {
   @Test public void should_find_nested_match_5() {
     List<URI> locations = matcher.matchingProtobufElementLocations(xtext.root(), newIterator("Person_Address", "Type"));
     EObject[] messages = { xtext.find("Type{}", 4, Message.class), xtext.find("Type {}", 4, Message.class) };
-    assertThat(eObjectsFrom(locations), hasItems(messages));
+    assertThat(eObjectsFrom(locations), containsInAnyOrder(messages));
   }
 
   private List<EObject> eObjectsFrom(List<URI> locations) {

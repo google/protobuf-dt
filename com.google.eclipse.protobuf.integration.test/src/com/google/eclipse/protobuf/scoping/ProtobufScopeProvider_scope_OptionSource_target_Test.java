@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2011, 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -9,7 +9,6 @@
 package com.google.eclipse.protobuf.scoping;
 
 import static org.junit.Assert.assertThat;
-
 import static com.google.eclipse.protobuf.junit.IEObjectDescriptions.descriptionsIn;
 import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
@@ -31,6 +30,7 @@ import com.google.eclipse.protobuf.protobuf.MessageField;
 import com.google.eclipse.protobuf.protobuf.NativeFieldOption;
 import com.google.eclipse.protobuf.protobuf.Option;
 import com.google.eclipse.protobuf.protobuf.OptionSource;
+import com.google.eclipse.protobuf.util.EResources;
 import com.google.inject.Inject;
 
 /**
@@ -51,7 +51,8 @@ public class ProtobufScopeProvider_scope_OptionSource_target_Test {
   @Test public void should_provide_sources_for_native_option() {
     Option option = xtext.find("optimize_for", Option.class);
     IScope scope = scopeProvider.scope_OptionSource_target(option.getSource(), reference);
-    ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
+    ProtoDescriptor descriptor =
+        descriptorProvider.primaryDescriptor(EResources.getProjectOf(xtext.resource()));
     Collection<MessageField> optionSources = descriptor.optionsOfType(FILE);
     assertThat(descriptionsIn(scope), containAll(optionSources));
   }
@@ -64,7 +65,8 @@ public class ProtobufScopeProvider_scope_OptionSource_target_Test {
   @Test public void should_provide_sources_for_native_field_option() {
     NativeFieldOption option = xtext.find("ctype", NativeFieldOption.class);
     IScope scope = scopeProvider.scope_OptionSource_target(option.getSource(), reference);
-    ProtoDescriptor descriptor = descriptorProvider.primaryDescriptor();
+    ProtoDescriptor descriptor =
+        descriptorProvider.primaryDescriptor(EResources.getProjectOf(xtext.resource()));
     Collection<MessageField> optionSources = descriptor.optionsOfType(FIELD);
     assertThat(descriptionsIn(scope), containAll(optionSources));
   }

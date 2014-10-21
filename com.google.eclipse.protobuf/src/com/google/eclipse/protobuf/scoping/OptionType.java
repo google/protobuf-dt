@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2011, 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -10,12 +10,8 @@ package com.google.eclipse.protobuf.scoping;
 
 import static com.google.common.collect.Maps.newHashMap;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.google.eclipse.protobuf.protobuf.AbstractOption;
 import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.eclipse.protobuf.protobuf.Group;
 import com.google.eclipse.protobuf.protobuf.IndexedElement;
 import com.google.eclipse.protobuf.protobuf.Literal;
 import com.google.eclipse.protobuf.protobuf.Message;
@@ -23,6 +19,9 @@ import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.eclipse.protobuf.protobuf.Rpc;
 import com.google.eclipse.protobuf.protobuf.Service;
 import com.google.eclipse.protobuf.protobuf.Stream;
+
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Types of options (by location.)

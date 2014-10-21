@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Google Inc.
+ * Copyright (c) 2012, 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -8,18 +8,17 @@
  */
 package com.google.eclipse.protobuf.cdt.util;
 
-import static org.hamcrest.collection.IsCollectionContaining.hasItems;
+import static com.google.common.collect.Lists.newArrayList;
+import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import static com.google.common.collect.Lists.newArrayList;
-
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.List;
 
 /**
  * Tests for <code>{@link ExtendedListIterator}</code>.
@@ -46,11 +45,11 @@ public class ExtendedListIterator_Test {
   }
 
   @Test public void should_return_elements_that_have_not_been_visited_yet() {
-    assertThat(contentsOf(iterator.notRetrievedYet()), hasItems("Luke", "Yoda", "Leia"));
+    assertThat(contentsOf(iterator.notRetrievedYet()), containsInAnyOrder("Luke", "Yoda", "Leia"));
     iterator.next();
-    assertThat(contentsOf(iterator.notRetrievedYet()), hasItems("Yoda", "Leia"));
+    assertThat(contentsOf(iterator.notRetrievedYet()), containsInAnyOrder("Yoda", "Leia"));
     iterator.next();
-    assertThat(contentsOf(iterator.notRetrievedYet()), hasItems("Leia"));
+    assertThat(contentsOf(iterator.notRetrievedYet()), containsInAnyOrder("Leia"));
     iterator.next();
     assertTrue(contentsOf(iterator.notRetrievedYet()).isEmpty());
   }

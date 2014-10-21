@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2011, 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -8,10 +8,39 @@
  */
 package com.google.eclipse.protobuf.ui;
 
-import static org.eclipse.ui.PlatformUI.isWorkbenchRunning;
-
 import static com.google.eclipse.protobuf.ui.util.Workbenches.activeWorkbenchWindow;
 import static com.google.inject.name.Names.named;
+import static org.eclipse.ui.PlatformUI.isWorkbenchRunning;
+
+import com.google.eclipse.protobuf.preferences.descriptor.DescriptorPreferences;
+import com.google.eclipse.protobuf.resource.IResourceVerifier;
+import com.google.eclipse.protobuf.scoping.IImportResolver;
+import com.google.eclipse.protobuf.scoping.IUriResolver;
+import com.google.eclipse.protobuf.ui.builder.nature.AutoAddNatureEditorCallback;
+import com.google.eclipse.protobuf.ui.documentation.ProtobufDocumentationProvider;
+import com.google.eclipse.protobuf.ui.editor.FileOutsideWorkspaceIconUpdater;
+import com.google.eclipse.protobuf.ui.editor.ProtobufUriEditorOpener;
+import com.google.eclipse.protobuf.ui.editor.hyperlinking.ProtobufHyperlinkDetector;
+import com.google.eclipse.protobuf.ui.editor.model.ProtobufDocumentProvider;
+import com.google.eclipse.protobuf.ui.editor.syntaxcoloring.HighlightingConfiguration;
+import com.google.eclipse.protobuf.ui.editor.syntaxcoloring.ProtobufSemanticHighlightingCalculator;
+import com.google.eclipse.protobuf.ui.internal.ProtobufActivator;
+import com.google.eclipse.protobuf.ui.outline.LinkWithEditor;
+import com.google.eclipse.protobuf.ui.outline.ProtobufOutlinePage;
+import com.google.eclipse.protobuf.ui.parser.PreferenceDrivenProtobufParser;
+import com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferences;
+import com.google.eclipse.protobuf.ui.preferences.editor.ignore.IgnoredExtensionsPreferences;
+import com.google.eclipse.protobuf.ui.preferences.editor.numerictag.NumericTagPreferences;
+import com.google.eclipse.protobuf.ui.preferences.editor.save.SaveActionsPreferences;
+import com.google.eclipse.protobuf.ui.preferences.general.GeneralPreferences;
+import com.google.eclipse.protobuf.ui.preferences.locations.LocationsPreferences;
+import com.google.eclipse.protobuf.ui.preferences.misc.MiscellaneousPreferences;
+import com.google.eclipse.protobuf.ui.resource.ProtobufServiceProvider;
+import com.google.eclipse.protobuf.ui.resource.ResourceVerifier;
+import com.google.eclipse.protobuf.ui.scoping.ImportResolver;
+import com.google.eclipse.protobuf.ui.scoping.UriResolver;
+import com.google.eclipse.protobuf.ui.validation.ValidateFileOnActivation;
+import com.google.inject.Binder;
 
 import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -31,33 +60,6 @@ import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculato
 import org.eclipse.xtext.ui.resource.IResourceSetProvider;
 import org.eclipse.xtext.ui.resource.SimpleResourceSetProvider;
 
-import com.google.eclipse.protobuf.resource.IResourceVerifier;
-import com.google.eclipse.protobuf.scoping.IFileUriResolver;
-import com.google.eclipse.protobuf.ui.builder.nature.AutoAddNatureEditorCallback;
-import com.google.eclipse.protobuf.ui.documentation.ProtobufDocumentationProvider;
-import com.google.eclipse.protobuf.ui.editor.FileOutsideWorkspaceIconUpdater;
-import com.google.eclipse.protobuf.ui.editor.ProtobufUriEditorOpener;
-import com.google.eclipse.protobuf.ui.editor.hyperlinking.ProtobufHyperlinkDetector;
-import com.google.eclipse.protobuf.ui.editor.model.ProtobufDocumentProvider;
-import com.google.eclipse.protobuf.ui.editor.syntaxcoloring.HighlightingConfiguration;
-import com.google.eclipse.protobuf.ui.editor.syntaxcoloring.ProtobufSemanticHighlightingCalculator;
-import com.google.eclipse.protobuf.ui.internal.ProtobufActivator;
-import com.google.eclipse.protobuf.ui.outline.LinkWithEditor;
-import com.google.eclipse.protobuf.ui.outline.ProtobufOutlinePage;
-import com.google.eclipse.protobuf.ui.parser.PreferenceDrivenProtobufParser;
-import com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferences;
-import com.google.eclipse.protobuf.ui.preferences.editor.ignore.IgnoredExtensionsPreferences;
-import com.google.eclipse.protobuf.ui.preferences.editor.numerictag.NumericTagPreferences;
-import com.google.eclipse.protobuf.ui.preferences.editor.save.SaveActionsPreferences;
-import com.google.eclipse.protobuf.ui.preferences.general.GeneralPreferences;
-import com.google.eclipse.protobuf.ui.preferences.misc.MiscellaneousPreferences;
-import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
-import com.google.eclipse.protobuf.ui.resource.ProtobufServiceProvider;
-import com.google.eclipse.protobuf.ui.resource.ResourceVerifier;
-import com.google.eclipse.protobuf.ui.scoping.FileUriResolver;
-import com.google.eclipse.protobuf.ui.validation.ValidateFileOnActivation;
-import com.google.inject.Binder;
-
 /**
  * Registers components to be used within the IDE.
  *
@@ -69,8 +71,12 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
     setValidationTrigger(activeWorkbenchWindow(), plugin);
   }
 
-  public Class<? extends IFileUriResolver> bindFileUriResolver() {
-    return FileUriResolver.class;
+  public Class<? extends IImportResolver> bindImportResolver() {
+    return ImportResolver.class;
+  }
+
+  public Class<? extends IUriResolver> bindUriResolver() {
+    return UriResolver.class;
   }
 
   public Class<? extends IHighlightingConfiguration> bindHighlightingConfiguration() {
@@ -138,8 +144,9 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
     configurePreferenceInitializer(binder, "ignoredExtensions", IgnoredExtensionsPreferences.Initializer.class);
     configurePreferenceInitializer(binder, "numericTagPreferences", NumericTagPreferences.Initializer.class);
     configurePreferenceInitializer(binder, "miscellaneousPreferences", MiscellaneousPreferences.Initializer.class);
-    configurePreferenceInitializer(binder, "pathsPreferences", PathsPreferences.Initializer.class);
+    configurePreferenceInitializer(binder, "pathsPreferences", LocationsPreferences.Initializer.class);
     configurePreferenceInitializer(binder, "saveActionsPreferences", SaveActionsPreferences.Initializer.class);
+    configurePreferenceInitializer(binder, "descriptorPreferences", DescriptorPreferences.Initializer.class);
   }
 
   private void configurePreferenceInitializer(Binder binder, String name,

@@ -9,7 +9,6 @@
 package com.google.eclipse.protobuf.ui.protoc.command;
 
 import static java.util.Collections.unmodifiableList;
-
 import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.List;
@@ -19,7 +18,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 
 import com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferences;
-import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
+import com.google.eclipse.protobuf.ui.preferences.locations.LocationsPreferences;
 
 /**
  * Builds the command to call protoc to compile a single .proto file.
@@ -32,7 +31,7 @@ public class ProtocCommandBuilder {
   private final String protocPath;
   private final ImportRootsProtocOption importRootsProtocOption;
 
-  public ProtocCommandBuilder(CompilerPreferences compilerPreferences, PathsPreferences pathsPreferences) {
+  public ProtocCommandBuilder(CompilerPreferences compilerPreferences, LocationsPreferences pathsPreferences) {
     protocPath = compilerPreferences.protocPath();
     options.add(new DescriptorPathProtocOption(compilerPreferences));
     options.add(new CodeGenerationProtocOption("java_out", compilerPreferences.javaCodeGeneration()));

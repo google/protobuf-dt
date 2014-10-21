@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2011, 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -8,21 +8,20 @@
  */
 package com.google.eclipse.protobuf.ui.commands.semicolon;
 
-import static java.util.regex.Pattern.CASE_INSENSITIVE;
-
-import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.getNode;
-import static org.eclipse.xtext.util.Strings.isEmpty;
-import static org.eclipse.xtext.util.Tuples.pair;
-
 import static com.google.common.cache.CacheBuilder.newBuilder;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.eclipse.protobuf.util.Strings.quote;
 import static com.google.eclipse.protobuf.util.SystemProperties.lineSeparator;
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
+import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.getNode;
+import static org.eclipse.xtext.util.Strings.isEmpty;
+import static org.eclipse.xtext.util.Tuples.pair;
 
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.eclipse.protobuf.model.util.INodes;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import org.apache.log4j.Logger;
 import org.eclipse.emf.ecore.EObject;
@@ -31,11 +30,10 @@ import org.eclipse.xtext.nodemodel.ILeafNode;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.util.Pair;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheLoader;
-import com.google.eclipse.protobuf.model.util.INodes;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -47,7 +45,8 @@ import com.google.inject.Singleton;
 
   @Inject private INodes nodes;
 
-  private final Cache<String, Pattern> patternCache = newBuilder().maximumSize(20).build(new PatternCacheLoader());
+  private final LoadingCache<String, Pattern> patternCache =
+      newBuilder().maximumSize(20).build(new PatternCacheLoader());
 
   Pair<INode, Matcher> matchingCommentNode(EObject target, String... patternsToMatch) {
     ICompositeNode node = getNode(target);
