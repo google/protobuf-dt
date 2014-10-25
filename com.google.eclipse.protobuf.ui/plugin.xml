@@ -209,7 +209,7 @@
       </enabledWhen>
     </page>
     <page category="com.google.eclipse.protobuf.Protobuf"
-      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.locations.LocationsPreferencePage"
+      class="com.google.eclipse.protobuf.ui.ProtobufExecutableExtensionFactory:com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferencePage"
       id="com.google.eclipse.protobuf.ui.properties.paths.PropertyPage" name="%page.name.3" selectionFilter="single">
       <enabledWhen>
         <adapt type="org.eclipse.core.resources.IProject" />

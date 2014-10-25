@@ -15,6 +15,9 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
   public static String contentValidation;
+  public static String errorCannotResolveOptionsDefinitionFile;
+  public static String errorEmptyOptionsDefinitionFile;
+  public static String optionsDefinitionFile;
   public static String validateFilesOnActivation;
 
   static {

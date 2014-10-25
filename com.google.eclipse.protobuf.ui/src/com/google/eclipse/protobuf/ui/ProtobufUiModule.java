@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, 2014 Google Inc.
+ * Copyright (c) 2011 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@ import static com.google.eclipse.protobuf.ui.util.Workbenches.activeWorkbenchWin
 import static com.google.inject.name.Names.named;
 import static org.eclipse.ui.PlatformUI.isWorkbenchRunning;
 
-import com.google.eclipse.protobuf.preferences.descriptor.DescriptorPreferences;
+import com.google.eclipse.protobuf.preferences.general.GeneralPreferences;
 import com.google.eclipse.protobuf.resource.IResourceVerifier;
 import com.google.eclipse.protobuf.scoping.IImportResolver;
 import com.google.eclipse.protobuf.scoping.IUriResolver;
@@ -32,9 +32,8 @@ import com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferences;
 import com.google.eclipse.protobuf.ui.preferences.editor.ignore.IgnoredExtensionsPreferences;
 import com.google.eclipse.protobuf.ui.preferences.editor.numerictag.NumericTagPreferences;
 import com.google.eclipse.protobuf.ui.preferences.editor.save.SaveActionsPreferences;
-import com.google.eclipse.protobuf.ui.preferences.general.GeneralPreferences;
-import com.google.eclipse.protobuf.ui.preferences.locations.LocationsPreferences;
 import com.google.eclipse.protobuf.ui.preferences.misc.MiscellaneousPreferences;
+import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
 import com.google.eclipse.protobuf.ui.resource.ProtobufServiceProvider;
 import com.google.eclipse.protobuf.ui.resource.ResourceVerifier;
 import com.google.eclipse.protobuf.ui.scoping.ImportResolver;
@@ -144,9 +143,8 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
     configurePreferenceInitializer(binder, "ignoredExtensions", IgnoredExtensionsPreferences.Initializer.class);
     configurePreferenceInitializer(binder, "numericTagPreferences", NumericTagPreferences.Initializer.class);
     configurePreferenceInitializer(binder, "miscellaneousPreferences", MiscellaneousPreferences.Initializer.class);
-    configurePreferenceInitializer(binder, "pathsPreferences", LocationsPreferences.Initializer.class);
+    configurePreferenceInitializer(binder, "pathsPreferences", PathsPreferences.Initializer.class);
     configurePreferenceInitializer(binder, "saveActionsPreferences", SaveActionsPreferences.Initializer.class);
-    configurePreferenceInitializer(binder, "descriptorPreferences", DescriptorPreferences.Initializer.class);
   }
 
   private void configurePreferenceInitializer(Binder binder, String name,

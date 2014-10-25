@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2011, 2014 Google Inc.
+ * Copyright (c) 2011 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.preferences.locations;
+package com.google.eclipse.protobuf.ui.preferences.paths;
 
 import org.eclipse.osgi.util.NLS;
 
@@ -18,16 +18,13 @@ public class Messages extends NLS {
   public static String addDirectoryPath;
   public static String browseFileSystem;
   public static String browseWorkspace;
-  public static String descriptorPath;
   public static String directories;
   public static String directory;
   public static String directorySelection;
   public static String down;
   public static String enterDirectoryName;
-  public static String errorCannotResolveOptionsDefinitionFile;
   public static String errorElementIsNotDirectory;
   public static String errorEmptyDirectoryName;
-  public static String errorEmptyOptionsDefinitionFile;
   public static String errorNoDirectoryNames;
   public static String filesInMultipleDirectories;
   public static String filesInOneDirectoryOnly;

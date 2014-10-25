@@ -12,11 +12,11 @@ import static com.google.eclipse.protobuf.ui.preferences.editor.save.PreferenceN
 import static com.google.eclipse.protobuf.ui.preferences.editor.save.PreferenceNames.IN_EDITED_LINES;
 import static com.google.eclipse.protobuf.ui.preferences.editor.save.PreferenceNames.REMOVE_TRAILING_WHITESPACE;
 
+import com.google.eclipse.protobuf.preferences.DefaultPreservingInitializer;
+import com.google.inject.Inject;
+
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
-import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
-
-import com.google.inject.Inject;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -36,12 +36,12 @@ public class SaveActionsPreferences {
     return store.getBoolean(IN_EDITED_LINES);
   }
 
-  public static class Initializer implements IPreferenceStoreInitializer {
-    @Override public void initialize(IPreferenceStoreAccess storeAccess) {
-      IPreferenceStore store = storeAccess.getWritablePreferenceStore();
-      store.setDefault(REMOVE_TRAILING_WHITESPACE, true);
-      store.setDefault(IN_ALL_LINES, false);
-      store.setDefault(IN_EDITED_LINES, true);
+  public static class Initializer extends DefaultPreservingInitializer {
+    @Override
+    public void setDefaults() {
+      setDefault(REMOVE_TRAILING_WHITESPACE, true);
+      setDefault(IN_ALL_LINES, false);
+      setDefault(IN_EDITED_LINES, true);
     }
   }
 }

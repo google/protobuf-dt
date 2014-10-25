@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, 2014 Google Inc.
+ * Copyright (c) 2011 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -11,8 +11,8 @@ package com.google.eclipse.protobuf.ui.scoping;
 import static com.google.common.collect.Lists.newArrayList;
 
 import com.google.common.base.Function;
-import com.google.eclipse.protobuf.ui.preferences.locations.DirectoryPath;
-import com.google.eclipse.protobuf.ui.preferences.locations.LocationsPreferences;
+import com.google.eclipse.protobuf.ui.preferences.paths.DirectoryPath;
+import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
 import com.google.inject.Inject;
 
 import java.util.List;
@@ -24,8 +24,8 @@ class MultipleDirectoriesUriResolver {
   @Inject private UriResolverHelper uriResolver;
   @Inject private ResourceLocations locations;
 
-  public String resolveUri(String importUri, Iterable<LocationsPreferences> allPathPreferences) {
-    for (LocationsPreferences preferences : allPathPreferences) {
+  public String resolveUri(String importUri, Iterable<PathsPreferences> allPathPreferences) {
+    for (PathsPreferences preferences : allPathPreferences) {
       String resolved = resolveUri(importUri, preferences);
       if (resolved != null) {
         return resolved;
@@ -34,7 +34,7 @@ class MultipleDirectoriesUriResolver {
     return null;
   }
 
-  private String resolveUri(final String importUri, LocationsPreferences preferences) {
+  private String resolveUri(final String importUri, PathsPreferences preferences) {
     final List<String> unresolvedWorkspacePaths = newArrayList();
     String resolved = preferences.applyToEachDirectoryPath(new Function<DirectoryPath, String>() {
       @Override public String apply(DirectoryPath path) {

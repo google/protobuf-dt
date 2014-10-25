@@ -21,19 +21,19 @@ import org.eclipse.core.runtime.IPath;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
-import com.google.eclipse.protobuf.ui.preferences.locations.DirectoryPath;
-import com.google.eclipse.protobuf.ui.preferences.locations.LocationsPreferences;
+import com.google.eclipse.protobuf.ui.preferences.paths.DirectoryPath;
+import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
 class ImportRootsProtocOption {
-  private final LocationsPreferences preferences;
+  private final PathsPreferences preferences;
 
   private boolean initialized;
   private List<String> importRoots;
 
-  ImportRootsProtocOption(LocationsPreferences preferences) {
+  ImportRootsProtocOption(PathsPreferences preferences) {
     this.preferences = preferences;
   }
 

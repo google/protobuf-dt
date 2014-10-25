@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2014 Google Inc.
+ * Copyright (c) 2012 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -13,7 +13,7 @@ import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import org.eclipse.emf.common.util.URI;
 
-import com.google.eclipse.protobuf.ui.preferences.locations.DirectoryPath;
+import com.google.eclipse.protobuf.ui.preferences.paths.DirectoryPath;
 import com.google.eclipse.protobuf.util.Uris;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

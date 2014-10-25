@@ -24,10 +24,11 @@ import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceName
 import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.USE_PROTOC_IN_CUSTOM_PATH;
 import static com.google.eclipse.protobuf.ui.preferences.compiler.PreferenceNames.USE_PROTOC_IN_SYSTEM_PATH;
 
+import com.google.eclipse.protobuf.preferences.DefaultPreservingInitializer;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
-import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -96,23 +97,23 @@ public class CompilerPreferences {
     return project;
   }
 
-  public static class Initializer implements IPreferenceStoreInitializer {
+  public static class Initializer extends DefaultPreservingInitializer {
     private static final String DEFAULT_OUTPUT_DIRECTORY = "src-gen";
 
-    @Override public void initialize(IPreferenceStoreAccess storeAccess) {
-      IPreferenceStore store = storeAccess.getWritablePreferenceStore();
-      store.setDefault(ENABLE_PROJECT_SETTINGS_PREFERENCE_NAME, false);
-      store.setDefault(USE_PROTOC_IN_SYSTEM_PATH, true);
-      store.setDefault(USE_PROTOC_IN_CUSTOM_PATH, false);
-      store.setDefault(JAVA_CODE_GENERATION_ENABLED, false);
-      store.setDefault(CPP_CODE_GENERATION_ENABLED, false);
-      store.setDefault(PYTHON_CODE_GENERATION_ENABLED, false);
-      store.setDefault(JAVA_OUTPUT_DIRECTORY, DEFAULT_OUTPUT_DIRECTORY);
-      store.setDefault(CPP_OUTPUT_DIRECTORY, DEFAULT_OUTPUT_DIRECTORY);
-      store.setDefault(PYTHON_OUTPUT_DIRECTORY, DEFAULT_OUTPUT_DIRECTORY);
-      store.setDefault(REFRESH_RESOURCES, true);
-      store.setDefault(REFRESH_PROJECT, true);
-      store.setDefault(REFRESH_OUTPUT_DIRECTORY, false);
+    @Override
+    public void setDefaults() {
+      setDefault(ENABLE_PROJECT_SETTINGS_PREFERENCE_NAME, false);
+      setDefault(USE_PROTOC_IN_SYSTEM_PATH, true);
+      setDefault(USE_PROTOC_IN_CUSTOM_PATH, false);
+      setDefault(JAVA_CODE_GENERATION_ENABLED, false);
+      setDefault(CPP_CODE_GENERATION_ENABLED, false);
+      setDefault(PYTHON_CODE_GENERATION_ENABLED, false);
+      setDefault(JAVA_OUTPUT_DIRECTORY, DEFAULT_OUTPUT_DIRECTORY);
+      setDefault(CPP_OUTPUT_DIRECTORY, DEFAULT_OUTPUT_DIRECTORY);
+      setDefault(PYTHON_OUTPUT_DIRECTORY, DEFAULT_OUTPUT_DIRECTORY);
+      setDefault(REFRESH_RESOURCES, true);
+      setDefault(REFRESH_PROJECT, true);
+      setDefault(REFRESH_OUTPUT_DIRECTORY, false);
     }
  }
 }

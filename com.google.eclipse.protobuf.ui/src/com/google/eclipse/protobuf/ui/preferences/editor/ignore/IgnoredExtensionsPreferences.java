@@ -11,9 +11,10 @@ package com.google.eclipse.protobuf.ui.preferences.editor.ignore;
 import static com.google.eclipse.protobuf.ui.preferences.editor.ignore.PreferenceNames.IGNORED_EXTENSIONS;
 import static com.google.eclipse.protobuf.ui.util.CommaSeparatedValues.splitCsv;
 
+import com.google.eclipse.protobuf.preferences.DefaultPreservingInitializer;
+
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
-import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -30,10 +31,10 @@ public class IgnoredExtensionsPreferences {
     return splitCsv(value);
   }
 
-  public static class Initializer implements IPreferenceStoreInitializer {
-    @Override public void initialize(IPreferenceStoreAccess storeAccess) {
-      IPreferenceStore store = storeAccess.getWritablePreferenceStore();
-      store.setDefault(IGNORED_EXTENSIONS, ".ascii.proto,.binary.proto,.xml.proto");
+  public static class Initializer extends DefaultPreservingInitializer {
+    @Override
+    public void setDefaults() {
+      setDefault(IGNORED_EXTENSIONS, ".ascii.proto,.binary.proto,.xml.proto");
     }
   }
 }

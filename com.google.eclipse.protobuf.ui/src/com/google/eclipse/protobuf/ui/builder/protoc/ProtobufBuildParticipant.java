@@ -35,7 +35,7 @@ import org.eclipse.xtext.resource.IResourceDescription.Delta;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
 import com.google.eclipse.protobuf.ui.preferences.compiler.CompilerPreferences;
-import com.google.eclipse.protobuf.ui.preferences.locations.LocationsPreferences;
+import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
 import com.google.eclipse.protobuf.ui.protoc.command.ProtocCommandBuilder;
 import com.google.eclipse.protobuf.ui.protoc.output.ProtocMarkerFactory;
 import com.google.eclipse.protobuf.ui.protoc.output.ProtocOutputParser;
@@ -66,7 +66,7 @@ public class ProtobufBuildParticipant implements IXtextBuilderParticipant {
     if (!compilerPreferences.shouldCompileProtoFiles()) {
       return;
     }
-    LocationsPreferences pathsPreferences = new LocationsPreferences(storeAccess, project);
+    PathsPreferences pathsPreferences = new PathsPreferences(storeAccess, project);
     ProtocCommandBuilder commandBuilder = new ProtocCommandBuilder(compilerPreferences, pathsPreferences);
     for (Delta delta : deltas) {
       if (subMonitor.isCanceled()) {

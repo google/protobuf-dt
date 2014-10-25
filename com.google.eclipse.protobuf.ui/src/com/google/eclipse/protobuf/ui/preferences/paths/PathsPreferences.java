@@ -6,31 +6,31 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.preferences.locations;
+package com.google.eclipse.protobuf.ui.preferences.paths;
 
-import static com.google.eclipse.protobuf.ui.preferences.locations.DirectoryPath.parse;
-import static com.google.eclipse.protobuf.ui.preferences.locations.PreferenceNames.DIRECTORY_PATHS;
-import static com.google.eclipse.protobuf.ui.preferences.locations.PreferenceNames.FILES_IN_MULTIPLE_DIRECTORIES;
-import static com.google.eclipse.protobuf.ui.preferences.locations.PreferenceNames.FILES_IN_ONE_DIRECTORY_ONLY;
+import static com.google.eclipse.protobuf.ui.preferences.paths.DirectoryPath.parse;
+import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.DIRECTORY_PATHS;
+import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.FILES_IN_MULTIPLE_DIRECTORIES;
+import static com.google.eclipse.protobuf.ui.preferences.paths.PreferenceNames.FILES_IN_ONE_DIRECTORY_ONLY;
 import static com.google.eclipse.protobuf.ui.util.CommaSeparatedValues.splitCsv;
+
+import com.google.common.base.Function;
+import com.google.eclipse.protobuf.preferences.DefaultPreservingInitializer;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
-import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
-
-import com.google.common.base.Function;
 
 /**
  * "Locations" preferences, retrieved from an <code>{@link IPreferenceStore}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class LocationsPreferences {
+public class PathsPreferences {
   private final IProject project;
   private final IPreferenceStore store;
 
-  public LocationsPreferences(IPreferenceStoreAccess storeAccess, IProject project) {
+  public PathsPreferences(IPreferenceStoreAccess storeAccess, IProject project) {
     this.store = storeAccess.getWritablePreferenceStore(project);
     this.project = project;
   }
@@ -51,12 +51,12 @@ public class LocationsPreferences {
     return null;
   }
 
-  public static class Initializer implements IPreferenceStoreInitializer {
-    @Override public void initialize(IPreferenceStoreAccess access) {
-      IPreferenceStore store = access.getWritablePreferenceStore();
-      store.setDefault(FILES_IN_ONE_DIRECTORY_ONLY, true);
-      store.setDefault(FILES_IN_MULTIPLE_DIRECTORIES, false);
-      store.setDefault(DIRECTORY_PATHS, "");
+  public static class Initializer extends DefaultPreservingInitializer {
+    @Override
+    public void setDefaults() {
+      setDefault(FILES_IN_ONE_DIRECTORY_ONLY, true);
+      setDefault(FILES_IN_MULTIPLE_DIRECTORIES, false);
+      setDefault(DIRECTORY_PATHS, "");
     }
   }
 }

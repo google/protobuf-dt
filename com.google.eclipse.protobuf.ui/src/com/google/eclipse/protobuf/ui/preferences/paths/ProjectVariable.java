@@ -6,7 +6,7 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.preferences.locations;
+package com.google.eclipse.protobuf.ui.preferences.paths;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;

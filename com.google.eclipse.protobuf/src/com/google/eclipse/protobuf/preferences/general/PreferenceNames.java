@@ -6,14 +6,17 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.preferences.descriptor;
+package com.google.eclipse.protobuf.preferences.general;
 
 /**
  * Preference names for descriptor proto preferences.
  */
 public final class PreferenceNames {
   public static final String DEFAULT_DESCRIPTOR_PATH = "google/protobuf/descriptor.proto";
-  public static final String DESCRIPTOR_PROTO_PATH = "descriptor.path";
+  public static final String DESCRIPTOR_PROTO_PATH = "general.descriptorPath";
+  public static final String ENABLE_PROJECT_SETTINGS_PREFERENCE_NAME =
+      "general.enableProjectSettings";
+  public static final String VALIDATE_FILES_ON_ACTIVATION = "general.validateFilesOnActivation";
 
   private PreferenceNames() {}
 }

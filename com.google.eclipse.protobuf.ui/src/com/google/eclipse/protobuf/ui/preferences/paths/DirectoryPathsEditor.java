@@ -6,15 +6,15 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.preferences.locations;
+package com.google.eclipse.protobuf.ui.preferences.paths;
 
 import static java.util.Collections.unmodifiableList;
 import static org.eclipse.jface.window.Window.OK;
-import static com.google.eclipse.protobuf.ui.preferences.locations.Messages.add;
-import static com.google.eclipse.protobuf.ui.preferences.locations.Messages.directories;
-import static com.google.eclipse.protobuf.ui.preferences.locations.Messages.down;
-import static com.google.eclipse.protobuf.ui.preferences.locations.Messages.remove;
-import static com.google.eclipse.protobuf.ui.preferences.locations.Messages.up;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.add;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.directories;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.down;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.remove;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.up;
 
 import java.util.Collection;
 import java.util.LinkedList;

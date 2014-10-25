@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.Path;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.eclipse.protobuf.ui.preferences.locations.ProjectVariable;
+import com.google.eclipse.protobuf.ui.preferences.paths.ProjectVariable;
 
 /**
  * Tests for <code>{@link ProjectVariable#replaceProjectVariableWithProjectName(IPath, IProject)}</code>.

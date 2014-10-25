@@ -10,9 +10,10 @@ package com.google.eclipse.protobuf.ui.preferences.misc;
 
 import static com.google.eclipse.protobuf.ui.preferences.misc.PreferenceNames.IS_GOOGLE_INTERNAL;
 
+import com.google.eclipse.protobuf.preferences.DefaultPreservingInitializer;
+
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
-import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
 
 /**
  * "Miscellaneous" preferences, retrieved from an <code>{@link IPreferenceStore}</code>.
@@ -30,10 +31,10 @@ public class MiscellaneousPreferences {
     return store.getBoolean(IS_GOOGLE_INTERNAL);
   }
 
-  public static class Initializer implements IPreferenceStoreInitializer {
-    @Override public void initialize(IPreferenceStoreAccess storeAccess) {
-      IPreferenceStore store = storeAccess.getWritablePreferenceStore();
-      store.setDefault(IS_GOOGLE_INTERNAL, false);
+  public static class Initializer extends DefaultPreservingInitializer {
+    @Override
+    public void setDefaults() {
+      setDefault(IS_GOOGLE_INTERNAL, false);
     }
   }
 }

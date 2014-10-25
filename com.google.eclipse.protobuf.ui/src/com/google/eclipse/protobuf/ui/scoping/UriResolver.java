@@ -13,7 +13,7 @@ import static java.util.Collections.unmodifiableList;
 
 import com.google.common.collect.ImmutableList;
 import com.google.eclipse.protobuf.scoping.IUriResolver;
-import com.google.eclipse.protobuf.ui.preferences.locations.LocationsPreferences;
+import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
 import com.google.inject.Inject;
 
 import org.eclipse.core.resources.IProject;
@@ -42,21 +42,21 @@ public class UriResolver implements IUriResolver {
     if (project == null) {
       return multipleDirectories.resolveUri(importUri, preferencesFromAllProjects());
     }
-    LocationsPreferences locations = new LocationsPreferences(storeAccess, project);
+    PathsPreferences locations = new PathsPreferences(storeAccess, project);
     if (locations.areFilesInMultipleDirectories()) {
       return multipleDirectories.resolveUri(importUri, ImmutableList.of(locations));
     }
     return singleDirectory.resolveUri(importUri, declaringResourceUri);
   }
 
-  private Iterable<LocationsPreferences> preferencesFromAllProjects() {
-    List<LocationsPreferences> allPreferences = new ArrayList<>();
+  private Iterable<PathsPreferences> preferencesFromAllProjects() {
+    List<PathsPreferences> allPreferences = new ArrayList<>();
     IWorkspaceRoot root = workspaceRoot();
     for (IProject project : root.getProjects()) {
       if (project.isHidden() || !project.isAccessible() || !XtextProjectHelper.hasNature(project)) {
         continue;
       }
-      LocationsPreferences preferences = new LocationsPreferences(storeAccess, project);
+      PathsPreferences preferences = new PathsPreferences(storeAccess, project);
       allPreferences.add(preferences);
     }
     return unmodifiableList(allPreferences);

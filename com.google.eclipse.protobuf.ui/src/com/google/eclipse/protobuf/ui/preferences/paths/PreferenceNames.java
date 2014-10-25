@@ -6,15 +6,15 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.preferences.general;
+package com.google.eclipse.protobuf.ui.preferences.paths;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
- *
  */
 final class PreferenceNames {
-  static final String ENABLE_PROJECT_SETTINGS_PREFERENCE_NAME = "general.enableProjectSettings";
-  static final String VALIDATE_FILES_ON_ACTIVATION = "general.validateFilesOnActivation";
+  static final String FILES_IN_ONE_DIRECTORY_ONLY= "paths.filesInOneDirectoryOnly";
+  static final String FILES_IN_MULTIPLE_DIRECTORIES = "paths.filesInMultipleDirectories";
+  static final String DIRECTORY_PATHS = "paths.directoryPaths";
 
   private PreferenceNames() {}
 }

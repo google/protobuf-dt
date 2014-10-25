@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2014 Google Inc.
+ * Copyright (c) 2012 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -21,8 +21,8 @@ import static org.mockito.Mockito.when;
 
 import com.google.eclipse.protobuf.junit.core.AbstractTestModule;
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.ui.preferences.locations.DirectoryPath;
-import com.google.eclipse.protobuf.ui.preferences.locations.LocationsPreferences;
+import com.google.eclipse.protobuf.ui.preferences.paths.DirectoryPath;
+import com.google.eclipse.protobuf.ui.preferences.paths.PathsPreferences;
 import com.google.inject.Inject;
 
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -50,14 +50,14 @@ public class MultipleDirectoriesUriResolver_resolveUri_Test {
   @Inject private MultipleDirectoriesUriResolver strategy;
 
   private IPreferenceStore store;
-  private LocationsPreferences preferences;
-  private Iterable<LocationsPreferences> allPreferences;
+  private PathsPreferences preferences;
+  private Iterable<PathsPreferences> allPreferences;
 
   @Before public void setUp() {
     IPreferenceStoreAccess storeAccess = mock(IPreferenceStoreAccess.class);
     store = mock(IPreferenceStore.class);
     when(storeAccess.getWritablePreferenceStore(null)).thenReturn(store);
-    preferences = new LocationsPreferences(storeAccess , null);
+    preferences = new PathsPreferences(storeAccess , null);
     allPreferences = singletonList(preferences);
   }
 

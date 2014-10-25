@@ -10,11 +10,12 @@ package com.google.eclipse.protobuf.ui.preferences.editor.numerictag;
 
 import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.PreferenceNames.NUMERIC_TAG_PATTERNS;
 
-import java.util.List;
+import com.google.eclipse.protobuf.preferences.DefaultPreservingInitializer;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
-import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
+
+import java.util.List;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -31,10 +32,10 @@ public class NumericTagPreferences {
     return NumericTagPatternSplitter.instance().splitIntoList(value);
   }
 
-  public static class Initializer implements IPreferenceStoreInitializer {
-    @Override public void initialize(IPreferenceStoreAccess storeAccess) {
-      IPreferenceStore store = storeAccess.getWritablePreferenceStore();
-      store.setDefault(NUMERIC_TAG_PATTERNS, "Next[\\s]+Id:[\\s]+[\\d]+");
+  public static class Initializer extends DefaultPreservingInitializer {
+    @Override
+    public void setDefaults() {
+      setDefault(NUMERIC_TAG_PATTERNS, "Next[\\s]+Id:[\\s]+[\\d]+");
     }
   }
 }

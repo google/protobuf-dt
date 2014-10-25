@@ -6,18 +6,18 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.preferences.locations;
+package com.google.eclipse.protobuf.ui.preferences.paths;
 
 import static org.eclipse.jface.dialogs.IDialogConstants.OK_ID;
 import static org.eclipse.xtext.util.Strings.isEmpty;
-import static com.google.eclipse.protobuf.ui.preferences.locations.DirectorySelectionDialogs.showFileSystemDirectorySelectionDialog;
-import static com.google.eclipse.protobuf.ui.preferences.locations.DirectorySelectionDialogs.showWorkspaceDirectorySelectionDialog;
-import static com.google.eclipse.protobuf.ui.preferences.locations.Messages.addDirectoryPath;
-import static com.google.eclipse.protobuf.ui.preferences.locations.Messages.browseFileSystem;
-import static com.google.eclipse.protobuf.ui.preferences.locations.Messages.browseWorkspace;
-import static com.google.eclipse.protobuf.ui.preferences.locations.Messages.directory;
-import static com.google.eclipse.protobuf.ui.preferences.locations.Messages.isWorkspacePathCheck;
 import static com.google.eclipse.protobuf.ui.preferences.pages.TextWidgets.setEditable;
+import static com.google.eclipse.protobuf.ui.preferences.paths.DirectorySelectionDialogs.showFileSystemDirectorySelectionDialog;
+import static com.google.eclipse.protobuf.ui.preferences.paths.DirectorySelectionDialogs.showWorkspaceDirectorySelectionDialog;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.addDirectoryPath;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.browseFileSystem;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.browseWorkspace;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.directory;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.isWorkspacePathCheck;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, 2014 Google Inc.
+ * Copyright (c) 2011 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -8,15 +8,15 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.eclipse.protobuf.preferences.descriptor.PreferenceNames.DESCRIPTOR_PROTO_PATH;
+import static com.google.eclipse.protobuf.preferences.general.PreferenceNames.DESCRIPTOR_PROTO_PATH;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import com.google.eclipse.protobuf.model.util.INodes;
-import com.google.eclipse.protobuf.preferences.descriptor.DescriptorPreferences;
-import com.google.eclipse.protobuf.preferences.descriptor.PreferenceNames;
+import com.google.eclipse.protobuf.preferences.general.GeneralPreferences;
+import com.google.eclipse.protobuf.preferences.general.PreferenceNames;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -126,7 +126,7 @@ import java.util.logging.Logger;
         new LinkedHashMap<String, ProtoDescriptorProvider.ProtoDescriptorInfo>();
 
     // Add descriptor.proto from preferences
-    DescriptorPreferences preferences = new DescriptorPreferences(storeAccess, project);
+    GeneralPreferences preferences = new GeneralPreferences(storeAccess, project);
     String descriptorProtoUri = preferences.getDescriptorProtoPath();
     if (!PreferenceNames.DEFAULT_DESCRIPTOR_PATH.equals(descriptorProtoUri)) {
       URI descriptorProtoLocation =

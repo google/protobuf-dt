@@ -6,15 +6,15 @@
  *
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package com.google.eclipse.protobuf.ui.preferences.locations;
+package com.google.eclipse.protobuf.ui.preferences.paths;
 
 import static org.eclipse.core.runtime.Status.OK_STATUS;
 import static org.eclipse.jface.window.Window.OK;
 import static org.eclipse.ui.views.navigator.ResourceComparator.NAME;
-import static com.google.eclipse.protobuf.ui.preferences.locations.Messages.directorySelection;
-import static com.google.eclipse.protobuf.ui.preferences.locations.Messages.errorElementIsNotDirectory;
-import static com.google.eclipse.protobuf.ui.preferences.locations.Messages.selectFileSystemDirectory;
-import static com.google.eclipse.protobuf.ui.preferences.locations.Messages.selectWorkspaceDirectory;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.directorySelection;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.errorElementIsNotDirectory;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.selectFileSystemDirectory;
+import static com.google.eclipse.protobuf.ui.preferences.paths.Messages.selectWorkspaceDirectory;
 import static com.google.eclipse.protobuf.ui.util.IStatusFactory.error;
 import static com.google.eclipse.protobuf.util.Workspaces.workspaceRoot;
 
