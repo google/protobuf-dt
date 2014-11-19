@@ -96,7 +96,7 @@ enum Modifier:
   optional | required | repeated;
 
 TypeLink:
-  ScalarTypeLink | ComplexTypeLink;
+  ScalarTypeLink | ComplexTypeLink | MapTypeLink;
 
 ScalarTypeLink:
   target=ScalarType;
@@ -107,6 +107,12 @@ enum ScalarType:
 
 ComplexTypeLink:
   target=[ComplexType|QualifiedName];
+  
+MapTypeLink:
+  target=MapType;
+
+MapType:
+  =>'map' '<' fromType=TypeLink ',' toType=TypeLink '>';
 
 Enum:
   =>'enum' name=Name '{'
