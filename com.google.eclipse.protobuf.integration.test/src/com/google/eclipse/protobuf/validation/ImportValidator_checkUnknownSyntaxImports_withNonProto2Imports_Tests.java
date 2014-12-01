@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Google Inc.
+ * Copyright (c) 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -15,7 +15,7 @@ import static org.mockito.Mockito.verify;
 import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
-import static com.google.eclipse.protobuf.validation.Messages.importingNonProto2;
+import static com.google.eclipse.protobuf.validation.Messages.importingUnsupportedSyntax;
 
 import java.util.List;
 
@@ -34,11 +34,11 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
- * Tests for <code>{@link ImportValidator#checkNonProto2Imports(Protobuf)}</code>
+ * Tests for <code>{@link ImportValidator#checkUnknownSyntaxImports(Protobuf)}</code>
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class ImportValidator_checkNonProto2Imports_withNonProto2Imports_Tests {
+public class ImportValidator_checkUnknownSyntaxImports_withNonProto2Imports_Tests {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule(), new TestModule());
 
   @Inject private ProtobufsStub protobufs;
@@ -63,11 +63,11 @@ public class ImportValidator_checkNonProto2Imports_withNonProto2Imports_Tests {
   //
   // import "B.proto";
   // import "C.proto";
-  @Test public void should_add_warning_if_import_if_import_refers_directly_to_non_proto2() {
-    protobufs.nonProto2FileName = "B.proto";
-    validator.checkNonProto2Imports(xtext.root());
-    Import importWithNonProto2File = findImportReferreringToFile(protobufs.nonProto2FileName);
-    verifyThatImportingNonProto2FileCreatedWarning(importWithNonProto2File);
+  @Test public void should_add_warning_if_import_refers_directly_to_unknown_syntax() {
+    protobufs.unknownSyntaxFileName = "B.proto";
+    validator.checkUnknownSyntaxImports(xtext.root());
+    Import importWithUnknownSyntaxFile = findImportReferreringToFile(protobufs.unknownSyntaxFileName);
+    verifyThatImportingUnknownSyntaxFileCreatedWarning(importWithUnknownSyntaxFile);
   }
 
   // // Create file C.proto
@@ -83,11 +83,11 @@ public class ImportValidator_checkNonProto2Imports_withNonProto2Imports_Tests {
   // syntax = "proto2";
   //
   // import "B.proto";
-  @Test public void should_add_warning_if_import_if_import_refers_indirectly_to_non_proto2() {
-    protobufs.nonProto2FileName = "C.proto";
-    validator.checkNonProto2Imports(xtext.root());
-    Import importWithNonProto2File = findImportReferreringToFile("B.proto");
-    verifyThatImportingNonProto2FileCreatedWarning(importWithNonProto2File);
+  @Test public void should_add_warning_if_import_refers_indirectly_to_unknown_syntax() {
+    protobufs.unknownSyntaxFileName = "C.proto";
+    validator.checkUnknownSyntaxImports(xtext.root());
+    Import importWithUnknownSyntaxFile = findImportReferreringToFile("B.proto");
+    verifyThatImportingUnknownSyntaxFileCreatedWarning(importWithUnknownSyntaxFile);
   }
 
   private Import findImportReferreringToFile(String fileName) {
@@ -100,8 +100,8 @@ public class ImportValidator_checkNonProto2Imports_withNonProto2Imports_Tests {
     return null;
   }
 
-  private void verifyThatImportingNonProto2FileCreatedWarning(Import anImport) {
-    verify(messageAcceptor).acceptWarning(importingNonProto2, anImport, IMPORT__IMPORT_URI, INSIGNIFICANT_INDEX, null,
+  private void verifyThatImportingUnknownSyntaxFileCreatedWarning(Import anImport) {
+    verify(messageAcceptor).acceptWarning(importingUnsupportedSyntax, anImport, IMPORT__IMPORT_URI, INSIGNIFICANT_INDEX, null,
         new String[0]);
   }
 
@@ -112,14 +112,14 @@ public class ImportValidator_checkNonProto2Imports_withNonProto2Imports_Tests {
   }
 
   @Singleton private static class ProtobufsStub extends Protobufs {
-    String nonProto2FileName;
+    String unknownSyntaxFileName;
 
-    @Override public boolean isProto2(Protobuf protobuf) {
+    @Override public boolean hasKnownSyntax(Protobuf protobuf) {
       URI resourceUri = protobuf.eResource().getURI();
-      if (resourceUri.toString().endsWith(nonProto2FileName)) {
+      if (resourceUri.toString().endsWith(unknownSyntaxFileName)) {
         return false;
       }
-      return super.isProto2(protobuf);
+      return super.hasKnownSyntax(protobuf);
     }
   }
 }

@@ -113,7 +113,7 @@ class ModelElementFinder {
         continue;
       }
       Protobuf rootOfImported = resources.rootOf(imported);
-      if (!protobufs.isProto2(rootOfImported)) {
+      if (!protobufs.hasKnownSyntax(rootOfImported)) {
         continue;
       }
       if (rootOfImported != null) {
@@ -130,7 +130,7 @@ class ModelElementFinder {
   }
 
   private <T> Collection<IEObjectDescription> publicImported(Protobuf start, FinderStrategy<T> strategy, T criteria) {
-    if (!protobufs.isProto2(start)) {
+    if (!protobufs.hasKnownSyntax(start)) {
       return emptySet();
     }
     List<Import> allImports = protobufs.publicImportsIn(start);

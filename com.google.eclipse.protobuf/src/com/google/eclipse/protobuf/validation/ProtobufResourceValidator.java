@@ -18,7 +18,7 @@ import static org.eclipse.xtext.validation.impl.ConcreteSyntaxEValidator.DISABLE
 
 import static com.google.common.collect.Lists.newArrayListWithExpectedSize;
 import static com.google.common.collect.Maps.newHashMap;
-import static com.google.eclipse.protobuf.validation.Messages.importingNonProto2;
+import static com.google.eclipse.protobuf.validation.Messages.importingUnsupportedSyntax;
 import static com.google.eclipse.protobuf.validation.Messages.scopingError;
 
 import java.util.List;
@@ -110,7 +110,7 @@ public class ProtobufResourceValidator extends ResourceValidatorImpl {
       return hasNonProto2Import;
     }
     for (Diagnostic child : diagnostic.getChildren()) {
-      if (importingNonProto2.equals(child.getMessage())) {
+      if (importingUnsupportedSyntax.equals(child.getMessage())) {
         hasNonProto2Import = Status.PROTO1_IMPORTS_FOUND;
       }
       issueFromEValidatorDiagnostic(child, acceptor);

@@ -15,7 +15,7 @@ import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.parser.ParseResult;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
-import com.google.eclipse.protobuf.parser.NonProto2Protobuf;
+import com.google.eclipse.protobuf.parser.UnknownSyntaxProtobuf;
 import com.google.eclipse.protobuf.parser.antlr.ProtobufParser;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.eclipse.protobuf.ui.preferences.misc.MiscellaneousPreferences;
@@ -31,13 +31,13 @@ public class PreferenceDrivenProtobufParser extends ProtobufParser {
       int initialLookAhead) {
     IParseResult result = super.doParse(ruleName, in, builder, initialLookAhead);
     MiscellaneousPreferences preferences = new MiscellaneousPreferences(storeAccess);
-    if (preferences.isGoogleInternal() && isNotProto2(result)) {
-      return new ParseResult(new NonProto2Protobuf(), result.getRootNode(), false);
+    if (preferences.isGoogleInternal() && hasUnknownSyntax(result)) {
+      return new ParseResult(new UnknownSyntaxProtobuf(), result.getRootNode(), false);
     }
     return result;
   }
 
-  private boolean isNotProto2(IParseResult result) {
+  private boolean hasUnknownSyntax(IParseResult result) {
     EObject rootObj = result.getRootASTElement();
     if (rootObj instanceof Protobuf) {
       Protobuf root = (Protobuf) result.getRootASTElement();

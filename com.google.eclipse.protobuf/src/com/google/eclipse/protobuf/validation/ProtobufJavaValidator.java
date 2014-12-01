@@ -17,7 +17,7 @@ import static com.google.eclipse.protobuf.validation.Messages.expectedSyntaxIden
 import static com.google.eclipse.protobuf.validation.Messages.fieldNumberAlreadyUsed;
 import static com.google.eclipse.protobuf.validation.Messages.fieldNumbersMustBePositive;
 import static com.google.eclipse.protobuf.validation.Messages.multiplePackages;
-import static com.google.eclipse.protobuf.validation.Messages.nonProto2;
+import static com.google.eclipse.protobuf.validation.Messages.unknownSyntax;
 import static com.google.eclipse.protobuf.validation.Messages.unrecognizedSyntaxIdentifier;
 
 import org.eclipse.emf.ecore.EObject;
@@ -45,7 +45,7 @@ import com.google.inject.Inject;
  */
 @ComposedChecks(validators = { DataTypeValidator.class, ImportValidator.class })
 public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
-  public static final String SYNTAX_IS_NOT_PROTO2_ERROR = "syntaxIsNotProto2";
+  public static final String SYNTAX_IS_NOT_KNOWN_ERROR = "syntaxIsNotProto2";
   public static final String INVALID_FIELD_TAG_NUMBER_ERROR = "invalidFieldTagNumber";
   public static final String MORE_THAN_ONE_PACKAGE_ERROR = "moreThanOnePackage";
 
@@ -54,19 +54,19 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
   @Inject private Protobufs protobufs;
   @Inject private IQualifiedNameProvider qualifiedNameProvider;
 
-  @Check public void checkIsProto2(Protobuf protobuf) {
-    if (!protobufs.isProto2(protobuf)) {
-      warning(nonProto2, null);
+  @Check public void checkIsKnownSyntax(Protobuf protobuf) {
+    if (!protobufs.hasKnownSyntax(protobuf)) {
+      warning(unknownSyntax, null);
     }
   }
 
-  @Check public void checkSyntaxIsProto2(Syntax syntax) {
+  @Check public void checkSyntaxIsKnown(Syntax syntax) {
     String name = syntax.getName();
-    if (Syntaxes.proto2().equals(name)) {
+    if (Syntaxes.proto2().equals(name) || Syntaxes.proto3().equals(name)) {
       return;
     }
     String msg = (name == null) ? expectedSyntaxIdentifier : format(unrecognizedSyntaxIdentifier, name);
-    error(msg, syntax, SYNTAX__NAME, SYNTAX_IS_NOT_PROTO2_ERROR);
+    error(msg, syntax, SYNTAX__NAME, SYNTAX_IS_NOT_KNOWN_ERROR);
   }
 
   @Check public void checkTagNumberIsUnique(IndexedElement e) {
@@ -81,17 +81,17 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
     if (container instanceof Message) {
       Message message = (Message) container;
       Iterable<MessageElement> elements = message.getElements();
-      checkTagNumerIsUnique(e, message, elements);
+      checkTagNumberIsUnique(e, message, elements);
     }
   }
 
-  private boolean checkTagNumerIsUnique(IndexedElement e, EObject message, 
+  private boolean checkTagNumberIsUnique(IndexedElement e, EObject message, 
       Iterable<MessageElement> elements) {
     long index = indexedElements.indexOf(e);
 
     for (MessageElement element : elements) {
       if (element instanceof OneOf) {
-        if (!checkTagNumerIsUnique(e, message, ((OneOf) element).getElements())) {
+        if (!checkTagNumberIsUnique(e, message, ((OneOf) element).getElements())) {
           return false;
         }
       } else if (element instanceof IndexedElement) {

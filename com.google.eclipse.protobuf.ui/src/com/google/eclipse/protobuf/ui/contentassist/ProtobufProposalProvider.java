@@ -29,6 +29,8 @@ import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.DEFAULT_EQU
 import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.EMPTY_STRING;
 import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.EQUAL_PROTO2_IN_QUOTES;
 import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.PROTO2_IN_QUOTES;
+import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.EQUAL_PROTO3_IN_QUOTES;
+import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.PROTO3_IN_QUOTES;
 import static com.google.eclipse.protobuf.util.CommonWords.space;
 import static java.lang.String.valueOf;
 import static java.util.Collections.emptyList;
@@ -111,11 +113,15 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Override public void completeSyntax_Name(EObject model, Assignment assignment, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     proposeAndAccept(PROTO2_IN_QUOTES, context, acceptor);
+    proposeAndAccept(PROTO3_IN_QUOTES, context, acceptor);
   }
 
   @Override public void complete_Syntax(EObject model, RuleCall ruleCall, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {
     String proposal = SYNTAX + space() + EQUAL_PROTO2_IN_QUOTES;
+    proposeAndAccept(proposal, imageHelper.getImage(images.imageFor(SYNTAX)), context, acceptor);
+    
+    proposal = SYNTAX + space() + EQUAL_PROTO3_IN_QUOTES;
     proposeAndAccept(proposal, imageHelper.getImage(images.imageFor(SYNTAX)), context, acceptor);
   }
 
@@ -220,6 +226,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       EObject grammarElement = context.getLastCompleteNode().getGrammarElement();
       if (isKeyword(grammarElement, SYNTAX)) {
         proposeEqualProto2(context, acceptor);
+        proposeEqualProto3(context, acceptor);
       }
       return true;
     }
@@ -264,6 +271,10 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
   private void proposeEqualProto2(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     proposeAndAccept(EQUAL_PROTO2_IN_QUOTES, context, acceptor);
+  }
+  
+  private void proposeEqualProto3(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+    proposeAndAccept(EQUAL_PROTO3_IN_QUOTES, context, acceptor);
   }
 
   private void proposeAndAccept(CompoundElement proposalText, ContentAssistContext context,

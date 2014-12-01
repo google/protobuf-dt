@@ -14,7 +14,7 @@ import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.List;
 
-import com.google.eclipse.protobuf.parser.NonProto2Protobuf;
+import com.google.eclipse.protobuf.parser.UnknownSyntaxProtobuf;
 import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.eclipse.protobuf.protobuf.ProtobufElement;
@@ -28,13 +28,14 @@ import com.google.inject.Singleton;
  */
 @Singleton public class Protobufs {
   /**
-   * Indicates whether the given root is not {@code null} and has a "proto2" syntax element.
+   * Indicates whether the given root is not {@code null} and has a known syntax.
+   *
    * @param protobuf the given root.
-   * @return {@code true} if the given root is not {@code null} and has a "proto2" syntax element, {@code false}
-   * otherwise.
+   * @return {@code true} if the given root is not {@code null} and has a syntax element,
+   *         {@code false} otherwise.
    */
-  public boolean isProto2(Protobuf protobuf) {
-    return protobuf != null && !(protobuf instanceof NonProto2Protobuf);
+  public boolean hasKnownSyntax(Protobuf protobuf) {
+    return protobuf != null && !(protobuf instanceof UnknownSyntaxProtobuf);
   }
 
   /**

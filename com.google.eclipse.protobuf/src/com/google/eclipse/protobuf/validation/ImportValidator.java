@@ -16,7 +16,7 @@ import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
 import static com.google.eclipse.protobuf.validation.Messages.importNotFound;
-import static com.google.eclipse.protobuf.validation.Messages.importingNonProto2;
+import static com.google.eclipse.protobuf.validation.Messages.importingUnsupportedSyntax;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,75 +50,78 @@ public class ImportValidator extends AbstractDeclarativeValidator {
   @Override public void register(EValidatorRegistrar registrar) {}
 
   /**
-   * Verifies that {@code Import}s in the given root only refer to "proto2" files. If non-proto2 {@code Import}s are
-   * found, this validator will create warning markers for such {@code Import}s.
+   * Verifies that {@code Import}s in the given root only refer to files with a supported syntax. If
+   * unsupported {@code Import}s are found, this validator will create warning markers for such
+   * {@code Import}s.
+   *
    * @param root the root containing the imports to check.
    */
-  @Check public void checkNonProto2Imports(Protobuf root) {
-    if (!protobufs.isProto2(root)) {
+  @Check public void checkUnknownSyntaxImports(Protobuf root) {
+    if (!protobufs.hasKnownSyntax(root)) {
       return;
     }
     Set<Protobuf> currentlyChecking = newHashSet(root);
-    HashMap<Protobuf, IsProto2> alreadyChecked = newHashMap();
-    hasNonProto2Imports(root, currentlyChecking, alreadyChecked);
+    HashMap<Protobuf, HasKnownSyntax> alreadyChecked = newHashMap();
+    hasUnknownSyntaxImports(root, currentlyChecking, alreadyChecked);
   }
 
-  private boolean hasNonProto2Imports(Protobuf root, Set<Protobuf> currentlyChecking,
-      Map<Protobuf, IsProto2> alreadyChecked) {
-    IsProto2 isProto2 = alreadyChecked.get(root);
-    if (isProto2 != null) {
-      return isProto2 == IsProto2.NO;
+  private boolean hasUnknownSyntaxImports(Protobuf root, Set<Protobuf> currentlyChecking,
+      Map<Protobuf, HasKnownSyntax> alreadyChecked) {
+    HasKnownSyntax hasKnownSyntax = alreadyChecked.get(root);
+    if (hasKnownSyntax != null) {
+      return hasKnownSyntax == HasKnownSyntax.NO;
     }
     currentlyChecking.add(root);
     Set<Pair<Import, Protobuf>> importsToCheck = newHashSet();
-    boolean hasNonProto2Imports = false;
+    boolean hasUnsupportedImports = false;
     for (Import anImport : protobufs.importsIn(root)) {
       Resource imported = imports.importedResource(anImport);
       if (imported == null) {
         continue;
       }
       Protobuf importedRoot = resources.rootOf(imported);
-      isProto2 = alreadyChecked.get(importedRoot);
-      if (isProto2 != null) {
+      hasKnownSyntax = alreadyChecked.get(importedRoot);
+      if (hasKnownSyntax != null) {
         // resource was already checked.
-        if (isProto2 == IsProto2.NO) {
-          hasNonProto2Imports = true;
-          warnNonProto2ImportFoundIn(anImport);
+        if (hasKnownSyntax == HasKnownSyntax.NO) {
+          hasUnsupportedImports = true;
+          warnUnsupportedImportFoundIn(anImport);
         }
         continue;
       }
-      if (!protobufs.isProto2(importedRoot)) {
-        alreadyChecked.put(importedRoot, IsProto2.NO);
-        hasNonProto2Imports = true;
-        warnNonProto2ImportFoundIn(anImport);
+      if (!protobufs.hasKnownSyntax(importedRoot)) {
+        alreadyChecked.put(importedRoot, HasKnownSyntax.NO);
+        hasUnsupportedImports = true;
+        warnUnsupportedImportFoundIn(anImport);
         continue;
       }
       // we have a circular dependency
       if (currentlyChecking.contains(importedRoot)) {
         continue;
       }
-      // this is a proto2 file. Need to check its imports.
+      // this is a supported file. Need to check its imports.
       importsToCheck.add(pair(anImport, importedRoot));
     }
     for (Pair<Import, Protobuf> importToCheck : importsToCheck) {
-      if (hasNonProto2Imports(importToCheck.getSecond(), currentlyChecking, alreadyChecked)) {
-        hasNonProto2Imports = true;
-        warnNonProto2ImportFoundIn(importToCheck.getFirst());
+      if (hasUnknownSyntaxImports(importToCheck.getSecond(), currentlyChecking, alreadyChecked)) {
+        hasUnsupportedImports = true;
+        warnUnsupportedImportFoundIn(importToCheck.getFirst());
       }
     }
-    isProto2 = hasNonProto2Imports ? IsProto2.NO : IsProto2.YES;
-    alreadyChecked.put(root, isProto2);
+    hasKnownSyntax = hasUnsupportedImports ? HasKnownSyntax.NO : HasKnownSyntax.YES;
+    alreadyChecked.put(root, hasKnownSyntax);
     currentlyChecking.remove(root);
-    return hasNonProto2Imports;
+    return hasUnsupportedImports;
   }
 
-  private void warnNonProto2ImportFoundIn(Import anImport) {
-    warning(importingNonProto2, anImport, IMPORT__IMPORT_URI, INSIGNIFICANT_INDEX);
+  private void warnUnsupportedImportFoundIn(Import anImport) {
+    warning(importingUnsupportedSyntax, anImport, IMPORT__IMPORT_URI, INSIGNIFICANT_INDEX);
   }
 
   /**
-   * Verifies that the URI of the given {@code Import} has been resolved. If the URI has not been resolved, this
-   * validator will create an error marker for the given {@code Import}.
+   * Verifies that the URI of the given {@code Import} has been resolved. If the URI has not been
+   * resolved, this validator will create an error marker for the given {@code Import}.
+   *
    * @param anImport the given {@code Import}.
    */
   @Check public void checkUriIsResolved(Import anImport) {
@@ -131,7 +134,7 @@ public class ImportValidator extends AbstractDeclarativeValidator {
     }
   }
 
-  private static enum IsProto2 {
+  private static enum HasKnownSyntax {
     YES, NO;
   }
 }

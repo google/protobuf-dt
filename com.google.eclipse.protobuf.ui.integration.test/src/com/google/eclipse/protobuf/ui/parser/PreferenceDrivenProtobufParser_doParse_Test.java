@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.junit.util.MultiLineTextBuilder;
-import com.google.eclipse.protobuf.parser.NonProto2Protobuf;
+import com.google.eclipse.protobuf.parser.UnknownSyntaxProtobuf;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.eclipse.protobuf.ui.plugin.ProtobufEditorPlugIn;
 import com.google.inject.Inject;
@@ -58,7 +58,7 @@ public class PreferenceDrivenProtobufParser_doParse_Test {
     store.setValue("misc.googleInternal", true);
     xtext.parseText(proto1);
     Protobuf root = xtext.root();
-    assertThat(root, instanceOf(NonProto2Protobuf.class));
+    assertThat(root, instanceOf(UnknownSyntaxProtobuf.class));
   }
 
   @Test public void should_not_recognize_proto1_syntax() {

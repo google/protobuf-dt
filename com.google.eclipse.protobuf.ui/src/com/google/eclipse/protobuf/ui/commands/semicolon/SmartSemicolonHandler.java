@@ -100,7 +100,7 @@ public class SmartSemicolonHandler extends SmartInsertHandler {
       document.modify(new IUnitOfWork.Void<XtextResource>() {
         @Override public void process(XtextResource resource) {
           Protobuf root = resources.rootOf(resource);
-          if (!protobufs.isProto2(root) /*|| !resource.getErrors().isEmpty()*/) {
+          if (!protobufs.hasKnownSyntax(root)) {
             return;
           }
           int offset = styledTextAccess.caretOffset();

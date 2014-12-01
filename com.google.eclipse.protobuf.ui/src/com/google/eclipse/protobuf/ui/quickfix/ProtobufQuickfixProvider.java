@@ -8,10 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.quickfix;
 
-import static org.eclipse.emf.ecore.util.EcoreUtil.remove;
-import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.findActualNodeFor;
-
 import static com.google.eclipse.protobuf.grammar.Syntaxes.proto2;
+import static com.google.eclipse.protobuf.grammar.Syntaxes.proto3;
 import static com.google.eclipse.protobuf.protobuf.BOOL.FALSE;
 import static com.google.eclipse.protobuf.protobuf.BOOL.TRUE;
 import static com.google.eclipse.protobuf.ui.quickfix.Messages.changeValueDescription;
@@ -24,19 +22,9 @@ import static com.google.eclipse.protobuf.validation.DataTypeValidator.EXPECTED_
 import static com.google.eclipse.protobuf.validation.DataTypeValidator.EXPECTED_STRING_ERROR;
 import static com.google.eclipse.protobuf.validation.ProtobufJavaValidator.INVALID_FIELD_TAG_NUMBER_ERROR;
 import static com.google.eclipse.protobuf.validation.ProtobufJavaValidator.MORE_THAN_ONE_PACKAGE_ERROR;
-import static com.google.eclipse.protobuf.validation.ProtobufJavaValidator.SYNTAX_IS_NOT_PROTO2_ERROR;
-
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.nodemodel.INode;
-import org.eclipse.xtext.resource.XtextResource;
-import org.eclipse.xtext.ui.editor.model.IXtextDocument;
-import org.eclipse.xtext.ui.editor.model.edit.IModificationContext;
-import org.eclipse.xtext.ui.editor.model.edit.ISemanticModification;
-import org.eclipse.xtext.ui.editor.quickfix.DefaultQuickfixProvider;
-import org.eclipse.xtext.ui.editor.quickfix.Fix;
-import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionAcceptor;
-import org.eclipse.xtext.util.concurrent.IUnitOfWork;
-import org.eclipse.xtext.validation.Issue;
+import static com.google.eclipse.protobuf.validation.ProtobufJavaValidator.SYNTAX_IS_NOT_KNOWN_ERROR;
+import static org.eclipse.emf.ecore.util.EcoreUtil.remove;
+import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.findActualNodeFor;
 
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.model.util.INodes;
@@ -53,6 +41,18 @@ import com.google.eclipse.protobuf.protobuf.Syntax;
 import com.google.eclipse.protobuf.protobuf.Value;
 import com.google.inject.Inject;
 
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.nodemodel.INode;
+import org.eclipse.xtext.resource.XtextResource;
+import org.eclipse.xtext.ui.editor.model.IXtextDocument;
+import org.eclipse.xtext.ui.editor.model.edit.IModificationContext;
+import org.eclipse.xtext.ui.editor.model.edit.ISemanticModification;
+import org.eclipse.xtext.ui.editor.quickfix.DefaultQuickfixProvider;
+import org.eclipse.xtext.ui.editor.quickfix.Fix;
+import org.eclipse.xtext.ui.editor.quickfix.IssueResolutionAcceptor;
+import org.eclipse.xtext.util.concurrent.IUnitOfWork;
+import org.eclipse.xtext.validation.Issue;
+
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
@@ -63,7 +63,7 @@ public class ProtobufQuickfixProvider extends DefaultQuickfixProvider {
   @Inject private NameResolver nameResolver;
   @Inject private INodes nodes;
 
-  @Fix(SYNTAX_IS_NOT_PROTO2_ERROR)
+  @Fix(SYNTAX_IS_NOT_KNOWN_ERROR)
   public void changeSyntaxToProto2(Issue issue, IssueResolutionAcceptor acceptor) {
     ISemanticModification modification = new ISemanticModification() {
       @Override public void apply(EObject element, IModificationContext context) throws Exception {
@@ -73,6 +73,19 @@ public class ProtobufQuickfixProvider extends DefaultQuickfixProvider {
     };
     String description = String.format(changeValueDescription, "syntax", quote(proto2()));
     String label = String.format(changeValueLabel, proto2());
+    acceptor.accept(issue, label, description, ICON_FOR_CHANGE, modification);
+  }
+
+  @Fix(SYNTAX_IS_NOT_KNOWN_ERROR)
+  public void changeSyntaxToProto3(Issue issue, IssueResolutionAcceptor acceptor) {
+    ISemanticModification modification = new ISemanticModification() {
+      @Override public void apply(EObject element, IModificationContext context) throws Exception {
+        Syntax syntax = (Syntax) element;
+        syntax.setName(proto3());
+      }
+    };
+    String description = String.format(changeValueDescription, "syntax", quote(proto3()));
+    String label = String.format(changeValueLabel, proto3());
     acceptor.accept(issue, label, description, ICON_FOR_CHANGE, modification);
   }
 
