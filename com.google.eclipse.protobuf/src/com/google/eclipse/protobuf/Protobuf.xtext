@@ -107,7 +107,7 @@ MapTypeLink:
   target=MapType;
 
 MapType:
-  ->'map' '<' fromType=TypeLink ',' toType=TypeLink '>';
+  ->'map' '<' keyType=TypeLink ',' valueType=TypeLink '>';
 
 Enum:
   ->'enum' name=Name '{'

@@ -31,6 +31,7 @@ import com.google.eclipse.protobuf.protobuf.ComplexTypeLink;
 import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.protobuf.Message;
 import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.eclipse.protobuf.protobuf.ModifierEnum;
 import com.google.eclipse.protobuf.protobuf.ScalarType;
 import com.google.eclipse.protobuf.protobuf.ScalarTypeLink;
 import com.google.eclipse.protobuf.protobuf.TypeLink;

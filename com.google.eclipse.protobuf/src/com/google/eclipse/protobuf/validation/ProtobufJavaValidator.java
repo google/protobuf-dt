@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.validation;
 
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MAP_TYPE__KEY_TYPE;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MAP_TYPE__VALUE_TYPE;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MESSAGE_FIELD__MODIFIER;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.PACKAGE__NAME;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.SYNTAX__NAME;
@@ -15,6 +17,8 @@ import static com.google.eclipse.protobuf.validation.Messages.expectedFieldNumbe
 import static com.google.eclipse.protobuf.validation.Messages.expectedSyntaxIdentifier;
 import static com.google.eclipse.protobuf.validation.Messages.fieldNumberAlreadyUsed;
 import static com.google.eclipse.protobuf.validation.Messages.fieldNumbersMustBePositive;
+import static com.google.eclipse.protobuf.validation.Messages.invalidMapKeyType;
+import static com.google.eclipse.protobuf.validation.Messages.invalidMapValueType;
 import static com.google.eclipse.protobuf.validation.Messages.mapWithModifier;
 import static com.google.eclipse.protobuf.validation.Messages.missingModifier;
 import static com.google.eclipse.protobuf.validation.Messages.multiplePackages;
@@ -28,6 +32,7 @@ import com.google.eclipse.protobuf.model.util.IndexedElements;
 import com.google.eclipse.protobuf.model.util.Protobufs;
 import com.google.eclipse.protobuf.naming.NameResolver;
 import com.google.eclipse.protobuf.protobuf.IndexedElement;
+import com.google.eclipse.protobuf.protobuf.MapType;
 import com.google.eclipse.protobuf.protobuf.MapTypeLink;
 import com.google.eclipse.protobuf.protobuf.Message;
 import com.google.eclipse.protobuf.protobuf.MessageElement;
@@ -37,7 +42,10 @@ import com.google.eclipse.protobuf.protobuf.OneOf;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.eclipse.protobuf.protobuf.ProtobufElement;
+import com.google.eclipse.protobuf.protobuf.ScalarType;
+import com.google.eclipse.protobuf.protobuf.ScalarTypeLink;
 import com.google.eclipse.protobuf.protobuf.Syntax;
+import com.google.eclipse.protobuf.protobuf.TypeLink;
 import com.google.inject.Inject;
 
 import org.eclipse.emf.ecore.EObject;
@@ -57,6 +65,8 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
   public static final String MISSING_MODIFIER_ERROR = "noModifier";
   public static final String MAP_WITH_MODIFIER_ERROR = "mapWithModifier";
   public static final String REQUIRED_IN_PROTO3_ERROR = "requiredInProto3";
+  public static final String INVALID_MAP_KEY_TYPE_ERROR = "invalidMapKeyType";
+  public static final String MAP_WITH_MAP_VALUE_TYPE_ERROR = "mapWithMapValueType";
 
   @Inject private IndexedElements indexedElements;
   @Inject private NameResolver nameResolver;
@@ -196,5 +206,26 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
 
   private boolean isNameNull(IndexedElement e) {
     return nameResolver.nameOf(e) == null;
+  }
+
+  @Check public void checkMapTypeHasValidKeyType(MapType map) {
+    TypeLink keyType = map.getKeyType();
+    if (!(keyType instanceof ScalarTypeLink)) {
+      error(invalidMapKeyType, map, MAP_TYPE__KEY_TYPE, INVALID_MAP_KEY_TYPE_ERROR);
+      return;
+    }
+    ScalarType scalarKeyType = ((ScalarTypeLink) keyType).getTarget();
+    if (scalarKeyType == ScalarType.BYTES || scalarKeyType == ScalarType.DOUBLE
+        || scalarKeyType == ScalarType.FLOAT) {
+      error(invalidMapKeyType, map, MAP_TYPE__KEY_TYPE, INVALID_MAP_KEY_TYPE_ERROR);
+    }
+  }
+
+  @Check public void checkMapTypeHasValidValueType(MapType map) {
+    TypeLink keyType = map.getValueType();
+    if (keyType instanceof MapTypeLink) {
+      error(invalidMapValueType, map, MAP_TYPE__VALUE_TYPE, MAP_WITH_MAP_VALUE_TYPE_ERROR);
+      return;
+    }
   }
 }

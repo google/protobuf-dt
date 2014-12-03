@@ -27,6 +27,8 @@ public class Messages extends NLS {
   public static String fieldNumbersMustBePositive;
   public static String importingUnsupportedSyntax;
   public static String importNotFound;
+  public static String invalidMapKeyType;
+  public static String invalidMapValueType;
   public static String literalNotInEnum;
   public static String mapWithModifier;
   public static String missingFieldNumber;

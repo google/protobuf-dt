@@ -28,6 +28,8 @@ import com.google.eclipse.protobuf.protobuf.Group;
 import com.google.eclipse.protobuf.protobuf.GroupElement;
 import com.google.eclipse.protobuf.protobuf.IndexedElement;
 import com.google.eclipse.protobuf.protobuf.LiteralLink;
+import com.google.eclipse.protobuf.protobuf.MapType;
+import com.google.eclipse.protobuf.protobuf.MapTypeLink;
 import com.google.eclipse.protobuf.protobuf.Message;
 import com.google.eclipse.protobuf.protobuf.MessageField;
 import com.google.eclipse.protobuf.protobuf.MessageLink;
@@ -84,6 +86,12 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   @SuppressWarnings("unused")
   public IScope scope_ComplexTypeLink_target(ComplexTypeLink link, EReference r) {
     EObject c = link.eContainer();
+    if (c instanceof MapType) {
+      c = c.eContainer();
+    }
+    if (c instanceof MapTypeLink) {
+      c = c.eContainer();
+    }
     if (c instanceof MessageField) {
       MessageField field = (MessageField) c;
       Collection<IEObjectDescription> complexTypes = potentialComplexTypesFor(field);
