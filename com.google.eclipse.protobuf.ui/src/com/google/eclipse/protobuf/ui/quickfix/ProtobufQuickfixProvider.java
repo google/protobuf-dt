@@ -21,7 +21,9 @@ import static com.google.eclipse.protobuf.util.Strings.quote;
 import static com.google.eclipse.protobuf.validation.DataTypeValidator.EXPECTED_BOOL_ERROR;
 import static com.google.eclipse.protobuf.validation.DataTypeValidator.EXPECTED_STRING_ERROR;
 import static com.google.eclipse.protobuf.validation.ProtobufJavaValidator.INVALID_FIELD_TAG_NUMBER_ERROR;
+import static com.google.eclipse.protobuf.validation.ProtobufJavaValidator.MISSING_MODIFIER_ERROR;
 import static com.google.eclipse.protobuf.validation.ProtobufJavaValidator.MORE_THAN_ONE_PACKAGE_ERROR;
+import static com.google.eclipse.protobuf.validation.ProtobufJavaValidator.REQUIRED_IN_PROTO3_ERROR;
 import static com.google.eclipse.protobuf.validation.ProtobufJavaValidator.SYNTAX_IS_NOT_KNOWN_ERROR;
 import static org.eclipse.emf.ecore.util.EcoreUtil.remove;
 import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.findActualNodeFor;
@@ -34,11 +36,14 @@ import com.google.eclipse.protobuf.protobuf.BOOL;
 import com.google.eclipse.protobuf.protobuf.BooleanLink;
 import com.google.eclipse.protobuf.protobuf.FieldOption;
 import com.google.eclipse.protobuf.protobuf.IndexedElement;
+import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.eclipse.protobuf.protobuf.ModifierEnum;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.eclipse.protobuf.protobuf.ProtobufFactory;
 import com.google.eclipse.protobuf.protobuf.StringLink;
 import com.google.eclipse.protobuf.protobuf.Syntax;
 import com.google.eclipse.protobuf.protobuf.Value;
+import com.google.eclipse.protobuf.validation.ProtobufJavaValidator;
 import com.google.inject.Inject;
 
 import org.eclipse.emf.ecore.EObject;
@@ -117,6 +122,62 @@ public class ProtobufQuickfixProvider extends DefaultQuickfixProvider {
     INode node = findActualNodeFor(aPackage);
     String description = nodes.textOf(node);
     acceptor.accept(issue, removeDuplicatePackageLabel, description, "remove.gif", modification);
+  }
+
+  @Fix(MISSING_MODIFIER_ERROR)
+  public void changeModifierToRequired(Issue issue, IssueResolutionAcceptor acceptor) {
+    ISemanticModification modification = new ISemanticModification() {
+      @Override
+      public void apply(EObject element, IModificationContext context) throws Exception {
+        MessageField field = (MessageField) element;
+        field.setModifier(ModifierEnum.REQUIRED);
+      }
+    };
+    String description = String.format(changeValueDescription, "modifier", "required");
+    String label = String.format(changeValueLabel, "required");
+    acceptor.accept(issue, label, description, ICON_FOR_CHANGE, modification);
+  }
+
+  @Fix(MISSING_MODIFIER_ERROR)
+  public void changeModifierToRepeated(Issue issue, IssueResolutionAcceptor acceptor) {
+    ISemanticModification modification = new ISemanticModification() {
+      @Override
+      public void apply(EObject element, IModificationContext context) throws Exception {
+        MessageField field = (MessageField) element;
+        field.setModifier(ModifierEnum.REPEATED);
+      }
+    };
+    String description = String.format(changeValueDescription, "modifier", "repeated");
+    String label = String.format(changeValueLabel, "repeated");
+    acceptor.accept(issue, label, description, ICON_FOR_CHANGE, modification);
+  }
+
+  @Fix(MISSING_MODIFIER_ERROR)
+  public void changeModifierToOptional(Issue issue, IssueResolutionAcceptor acceptor) {
+    ISemanticModification modification = new ISemanticModification() {
+      @Override
+      public void apply(EObject element, IModificationContext context) throws Exception {
+        MessageField field = (MessageField) element;
+        field.setModifier(ModifierEnum.OPTIONAL);
+      }
+    };
+    String description = String.format(changeValueDescription, "modifier", "optional");
+    String label = String.format(changeValueLabel, "optional");
+    acceptor.accept(issue, label, description, ICON_FOR_CHANGE, modification);
+  }
+
+  @Fix(REQUIRED_IN_PROTO3_ERROR)
+  public void changeModifierToOptionalOnRequired(Issue issue, IssueResolutionAcceptor acceptor) {
+    ISemanticModification modification = new ISemanticModification() {
+      @Override
+      public void apply(EObject element, IModificationContext context) throws Exception {
+        MessageField field = (MessageField) element;
+        field.setModifier(ModifierEnum.OPTIONAL);
+      }
+    };
+    String description = String.format(changeValueDescription, "modifier", "optional");
+    String label = String.format(changeValueLabel, "optional");
+    acceptor.accept(issue, label, description, ICON_FOR_CHANGE, modification);
   }
 
   @Fix(EXPECTED_BOOL_ERROR)

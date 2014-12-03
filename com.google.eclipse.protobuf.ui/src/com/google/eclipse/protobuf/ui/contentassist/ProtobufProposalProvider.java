@@ -18,8 +18,8 @@ import static com.google.eclipse.protobuf.grammar.CommonKeyword.OPENING_BRACKET;
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.OPENING_CURLY_BRACKET;
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.SYNTAX;
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.TRUE;
-import static com.google.eclipse.protobuf.protobuf.Modifier.OPTIONAL;
-import static com.google.eclipse.protobuf.protobuf.Modifier.REPEATED;
+import static com.google.eclipse.protobuf.protobuf.ModifierEnum.OPTIONAL;
+import static com.google.eclipse.protobuf.protobuf.ModifierEnum.REPEATED;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.LITERAL;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.OPTION;
 import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.DEFAULT_EQUAL;
@@ -28,8 +28,8 @@ import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.DEFAULT_EQU
 import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.DEFAULT_EQUAL_STRING_IN_BRACKETS;
 import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.EMPTY_STRING;
 import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.EQUAL_PROTO2_IN_QUOTES;
-import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.PROTO2_IN_QUOTES;
 import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.EQUAL_PROTO3_IN_QUOTES;
+import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.PROTO2_IN_QUOTES;
 import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.PROTO3_IN_QUOTES;
 import static com.google.eclipse.protobuf.util.CommonWords.space;
 import static java.lang.String.valueOf;
@@ -56,7 +56,7 @@ import com.google.eclipse.protobuf.protobuf.FieldOption;
 import com.google.eclipse.protobuf.protobuf.IndexedElement;
 import com.google.eclipse.protobuf.protobuf.Literal;
 import com.google.eclipse.protobuf.protobuf.MessageField;
-import com.google.eclipse.protobuf.protobuf.Modifier;
+import com.google.eclipse.protobuf.protobuf.ModifierEnum;
 import com.google.eclipse.protobuf.protobuf.NativeFieldOption;
 import com.google.eclipse.protobuf.protobuf.NativeOption;
 import com.google.eclipse.protobuf.protobuf.Option;
@@ -314,7 +314,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     }
     if (model instanceof MessageField) {
       MessageField field = (MessageField) model;
-      Modifier modifier = field.getModifier();
+      ModifierEnum modifier = field.getModifier();
       if (OPTIONAL.equals(modifier)) {
         CompoundElement display = DEFAULT_EQUAL_IN_BRACKETS;
         int cursorPosition = display.indexOf(CLOSING_BRACKET);

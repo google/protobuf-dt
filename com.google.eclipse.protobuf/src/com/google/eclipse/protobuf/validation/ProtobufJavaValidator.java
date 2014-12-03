@@ -8,37 +8,43 @@
  */
 package com.google.eclipse.protobuf.validation;
 
-import static java.lang.String.format;
-
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MESSAGE_FIELD__MODIFIER;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.PACKAGE__NAME;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.SYNTAX__NAME;
 import static com.google.eclipse.protobuf.validation.Messages.expectedFieldNumber;
 import static com.google.eclipse.protobuf.validation.Messages.expectedSyntaxIdentifier;
 import static com.google.eclipse.protobuf.validation.Messages.fieldNumberAlreadyUsed;
 import static com.google.eclipse.protobuf.validation.Messages.fieldNumbersMustBePositive;
+import static com.google.eclipse.protobuf.validation.Messages.mapWithModifier;
+import static com.google.eclipse.protobuf.validation.Messages.missingModifier;
 import static com.google.eclipse.protobuf.validation.Messages.multiplePackages;
+import static com.google.eclipse.protobuf.validation.Messages.requiredInProto3;
 import static com.google.eclipse.protobuf.validation.Messages.unknownSyntax;
 import static com.google.eclipse.protobuf.validation.Messages.unrecognizedSyntaxIdentifier;
-
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.naming.IQualifiedNameProvider;
-import org.eclipse.xtext.naming.QualifiedName;
-import org.eclipse.xtext.validation.Check;
-import org.eclipse.xtext.validation.ComposedChecks;
+import static java.lang.String.format;
 
 import com.google.eclipse.protobuf.grammar.Syntaxes;
 import com.google.eclipse.protobuf.model.util.IndexedElements;
 import com.google.eclipse.protobuf.model.util.Protobufs;
 import com.google.eclipse.protobuf.naming.NameResolver;
 import com.google.eclipse.protobuf.protobuf.IndexedElement;
+import com.google.eclipse.protobuf.protobuf.MapTypeLink;
 import com.google.eclipse.protobuf.protobuf.Message;
 import com.google.eclipse.protobuf.protobuf.MessageElement;
+import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.eclipse.protobuf.protobuf.ModifierEnum;
 import com.google.eclipse.protobuf.protobuf.OneOf;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.eclipse.protobuf.protobuf.ProtobufElement;
 import com.google.eclipse.protobuf.protobuf.Syntax;
 import com.google.inject.Inject;
+
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.naming.IQualifiedNameProvider;
+import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.validation.Check;
+import org.eclipse.xtext.validation.ComposedChecks;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -48,6 +54,9 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
   public static final String SYNTAX_IS_NOT_KNOWN_ERROR = "syntaxIsNotProto2";
   public static final String INVALID_FIELD_TAG_NUMBER_ERROR = "invalidFieldTagNumber";
   public static final String MORE_THAN_ONE_PACKAGE_ERROR = "moreThanOnePackage";
+  public static final String MISSING_MODIFIER_ERROR = "noModifier";
+  public static final String MAP_WITH_MODIFIER_ERROR = "mapWithModifier";
+  public static final String REQUIRED_IN_PROTO3_ERROR = "requiredInProto3";
 
   @Inject private IndexedElements indexedElements;
   @Inject private NameResolver nameResolver;
@@ -83,6 +92,47 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
       Iterable<MessageElement> elements = message.getElements();
       checkTagNumberIsUnique(e, message, elements);
     }
+  }
+
+  @Check public void checkFieldModifiers(MessageField field) {
+    if (field.getType() instanceof MapTypeLink) {
+      checkMapField(field);
+      return;
+    }
+    if (field.getModifier() == ModifierEnum.UNSPECIFIED && isProto2Field(field)) {
+      error(missingModifier, field, MESSAGE_FIELD__MODIFIER, MISSING_MODIFIER_ERROR);
+    } else if (field.getModifier() == ModifierEnum.REQUIRED && isProto3Field(field)) {
+      error(requiredInProto3, field, MESSAGE_FIELD__MODIFIER, REQUIRED_IN_PROTO3_ERROR);
+    }
+  }
+
+  private void checkMapField(MessageField field) {
+    // TODO(het): Add quickfix to delete the modifier
+    if (field.getModifier() != ModifierEnum.UNSPECIFIED) {
+      error(mapWithModifier, field, MESSAGE_FIELD__MODIFIER, MAP_WITH_MODIFIER_ERROR);
+    }
+  }
+
+  private boolean isProto2Field(MessageField field) {
+    EObject container = field.eContainer();
+    if (container != null && !(container instanceof Protobuf)) {
+      container = container.eContainer();
+    }
+    if (container instanceof Protobuf) {
+      return Syntaxes.isSpecifyingProto2Syntax(((Protobuf) container).getSyntax().getName());
+    }
+    return false;
+  }
+
+  private boolean isProto3Field(MessageField field) {
+    EObject container = field.eContainer();
+    while (container != null && !(container instanceof Protobuf)) {
+      container = container.eContainer();
+    }
+    if (container instanceof Protobuf) {
+      return Syntaxes.isSpecifyingProto3Syntax(((Protobuf) container).getSyntax().getName());
+    }
+    return false;
   }
 
   private boolean checkTagNumberIsUnique(IndexedElement e, EObject message, 

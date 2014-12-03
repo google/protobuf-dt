@@ -45,7 +45,7 @@ ComplexType:
   Enum | ExtensibleType;
 
 Message:
-  'message' name=Name '{'
+  ->'message' name=Name '{'
   elements+=MessageElement*
   '}' (';')?;
 
@@ -58,42 +58,37 @@ Range:
 RangeMax:
   LONG | 'max';
 
-Group:
-  modifier=Modifier 'group' name=Name '=' index=(LONG | HEX)
-  ('[' (fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)*) ']')? '{'
-  elements+=GroupElement*
-  '}' (';')?;
+// Hack to make the default modifier 'unspecified'
+enum ModifierEnum:
+  unspecified | optional | required | repeated
+;
 
-UnmodifiedGroup returns Group:
-  =>'group' name=Name '=' index=(LONG | HEX)
+enum Modifier returns ModifierEnum:
+  optional | required | repeated;
+
+Group:
+  (modifier=Modifier)? =>'group' name=Name '=' index=(LONG | HEX)
   ('[' (fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)*) ']')? '{'
   elements+=GroupElement*
   '}' (';')?;
 
 GroupElement:
-  Option | IndexedElement | ComplexType | TypeExtension | Extensions;
+  Option | MessageField | ComplexType | TypeExtension | Extensions;
 
 OneOf:
-  (isRepeated?='repeated')? 'oneof' name=Name '{'
+  (isRepeated?='repeated')? =>'oneof' name=Name '{'
   elements+=OneOfElement+
   '}' (';')?;
 
 OneOfElement returns MessageElement:
-  Extensions | UnmodifiedGroup | UnmodifiedMessageField;
+  Extensions | Group;
 
 Extensions:
-  'extensions' ranges+=Range (',' ranges+=Range)* (';')+;
+  ->'extensions' ranges+=Range (',' ranges+=Range)* (';')+;
 
 MessageField:
-  =>modifier=Modifier type=TypeLink name=Name '=' index=(LONG | HEX)
+  (modifier=Modifier)? =>type=TypeLink name=Name '=' index=(LONG | HEX)
   ('[' (fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)*)? ']')? (';')+;
-
-UnmodifiedMessageField returns MessageField:
-  type=TypeLink name=Name '=' index=(LONG | HEX)
-  ('[' (fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)*)? ']')? (';')+;
-
-enum Modifier:
-  optional | required | repeated;
 
 TypeLink:
   ScalarTypeLink | ComplexTypeLink | MapTypeLink;
@@ -107,15 +102,15 @@ enum ScalarType:
 
 ComplexTypeLink:
   target=[ComplexType|QualifiedName];
-  
+
 MapTypeLink:
   target=MapType;
 
 MapType:
-  =>'map' '<' fromType=TypeLink ',' toType=TypeLink '>';
+  ->'map' '<' fromType=TypeLink ',' toType=TypeLink '>';
 
 Enum:
-  =>'enum' name=Name '{'
+  ->'enum' name=Name '{'
   elements+=EnumElement*
   '}' ';'?;
 
@@ -123,14 +118,14 @@ EnumElement:
   Option | Literal;
 
 Literal:
-  name=Name '=' index=(LONG | HEX) 
+  name=Name '=' index=(LONG | HEX)
   ('[' fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)* ']')? (';')+;
 
 terminal HEX returns ecore::ELong:
-  ('-')? '0' ('x' | 'X') (NUMBER | 'a'..'f' | 'A'..'F')+;
+  ('-')? '0' ('x' | 'X') (DIGIT | 'a'..'f' | 'A'..'F')+;
 
 TypeExtension:
-  =>'extend' type=ExtensibleTypeLink '{'
+  ->'extend' type=ExtensibleTypeLink '{'
   elements+=MessageElement*
   '}' (';')?;
 
@@ -141,7 +136,7 @@ ExtensibleType:
   Message | Group;
 
 Service:
-  'service' name=Name '{'
+  ->'service' name=Name '{'
   (elements+=ServiceElement)*
   '}' (';')?;
 
@@ -149,17 +144,17 @@ ServiceElement:
   Option | Rpc | Stream;
 
 Rpc:
-  'rpc' name=Name '(' argType=MessageLink ')' 'returns' '(' returnType=MessageLink ')'
+  ->'rpc' name=Name '(' argType=MessageLink ')' 'returns' '(' returnType=MessageLink ')'
   (('{' options+=Option* '}') (';')? | (';')+);
 
 Stream:
-  'stream' name=Name '(' clientMessage=MessageLink ',' serverMessage=MessageLink ')'
+  ->'stream' name=Name '(' clientMessage=MessageLink ',' serverMessage=MessageLink ')'
   (('{' options+=Option* '}') (';')? | (';')+);
 
 Name:
   IdOrReservedWord;
 
-IdOrReservedWord: 
+IdOrReservedWord:
   ID | ReservedWord;
 
 MessageLink:
@@ -178,9 +173,9 @@ NativeOption:
   'option' source=OptionSource '=' value=Value (';')+;
 
 CustomOption:
-  'option' '(' source=OptionSource ')'
+  'option' =>'(' source=OptionSource ')'
   ('.' fields+=OptionField ('.' fields+=OptionField)*)? '=' value=Value (';')+;
- 
+
 FieldOption:
   DefaultValueFieldOption | NativeFieldOption | CustomFieldOption;
 
@@ -191,7 +186,7 @@ NativeFieldOption:
   source=OptionSource '=' value=Value;
 
 CustomFieldOption:
-  '(' source=OptionSource ')'
+  ->'(' source=OptionSource ')'
   ('.' fields+=OptionField ('.' fields+=OptionField)*)? '=' value=Value;
 
 OptionSource:
@@ -201,7 +196,7 @@ OptionField:
   MessageOptionField | '(' ExtensionOptionField ')';
 
 MessageOptionField:
-  target=[IndexedElement|Name];  
+  target=[IndexedElement|Name];
 
 ExtensionOptionField:
   target=[IndexedElement|QualifiedName];
@@ -217,11 +212,11 @@ ComplexValue:
 
 // { foo: 1, bar: 2 }
 ComplexValueCurlyBracket:
-  '{' {ComplexValueCurlyBracket} (fields+=ValueField (',')?)* '}';
+  ->'{' {ComplexValueCurlyBracket} (fields+=ValueField (',')?)* '}';
 
 // < foo: 1, bar: 2 >
 ComplexValueAngleBracket:
-  '<' {ComplexValueAngleBracket} (fields+=ValueField (',')?)* '>';
+  ->'<' {ComplexValueAngleBracket} (fields+=ValueField (',')?)* '>';
 
 ValueField:
   SimpleValueField | ComplexValueField;
@@ -278,18 +273,18 @@ LongLink:
   target=LONG;
 
 terminal LONG returns ecore::ELong:
-  ('-')? (NUMBER)+;
+  ('-')? (DIGIT)+;
 
 DoubleLink:
   target=DOUBLE;
 
 terminal DOUBLE returns ecore::EDouble:
-  ('-')? (NUMBER)* ('.' (NUMBER)+)? |
-  ('-')? (NUMBER)+ ('.') | 
-  ('-')? (NUMBER)+ ('.' (NUMBER)*)? (('e'|'E')('-'|'+')? (NUMBER)+) | 
+  ('-')? (DIGIT)* ('.' (DIGIT)+)? |
+  ('-')? (DIGIT)+ ('.') |
+  ('-')? (DIGIT)+ ('.' (DIGIT)*)? (('e'|'E')('-'|'+')? (DIGIT)+) |
   'nan' | 'inf' | '-inf';
 
-terminal NUMBER:
+terminal DIGIT:
   '0'..'9';
 
 StringLink:

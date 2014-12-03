@@ -28,8 +28,11 @@ public class Messages extends NLS {
   public static String importingUnsupportedSyntax;
   public static String importNotFound;
   public static String literalNotInEnum;
+  public static String mapWithModifier;
   public static String missingFieldNumber;
+  public static String missingModifier;
   public static String multiplePackages;
+  public static String requiredInProto3;
   public static String scopingError;
   public static String unknownSyntax;
   public static String unrecognizedSyntaxIdentifier;

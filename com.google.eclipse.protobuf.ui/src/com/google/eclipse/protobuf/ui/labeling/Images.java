@@ -9,9 +9,9 @@
 package com.google.eclipse.protobuf.ui.labeling;
 
 import static com.google.common.collect.Sets.newHashSet;
-import static com.google.eclipse.protobuf.protobuf.Modifier.OPTIONAL;
-import static com.google.eclipse.protobuf.protobuf.Modifier.REPEATED;
-import static com.google.eclipse.protobuf.protobuf.Modifier.REQUIRED;
+import static com.google.eclipse.protobuf.protobuf.ModifierEnum.OPTIONAL;
+import static com.google.eclipse.protobuf.protobuf.ModifierEnum.REPEATED;
+import static com.google.eclipse.protobuf.protobuf.ModifierEnum.REQUIRED;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.ENUM;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.EXTENSIONS;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.GROUP;
@@ -35,7 +35,7 @@ import org.eclipse.xtext.Keyword;
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.protobuf.MessageField;
-import com.google.eclipse.protobuf.protobuf.Modifier;
+import com.google.eclipse.protobuf.protobuf.ModifierEnum;
 import com.google.eclipse.protobuf.protobuf.Option;
 import com.google.inject.Singleton;
 
@@ -56,8 +56,8 @@ import com.google.inject.Singleton;
     addImages("imports", "options");
   }
 
-  private static void addImages(Modifier...modifiers) {
-    for (Modifier m : modifiers) {
+  private static void addImages(ModifierEnum...modifiers) {
+    for (ModifierEnum m : modifiers) {
       addImage(imageNameFrom(m));
     }
   }
@@ -90,7 +90,7 @@ import com.google.inject.Singleton;
       imageName = (String) o;
     } else if (o instanceof MessageField) {
       MessageField field = (MessageField) o;
-      Modifier modifier = field.getModifier();
+      ModifierEnum modifier = field.getModifier();
       imageName = imageNameFrom(modifier);
     } else if (o instanceof Option) {
       imageName = imageNameFrom(OPTION);
@@ -110,7 +110,7 @@ import com.google.inject.Singleton;
     return (IMAGES.contains(imageFileName)) ? imageFileName : defaultImage();
   }
 
-  private static String imageNameFrom(Modifier modifier) {
+  private static String imageNameFrom(ModifierEnum modifier) {
     return modifier.getName().toLowerCase();
   }
 

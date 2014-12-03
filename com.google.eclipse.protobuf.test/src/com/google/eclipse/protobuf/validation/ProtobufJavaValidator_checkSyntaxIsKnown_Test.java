@@ -42,8 +42,10 @@ public class ProtobufJavaValidator_checkSyntaxIsKnown_Test {
   @Test public void should_create_error_if_syntax_is_not_proto2_or_proto3() {
     when(syntax.getName()).thenReturn("proto5");
     validator.checkSyntaxIsKnown(syntax);
-    String message = "Unrecognized syntax identifier \"proto5\".  This parser only recognizes \"proto2\" or \"proto3\".";
-    verify(messageAcceptor).acceptError(message, syntax, SYNTAX__NAME, INSIGNIFICANT_INDEX, SYNTAX_IS_NOT_KNOWN_ERROR);
+    String message = "Unrecognized syntax identifier \"proto5\".  "
+        + "This parser only recognizes \"proto2\" and \"proto3\".";
+    verify(messageAcceptor).acceptError(message, syntax, SYNTAX__NAME, INSIGNIFICANT_INDEX,
+        SYNTAX_IS_NOT_KNOWN_ERROR);
   }
 
   @Test public void should_not_create_error_if_syntax_is_proto2() {

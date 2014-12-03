@@ -23,7 +23,7 @@ import static com.google.eclipse.protobuf.grammar.CommonKeyword.SINT64;
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.STRING;
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.UINT32;
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.UINT64;
-import static com.google.eclipse.protobuf.protobuf.Modifier.OPTIONAL;
+import static com.google.eclipse.protobuf.protobuf.ModifierEnum.OPTIONAL;
 
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.protobuf.ComplexType;
@@ -31,7 +31,6 @@ import com.google.eclipse.protobuf.protobuf.ComplexTypeLink;
 import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.protobuf.Message;
 import com.google.eclipse.protobuf.protobuf.MessageField;
-import com.google.eclipse.protobuf.protobuf.Modifier;
 import com.google.eclipse.protobuf.protobuf.ScalarType;
 import com.google.eclipse.protobuf.protobuf.ScalarTypeLink;
 import com.google.eclipse.protobuf.protobuf.TypeLink;
@@ -44,7 +43,7 @@ import com.google.inject.Singleton;
  */
 @Singleton public class MessageFields {
   /**
-   * Indicates whether the modifier of the given field is <code>{@link Modifier#OPTIONAL}</code>.
+   * Indicates whether the modifier of the given field is <code>{@link ModifierEnum#OPTIONAL}</code>.
    * @param field the given field.
    * @return {@code true} if the modifier of the given field is "optional," {@code false} otherwise.
    */
