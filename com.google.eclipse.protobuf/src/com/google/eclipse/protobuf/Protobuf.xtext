@@ -144,7 +144,8 @@ ServiceElement:
   Option | Rpc | Stream;
 
 Rpc:
-  ->'rpc' name=Name '(' argType=MessageLink ')' 'returns' '(' returnType=MessageLink ')'
+  ->'rpc' name=Name '(' (isArgStreaming?='stream')? argType=MessageLink ')'
+  'returns' '(' (isReturnStreaming?='stream')? returnType=MessageLink ')'
   (('{' options+=Option* '}') (';')? | (';')+);
 
 Stream:
