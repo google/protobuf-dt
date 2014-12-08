@@ -13,8 +13,10 @@ import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeMo
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MESSAGE_FIELD__MODIFIER;
 import static com.google.eclipse.protobuf.validation.Messages.mapWithModifier;
 import static com.google.eclipse.protobuf.validation.Messages.missingModifier;
+import static com.google.eclipse.protobuf.validation.Messages.oneofFieldWithModifier;
 import static com.google.eclipse.protobuf.validation.ProtobufJavaValidator.MAP_WITH_MODIFIER_ERROR;
 import static com.google.eclipse.protobuf.validation.ProtobufJavaValidator.MISSING_MODIFIER_ERROR;
+import static com.google.eclipse.protobuf.validation.ProtobufJavaValidator.ONEOF_FIELD_WITH_MODIFIER_ERROR;
 import static org.eclipse.xtext.validation.ValidationMessageAcceptor.INSIGNIFICANT_INDEX;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -111,5 +113,34 @@ public class ProtobufJavaValidator_checkFieldModifiers_Test {
     MessageField field = xtext.find("bar", MessageField.class);
     validator.checkFieldModifiers(field);
     verifyZeroInteractions(messageAcceptor);
+  }
+
+  // syntax = "proto2";
+  //
+  // message Foo {
+  //   oneof test {
+  //     string bar = 1;
+  //     string baz = 2;
+  //   }
+  // }
+  @Test public void should_not_create_error_if_no_modifier_on_oneof_field() {
+    MessageField field = xtext.find("bar", MessageField.class);
+    validator.checkFieldModifiers(field);
+    verifyZeroInteractions(messageAcceptor);
+  }
+
+  // syntax = "proto2";
+  //
+  // message Foo {
+  //   oneof test {
+  //     repeated string bar = 1;
+  //     string baz = 2;
+  //   }
+  // }
+  @Test public void should_create_error_if_modifier_on_oneof_field() {
+    MessageField field = xtext.find("bar", MessageField.class);
+    validator.checkFieldModifiers(field);
+    verify(messageAcceptor).acceptError(oneofFieldWithModifier, field, MESSAGE_FIELD__MODIFIER,
+        INSIGNIFICANT_INDEX, ONEOF_FIELD_WITH_MODIFIER_ERROR);
   }
 }

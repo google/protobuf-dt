@@ -34,6 +34,7 @@ public class Messages extends NLS {
   public static String missingFieldNumber;
   public static String missingModifier;
   public static String multiplePackages;
+  public static String oneofFieldWithModifier;
   public static String requiredInProto3;
   public static String scopingError;
   public static String unknownSyntax;

@@ -81,7 +81,7 @@ OneOf:
   '}' (';')?;
 
 OneOfElement returns MessageElement:
-  Extensions | Group;
+  Extensions | Group | MessageField;
 
 Extensions:
   ->'extensions' ranges+=Range (',' ranges+=Range)* (';')+;

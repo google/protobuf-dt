@@ -22,6 +22,7 @@ import static com.google.eclipse.protobuf.validation.Messages.invalidMapValueTyp
 import static com.google.eclipse.protobuf.validation.Messages.mapWithModifier;
 import static com.google.eclipse.protobuf.validation.Messages.missingModifier;
 import static com.google.eclipse.protobuf.validation.Messages.multiplePackages;
+import static com.google.eclipse.protobuf.validation.Messages.oneofFieldWithModifier;
 import static com.google.eclipse.protobuf.validation.Messages.requiredInProto3;
 import static com.google.eclipse.protobuf.validation.Messages.unknownSyntax;
 import static com.google.eclipse.protobuf.validation.Messages.unrecognizedSyntaxIdentifier;
@@ -67,6 +68,7 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
   public static final String REQUIRED_IN_PROTO3_ERROR = "requiredInProto3";
   public static final String INVALID_MAP_KEY_TYPE_ERROR = "invalidMapKeyType";
   public static final String MAP_WITH_MAP_VALUE_TYPE_ERROR = "mapWithMapValueType";
+  public static final String ONEOF_FIELD_WITH_MODIFIER_ERROR = "oneofFieldWithModifier";
 
   @Inject private IndexedElements indexedElements;
   @Inject private NameResolver nameResolver;
@@ -109,6 +111,10 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
       checkMapField(field);
       return;
     }
+    if (field.eContainer() instanceof OneOf) {
+      checkOneOfField(field);
+      return;
+    }
     if (field.getModifier() == ModifierEnum.UNSPECIFIED && isProto2Field(field)) {
       error(missingModifier, field, MESSAGE_FIELD__MODIFIER, MISSING_MODIFIER_ERROR);
     } else if (field.getModifier() == ModifierEnum.REQUIRED && isProto3Field(field)) {
@@ -120,6 +126,13 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
     // TODO(het): Add quickfix to delete the modifier
     if (field.getModifier() != ModifierEnum.UNSPECIFIED) {
       error(mapWithModifier, field, MESSAGE_FIELD__MODIFIER, MAP_WITH_MODIFIER_ERROR);
+    }
+  }
+
+  private void checkOneOfField(MessageField field) {
+    if (field.getModifier() != ModifierEnum.UNSPECIFIED) {
+      error(oneofFieldWithModifier, field, MESSAGE_FIELD__MODIFIER,
+          ONEOF_FIELD_WITH_MODIFIER_ERROR);
     }
   }
 
