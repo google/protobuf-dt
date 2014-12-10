@@ -129,14 +129,19 @@ import java.util.logging.Logger;
     GeneralPreferences preferences = new GeneralPreferences(storeAccess, project);
     String descriptorProtoUri = preferences.getDescriptorProtoPath();
     if (!PreferenceNames.DEFAULT_DESCRIPTOR_PATH.equals(descriptorProtoUri)) {
-      URI descriptorProtoLocation =
-          URI.createURI(resolver.resolveUri(descriptorProtoUri, null, project));
-      if (descriptorProtoLocation != null) {
-        ProtoDescriptor protoDescriptor =
-            new ProtoDescriptor(descriptorProtoUri, descriptorProtoLocation, parser, nodes);
-        ProtoDescriptorInfo descriptorInfo =
-            new ProtoDescriptorInfo(descriptorProtoUri, descriptorProtoLocation, protoDescriptor);
-        descriptorInfos.put(descriptorProtoUri, descriptorInfo);
+      String resolvedUri = resolver.resolveUri(descriptorProtoUri, null, project);
+      if (resolvedUri != null) {
+        URI descriptorProtoLocation = URI.createURI(resolvedUri);
+        if (descriptorProtoLocation != null) {
+          ProtoDescriptor protoDescriptor =
+              new ProtoDescriptor(descriptorProtoUri, descriptorProtoLocation, parser, nodes);
+          ProtoDescriptorInfo descriptorInfo =
+              new ProtoDescriptorInfo(descriptorProtoUri, descriptorProtoLocation, protoDescriptor);
+          descriptorInfos.put(descriptorProtoUri, descriptorInfo);
+        }
+      } else {
+        LOG.log(Level.WARNING,
+            "Unable to resolve URI for descriptor proto location: " + descriptorProtoUri);
       }
     }
 
