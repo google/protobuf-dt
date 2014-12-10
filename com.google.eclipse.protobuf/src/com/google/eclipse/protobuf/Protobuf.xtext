@@ -18,7 +18,7 @@ Protobuf:
   (elements+=ProtobufElement)*;
 
 Syntax:
-  'syntax' '=' name=STRING (';')+;
+  'syntax' '=' name=StringLiteral (';')+;
 
 ProtobufElement:
   Package | Import | Option | ComplexType | TypeExtension | Service;
@@ -33,13 +33,13 @@ Import:
   NormalImport | PublicImport | WeakImport;
 
 NormalImport:
-  'import' importURI=STRING (';')+;
+  'import' path=StringLiteral (';')+;
 
 PublicImport:
-  'import' 'public' importURI=STRING (';')+;
+  'import' 'public' path=StringLiteral (';')+;
 
 WeakImport:
-  'import' 'weak' importURI=STRING (';')+;
+  'import' 'weak' path=StringLiteral (';')+;
 
 ComplexType:
   Enum | ExtensibleType;
@@ -289,14 +289,14 @@ terminal DIGIT:
   '0'..'9';
 
 StringLink:
-  target=STRING;
+  target=StringLiteral;
 
-terminal STRING:
-  SL_STRING (SL_STRING)*;
+StringLiteral:
+  chunks+=CHUNK+;
 
-terminal SL_STRING:
-  '"' ('\\' ('"' | "'" | '\\' | !('\\' | '"')) | !('\\' | '"'))* '"' (WS)* |
-  "'" ('\\' ('"' | "'" | '\\' | !('\\' | "'")) | !('\\' | "'"))* "'" (WS)*;
+terminal CHUNK:
+  '"' ('\\' ('"' | "'" | '\\' | !('\\' | '"')) | !('\\' | '"'))* '"' |
+  "'" ('\\' ('"' | "'" | '\\' | !('\\' | "'")) | !('\\' | "'"))* "'";
 
 terminal ID: '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
 terminal ML_COMMENT: '/*' -> '*/';

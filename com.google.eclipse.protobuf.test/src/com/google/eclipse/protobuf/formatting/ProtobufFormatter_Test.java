@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Google Inc.
+ * Copyright (c) 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -8,10 +8,12 @@
  */
 package com.google.eclipse.protobuf.formatting;
 
-import static org.junit.Assert.assertEquals;
-
 import static com.google.eclipse.protobuf.formatting.CommentReaderRule.overrideRuntimeModuleWith;
 import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
+import static org.junit.Assert.assertEquals;
+
+import com.google.eclipse.protobuf.junit.core.AbstractTestModule;
+import com.google.inject.Inject;
 
 import org.eclipse.xtext.formatting.IIndentationInformation;
 import org.eclipse.xtext.formatting.INodeModelFormatter;
@@ -20,9 +22,6 @@ import org.eclipse.xtext.nodemodel.ICompositeNode;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
-
-import com.google.eclipse.protobuf.junit.core.AbstractTestModule;
-import com.google.inject.Inject;
 
 /**
  * @Tests for <code>{@link ProtobufFormatter}</code>.
@@ -153,6 +152,16 @@ public class ProtobufFormatter_Test {
   //   extensions 1 to 10;
   // }
   @Test public void should_format_extensions() {
+    assertThatFormattingWorksCorrectly();
+  }
+
+  // syntax = "proto" // version on next line
+  //          '3';
+
+  // syntax = "proto" // version on next line
+  //   '3';
+  @Test public void should_format_multiline_strings() {
+    // TODO(het): Switch to clang-format so this works correctly
     assertThatFormattingWorksCorrectly();
   }
 

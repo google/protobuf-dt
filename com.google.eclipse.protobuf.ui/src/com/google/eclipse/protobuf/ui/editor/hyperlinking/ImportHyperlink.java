@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -8,7 +8,8 @@
  */
 package com.google.eclipse.protobuf.ui.editor.hyperlinking;
 
-import static org.eclipse.emf.common.util.URI.createURI;
+import com.google.eclipse.protobuf.ui.editor.FileOpener;
+import com.google.inject.Inject;
 
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
@@ -17,10 +18,6 @@ import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.xtext.nodemodel.INode;
-
-import com.google.eclipse.protobuf.protobuf.Import;
-import com.google.eclipse.protobuf.ui.editor.FileOpener;
-import com.google.inject.Inject;
 
 /**
  * A hyperlink for imported .proto files.
@@ -35,8 +32,8 @@ class ImportHyperlink implements IHyperlink {
   private URI importUri;
   private IRegion region;
 
-  void update(Import anImport, INode importUriNode) {
-    importUri = createURI(anImport.getImportURI());
+  void update(URI uri, INode importUriNode) {
+    importUri = uri;
     region = new Region(importUriNode.getOffset(), importUriNode.getLength());
   }
 

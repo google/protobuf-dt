@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -8,19 +8,11 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Collections.emptySet;
 import static org.eclipse.xtext.resource.EObjectDescription.create;
-import static com.google.common.collect.Sets.newHashSet;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-
-import org.eclipse.core.resources.IProject;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.xtext.naming.QualifiedName;
-import org.eclipse.xtext.resource.IEObjectDescription;
-
+import com.google.eclipse.protobuf.model.util.Imports;
 import com.google.eclipse.protobuf.naming.LocalNamesProvider;
 import com.google.eclipse.protobuf.naming.NormalNamingStrategy;
 import com.google.eclipse.protobuf.protobuf.ComplexType;
@@ -28,6 +20,15 @@ import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.eclipse.protobuf.util.EResources;
 import com.google.inject.Inject;
+
+import org.eclipse.core.resources.IProject;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.resource.IEObjectDescription;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -38,6 +39,7 @@ class ComplexTypeFinderStrategy implements ModelElementFinder.FinderStrategy<Cla
   @Inject private LocalNamesProvider localNamesProvider;
   @Inject private NormalNamingStrategy namingStrategy;
   @Inject private QualifiedNameDescriptions qualifiedNamesDescriptions;
+  @Inject private Imports imports;
 
   @Override public Collection<IEObjectDescription> imported(Package fromImporter, Package fromImported, Object target,
       Class<? extends ComplexType> typeOfComplexType) {
@@ -55,7 +57,7 @@ class ComplexTypeFinderStrategy implements ModelElementFinder.FinderStrategy<Cla
       Class<? extends ComplexType> typeOfComplexType) {
     IProject project = EResources.getProjectOf(anImport.eResource());
     Set<IEObjectDescription> descriptions = newHashSet();
-    ProtoDescriptor descriptor = descriptorProvider.descriptor(project, anImport.getImportURI());
+    ProtoDescriptor descriptor = descriptorProvider.descriptor(project, imports.getPath(anImport));
     for (ComplexType complexType : descriptor.allTypes()) {
       if (!typeOfComplexType.isInstance(complexType)) {
         continue;

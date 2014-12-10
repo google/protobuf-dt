@@ -120,7 +120,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ICompletionProposalAcceptor acceptor) {
     String proposal = SYNTAX + space() + EQUAL_PROTO2_IN_QUOTES;
     proposeAndAccept(proposal, imageHelper.getImage(images.imageFor(SYNTAX)), context, acceptor);
-    
+
     proposal = SYNTAX + space() + EQUAL_PROTO3_IN_QUOTES;
     proposeAndAccept(proposal, imageHelper.getImage(images.imageFor(SYNTAX)), context, acceptor);
   }
@@ -203,7 +203,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   @Override public void complete_ID(EObject model, RuleCall ruleCall, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {}
 
-  @Override public void complete_STRING(EObject model, RuleCall ruleCall, ContentAssistContext context,
+  @Override public void complete_CHUNK(EObject model, RuleCall ruleCall, ContentAssistContext context,
       ICompletionProposalAcceptor acceptor) {}
 
   @Override public void completeKeyword(Keyword keyword, ContentAssistContext context,
@@ -272,7 +272,7 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
   private void proposeEqualProto2(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     proposeAndAccept(EQUAL_PROTO2_IN_QUOTES, context, acceptor);
   }
-  
+
   private void proposeEqualProto3(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     proposeAndAccept(EQUAL_PROTO3_IN_QUOTES, context, acceptor);
   }

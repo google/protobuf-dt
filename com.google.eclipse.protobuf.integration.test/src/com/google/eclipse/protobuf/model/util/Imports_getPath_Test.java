@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Google Inc.
+ * Copyright (c) 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -8,29 +8,28 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
+import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-
-import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
-import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
-
-import java.util.List;
-
-import org.junit.Rule;
-import org.junit.Test;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.inject.Inject;
 
+import org.junit.Rule;
+import org.junit.Test;
+
+import java.util.List;
+
 /**
- * Tests for <code>{@link Imports#uriAsEnteredByUser(Import)}</code>
+ * Tests for <code>{@link Imports#getPath(Import)}</code>
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-public class Imports_uriAsEnteredByUser_Test {
+public class Imports_getPath_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
   @Inject private Imports imports;
@@ -40,8 +39,7 @@ public class Imports_uriAsEnteredByUser_Test {
   @Test public void should_return_import_URI_as_entered_by_user() {
     Protobuf root = xtext.root();
     Import anImport = firstImportOf(root);
-    anImport.setImportURI("file:/test-protos/types.proto"); // simulate the URI is resolved
-    assertThat(imports.uriAsEnteredByUser(anImport), equalTo("types.proto"));
+    assertThat(imports.getPath(anImport), equalTo("types.proto"));
   }
 
   private Import firstImportOf(Protobuf root) {

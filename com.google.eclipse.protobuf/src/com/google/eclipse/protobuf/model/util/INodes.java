@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@ package com.google.eclipse.protobuf.model.util;
 
 import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.findNodesForFeature;
 
-import java.util.List;
+import com.google.inject.Singleton;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -20,7 +20,7 @@ import org.eclipse.xtext.TerminalRule;
 import org.eclipse.xtext.nodemodel.ILeafNode;
 import org.eclipse.xtext.nodemodel.INode;
 
-import com.google.inject.Singleton;
+import java.util.List;
 
 /**
  * Utility methods related to <code>{@link INode}</code>s.
@@ -107,7 +107,8 @@ import com.google.inject.Singleton;
       return false;
     }
     TerminalRule terminalRule = (TerminalRule) rule;
-    return "STRING".equals(terminalRule.getName());
+    return "StringLiteral".equals(terminalRule.getName())
+        || "CHUNK".equals(terminalRule.getName());
   }
 
   /**

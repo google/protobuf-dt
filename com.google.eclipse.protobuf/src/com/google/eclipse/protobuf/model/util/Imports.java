@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -8,22 +8,20 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.eclipse.xtext.util.Strings.isEmpty;
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
+
+import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.resource.ResourceSets;
+import com.google.eclipse.protobuf.scoping.IImportResolver;
+import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider;
+import com.google.eclipse.protobuf.util.EResources;
+import com.google.inject.Inject;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.xtext.nodemodel.INode;
-import org.eclipse.xtext.scoping.impl.ImportUriResolver;
-
-import com.google.eclipse.protobuf.conversion.STRINGValueConverter;
-import com.google.eclipse.protobuf.protobuf.Import;
-import com.google.eclipse.protobuf.resource.ResourceSets;
-import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider;
-import com.google.eclipse.protobuf.util.EResources;
-import com.google.inject.Inject;
 
 /**
  * Utility methods related to imports.
@@ -32,10 +30,9 @@ import com.google.inject.Inject;
  */
 public class Imports {
   @Inject private ProtoDescriptorProvider descriptorProvider;
-  @Inject private INodes nodes;
   @Inject private ResourceSets resourceSets;
-  @Inject private STRINGValueConverter converter;
-  @Inject private ImportUriResolver uriResolver;
+  @Inject private StringLiterals stringLiterals;
+  @Inject private IImportResolver importResolver;
 
   /**
    * Indicates whether the URI of the given {@code Import} is equal to the path of the file "descriptor.proto."
@@ -50,7 +47,7 @@ public class Imports {
     }
     IProject project = EResources.getProjectOf(anImport.eResource());
     URI descriptorLocation =
-        descriptorProvider.descriptorLocation(project, anImport.getImportURI());
+        descriptorProvider.descriptorLocation(project, getPath(anImport));
     return descriptorLocation != null;
   }
 
@@ -66,7 +63,7 @@ public class Imports {
     if (anImport == null) {
       return false;
     }
-    String importUri = anImport.getImportURI();
+    String importUri = getPath(anImport);
     IProject project = EResources.getProjectOf(anImport.eResource());
     for (URI locationUri : descriptorProvider.allDescriptorLocations(project)) {
       String location = locationUri.toString();
@@ -78,31 +75,12 @@ public class Imports {
   }
 
   /**
-   * Returns the URI of the given {@code Import} as it looks in the editor (i.e. before it is resolved.)
+   * Indicates whether the URI of the given {@code Import} can be resolved.
    * @param anImport the given {@code Import}.
-   * @return the URI of the given {@code Import} as it looks in the editor.
-   */
-  public String uriAsEnteredByUser(Import anImport) {
-    INode node = nodes.firstNodeForFeature(anImport, IMPORT__IMPORT_URI);
-    String text = (node == null) ? null : node.getText();
-    if (text == null) {
-      return null;
-    }
-    return converter.toValue(text, node);
-  }
-
-  /**
-   * Indicates whether the URI of the given {@code Import} has been resolved.
-   * @param anImport the given {@code Import}.
-   * @return {@code true} if the URI of the given {@code Import} has been resolved, {@code false} otherwise.
+   * @return {@code true} if the URI of the given {@code Import} can be resolved, {@code false} otherwise.
    */
   public boolean isResolved(Import anImport) {
-    String uriAsText = anImport.getImportURI();
-    if (!isEmpty(uriAsText)) {
-      URI uri = URI.createURI(uriAsText);
-      return isResolved(uri);
-    }
-    return false;
+    return resolvedUriOf(anImport) != null;
   }
 
   /**
@@ -126,8 +104,8 @@ public class Imports {
    * @return the resolved URI of the given {@code Import}, or {@code null} if the URI was not successfully resolved.
    */
   public URI resolvedUriOf(Import anImport) {
-    String resolvedUri = uriResolver.apply(anImport);
-    if (isEmpty(resolvedUri)) {
+    String resolvedUri = importResolver.resolve(anImport);
+    if (isNullOrEmpty(resolvedUri)) {
       return null;
     }
     URI uri = URI.createURI(resolvedUri);
@@ -136,5 +114,12 @@ public class Imports {
 
   private boolean isResolved(URI uri) {
     return !isEmpty(uri.scheme());
+  }
+
+  /**
+   * Returns the path that is being imported by the given {@link Import}.
+   */
+  public String getPath(Import anImport) {
+    return stringLiterals.getCombinedString(anImport.getPath());
   }
 }

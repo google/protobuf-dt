@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -9,9 +9,10 @@
 package com.google.eclipse.protobuf.ui.validation;
 
 import static com.google.common.base.Objects.equal;
-import static com.google.eclipse.protobuf.ui.validation.ProtobufValidation.validate;
 
-import java.net.URI;
+import com.google.eclipse.protobuf.ui.util.Editors;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.IEditorPart;
@@ -20,9 +21,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
-import com.google.eclipse.protobuf.ui.util.Editors;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import java.net.URI;
 
 /**
  * Triggers validation of .proto files.
@@ -33,6 +32,7 @@ import com.google.inject.Singleton;
   private final String PROTO_EDITOR_ID = "com.google.eclipse.protobuf.Protobuf";
 
   @Inject private Editors editors;
+  @Inject private ProtobufValidation validator;
 
   /**
    * Triggers validation of all open .proto files belonging to the given project.
@@ -57,7 +57,7 @@ import com.google.inject.Singleton;
     if (fileProject == null || !haveEqualUris(project, fileProject)) {
       return;
     }
-    validate(editor);
+    validator.validate(editor);
   }
 
   private boolean haveEqualUris(IProject p1, IProject p2) {

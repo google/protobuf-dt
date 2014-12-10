@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -16,11 +16,11 @@ import static com.google.eclipse.protobuf.grammar.CommonKeyword.OPENING_CURLY_BR
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.SEMICOLON;
 import static com.google.eclipse.protobuf.util.CommonWords.space;
 
+import com.google.eclipse.protobuf.services.ProtobufGrammarAccess;
+
 import org.eclipse.xtext.Keyword;
 import org.eclipse.xtext.formatting.impl.AbstractDeclarativeFormatter;
 import org.eclipse.xtext.formatting.impl.FormattingConfig;
-
-import com.google.eclipse.protobuf.services.ProtobufGrammarAccess;
 
 /**
  * Provides custom formatting.
@@ -49,6 +49,12 @@ public class ProtobufFormatter extends AbstractDeclarativeFormatter {
     c.setLinewrap(1).after(g.getRpcRule());
     c.setLinewrap(2).after(g.getServiceRule());
     c.setLinewrap(1).after(g.getStreamRule());
+
+    c.setLinewrap(1).between(g.getCHUNKRule(), g.getCHUNKRule());
+    c.setLinewrap(1).between(g.getML_COMMENTRule(), g.getCHUNKRule());
+    c.setIndentationIncrement().before(g.getStringLiteralRule());
+    c.setIndentationDecrement().after(g.getStringLiteralRule());
+
     for (Keyword k : g.findKeywords(EQUAL.toString())) {
       c.setSpace(space()).around(k);
     }

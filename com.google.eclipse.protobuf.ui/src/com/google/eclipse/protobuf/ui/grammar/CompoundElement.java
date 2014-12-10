@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -13,10 +13,10 @@ import static com.google.eclipse.protobuf.grammar.CommonKeyword.DEFAULT;
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.EQUAL;
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.OPENING_BRACKET;
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.SEMICOLON;
-import static com.google.eclipse.protobuf.grammar.Syntaxes.proto2;
 import static com.google.eclipse.protobuf.util.CommonWords.space;
 
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
+import com.google.eclipse.protobuf.model.util.Syntaxes;
 
 /**
  * Element composed of one or more keywords.
@@ -30,9 +30,9 @@ public enum CompoundElement {
   EMPTY_STRING(join(QUOTE, QUOTE)),
   DEFAULT_EQUAL_STRING(joinWithWhitespace(DEFAULT_EQUAL, EMPTY_STRING)),
   DEFAULT_EQUAL_STRING_IN_BRACKETS(inBrackets(DEFAULT_EQUAL_STRING)),
-  PROTO2_IN_QUOTES(join(QUOTE, proto2(), QUOTE, SEMICOLON)),
+  PROTO2_IN_QUOTES(join(QUOTE, Syntaxes.PROTO2, QUOTE, SEMICOLON)),
   EQUAL_PROTO2_IN_QUOTES(joinWithWhitespace(EQUAL, PROTO2_IN_QUOTES)),
-  PROTO3_IN_QUOTES(join(QUOTE, proto2(), QUOTE, SEMICOLON)),
+  PROTO3_IN_QUOTES(join(QUOTE, Syntaxes.PROTO3, QUOTE, SEMICOLON)),
   EQUAL_PROTO3_IN_QUOTES(joinWithWhitespace(EQUAL, PROTO2_IN_QUOTES));
 
   private final String value;

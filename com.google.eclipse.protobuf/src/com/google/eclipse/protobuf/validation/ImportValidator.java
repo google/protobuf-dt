@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -8,26 +8,13 @@
  */
 package com.google.eclipse.protobuf.validation;
 
-import static java.lang.String.format;
-
-import static org.eclipse.xtext.util.Tuples.pair;
-
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__PATH;
 import static com.google.eclipse.protobuf.validation.Messages.importNotFound;
 import static com.google.eclipse.protobuf.validation.Messages.importingUnsupportedSyntax;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.xtext.scoping.impl.ImportUriResolver;
-import org.eclipse.xtext.util.Pair;
-import org.eclipse.xtext.validation.AbstractDeclarativeValidator;
-import org.eclipse.xtext.validation.Check;
-import org.eclipse.xtext.validation.EValidatorRegistrar;
+import static java.lang.String.format;
+import static org.eclipse.xtext.util.Tuples.pair;
 
 import com.google.eclipse.protobuf.model.util.Imports;
 import com.google.eclipse.protobuf.model.util.Protobufs;
@@ -35,6 +22,16 @@ import com.google.eclipse.protobuf.model.util.Resources;
 import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.inject.Inject;
+
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.xtext.util.Pair;
+import org.eclipse.xtext.validation.AbstractDeclarativeValidator;
+import org.eclipse.xtext.validation.Check;
+import org.eclipse.xtext.validation.EValidatorRegistrar;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Verifies that "imports" contain correct values.
@@ -45,7 +42,6 @@ public class ImportValidator extends AbstractDeclarativeValidator {
   @Inject private Imports imports;
   @Inject private Protobufs protobufs;
   @Inject private Resources resources;
-  @Inject private ImportUriResolver uriResolver;
 
   @Override public void register(EValidatorRegistrar registrar) {}
 
@@ -115,7 +111,7 @@ public class ImportValidator extends AbstractDeclarativeValidator {
   }
 
   private void warnUnsupportedImportFoundIn(Import anImport) {
-    warning(importingUnsupportedSyntax, anImport, IMPORT__IMPORT_URI, INSIGNIFICANT_INDEX);
+    warning(importingUnsupportedSyntax, anImport, IMPORT__PATH, INSIGNIFICANT_INDEX);
   }
 
   /**
@@ -124,14 +120,12 @@ public class ImportValidator extends AbstractDeclarativeValidator {
    *
    * @param anImport the given {@code Import}.
    */
-  @Check public void checkUriIsResolved(Import anImport) {
+  @Check
+  public void checkUriIsResolved(Import anImport) {
     if (imports.isResolved(anImport)) {
       return;
     }
-    uriResolver.apply(anImport);
-    if (!imports.isResolved(anImport)) {
-      error(format(importNotFound, anImport.getImportURI()), IMPORT__IMPORT_URI);
-    }
+    error(format(importNotFound, imports.getPath(anImport)), IMPORT__PATH);
   }
 
   private static enum HasKnownSyntax {

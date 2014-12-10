@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -28,9 +28,9 @@ import static com.google.eclipse.protobuf.validation.Messages.unknownSyntax;
 import static com.google.eclipse.protobuf.validation.Messages.unrecognizedSyntaxIdentifier;
 import static java.lang.String.format;
 
-import com.google.eclipse.protobuf.grammar.Syntaxes;
 import com.google.eclipse.protobuf.model.util.IndexedElements;
 import com.google.eclipse.protobuf.model.util.Protobufs;
+import com.google.eclipse.protobuf.model.util.Syntaxes;
 import com.google.eclipse.protobuf.naming.NameResolver;
 import com.google.eclipse.protobuf.protobuf.IndexedElement;
 import com.google.eclipse.protobuf.protobuf.MapType;
@@ -74,6 +74,7 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
   @Inject private NameResolver nameResolver;
   @Inject private Protobufs protobufs;
   @Inject private IQualifiedNameProvider qualifiedNameProvider;
+  @Inject private Syntaxes syntaxes;
 
   @Check public void checkIsKnownSyntax(Protobuf protobuf) {
     if (!protobufs.hasKnownSyntax(protobuf)) {
@@ -82,10 +83,10 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
   }
 
   @Check public void checkSyntaxIsKnown(Syntax syntax) {
-    String name = syntax.getName();
-    if (Syntaxes.proto2().equals(name) || Syntaxes.proto3().equals(name)) {
+    if (syntaxes.isSpecifyingProto2Syntax(syntax) || syntaxes.isSpecifyingProto3Syntax(syntax)) {
       return;
     }
+    String name = syntaxes.getName(syntax);
     String msg = (name == null) ? expectedSyntaxIdentifier : format(unrecognizedSyntaxIdentifier, name);
     error(msg, syntax, SYNTAX__NAME, SYNTAX_IS_NOT_KNOWN_ERROR);
   }
@@ -94,10 +95,10 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
     if (isNameNull(e)) {
       return; // we already show an error if name is null, no need to go further.
     }
-    
+
     EObject container = e.eContainer();
     if (container instanceof OneOf) {
-      container = container.eContainer();  
+      container = container.eContainer();
     }
     if (container instanceof Message) {
       Message message = (Message) container;
@@ -142,7 +143,7 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
       container = container.eContainer();
     }
     if (container instanceof Protobuf) {
-      return Syntaxes.isSpecifyingProto2Syntax(((Protobuf) container).getSyntax().getName());
+      return syntaxes.isSpecifyingProto2Syntax(((Protobuf) container).getSyntax());
     }
     return false;
   }
@@ -153,12 +154,12 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
       container = container.eContainer();
     }
     if (container instanceof Protobuf) {
-      return Syntaxes.isSpecifyingProto3Syntax(((Protobuf) container).getSyntax().getName());
+      return syntaxes.isSpecifyingProto3Syntax(((Protobuf) container).getSyntax());
     }
     return false;
   }
 
-  private boolean checkTagNumberIsUnique(IndexedElement e, EObject message, 
+  private boolean checkTagNumberIsUnique(IndexedElement e, EObject message,
       Iterable<MessageElement> elements) {
     long index = indexedElements.indexOf(e);
 
@@ -174,13 +175,14 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
         }
         if (indexedElements.indexOf(other) == index) {
           QualifiedName messageName = qualifiedNameProvider.getFullyQualifiedName(message);
-          String msg = format(fieldNumberAlreadyUsed, index, messageName.toString(), nameResolver.nameOf(other));
+          String msg = format(fieldNumberAlreadyUsed, index, messageName.toString(),
+              nameResolver.nameOf(other));
           invalidTagNumberError(msg, e);
           return false;
         }
       }
     }
-    
+
     return true;
   }
 

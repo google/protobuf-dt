@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2011 Google Inc.
+* Copyright (c) 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -8,17 +8,18 @@
  */
 package com.google.eclipse.protobuf.junit.core;
 
+import static com.google.eclipse.protobuf.junit.core.GeneratedProtoFiles.protoFile;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
-import static com.google.eclipse.protobuf.junit.core.GeneratedProtoFiles.protoFile;
-
-import java.io.File;
+import com.google.eclipse.protobuf.model.util.Imports;
+import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.scoping.IImportResolver;
+import com.google.inject.Inject;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EReference;
 
-import com.google.eclipse.protobuf.protobuf.Import;
-import com.google.eclipse.protobuf.scoping.IImportResolver;
+import java.io.File;
 
 /**
  * Guice module for unit testing.
@@ -38,19 +39,24 @@ public class IntegrationTestModule extends AbstractTestModule {
   }
 
   private static class ImportResolver implements IImportResolver {
-    @Override public void resolveAndUpdateUri(Import anImport) {
-      String importUri = anImport.getImportURI();
+    @Inject
+    private Imports imports;
+
+    @Override
+    public String resolve(Import anImport) {
+      String importUri = imports.getPath(anImport);
       URI uri = URI.createURI(importUri);
-      if (!isEmpty(uri.scheme()))
-      {
-        return; // already resolved.
+      if (!isEmpty(uri.scheme())) {
+        return importUri; // already resolved.
       }
       File file = protoFile(importUri);
       if (!file.exists()) {
-        return; // file does not exist.
+        return null; // file does not exist.
       }
-      String resolvedUri = file.toURI().toString();
-      anImport.setImportURI(resolvedUri);
+      return file.toURI().toString();
     }
+
+    @Override
+    public void invalidateCacheFor(Import anImport) {}
   }
 }

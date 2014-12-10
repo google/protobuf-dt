@@ -11,13 +11,15 @@ package com.google.eclipse.protobuf.grammar;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
+import com.google.eclipse.protobuf.model.util.Syntaxes;
+
 import org.junit.Test;
 
 /**
- * Tests for <code>{@link Syntaxes#proto3()}</code>.
+ * Tests for <code>{@link Syntaxes#PROTO3}</code>.
  */
 public class Syntaxes_proto3_Test {
   @Test public void should_return_proto3() {
-    assertThat(Syntaxes.proto3(), equalTo("proto3"));
+    assertThat(Syntaxes.PROTO3, equalTo("proto3"));
   }
 }

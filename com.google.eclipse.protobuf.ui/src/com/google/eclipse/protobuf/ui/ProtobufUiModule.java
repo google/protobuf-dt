@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  */
 package com.google.eclipse.protobuf.ui;
 
-import static com.google.eclipse.protobuf.ui.util.Workbenches.activeWorkbenchWindow;
 import static com.google.inject.name.Names.named;
 import static org.eclipse.ui.PlatformUI.isWorkbenchRunning;
 
@@ -16,15 +15,15 @@ import com.google.eclipse.protobuf.preferences.general.GeneralPreferences;
 import com.google.eclipse.protobuf.resource.IResourceVerifier;
 import com.google.eclipse.protobuf.scoping.IImportResolver;
 import com.google.eclipse.protobuf.scoping.IUriResolver;
-import com.google.eclipse.protobuf.ui.builder.nature.AutoAddNatureEditorCallback;
+import com.google.eclipse.protobuf.ui.builder.nature.ProtobufEditorCallback;
 import com.google.eclipse.protobuf.ui.documentation.ProtobufDocumentationProvider;
 import com.google.eclipse.protobuf.ui.editor.FileOutsideWorkspaceIconUpdater;
 import com.google.eclipse.protobuf.ui.editor.ProtobufUriEditorOpener;
 import com.google.eclipse.protobuf.ui.editor.hyperlinking.ProtobufHyperlinkDetector;
 import com.google.eclipse.protobuf.ui.editor.model.ProtobufDocumentProvider;
 import com.google.eclipse.protobuf.ui.editor.syntaxcoloring.HighlightingConfiguration;
+import com.google.eclipse.protobuf.ui.editor.syntaxcoloring.ProtobufAntlrTokenToAttributeIdMapper;
 import com.google.eclipse.protobuf.ui.editor.syntaxcoloring.ProtobufSemanticHighlightingCalculator;
-import com.google.eclipse.protobuf.ui.internal.ProtobufActivator;
 import com.google.eclipse.protobuf.ui.outline.LinkWithEditor;
 import com.google.eclipse.protobuf.ui.outline.ProtobufOutlinePage;
 import com.google.eclipse.protobuf.ui.parser.PreferenceDrivenProtobufParser;
@@ -38,11 +37,9 @@ import com.google.eclipse.protobuf.ui.resource.ProtobufServiceProvider;
 import com.google.eclipse.protobuf.ui.resource.ResourceVerifier;
 import com.google.eclipse.protobuf.ui.scoping.ImportResolver;
 import com.google.eclipse.protobuf.ui.scoping.UriResolver;
-import com.google.eclipse.protobuf.ui.validation.ValidateFileOnActivation;
 import com.google.inject.Binder;
 
 import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.xtext.documentation.IEObjectDocumentationProvider;
@@ -54,6 +51,7 @@ import org.eclipse.xtext.ui.editor.IXtextEditorCallback;
 import org.eclipse.xtext.ui.editor.model.XtextDocumentProvider;
 import org.eclipse.xtext.ui.editor.outline.actions.IOutlineContribution;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreInitializer;
+import org.eclipse.xtext.ui.editor.syntaxcoloring.AbstractAntlrTokenToAttributeIdMapper;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfiguration;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculator;
 import org.eclipse.xtext.ui.resource.IResourceSetProvider;
@@ -67,7 +65,6 @@ import org.eclipse.xtext.ui.resource.SimpleResourceSetProvider;
 public class ProtobufUiModule extends AbstractProtobufUiModule {
   public ProtobufUiModule(AbstractUIPlugin plugin) {
     super(plugin);
-    setValidationTrigger(activeWorkbenchWindow(), plugin);
   }
 
   public Class<? extends IImportResolver> bindImportResolver() {
@@ -115,7 +112,7 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
   }
 
   @Override public Class<? extends IXtextEditorCallback> bindIXtextEditorCallback() {
-    return AutoAddNatureEditorCallback.class;
+    return ProtobufEditorCallback.class;
   }
 
   public Class<? extends XtextDocumentProvider> bindXtextDocumentProvider() {
@@ -158,10 +155,7 @@ public class ProtobufUiModule extends AbstractProtobufUiModule {
           .to(LinkWithEditor.class);
   }
 
-  private void setValidationTrigger(IWorkbenchWindow w, AbstractUIPlugin plugin) {
-    if (w == null || !(plugin instanceof ProtobufActivator)) {
-      return;
-    }
-    w.getPartService().addPartListener(new ValidateFileOnActivation());
+  public Class<? extends AbstractAntlrTokenToAttributeIdMapper> bindAbstractAntlrTokenToAttributeIdMapper() {
+    return ProtobufAntlrTokenToAttributeIdMapper.class;
   }
 }

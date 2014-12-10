@@ -31,9 +31,6 @@ public class ProtobufSyntaxErrorMessageProvider extends SyntaxErrorMessageProvid
     if (currentContext instanceof MessageField) {
       message = mapToProtocMessage(message, (MessageField) currentContext);
     }
-    if (currentContext == null && message.contains("RULE_STRING")) {
-      return null;
-    }
     return new SyntaxErrorMessage(message, SYNTAX_DIAGNOSTIC);
   }
 

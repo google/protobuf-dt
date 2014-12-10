@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -8,13 +8,15 @@
  */
 package com.google.eclipse.protobuf.ui.validation;
 
-import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
-
-import java.util.List;
+import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.scoping.IImportResolver;
+import com.google.eclipse.protobuf.ui.plugin.ProtobufEditorPlugIn;
+import com.google.inject.Inject;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.impl.ListBasedDiagnosticConsumer;
@@ -23,15 +25,15 @@ import org.eclipse.xtext.ui.editor.model.IXtextDocument;
 import org.eclipse.xtext.ui.editor.model.XtextDocument;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 
-import com.google.eclipse.protobuf.model.util.Imports;
-import com.google.eclipse.protobuf.protobuf.Import;
-import com.google.eclipse.protobuf.ui.plugin.ProtobufEditorPlugIn;
+import java.util.List;
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
  */
-final class ProtobufValidation {
-  static void validate(IEditorPart editor) {
+public final class ProtobufValidation {
+  @Inject private IImportResolver resolver;
+
+  public void validate(IEditorPart editor) {
     if (!(editor instanceof XtextEditor) || !(editor.getEditorInput() instanceof FileEditorInput)) {
       return;
     }
@@ -42,7 +44,7 @@ final class ProtobufValidation {
     validate(xtextEditor);
   }
 
-  private static void validate(XtextEditor editor) {
+  private void validate(XtextEditor editor) {
     final IXtextDocument document = editor.getDocument();
     if (!(document instanceof XtextDocument)) {
       return;
@@ -53,36 +55,25 @@ final class ProtobufValidation {
         if (root == null) {
           return;
         }
-        resetUriInImports(root);
+        invalidateCacheForImports(root);
         resource.getLinker().linkModel(root, new ListBasedDiagnosticConsumer());
         ((XtextDocument) document).checkAndUpdateAnnotations();
       }
     });
   }
 
-  private static EObject rootOf(XtextResource resource) {
+  private void invalidateCacheForImports(EObject root) {
+    List<Import> imports = EcoreUtil2.getAllContentsOfType(root, Import.class);
+    for (Import anImport : imports) {
+      resolver.invalidateCacheFor(anImport);
+    }
+  }
+
+  private EObject rootOf(XtextResource resource) {
     if (resource == null) {
       return null;
     }
     IParseResult parseResult = resource.getParseResult();
     return parseResult == null ? null : parseResult.getRootASTElement();
   }
-
-  private static void resetUriInImports(EObject root) {
-    List<Import> imports = getAllContentsOfType(root, Import.class);
-    for (Import anImport : imports) {
-      resetUri(anImport);
-    }
-  }
-
-  private static void resetUri(Import anImport) {
-    Imports imports = ProtobufEditorPlugIn.getInstanceOf(Imports.class);
-    String uri = imports.uriAsEnteredByUser(anImport);
-    if (uri == null) {
-      return;
-    }
-    anImport.setImportURI(uri);
-  }
-
-  private ProtobufValidation() {}
 }

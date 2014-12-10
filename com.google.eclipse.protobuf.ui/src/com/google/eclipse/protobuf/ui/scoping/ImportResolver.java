@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -8,6 +8,9 @@
  */
 package com.google.eclipse.protobuf.ui.scoping;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.eclipse.protobuf.model.util.Imports;
 import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.scoping.IImportResolver;
@@ -21,6 +24,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 
+import java.util.concurrent.ExecutionException;
+
 /**
  * Resolves "import" URIs.
  *
@@ -31,6 +36,18 @@ public class ImportResolver implements IImportResolver {
   @Inject private Imports imports;
   @Inject private IUriResolver resolver;
   @Inject private Uris uris;
+
+  private LoadingCache<Import, String> cache =
+      CacheBuilder.newBuilder().build(new CacheLoader<Import, String>() {
+        @Override
+        public String load(Import key) throws Exception {
+          String result = internalResolveUri(key);
+          if (result == null) {
+            throw new Exception("Unable to resolve import: " + imports.getPath(key));
+          }
+          return result;
+        }
+      });
 
   /*
    * The import URI is relative to the file where the import is. Protoc works fine, but the editor doesn't.
@@ -47,14 +64,16 @@ public class ImportResolver implements IImportResolver {
    * If we import "folder/proto2.proto" into proto1.proto, proto1.proto will compile fine, but the editor will complain.
    * We need to have the import URI as "platform:/resource/protobuf-test/folder/proto2.proto" for the editor to see it.
    */
-  @Override public void resolveAndUpdateUri(Import anImport) {
-    if (imports.isResolved(anImport)) {
-      return;
+  @Override public String resolve(Import anImport) {
+    try {
+      return cache.get(anImport);
+    } catch (ExecutionException e) {
+      return null;
     }
-    String resolved = resolveUri(anImport.getImportURI(), anImport.eResource());
-    if (resolved != null) {
-      anImport.setImportURI(resolved);
-    }
+  }
+
+  private String internalResolveUri(Import anImport) {
+    return resolveUri(imports.getPath(anImport), anImport.eResource());
   }
 
   private String resolveUri(String importUri, Resource resource) {
@@ -67,5 +86,10 @@ public class ImportResolver implements IImportResolver {
     URI resourceUri = resource.getURI();
     IProject project = uris.projectOfReferredFile(resourceUri);
     return resolver.resolveUri(importUri, resourceUri, project);
+  }
+
+  @Override
+  public void invalidateCacheFor(Import anImport) {
+    cache.invalidate(anImport);
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -8,7 +8,13 @@
  */
 package com.google.eclipse.protobuf.ui.editor.hyperlinking;
 
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__IMPORT_URI;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__PATH;
+
+import com.google.eclipse.protobuf.model.util.INodes;
+import com.google.eclipse.protobuf.model.util.Imports;
+import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.text.IRegion;
@@ -22,12 +28,6 @@ import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.hyperlinking.DefaultHyperlinkDetector;
 import org.eclipse.xtext.ui.editor.model.IXtextDocument;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
-
-import com.google.eclipse.protobuf.model.util.INodes;
-import com.google.eclipse.protobuf.model.util.Imports;
-import com.google.eclipse.protobuf.protobuf.Import;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 /**
  * Represents an implementation of interface <code>{@link IHyperlinkDetector}</code> to find and convert
@@ -61,6 +61,9 @@ public class ProtobufHyperlinkDetector extends DefaultHyperlinkDetector {
     return document.readOnly(new IUnitOfWork<IHyperlink[], XtextResource>() {
       @Override public IHyperlink[] exec(XtextResource resource) {
         EObject resolved = eObjectAtOffsetHelper.resolveElementAt(resource, region.getOffset());
+        if (resolved.eContainer() instanceof Import) {
+          resolved = resolved.eContainer();
+        }
         if (!(resolved instanceof Import)) {
           return NO_HYPERLINKS;
         }
@@ -68,12 +71,12 @@ public class ProtobufHyperlinkDetector extends DefaultHyperlinkDetector {
         if (!imports.isResolved(anImport)) {
           return NO_HYPERLINKS;
         }
-        INode importUriNode = nodes.firstNodeForFeature(anImport, IMPORT__IMPORT_URI);
+        INode importUriNode = nodes.firstNodeForFeature(anImport, IMPORT__PATH);
         if (importUriNode.getLength() == 0) {
           return NO_HYPERLINKS;
         }
         ImportHyperlink hyperlink = importHyperlinkProvider.get();
-        hyperlink.update(anImport, importUriNode);
+        hyperlink.update(imports.resolvedUriOf(anImport), importUriNode);
         return new IHyperlink[] { hyperlink };
       }
     });

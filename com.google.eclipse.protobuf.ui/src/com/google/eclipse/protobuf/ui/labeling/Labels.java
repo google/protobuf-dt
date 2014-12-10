@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
@@ -9,13 +9,8 @@
  */
 package com.google.eclipse.protobuf.ui.labeling;
 
-import static org.eclipse.jface.viewers.StyledString.DECORATIONS_STYLER;
-
 import static com.google.eclipse.protobuf.ui.labeling.Messages.unresolved;
-
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.jface.viewers.StyledString;
+import static org.eclipse.jface.viewers.StyledString.DECORATIONS_STYLER;
 
 import com.google.eclipse.protobuf.model.util.Imports;
 import com.google.eclipse.protobuf.model.util.MessageFields;
@@ -36,6 +31,10 @@ import com.google.eclipse.protobuf.protobuf.Rpc;
 import com.google.eclipse.protobuf.protobuf.Stream;
 import com.google.eclipse.protobuf.protobuf.TypeExtension;
 import com.google.inject.Inject;
+
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.jface.viewers.StyledString;
 
 /**
  * Registry of commonly used text in the 'Protocol Buffer' editor.
@@ -128,7 +127,7 @@ public class Labels {
   }
 
   private Object labelFor(Import anImport) {
-    return imports.uriAsEnteredByUser(anImport);
+    return imports.getPath(anImport);
   }
 
   private Object labelFor(Literal literal) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -20,14 +20,25 @@ import com.google.inject.ImplementedBy;
 @ImplementedBy(NullImportResolver.class)
 public interface IImportResolver {
   /**
-   * Resolves the URI of the given {@code Import}. This method will update the URI of the given {@code Import} if it was
-   * successfully resolved.
+   * Returns the resolved path of the given {@code Import} or {@code null} if the path cannot be
+   * resolved.
+   *
    * @param anImport the given {@code Import}.
    */
-  void resolveAndUpdateUri(Import anImport);
+  String resolve(Import anImport);
+
+  /**
+   * Invalidates any cached results for the resolution of the given import.
+   */
+  void invalidateCacheFor(Import anImport);
 
   class NullImportResolver implements IImportResolver {
-    @Override public void resolveAndUpdateUri(Import anImport) {
+    @Override public String resolve(Import anImport) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void invalidateCacheFor(Import anImport) {
       throw new UnsupportedOperationException();
     }
   }

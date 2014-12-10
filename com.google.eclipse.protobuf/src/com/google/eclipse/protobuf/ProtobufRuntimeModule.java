@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -15,7 +15,7 @@ import com.google.eclipse.protobuf.naming.ProtobufQualifiedNameProvider;
 import com.google.eclipse.protobuf.resource.FastXtextResourceSet;
 import com.google.eclipse.protobuf.resource.GlobalResourceServiceProvider;
 import com.google.eclipse.protobuf.scoping.ExtensionRegistryProvider;
-import com.google.eclipse.protobuf.scoping.ProtobufImportUriResolver;
+import com.google.eclipse.protobuf.scoping.ProtobufGlobalScopeProvider;
 import com.google.eclipse.protobuf.validation.ProtobufResourceValidator;
 import com.google.eclipse.protobuf.validation.ProtobufSyntaxErrorMessageProvider;
 import com.google.inject.Binder;
@@ -28,7 +28,7 @@ import org.eclipse.xtext.parser.antlr.ISyntaxErrorMessageProvider;
 import org.eclipse.xtext.resource.IGlobalServiceProvider;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
-import org.eclipse.xtext.scoping.impl.ImportUriResolver;
+import org.eclipse.xtext.scoping.IGlobalScopeProvider;
 import org.eclipse.xtext.validation.IResourceValidator;
 
 /**
@@ -39,14 +39,10 @@ public class ProtobufRuntimeModule extends AbstractProtobufRuntimeModule {
     return GlobalResourceServiceProvider.class;
   }
 
-  public Class<? extends ImportUriResolver> bindImportUriResolver() {
-    return ProtobufImportUriResolver.class;
-  }
-
   public Class<? extends IQualifiedNameConverter> bindIQualifiedNameConverter() {
     return ProtobufQualifiedNameConverter.class;
   }
-  
+
   @Override public Class<? extends IQualifiedNameProvider> bindIQualifiedNameProvider() {
     return ProtobufQualifiedNameProvider.class;
   }
@@ -69,6 +65,10 @@ public class ProtobufRuntimeModule extends AbstractProtobufRuntimeModule {
 
   @Override public Class<? extends XtextResourceSet> bindXtextResourceSet() {
     return FastXtextResourceSet.class;
+  }
+
+  @Override public Class<? extends IGlobalScopeProvider> bindIGlobalScopeProvider() {
+    return ProtobufGlobalScopeProvider.class;
   }
 
   public void configureExtensionRegistry(Binder binder) {

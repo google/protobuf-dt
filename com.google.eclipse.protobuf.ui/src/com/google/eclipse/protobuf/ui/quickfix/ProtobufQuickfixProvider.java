@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2014 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -8,8 +8,6 @@
  */
 package com.google.eclipse.protobuf.ui.quickfix;
 
-import static com.google.eclipse.protobuf.grammar.Syntaxes.proto2;
-import static com.google.eclipse.protobuf.grammar.Syntaxes.proto3;
 import static com.google.eclipse.protobuf.protobuf.BOOL.FALSE;
 import static com.google.eclipse.protobuf.protobuf.BOOL.TRUE;
 import static com.google.eclipse.protobuf.ui.quickfix.Messages.changeValueDescription;
@@ -31,6 +29,7 @@ import static org.eclipse.xtext.nodemodel.util.NodeModelUtils.findActualNodeFor;
 import com.google.eclipse.protobuf.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.model.util.INodes;
 import com.google.eclipse.protobuf.model.util.IndexedElements;
+import com.google.eclipse.protobuf.model.util.Syntaxes;
 import com.google.eclipse.protobuf.naming.NameResolver;
 import com.google.eclipse.protobuf.protobuf.BOOL;
 import com.google.eclipse.protobuf.protobuf.BooleanLink;
@@ -41,9 +40,9 @@ import com.google.eclipse.protobuf.protobuf.ModifierEnum;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.eclipse.protobuf.protobuf.ProtobufFactory;
 import com.google.eclipse.protobuf.protobuf.StringLink;
+import com.google.eclipse.protobuf.protobuf.StringLiteral;
 import com.google.eclipse.protobuf.protobuf.Syntax;
 import com.google.eclipse.protobuf.protobuf.Value;
-import com.google.eclipse.protobuf.validation.ProtobufJavaValidator;
 import com.google.inject.Inject;
 
 import org.eclipse.emf.ecore.EObject;
@@ -67,17 +66,18 @@ public class ProtobufQuickfixProvider extends DefaultQuickfixProvider {
   @Inject private IndexedElements indexedElements;
   @Inject private NameResolver nameResolver;
   @Inject private INodes nodes;
+  @Inject private Syntaxes syntaxes;
 
   @Fix(SYNTAX_IS_NOT_KNOWN_ERROR)
   public void changeSyntaxToProto2(Issue issue, IssueResolutionAcceptor acceptor) {
     ISemanticModification modification = new ISemanticModification() {
       @Override public void apply(EObject element, IModificationContext context) throws Exception {
         Syntax syntax = (Syntax) element;
-        syntax.setName(proto2());
+        syntaxes.setName(syntax, Syntaxes.PROTO2);
       }
     };
-    String description = String.format(changeValueDescription, "syntax", quote(proto2()));
-    String label = String.format(changeValueLabel, proto2());
+    String description = String.format(changeValueDescription, "syntax", quote(Syntaxes.PROTO2));
+    String label = String.format(changeValueLabel, Syntaxes.PROTO2);
     acceptor.accept(issue, label, description, ICON_FOR_CHANGE, modification);
   }
 
@@ -86,11 +86,11 @@ public class ProtobufQuickfixProvider extends DefaultQuickfixProvider {
     ISemanticModification modification = new ISemanticModification() {
       @Override public void apply(EObject element, IModificationContext context) throws Exception {
         Syntax syntax = (Syntax) element;
-        syntax.setName(proto3());
+        syntaxes.setName(syntax, Syntaxes.PROTO3);
       }
     };
-    String description = String.format(changeValueDescription, "syntax", quote(proto3()));
-    String label = String.format(changeValueLabel, proto3());
+    String description = String.format(changeValueDescription, "syntax", quote(Syntaxes.PROTO3));
+    String label = String.format(changeValueLabel, Syntaxes.PROTO3);
     acceptor.accept(issue, label, description, ICON_FOR_CHANGE, modification);
   }
 
@@ -217,7 +217,9 @@ public class ProtobufQuickfixProvider extends DefaultQuickfixProvider {
 
   private StringLink linkTo(String value) {
     StringLink link = ProtobufFactory.eINSTANCE.createStringLink();
-    link.setTarget(value);
+    StringLiteral literal = ProtobufFactory.eINSTANCE.createStringLiteral();
+    literal.getChunks().add(value);
+    link.setTarget(literal);
     return link;
   }
 
