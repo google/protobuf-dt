@@ -9,5 +9,8 @@
    <feature url="features/com.google.eclipse.protobuf_1.4.3.201307151341.jar" id="com.google.eclipse.protobuf" version="1.4.3.201307151341">
       <category name="google"/>
    </feature>
+   <feature url="features/com.google.eclipse.protobuf_2.1.0.201412161507.jar" id="com.google.eclipse.protobuf" version="2.1.0.201412161507">
+      <category name="google"/>
+   </feature>
    <category-def name="google" label="Google Inc."/>
 </site>
