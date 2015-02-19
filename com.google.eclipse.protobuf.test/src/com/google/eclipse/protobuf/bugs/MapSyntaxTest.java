@@ -36,4 +36,14 @@ public class MapSyntaxTest {
     boolean isValid = validator.validate(xtext.root(), new BasicDiagnostic(), null);
     assertTrue(isValid);
   }
+
+  // syntax = "proto2";
+  //
+  // message Foo {
+  //   optional string map = 1;
+  // }
+  @Test public void shouldAllowFieldsNamedMap() {
+    boolean isValid = validator.validate(xtext.root(), new BasicDiagnostic(), null);
+    assertTrue(isValid);
+  }
 }

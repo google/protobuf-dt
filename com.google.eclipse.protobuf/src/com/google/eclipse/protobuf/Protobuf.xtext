@@ -250,7 +250,7 @@ SafeReservedWord:
   'package' | 'import' | 'public' | 'option' | 'extend' | 'message' | 'optional' | 'required' | 'repeated' |
   'enum' | 'service' | 'rpc' | 'stream' | 'returns' | 'default' | 'extensions' | 'to' | 'max' | 'true' | 'false' |
   'double' | 'float' | 'int32' | 'int64' | 'uint32' | 'uint64' | 'sint32' | 'sint64' | 'fixed32' | 'fixed64' |
-  'sfixed32' | 'sfixed64' | 'bool' | 'string' | 'bytes' | 'weak';
+  'sfixed32' | 'sfixed64' | 'bool' | 'string' | 'bytes' | 'weak' | 'map';
 
 SimpleValueLink:
   LiteralLink | BooleanLink | NumberLink | StringLink;
