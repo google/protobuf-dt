@@ -50,7 +50,7 @@ Message:
   '}' (';')?;
 
 MessageElement:
-  Option | Extensions | ComplexType | MessageField | TypeExtension | OneOf;
+  =>Option | Extensions | ComplexType | MessageField | TypeExtension | OneOf;
 
 Range:
   from=LONG ('to' to=RangeMax)?;
@@ -73,7 +73,7 @@ Group:
   '}' (';')?;
 
 GroupElement:
-  Option | MessageField | ComplexType | TypeExtension | Extensions;
+  =>Option | MessageField | ComplexType | TypeExtension | Extensions;
 
 OneOf:
   (isRepeated?='repeated')? =>'oneof' name=Name '{'
@@ -91,7 +91,7 @@ MessageField:
   ('[' (fieldOptions+=FieldOption (',' fieldOptions+=FieldOption)*)? ']')? (';')+;
 
 TypeLink:
-  ScalarTypeLink | ComplexTypeLink | MapTypeLink;
+  =>ScalarTypeLink | ComplexTypeLink | MapTypeLink;
 
 ScalarTypeLink:
   target=ScalarType;
@@ -144,8 +144,8 @@ ServiceElement:
   Option | Rpc | Stream;
 
 Rpc:
-  ->'rpc' name=Name '(' (isArgStreaming?='stream')? argType=MessageLink ')'
-  'returns' '(' (isReturnStreaming?='stream')? returnType=MessageLink ')'
+  ->'rpc' name=Name '(' (=>isArgStreaming?='stream')? argType=MessageLink ')'
+  'returns' '(' (=>isReturnStreaming?='stream')? returnType=MessageLink ')'
   (('{' options+=Option* '}') (';')? | (';')+);
 
 Stream:
@@ -265,7 +265,7 @@ enum BOOL:
   true | false;
 
 NumberLink:
-  HexNumberLink | LongLink | DoubleLink;
+  HexNumberLink | =>LongLink | DoubleLink;
 
 HexNumberLink:
   target=HEX;
@@ -285,7 +285,7 @@ terminal DOUBLE returns ecore::EDouble:
   ('-')? (DIGIT)+ ('.' (DIGIT)*)? (('e'|'E')('-'|'+')? (DIGIT)+) |
   'nan' | 'inf' | '-inf';
 
-terminal DIGIT:
+terminal fragment DIGIT:
   '0'..'9';
 
 StringLink:
@@ -295,10 +295,10 @@ StringLiteral:
   chunks+=CHUNK+;
 
 terminal CHUNK:
-  '"' ('\\' ('"' | "'" | '\\' | !('\\' | '"')) | !('\\' | '"'))* '"' |
-  "'" ('\\' ('"' | "'" | '\\' | !('\\' | "'")) | !('\\' | "'"))* "'";
+  '"' ('\\' . | !('\\' | '"'))* '"' |
+  "'" ('\\' . | !('\\' | "'"))* "'";
 
-terminal ID: '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
+terminal ID: '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|DIGIT)*;
 terminal ML_COMMENT: '/*' -> '*/';
 terminal SL_COMMENT: '//' !('\n'|'\r')* ('\r'? '\n')?;
 terminal WS: (' '|'\t'|'\r'|'\n')+;
