@@ -10,18 +10,21 @@ package com.google.eclipse.protobuf.model.util;
 
 import static java.lang.Math.max;
 import static java.util.Collections.emptyList;
-
 import static org.eclipse.xtext.util.SimpleAttributeResolver.newResolver;
 
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.util.SimpleAttributeResolver;
 
 import com.google.eclipse.protobuf.protobuf.FieldOption;
+import com.google.eclipse.protobuf.protobuf.Group;
 import com.google.eclipse.protobuf.protobuf.IndexedElement;
+import com.google.eclipse.protobuf.protobuf.Message;
 import com.google.eclipse.protobuf.protobuf.MessageElement;
+import com.google.eclipse.protobuf.protobuf.MessageField;
 import com.google.eclipse.protobuf.protobuf.OneOf;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -53,11 +56,11 @@ import com.google.inject.Singleton;
    * @return the calculated value for the index of the given element.
    */
   public long calculateNewIndexFor(IndexedElement e) {
-    EObject type = e.eContainer();
-    long index = findMaxIndex(type.eContents());
-    return ++index;
+    EObject containingMessage = EcoreUtil2.getContainerOfType(e, Message.class);
+    long index = findMaxIndex(containingMessage.eContents());
+    return index + 1;
   }
-  
+
   private long findMaxIndex(Iterable<? extends EObject> elements) {
     long maxIndex = 0;
 
@@ -66,17 +69,18 @@ import com.google.inject.Singleton;
         maxIndex = max(maxIndex, findMaxIndex(((OneOf) e).getElements()));
       } else if (e instanceof IndexedElement) {
         maxIndex  = max(maxIndex, indexOf((IndexedElement) e));
+        if (e instanceof Group) {
+          maxIndex = max(maxIndex, findMaxIndex(((Group) e).getElements()));
+        }
       }
     }
-    
+
     return maxIndex;
   }
 
   /**
-   * Returns the name of the given <code>{@link IndexedElement}</code>.
-   * @param e the given {@code IndexedElement}.
-   * @return the name of the given {@code IndexedElement}, or {@code Long.MIN_VALUE} if the given {@code IndexedElement}
-   * is {@code null}.
+   * Returns the index of the given {@link IndexedElement}, or {@code Long.MIN_VALUE} if the given
+   * {@code IndexedElement} is {@code null}.
    */
   public long indexOf(IndexedElement e) {
     long index = Long.MIN_VALUE;

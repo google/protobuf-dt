@@ -113,6 +113,10 @@ public class XtextRule implements MethodRule {
     return root;
   }
 
+  public String text() {
+    return resource.getParseResult().getRootNode().getText();
+  }
+
   public <T extends EObject> T find(String name, String extra, Class<T> type, SearchOption...options) {
     return find(name + extra, name.length(), type, options);
   }
