@@ -15,6 +15,7 @@ import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integ
 import static com.google.eclipse.protobuf.junit.core.SearchOption.IGNORE_CASE;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static com.google.eclipse.protobuf.junit.matchers.ContainAllFieldsInMessage.containAllFieldsIn;
+import static com.google.eclipse.protobuf.junit.matchers.ContainAllNames.containAll;
 
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.xtext.scoping.IScope;
@@ -181,5 +182,33 @@ public class ProtobufScopeProvider_scope_OptionField_target_with_MessageOptionFi
     IScope scope = scopeProvider.scope_OptionField_target(codeOptionField, reference);
     Group groupMessage = xtext.find("Type", " =", Group.class);
     assertThat(descriptionsIn(scope), containAllFieldsIn(groupMessage));
+  }
+
+  // syntax = "proto2";
+  //
+  // package com.google.proto;
+  //
+  // import 'google/protobuf/descriptor.proto';
+  //
+  // message Type {
+  //   bool foo = 1;
+  //   oneof choose_one {
+  //     bool bar = 2;
+  //     bool baz = 3;
+  //   }
+  // }
+  //
+  // extend google.protobuf.FieldOptions {
+  //   optional Type type = 1000;
+  // }
+  //
+  // message Person {
+  //   optional bool active = 1 [(type).bar = true];
+  // }
+  @Test public void should_provide_field_option_from_oneof() {
+    CustomFieldOption option = xtext.find("type", ")", CustomFieldOption.class);
+    MessageOptionField codeOptionField = (MessageOptionField) option.getFields().get(0);
+    IScope scope = scopeProvider.scope_OptionField_target(codeOptionField, reference);
+    assertThat(descriptionsIn(scope), containAll("foo", "bar", "baz"));
   }
 }
