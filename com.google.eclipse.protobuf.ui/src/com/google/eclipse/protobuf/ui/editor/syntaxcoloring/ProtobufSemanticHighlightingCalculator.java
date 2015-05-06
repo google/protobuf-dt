@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2011, 2015 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
@@ -115,7 +115,7 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
 
   private void highlight(TypeExtension extension, IHighlightedPositionAcceptor acceptor) {
     highlightFirstFeature(extension, TYPE_EXTENSION__TYPE, acceptor, MESSAGE_ID);
-    for (MessageElement element : extension.getElements()) {
+    for (IndexedElement element : extension.getElements()) {
       highlight(element, acceptor);
     }
   }

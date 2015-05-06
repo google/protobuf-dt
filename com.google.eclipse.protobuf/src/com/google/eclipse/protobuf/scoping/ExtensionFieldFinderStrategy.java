@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2011, 2015 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -25,7 +25,6 @@ import com.google.eclipse.protobuf.model.util.Options;
 import com.google.eclipse.protobuf.naming.OptionNamingStrategy;
 import com.google.eclipse.protobuf.protobuf.IndexedElement;
 import com.google.eclipse.protobuf.protobuf.Message;
-import com.google.eclipse.protobuf.protobuf.MessageElement;
 import com.google.eclipse.protobuf.protobuf.MessageField;
 import com.google.eclipse.protobuf.protobuf.TypeExtension;
 import com.google.inject.Inject;
@@ -50,14 +49,10 @@ class ExtensionFieldFinderStrategy implements CustomOptionFieldFinder.FinderStra
     }
     Set<IEObjectDescription> descriptions = newHashSet();
     for (TypeExtension extension : messages.localExtensionsOf(fieldType)) {
-      for (MessageElement element : extension.getElements()) {
-        if (!(element instanceof IndexedElement)) {
-          continue;
-        }
-        IndexedElement current = (IndexedElement) element;
-        descriptions.addAll(qualifiedNameDescriptions.qualifiedNames(current, namingStrategy));
-        String name = options.nameForOption(current);
-        descriptions.add(create(name, current));
+      for (IndexedElement element : extension.getElements()) {
+        descriptions.addAll(qualifiedNameDescriptions.qualifiedNames(element, namingStrategy));
+        String name = options.nameForOption(element);
+        descriptions.add(create(name, element));
       }
     }
     return descriptions;

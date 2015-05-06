@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2011, 2015 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -25,8 +25,8 @@ import com.google.eclipse.protobuf.model.util.TypeExtensions;
 import com.google.eclipse.protobuf.naming.LocalNamesProvider;
 import com.google.eclipse.protobuf.naming.OptionNamingStrategy;
 import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.protobuf.IndexedElement;
 import com.google.eclipse.protobuf.protobuf.Message;
-import com.google.eclipse.protobuf.protobuf.MessageElement;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.eclipse.protobuf.protobuf.TypeExtension;
 import com.google.inject.Inject;
@@ -47,7 +47,7 @@ class CustomOptionFinderStrategy implements ModelElementFinder.FinderStrategy<Op
     }
     Set<IEObjectDescription> descriptions = newHashSet();
     TypeExtension extension = (TypeExtension) target;
-    for (MessageElement e : extension.getElements()) {
+    for (IndexedElement e : extension.getElements()) {
       descriptions.addAll(qualifiedNamesDescriptions.qualifiedNames(e, namingStrategy));
     }
     return descriptions;
@@ -63,7 +63,7 @@ class CustomOptionFinderStrategy implements ModelElementFinder.FinderStrategy<Op
     }
     Set<IEObjectDescription> descriptions = newHashSet();
     TypeExtension extension = (TypeExtension) target;
-    for (MessageElement e : extension.getElements()) {
+    for (IndexedElement e : extension.getElements()) {
       List<QualifiedName> names = localNamesProvider.localNames(e, namingStrategy);
       int nameCount = names.size();
       for (int i = level; i < nameCount; i++) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Google Inc.
+ * Copyright (c) 2012, 2015 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -23,7 +23,6 @@ import com.google.eclipse.protobuf.naming.NormalNamingStrategy;
 import com.google.eclipse.protobuf.protobuf.Group;
 import com.google.eclipse.protobuf.protobuf.IndexedElement;
 import com.google.eclipse.protobuf.protobuf.Message;
-import com.google.eclipse.protobuf.protobuf.MessageElement;
 import com.google.eclipse.protobuf.protobuf.MessageField;
 import com.google.eclipse.protobuf.protobuf.TypeExtension;
 import com.google.inject.Inject;
@@ -44,10 +43,8 @@ class ExtensionFieldNameFinderStrategy implements CustomOptionFieldNameFinder.Fi
       Message type = messageFields.messageTypeOf((MessageField) reference);
       // check first in descriptor.proto
       for (TypeExtension extension : messages.extensionsOf(type, modelObjects.rootOf(reference))) {
-        for (MessageElement element : extension.getElements()) {
-          if (element instanceof IndexedElement) {
-            descriptions.addAll(qualifiedNameDescriptions.qualifiedNames(element, namingStrategy));
-          }
+        for (IndexedElement element : extension.getElements()) {
+          descriptions.addAll(qualifiedNameDescriptions.qualifiedNames(element, namingStrategy));
         }
       }
     } else if (reference instanceof Group) {

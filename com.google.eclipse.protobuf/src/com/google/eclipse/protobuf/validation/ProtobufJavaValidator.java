@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Google Inc.
+ * Copyright (c) 2014, 2015 Google Inc.
  *
  * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
  * Public License v1.0 which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import static com.google.eclipse.protobuf.validation.Messages.fieldNumbersMustBe
 import static com.google.eclipse.protobuf.validation.Messages.invalidMapKeyType;
 import static com.google.eclipse.protobuf.validation.Messages.invalidMapValueType;
 import static com.google.eclipse.protobuf.validation.Messages.mapWithModifier;
+import static com.google.eclipse.protobuf.validation.Messages.mapWithinTypeExtension;
 import static com.google.eclipse.protobuf.validation.Messages.missingModifier;
 import static com.google.eclipse.protobuf.validation.Messages.multiplePackages;
 import static com.google.eclipse.protobuf.validation.Messages.oneofFieldWithModifier;
@@ -46,10 +47,12 @@ import com.google.eclipse.protobuf.protobuf.ProtobufElement;
 import com.google.eclipse.protobuf.protobuf.ScalarType;
 import com.google.eclipse.protobuf.protobuf.ScalarTypeLink;
 import com.google.eclipse.protobuf.protobuf.Syntax;
+import com.google.eclipse.protobuf.protobuf.TypeExtension;
 import com.google.eclipse.protobuf.protobuf.TypeLink;
 import com.google.inject.Inject;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.validation.Check;
@@ -241,6 +244,12 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
     if (keyType instanceof MapTypeLink) {
       error(invalidMapValueType, map, MAP_TYPE__VALUE_TYPE, MAP_WITH_MAP_VALUE_TYPE_ERROR);
       return;
+    }
+  }
+
+  @Check public void checkMapIsNotWithinExtension(MapType map) {
+    if (EcoreUtil2.getContainerOfType(map, TypeExtension.class) != null) {
+      error(mapWithinTypeExtension, map, null);
     }
   }
 }
