@@ -21,12 +21,12 @@ import com.google.eclipse.protobuf.protobuf.AbstractOption;
 import com.google.eclipse.protobuf.protobuf.ExtensibleTypeLink;
 import com.google.eclipse.protobuf.protobuf.Extensions;
 import com.google.eclipse.protobuf.protobuf.Import;
+import com.google.eclipse.protobuf.protobuf.IndexRange;
 import com.google.eclipse.protobuf.protobuf.IndexedElement;
 import com.google.eclipse.protobuf.protobuf.Literal;
 import com.google.eclipse.protobuf.protobuf.MessageField;
 import com.google.eclipse.protobuf.protobuf.MessageLink;
 import com.google.eclipse.protobuf.protobuf.OptionField;
-import com.google.eclipse.protobuf.protobuf.Range;
 import com.google.eclipse.protobuf.protobuf.Rpc;
 import com.google.eclipse.protobuf.protobuf.Stream;
 import com.google.eclipse.protobuf.protobuf.TypeExtension;
@@ -110,13 +110,13 @@ public class Labels {
 
   private Object labelFor(Extensions extensions) {
     StringBuilder builder = new StringBuilder();
-    EList<Range> ranges = extensions.getRanges();
+    EList<IndexRange> ranges = extensions.getRanges();
     int rangeCount = ranges.size();
     for (int i = 0; i < rangeCount; i++) {
       if (i > 0) {
         builder.append(", ");
       }
-      Range range = ranges.get(i);
+      IndexRange range = ranges.get(i);
       builder.append(range.getFrom());
       String to = range.getTo();
       if (to != null) {

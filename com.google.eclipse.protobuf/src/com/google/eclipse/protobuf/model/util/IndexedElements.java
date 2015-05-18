@@ -19,13 +19,15 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.util.SimpleAttributeResolver;
 
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Range;
 import com.google.eclipse.protobuf.protobuf.FieldOption;
 import com.google.eclipse.protobuf.protobuf.Group;
+import com.google.eclipse.protobuf.protobuf.IndexRange;
 import com.google.eclipse.protobuf.protobuf.IndexedElement;
 import com.google.eclipse.protobuf.protobuf.Message;
-import com.google.eclipse.protobuf.protobuf.MessageElement;
-import com.google.eclipse.protobuf.protobuf.MessageField;
 import com.google.eclipse.protobuf.protobuf.OneOf;
+import com.google.eclipse.protobuf.protobuf.Reserved;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -37,6 +39,7 @@ import com.google.inject.Singleton;
 @Singleton public class IndexedElements {
   private final static SimpleAttributeResolver<EObject, Long> INDEX_RESOLVER = newResolver(long.class, "index");
 
+  @Inject private IndexRanges indexRanges;
   @Inject private ModelObjects modelObjects;
 
   /**
@@ -71,6 +74,14 @@ import com.google.inject.Singleton;
         maxIndex  = max(maxIndex, indexOf((IndexedElement) e));
         if (e instanceof Group) {
           maxIndex = max(maxIndex, findMaxIndex(((Group) e).getElements()));
+        }
+      } else if (e instanceof Reserved) {
+        for (IndexRange indexRange :
+            Iterables.filter(((Reserved) e).getReservations(), IndexRange.class)) {
+          Range<Long> range = indexRanges.toLongRange(indexRange);
+          if (range.hasUpperBound()) {
+            maxIndex = max(maxIndex, range.upperEndpoint());
+          }
         }
       }
     }

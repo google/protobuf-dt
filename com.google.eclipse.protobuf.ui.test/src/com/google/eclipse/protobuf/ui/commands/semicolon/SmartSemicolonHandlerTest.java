@@ -11,7 +11,6 @@ package com.google.eclipse.protobuf.ui.commands.semicolon;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.custom.StyledTextContent;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
@@ -19,7 +18,6 @@ import org.eclipse.xtext.nodemodel.ICompositeNode;
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
@@ -111,6 +109,32 @@ public class SmartSemicolonHandlerTest {
   @Test public void shouldDetermineCorrectIndexOutsideOfNestedMessage() {
     MessageField incomplete = xtext.find("incomplete", MessageField.class);
     assertThat(handler.determineNewIndex(incomplete), is(3L));
+  }
+
+  // // ignore errors
+  // syntax = "proto2";
+  //
+  // message Message {
+  //   optional bool foo = 1;
+  //   reserved 3;
+  //   optional bool incomplete
+  // }
+  @Test public void shouldDetermineCorrectIndexWithSingleReserved() {
+    MessageField incomplete = xtext.find("incomplete", MessageField.class);
+    assertThat(handler.determineNewIndex(incomplete), is(4L));
+  }
+
+  // // ignore errors
+  // syntax = "proto2";
+  //
+  // message Message {
+  //   optional bool foo = 1;
+  //   reserved 3, 5 to 7;
+  //   optional bool incomplete
+  // }
+  @Test public void shouldDetermineCorrectIndexWithReservedRange() {
+    MessageField incomplete = xtext.find("incomplete", MessageField.class);
+    assertThat(handler.determineNewIndex(incomplete), is(8L));
   }
 
   // // ignore errors

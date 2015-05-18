@@ -50,12 +50,12 @@ Message:
   '}' (';')?;
 
 MessageElement:
-  =>Option | Extensions | ComplexType | MessageField | TypeExtension | OneOf;
+  =>Option | Extensions | ComplexType | MessageField | TypeExtension | OneOf | Reserved;
 
-Range:
-  from=LONG ('to' to=RangeMax)?;
+IndexRange:
+  from=LONG ('to' to=IndexRangeMax)?;
 
-RangeMax:
+IndexRangeMax:
   LONG | 'max';
 
 // Hack to make the default modifier 'unspecified'
@@ -84,7 +84,7 @@ OneOfElement returns MessageElement:
   Extensions | Group | MessageField;
 
 Extensions:
-  ->'extensions' ranges+=Range (',' ranges+=Range)* (';')+;
+  ->'extensions' ranges+=IndexRange (',' ranges+=IndexRange)* (';')+;
 
 MessageField:
   (modifier=Modifier)? =>type=TypeLink name=Name '=' index=(LONG | HEX)
@@ -134,6 +134,12 @@ ExtensibleTypeLink:
 
 ExtensibleType:
   Message | Group;
+
+Reserved:
+  'reserved' reservations+=Reservation (',' reservations+=Reservation)* ';'+;
+
+Reservation:
+  IndexRange | StringLiteral;
 
 Service:
   ->'service' name=Name '{'
@@ -250,7 +256,7 @@ SafeReservedWord:
   'package' | 'import' | 'public' | 'option' | 'extend' | 'message' | 'optional' | 'required' | 'repeated' |
   'enum' | 'service' | 'rpc' | 'stream' | 'returns' | 'default' | 'extensions' | 'to' | 'max' | 'true' | 'false' |
   'double' | 'float' | 'int32' | 'int64' | 'uint32' | 'uint64' | 'sint32' | 'sint64' | 'fixed32' | 'fixed64' |
-  'sfixed32' | 'sfixed64' | 'bool' | 'string' | 'bytes' | 'weak' | 'map';
+  'sfixed32' | 'sfixed64' | 'bool' | 'string' | 'bytes' | 'weak' | 'map' | 'reserved';
 
 SimpleValueLink:
   LiteralLink | BooleanLink | NumberLink | StringLink;

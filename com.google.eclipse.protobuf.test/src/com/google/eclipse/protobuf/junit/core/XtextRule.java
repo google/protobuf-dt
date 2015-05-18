@@ -10,10 +10,10 @@
 package com.google.eclipse.protobuf.junit.core;
 
 import static java.util.Arrays.asList;
-
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
@@ -133,8 +133,11 @@ public class XtextRule implements MethodRule {
     return finder.find(text);
   }
 
+  public <T extends EObject> List<T> findAll(Class<T> type) {
+    return EcoreUtil2.getAllContentsOfType(root, type);
+  }
+
   public <T extends EObject> T findFirst(Class<T> type) {
-    List<T> contents = EcoreUtil2.getAllContentsOfType(root, type);
-    return (contents.isEmpty()) ? null : contents.get(0);
+    return findAll(type).get(0);
   }
 }

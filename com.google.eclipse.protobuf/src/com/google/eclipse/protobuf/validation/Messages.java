@@ -14,6 +14,8 @@ import org.eclipse.osgi.util.NLS;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Messages extends NLS {
+  public static String conflictsWithExtensions;
+  public static String conflictsWithReserved;
   public static String expectedFieldName;
   public static String expectedFieldNumber;
   public static String expectedIdentifier;
@@ -37,6 +39,8 @@ public class Messages extends NLS {
   public static String multiplePackages;
   public static String oneofFieldWithModifier;
   public static String requiredInProto3;
+  public static String reservedIndexAndName;
+  public static String reservedToMax;
   public static String scopingError;
   public static String unknownSyntax;
   public static String unrecognizedSyntaxIdentifier;

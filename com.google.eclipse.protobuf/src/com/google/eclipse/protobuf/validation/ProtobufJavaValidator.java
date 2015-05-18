@@ -13,6 +13,8 @@ import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MAP_
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MESSAGE_FIELD__MODIFIER;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.PACKAGE__NAME;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.SYNTAX__NAME;
+import static com.google.eclipse.protobuf.validation.Messages.conflictsWithExtensions;
+import static com.google.eclipse.protobuf.validation.Messages.conflictsWithReserved;
 import static com.google.eclipse.protobuf.validation.Messages.expectedFieldNumber;
 import static com.google.eclipse.protobuf.validation.Messages.expectedSyntaxIdentifier;
 import static com.google.eclipse.protobuf.validation.Messages.fieldNumberAlreadyUsed;
@@ -25,14 +27,28 @@ import static com.google.eclipse.protobuf.validation.Messages.missingModifier;
 import static com.google.eclipse.protobuf.validation.Messages.multiplePackages;
 import static com.google.eclipse.protobuf.validation.Messages.oneofFieldWithModifier;
 import static com.google.eclipse.protobuf.validation.Messages.requiredInProto3;
+import static com.google.eclipse.protobuf.validation.Messages.reservedIndexAndName;
+import static com.google.eclipse.protobuf.validation.Messages.reservedToMax;
 import static com.google.eclipse.protobuf.validation.Messages.unknownSyntax;
 import static com.google.eclipse.protobuf.validation.Messages.unrecognizedSyntaxIdentifier;
 import static java.lang.String.format;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Range;
+import com.google.eclipse.protobuf.model.util.IndexRanges;
 import com.google.eclipse.protobuf.model.util.IndexedElements;
 import com.google.eclipse.protobuf.model.util.Protobufs;
+import com.google.eclipse.protobuf.model.util.StringLiterals;
 import com.google.eclipse.protobuf.model.util.Syntaxes;
 import com.google.eclipse.protobuf.naming.NameResolver;
+import com.google.eclipse.protobuf.protobuf.Extensions;
+import com.google.eclipse.protobuf.protobuf.IndexRange;
 import com.google.eclipse.protobuf.protobuf.IndexedElement;
 import com.google.eclipse.protobuf.protobuf.MapType;
 import com.google.eclipse.protobuf.protobuf.MapTypeLink;
@@ -44,17 +60,24 @@ import com.google.eclipse.protobuf.protobuf.OneOf;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.eclipse.protobuf.protobuf.ProtobufElement;
+import com.google.eclipse.protobuf.protobuf.ProtobufPackage;
+import com.google.eclipse.protobuf.protobuf.Reservation;
+import com.google.eclipse.protobuf.protobuf.Reserved;
 import com.google.eclipse.protobuf.protobuf.ScalarType;
 import com.google.eclipse.protobuf.protobuf.ScalarTypeLink;
+import com.google.eclipse.protobuf.protobuf.StringLiteral;
 import com.google.eclipse.protobuf.protobuf.Syntax;
 import com.google.eclipse.protobuf.protobuf.TypeExtension;
 import com.google.eclipse.protobuf.protobuf.TypeLink;
 import com.google.inject.Inject;
 
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.naming.QualifiedName;
+import org.eclipse.xtext.util.SimpleAttributeResolver;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.ComposedChecks;
 
@@ -74,7 +97,9 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
   public static final String ONEOF_FIELD_WITH_MODIFIER_ERROR = "oneofFieldWithModifier";
 
   @Inject private IndexedElements indexedElements;
+  @Inject private IndexRanges indexRanges;
   @Inject private NameResolver nameResolver;
+  @Inject private StringLiterals stringLiterals;
   @Inject private Protobufs protobufs;
   @Inject private IQualifiedNameProvider qualifiedNameProvider;
   @Inject private Syntaxes syntaxes;
@@ -92,6 +117,127 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
     String name = syntaxes.getName(syntax);
     String msg = (name == null) ? expectedSyntaxIdentifier : format(unrecognizedSyntaxIdentifier, name);
     error(msg, syntax, SYNTAX__NAME, SYNTAX_IS_NOT_KNOWN_ERROR);
+  }
+
+  @Check public void checkForIndexRangeConflicts(Message message) {
+    Collection<Range<Long>> reservedRanges = new ArrayList<>();
+    for (Reserved reserved : getOwnedElements(Message.class, message, Reserved.class)) {
+      for (IndexRange indexRange : Iterables.filter(reserved.getReservations(), IndexRange.class)) {
+        Range<Long> range = indexRanges.toLongRange(indexRange);
+        errorOnConflicts(range, reservedRanges, conflictsWithReserved, indexRange, null);
+        reservedRanges.add(range);
+      }
+    }
+
+    Collection<Range<Long>> extensionsRanges = new ArrayList<>();
+    for (Extensions extensions : getOwnedElements(Message.class, message, Extensions.class)) {
+      for (IndexRange indexRange : extensions.getRanges()) {
+        Range<Long> range = indexRanges.toLongRange(indexRange);
+        errorOnConflicts(range, reservedRanges, conflictsWithReserved, indexRange, null);
+        errorOnConflicts(range, extensionsRanges, conflictsWithExtensions, indexRange, null);
+        extensionsRanges.add(range);
+      }
+    }
+
+    for (IndexedElement element : getOwnedElements(Message.class, message, IndexedElement.class)) {
+      long index = indexedElements.indexOf(element);
+      Range<Long> range = Range.singleton(index);
+      EStructuralFeature indexFeature = indexedElements.indexFeatureOf(element);
+      errorOnConflicts(range, reservedRanges, conflictsWithReserved, element, indexFeature);
+      errorOnConflicts(range, extensionsRanges, conflictsWithExtensions, element, indexFeature);
+    }
+  }
+
+  private void errorOnConflicts(
+      Range<Long> range,
+      Iterable<Range<Long>> existingRanges,
+      String errorTemplate,
+      EObject errorSource,
+      EStructuralFeature errorFeature) {
+    for (Range<Long> existingRange : existingRanges) {
+      if (range.isConnected(existingRange)) {
+        String message =
+            String.format(errorTemplate, rangeToString(range), rangeToString(existingRange));
+        error(message, errorSource, errorFeature);
+      }
+    }
+  }
+
+  private String rangeToString(Range<Long> range) {
+    if (range.hasLowerBound() && range.hasUpperBound()
+        && range.lowerEndpoint() == range.upperEndpoint()) {
+      return String.valueOf(range.lowerEndpoint());
+    }
+
+    String upper =
+        range.hasUpperBound() ? String.valueOf(range.upperEndpoint()) : indexRanges.getMaxKeyword();
+    return String.format("%d to %s", range.lowerEndpoint(), upper);
+  }
+
+  @Check public void checkForReservedToMax(Reserved reserved) {
+    for (IndexRange range : Iterables.filter(reserved.getReservations(), IndexRange.class)) {
+      String to = range.getTo();
+      if (indexRanges.getMaxKeyword().equals(to)) {
+        error(reservedToMax, range, ProtobufPackage.Literals.INDEX_RANGE__TO);
+      }
+    }
+  }
+
+  @Check public void checkForReservedNameConflicts(Message message) {
+    Set<String> reservedNames = new HashSet<>();
+    for (Reserved reserved : getOwnedElements(Message.class, message, Reserved.class)) {
+      for (StringLiteral stringLiteral :
+          Iterables.filter(reserved.getReservations(), StringLiteral.class)) {
+        String name = stringLiterals.getCombinedString(stringLiteral);
+        reportReservedNameConflicts(name, reservedNames, stringLiteral, null);
+        reservedNames.add(name);
+      }
+    }
+
+    for (IndexedElement element : getOwnedElements(Message.class, message, IndexedElement.class)) {
+      String name = nameResolver.nameOf(element);
+      if (name != null) {
+        EAttribute nameAttribute = SimpleAttributeResolver.NAME_RESOLVER.getAttribute(element);
+        reportReservedNameConflicts(name, reservedNames, element, nameAttribute);
+      }
+    }
+  }
+
+  @Check public void checkForReservedIndexAndName(Reserved reserved) {
+    boolean hasIndexReservation = false;
+    boolean hasNameReservation = false;
+    for (Reservation reservation : reserved.getReservations()) {
+      if (reservation instanceof IndexRange) {
+        hasIndexReservation = true;
+      } else if (reservation instanceof StringLiteral) {
+        hasNameReservation = true;
+      }
+    }
+
+    if (hasIndexReservation && hasNameReservation) {
+      error(reservedIndexAndName, reserved, null);
+    }
+  }
+
+  private void reportReservedNameConflicts(
+      String name, Set<String> reservedNames, EObject errorSource, EAttribute errorFeature) {
+    if (reservedNames.contains(name)) {
+      String quotedName = '"' + name + '"';
+      String message = String.format(conflictsWithReserved, quotedName, quotedName);
+      error(message, errorSource, errorFeature);
+    }
+  }
+
+  private <E extends EObject, C extends EObject> Collection<E> getOwnedElements(
+      Class<C> containerType, C container, Class<E> elementType) {
+    List<E> allElements = EcoreUtil2.getAllContentsOfType(container, elementType);
+    List<E> ownedElements = new ArrayList<>(allElements.size());
+    for (E element : allElements) {
+      if (EcoreUtil2.getContainerOfType(element, containerType) == container) {
+        ownedElements.add(element);
+      }
+    }
+    return ownedElements;
   }
 
   @Check public void checkTagNumberIsUnique(IndexedElement e) {
