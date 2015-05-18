@@ -704,10 +704,11 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
   }
 
-  @Override public void completeSimpleValueField_Value(EObject model, Assignment assignment,
-      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    if (model instanceof SimpleValueField) {
-      SimpleValueField field = (SimpleValueField) model;
+  @Override
+  public void complete_SimpleValueLink(EObject model, RuleCall ruleCall, ContentAssistContext context,
+      ICompletionProposalAcceptor acceptor) {
+    SimpleValueField field = extractElementFromContext(context, SimpleValueField.class);
+    if (field != null) {
       FieldName name = field.getName();
       if (name != null) {
         IndexedElement target = name.getTarget();

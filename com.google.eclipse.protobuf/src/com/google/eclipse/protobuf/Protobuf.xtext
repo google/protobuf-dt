@@ -219,20 +219,24 @@ ComplexValue:
 
 // { foo: 1, bar: 2 }
 ComplexValueCurlyBracket:
-  ->'{' {ComplexValueCurlyBracket} (fields+=ValueField (',')?)* '}';
+  '{' {ComplexValueCurlyBracket} (fields+=ValueField (',')?)* '}';
 
 // < foo: 1, bar: 2 >
 ComplexValueAngleBracket:
-  ->'<' {ComplexValueAngleBracket} (fields+=ValueField (',')?)* '>';
+  '<' {ComplexValueAngleBracket} (fields+=ValueField (',')?)* '>';
 
 ValueField:
-  SimpleValueField | ComplexValueField;
+  ->SimpleValueField | ComplexValueField;
 
 SimpleValueField:
-  name=FieldName ':' value=SimpleValueLink ';'?;
+  name=FieldName ':'
+  (values+=SimpleValueLink | '[' values+=SimpleValueLink (',' values+=SimpleValueLink)* ','? ']')
+  ';'?;
 
 ComplexValueField:
-  name=FieldName ':'? values=ComplexValue ';'?;
+  name=FieldName ':'?
+  (values+=ComplexValue | '[' values+=ComplexValue (',' values+=ComplexValue)* ','? ']')
+  ';'?;
 
 FieldName:
   NormalFieldName | ExtensionFieldName;
