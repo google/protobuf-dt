@@ -29,6 +29,8 @@ import com.google.eclipse.protobuf.grammar.CommonKeyword;
 import com.google.eclipse.protobuf.protobuf.ComplexType;
 import com.google.eclipse.protobuf.protobuf.ComplexTypeLink;
 import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.eclipse.protobuf.protobuf.MapType;
+import com.google.eclipse.protobuf.protobuf.MapTypeLink;
 import com.google.eclipse.protobuf.protobuf.Message;
 import com.google.eclipse.protobuf.protobuf.MessageField;
 import com.google.eclipse.protobuf.protobuf.ModifierEnum;
@@ -142,14 +144,26 @@ import com.google.inject.Singleton;
    * @return the name of the type of the given field.
    */
   public String typeNameOf(MessageField field) {
-    ScalarType scalarType = scalarTypeOf(field);
+    return typeNameOf(field.getType());
+  }
+
+  private String typeNameOf(TypeLink typeLink) {
+    ScalarType scalarType = scalarTypeOf(typeLink);
     if (scalarType != null) {
       return scalarType.getName();
     }
-    ComplexType complexType = typeOf(field);
+
+    MapType mapType = mapTypeOf(typeLink);
+    if (mapType != null) {
+      return String.format(
+          "map<%s, %s>", typeNameOf(mapType.getKeyType()), typeNameOf(mapType.getValueType()));
+    }
+
+    ComplexType complexType = complexTypeOf(typeLink);
     if (complexType != null) {
       return complexType.getName();
     }
+
     return null;
   }
 
@@ -159,7 +173,8 @@ import com.google.inject.Singleton;
    * @return the message type of the given field or {@code null} if the type of the given field is not message.
    */
   public Message messageTypeOf(MessageField field) {
-    return fieldType(field, Message.class);
+    ComplexType fieldType = complexTypeOf(field.getType());
+    return fieldType instanceof Message ? (Message) fieldType : null;
   }
 
   /**
@@ -168,28 +183,12 @@ import com.google.inject.Singleton;
    * @return the enum type of the given field or {@code null} if the type of the given field is not enum.
    */
   public Enum enumTypeOf(MessageField field) {
-    return fieldType(field, Enum.class);
+    ComplexType fieldType = complexTypeOf(field.getType());
+    return fieldType instanceof Enum ? (Enum) fieldType : null;
   }
 
-  private <T extends ComplexType> T fieldType(MessageField field, Class<T> targetType) {
-    ComplexType type = typeOf(field);
-    if (targetType.isInstance(type)) {
-      return targetType.cast(type);
-    }
-    return null;
-  }
-
-  /**
-   * Returns the type of the given field.
-   * @param field the given field.
-   * @return the type of the given field.
-   */
-  public ComplexType typeOf(MessageField field) {
-    TypeLink link = field.getType();
-    if (link instanceof ComplexTypeLink) {
-      return ((ComplexTypeLink) link).getTarget();
-    }
-    return null;
+  private ComplexType complexTypeOf(TypeLink link) {
+    return link instanceof ComplexTypeLink ? ((ComplexTypeLink) link).getTarget() : null;
   }
 
   /**
@@ -198,10 +197,14 @@ import com.google.inject.Singleton;
    * @return the scalar type of the given field or {@code null} if the type of the given field is not a scalar.
    */
   public ScalarType scalarTypeOf(MessageField field) {
-    TypeLink link = (field).getType();
-    if (link instanceof ScalarTypeLink) {
-      return ((ScalarTypeLink) link).getTarget();
-    }
-    return null;
+    return scalarTypeOf(field.getType());
+  }
+
+  private ScalarType scalarTypeOf(TypeLink link) {
+    return link instanceof ScalarTypeLink ? ((ScalarTypeLink) link).getTarget() : null;
+  }
+
+  private MapType mapTypeOf(TypeLink typeLink) {
+    return typeLink instanceof MapTypeLink ? ((MapTypeLink) typeLink).getTarget() : null;
   }
 }
