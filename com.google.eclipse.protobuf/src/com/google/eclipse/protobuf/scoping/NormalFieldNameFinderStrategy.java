@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.eclipse.protobuf.model.util.MessageFields;
 import com.google.eclipse.protobuf.protobuf.Group;
 import com.google.eclipse.protobuf.protobuf.IndexedElement;
+import com.google.eclipse.protobuf.protobuf.Message;
 import com.google.eclipse.protobuf.protobuf.MessageField;
 import com.google.eclipse.protobuf.protobuf.OneOf;
 import com.google.inject.Inject;
@@ -33,11 +34,19 @@ class NormalFieldNameFinderStrategy implements CustomOptionFieldNameFinder.Finde
   @Inject private MessageFields messageFields;
 
   @Override public Collection<IEObjectDescription> findMessageFields(IndexedElement reference) {
-    Iterable<? extends EObject> elements = reference instanceof Group
-        ? ((Group) reference).getElements()
-        : reference instanceof MessageField
-            ? messageFields.messageTypeOf((MessageField) reference).getElements()
-            : null;
+    Iterable<? extends EObject> elements;
+    if (reference instanceof Group) {
+      elements = ((Group) reference).getElements();
+    } else if (reference instanceof MessageField) {
+      MessageField field = (MessageField) reference;
+      Message fieldType = messageFields.mapEntryTypeOf(field);
+      if (fieldType == null) {
+        fieldType = messageFields.messageTypeOf(field);
+      }
+      elements = fieldType.getElements();
+    } else {
+      elements = null;
+    }
     return getDescriptions(elements);
   }
 

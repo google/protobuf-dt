@@ -39,7 +39,11 @@ class MessageFieldFinderStrategy implements CustomOptionFieldFinder.FinderStrate
   @Override public Collection<IEObjectDescription> findOptionFields(IndexedElement reference) {
     Collection<? extends EObject> elements;
     if (reference instanceof MessageField) {
-      Message fieldType = messageFields.messageTypeOf((MessageField) reference);
+      Message fieldType = messageFields.mapEntryTypeOf((MessageField) reference);
+      if (fieldType == null) {
+        fieldType = messageFields.messageTypeOf((MessageField) reference);
+      }
+
       if (fieldType != null) {
         elements = fieldType.getElements();
       } else {

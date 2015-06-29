@@ -37,6 +37,8 @@ import com.google.eclipse.protobuf.protobuf.ModifierEnum;
 import com.google.eclipse.protobuf.protobuf.ScalarType;
 import com.google.eclipse.protobuf.protobuf.ScalarTypeLink;
 import com.google.eclipse.protobuf.protobuf.TypeLink;
+import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
@@ -45,6 +47,8 @@ import com.google.inject.Singleton;
  * @author alruiz@google.com (Alex Ruiz)
  */
 @Singleton public class MessageFields {
+  @Inject private ProtoDescriptorProvider descriptorProvider;
+
   /**
    * Indicates whether the modifier of the given field is <code>{@link ModifierEnum#OPTIONAL}</code>.
    * @param field the given field.
@@ -206,5 +210,16 @@ import com.google.inject.Singleton;
 
   private MapType mapTypeOf(TypeLink typeLink) {
     return typeLink instanceof MapTypeLink ? ((MapTypeLink) typeLink).getTarget() : null;
+  }
+
+  /**
+   * Returns a Message representing an entry in a map of the given field's type, or null if the
+   * given field is not of map type.
+   */
+  public Message mapEntryTypeOf(MessageField field) {
+    // TODO(jogl): Dynamically create and return a message type with key and value fields matching
+    // the key and value types of the target MapType.
+    return field.getType() instanceof MapTypeLink
+        ? (Message) descriptorProvider.mapEntryDescriptor().allTypes().get(0) : null;
   }
 }

@@ -55,6 +55,11 @@ import java.util.logging.Logger;
   private final ProtoDescriptorInfo openSourceProtoDescriptorInfo;
   private final ProtoDescriptorInfo extensionPointDescriptorInfo;
 
+  private static final String MAP_ENTRY_DESCRIPTOR_PATH = "google/protobuf/map_entry.proto";
+  private static final URI MAP_ENTRY_DESCRIPTOR_LOCATION =
+      URI.createURI("platform:/plugin/com.google.eclipse.protobuf/map_entry.proto");;
+  private final ProtoDescriptorInfo mapEntryDescriptorInfo;
+
   private static final Logger LOG =
       Logger.getLogger(ProtoDescriptorProvider.class.getCanonicalName());
 
@@ -76,6 +81,7 @@ import java.util.logging.Logger;
     this.nodes = nodes;
     this.resolver = resolver;
     this.openSourceProtoDescriptorInfo = getOpenSourceProtoDescriptorInfo();
+    this.mapEntryDescriptorInfo = getMapEntryDescriptorInfo();
     this.extensionPointDescriptorInfo = getExtensionPointDescriptorInfo();
   }
 
@@ -119,6 +125,10 @@ import java.util.logging.Logger;
       }
     }
     return null;
+  }
+
+  public ProtoDescriptor mapEntryDescriptor() {
+    return mapEntryDescriptorInfo.protoDescriptor;
   }
 
   private Map<String, ProtoDescriptorInfo> loadDescriptorInfos(final IProject project) {
@@ -191,6 +201,13 @@ import java.util.logging.Logger;
         DEFAULT_DESCRIPTOR_LOCATION, parser, nodes);
     return new ProtoDescriptorInfo(PreferenceNames.DEFAULT_DESCRIPTOR_PATH,
         DEFAULT_DESCRIPTOR_LOCATION, descriptor);
+  }
+
+  private ProtoDescriptorInfo getMapEntryDescriptorInfo() {
+    ProtoDescriptor descriptor = new ProtoDescriptor(
+        MAP_ENTRY_DESCRIPTOR_PATH, MAP_ENTRY_DESCRIPTOR_LOCATION, parser, nodes);
+    return new ProtoDescriptorInfo(
+        MAP_ENTRY_DESCRIPTOR_PATH, MAP_ENTRY_DESCRIPTOR_LOCATION, descriptor);
   }
 
   private ProtoDescriptorInfo getExtensionPointDescriptorInfo() {

@@ -1,0 +1,23 @@
+// Copyright 2015 Google Inc.  All rights reserved.
+syntax = "proto2";
+
+package google.protobuf;
+
+// An entry in a map field.
+//
+// Specified here as if the defining map field were "map<string, string>" as a temporary hack
+// until protobuf-dt is able to synthesize entry types for map fields with arbitary value types.
+// This avoids "Couldn't resolve" errors on "key" and "value" fields and enables completion of them.
+message MapEntry {
+  // The key of an entry in a map field.
+  //
+  // Specified here as "string" due to technical limitations in protobuf-dt. The actual type of
+  // this key field is specified by the defining map field.
+  optional string key = 1;
+
+  // The value of an entry in a map field.
+  //
+  // Specified here as "string" due to technical limitations in protobuf-dt. The actual type of
+  // this value field is specified by the defining map field.
+  optional string value = 2;
+}
