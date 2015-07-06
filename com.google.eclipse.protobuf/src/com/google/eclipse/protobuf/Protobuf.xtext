@@ -252,15 +252,52 @@ QualifiedName:
 
 SafeId:
   ID | SafeReservedWord;
-  
-ReservedWord:  
+
+ReservedWord:
   SafeReservedWord | 'group' | 'oneof';
 
+// These tokens appear as keywords in other rules. Explicitly listing them here prevents the lexer
+// from consuming them as keywords and gives the parser a chance to interpret them as identifiers.
 SafeReservedWord:
-  'package' | 'import' | 'public' | 'option' | 'extend' | 'message' | 'optional' | 'required' | 'repeated' |
-  'enum' | 'service' | 'rpc' | 'stream' | 'returns' | 'default' | 'extensions' | 'to' | 'max' | 'true' | 'false' |
-  'double' | 'float' | 'int32' | 'int64' | 'uint32' | 'uint64' | 'sint32' | 'sint64' | 'fixed32' | 'fixed64' |
-  'sfixed32' | 'sfixed64' | 'bool' | 'string' | 'bytes' | 'weak' | 'map' | 'reserved';
+  'bool' |
+  'bytes' |
+  'default' |
+  'double' |
+  'enum' |
+  'extend' |
+  'extensions' |
+  'false' |
+  'fixed32' |
+  'fixed64' |
+  'float' |
+  'import' |
+  'int32' |
+  'int64' |
+  'map' |
+  'max' |
+  'message' |
+  'option' |
+  'optional' |
+  'package' |
+  'public' |
+  'repeated' |
+  'required' |
+  'reserved' |
+  'returns' |
+  'rpc' |
+  'service' |
+  'sfixed32' |
+  'sfixed64' |
+  'sint32' |
+  'sint64' |
+  'stream' |
+  'string' |
+  'syntax' |
+  'to' |
+  'true' |
+  'uint32' |
+  'uint64' |
+  'weak';
 
 SimpleValueLink:
   LiteralLink | BooleanLink | NumberLink | StringLink;
