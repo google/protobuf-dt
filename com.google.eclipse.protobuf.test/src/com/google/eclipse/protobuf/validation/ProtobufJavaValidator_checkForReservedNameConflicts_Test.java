@@ -10,6 +10,7 @@ package com.google.eclipse.protobuf.validation;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 
@@ -50,8 +51,8 @@ public class ProtobufJavaValidator_checkForReservedNameConflicts_Test {
   @Test public void should_error_on_conflict_between_reserved_and_reserved() {
     validator.checkForReservedNameConflicts(xtext.findFirst(Message.class));
     List<StringLiteral> stringLiterals = xtext.findAll(StringLiteral.class);
-    verifyError("\"foo\" conflicts with reserved \"foo\"", stringLiterals.get(3));
-    verifyError("\"bar\" conflicts with reserved \"bar\"", stringLiterals.get(4));
+    verifyError("Name \"foo\" conflicts with reserved \"foo\".", stringLiterals.get(3));
+    verifyError("Name \"bar\" conflicts with reserved \"bar\".", stringLiterals.get(4));
   }
 
   // syntax = "proto2";
@@ -66,17 +67,35 @@ public class ProtobufJavaValidator_checkForReservedNameConflicts_Test {
   @Test public void should_error_on_conflict_between_reserved_and_indexed_element() {
     validator.checkForReservedNameConflicts(xtext.findFirst(Message.class));
     verifyError(
-        "\"foo\" conflicts with reserved \"foo\"",
+        "Name \"foo\" conflicts with reserved \"foo\".",
         xtext.findAll(MessageField.class).get(0),
         ProtobufPackage.Literals.MESSAGE_FIELD__NAME);
     verifyError(
-        "\"bar\" conflicts with reserved \"bar\"",
+        "Name \"bar\" conflicts with reserved \"bar\".",
         xtext.findAll(Group.class).get(0),
         ProtobufPackage.Literals.COMPLEX_TYPE__NAME);
     verifyError(
-        "\"baz\" conflicts with reserved \"baz\"",
+        "Name \"baz\" conflicts with reserved \"baz\".",
         xtext.findAll(MessageField.class).get(1),
         ProtobufPackage.Literals.MESSAGE_FIELD__NAME);
+  }
+
+  // syntax = "proto2";
+  //
+  // message Car {
+  // }
+  //
+  // message Person {
+  //   reserved "owner";
+  //   optional bool passenger = 1;
+  //   extend Car {
+  //     optional Person owner = 1;
+  //     repeated Person passenger = 2;
+  //   }
+  // }
+  @Test public void should_not_find_conflict_with_nested_extension() {
+    validator.checkForReservedNameConflicts(xtext.findFirst(Message.class));
+    verifyZeroInteractions(messageAcceptor);
   }
 
   private void verifyError(String message, EObject errorSource) {

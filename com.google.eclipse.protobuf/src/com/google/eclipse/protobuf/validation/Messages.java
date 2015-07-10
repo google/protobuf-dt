@@ -14,8 +14,11 @@ import org.eclipse.osgi.util.NLS;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Messages extends NLS {
-  public static String conflictsWithExtensions;
-  public static String conflictsWithReserved;
+  public static String conflictingExtensions;
+  public static String conflictingField;
+  public static String conflictingGroup;
+  public static String conflictingReservedName;
+  public static String conflictingReservedNumber;
   public static String expectedFieldName;
   public static String expectedFieldNumber;
   public static String expectedIdentifier;
@@ -25,7 +28,6 @@ public class Messages extends NLS {
   public static String expectedString;
   public static String expectedSyntaxIdentifier;
   public static String expectedTrueOrFalse;
-  public static String fieldNumberAlreadyUsed;
   public static String fieldNumbersMustBePositive;
   public static String importingUnsupportedSyntax;
   public static String importNotFound;
@@ -37,11 +39,14 @@ public class Messages extends NLS {
   public static String missingFieldNumber;
   public static String missingModifier;
   public static String multiplePackages;
+  public static String nameConflict;
   public static String oneofFieldWithModifier;
   public static String requiredInProto3;
   public static String reservedIndexAndName;
   public static String reservedToMax;
   public static String scopingError;
+  public static String tagNumberRangeConflict;
+  public static String tagNumberConflict;
   public static String unknownSyntax;
   public static String unrecognizedSyntaxIdentifier;
 

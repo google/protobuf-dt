@@ -13,11 +13,8 @@ import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MAP_
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MESSAGE_FIELD__MODIFIER;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.PACKAGE__NAME;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.SYNTAX__NAME;
-import static com.google.eclipse.protobuf.validation.Messages.conflictsWithExtensions;
-import static com.google.eclipse.protobuf.validation.Messages.conflictsWithReserved;
 import static com.google.eclipse.protobuf.validation.Messages.expectedFieldNumber;
 import static com.google.eclipse.protobuf.validation.Messages.expectedSyntaxIdentifier;
-import static com.google.eclipse.protobuf.validation.Messages.fieldNumberAlreadyUsed;
 import static com.google.eclipse.protobuf.validation.Messages.fieldNumbersMustBePositive;
 import static com.google.eclipse.protobuf.validation.Messages.invalidMapKeyType;
 import static com.google.eclipse.protobuf.validation.Messages.invalidMapValueType;
@@ -25,10 +22,18 @@ import static com.google.eclipse.protobuf.validation.Messages.mapWithModifier;
 import static com.google.eclipse.protobuf.validation.Messages.mapWithinTypeExtension;
 import static com.google.eclipse.protobuf.validation.Messages.missingModifier;
 import static com.google.eclipse.protobuf.validation.Messages.multiplePackages;
+import static com.google.eclipse.protobuf.validation.Messages.nameConflict;
 import static com.google.eclipse.protobuf.validation.Messages.oneofFieldWithModifier;
 import static com.google.eclipse.protobuf.validation.Messages.requiredInProto3;
 import static com.google.eclipse.protobuf.validation.Messages.reservedIndexAndName;
 import static com.google.eclipse.protobuf.validation.Messages.reservedToMax;
+import static com.google.eclipse.protobuf.validation.Messages.tagNumberRangeConflict;
+import static com.google.eclipse.protobuf.validation.Messages.tagNumberConflict;
+import static com.google.eclipse.protobuf.validation.Messages.conflictingExtensions;
+import static com.google.eclipse.protobuf.validation.Messages.conflictingField;
+import static com.google.eclipse.protobuf.validation.Messages.conflictingGroup;
+import static com.google.eclipse.protobuf.validation.Messages.conflictingReservedName;
+import static com.google.eclipse.protobuf.validation.Messages.conflictingReservedNumber;
 import static com.google.eclipse.protobuf.validation.Messages.unknownSyntax;
 import static com.google.eclipse.protobuf.validation.Messages.unrecognizedSyntaxIdentifier;
 import static java.lang.String.format;
@@ -36,10 +41,12 @@ import static java.lang.String.format;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.Iterables;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Range;
 import com.google.eclipse.protobuf.model.util.IndexRanges;
 import com.google.eclipse.protobuf.model.util.IndexedElements;
@@ -48,12 +55,12 @@ import com.google.eclipse.protobuf.model.util.StringLiterals;
 import com.google.eclipse.protobuf.model.util.Syntaxes;
 import com.google.eclipse.protobuf.naming.NameResolver;
 import com.google.eclipse.protobuf.protobuf.Extensions;
+import com.google.eclipse.protobuf.protobuf.Group;
 import com.google.eclipse.protobuf.protobuf.IndexRange;
 import com.google.eclipse.protobuf.protobuf.IndexedElement;
 import com.google.eclipse.protobuf.protobuf.MapType;
 import com.google.eclipse.protobuf.protobuf.MapTypeLink;
 import com.google.eclipse.protobuf.protobuf.Message;
-import com.google.eclipse.protobuf.protobuf.MessageElement;
 import com.google.eclipse.protobuf.protobuf.MessageField;
 import com.google.eclipse.protobuf.protobuf.ModifierEnum;
 import com.google.eclipse.protobuf.protobuf.OneOf;
@@ -71,12 +78,11 @@ import com.google.eclipse.protobuf.protobuf.TypeExtension;
 import com.google.eclipse.protobuf.protobuf.TypeLink;
 import com.google.inject.Inject;
 
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.xtext.EcoreUtil2;
-import org.eclipse.xtext.naming.IQualifiedNameProvider;
-import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.util.SimpleAttributeResolver;
 import org.eclipse.xtext.validation.Check;
 import org.eclipse.xtext.validation.ComposedChecks;
@@ -101,7 +107,6 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
   @Inject private NameResolver nameResolver;
   @Inject private StringLiterals stringLiterals;
   @Inject private Protobufs protobufs;
-  @Inject private IQualifiedNameProvider qualifiedNameProvider;
   @Inject private Syntaxes syntaxes;
 
   @Check public void checkIsKnownSyntax(Protobuf protobuf) {
@@ -119,46 +124,67 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
     error(msg, syntax, SYNTAX__NAME, SYNTAX_IS_NOT_KNOWN_ERROR);
   }
 
-  @Check public void checkForIndexRangeConflicts(Message message) {
-    Collection<Range<Long>> reservedRanges = new ArrayList<>();
-    for (Reserved reserved : getOwnedElements(Message.class, message, Reserved.class)) {
+  @Check public void checkForIndexConflicts(Message message) {
+    Multimap<EObject, Range<Long>> rangeUsages = LinkedHashMultimap.create();
+
+    for (Reserved reserved : getOwnedElements(message, Reserved.class)) {
       for (IndexRange indexRange : Iterables.filter(reserved.getReservations(), IndexRange.class)) {
         Range<Long> range = indexRanges.toLongRange(indexRange);
-        errorOnConflicts(range, reservedRanges, conflictsWithReserved, indexRange, null);
-        reservedRanges.add(range);
+        errorOnConflicts(range, rangeUsages, indexRange, null);
+        rangeUsages.put(reserved, range);
       }
     }
 
-    Collection<Range<Long>> extensionsRanges = new ArrayList<>();
-    for (Extensions extensions : getOwnedElements(Message.class, message, Extensions.class)) {
+    for (Extensions extensions : getOwnedElements(message, Extensions.class)) {
       for (IndexRange indexRange : extensions.getRanges()) {
         Range<Long> range = indexRanges.toLongRange(indexRange);
-        errorOnConflicts(range, reservedRanges, conflictsWithReserved, indexRange, null);
-        errorOnConflicts(range, extensionsRanges, conflictsWithExtensions, indexRange, null);
-        extensionsRanges.add(range);
+        errorOnConflicts(range, rangeUsages, indexRange, null);
+        rangeUsages.put(extensions, range);
       }
     }
 
-    for (IndexedElement element : getOwnedElements(Message.class, message, IndexedElement.class)) {
+    for (IndexedElement element : getOwnedElements(message, IndexedElement.class)) {
       long index = indexedElements.indexOf(element);
       Range<Long> range = Range.singleton(index);
-      EStructuralFeature indexFeature = indexedElements.indexFeatureOf(element);
-      errorOnConflicts(range, reservedRanges, conflictsWithReserved, element, indexFeature);
-      errorOnConflicts(range, extensionsRanges, conflictsWithExtensions, element, indexFeature);
+      EStructuralFeature feature = indexedElements.indexFeatureOf(element);
+      errorOnConflicts(range, rangeUsages, element, feature);
+      rangeUsages.put(element, range);
     }
   }
 
   private void errorOnConflicts(
       Range<Long> range,
-      Iterable<Range<Long>> existingRanges,
-      String errorTemplate,
+      Multimap<EObject, Range<Long>> rangeUsages,
       EObject errorSource,
       EStructuralFeature errorFeature) {
-    for (Range<Long> existingRange : existingRanges) {
-      if (range.isConnected(existingRange)) {
-        String message =
-            String.format(errorTemplate, rangeToString(range), rangeToString(existingRange));
+    for (Map.Entry<EObject, Range<Long>> rangeUsage : rangeUsages.entries()) {
+      Range<Long> usedRange = rangeUsage.getValue();
+      if (range.isConnected(usedRange)) {
+        EObject rangeUser = rangeUsage.getKey();
+
+        boolean rangeIsSingular =
+            range.hasUpperBound() && range.upperEndpoint() == range.lowerEndpoint();
+        String template = rangeIsSingular ? tagNumberConflict : tagNumberRangeConflict;
+
+        String rangeUserString;
+        String usedRangeString = rangeToString(usedRange);
+        if (rangeUser instanceof MessageField) {
+          rangeUserString =
+              String.format(conflictingField, nameResolver.nameOf(rangeUser), usedRangeString);
+        } else if (rangeUser instanceof Group) {
+          rangeUserString =
+              String.format(conflictingGroup, nameResolver.nameOf(rangeUser), usedRangeString);
+        } else if (rangeUser instanceof Reserved) {
+          rangeUserString = String.format(conflictingReservedNumber, usedRangeString);
+        } else {
+          rangeUserString = String.format(conflictingExtensions, usedRangeString);
+        }
+
+        String message = String.format(template, rangeToString(range), rangeUserString);
         error(message, errorSource, errorFeature);
+
+        // Don't report more than one error per element.
+        return;
       }
     }
   }
@@ -185,7 +211,7 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
 
   @Check public void checkForReservedNameConflicts(Message message) {
     Set<String> reservedNames = new HashSet<>();
-    for (Reserved reserved : getOwnedElements(Message.class, message, Reserved.class)) {
+    for (Reserved reserved : getOwnedElements(message, Reserved.class)) {
       for (StringLiteral stringLiteral :
           Iterables.filter(reserved.getReservations(), StringLiteral.class)) {
         String name = stringLiterals.getCombinedString(stringLiteral);
@@ -194,7 +220,7 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
       }
     }
 
-    for (IndexedElement element : getOwnedElements(Message.class, message, IndexedElement.class)) {
+    for (IndexedElement element : getOwnedElements(message, IndexedElement.class)) {
       String name = nameResolver.nameOf(element);
       if (name != null) {
         EAttribute nameAttribute = SimpleAttributeResolver.NAME_RESOLVER.getAttribute(element);
@@ -222,38 +248,36 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
   private void reportReservedNameConflicts(
       String name, Set<String> reservedNames, EObject errorSource, EAttribute errorFeature) {
     if (reservedNames.contains(name)) {
-      String quotedName = '"' + name + '"';
-      String message = String.format(conflictsWithReserved, quotedName, quotedName);
+      String nameUser = String.format(conflictingReservedName, name);
+      String message = String.format(nameConflict, name, nameUser);
       error(message, errorSource, errorFeature);
     }
   }
 
-  private <E extends EObject, C extends EObject> Collection<E> getOwnedElements(
-      Class<C> containerType, C container, Class<E> elementType) {
-    List<E> allElements = EcoreUtil2.getAllContentsOfType(container, elementType);
-    List<E> ownedElements = new ArrayList<>(allElements.size());
-    for (E element : allElements) {
-      if (EcoreUtil2.getContainerOfType(element, containerType) == container) {
-        ownedElements.add(element);
+  /**
+   * Returns elements of the given type contained within the given message, except those contained
+   * within intervening Messages or TypeExtensions.
+   */
+  private static <E extends EObject> Collection<E> getOwnedElements(
+      Message container, Class<E> elementType) {
+    Collection<E> elements = new ArrayList<E>();
+
+    TreeIterator<EObject> elementsIterator = container.eAllContents();
+    while (elementsIterator.hasNext()) {
+      EObject element = elementsIterator.next();
+
+      if (elementType.isAssignableFrom(element.getClass())) {
+        @SuppressWarnings("unchecked")
+        E elementAsElementType = (E) element;
+        elements.add(elementAsElementType);
+      }
+
+      if (element instanceof Message || element instanceof TypeExtension) {
+        elementsIterator.prune();
       }
     }
-    return ownedElements;
-  }
 
-  @Check public void checkTagNumberIsUnique(IndexedElement e) {
-    if (isNameNull(e)) {
-      return; // we already show an error if name is null, no need to go further.
-    }
-
-    EObject container = e.eContainer();
-    if (container instanceof OneOf) {
-      container = container.eContainer();
-    }
-    if (container instanceof Message) {
-      Message message = (Message) container;
-      Iterable<MessageElement> elements = message.getElements();
-      checkTagNumberIsUnique(e, message, elements);
-    }
+    return elements;
   }
 
   @Check public void checkFieldModifiers(MessageField field) {
@@ -306,33 +330,6 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
       return syntaxes.isSpecifyingProto3Syntax(((Protobuf) container).getSyntax());
     }
     return false;
-  }
-
-  private boolean checkTagNumberIsUnique(IndexedElement e, EObject message,
-      Iterable<MessageElement> elements) {
-    long index = indexedElements.indexOf(e);
-
-    for (MessageElement element : elements) {
-      if (element instanceof OneOf) {
-        if (!checkTagNumberIsUnique(e, message, ((OneOf) element).getElements())) {
-          return false;
-        }
-      } else if (element instanceof IndexedElement) {
-        IndexedElement other = (IndexedElement) element;
-        if (other == e) {
-          return true;
-        }
-        if (indexedElements.indexOf(other) == index) {
-          QualifiedName messageName = qualifiedNameProvider.getFullyQualifiedName(message);
-          String msg = format(fieldNumberAlreadyUsed, index, messageName.toString(),
-              nameResolver.nameOf(other));
-          invalidTagNumberError(msg, e);
-          return false;
-        }
-      }
-    }
-
-    return true;
   }
 
   @Check public void checkTagNumberIsGreaterThanZero(IndexedElement e) {
