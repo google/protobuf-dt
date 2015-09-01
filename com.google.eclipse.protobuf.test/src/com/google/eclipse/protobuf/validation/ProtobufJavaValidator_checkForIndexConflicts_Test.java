@@ -224,4 +224,34 @@ public class ProtobufJavaValidator_checkForIndexConflicts_Test {
   private void verifyError(String message, EObject errorSource, EStructuralFeature errorFeature) {
     verify(messageAcceptor).acceptError(message, errorSource, errorFeature, -1, null);
   }
+
+  // syntax = "proto2";
+  //
+  // message Person {
+  //   group foo = 10 {
+  //     reserved 1 to 3;
+  //     optional bool in_same_group = 1;
+  //   }
+  //   optional bool outside_group = 2;
+  //   group bar = 20 {
+  //     optional bool in_other_group = 3;
+  //   }
+  // }
+  @Test public void should_error_on_conflict_with_reserved_in_group() {
+    validator.checkForIndexConflicts(xtext.findFirst(Message.class));
+    List<MessageField> messageFields = xtext.findAll(MessageField.class);
+    verifyError(
+        "Tag number 1 conflicts with reserved 1 to 3.",
+        messageFields.get(0),
+        ProtobufPackage.Literals.MESSAGE_FIELD__INDEX);
+    verifyError(
+        "Tag number 2 conflicts with reserved 1 to 3.",
+        messageFields.get(1),
+        ProtobufPackage.Literals.MESSAGE_FIELD__INDEX);
+    verifyError(
+        "Tag number 3 conflicts with reserved 1 to 3.",
+        messageFields.get(2),
+        ProtobufPackage.Literals.MESSAGE_FIELD__INDEX);
+    verifyNoMoreInteractions(messageAcceptor);
+  }
 }

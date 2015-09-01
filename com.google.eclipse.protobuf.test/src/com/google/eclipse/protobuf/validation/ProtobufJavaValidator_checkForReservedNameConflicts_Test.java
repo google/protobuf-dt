@@ -10,6 +10,7 @@ package com.google.eclipse.protobuf.validation;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
@@ -96,6 +97,36 @@ public class ProtobufJavaValidator_checkForReservedNameConflicts_Test {
   @Test public void should_not_find_conflict_with_nested_extension() {
     validator.checkForReservedNameConflicts(xtext.findFirst(Message.class));
     verifyZeroInteractions(messageAcceptor);
+  }
+
+  // syntax = "proto2";
+  //
+  // message Person {
+  //   group foo = 10 {
+  //     reserved "in_same_group", "outside_group", "in_other_group";
+  //     optional bool in_same_group = 1;
+  //   }
+  //   optional bool outside_group = 2;
+  //   group bar = 20 {
+  //     optional bool in_other_group = 3;
+  //   }
+  // }
+  @Test public void should_error_on_conflict_with_reserved_in_group() {
+    validator.checkForReservedNameConflicts(xtext.findFirst(Message.class));
+    List<MessageField> messageFields = xtext.findAll(MessageField.class);
+    verifyError(
+        "Name \"in_same_group\" conflicts with reserved \"in_same_group\".",
+        messageFields.get(0),
+        ProtobufPackage.Literals.MESSAGE_FIELD__NAME);
+    verifyError(
+        "Name \"outside_group\" conflicts with reserved \"outside_group\".",
+        messageFields.get(1),
+        ProtobufPackage.Literals.MESSAGE_FIELD__NAME);
+    verifyError(
+        "Name \"in_other_group\" conflicts with reserved \"in_other_group\".",
+        messageFields.get(2),
+        ProtobufPackage.Literals.MESSAGE_FIELD__NAME);
+    verifyNoMoreInteractions(messageAcceptor);
   }
 
   private void verifyError(String message, EObject errorSource) {

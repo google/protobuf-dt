@@ -73,7 +73,7 @@ Group:
   '}' (';')?;
 
 GroupElement:
-  =>Option | MessageField | ComplexType | TypeExtension | Extensions;
+  =>Option | MessageField | ComplexType | TypeExtension | Extensions | Reserved;
 
 OneOf:
   (isRepeated?='repeated')? =>'oneof' name=Name '{'
