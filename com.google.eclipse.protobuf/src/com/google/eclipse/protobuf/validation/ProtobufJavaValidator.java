@@ -16,6 +16,8 @@ import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.SYNT
 import static com.google.eclipse.protobuf.validation.Messages.expectedFieldNumber;
 import static com.google.eclipse.protobuf.validation.Messages.expectedSyntaxIdentifier;
 import static com.google.eclipse.protobuf.validation.Messages.fieldNumbersMustBePositive;
+import static com.google.eclipse.protobuf.validation.Messages.indexRangeEndLessThanStart;
+import static com.google.eclipse.protobuf.validation.Messages.indexRangeNonPositive;
 import static com.google.eclipse.protobuf.validation.Messages.invalidMapKeyType;
 import static com.google.eclipse.protobuf.validation.Messages.invalidMapValueType;
 import static com.google.eclipse.protobuf.validation.Messages.mapWithModifier;
@@ -49,6 +51,7 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Range;
 import com.google.eclipse.protobuf.model.util.IndexRanges;
+import com.google.eclipse.protobuf.model.util.IndexRanges.BackwardsRangeException;
 import com.google.eclipse.protobuf.model.util.IndexedElements;
 import com.google.eclipse.protobuf.model.util.Protobufs;
 import com.google.eclipse.protobuf.model.util.StringLiterals;
@@ -124,22 +127,44 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
     error(msg, syntax, SYNTAX__NAME, SYNTAX_IS_NOT_KNOWN_ERROR);
   }
 
+  @Check public void checkIndexRangeBounds(IndexRange indexRange) {
+    Range<Long> range;
+    try {
+      range = indexRanges.toLongRange(indexRange);
+    } catch (BackwardsRangeException e) {
+      error(indexRangeEndLessThanStart, indexRange, null);
+      return;
+    }
+
+    if (range.lowerEndpoint() <= 0) {
+      error(indexRangeNonPositive, indexRange, ProtobufPackage.Literals.INDEX_RANGE__FROM);
+    }
+  }
+
   @Check public void checkForIndexConflicts(Message message) {
     Multimap<EObject, Range<Long>> rangeUsages = LinkedHashMultimap.create();
 
     for (Reserved reserved : getOwnedElements(message, Reserved.class)) {
       for (IndexRange indexRange : Iterables.filter(reserved.getReservations(), IndexRange.class)) {
-        Range<Long> range = indexRanges.toLongRange(indexRange);
-        errorOnConflicts(range, rangeUsages, indexRange, null);
-        rangeUsages.put(reserved, range);
+        try {
+          Range<Long> range = indexRanges.toLongRange(indexRange);
+          errorOnConflicts(range, rangeUsages, indexRange, null);
+          rangeUsages.put(reserved, range);
+        } catch (BackwardsRangeException e) {
+          // Do not try to find conflicts with invalid ranges.
+        }
       }
     }
 
     for (Extensions extensions : getOwnedElements(message, Extensions.class)) {
       for (IndexRange indexRange : extensions.getRanges()) {
-        Range<Long> range = indexRanges.toLongRange(indexRange);
-        errorOnConflicts(range, rangeUsages, indexRange, null);
-        rangeUsages.put(extensions, range);
+        try {
+          Range<Long> range = indexRanges.toLongRange(indexRange);
+          errorOnConflicts(range, rangeUsages, indexRange, null);
+          rangeUsages.put(extensions,  range);
+        } catch (BackwardsRangeException e) {
+          // Do not try to find conflicts with invalid ranges.
+        }
       }
     }
 

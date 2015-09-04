@@ -20,6 +20,13 @@ import com.google.inject.Singleton;
  * @author jogl@google.com (John Glassmyer)
  */
 @Singleton public class IndexRanges {
+  /**
+   * Thrown to indicate that a range's end number is less than its start number.
+   */
+  public static class BackwardsRangeException extends Exception {
+    private static final long serialVersionUID = 1L;
+  }
+
   private ProtobufGrammarAccess protobufGrammarAccess;
 
   @Inject
@@ -27,7 +34,10 @@ import com.google.inject.Singleton;
     this.protobufGrammarAccess = protobufGrammarAccess;
   }
 
-  public Range<Long> toLongRange(IndexRange indexRange) {
+  /**
+   * @throws BackwardsRangeException if the end number is less than the start number
+   */
+  public Range<Long> toLongRange(IndexRange indexRange) throws BackwardsRangeException {
     long from = indexRange.getFrom();
 
     Range<Long> range;
@@ -37,7 +47,13 @@ import com.google.inject.Singleton;
     } else if (toString.equals(getMaxKeyword())) {
       range = Range.atLeast(from);
     } else {
-      range = Range.closed(from, Long.valueOf(toString));
+      Long to = Long.valueOf(toString);
+
+      if (to < from) {
+        throw new BackwardsRangeException();
+      }
+
+      range = Range.closed(from, to);
     }
 
     return range;

@@ -21,6 +21,7 @@ import org.eclipse.xtext.util.SimpleAttributeResolver;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Range;
+import com.google.eclipse.protobuf.model.util.IndexRanges.BackwardsRangeException;
 import com.google.eclipse.protobuf.protobuf.FieldOption;
 import com.google.eclipse.protobuf.protobuf.Group;
 import com.google.eclipse.protobuf.protobuf.IndexRange;
@@ -67,20 +68,24 @@ import com.google.inject.Singleton;
   private long findMaxIndex(Iterable<? extends EObject> elements) {
     long maxIndex = 0;
 
-    for (EObject e : elements) {
-      if (e instanceof OneOf) {
-        maxIndex = max(maxIndex, findMaxIndex(((OneOf) e).getElements()));
-      } else if (e instanceof IndexedElement) {
-        maxIndex  = max(maxIndex, indexOf((IndexedElement) e));
-        if (e instanceof Group) {
-          maxIndex = max(maxIndex, findMaxIndex(((Group) e).getElements()));
+    for (EObject element : elements) {
+      if (element instanceof OneOf) {
+        maxIndex = max(maxIndex, findMaxIndex(((OneOf) element).getElements()));
+      } else if (element instanceof IndexedElement) {
+        maxIndex  = max(maxIndex, indexOf((IndexedElement) element));
+        if (element instanceof Group) {
+          maxIndex = max(maxIndex, findMaxIndex(((Group) element).getElements()));
         }
-      } else if (e instanceof Reserved) {
+      } else if (element instanceof Reserved) {
         for (IndexRange indexRange :
-            Iterables.filter(((Reserved) e).getReservations(), IndexRange.class)) {
-          Range<Long> range = indexRanges.toLongRange(indexRange);
-          if (range.hasUpperBound()) {
-            maxIndex = max(maxIndex, range.upperEndpoint());
+            Iterables.filter(((Reserved) element).getReservations(), IndexRange.class)) {
+          try {
+            Range<Long> range = indexRanges.toLongRange(indexRange);
+            if (range.hasUpperBound()) {
+              maxIndex = max(maxIndex, range.upperEndpoint());
+            }
+          } catch (BackwardsRangeException e) {
+            // Do not consider reserved ranges that are invalid.
           }
         }
       }
