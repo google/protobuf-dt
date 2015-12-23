@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.labeling;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 

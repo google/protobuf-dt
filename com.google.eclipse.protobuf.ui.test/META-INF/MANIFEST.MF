@@ -1,10 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests for com.google.eclipse.protobuf.ui
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-SymbolicName: com.google.eclipse.protobuf.ui.test
 Bundle-Version: 1.0.0
 Bundle-Vendor: Google Inc.
-Fragment-Host: com.google.eclipse.protobuf.ui
-Require-Bundle: org.junit,
- org.mockito
+Fragment-Host: com.google.eclipse.protobuf.ui;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit;bundle-version="4.8.1",
+ org.mockito;bundle-version="1.8.5",
+ org.hamcrest;bundle-version="1.1.0",
+ org.hamcrest.library;bundle-version="1.1.0"
