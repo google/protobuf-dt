@@ -44,6 +44,6 @@ public class PreferenceDrivenProtobufParser extends ProtobufParser {
       return root == null || root.getSyntax() == null;
     }
     
-    return rootObj == null;
+    return false;
   }
 }
