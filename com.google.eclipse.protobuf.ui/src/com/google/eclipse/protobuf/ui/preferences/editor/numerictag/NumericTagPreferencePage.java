@@ -8,23 +8,16 @@
  */
 package com.google.eclipse.protobuf.ui.preferences.editor.numerictag;
 
+import static org.eclipse.jface.window.Window.OK;
+
 import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.AddOrEditPatternDialog.addPattern;
 import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.AddOrEditPatternDialog.editPattern;
 import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.Messages.add;
 import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.Messages.edit;
-import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.Messages.enableSmartSemicolon;
 import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.Messages.pageDescription;
 import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.Messages.remove;
-import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.PreferenceNames.ENABLE_SMART_SEMICOLON;
 import static com.google.eclipse.protobuf.ui.preferences.editor.numerictag.PreferenceNames.NUMERIC_TAG_PATTERNS;
-import static com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToButtonSelection.bindSelectionOf;
 import static com.google.eclipse.protobuf.ui.preferences.pages.binding.BindingToListItems.bindItemsOf;
-import static org.eclipse.jface.window.Window.OK;
-
-import com.google.eclipse.protobuf.ui.preferences.StringSplitter;
-import com.google.eclipse.protobuf.ui.preferences.pages.PreferenceAndPropertyPage;
-import com.google.eclipse.protobuf.ui.preferences.pages.binding.PreferenceBinder;
-import com.google.eclipse.protobuf.ui.preferences.pages.binding.PreferenceFactory;
 
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
@@ -37,6 +30,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 
+import com.google.eclipse.protobuf.ui.preferences.StringSplitter;
+import com.google.eclipse.protobuf.ui.preferences.pages.PreferenceAndPropertyPage;
+import com.google.eclipse.protobuf.ui.preferences.pages.binding.PreferenceBinder;
+import com.google.eclipse.protobuf.ui.preferences.pages.binding.PreferenceFactory;
+
 /**
  * Preference page where users can specify the patterns to use to match comments where "the next id" is being tracked.
  *
@@ -45,18 +43,12 @@ import org.eclipse.swt.widgets.List;
 public class NumericTagPreferencePage extends PreferenceAndPropertyPage {
   private static final String PREFERENCE_PAGE_ID = NumericTagPreferencePage.class.getName();
 
-  private Button btnEnableSmartSemicolon;
   private List lstPatterns;
   private Button btnAdd;
   private Button btnEdit;
   private Button btnRemove;
 
   @Override protected void doCreateContents(Composite parent) {
-    btnEnableSmartSemicolon = new Button(parent, SWT.CHECK);
-    btnEnableSmartSemicolon.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
-    btnEnableSmartSemicolon.setText(enableSmartSemicolon);
-    new Label(parent, SWT.NONE);
-
     Label lblDescription = new Label(parent, SWT.WRAP);
     GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1);
     gridData.widthHint = 150; // only expand further if anyone else requires it
@@ -140,7 +132,6 @@ public class NumericTagPreferencePage extends PreferenceAndPropertyPage {
   @Override protected void setupBinding(PreferenceBinder binder, PreferenceFactory factory) {
     StringSplitter splitter = NumericTagPatternSplitter.instance();
     binder.add(bindItemsOf(lstPatterns).to(factory.newStringListPreference(NUMERIC_TAG_PATTERNS, splitter)));
-    binder.add(bindSelectionOf(btnEnableSmartSemicolon).to(factory.newBooleanPreference(ENABLE_SMART_SEMICOLON)));
   }
 
   @Override protected void onProjectSettingsActivation(boolean projectSettingsActive) {}

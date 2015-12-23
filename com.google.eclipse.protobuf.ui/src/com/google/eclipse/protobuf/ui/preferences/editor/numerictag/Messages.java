@@ -24,7 +24,6 @@ public class Messages extends NLS {
   public static String pattern;
   public static String remove;
   public static String testPattern;
-  public static String enableSmartSemicolon;
 
   static {
     Class<Messages> type = Messages.class;
