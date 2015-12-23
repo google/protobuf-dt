@@ -143,8 +143,7 @@ ServiceElement:
   Option | Rpc | Stream;
 
 Rpc:
-  'rpc' name=Name '(' (=> argStream?='stream')? argType=MessageLink ')' 
-  'returns' '(' (=> returnStream?='stream')? returnType=MessageLink ')'
+  'rpc' name=Name '(' argType=MessageLink ')' 'returns' '(' returnType=MessageLink ')'
   (('{' options+=Option* '}') (';')? | (';')+);
 
 Stream:
@@ -294,8 +293,8 @@ terminal STRING:
   SL_STRING (SL_STRING)*;
 
 terminal SL_STRING:
-  '"' ( '\\' . | !('\\'|'"') )* '"' (WS)* |
-  "'" ( '\\' . | !('\\'|"'") )* "'" (WS)*;
+  '"' ('\\' ('"' | "'" | '\\' | !('\\' | '"')) | !('\\' | '"'))* '"' (WS)* |
+  "'" ('\\' ('"' | "'" | '\\' | !('\\' | "'")) | !('\\' | "'"))* "'" (WS)*;
 
 terminal ID: '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
 terminal ML_COMMENT: '/*' -> '*/';
