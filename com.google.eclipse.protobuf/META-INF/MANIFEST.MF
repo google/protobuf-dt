@@ -18,7 +18,7 @@ Require-Bundle: org.antlr.runtime,
  org.eclipse.xtext.ui,
  org.eclipse.xtext.util,
  org.eclipse.emf.ecore
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: com.google.eclipse.protobuf,
  com.google.eclipse.protobuf.conversion,
  com.google.eclipse.protobuf.formatting,

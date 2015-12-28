@@ -43,7 +43,7 @@ public class MarkerStub implements IMarker {
     creationTime = System.currentTimeMillis();
   }
 
-  @Override @SuppressWarnings("rawtypes") public Object getAdapter(Class adapter) {
+  @Override public <T> T getAdapter(Class<T> adapter) {
     throw new UnsupportedOperationException();
   }
 

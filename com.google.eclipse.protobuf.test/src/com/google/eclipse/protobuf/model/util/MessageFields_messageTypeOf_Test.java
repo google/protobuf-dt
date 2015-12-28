@@ -14,17 +14,10 @@ import static org.junit.Assert.assertThat;
 import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.eclipse.emf.common.util.EList;
 import org.junit.Rule;
 import org.junit.Test;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.Message;
-import com.google.eclipse.protobuf.protobuf.MessageElement;
 import com.google.eclipse.protobuf.protobuf.MessageField;
 import com.google.inject.Inject;
 

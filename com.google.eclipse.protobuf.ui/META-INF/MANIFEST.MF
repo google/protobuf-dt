@@ -22,7 +22,7 @@ Require-Bundle: com.google.eclipse.protobuf,
  org.eclipse.xtext.builder,
  org.eclipse.xtext.ui,
  org.eclipse.xtext.ui.shared
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: com.google.eclipse.protobuf.ui.contentassist,
  com.google.eclipse.protobuf.ui.contentassist.antlr,
  com.google.eclipse.protobuf.ui.editor,

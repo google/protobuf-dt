@@ -45,6 +45,6 @@ import com.google.inject.Singleton;
    * @return the file displayed in the given editor.
    */
   public IFile fileDisplayedIn(IEditorPart editor) {
-    return (IFile) editor.getEditorInput().getAdapter(IFile.class);
+    return editor.getEditorInput().getAdapter(IFile.class);
   }
 }

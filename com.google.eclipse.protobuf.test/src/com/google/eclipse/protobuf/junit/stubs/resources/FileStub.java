@@ -159,7 +159,7 @@ public class FileStub implements IFile {
     throw new UnsupportedOperationException();
   }
 
-  @Override @SuppressWarnings("rawtypes") public Object getAdapter(Class adapter) {
+  @Override public <T> T getAdapter(Class<T> adapter) {
     throw new UnsupportedOperationException();
   }
 

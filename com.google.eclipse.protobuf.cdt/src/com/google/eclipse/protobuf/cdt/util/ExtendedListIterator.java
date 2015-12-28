@@ -11,8 +11,7 @@ package com.google.eclipse.protobuf.cdt.util;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 
-import static com.google.common.collect.Lists.newArrayList;
-
+import java.util.Arrays;
 import java.util.List;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -41,8 +40,9 @@ public class ExtendedListIterator<T> extends AbstractIterator<T> implements Exte
    * @param elements the elements of the {@code Iterator} to create.
    * @return the created {@code ListIterator}.
    */
-  public static <T> ExtendedIterator<T> newIterator(T...elements) {
-    return new ExtendedListIterator<T>(newArrayList(elements));
+  @SafeVarargs
+  public static <T> ExtendedIterator<T> newIterator(T... elements) {
+    return new ExtendedListIterator<T>(Arrays.asList(elements));
   }
 
   /**

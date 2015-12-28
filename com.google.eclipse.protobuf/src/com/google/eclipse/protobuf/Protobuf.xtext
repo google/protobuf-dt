@@ -309,7 +309,7 @@ BooleanLink:
   target=BOOL;
 
 enum BOOL:
-  true | false;
+  TRUE = 'true' | FALSE = 'false';
 
 NumberLink:
   HexNumberLink | =>LongLink | DoubleLink;

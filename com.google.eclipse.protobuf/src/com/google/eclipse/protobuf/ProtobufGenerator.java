@@ -32,8 +32,14 @@ public class ProtobufGenerator extends Generator {
   }
   
   private static class XtextRuntimeModuleExtension extends XtextRuntimeModule {
+	// For the recent XText versions replace the method below with the commented
+	// out one.
     @Override public Class<? extends IXtext2EcorePostProcessor> bindIXtext2EcorePostProcessor() {
       return ProtobufEcorePostProcessor.class;
     }
+//    @Override public void configureIXtext2EcorePostProcessor(Binder binder) {
+//    	super.configure(binder);
+//    	binder.bind(IXtext2EcorePostProcessor.class).to(ProtobufEcorePostProcessor.class);
+//    }
   }
 }

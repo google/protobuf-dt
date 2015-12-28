@@ -10,6 +10,7 @@
  */
 module com.google.eclipse.protobuf.Protobuf
 
+import com.google.eclipse.protobuf.*
 import org.eclipse.emf.mwe.utils.*
 import org.eclipse.xtext.generator.*
 import org.eclipse.xtext.ui.generator.*
@@ -45,7 +46,7 @@ Workflow {
       fragment = grammarAccess.GrammarAccessFragment {}
 
       // generates Java API for the generated EPackages 
-      fragment = ecore.EcoreGeneratorFragment {
+      fragment = ecore.EMFGeneratorFragment {
       // referencedGenModels = "uri to genmodel, uri to next genmodel"
       }
       

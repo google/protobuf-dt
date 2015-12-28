@@ -9,7 +9,6 @@
 package com.google.eclipse.protobuf.cdt.mapping;
 
 import static com.google.common.collect.ImmutableList.of;
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.unmodifiableList;
 
 import com.google.common.collect.ImmutableList;
@@ -23,6 +22,7 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPNamespace;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,7 +54,7 @@ public class IBindings {
   }
 
   public List<String> qualifiedNameOf(IBinding binding) {
-    List<String> segments = newArrayList();
+    List<String> segments = new ArrayList<>();
     for (IBinding owner = binding.getOwner(); owner != null; owner = owner.getOwner()) {
       if (owner instanceof ICPPEnumeration && !((ICPPEnumeration) owner).isScoped()) {
         continue;

@@ -5,7 +5,7 @@ Bundle-SymbolicName: com.google.eclipse.protobuf.ui.test
 Bundle-Version: 2.2.0.qualifier
 Bundle-Vendor: Google Inc.
 Fragment-Host: com.google.eclipse.protobuf.ui;bundle-version="1.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.junit;bundle-version="4.8.1",
  org.mockito;bundle-version="1.8.5",
  org.hamcrest.core;bundle-version="1.1.0",

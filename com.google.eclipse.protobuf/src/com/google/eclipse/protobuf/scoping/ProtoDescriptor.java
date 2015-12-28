@@ -9,30 +9,43 @@
 package com.google.eclipse.protobuf.scoping;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Maps.newHashMap;
-import static com.google.common.io.Closeables.closeQuietly;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MESSAGE_FIELD__TYPE;
 import static com.google.eclipse.protobuf.scoping.OptionType.findOptionTypeForLevelOf;
 import static com.google.eclipse.protobuf.util.Encodings.UTF_8;
-import static java.util.Collections.*;
-import static org.eclipse.xtext.EcoreUtil2.*;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableCollection;
+import static java.util.Collections.unmodifiableList;
+import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
+import static org.eclipse.xtext.EcoreUtil2.resolveLazyCrossReferences;
 import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.eclipse.protobuf.model.util.INodes;
-import com.google.eclipse.protobuf.protobuf.*;
+import com.google.eclipse.protobuf.protobuf.ComplexType;
 import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.eclipse.protobuf.protobuf.Message;
+import com.google.eclipse.protobuf.protobuf.MessageElement;
+import com.google.eclipse.protobuf.protobuf.MessageField;
+import com.google.eclipse.protobuf.protobuf.NativeOption;
+import com.google.eclipse.protobuf.protobuf.Protobuf;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.nodemodel.INode;
-import org.eclipse.xtext.parser.*;
+import org.eclipse.xtext.parser.IParseResult;
+import org.eclipse.xtext.parser.IParser;
 import org.eclipse.xtext.resource.XtextResource;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Contains the elements from descriptor.proto (provided with protobuf's library.)
@@ -40,7 +53,7 @@ import java.util.*;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtoDescriptor {
-  private static final Map<String, OptionType> OPTION_DEFINITION_BY_NAME = newHashMap();
+  private static final Map<String, OptionType> OPTION_DEFINITION_BY_NAME = new HashMap<>();
 
   static {
     populateMap();
@@ -52,9 +65,9 @@ public class ProtoDescriptor {
     }
   }
 
-  private final List<ComplexType> allTypes = newArrayList();
-  private final Map<OptionType, Map<String, MessageField>> optionsByType = newHashMap();
-  private final Map<String, Enum> enumsByName = newHashMap();
+  private final List<ComplexType> allTypes = new ArrayList<>();
+  private final Map<OptionType, Map<String, MessageField>> optionsByType = new HashMap<>();
+  private final Map<String, Enum> enumsByName = new HashMap<>();
 
   private Protobuf root;
 
@@ -66,10 +79,8 @@ public class ProtoDescriptor {
     this.importUri = importUri;
     this.nodes = nodes;
     addOptionTypes();
-    InputStreamReader reader = null;
-    try {
-      resource = new XtextResource(location);
-      reader = new InputStreamReader(contents(location), UTF_8);
+    resource = new XtextResource(location);
+    try (InputStreamReader reader = new InputStreamReader(contents(location), UTF_8)) {
       IParseResult result = parser.parse(reader);
       root = (Protobuf) result.getRootASTElement();
       resource.getContents().add(root);
@@ -77,8 +88,6 @@ public class ProtoDescriptor {
       initContents();
     } catch (Throwable t) {
       throw new IllegalStateException("Unable to parse descriptor.proto", t);
-    } finally {
-      closeQuietly(reader);
     }
   }
 

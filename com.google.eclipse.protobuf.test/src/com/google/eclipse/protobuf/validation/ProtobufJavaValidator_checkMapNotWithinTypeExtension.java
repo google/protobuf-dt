@@ -24,7 +24,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 /**
- * Tests for <code>{@link ProtobufJavaValidator#checkMapNotWithinTypeExtension(MapType)}</code>
+ * Tests for <code>{@link ProtobufJavaValidator#checkMapIsNotWithinExtension(MapType)}</code>
  */
 public class ProtobufJavaValidator_checkMapNotWithinTypeExtension {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(unitTestModule());

@@ -13,7 +13,6 @@ import static java.util.Arrays.asList;
 import static org.eclipse.xtext.util.Strings.isEmpty;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;

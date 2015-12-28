@@ -29,16 +29,17 @@ class FileCreator {
   private static final Pattern CREATE_FILE_PATTERN = compile("// Create file (.*)");
 
   File createFileFrom(String comment) {
-    Scanner scanner = new Scanner(comment);
     String fileName = null;
-    while (scanner.hasNextLine()) {
-      String line = scanner.nextLine();
-      Matcher matcher = CREATE_FILE_PATTERN.matcher(line);
-      if (!matcher.matches()) {
-        return null;
-      }
-      fileName = matcher.group(1);
-      break;
+    try (Scanner scanner = new Scanner(comment)) {
+	    while (scanner.hasNextLine()) {
+	      String line = scanner.nextLine();
+	      Matcher matcher = CREATE_FILE_PATTERN.matcher(line);
+	      if (!matcher.matches()) {
+	        return null;
+	      }
+	      fileName = matcher.group(1);
+	      break;
+	    }
     }
     return createFile(fileName, comment);
   }
