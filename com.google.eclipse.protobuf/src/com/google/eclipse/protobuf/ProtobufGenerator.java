@@ -13,6 +13,7 @@ import org.eclipse.xtext.XtextStandaloneSetup;
 import org.eclipse.xtext.generator.Generator;
 import org.eclipse.xtext.xtext.ecoreInference.IXtext2EcorePostProcessor;
 
+import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
@@ -32,14 +33,8 @@ public class ProtobufGenerator extends Generator {
   }
   
   private static class XtextRuntimeModuleExtension extends XtextRuntimeModule {
-	// For the recent XText versions replace the method below with the commented
-	// out one.
-    @Override public Class<? extends IXtext2EcorePostProcessor> bindIXtext2EcorePostProcessor() {
-      return ProtobufEcorePostProcessor.class;
+    @Override public void configureIXtext2EcorePostProcessor(Binder binder) {
+    	binder.bind(IXtext2EcorePostProcessor.class).to(ProtobufEcorePostProcessor.class);
     }
-//    @Override public void configureIXtext2EcorePostProcessor(Binder binder) {
-//    	super.configure(binder);
-//    	binder.bind(IXtext2EcorePostProcessor.class).to(ProtobufEcorePostProcessor.class);
-//    }
   }
 }

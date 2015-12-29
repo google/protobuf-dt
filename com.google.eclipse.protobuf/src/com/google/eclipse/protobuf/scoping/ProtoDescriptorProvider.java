@@ -132,8 +132,7 @@ import java.util.logging.Logger;
   }
 
   private Map<String, ProtoDescriptorInfo> loadDescriptorInfos(final IProject project) {
-    Map<String, ProtoDescriptorInfo> descriptorInfos =
-        new LinkedHashMap<String, ProtoDescriptorProvider.ProtoDescriptorInfo>();
+    Map<String, ProtoDescriptorInfo> descriptorInfos = new LinkedHashMap<>();
 
     // Add descriptor.proto from preferences
     GeneralPreferences preferences = new GeneralPreferences(storeAccess, project);

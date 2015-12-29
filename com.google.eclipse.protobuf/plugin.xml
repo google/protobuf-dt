@@ -9,7 +9,7 @@
     <package
       uri="http://www.google.com/eclipse/protobuf/Protobuf"
       class="com.google.eclipse.protobuf.protobuf.ProtobufPackage"
-      genModel="com/google/eclipse/protobuf/Protobuf.genmodel" />
+      genModel="model/generated/Protobuf.genmodel" />
   </extension>
   <extension
         point="org.eclipse.core.contenttype.contentTypes">

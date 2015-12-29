@@ -2,7 +2,7 @@
 <feature
       id="com.google.eclipse.protobuf"
       label="%featureName"
-      version="2.2.0.qualifier"
+      version="2.2.1.qualifier"
       provider-name="%providerName">
 
    <description url="https://code.google.com/p/protobuf-dt/">
@@ -10,7 +10,7 @@
    </description>
 
    <copyright>
-      %description
+      %copyright
    </copyright>
 
    <license url="%licenseURL">
@@ -33,7 +33,7 @@
       <import plugin="org.eclipse.ui.console" version="3.5.100" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.editors" version="3.7.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.7.0" match="greaterOrEqual"/>
-      <import feature="org.eclipse.xtext.runtime" version="2.4.2" match="compatible"/>
+      <import feature="org.eclipse.xtext.runtime" version="2.9.0" match="compatible"/>
    </requires>
 
    <plugin
