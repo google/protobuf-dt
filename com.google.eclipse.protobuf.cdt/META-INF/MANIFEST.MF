@@ -4,7 +4,7 @@ Bundle-Name: Protocol Buffer Editor: CDT Integration
 Bundle-SymbolicName: com.google.eclipse.protobuf.cdt;singleton:=true
 Bundle-Version: 2.2.1.qualifier
 Bundle-Activator: com.google.eclipse.protobuf.cdt.ProtobufCdtActivator
-Bundle-Vendor: Google, Inc.
+Bundle-Vendor: Google Inc.
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.cdt.core;bundle-version="5.3.1",
