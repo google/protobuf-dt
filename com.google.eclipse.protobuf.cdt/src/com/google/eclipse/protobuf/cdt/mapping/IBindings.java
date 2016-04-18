@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableList;
 import org.eclipse.cdt.core.dom.IName;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPBase;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPEnumeration;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPFunction;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPNamespace;
@@ -29,9 +30,6 @@ import java.util.List;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class IBindings {
-  private static final ImmutableList<String> MESSAGE_SUPER_TYPES = of("::google::protobuf::Message",
-      "google::protobuf::MessageLite");
-
   public boolean isMessage(IBinding binding) {
     if (!(binding instanceof CPPClassType)) {
       return false;
@@ -41,16 +39,26 @@ public class IBindings {
     if (bases.length != 1) {
       return false;
     }
-    IName name = bases[0].getBaseClassSpecifierName();
-    if (!(name instanceof CPPASTQualifiedName)) {
+    ICPPBinding baseClass = (ICPPBinding) bases[0].getBaseClass();
+    String name = baseClass.getName();
+    if (!name.equals("Message") && !name.equals("MessageLite")) {
       return false;
     }
-    CPPASTQualifiedName qualifiedName = (CPPASTQualifiedName) name;
-    if (!qualifiedName.isFullyQualified()) {
+    IBinding owner = baseClass.getOwner();
+    if (!(owner instanceof ICPPNamespace)) {
       return false;
     }
-    String qualifiedNameAsText = qualifiedName.toString();
-    return MESSAGE_SUPER_TYPES.contains(qualifiedNameAsText);
+    if (!owner.getName().equals("protobuf")) {
+      return false;
+    }
+    owner = owner.getOwner();
+    if (!(owner instanceof ICPPNamespace)) {
+      return false;
+    }
+    if (!owner.getName().equals("google")) {
+      return false;
+    }
+    return true;
   }
 
   public List<String> qualifiedNameOf(IBinding binding) {
