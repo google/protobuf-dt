@@ -51,19 +51,20 @@ class ModelElementFinder {
   @Inject private Resources resources;
   @Inject private ResourceSets resourceSets;
 
+  // Start at an element
   <T> Collection<IEObjectDescription> find(EObject start, FinderStrategy<T> strategy, T criteria) {
     Set<IEObjectDescription> descriptions = newHashSet();
-    descriptions.addAll(local(start, strategy, criteria));
+    descriptions.addAll(getDescriptionsFromObjectAncestors(start, strategy, criteria));
     Protobuf root = modelObjects.rootOf(start);
-    descriptions.addAll(imported(root, strategy, criteria));
+    descriptions.addAll(getDescriptionsFromAllImports(root, strategy, criteria));
     return unmodifiableSet(descriptions);
   }
 
-  private <T> Collection<IEObjectDescription> local(EObject start, FinderStrategy<T> strategy, T criteria) {
+  private <T> Collection<IEObjectDescription> getDescriptionsFromObjectAncestors(EObject start, FinderStrategy<T> strategy, T criteria) {
     UniqueDescriptions descriptions = new UniqueDescriptions();
     EObject current = start.eContainer();
     while (current != null) {
-      descriptions.addAll(local(current, strategy, criteria, 0));
+      descriptions.addAll(getDescriptionsFromObjectDescendants(current, strategy, criteria, 0));
       current = current.eContainer();
     }
     return descriptions.values();
@@ -71,32 +72,32 @@ class ModelElementFinder {
 
   <T> Collection<IEObjectDescription> find(Protobuf start, FinderStrategy<T> strategy, T criteria) {
     Set<IEObjectDescription> descriptions = newHashSet();
-    descriptions.addAll(local(start, strategy, criteria, 0));
-    descriptions.addAll(imported(start, strategy, criteria));
+    descriptions.addAll(getDescriptionsFromObjectDescendants(start, strategy, criteria, 0));
+    descriptions.addAll(getDescriptionsFromAllImports(start, strategy, criteria));
     return unmodifiableSet(descriptions);
   }
 
-  private <T> Collection<IEObjectDescription> local(EObject start, FinderStrategy<T> strategy, T criteria, int level) {
+  private <T> Collection<IEObjectDescription> getDescriptionsFromObjectDescendants(EObject start, FinderStrategy<T> strategy, T criteria, int level) {
     UniqueDescriptions descriptions = new UniqueDescriptions();
     for (EObject element : start.eContents()) {
       descriptions.addAll(strategy.local(element, criteria, level));
       if (element instanceof Message || element instanceof Group) {
-        descriptions.addAll(local(element, strategy, criteria, level + 1));
+        descriptions.addAll(getDescriptionsFromObjectDescendants(element, strategy, criteria, level + 1));
       }
     }
     return descriptions.values();
   }
 
-  private <T> Collection<IEObjectDescription> imported(Protobuf start, FinderStrategy<T> strategy, T criteria) {
+  private <T> Collection<IEObjectDescription> getDescriptionsFromAllImports(Protobuf start, FinderStrategy<T> strategy, T criteria) {
     List<Import> allImports = protobufs.importsIn(start);
     if (allImports.isEmpty()) {
       return emptyList();
     }
     ResourceSet resourceSet = start.eResource().getResourceSet();
-    return imported(allImports, modelObjects.packageOf(start), resourceSet, strategy, criteria);
+    return getDescriptionsFromImports(allImports, modelObjects.packageOf(start), resourceSet, strategy, criteria);
   }
 
-  private <T> Collection<IEObjectDescription> imported(List<Import> allImports, Package fromImporter,
+  private <T> Collection<IEObjectDescription> getDescriptionsFromImports(List<Import> allImports, Package fromImporter,
       ResourceSet resourceSet, FinderStrategy<T> strategy, T criteria) {
     Set<IEObjectDescription> descriptions = newHashSet();
     for (Import anImport : allImports) {
@@ -117,19 +118,23 @@ class ModelElementFinder {
         continue;
       }
       if (rootOfImported != null) {
-        descriptions.addAll(publicImported(rootOfImported, strategy, criteria));
+        descriptions.addAll(getDescriptionsFromPublicImports(rootOfImported, strategy, criteria));
         if (arePackagesRelated(fromImporter, rootOfImported)) {
-          descriptions.addAll(local(rootOfImported, strategy, criteria, 0));
+          descriptions.addAll(getDescriptionsFromObjectDescendants(rootOfImported, strategy, criteria, 0));
           continue;
         }
         Package packageOfImported = modelObjects.packageOf(rootOfImported);
-        descriptions.addAll(imported(fromImporter, packageOfImported, imported, strategy, criteria));
+        TreeIterator<Object> contents = getAllContents(imported, true);
+        while (contents.hasNext()) {
+          Object next = contents.next();
+          descriptions.addAll(strategy.imported(fromImporter, packageOfImported, next, criteria));
+        }
       }
     }
     return descriptions;
   }
 
-  private <T> Collection<IEObjectDescription> publicImported(Protobuf start, FinderStrategy<T> strategy, T criteria) {
+  private <T> Collection<IEObjectDescription> getDescriptionsFromPublicImports(Protobuf start, FinderStrategy<T> strategy, T criteria) {
     if (!protobufs.hasKnownSyntax(start)) {
       return emptySet();
     }
@@ -138,23 +143,12 @@ class ModelElementFinder {
       return emptyList();
     }
     ResourceSet resourceSet = start.eResource().getResourceSet();
-    return imported(allImports, modelObjects.packageOf(start), resourceSet, strategy, criteria);
+    return getDescriptionsFromImports(allImports, modelObjects.packageOf(start), resourceSet, strategy, criteria);
   }
 
   private boolean arePackagesRelated(Package aPackage, EObject root) {
     Package p = modelObjects.packageOf(root);
     return packages.areRelated(aPackage, p);
-  }
-
-  private <T> Collection<IEObjectDescription> imported(Package fromImporter, Package fromImported, Resource resource,
-      FinderStrategy<T> strategy, T criteria) {
-    Set<IEObjectDescription> descriptions = newHashSet();
-    TreeIterator<Object> contents = getAllContents(resource, true);
-    while (contents.hasNext()) {
-      Object next = contents.next();
-      descriptions.addAll(strategy.imported(fromImporter, fromImported, next, criteria));
-    }
-    return descriptions;
   }
 
   static interface FinderStrategy<T> {
