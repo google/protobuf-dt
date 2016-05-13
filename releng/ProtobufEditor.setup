@@ -61,6 +61,12 @@
           url="http://download.eclipse.org/modeling/emft/mwe/updates/milestones/"/>
       <repository
           url="http://download.eclipse.org/tools/gef/gef4/updates/releases"/>
+      <repository
+          url="http://download.itemis.com/updates/milestones/"/>
+      <repository
+          url="http://download.eclipse.org/tools/cdt/builds/mars/milestones/"/>
+      <repository
+          url="http://download.eclipse.org/technology/swtbot/releases/latest/"/>
     </setupTask>
     <setupTask
         xsi:type="setup.targlets:TargletTask"
@@ -72,10 +78,32 @@
             name="*"/>
         <requirement
             name="org.eclipse.emf.mwe2.launcher.feature.group"/>
+        <requirement
+            name="de.itemis.xtext.antlr.feature.feature.group"/>
+        <requirement
+            name="de.itemis.xtext.antlr.sdk.feature.group"/>
+        <requirement
+            name="org.antlr.runtime"/>
+        <requirement
+            name="org.hamcrest.library.source"/>
+        <requirement
+            name="org.hamcrest.generator"/>
+        <requirement
+            name="org.eclipse.cdt.feature.group"/>
+        <requirement
+            name="org.eclipse.cdt.sdk.feature.group"/>
+        <requirement
+            name="org.eclipse.swtbot.eclipse.feature.group"/>
+        <requirement
+            name="org.eclipse.platform.feature.group"/>
+        <requirement
+            name="org.eclipse.jdt.feature.group"/>
         <sourceLocator
             rootFolder="${git.clone.protobuf-dt.location}"/>
         <repositoryList
             name="protobuf_repositories_list">
+          <repository
+              url="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/"/>
           <repository
               url="http://download.eclipse.org/technology/swtbot/snapshots/"/>
           <repository
@@ -92,6 +120,12 @@
               url="http://download.eclipse.org/modeling/emft/mwe/updates/milestones/"/>
           <repository
               url="http://download.eclipse.org/tools/gef/gef4/updates/releases"/>
+          <repository
+              url="http://download.itemis.com/updates/milestones/"/>
+          <repository
+              url="http://download.eclipse.org/tools/cdt/builds/mars/milestones/"/>
+          <repository
+              url="http://download.eclipse.org/technology/swtbot/releases/latest/"/>
         </repositoryList>
       </targlet>
       <description></description>
@@ -99,9 +133,6 @@
     <setupTask
         xsi:type="projects:ProjectsImportTask"
         id="protobuf_projects_import">
-      <predecessor
-          xsi:type="git:GitCloneTask"
-          href="releng/ProtobufEditor.setup#git.clone.protobuf-dt"/>
       <sourceLocator
           rootFolder="${git.clone.protobuf-dt.location}"/>
     </setupTask>
