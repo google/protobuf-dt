@@ -58,6 +58,51 @@ with Gerrit. To do this, visit
 You will immediately be redirected to Google Accounts. Sign in using the same
 Google Account you used above. That is all that is required.
 
+## Compiling the code
+
+Download the [Eclipse Installer](https://eclipse.org/downloads/).
+
+Run it.
+
+If you see a yellow exclamation mark in the top-right, it means the installer
+is out-of-date. Click on the exclamation mark and then click on the word
+**UPDATE**. After the installer finishes updating, it will restart and you can
+continue with these steps.
+
+Click the menu button in the upper-right corner.
+
+Select "ADVANCED MODE...".
+
+Select "Eclipse IDE for Eclipse Committers".
+
+Select "Latest (Neon)".
+
+Click **Next**.
+
+This page is titled "Product". Click the little green "+" near the top-right of
+the screen.
+
+Paste this link into the box titled "Resource URIs:".
+
+https://raw.githubusercontent.com/google/protobuf-dt/master/releng/ProtobufEditor.setup
+
+Click **OK**.
+
+Click the checkbox next to "Protobuf Editor".
+
+Click **Next**.
+
+In "Target Platform", select "Neon".
+
+Click **Finish**.
+
+Wait for Eclipse to install, then click **Finish** to close the wizard. Wait for
+the build to finish.
+
+Expand **com.google.eclipse.protobuf.generator/src/com.google.eclipse.protobuf**.
+
+Right-click on **GenerateProtobuf.mwe2** and select "Run As > MWE2 Workflow".
+
 ## The small print
 Contributions made by corporations are covered by a different agreement than
 the one above, the
