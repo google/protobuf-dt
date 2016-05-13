@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description name="protobuf-dt" url="http://protobuf-dt.googlecode.com/git/update-site">
+      Update site for protobuf-dt, an Eclipse-based Development Environment for Protocol Buffers.
+   </description>
+   <feature url="features/com.google.eclipse.protobuf_1.4.1.201306170929.jar" id="com.google.eclipse.protobuf" version="1.4.1.201306170929">
+      <category name="google"/>
+   </feature>
+   <feature url="features/com.google.eclipse.protobuf_1.4.3.201307151341.jar" id="com.google.eclipse.protobuf" version="1.4.3.201307151341">
+      <category name="google"/>
+   </feature>
+   <feature url="features/com.google.eclipse.protobuf_2.1.0.201412161507.jar" id="com.google.eclipse.protobuf" version="2.1.0.201412161507">
+      <category name="google"/>
+   </feature>
+   <feature url="features/com.google.eclipse.protobuf_2.2.0.201512281705.jar" id="com.google.eclipse.protobuf" version="2.2.0.201512281705">
+      <category name="google"/>
+   </feature>
+   <feature url="features/com.google.eclipse.protobuf_2.2.1.201601041517.jar" id="com.google.eclipse.protobuf" version="2.2.1.201601041517">
+      <category name="google"/>
+   </feature>
+   <category-def name="google" label="Google Inc."/>
+</site>
