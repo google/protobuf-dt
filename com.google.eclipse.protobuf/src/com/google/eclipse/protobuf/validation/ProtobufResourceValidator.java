@@ -1,9 +1,9 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2016 Google Inc.
  *
- * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License v1.0 which accompanies this distribution, and is available at
- *
+ * All rights reserved. This program and the accompanying materials are
+ * made available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.validation;
@@ -15,6 +15,8 @@ import static org.eclipse.xtext.validation.CancelableDiagnostician.CANCEL_INDICA
 import static org.eclipse.xtext.validation.CheckMode.KEY;
 import static org.eclipse.xtext.validation.CheckType.FAST;
 import static org.eclipse.xtext.validation.impl.ConcreteSyntaxEValidator.DISABLE_CONCRETE_SYNTAX_EVALIDATOR;
+import static com.google.eclipse.protobuf.util.Tracer.DEBUG_SCOPING;
+import static com.google.eclipse.protobuf.util.Tracer.trace;
 
 import static com.google.common.collect.Lists.newArrayListWithExpectedSize;
 import static com.google.common.collect.Maps.newHashMap;
@@ -38,6 +40,7 @@ import org.eclipse.xtext.validation.Issue;
 import org.eclipse.xtext.validation.ResourceValidatorImpl;
 
 import com.google.eclipse.protobuf.linking.ProtobufDiagnostic;
+import com.google.eclipse.protobuf.util.TimingCollector;
 
 /**
  * Adds support for converting scoping errors into warnings if non-proto2 files are imported.
@@ -46,14 +49,32 @@ import com.google.eclipse.protobuf.linking.ProtobufDiagnostic;
  */
 public class ProtobufResourceValidator extends ResourceValidatorImpl {
   private static final Logger log = Logger.getLogger(ProtobufResourceValidator.class);
+  private static final ThreadLocal<TimingCollector> scopeProviderTimingCollector =
+      new ThreadLocal<TimingCollector>() {
+        @Override
+        public TimingCollector initialValue() {
+          return new TimingCollector();
+        }
+      };
 
-  @Override public List<Issue> validate(Resource resource, CheckMode mode, CancelIndicator indicator) {
+  @Override
+  public List<Issue> validate(Resource resource, CheckMode mode, CancelIndicator indicator) {
     CancelIndicator monitor = indicator == null ? CancelIndicator.NullImpl : indicator;
+    getScopeProviderTimingCollector().clear();
     resolveProxies(resource, monitor);
+    if (DEBUG_SCOPING) {
+      trace("Debugging AbstractDeclarativeScopeProvider.getScope() "
+           + getScopeProviderTimingCollector().toString());
+    }
+    return handleIssues(resource, mode, monitor);
+  }
+
+  private List<Issue> handleIssues(Resource resource, CheckMode mode, CancelIndicator monitor) {
     if (monitor.isCanceled()) {
       return null;
     }
-    List<Issue> result = newArrayListWithExpectedSize(resource.getErrors().size() + resource.getWarnings().size());
+    List<Issue> result =
+        newArrayListWithExpectedSize(resource.getErrors().size() + resource.getWarnings().size());
     try {
       IAcceptor<Issue> acceptor = createAcceptor(result);
       Status status = delegateValidationToDiagnostician(resource, mode, monitor, acceptor);
@@ -76,14 +97,15 @@ public class ProtobufResourceValidator extends ResourceValidatorImpl {
     return result;
   }
 
-  private Status delegateValidationToDiagnostician(Resource resource, CheckMode mode,
-      CancelIndicator monitor, IAcceptor<Issue> acceptor) {
+  private Status delegateValidationToDiagnostician(
+      Resource resource, CheckMode mode, CancelIndicator monitor, IAcceptor<Issue> acceptor) {
     Status hasNonProto2Import = Status.OK;
     for (EObject element : resource.getContents()) {
       if (monitor.isCanceled()) {
         return Status.CANCELED;
       }
-      Diagnostic diagnostic = getDiagnostician().validate(element, validationOptions(resource, mode, monitor));
+      Diagnostic diagnostic =
+          getDiagnostician().validate(element, validationOptions(resource, mode, monitor));
       if (convertIssuesToMarkers(acceptor, diagnostic) == Status.PROTO1_IMPORTS_FOUND) {
         hasNonProto2Import = Status.PROTO1_IMPORTS_FOUND;
       }
@@ -91,7 +113,8 @@ public class ProtobufResourceValidator extends ResourceValidatorImpl {
     return hasNonProto2Import;
   }
 
-  private Map<Object, Object> validationOptions(Resource resource, CheckMode mode, CancelIndicator monitor) {
+  private Map<Object, Object> validationOptions(
+      Resource resource, CheckMode mode, CancelIndicator monitor) {
     Map<Object, Object> options = newHashMap();
     options.put(KEY, mode);
     options.put(CANCEL_INDICATOR, monitor);
@@ -118,7 +141,10 @@ public class ProtobufResourceValidator extends ResourceValidatorImpl {
     return hasNonProto2Import;
   }
 
-  private Status createErrors(Resource resource, boolean proto1ImportsFound, IAcceptor<Issue> acceptor,
+  private Status createErrors(
+      Resource resource,
+      boolean proto1ImportsFound,
+      IAcceptor<Issue> acceptor,
       CancelIndicator monitor) {
     for (Resource.Diagnostic error : resource.getErrors()) {
       if (monitor.isCanceled()) {
@@ -154,7 +180,8 @@ public class ProtobufResourceValidator extends ResourceValidatorImpl {
     return false;
   }
 
-  private Status createWarnings(Resource resource, IAcceptor<Issue> acceptor, CancelIndicator monitor) {
+  private Status createWarnings(
+      Resource resource, IAcceptor<Issue> acceptor, CancelIndicator monitor) {
     for (Resource.Diagnostic warning : resource.getWarnings()) {
       if (monitor.isCanceled()) {
         return Status.CANCELED;
@@ -165,7 +192,9 @@ public class ProtobufResourceValidator extends ResourceValidatorImpl {
   }
 
   private static enum Status {
-    OK, CANCELED, PROTO1_IMPORTS_FOUND;
+    OK,
+    CANCELED,
+    PROTO1_IMPORTS_FOUND;
 
     boolean hasProto1Imports() {
       return (this == PROTO1_IMPORTS_FOUND);
@@ -174,5 +203,9 @@ public class ProtobufResourceValidator extends ResourceValidatorImpl {
     boolean isCanceled() {
       return (this == CANCELED);
     }
+  }
+
+  public static TimingCollector getScopeProviderTimingCollector() {
+    return scopeProviderTimingCollector.get();
   }
 }

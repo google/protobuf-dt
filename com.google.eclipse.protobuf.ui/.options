@@ -1,0 +1,7 @@
+# Debugging options for the com.google.eclipse.protobuf plugin.
+
+# Turns on debugging for the com.google.eclipse.protobuf plugin.
+com.google.eclipse.protobuf.ui/debug=false
+
+# Turns on debugging for com.google.eclipse.protobuf.scoping.
+com.google.eclipse.protobuf.ui/scoping=false

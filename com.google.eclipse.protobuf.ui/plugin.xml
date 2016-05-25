@@ -278,4 +278,15 @@
     <extension point="org.eclipse.xtext.ui.shared.overridingGuiceModule">
     <module class="com.google.eclipse.protobuf.ui.SharedModuleOverrides"/>
   </extension>
+  <extension
+         point="org.eclipse.ui.trace.traceComponents">
+      <component
+            id="com.google.eclipse.protobuf.ui.trace"
+            label="%trace.component.label">
+         <bundle
+               consumed="false"
+               name="com.google.eclipse.protobuf.ui">
+         </bundle>
+      </component>
+   </extension>
 </plugin>

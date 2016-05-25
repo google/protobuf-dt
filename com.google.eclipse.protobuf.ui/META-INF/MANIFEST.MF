@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
 Bundle-Version: 2.2.1.qualifier
-Bundle-Activator: com.google.eclipse.protobuf.ui.internal.ProtobufActivator
+Bundle-Activator: com.google.eclipse.protobuf.ui.internal.Activator
 Bundle-SymbolicName: com.google.eclipse.protobuf.ui; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: com.google.eclipse.protobuf,

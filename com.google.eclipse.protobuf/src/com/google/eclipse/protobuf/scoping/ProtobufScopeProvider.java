@@ -1,14 +1,16 @@
 /*
- * Copyright (c) 2011 Google Inc.
+ * Copyright (c) 2016 Google Inc.
  *
- * All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse
- * Public License v1.0 which accompanies this distribution, and is available at
- *
+ * All rights reserved. This program and the accompanying materials are
+ * made available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package com.google.eclipse.protobuf.scoping;
 
 import static com.google.eclipse.protobuf.scoping.OptionType.typeOf;
+import static com.google.eclipse.protobuf.util.Tracer.DEBUG_SCOPING;
+import static com.google.eclipse.protobuf.validation.ProtobufResourceValidator.getScopeProviderTimingCollector;
 import static java.util.Collections.emptySet;
 
 import com.google.eclipse.protobuf.model.util.MessageFields;
@@ -62,9 +64,11 @@ import java.util.Set;
  *
  * @author alruiz@google.com (Alex Ruiz)
  *
- * @see <a href="http://www.eclipse.org/Xtext/documentation/latest/xtext.html#scoping">Xtext Scoping</a>
+ * @see <a href="http://www.eclipse.org/Xtext/documentation/latest/xtext.html#scoping">Xtext
+ * Scoping</a>
  */
-public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider implements ScopeProvider {
+public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider
+    implements ScopeProvider {
   private static final boolean DO_NOT_IGNORE_CASE = false;
 
   @Inject private ComplexTypeFinderStrategy complexTypeFinderDelegate;
@@ -83,6 +87,18 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
   @Inject private NativeOptionDescriptions nativeOptionDescriptions;
   @Inject private Options options;
 
+  @Override
+  public IScope getScope(EObject context, EReference reference) {
+    if (DEBUG_SCOPING) {
+      getScopeProviderTimingCollector().startTimer();
+    }
+    IScope scope = super.getScope(context, reference);
+    if (DEBUG_SCOPING) {
+      getScopeProviderTimingCollector().stopTimer();
+    }
+    return scope;
+  }
+
   @SuppressWarnings("unused")
   public IScope scope_ComplexTypeLink_target(ComplexTypeLink link, EReference r) {
     EObject c = link.eContainer();
@@ -100,7 +116,8 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     return createEmptyScope();
   }
 
-  @Override public Collection<IEObjectDescription> potentialComplexTypesFor(MessageField field) {
+  @Override
+  public Collection<IEObjectDescription> potentialComplexTypesFor(MessageField field) {
     return modelElementFinder.find(field, complexTypeFinderDelegate, ComplexType.class);
   }
 
@@ -112,7 +129,8 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     return createScope(extensibleTypes);
   }
 
-  @Override public Collection<IEObjectDescription> potentialExtensibleTypesFor(TypeExtension extension) {
+  @Override
+  public Collection<IEObjectDescription> potentialExtensibleTypesFor(TypeExtension extension) {
     Protobuf root = modelObjects.rootOf(extension);
     return modelElementFinder.find(root, complexTypeFinderDelegate, ExtensibleType.class);
   }
@@ -124,12 +142,14 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     return createScope(messages);
   }
 
-  @Override public Collection<IEObjectDescription> potentialMessagesFor(Rpc rpc) {
+  @Override
+  public Collection<IEObjectDescription> potentialMessagesFor(Rpc rpc) {
     Protobuf root = modelObjects.rootOf(rpc);
     return allMessages(root);
   }
 
-  @Override public Collection<IEObjectDescription> potentialMessagesFor(Stream stream) {
+  @Override
+  public Collection<IEObjectDescription> potentialMessagesFor(Stream stream) {
     Protobuf root = modelObjects.rootOf(stream);
     return allMessages(root);
   }
@@ -184,9 +204,10 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
         EObject container = c.eContainer();
         if (container instanceof Group) {
           OptionType optionType = OptionType.findOptionTypeForLevelOf(container.eContainer());
-          return createScope(optionType != null 
-              ? modelElementFinder.find(option, customOptionFinderDelegate, optionType)
-              : Collections.<IEObjectDescription>emptySet());
+          return createScope(
+              optionType != null
+                  ? modelElementFinder.find(option, customOptionFinderDelegate, optionType)
+                  : Collections.<IEObjectDescription>emptySet());
         }
       }
 
@@ -196,7 +217,8 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     return createScope(descriptions);
   }
 
-  @Override public Collection<IEObjectDescription> potentialSourcesFor(AbstractCustomOption option) {
+  @Override
+  public Collection<IEObjectDescription> potentialSourcesFor(AbstractCustomOption option) {
     OptionType optionType = typeOf((AbstractOption) option);
     Collection<IEObjectDescription> descriptions = emptySet();
     if (optionType != null) {
@@ -225,11 +247,13 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     return emptySet();
   }
 
-  @Override public Collection<IEObjectDescription> potentialMessageFieldsFor(AbstractCustomOption option) {
+  @Override
+  public Collection<IEObjectDescription> potentialMessageFieldsFor(AbstractCustomOption option) {
     return customOptionFieldFinder.findOptionFields(option, messageFieldFinderDelegate);
   }
 
-  @Override public Collection<IEObjectDescription> potentialExtensionFieldsFor(AbstractCustomOption option) {
+  @Override
+  public Collection<IEObjectDescription> potentialExtensionFieldsFor(AbstractCustomOption option) {
     return customOptionFieldFinder.findOptionFields(option, extensionFieldFinderDelegate);
   }
 
@@ -260,12 +284,15 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider impl
     return null;
   }
 
-  @Override public Collection<IEObjectDescription> potentialNormalFieldNames(ComplexValue value) {
+  @Override
+  public Collection<IEObjectDescription> potentialNormalFieldNames(ComplexValue value) {
     return customOptionFieldNameFinder.findFieldNamesSources(value, normalFieldNameFinderDelegate);
   }
 
-  @Override public Collection<IEObjectDescription> potentialExtensionFieldNames(ComplexValue value) {
-    return customOptionFieldNameFinder.findFieldNamesSources(value, extensionFieldNameFinderDelegate);
+  @Override
+  public Collection<IEObjectDescription> potentialExtensionFieldNames(ComplexValue value) {
+    return customOptionFieldNameFinder.findFieldNamesSources(
+        value, extensionFieldNameFinderDelegate);
   }
 
   private static IScope createEmptyScope() {
