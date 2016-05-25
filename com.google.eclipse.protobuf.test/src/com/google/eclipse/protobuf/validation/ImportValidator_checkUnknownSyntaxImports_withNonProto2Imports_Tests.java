@@ -10,7 +10,7 @@ package com.google.eclipse.protobuf.validation;
 
 import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__PATH;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.PACKAGE__IMPORTED_NAMESPACE;
 import static com.google.eclipse.protobuf.validation.Messages.importingUnsupportedSyntax;
 import static org.eclipse.xtext.validation.ValidationMessageAcceptor.INSIGNIFICANT_INDEX;
 import static org.mockito.Mockito.mock;
@@ -104,7 +104,7 @@ public class ImportValidator_checkUnknownSyntaxImports_withNonProto2Imports_Test
   private void verifyThatImportingUnknownSyntaxFileCreatedWarning(Import anImport) {
     verify(messageAcceptor).acceptWarning(importingUnsupportedSyntax,
         anImport,
-        IMPORT__PATH,
+        PACKAGE__IMPORTED_NAMESPACE,
         INSIGNIFICANT_INDEX,
         null,
         new String[0]);

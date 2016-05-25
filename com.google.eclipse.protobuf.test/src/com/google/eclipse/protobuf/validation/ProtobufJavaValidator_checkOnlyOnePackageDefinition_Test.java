@@ -15,7 +15,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 
 import static com.google.eclipse.protobuf.junit.core.UnitTestModule.unitTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.PACKAGE__NAME;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.PACKAGE__IMPORTED_NAMESPACE;
 import static com.google.eclipse.protobuf.validation.Messages.multiplePackages;
 import static com.google.eclipse.protobuf.validation.ProtobufJavaValidator.MORE_THAN_ONE_PACKAGE_ERROR;
 
@@ -51,7 +51,7 @@ public class ProtobufJavaValidator_checkOnlyOnePackageDefinition_Test {
   @Test public void should_create_error_if_there_are_more_than_one_package_definitions() {
     Package p = xtext.find("com.google.eclipse", Package.class);
     validator.checkOnlyOnePackageDefinition(p);
-    verify(messageAcceptor).acceptError(multiplePackages, p, PACKAGE__NAME, INSIGNIFICANT_INDEX, MORE_THAN_ONE_PACKAGE_ERROR);
+    verify(messageAcceptor).acceptError(multiplePackages, p, PACKAGE__IMPORTED_NAMESPACE, INSIGNIFICANT_INDEX, MORE_THAN_ONE_PACKAGE_ERROR);
   }
 
   // syntax = "proto2";

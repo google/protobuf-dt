@@ -5,7 +5,8 @@ Bundle-SymbolicName: com.google.eclipse.protobuf.generator
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: com.google.eclipse.protobuf.generator.Activator
 Bundle-Vendor: Google
-Require-Bundle: org.antlr.runtime,
+Require-Bundle: com.google.eclipse.protobuf,
+ org.antlr.runtime,
  org.apache.commons.logging,
  org.apache.log4j,
  org.eclipse.core.resources,

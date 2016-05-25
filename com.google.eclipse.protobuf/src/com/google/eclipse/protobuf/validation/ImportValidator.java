@@ -10,7 +10,7 @@ package com.google.eclipse.protobuf.validation;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Sets.newHashSet;
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__PATH;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.PACKAGE__IMPORTED_NAMESPACE;
 import static com.google.eclipse.protobuf.validation.Messages.importNotFound;
 import static com.google.eclipse.protobuf.validation.Messages.importingUnsupportedSyntax;
 import static java.lang.String.format;
@@ -111,7 +111,7 @@ public class ImportValidator extends AbstractDeclarativeValidator {
   }
 
   private void warnUnsupportedImportFoundIn(Import anImport) {
-    warning(importingUnsupportedSyntax, anImport, IMPORT__PATH, INSIGNIFICANT_INDEX);
+    warning(importingUnsupportedSyntax, anImport, PACKAGE__IMPORTED_NAMESPACE, INSIGNIFICANT_INDEX);
   }
 
   /**
@@ -125,7 +125,7 @@ public class ImportValidator extends AbstractDeclarativeValidator {
     if (imports.isResolved(anImport)) {
       return;
     }
-    error(format(importNotFound, imports.getPath(anImport)), IMPORT__PATH);
+    error(format(importNotFound, imports.getPath(anImport)), PACKAGE__IMPORTED_NAMESPACE);
   }
 
   private static enum HasKnownSyntax {
