@@ -130,7 +130,7 @@ public class Packages {
   }
 
   private QualifiedName nameOf(Package p) {
-    String name = p.getName();
+    String name = p.getImportedNamespace();
     return (isEmpty(name)) ? null : qualifiedNameConverter.toQualifiedName(name);
   }
 }

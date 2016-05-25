@@ -24,7 +24,7 @@ ProtobufElement:
   Package | Import | Option | ComplexType | TypeExtension | Service;
 
 Package:
-  'package' name=PackageName (';')+;
+  'package' importedNamespace=PackageName (';')+;
 
 PackageName:
   IdOrReservedWord ('.' IdOrReservedWord)*;

@@ -42,14 +42,14 @@ Workflow {
       uri = grammarURI
       fileExtensions = file.extensions
 
-      // Java API to access grammar elements (required by several other fragments)
+      // Java APIto access grammar elements (required by several other fragments)
       fragment = grammarAccess.GrammarAccessFragment {}
 
-      // generates Java API for the generated EPackages 
+      // generates Java APIfor the generated EPackages
       fragment = ecore.EMFGeneratorFragment {
       // referencedGenModels = "uri to genmodel, uri to next genmodel"
       }
-      
+
       // Serializer 2.0
       fragment = serializer.SerializerFragment {
         generateStub = false
@@ -58,7 +58,7 @@ Workflow {
       // the serialization component
       // fragment = parseTreeConstructor.ParseTreeConstructorFragment {}
 
-      // a custom ResourceFactory for use with EMF 
+      // a custom ResourceFactory for use with EMF
       fragment = resourceFactory.ResourceFactoryFragment {
         fileExtensions = file.extensions
       }
@@ -70,7 +70,7 @@ Workflow {
         // }
       }
 
-      // java-based API for validation 
+      // java-based APIfor validation
       fragment = validation.JavaValidatorFragment {
       // composedCheck = "org.eclipse.xtext.validation.ImportUriValidator"
       // composedCheck = "org.eclipse.xtext.validation.NamesAreUniqueValidator"
@@ -81,41 +81,41 @@ Workflow {
       // fragment = scoping.ImportURIScopingFragment {}
       // fragment = exporting.SimpleNamesFragment {}
 
-      // scoping and exporting API 
-      fragment = scoping.ImportNamespacesScopingFragment {}
+      // scoping and exporting API
+      fragment = scoping.ProtobufImportNamespacesScopingFragment {}
       fragment = exporting.QualifiedNamesFragment {}
       fragment = builder.BuilderIntegrationFragment {}
 
-      // formatter API 
+      // formatter API
       fragment = formatting.FormatterFragment {}
 
-      // labeling API 
+      // labeling API
       fragment = labeling.LabelProviderFragment {}
 
-      // outline API 
+      // outline API
       fragment = outline.OutlineTreeProviderFragment {}
       fragment = outline.QuickOutlineFragment {}
 
-      // quickfix API 
+      // quickfix API
       fragment = quickfix.QuickfixProviderFragment {}
 
       // rename refactoring
       fragment = refactoring.RefactorElementNameFragment {}
 
-      // content assist API  
+      // content assist API
       fragment = contentAssist.JavaBasedContentAssistFragment {}
 
-      // generates a more lightweight Antlr parser and lexer tailored for content assist  
+      // generates a more lightweight Antlr parser and lexer tailored for content assist
       fragment = parser.antlr.XtextAntlrUiGeneratorFragment {
         // options = {
         //   backtrack = true
         // }
       }
 
-      // project wizard (optional) 
+      // project wizard (optional)
       // fragment = projectWizard.SimpleProjectWizardFragment {
-      // 		generatorProjectName = "${projectName}.generator" 
-      //		modelFileExtension = file.extensions
+      //   generatorProjectName = "${projectName}.generator"
+      //   modelFileExtension = file.extensions
       // }
     }
   }

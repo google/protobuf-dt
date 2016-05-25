@@ -21,3 +21,4 @@ Require-Bundle: org.antlr.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: com.google.eclipse.protobuf
+Import-Package: com.google.eclipse.protobuf.scoping
