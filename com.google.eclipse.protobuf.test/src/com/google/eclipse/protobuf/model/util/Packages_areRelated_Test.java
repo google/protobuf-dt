@@ -49,36 +49,36 @@ public class Packages_areRelated_Test {
         "may"
     };
     p1 = mock(Package.class);
-    when(p1.getImportedNamespace()).thenReturn(baseName);
+    when(p1.getName()).thenReturn(baseName);
     p2 = mock(Package.class);
   }
 
   @Test public void should_return_true_if_packages_are_equal() {
-    when(p2.getImportedNamespace()).thenReturn(baseName);
+    when(p2.getName()).thenReturn(baseName);
     assertTrue(packages.areRelated(p1, p2));
   }
 
   @Test public void should_return_true_second_is_subPackage_of_first() {
     for (String name : subpackageNames) {
-      when(p2.getImportedNamespace()).thenReturn(name);
+      when(p2.getName()).thenReturn(name);
       assertTrue(packages.areRelated(p1, p2));
     }
   }
 
   @Test public void should_return_true_first_is_subPackage_of_second() {
     for (String name : subpackageNames) {
-      when(p2.getImportedNamespace()).thenReturn(name);
+      when(p2.getName()).thenReturn(name);
       assertTrue(packages.areRelated(p2, p1));
     }
   }
 
   @Test public void should_return_false_if_second_starts_with_few_segments_of_first_but_is_not_subpackage() {
-    when(p2.getImportedNamespace()).thenReturn("may.the.ring");
+    when(p2.getName()).thenReturn("may.the.ring");
     assertFalse(packages.areRelated(p1, p2));
   }
 
   @Test public void should_return_false_if_names_are_completely_different() {
-    when(p2.getImportedNamespace()).thenReturn("peace.dog");
+    when(p2.getName()).thenReturn("peace.dog");
     assertFalse(packages.areRelated(p1, p2));
   }
 }

@@ -15,6 +15,7 @@ import com.google.eclipse.protobuf.naming.ProtobufQualifiedNameProvider;
 import com.google.eclipse.protobuf.resource.FastXtextResourceSet;
 import com.google.eclipse.protobuf.resource.GlobalResourceServiceProvider;
 import com.google.eclipse.protobuf.scoping.ExtensionRegistryProvider;
+import com.google.eclipse.protobuf.scoping.ProtobufGlobalScopeProvider;
 import com.google.eclipse.protobuf.validation.ProtobufResourceValidator;
 import com.google.eclipse.protobuf.validation.ProtobufSyntaxErrorMessageProvider;
 import com.google.inject.Binder;
@@ -27,11 +28,11 @@ import org.eclipse.xtext.parser.antlr.ISyntaxErrorMessageProvider;
 import org.eclipse.xtext.resource.IGlobalServiceProvider;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
+import org.eclipse.xtext.scoping.IGlobalScopeProvider;
 import org.eclipse.xtext.validation.IResourceValidator;
 
 /**
- * Use this class to register components to be used at runtime / without the Equinox extension
- * registry.
+ * Use this class to register components to be used at runtime / without the Equinox extension registry.
  */
 public class ProtobufRuntimeModule extends AbstractProtobufRuntimeModule {
   public Class<? extends IGlobalServiceProvider> bindIGlobalServiceProvider() {
@@ -42,8 +43,7 @@ public class ProtobufRuntimeModule extends AbstractProtobufRuntimeModule {
     return ProtobufQualifiedNameConverter.class;
   }
 
-  @Override
-  public Class<? extends IQualifiedNameProvider> bindIQualifiedNameProvider() {
+  @Override public Class<? extends IQualifiedNameProvider> bindIQualifiedNameProvider() {
     return ProtobufQualifiedNameProvider.class;
   }
 
@@ -55,19 +55,20 @@ public class ProtobufRuntimeModule extends AbstractProtobufRuntimeModule {
     return ProtobufSyntaxErrorMessageProvider.class;
   }
 
-  @Override
-  public Class<? extends IValueConverterService> bindIValueConverterService() {
+  @Override public Class<? extends IValueConverterService> bindIValueConverterService() {
     return ProtobufTerminalConverters.class;
   }
 
-  @Override
-  public Class<? extends XtextResource> bindXtextResource() {
+  @Override public Class<? extends XtextResource> bindXtextResource() {
     return ProtobufResource.class;
   }
 
-  @Override
-  public Class<? extends XtextResourceSet> bindXtextResourceSet() {
+  @Override public Class<? extends XtextResourceSet> bindXtextResourceSet() {
     return FastXtextResourceSet.class;
+  }
+
+  @Override public Class<? extends IGlobalScopeProvider> bindIGlobalScopeProvider() {
+    return ProtobufGlobalScopeProvider.class;
   }
 
   public void configureExtensionRegistry(Binder binder) {

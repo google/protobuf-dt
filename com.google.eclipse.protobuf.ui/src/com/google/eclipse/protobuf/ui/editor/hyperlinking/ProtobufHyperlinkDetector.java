@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.editor.hyperlinking;
 
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.PACKAGE__IMPORTED_NAMESPACE;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.IMPORT__PATH;
 
 import com.google.eclipse.protobuf.model.util.INodes;
 import com.google.eclipse.protobuf.model.util.Imports;
@@ -71,7 +71,7 @@ public class ProtobufHyperlinkDetector extends DefaultHyperlinkDetector {
         if (!imports.isResolved(anImport)) {
           return NO_HYPERLINKS;
         }
-        INode importUriNode = nodes.firstNodeForFeature(anImport, PACKAGE__IMPORTED_NAMESPACE);
+        INode importUriNode = nodes.firstNodeForFeature(anImport, IMPORT__PATH);
         if (importUriNode.getLength() == 0) {
           return NO_HYPERLINKS;
         }

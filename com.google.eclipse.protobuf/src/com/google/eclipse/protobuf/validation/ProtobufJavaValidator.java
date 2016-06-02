@@ -11,7 +11,7 @@ package com.google.eclipse.protobuf.validation;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MAP_TYPE__KEY_TYPE;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MAP_TYPE__VALUE_TYPE;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.MESSAGE_FIELD__MODIFIER;
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.PACKAGE__IMPORTED_NAMESPACE;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.PACKAGE__NAME;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.SYNTAX__NAME;
 import static com.google.eclipse.protobuf.validation.Messages.expectedFieldNumber;
 import static com.google.eclipse.protobuf.validation.Messages.expectedSyntaxIdentifier;
@@ -380,7 +380,7 @@ public class ProtobufJavaValidator extends AbstractProtobufJavaValidator {
     for (ProtobufElement e : root.getElements()) {
       if (e == aPackage) {
         if (firstFound) {
-          error(multiplePackages, aPackage, PACKAGE__IMPORTED_NAMESPACE, MORE_THAN_ONE_PACKAGE_ERROR);
+          error(multiplePackages, aPackage, PACKAGE__NAME, MORE_THAN_ONE_PACKAGE_ERROR);
         }
         return;
       }

@@ -44,7 +44,7 @@ public class ModelObjects_packageOf_Test {
   @Test public void should_return_package_if_proto_has_one() {
     MessageField field = xtext.find("id", MessageField.class);
     Package aPackage = modelObjects.packageOf(field);
-    assertThat(aPackage.getImportedNamespace(), equalTo("person.test"));
+    assertThat(aPackage.getName(), equalTo("person.test"));
   }
 
   // syntax = "proto2";

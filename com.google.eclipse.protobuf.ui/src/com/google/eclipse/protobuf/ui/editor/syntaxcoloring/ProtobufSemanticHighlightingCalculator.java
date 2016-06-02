@@ -35,11 +35,10 @@ import static com.google.eclipse.protobuf.ui.editor.syntaxcoloring.HighlightingC
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.xtext.ide.editor.syntaxcoloring.IHighlightedPositionAcceptor;
-import org.eclipse.xtext.ide.editor.syntaxcoloring.ISemanticHighlightingCalculator;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.resource.XtextResource;
-import org.eclipse.xtext.util.CancelIndicator;
+import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightedPositionAcceptor;
+import org.eclipse.xtext.ui.editor.syntaxcoloring.ISemanticHighlightingCalculator;
 
 import com.google.eclipse.protobuf.model.util.INodes;
 import com.google.eclipse.protobuf.model.util.IndexedElements;
@@ -78,11 +77,7 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
   @Inject private INodes nodes;
   @Inject private Options options;
 
-  @Override
-  public void provideHighlightingFor(
-      XtextResource resource,
-      IHighlightedPositionAcceptor acceptor,
-      CancelIndicator cancelIndicator) {
+  @Override public void provideHighlightingFor(XtextResource resource, IHighlightedPositionAcceptor acceptor) {
     if (resource == null) {
       return;
     }
@@ -162,8 +157,7 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
 
   private void highlight(IndexedElement element, IHighlightedPositionAcceptor acceptor) {
     highlightName(element, acceptor, DEFAULT_ID);
-    highlightFirstFeature(
-        element, indexedElements.indexFeatureOf(element), acceptor, MESSAGE_FIELD_INDEX_ID);
+    highlightFirstFeature(element, indexedElements.indexFeatureOf(element), acceptor, MESSAGE_FIELD_INDEX_ID);
     highlightOptions(element, acceptor);
     if (element instanceof Group) {
       highlight((Group) element, acceptor);
@@ -275,18 +269,11 @@ public class ProtobufSemanticHighlightingCalculator implements ISemanticHighligh
   }
 
   private void highlightName(EObject o, IHighlightedPositionAcceptor acceptor, String highlightId) {
-    EStructuralFeature feature = o.eClass().getEStructuralFeature("name");
-    if (feature == null) {
-      feature = o.eClass().getEStructuralFeature("importedNamespace");
-    }
-    highlightFirstFeature(o, feature, acceptor, highlightId);
+    highlightFirstFeature(o, o.eClass().getEStructuralFeature("name"), acceptor, highlightId);
   }
 
-  private void highlightFirstFeature(
-      EObject semantic,
-      EStructuralFeature feature,
-      IHighlightedPositionAcceptor acceptor,
-      String highlightId) {
+  private void highlightFirstFeature(EObject semantic, EStructuralFeature feature,
+      IHighlightedPositionAcceptor acceptor, String highlightId) {
     INode node = nodes.firstNodeForFeature(semantic, feature);
     if (node == null) {
       return;
