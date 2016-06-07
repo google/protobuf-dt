@@ -13,9 +13,11 @@ import com.google.eclipse.protobuf.model.util.Protobufs;
 import com.google.eclipse.protobuf.model.util.Resources;
 import com.google.eclipse.protobuf.protobuf.Import;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
+import com.google.eclipse.protobuf.util.EResources;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider;
@@ -32,6 +34,7 @@ public class ProtobufImportUriGlobalScopeProvider extends ImportUriGlobalScopePr
   @Inject private Resources resources;
   @Inject private Imports imports;
   @Inject private IResourceScopeCache cache;
+  @Inject private ProtoDescriptorProvider descriptorProvider;
 
   @Override
   protected LinkedHashSet<URI> getImportedUris(final Resource resource) {
@@ -65,6 +68,10 @@ public class ProtobufImportUriGlobalScopeProvider extends ImportUriGlobalScopePr
               if (root != null) {
                 addPublicImportedUris(root, importedUris);
               }
+            } else if (imports.hasUnresolvedDescriptorUri(singleImport)) {
+              IProject project = EResources.getProjectOf(singleImport.eResource());
+              importedUris.add(
+                  descriptorProvider.descriptorLocation(project, imports.getPath(singleImport)));
             }
           }
         });

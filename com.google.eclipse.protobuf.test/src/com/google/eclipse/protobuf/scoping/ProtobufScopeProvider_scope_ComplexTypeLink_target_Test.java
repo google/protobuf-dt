@@ -9,14 +9,18 @@
 package com.google.eclipse.protobuf.scoping;
 
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 
 import static com.google.eclipse.protobuf.junit.IEObjectDescriptions.descriptionsIn;
 import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static com.google.eclipse.protobuf.junit.matchers.ContainAllNames.containAll;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.COMPLEX_TYPE;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.COMPLEX_TYPE_LINK;
 
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.xtext.scoping.IScope;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -26,7 +30,7 @@ import com.google.eclipse.protobuf.protobuf.MessageField;
 import com.google.inject.Inject;
 
 /**
- * Tests for <code>{@link ProtobufScopeProvider#scope_ComplexTypeLink_target(ComplexTypeLink, EReference)}</code>
+ * Tests for <code>{@link ProtobufScopeProvider#getScope(ComplexTypeLink, EReference)}</code>
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
@@ -35,6 +39,12 @@ public class ProtobufScopeProvider_scope_ComplexTypeLink_target_Test {
 
   @Inject private EReference reference;
   @Inject private ProtobufScopeProvider scopeProvider;
+
+  @Before
+  public void setup() {
+    when(reference.getEReferenceType()).thenReturn(COMPLEX_TYPE);
+    when(reference.getEContainingClass()).thenReturn(COMPLEX_TYPE_LINK);
+  }
 
   // syntax = "proto2";
   // package com.google.proto;
@@ -56,7 +66,7 @@ public class ProtobufScopeProvider_scope_ComplexTypeLink_target_Test {
   // }
   @Test public void should_provide_Types() {
     MessageField field = xtext.find("type", MessageField.class);
-    IScope scope = scopeProvider.scope_ComplexTypeLink_target(typeOf(field), reference);
+    IScope scope = scopeProvider.getScope(typeOf(field), reference);
     assertThat(descriptionsIn(scope), containAll("Type", "proto.Type", "google.proto.Type", "com.google.proto.Type",
                                                  ".com.google.proto.Type",
                                                  "Address", "proto.Address", "google.proto.Address",
@@ -92,7 +102,7 @@ public class ProtobufScopeProvider_scope_ComplexTypeLink_target_Test {
   // }
   @Test public void should_provide_imported_Types() {
     MessageField field = xtext.find("type", " =", MessageField.class);
-    IScope scope = scopeProvider.scope_ComplexTypeLink_target(typeOf(field), reference);
+    IScope scope = scopeProvider.getScope(typeOf(field), reference);
     assertThat(descriptionsIn(scope), containAll("test.proto.Type", ".test.proto.Type",
                                                  "test.proto.Address", ".test.proto.Address",
                                                  "Contact", "proto.Contact", "google.proto.Contact",
@@ -126,7 +136,7 @@ public class ProtobufScopeProvider_scope_ComplexTypeLink_target_Test {
   // }
   @Test public void should_provide_imported_Types_with_equal_package() {
     MessageField field = xtext.find("type", " =", MessageField.class);
-    IScope scope = scopeProvider.scope_ComplexTypeLink_target(typeOf(field), reference);
+    IScope scope = scopeProvider.getScope(typeOf(field), reference);
     assertThat(descriptionsIn(scope), containAll("Type", "proto.Type", "google.proto.Type", "com.google.proto.Type",
                                                  ".com.google.proto.Type",
                                                  "Address", "proto.Address", "google.proto.Address",
@@ -162,7 +172,7 @@ public class ProtobufScopeProvider_scope_ComplexTypeLink_target_Test {
   // }
   @Test public void should_provide_public_imported_Types() {
     MessageField field = xtext.find("type", " =", MessageField.class);
-    IScope scope = scopeProvider.scope_ComplexTypeLink_target(typeOf(field), reference);
+    IScope scope = scopeProvider.getScope(typeOf(field), reference);
     assertThat(descriptionsIn(scope), containAll("test.proto.Type", ".test.proto.Type",
                                                  "test.proto.Address", ".test.proto.Address",
                                                  "Contact", "proto.Contact", "google.proto.Contact",
@@ -203,7 +213,7 @@ public class ProtobufScopeProvider_scope_ComplexTypeLink_target_Test {
   // }
   @Test public void should_provide_public_imported_Types_with_more_than_one_level() {
     MessageField field = xtext.find("type", " =", MessageField.class);
-    IScope scope = scopeProvider.scope_ComplexTypeLink_target(typeOf(field), reference);
+    IScope scope = scopeProvider.getScope(typeOf(field), reference);
     assertThat(descriptionsIn(scope), containAll("test.proto.Type", ".test.proto.Type",
                                                  "test.proto.Address", ".test.proto.Address",
                                                  "Contact", "proto.Contact", "google.proto.Contact",

@@ -9,17 +9,19 @@
 package com.google.eclipse.protobuf.bugs;
 
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 
 import static com.google.eclipse.protobuf.junit.IEObjectDescriptions.descriptionsIn;
 import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static com.google.eclipse.protobuf.junit.matchers.ContainNames.contain;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.COMPLEX_TYPE;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.COMPLEX_TYPE_LINK;
 
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.xtext.scoping.IScope;
 import org.junit.Rule;
 import org.junit.Test;
-
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.ComplexTypeLink;
 import com.google.eclipse.protobuf.protobuf.MessageField;
@@ -56,9 +58,11 @@ public class Issue161_PackageScoping_Test {
   //   repeated base.shared.Type type = 1;
   // }
   @Test public void should_include_package_intersection() {
+    when(reference.getEReferenceType()).thenReturn(COMPLEX_TYPE);
+    when(reference.getEContainingClass()).thenReturn(COMPLEX_TYPE_LINK);
     MessageField field = xtext.find("type", " =", MessageField.class);
-    IScope scope = scopeProvider.scope_ComplexTypeLink_target((ComplexTypeLink) field.getType(), reference);
+    IScope scope = scopeProvider.getScope((ComplexTypeLink) field.getType(), reference);
     assertThat(descriptionsIn(scope), contain("base.shared.Type", "proto.base.shared.Type",
-                                              "google.proto.base.shared.Type", "com.google.proto.base.shared.Type"));
+        "google.proto.base.shared.Type", "com.google.proto.base.shared.Type"));
   }
 }

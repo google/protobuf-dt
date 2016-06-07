@@ -9,17 +9,19 @@
 package com.google.eclipse.protobuf.bugs;
 
 import static org.junit.Assert.assertSame;
+import static org.mockito.Mockito.when;
 
 import static com.google.eclipse.protobuf.junit.IEObjectDescriptions.descriptionsIn;
 import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.COMPLEX_TYPE;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.COMPLEX_TYPE_LINK;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.xtext.scoping.IScope;
 import org.junit.Rule;
 import org.junit.Test;
-
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.ComplexTypeLink;
 import com.google.eclipse.protobuf.protobuf.Literal;
@@ -53,10 +55,12 @@ public class Issue189_ScopingShouldLookForClosestType {
   //   READY = 1;
   // }
   @Test public void should_find_closest_type_possible() {
+    when(reference.getEReferenceType()).thenReturn(COMPLEX_TYPE);
+    when(reference.getEContainingClass()).thenReturn(COMPLEX_TYPE_LINK);
     Literal active = xtext.find("ACTIVE", " = 0", Literal.class);
     MessageField field = xtext.find("status", MessageField.class);
     ComplexTypeLink link = (ComplexTypeLink) field.getType();
-    IScope scope = scopeProvider.scope_ComplexTypeLink_target(link, reference);
+    IScope scope = scopeProvider.getScope(link, reference);
     EObject status = descriptionsIn(scope).objectDescribedAs("Status");
     assertSame(active.eContainer(), status);
   }

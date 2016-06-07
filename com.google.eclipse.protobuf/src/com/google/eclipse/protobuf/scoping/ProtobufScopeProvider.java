@@ -19,19 +19,15 @@ import com.google.eclipse.protobuf.model.util.Options;
 import com.google.eclipse.protobuf.protobuf.AbstractCustomOption;
 import com.google.eclipse.protobuf.protobuf.AbstractOption;
 import com.google.eclipse.protobuf.protobuf.ComplexType;
-import com.google.eclipse.protobuf.protobuf.ComplexTypeLink;
 import com.google.eclipse.protobuf.protobuf.ComplexValue;
 import com.google.eclipse.protobuf.protobuf.DefaultValueFieldOption;
 import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.protobuf.ExtensibleType;
-import com.google.eclipse.protobuf.protobuf.ExtensibleTypeLink;
 import com.google.eclipse.protobuf.protobuf.FieldName;
 import com.google.eclipse.protobuf.protobuf.Group;
 import com.google.eclipse.protobuf.protobuf.GroupElement;
 import com.google.eclipse.protobuf.protobuf.IndexedElement;
 import com.google.eclipse.protobuf.protobuf.LiteralLink;
-import com.google.eclipse.protobuf.protobuf.MapType;
-import com.google.eclipse.protobuf.protobuf.MapTypeLink;
 import com.google.eclipse.protobuf.protobuf.Message;
 import com.google.eclipse.protobuf.protobuf.MessageField;
 import com.google.eclipse.protobuf.protobuf.MessageLink;
@@ -99,34 +95,9 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider
     return scope;
   }
 
-  @SuppressWarnings("unused")
-  public IScope scope_ComplexTypeLink_target(ComplexTypeLink link, EReference r) {
-    EObject c = link.eContainer();
-    if (c instanceof MapType) {
-      c = c.eContainer();
-    }
-    if (c instanceof MapTypeLink) {
-      c = c.eContainer();
-    }
-    if (c instanceof MessageField) {
-      MessageField field = (MessageField) c;
-      Collection<IEObjectDescription> complexTypes = potentialComplexTypesFor(field);
-      return createScope(complexTypes);
-    }
-    return createEmptyScope();
-  }
-
   @Override
   public Collection<IEObjectDescription> potentialComplexTypesFor(MessageField field) {
     return modelElementFinder.find(field, complexTypeFinderDelegate, ComplexType.class);
-  }
-
-  @SuppressWarnings("unused")
-  public IScope scope_ExtensibleTypeLink_target(ExtensibleTypeLink link, EReference r) {
-    EObject c = link.eContainer();
-    Collection<IEObjectDescription> extensibleTypes =
-        modelElementFinder.find(c, complexTypeFinderDelegate, ExtensibleType.class);
-    return createScope(extensibleTypes);
   }
 
   @Override
@@ -293,11 +264,6 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider
   public Collection<IEObjectDescription> potentialExtensionFieldNames(ComplexValue value) {
     return customOptionFieldNameFinder.findFieldNamesSources(
         value, extensionFieldNameFinderDelegate);
-  }
-
-  private static IScope createEmptyScope() {
-    Set<IEObjectDescription> descriptions = emptySet();
-    return createScope(descriptions);
   }
 
   private static IScope createScope(Iterable<IEObjectDescription> descriptions) {
