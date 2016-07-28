@@ -12,25 +12,17 @@ import static org.junit.Assert.assertThat;
 import static com.google.eclipse.protobuf.junit.IEObjectDescriptions.descriptionsIn;
 import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
-import static com.google.eclipse.protobuf.junit.matchers.ContainAllFields.containAll;
-import static com.google.eclipse.protobuf.junit.matchers.ContainAllNames.containAll;
+import static com.google.eclipse.protobuf.junit.matchers.ContainNames.contain;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.OPTION_SOURCE__TARGET;
 
-import java.util.Collection;
-
-import org.eclipse.emf.ecore.EReference;
 import org.eclipse.xtext.scoping.IScope;
 import org.junit.Rule;
 import org.junit.Test;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
 import com.google.eclipse.protobuf.protobuf.CustomFieldOption;
-import com.google.eclipse.protobuf.protobuf.Group;
-import com.google.eclipse.protobuf.protobuf.MessageField;
 import com.google.eclipse.protobuf.protobuf.NativeFieldOption;
-import com.google.eclipse.protobuf.scoping.ProtoDescriptor;
-import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider;
 import com.google.eclipse.protobuf.scoping.ProtobufScopeProvider;
-import com.google.eclipse.protobuf.util.EResources;
 import com.google.inject.Inject;
 
 /**
@@ -41,8 +33,6 @@ import com.google.inject.Inject;
 public class Issue147_AddSupportForGroupOptions_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
-  @Inject private EReference reference;
-  @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private ProtobufScopeProvider scopeProvider;
 
   // syntax = "proto2";
@@ -54,12 +44,10 @@ public class Issue147_AddSupportForGroupOptions_Test {
   // }
   @Test public void should_provide_fields_for_native_option() {
     NativeFieldOption option = xtext.find("deprecated", NativeFieldOption.class);
-    IScope scope = scopeProvider.scope_OptionSource_target(option.getSource(), reference);
-    Group group = xtext.find("membership", Group.class);
-    ProtoDescriptor descriptor =
-        descriptorProvider.primaryDescriptor(EResources.getProjectOf(option.eResource()));
-    Collection<MessageField> optionSources = descriptor.availableOptionsFor(group);
-    assertThat(descriptionsIn(scope), containAll(optionSources));
+    IScope scope = scopeProvider.scope_OptionSource_target(option.getSource(),
+        OPTION_SOURCE__TARGET);
+    assertThat(descriptionsIn(scope), contain("ctype", "packed", "deprecated",
+        "experimental_map_key"));
   }
 
   // syntax = "proto2";
@@ -79,10 +67,10 @@ public class Issue147_AddSupportForGroupOptions_Test {
   // }
   @Test public void should_provide_fields_for_custom_option() {
     CustomFieldOption option = xtext.find("code", ")", CustomFieldOption.class);
-    IScope scope = scopeProvider.scope_OptionSource_target(option.getSource(), reference);
-    assertThat(descriptionsIn(scope), containAll("code", "proto.code", "google.proto.code", "com.google.proto.code",
-                                                 ".com.google.proto.code",
-                                                 "info", "proto.info", "google.proto.info", "com.google.proto.info",
-                                                 ".com.google.proto.info"));
+    IScope scope = scopeProvider.scope_OptionSource_target(option.getSource(),
+        OPTION_SOURCE__TARGET);
+    assertThat(descriptionsIn(scope), contain("code", "proto.code", "google.proto.code",
+        "com.google.proto.code", "info", "proto.info", "google.proto.info",
+        "com.google.proto.info"));
   }
 }

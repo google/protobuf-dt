@@ -8,7 +8,7 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static java.util.Collections.emptyList;
+import static com.google.eclipse.protobuf.model.util.QualifiedNames.removeLeadingDot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +22,18 @@ import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.impl.ImportNormalizer;
 import org.eclipse.xtext.scoping.impl.ImportScope;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
 
+/**
+ * {@link ImportScope} that allows additional ImportNormalizers to be added after initialization.
+ *
+ * @author (atrookey@google.com) Alexander Rookey
+ */
 public class ProtobufImportScope extends ImportScope {
   private final EClass type;
+  private List<ImportNormalizer> normalizers;
 
   public ProtobufImportScope(
       List<ImportNormalizer> namespaceResolvers,
@@ -35,46 +43,74 @@ public class ProtobufImportScope extends ImportScope {
       boolean ignoreCase) {
     super(namespaceResolvers, parent, importFrom, type, ignoreCase);
     this.type = type;
+    this.normalizers = removeDuplicates(namespaceResolvers);
   }
 
   @Override
   protected Iterable<IEObjectDescription> getAliasedElements(
       Iterable<IEObjectDescription> candidates) {
-    ArrayList<IEObjectDescription> descriptions =
-        Lists.newArrayList(super.getAliasedElements(candidates));
+    Multimap<QualifiedName, IEObjectDescription> keyToDescription = LinkedHashMultimap.create();
+    Multimap<QualifiedName, ImportNormalizer> keyToNormalizer = HashMultimap.create();
+
     for (IEObjectDescription imported : candidates) {
-      descriptions.add(new AliasedEObjectDescription(addLeadingDot(imported.getName()), imported));
+      QualifiedName fullyQualifiedName = imported.getName();
+      for (ImportNormalizer normalizer : normalizers) {
+        QualifiedName alias = normalizer.deresolve(fullyQualifiedName);
+        if (alias != null) {
+          QualifiedName key = alias;
+          if (isIgnoreCase()) {
+            key = key.toLowerCase();
+          }
+          keyToDescription.put(key, new AliasedEObjectDescription(alias, imported));
+          keyToNormalizer.put(key, normalizer);
+        }
+      }
     }
-    return descriptions;
+    for (QualifiedName name : keyToNormalizer.keySet()) {
+      if (keyToNormalizer.get(name).size() > 1) keyToDescription.removeAll(name);
+    }
+    return keyToDescription.values();
   }
 
+  // TODO (atrookey) Refactor this method for clarity
   @Override
   protected Iterable<IEObjectDescription> getLocalElementsByName(QualifiedName name) {
-    List<IEObjectDescription> result =
-        (List<IEObjectDescription>) super.getLocalElementsByName(name);
+    List<IEObjectDescription> result = new ArrayList<>();
     QualifiedName resolvedQualifiedName = null;
-    final QualifiedName resolvedName = name.skipFirst(1);
     ISelectable importFrom = getImportFrom();
-    if (resolvedName != null) {
-      Iterable<IEObjectDescription> resolvedElements =
-          importFrom.getExportedObjects(type, resolvedName, isIgnoreCase());
-      for (IEObjectDescription resolvedElement : resolvedElements) {
-        if (resolvedQualifiedName == null) resolvedQualifiedName = resolvedName;
-        else if (!resolvedQualifiedName.equals(resolvedName)) {
-          if (result.get(0).getEObjectOrProxy() != resolvedElement.getEObjectOrProxy()) {
-            return emptyList();
+    for (ImportNormalizer normalizer : normalizers) {
+      final QualifiedName resolvedName = normalizer.resolve(name);
+      if (resolvedName != null) {
+        Iterable<IEObjectDescription> resolvedElements =
+            importFrom.getExportedObjects(type, resolvedName, isIgnoreCase());
+        for (IEObjectDescription resolvedElement : resolvedElements) {
+          if (resolvedQualifiedName == null) {
+            resolvedQualifiedName = resolvedName;
+          } else if (!resolvedQualifiedName.equals(resolvedName)) {
+            if (result.get(0).getEObjectOrProxy() != resolvedElement.getEObjectOrProxy()) {
+              continue;
+            }
           }
+          QualifiedName alias = normalizer.deresolve(resolvedElement.getName());
+          if (alias == null)
+            throw new IllegalStateException(
+                "Couldn't deresolve " + resolvedElement.getName() + " with import " + normalizer);
+          final AliasedEObjectDescription aliasedEObjectDescription =
+              new AliasedEObjectDescription(alias, resolvedElement);
+          result.add(aliasedEObjectDescription);
         }
-        QualifiedName alias = addLeadingDot(resolvedElement.getName());
-        final AliasedEObjectDescription aliasedEObjectDescription =
-            new AliasedEObjectDescription(alias, resolvedElement);
-        result.add(aliasedEObjectDescription);
       }
     }
     return result;
   }
 
-  private QualifiedName addLeadingDot(QualifiedName qualifiedName) {
-    return QualifiedName.create("").append(qualifiedName);
+  /** Before getting element, check for and remove leading dot. */
+  @Override
+  public IEObjectDescription getSingleElement(QualifiedName name) {
+    return super.getSingleElement(removeLeadingDot(name));
+  }
+
+  public void addNormalizer(ImportNormalizer normalizer) {
+    normalizers.add(normalizer);
   }
 }

@@ -9,10 +9,12 @@
 package com.google.eclipse.protobuf.scoping;
 
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static com.google.eclipse.protobuf.junit.IEObjectDescriptions.descriptionsIn;
 import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
-import static com.google.eclipse.protobuf.junit.matchers.ContainAllLiteralsInEnum.containAllLiteralsIn;
+import static com.google.eclipse.protobuf.junit.matchers.ContainNames.contain;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.LITERAL_LINK__TARGET;
 
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.xtext.scoping.IScope;
@@ -20,23 +22,23 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.DefaultValueFieldOption;
 import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.protobuf.FieldOption;
+import com.google.eclipse.protobuf.protobuf.Literal;
 import com.google.eclipse.protobuf.protobuf.LiteralLink;
+import com.google.eclipse.protobuf.protobuf.MessageField;
 import com.google.eclipse.protobuf.protobuf.Option;
-import com.google.eclipse.protobuf.util.EResources;
 import com.google.inject.Inject;
 
 /**
- * Tests for <code>{@link ProtobufScopeProvider#scope_LiteralLink_target(LiteralLink, EReference)}</code>.
+ * Tests for <code>{@link ProtobufScopeProvider#getScope(LiteralLink, EReference)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufScopeProvider_scope_LiteralLink_target_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
-  @Inject private EReference reference;
-  @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private ProtobufScopeProvider scopeProvider;
 
   // syntax = "proto2";
@@ -50,10 +52,10 @@ public class ProtobufScopeProvider_scope_LiteralLink_target_Test {
   //   optional Type type = 1 [default = ONE];
   // }
   @Test public void should_provide_Literals_for_default_value() {
-    FieldOption option = xtext.find("default", FieldOption.class);
-    IScope scope = scopeProvider.scope_LiteralLink_target(valueOf(option), reference);
-    Enum typeEnum = xtext.find("Type", " {", Enum.class);
-    assertThat(descriptionsIn(scope), containAllLiteralsIn(typeEnum));
+    MessageField field = xtext.find("type", " =", MessageField.class);
+    FieldOption option = field.getFieldOptions().get(0);
+    IScope scope = scopeProvider.getScope(valueOf(option), LITERAL_LINK__TARGET);
+    assertThat(descriptionsIn(scope), contain("ONE", "TWO"));
   }
 
   // syntax = "proto2";
@@ -61,10 +63,8 @@ public class ProtobufScopeProvider_scope_LiteralLink_target_Test {
   // option optimize_for = SPEED;
   @Test public void should_provide_Literals_for_native_option() {
     Option option = xtext.find("optimize_for", Option.class);
-    IScope scope = scopeProvider.scope_LiteralLink_target(valueOf(option), reference);
-    Enum optimizeModeEnum = descriptorProvider.primaryDescriptor(
-        EResources.getProjectOf(xtext.root().eResource())).enumByName("OptimizeMode");
-    assertThat(descriptionsIn(scope), containAllLiteralsIn(optimizeModeEnum));
+    IScope scope = scopeProvider.getScope(valueOf(option), LITERAL_LINK__TARGET);
+    assertThat(descriptionsIn(scope), contain("SPEED", "CODE_SIZE", "LITE_RUNTIME"));
   }
 
   // syntax = "proto2";
@@ -83,9 +83,8 @@ public class ProtobufScopeProvider_scope_LiteralLink_target_Test {
   // option (type) = ONE;
   @Test public void should_provide_Literals_for_source_of_custom_option() {
     Option option = xtext.find("type", ")", Option.class);
-    IScope scope = scopeProvider.scope_LiteralLink_target(valueOf(option), reference);
-    Enum typeEnum = xtext.find("Type", " {", Enum.class);
-    assertThat(descriptionsIn(scope), containAllLiteralsIn(typeEnum));
+    IScope scope = scopeProvider.getScope(valueOf(option), LITERAL_LINK__TARGET);
+    assertThat(descriptionsIn(scope), contain("ONE", "TWO"));
   }
 
   // syntax = "proto2";
@@ -108,9 +107,9 @@ public class ProtobufScopeProvider_scope_LiteralLink_target_Test {
   // option (info).type = ONE;
   @Test public void should_provide_Literals_for_source_of_field_of_custom_option() {
     Option option = xtext.find("info", ")", Option.class);
-    IScope scope = scopeProvider.scope_LiteralLink_target(valueOf(option), reference);
-    Enum typeEnum = xtext.find("Type", " {", Enum.class);
-    assertThat(descriptionsIn(scope), containAllLiteralsIn(typeEnum));
+    IScope scope = scopeProvider.getScope(valueOf(option), LITERAL_LINK__TARGET);
+    xtext.find("Type", " {", Enum.class);
+    assertThat(descriptionsIn(scope), contain("ONE", "TWO"));
   }
 
   private static LiteralLink valueOf(Option option) {
@@ -124,11 +123,8 @@ public class ProtobufScopeProvider_scope_LiteralLink_target_Test {
   //  }
   @Test public void should_provide_Literals_for_source_of_native_field_option() {
     FieldOption option = xtext.find("ctype", FieldOption.class);
-    IScope scope = scopeProvider.scope_LiteralLink_target(valueOf(option), reference);
-    ProtoDescriptor descriptor =
-        descriptorProvider.primaryDescriptor(EResources.getProjectOf(xtext.resource()));
-    Enum cTypeEnum = descriptor.enumByName("CType");
-    assertThat(descriptionsIn(scope), containAllLiteralsIn(cTypeEnum));
+    IScope scope = scopeProvider.getScope(valueOf(option), LITERAL_LINK__TARGET);
+    assertThat(descriptionsIn(scope), contain("STRING", "CORD", "STRING_PIECE"));
   }
 
   // syntax = "proto2";
@@ -149,9 +145,9 @@ public class ProtobufScopeProvider_scope_LiteralLink_target_Test {
   // }
   @Test public void should_provide_Literals_for_source_of_custom_field_option() {
     FieldOption option = xtext.find("type", ")", FieldOption.class);
-    IScope scope = scopeProvider.scope_LiteralLink_target(valueOf(option), reference);
-    Enum typeEnum = xtext.find("Type", " {", Enum.class);
-    assertThat(descriptionsIn(scope), containAllLiteralsIn(typeEnum));
+    IScope scope = scopeProvider.getScope(valueOf(option), LITERAL_LINK__TARGET);
+    xtext.find("Type", " {", Enum.class);
+    assertThat(descriptionsIn(scope), contain("ONE", "TWO"));
   }
 
   // syntax = "proto2";
@@ -176,9 +172,43 @@ public class ProtobufScopeProvider_scope_LiteralLink_target_Test {
   // }
   @Test public void should_provide_Literals_for_source_of_field_in_custom_field_option() {
     FieldOption option = xtext.find("info", ")", FieldOption.class);
-    IScope scope = scopeProvider.scope_LiteralLink_target(valueOf(option), reference);
-    Enum typeEnum = xtext.find("Type", " {", Enum.class);
-    assertThat(descriptionsIn(scope), containAllLiteralsIn(typeEnum));
+    IScope scope = scopeProvider.getScope(valueOf(option), LITERAL_LINK__TARGET);
+    xtext.find("Type", " {", Enum.class);
+    assertThat(descriptionsIn(scope), contain("ONE", "TWO"));
+  }
+
+  // // Create file sample_proto.proto
+  // syntax = "proto2";
+  // package sample.proto;
+  //
+  // message Example {
+  //   enum Alpha {
+  //     BAR =  1;
+  //   }
+  // }
+
+  //  syntax = "proto2";
+  //  package example.proto;
+  //  import "sample_proto.proto";
+  //
+  // message Fruits {
+  //  enum Beta {
+  //     BAR =  1;
+  //  }
+  //   optional Grape grape = 4 [default = BAR];
+  // }
+  @Test public void should_provide_Literal_nearest_to_option() {
+    // Beta
+    MessageField field = xtext.find("grape", " =", MessageField.class);
+    DefaultValueFieldOption option = (DefaultValueFieldOption) field.getFieldOptions().get(0);
+    LiteralLink link = (LiteralLink) option.getValue();
+    Enum enumBeta = (Enum)link.getTarget().eContainer();
+
+    // Alpha
+    Enum beta = xtext.find("Beta", Enum.class);
+    Literal literal = (Literal) beta.getElements().get(0);
+    Enum expectedEnum = (Enum) literal.eContainer();
+    assertEquals(expectedEnum, enumBeta);
   }
 
   private static LiteralLink valueOf(FieldOption option) {

@@ -15,6 +15,7 @@ import com.google.eclipse.protobuf.naming.ProtobufQualifiedNameProvider;
 import com.google.eclipse.protobuf.resource.FastXtextResourceSet;
 import com.google.eclipse.protobuf.resource.GlobalResourceServiceProvider;
 import com.google.eclipse.protobuf.scoping.ExtensionRegistryProvider;
+import com.google.eclipse.protobuf.scoping.ProtobufCaseInsensitivityHelper;
 import com.google.eclipse.protobuf.validation.ProtobufResourceValidator;
 import com.google.eclipse.protobuf.validation.ProtobufSyntaxErrorMessageProvider;
 import com.google.inject.Binder;
@@ -27,6 +28,7 @@ import org.eclipse.xtext.parser.antlr.ISyntaxErrorMessageProvider;
 import org.eclipse.xtext.resource.IGlobalServiceProvider;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
+import org.eclipse.xtext.scoping.ICaseInsensitivityHelper;
 import org.eclipse.xtext.validation.IResourceValidator;
 
 /**
@@ -40,6 +42,10 @@ public class ProtobufRuntimeModule extends AbstractProtobufRuntimeModule {
 
   public Class<? extends IQualifiedNameConverter> bindIQualifiedNameConverter() {
     return ProtobufQualifiedNameConverter.class;
+  }
+
+  public Class<? extends ICaseInsensitivityHelper> bindICaseInsensitivityHelper() {
+    return ProtobufCaseInsensitivityHelper.class;
   }
 
   @Override

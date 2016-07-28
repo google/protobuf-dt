@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import com.google.common.base.Predicate;
 import com.google.eclipse.protobuf.model.util.Imports;
 import com.google.eclipse.protobuf.model.util.Protobufs;
 import com.google.eclipse.protobuf.model.util.Resources;
@@ -19,7 +20,12 @@ import com.google.inject.Provider;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.xtext.resource.IEObjectDescription;
+import org.eclipse.xtext.resource.IResourceDescription;
+import org.eclipse.xtext.resource.IResourceDescriptions;
+import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider;
 import org.eclipse.xtext.util.IResourceScopeCache;
 
@@ -30,6 +36,18 @@ import java.util.LinkedHashSet;
  * caches the result.
  */
 public class ProtobufImportUriGlobalScopeProvider extends ImportUriGlobalScopeProvider {
+  @Override
+  protected IScope createLazyResourceScope(
+      IScope parent,
+      URI uri,
+      IResourceDescriptions descriptions,
+      EClass type,
+      Predicate<IEObjectDescription> filter,
+      boolean ignoreCase) {
+    IResourceDescription description = descriptions.getResourceDescription(uri);
+    return ProtobufSelectableBasedScope.createScope(parent, description, filter, type, ignoreCase);
+  }
+
   @Inject private Protobufs protobufs;
   @Inject private Resources resources;
   @Inject private Imports imports;

@@ -9,11 +9,11 @@
 package com.google.eclipse.protobuf.scoping;
 
 import static org.junit.Assert.assertThat;
-
 import static com.google.eclipse.protobuf.junit.IEObjectDescriptions.descriptionsIn;
 import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
-import static com.google.eclipse.protobuf.junit.matchers.ContainAllNames.containAll;
+import static com.google.eclipse.protobuf.junit.matchers.ContainNames.contain;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.OPTION_SOURCE__TARGET;
 
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.xtext.scoping.IScope;
@@ -28,14 +28,13 @@ import com.google.eclipse.protobuf.protobuf.OptionField;
 import com.google.inject.Inject;
 
 /**
- * Tests for <code>{@link ProtobufScopeProvider#scope_OptionField_target(OptionField, EReference)}</code>.
+ * Tests for <code>{@link ProtobufScopeProvider#getScope(OptionField, EReference)}</code>.
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class ProtobufScopeProvider_scope_OptionField_target_with_ExtensionOptionField_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
-  @Inject private EReference reference;
   @Inject private ProtobufScopeProvider scopeProvider;
 
   // syntax = "proto2";
@@ -62,8 +61,8 @@ public class ProtobufScopeProvider_scope_OptionField_target_with_ExtensionOption
   @Test public void should_provide_extend_message_fields_for_first_field_in_custom_option() {
     CustomOption option = xtext.find("type", ")", CustomOption.class);
     ExtensionOptionField codeOptionField = (ExtensionOptionField) option.getFields().get(0);
-    IScope scope = scopeProvider.scope_OptionField_target(codeOptionField, reference);
-    assertThat(descriptionsIn(scope), containAll("active", "com.google.proto.active", ".com.google.proto.active"));
+    IScope scope = scopeProvider.getScope(codeOptionField, OPTION_SOURCE__TARGET);
+    assertThat(descriptionsIn(scope), contain("active", "com.google.proto.active"));
   }
 
   // syntax = "proto2";
@@ -92,7 +91,7 @@ public class ProtobufScopeProvider_scope_OptionField_target_with_ExtensionOption
   @Test public void should_provide_message_fields_for_first_field_in_field_custom_option() {
     CustomFieldOption option = xtext.find("type", ")", CustomFieldOption.class);
     ExtensionOptionField codeOptionField = (ExtensionOptionField) option.getFields().get(0);
-    IScope scope = scopeProvider.scope_OptionField_target(codeOptionField, reference);
-    assertThat(descriptionsIn(scope), containAll("active", "com.google.proto.active", ".com.google.proto.active"));
+    IScope scope = scopeProvider.getScope(codeOptionField, OPTION_SOURCE__TARGET);
+    assertThat(descriptionsIn(scope), contain("active", "com.google.proto.active"));
   }
 }

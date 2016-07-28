@@ -13,7 +13,8 @@ import static org.junit.Assert.assertThat;
 import static com.google.eclipse.protobuf.junit.IEObjectDescriptions.descriptionsIn;
 import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
-import static com.google.eclipse.protobuf.junit.matchers.ContainAllNames.containAll;
+import static com.google.eclipse.protobuf.junit.matchers.ContainNames.contain;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.FIELD_NAME__TARGET;
 
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.xtext.scoping.IScope;
@@ -21,6 +22,8 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.ComplexValue;
+import com.google.eclipse.protobuf.protobuf.ComplexValueField;
 import com.google.eclipse.protobuf.protobuf.ExtensionFieldName;
 import com.google.eclipse.protobuf.protobuf.FieldName;
 import com.google.eclipse.protobuf.protobuf.ValueField;
@@ -34,7 +37,6 @@ import com.google.inject.Inject;
 public class ProtobufScopeProvider_scope_FieldName_target_with_ExtensionFieldName_Test {
   @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
-  @Inject private EReference reference;
   @Inject private ProtobufScopeProvider scopeProvider;
 
   // syntax = "proto2";
@@ -60,9 +62,11 @@ public class ProtobufScopeProvider_scope_FieldName_target_with_ExtensionFieldNam
   //   }
   // };
   @Test public void should_provide_sources_for_aggregate_field() {
-    ValueField field = xtext.find("google.proto.test.fileopt", "]", ValueField.class);
+    ComplexValueField valueField = xtext.find("file", " {", ComplexValueField.class);
+    ComplexValue value = valueField.getValues().get(0);
+    ValueField field = value.getFields().get(0);
     ExtensionFieldName name = (ExtensionFieldName) field.getName();
-    IScope scope = scopeProvider.scope_FieldName_target(name, reference);
-    assertThat(descriptionsIn(scope), containAll("google.proto.test.fileopt", ".google.proto.test.fileopt"));
+    IScope scope = scopeProvider.getScope(name, FIELD_NAME__TARGET);
+    assertThat(descriptionsIn(scope), contain("google.proto.test.fileopt"));
   }
 }

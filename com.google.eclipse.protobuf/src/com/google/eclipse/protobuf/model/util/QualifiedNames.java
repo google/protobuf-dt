@@ -8,8 +8,7 @@
  */
 package com.google.eclipse.protobuf.model.util;
 
-import static com.google.common.collect.Lists.newArrayList;
-
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.xtext.naming.QualifiedName;
@@ -23,14 +22,23 @@ import com.google.inject.Singleton;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton public class QualifiedNames {
+@Singleton
+public class QualifiedNames {
   @Inject private StringLists stringLists;
 
+  public static QualifiedName removeLeadingDot(QualifiedName name) {
+    String firstSegment = name.getFirstSegment();
+    if (firstSegment != null && firstSegment.isEmpty()) {
+      return name.skipFirst(1);
+    }
+    return name;
+  }
+
   public QualifiedName addLeadingDot(QualifiedName name) {
-    if (name.getFirstSegment().equals("")) {
+    if (name.getFirstSegment().isEmpty()) {
       return name;
     }
-    List<String> segments = newArrayList();
+    List<String> segments = new ArrayList<>();
     segments.addAll(name.getSegments());
     segments.add(0, "");
     return createQualifiedName(segments);

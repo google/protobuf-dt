@@ -8,6 +8,7 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -17,14 +18,17 @@ import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeMo
 import static com.google.eclipse.protobuf.junit.matchers.ContainAllNames.containAll;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.COMPLEX_TYPE;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.COMPLEX_TYPE_LINK;
+import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.COMPLEX_TYPE_LINK__TARGET;
 
 import org.eclipse.emf.ecore.EReference;
+import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.scoping.IScope;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
+import com.google.eclipse.protobuf.protobuf.ComplexType;
 import com.google.eclipse.protobuf.protobuf.ComplexTypeLink;
 import com.google.eclipse.protobuf.protobuf.MessageField;
 import com.google.inject.Inject;
@@ -67,12 +71,10 @@ public class ProtobufScopeProvider_scope_ComplexTypeLink_target_Test {
   @Test public void should_provide_Types() {
     MessageField field = xtext.find("type", MessageField.class);
     IScope scope = scopeProvider.getScope(typeOf(field), reference);
-    assertThat(descriptionsIn(scope), containAll("Type", "proto.Type", "google.proto.Type", "com.google.proto.Type",
-                                                 ".com.google.proto.Type",
-                                                 "Address", "proto.Address", "google.proto.Address",
-                                                 "com.google.proto.Address", ".com.google.proto.Address",
-                                                 "Contact", "proto.Contact", "google.proto.Contact",
-                                                 "com.google.proto.Contact", ".com.google.proto.Contact"));
+    assertThat(descriptionsIn(scope), containAll("Type", "proto.Type", "google.proto.Type",
+        "com.google.proto.Type", "Address", "proto.Address", "google.proto.Address",
+        "com.google.proto.Address", "Contact", "proto.Contact", "google.proto.Contact",
+        "com.google.proto.Contact"));
   }
 
   // // Create file types.proto
@@ -103,10 +105,8 @@ public class ProtobufScopeProvider_scope_ComplexTypeLink_target_Test {
   @Test public void should_provide_imported_Types() {
     MessageField field = xtext.find("type", " =", MessageField.class);
     IScope scope = scopeProvider.getScope(typeOf(field), reference);
-    assertThat(descriptionsIn(scope), containAll("test.proto.Type", ".test.proto.Type",
-                                                 "test.proto.Address", ".test.proto.Address",
-                                                 "Contact", "proto.Contact", "google.proto.Contact",
-                                                 "com.google.proto.Contact", ".com.google.proto.Contact"));
+    assertThat(descriptionsIn(scope), containAll("test.proto.Type", "test.proto.Address",
+        "Contact", "proto.Contact", "google.proto.Contact", "com.google.proto.Contact"));
   }
 
   // // Create file types.proto
@@ -137,12 +137,10 @@ public class ProtobufScopeProvider_scope_ComplexTypeLink_target_Test {
   @Test public void should_provide_imported_Types_with_equal_package() {
     MessageField field = xtext.find("type", " =", MessageField.class);
     IScope scope = scopeProvider.getScope(typeOf(field), reference);
-    assertThat(descriptionsIn(scope), containAll("Type", "proto.Type", "google.proto.Type", "com.google.proto.Type",
-                                                 ".com.google.proto.Type",
-                                                 "Address", "proto.Address", "google.proto.Address",
-                                                 "com.google.proto.Address", ".com.google.proto.Address",
-                                                 "Contact", "proto.Contact", "google.proto.Contact",
-                                                 "com.google.proto.Contact", ".com.google.proto.Contact"));
+    assertThat(descriptionsIn(scope), containAll("Type", "proto.Type", "google.proto.Type",
+        "com.google.proto.Type", "Address", "proto.Address", "google.proto.Address",
+        "com.google.proto.Address", "Contact", "proto.Contact", "google.proto.Contact",
+        "com.google.proto.Contact"));
   }
 
   // // Create file types.proto
@@ -173,10 +171,8 @@ public class ProtobufScopeProvider_scope_ComplexTypeLink_target_Test {
   @Test public void should_provide_public_imported_Types() {
     MessageField field = xtext.find("type", " =", MessageField.class);
     IScope scope = scopeProvider.getScope(typeOf(field), reference);
-    assertThat(descriptionsIn(scope), containAll("test.proto.Type", ".test.proto.Type",
-                                                 "test.proto.Address", ".test.proto.Address",
-                                                 "Contact", "proto.Contact", "google.proto.Contact",
-                                                 "com.google.proto.Contact", ".com.google.proto.Contact"));
+    assertThat(descriptionsIn(scope), containAll("test.proto.Type", "test.proto.Address",
+        "Contact", "proto.Contact", "google.proto.Contact", "com.google.proto.Contact"));
   }
 
   // // Create file public-types.proto
@@ -214,10 +210,38 @@ public class ProtobufScopeProvider_scope_ComplexTypeLink_target_Test {
   @Test public void should_provide_public_imported_Types_with_more_than_one_level() {
     MessageField field = xtext.find("type", " =", MessageField.class);
     IScope scope = scopeProvider.getScope(typeOf(field), reference);
-    assertThat(descriptionsIn(scope), containAll("test.proto.Type", ".test.proto.Type",
-                                                 "test.proto.Address", ".test.proto.Address",
-                                                 "Contact", "proto.Contact", "google.proto.Contact",
-                                                 "com.google.proto.Contact", ".com.google.proto.Contact"));
+    assertThat(descriptionsIn(scope), containAll("test.proto.Type", "test.proto.Address",
+        "Contact", "proto.Contact", "google.proto.Contact", "com.google.proto.Contact"));
+  }
+
+  // // Create file sample_proto.proto
+  // syntax = "proto2";
+  // package sample.proto;
+  //
+  //  enum Fruit {
+  //    GRAPE =  1;
+  //  }
+
+  //  syntax = "proto2";
+  //  package sample.proto.foo;
+  //  import "sample_proto.proto";
+  //
+  //  enum Fruit {
+  //     GRAPE =  1;
+  //  }
+  //
+  //  message Fruits {
+  //   optional Fruit grape = 1;
+  // }
+  @Test public void should_provide_nearest_ComplexType() {
+    MessageField field = xtext.find("grape", " =", MessageField.class);
+    ComplexTypeLink link = (ComplexTypeLink) field.getType();
+    ComplexType scopedEnum = link.getTarget();  // Enum inherits from ComplexType
+    IScope scope = scopeProvider.getScope(field, COMPLEX_TYPE_LINK__TARGET);
+    Object expectedEnum =
+        scope.getSingleElement(
+            QualifiedName.create("sample", "proto", "foo", "Fruit")).getEObjectOrProxy();
+    assertEquals(expectedEnum, scopedEnum);
   }
 
   private static ComplexTypeLink typeOf(MessageField field) {
