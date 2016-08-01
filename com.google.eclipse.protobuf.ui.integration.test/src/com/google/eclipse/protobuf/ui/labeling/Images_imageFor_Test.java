@@ -10,8 +10,9 @@ package com.google.eclipse.protobuf.ui.labeling;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-
+import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.OPTION;
 import static com.google.eclipse.protobuf.ui.labeling.ProjectFileExists.existsInProject;
 
@@ -46,7 +47,7 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Images_imageFor_Test {
-  @Rule public XtextRule xtext = createWith(ProtobufEditorPlugIn.injector());
+  @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
   @Inject private Images images;
 

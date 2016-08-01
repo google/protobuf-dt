@@ -11,8 +11,9 @@ package com.google.eclipse.protobuf.ui.labeling;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-
+import static com.google.eclipse.protobuf.junit.core.IntegrationTestModule.integrationTestModule;
 import static com.google.eclipse.protobuf.junit.core.XtextRule.createWith;
+import static com.google.eclipse.protobuf.junit.core.XtextRule.overrideRuntimeModuleWith;
 
 import org.eclipse.jface.viewers.StyledString;
 import org.junit.Rule;
@@ -38,7 +39,7 @@ import com.google.inject.Inject;
  * @author alruiz@google.com (Alex Ruiz)
  */
 public class Labels_labelFor_Test {
-  @Rule public XtextRule xtext = createWith(ProtobufEditorPlugIn.injector());
+  @Rule public XtextRule xtext = overrideRuntimeModuleWith(integrationTestModule());
 
   @Inject private Labels labels;
 
