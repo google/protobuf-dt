@@ -257,18 +257,19 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider
    * Recursively scope {@code OptionField} starting with an {@code OptionSource}.
    */
   private IScope getScopeOfOptionField(
-      OptionSource optionSource, EReference reference, int fieldIndex, EList<OptionField> fields) {
+      IScope scope, OptionSource optionSource, EReference reference, int fieldIndex, EList<OptionField> fields) {
     if (fieldIndex < 0 || fields.size() <= fieldIndex) {
       throw new IllegalArgumentException();
     }
-    IScope parentScope, retval = IScope.NULLSCOPE;
+    IScope retval = scope;
+    IScope parentScope = IScope.NULLSCOPE;
     QualifiedName name = QualifiedName.EMPTY;
     if (fieldIndex == 0) {
       parentScope = super.getScope(optionSource, OPTION_SOURCE__TARGET);
       name = getEObjectName(optionSource);
     } else {
       OptionField parentOptionField = fields.get(fieldIndex - 1);
-      parentScope = getScopeOfOptionField(optionSource, reference, fieldIndex - 1, fields);
+      parentScope = getScopeOfOptionField(retval, optionSource, reference, fieldIndex - 1, fields);
       name = getEObjectName(parentOptionField);
     }
     IEObjectDescription indexedElementDescription = parentScope.getSingleElement(name);
@@ -532,7 +533,8 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider
    *
    * The {@code OptionField} {@code number} contains a cross-reference to {@code Code.number}.
    */
-  public @Nullable IScope scope_OptionField_target(OptionField optionField, EReference reference) {
+  public IScope scope_OptionField_target(OptionField optionField, EReference reference) {
+    IScope scope = getLocalScopeProvider().getResourceScope(optionField.eResource(), reference);
     EObject customOption = optionField.eContainer();
     if (customOption != null) {
       OptionSource optionSource = null;
@@ -547,10 +549,10 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider
       }
       if (optionSource != null && fields != null) {
         int index = fields.indexOf(optionField);
-        return getScopeOfOptionField(optionSource, reference, index, fields);
+        return getScopeOfOptionField(scope, optionSource, reference, index, fields);
       }
     }
-    return null;
+    return scope;
   }
 
   /**
