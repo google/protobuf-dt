@@ -21,9 +21,11 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.resource.ISelectable;
+import org.eclipse.xtext.scoping.IGlobalScopeProvider;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.impl.ImportNormalizer;
 import org.eclipse.xtext.scoping.impl.ImportScope;
+import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider;
 import org.eclipse.xtext.scoping.impl.ImportedNamespaceAwareLocalScopeProvider;
 import org.eclipse.xtext.util.Strings;
 
@@ -39,6 +41,7 @@ import com.google.inject.Inject;
 public class ProtobufImportedNamespaceAwareLocalScopeProvider
     extends ImportedNamespaceAwareLocalScopeProvider {
   @Inject private ProtobufQualifiedNameConverter qualifiedNameConverter;
+  @Inject private IGlobalScopeProvider globalScopeProvider;
 
   private static final boolean WILDCARD = true;
 
@@ -189,5 +192,9 @@ public class ProtobufImportedNamespaceAwareLocalScopeProvider
     ISelectable allDescriptions = getAllDescriptions(context.eResource());
     return ProtobufSelectableBasedScope.createScope(
         parent, allDescriptions, reference.getEReferenceType(), isIgnoreCase(reference));
+  }
+
+  protected ProtobufImportUriGlobalScopeProvider getGlobalScopeProvider() {
+    return (ProtobufImportUriGlobalScopeProvider) globalScopeProvider;
   }
 }

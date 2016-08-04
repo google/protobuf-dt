@@ -21,8 +21,8 @@ import static org.eclipse.xtext.resource.XtextResource.OPTION_ENCODING;
 import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
 
 import com.google.eclipse.protobuf.model.util.ModelObjects;
-import com.google.eclipse.protobuf.naming.NameResolver;
 import com.google.eclipse.protobuf.naming.ProtobufQualifiedNameConverter;
+import com.google.eclipse.protobuf.naming.ProtobufQualifiedNameProvider;
 import com.google.eclipse.protobuf.preferences.general.PreferenceNames;
 import com.google.eclipse.protobuf.protobuf.AbstractCustomOption;
 import com.google.eclipse.protobuf.protobuf.AbstractOption;
@@ -46,6 +46,7 @@ import com.google.eclipse.protobuf.protobuf.NativeOption;
 import com.google.eclipse.protobuf.protobuf.OneOf;
 import com.google.eclipse.protobuf.protobuf.OptionField;
 import com.google.eclipse.protobuf.protobuf.OptionSource;
+import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.eclipse.protobuf.protobuf.Rpc;
 import com.google.eclipse.protobuf.protobuf.Stream;
@@ -71,11 +72,9 @@ import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.nodemodel.ICompositeNode;
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils;
 import org.eclipse.xtext.resource.IEObjectDescription;
-import org.eclipse.xtext.resource.ISelectable;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider;
 import org.eclipse.xtext.scoping.impl.ImportNormalizer;
-import org.eclipse.xtext.scoping.impl.SelectableBasedScope;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 import org.eclipse.xtext.util.IResourceScopeCache;
 
@@ -107,10 +106,8 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider
   @Inject private IPreferenceStoreAccess storeAccess;
   @Inject private IUriResolver uriResolver;
   @Inject private IResourceScopeCache cache;
-  @Inject private NameResolver nameResolver;
   @Inject private ProtobufQualifiedNameConverter nameConverter;
-
-  private static final String CACHEKEY = "IMPORT_NORMALIZER_CACHE_KEY";
+  @Inject private ProtobufQualifiedNameProvider nameProvider;
 
   /**
    * Returns the name of the descriptor.proto message declaring default options. The options must
@@ -158,21 +155,27 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider
 
   // TODO (atrookey) Create utility for getting package.
   private String getPackageOfResource(Resource resource) {
-    Protobuf object;
-    if (resource != null && (object = (Protobuf) resource.getContents().get(0)) != null) {
-      for (EObject content : object.getElements()) {
-        if (content instanceof com.google.eclipse.protobuf.protobuf.Package) {
-          return ((com.google.eclipse.protobuf.protobuf.Package) content).getImportedNamespace();
-        }
-      }
-    }
-    return "";
+    return cache.get(
+        "Package",
+        resource,
+        new Provider<String>() {
+          @Override
+          public String get() {
+            Protobuf protobuf;
+            if (resource != null && (protobuf = (Protobuf) resource.getContents().get(0)) != null) {
+              for (EObject content : protobuf.getElements()) {
+                if (content instanceof Package) {
+                  return ((Package) content).getImportedNamespace();
+                }
+              }
+            }
+            return "";
+          }
+        });
   }
 
-  /**
-   * Returns descriptor associated with the current project.
-   */
-  private  @Nullable Resource getDescriptorResource(EObject context) {
+  /** Returns descriptor associated with the current project. */
+  private @Nullable Resource getDescriptorResource(EObject context) {
     URI descriptorLocation;
     IProject project = EResources.getProjectOf(context.eResource());
     IPreferenceStore store = storeAccess.getWritablePreferenceStore(project);
@@ -196,20 +199,21 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider
     return null;
   }
 
-  /**
-   * Returns name of an object as a QualifiedName.
-   */
+  /** Returns name of an object as a QualifiedName. */
   private QualifiedName getEObjectName(EObject object) {
     ICompositeNode node = NodeModelUtils.getNode(object);
     String name = linkingHelper.getCrossRefNodeAsString(node, true);
     return QualifiedName.create(name);
   }
 
-  /**
-   * Returns the local scope provider.
-   */
+  /** Returns the local scope provider. */
   private ProtobufImportedNamespaceAwareLocalScopeProvider getLocalScopeProvider() {
     return (ProtobufImportedNamespaceAwareLocalScopeProvider) super.getDelegate();
+  }
+
+  /** Returns the local scope provider. */
+  private ProtobufImportUriGlobalScopeProvider getGlobalScopeProvider() {
+    return getLocalScopeProvider().getGlobalScopeProvider();
   }
 
   @Override
@@ -224,9 +228,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider
     return scope;
   }
 
-  /**
-   * Recursively scope {@code FieldName} starting with an {@code OptionSource}.
-   */
+  /** Recursively scope {@code FieldName} starting with an {@code OptionSource}. */
   private IScope getScopeOfFieldName(
       IScope delegatedScope, OptionSource optionSource, EReference reference) {
     IScope retval = IScope.NULLSCOPE;
@@ -240,9 +242,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider
     return retval;
   }
 
-  /**
-   * Locally scope any children of {@code context} that are of type {@code OneOf}.
-   */
+  /** Locally scope any children of {@code context} that are of type {@code OneOf}. */
   private IScope getScopeOfOneOf(IScope scope, EObject context, EReference reference) {
     IScope result = scope;
     for (EObject element : context.eContents()) {
@@ -253,11 +253,13 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider
     return result;
   }
 
-  /**
-   * Recursively scope {@code OptionField} starting with an {@code OptionSource}.
-   */
+  /** Recursively scope {@code OptionField} starting with an {@code OptionSource}. */
   private IScope getScopeOfOptionField(
-      IScope scope, OptionSource optionSource, EReference reference, int fieldIndex, EList<OptionField> fields) {
+      IScope scope,
+      OptionSource optionSource,
+      EReference reference,
+      int fieldIndex,
+      EList<OptionField> fields) {
     if (fieldIndex < 0 || fields.size() <= fieldIndex) {
       throw new IllegalArgumentException();
     }
@@ -362,9 +364,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider
   /**
    * Recursively scopes the {@code FieldName} starting with the {@code OptionSource}.
    *
-   * For example:
-   *
-   * <pre>
+   * <p>For example: <pre>
    * message FooOptions {
    *   optional int32 opt1 = 1;
    * }
@@ -419,12 +419,10 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider
   }
 
   /**
-   * Creates a scope containing elements of type {@code Literal} that can be
-   * referenced with their local name only.
+   * Creates a scope containing elements of type {@code Literal} that can be referenced with their
+   * local name only.
    *
-   * For example:
-   *
-   * <pre>
+   * <p>For example: <pre>
    * enum MyEnum {
    *   FOO = 1;
    * }
@@ -440,83 +438,66 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider
    */
   public IScope scope_LiteralLink_target(LiteralLink literalLink, EReference reference) {
     IScope scope = IScope.NULLSCOPE;
-    scope =
-        createLiteralLinkResolvedScopeForResource(
-            reference, scope, getDescriptorResource(literalLink));
-    scope = createLiteralLinkResolvedScopeForResource(reference, scope, literalLink.eResource());
+    Resource descriptorResource = getDescriptorResource(literalLink);
+    EObject descriptor = descriptorResource.getContents().get(0);
+    scope = createLiteralLinkResolvedScope(reference, scope, descriptor);
+    scope = createLiteralLinkResolvedScope(reference, scope, literalLink);
     return scope;
   }
 
-  // TODO (atrookey) Create resolvers for ProtobufImportScopes at all scope levels,
-  // not just top level.
-  private IScope createLiteralLinkResolvedScopeForResource(
-      EReference reference, IScope parent, Resource resource) {
-    IScope scope = parent;
-    scope = getProtobufImportScope(scope, resource, reference);
-    List<ImportNormalizer> protoNormalizers =
-        cache.get(
-            CACHEKEY,
-            resource,
-            new Provider<List<ImportNormalizer>>() {
-              @Override
-              public List<ImportNormalizer> get() {
-                return createEnumElementResolvers(
-                    resource.getContents().get(0), getPackageOfResource(resource), false);
-              }
-            });
-    if (scope instanceof ProtobufImportScope) {
-      for (ImportNormalizer normalizer : protoNormalizers) {
-        ((ProtobufImportScope) scope).addNormalizer(normalizer);
-      }
-    } else if (scope instanceof SelectableBasedScope) {
-      ISelectable allDescriptions = getLocalScopeProvider().getAllDescriptions(resource);
-      scope =
-          getLocalScopeProvider()
-              .createImportScope(
-                  scope, protoNormalizers, allDescriptions, reference.getEReferenceType(), false);
+  private IScope createLiteralLinkResolvedScope(
+      EReference reference, IScope parent, EObject context) {
+    if (context == null) {
+      return parent;
     }
-    return scope;
+    final IScope parentScope =
+        createLiteralLinkResolvedScope(reference, parent, context.eContainer());
+    return cache.get(
+        context,
+        context.eResource(),
+        new Provider<IScope>() {
+          @Override
+          public IScope get() {
+            List<ImportNormalizer> protoNormalizers = createEnumElementResolvers(context, false);
+            IScope scope = getSingleLevelProtobufImport(parentScope, context, reference);
+            if (scope instanceof ProtobufImportScope) {
+              for (ImportNormalizer normalizer : protoNormalizers) {
+                ((ProtobufImportScope) scope).addNormalizer(normalizer);
+              }
+            }
+            return scope;
+          }
+        });
   }
 
   /**
-   * Creates an {@code ImportNormalizer} for every {@code Enum} that is a descendant of {@code context}.
+   * Creates an {@code ImportNormalizer} for every {@code Enum} that is a descendant of {@code
+   * context}.
    */
-  private List<ImportNormalizer> createEnumElementResolvers(
-      EObject context, String qualifiedName, boolean ignoreCase) {
+  private List<ImportNormalizer> createEnumElementResolvers(EObject context, boolean ignoreCase) {
     List<ImportNormalizer> importedNamespaceResolvers = new ArrayList<>();
     for (EObject child : context.eContents()) {
       if (child instanceof Enum) {
-        String name = appendNameOfEObject(qualifiedName, child);
-        if (!name.isEmpty()) {
+        QualifiedName name = nameProvider.getFullyQualifiedName(child);
+        if (name != null && !name.isEmpty()) {
           ImportNormalizer resolver =
-              getLocalScopeProvider().createImportedNamespaceResolver(name, ignoreCase);
+              getLocalScopeProvider().createImportedNamespaceResolver(name.toString(), ignoreCase);
           if (resolver != null) {
             importedNamespaceResolvers.add(resolver);
           }
         }
       }
       if (child instanceof Message) {
-        String name = appendNameOfEObject(qualifiedName, child);
-        importedNamespaceResolvers.addAll(createEnumElementResolvers(child, name, ignoreCase));
+        importedNamespaceResolvers.addAll(createEnumElementResolvers(child, ignoreCase));
       }
     }
     return importedNamespaceResolvers;
   }
 
-  private String appendNameOfEObject(String qualifiedName, EObject child) {
-    String childName = nameResolver.nameOf(child);
-    if (qualifiedName.isEmpty()) {
-      return childName;
-    }
-    return qualifiedName + nameConverter.getDelimiter() + childName;
-  }
-
   /**
    * Recursively scopes the {@code OptionField} starting with the {@code OptionSource}.
    *
-   * For example:
-   *
-   * <pre>
+   * <p>For example: <pre>
    * message Code {
    *   optional double number = 1;
    * }
@@ -558,9 +539,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider
   /**
    * Creates a scope containing the default options defined in descriptor.proto.
    *
-   * For example:
-   *
-   * <pre>
+   * <p>For example: <pre>
    * option java_package = "com.example.foo";
    * </pre>
    *
@@ -568,26 +547,52 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider
    * google.protobuf.FileOptions.java_package} defined in descriptor.proto.
    */
   public IScope scope_OptionSource_target(OptionSource optionSource, EReference reference) {
-    Resource descriptorResource = getDescriptorResource(optionSource);
-    String descriptorMessage =
-        getPackageOfResource(descriptorResource)
-            + nameConverter.getDelimiter()
-            + getOptionType(optionSource);
-    ImportNormalizer normalizer =
-        getLocalScopeProvider().createImportedNamespaceResolver(descriptorMessage, false);
-    IScope scope = delegateGetScope(optionSource, reference);
-    scope = getProtobufImportScope(scope, getDescriptorResource(optionSource), reference);
-    ((ProtobufImportScope) scope).addNormalizer(normalizer);
-    return scope;
+    String optionType = getOptionType(optionSource);
+    Resource resource = optionSource.eResource();
+    IScope descriptorScope = cache.get(
+        optionType,
+        resource,
+        new Provider<IScope>() {
+          @Override
+          public IScope get() {
+            IScope scope = getGlobalScopeProvider().getScope(resource, reference);
+            Resource descriptorResource = getDescriptorResource(optionSource);
+            String descriptorMessage =
+                getPackageOfResource(descriptorResource)
+                    + nameConverter.getDelimiter()
+                    + optionType;
+            ImportNormalizer normalizer =
+                getLocalScopeProvider().createImportedNamespaceResolver(descriptorMessage, false);
+            scope =
+                getProtobufImportScope(
+                    scope, getDescriptorResource(optionSource).getContents().get(0), reference);
+            ((ProtobufImportScope) scope).addNormalizer(normalizer);
+            return scope;
+          }
+        });
+    return getProtobufImportScope(descriptorScope, optionSource, reference);
   }
 
-  /** Returns the top level scope of the {@code Resource}. */
-  private ProtobufImportScope getProtobufImportScope(
-      IScope parent, Resource resource, EReference reference) {
-    EObject protobuf = resource.getContents().get(0);
-    IScope descriptorResourceScope =
-        getLocalScopeProvider().getResourceScope(parent, protobuf, reference);
+  /** Returns a multi level ProtobufImportScope {@code EObject}. */
+  private IScope getProtobufImportScope(
+      IScope parent, EObject context, EReference reference) {
+    IScope scope = parent;
+    if (context.eContainer() == null) {
+      scope = getLocalScopeProvider().getResourceScope(scope, context, reference);
+    } else {
+      scope = getProtobufImportScope(scope, context.eContainer(), reference);
+    }
+    return getLocalScopeProvider().getLocalElementsScope(scope, context, reference);
+  }
+
+  /** Returns a single level ProtobufImportScope {@code EObject}. */
+  private ProtobufImportScope getSingleLevelProtobufImport(
+      IScope parent, EObject context, EReference reference) {
+    IScope scope = parent;
+    if (context.eContainer() == null) {
+      scope = getLocalScopeProvider().getResourceScope(scope, context, reference);
+    }
     return (ProtobufImportScope)
-        getLocalScopeProvider().getLocalElementsScope(descriptorResourceScope, protobuf, reference);
+        getLocalScopeProvider().getLocalElementsScope(scope, context, reference);
   }
 }

@@ -27,6 +27,7 @@ import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.protobuf.FieldOption;
 import com.google.eclipse.protobuf.protobuf.Literal;
 import com.google.eclipse.protobuf.protobuf.LiteralLink;
+import com.google.eclipse.protobuf.protobuf.Message;
 import com.google.eclipse.protobuf.protobuf.MessageField;
 import com.google.eclipse.protobuf.protobuf.Option;
 import com.google.inject.Inject;
@@ -108,7 +109,6 @@ public class ProtobufScopeProvider_scope_LiteralLink_target_Test {
   @Test public void should_provide_Literals_for_source_of_field_of_custom_option() {
     Option option = xtext.find("info", ")", Option.class);
     IScope scope = scopeProvider.getScope(valueOf(option), LITERAL_LINK__TARGET);
-    xtext.find("Type", " {", Enum.class);
     assertThat(descriptionsIn(scope), contain("ONE", "TWO"));
   }
 
@@ -146,7 +146,6 @@ public class ProtobufScopeProvider_scope_LiteralLink_target_Test {
   @Test public void should_provide_Literals_for_source_of_custom_field_option() {
     FieldOption option = xtext.find("type", ")", FieldOption.class);
     IScope scope = scopeProvider.getScope(valueOf(option), LITERAL_LINK__TARGET);
-    xtext.find("Type", " {", Enum.class);
     assertThat(descriptionsIn(scope), contain("ONE", "TWO"));
   }
 
@@ -173,7 +172,6 @@ public class ProtobufScopeProvider_scope_LiteralLink_target_Test {
   @Test public void should_provide_Literals_for_source_of_field_in_custom_field_option() {
     FieldOption option = xtext.find("info", ")", FieldOption.class);
     IScope scope = scopeProvider.getScope(valueOf(option), LITERAL_LINK__TARGET);
-    xtext.find("Type", " {", Enum.class);
     assertThat(descriptionsIn(scope), contain("ONE", "TWO"));
   }
 
@@ -198,17 +196,63 @@ public class ProtobufScopeProvider_scope_LiteralLink_target_Test {
   //   optional Grape grape = 4 [default = BAR];
   // }
   @Test public void should_provide_Literal_nearest_to_option() {
-    // Beta
     MessageField field = xtext.find("grape", " =", MessageField.class);
     DefaultValueFieldOption option = (DefaultValueFieldOption) field.getFieldOptions().get(0);
     LiteralLink link = (LiteralLink) option.getValue();
     Enum enumBeta = (Enum)link.getTarget().eContainer();
-
-    // Alpha
     Enum beta = xtext.find("Beta", Enum.class);
     Literal literal = (Literal) beta.getElements().get(0);
     Enum expectedEnum = (Enum) literal.eContainer();
     assertEquals(expectedEnum, enumBeta);
+  }
+
+  // syntax = "proto2";
+  //
+  // message Status {
+  //   enum StatusCode {
+  //     SUCCESS = 1;
+  //   }
+  //   required StatusCode statusCode = 1 [default = SUCCESS];
+  // }
+  //
+  // message Response {
+  //   enum Status {
+  //     SUCCESS = 1;
+  //   }
+  //   required Status status = 1 [default = SUCCESS];
+  // }
+  @Test public void should_provide_Literals_in_nearest_scope_to_default_value_field_option() {
+    MessageField field = xtext.find("status", " =", MessageField.class);
+    DefaultValueFieldOption option = (DefaultValueFieldOption) field.getFieldOptions().get(0);
+    LiteralLink link = (LiteralLink) option.getValue();
+    Enum enumActual = (Enum)link.getTarget().eContainer();
+    Message message = xtext.find("Response", Message.class);
+    Enum status = (Enum) message.getElements().get(0);
+    Literal literal = (Literal) status.getElements().get(0);
+    Enum expectedEnum = (Enum) literal.eContainer();
+    assertEquals(expectedEnum, enumActual);
+  }
+
+  // syntax = "proto2";
+  //
+  // message Status {
+  //   enum StatusCode {
+  //     SUCCESS = 1;
+  //   }
+  //   required StatusCode statusCode = 1 [default = SUCCESS];
+  // }
+  //
+  // message Response {
+  //   enum Status {
+  //     SUCCESS = 1;
+  //   }
+  //   required Status status = 1 [default = SUCCESS];
+  // }
+  @Test public void should_provide_Literals_for_source_of_default_value_field_option() {
+    MessageField field = xtext.find("status", " =", MessageField.class);
+    DefaultValueFieldOption option = (DefaultValueFieldOption) field.getFieldOptions().get(0);
+    IScope scope = scopeProvider.getScope(valueOf(option), LITERAL_LINK__TARGET);
+    assertThat(descriptionsIn(scope), contain("SUCCESS"));
   }
 
   private static LiteralLink valueOf(FieldOption option) {
