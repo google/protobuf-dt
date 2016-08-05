@@ -179,7 +179,7 @@ public class ProtobufScopeProvider_scope_LiteralLink_target_Test {
   // syntax = "proto2";
   // package sample.proto;
   //
-  // message Example {
+  // message Sample {
   //   enum Alpha {
   //     BAR =  1;
   //   }
@@ -189,20 +189,19 @@ public class ProtobufScopeProvider_scope_LiteralLink_target_Test {
   //  package example.proto;
   //  import "sample_proto.proto";
   //
-  // message Fruits {
-  //  enum Beta {
+  // message Example {
+  //  enum Alpha {
   //     BAR =  1;
   //  }
-  //   optional Grape grape = 4 [default = BAR];
+  //   optional Alpha alpha = 1 [default = BAR];
   // }
   @Test public void should_provide_Literal_nearest_to_option() {
-    MessageField field = xtext.find("grape", " =", MessageField.class);
+    MessageField field = xtext.find("alpha", " =", MessageField.class);
     DefaultValueFieldOption option = (DefaultValueFieldOption) field.getFieldOptions().get(0);
     LiteralLink link = (LiteralLink) option.getValue();
     Enum enumBeta = (Enum)link.getTarget().eContainer();
-    Enum beta = xtext.find("Beta", Enum.class);
-    Literal literal = (Literal) beta.getElements().get(0);
-    Enum expectedEnum = (Enum) literal.eContainer();
+    Message example = xtext.find("Example", Message.class);
+    Enum expectedEnum = (Enum) example.getElements().get(0);
     assertEquals(expectedEnum, enumBeta);
   }
 
@@ -221,7 +220,7 @@ public class ProtobufScopeProvider_scope_LiteralLink_target_Test {
   //   }
   //   required Status status = 1 [default = SUCCESS];
   // }
-  @Test public void should_provide_Literals_in_nearest_scope_to_default_value_field_option() {
+  @Test public void should_provide_default_Literals_matching_type_of_field() {
     MessageField field = xtext.find("status", " =", MessageField.class);
     DefaultValueFieldOption option = (DefaultValueFieldOption) field.getFieldOptions().get(0);
     LiteralLink link = (LiteralLink) option.getValue();
@@ -249,6 +248,28 @@ public class ProtobufScopeProvider_scope_LiteralLink_target_Test {
   //   required Status status = 1 [default = SUCCESS];
   // }
   @Test public void should_provide_Literals_for_source_of_default_value_field_option() {
+    MessageField field = xtext.find("status", " =", MessageField.class);
+    DefaultValueFieldOption option = (DefaultValueFieldOption) field.getFieldOptions().get(0);
+    IScope scope = scopeProvider.getScope(valueOf(option), LITERAL_LINK__TARGET);
+    assertThat(descriptionsIn(scope), contain("SUCCESS"));
+  }
+
+  // // Create file sample_proto.proto
+  // syntax = "proto2";
+  // package example;
+  //
+  // enum Status {
+  //   SUCCESS = 1;
+  // }
+
+  // syntax = "proto2";
+  // package example;
+  // import "sample_proto.proto";
+  //
+  // message Response {
+  //   required Status status = 1 [default = SUCCESS];
+  // }
+  @Test public void should_provide_Literals_from_imported_proto() {
     MessageField field = xtext.find("status", " =", MessageField.class);
     DefaultValueFieldOption option = (DefaultValueFieldOption) field.getFieldOptions().get(0);
     IScope scope = scopeProvider.getScope(valueOf(option), LITERAL_LINK__TARGET);
