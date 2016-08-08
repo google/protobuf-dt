@@ -81,9 +81,9 @@ public class ProtobufImportUriGlobalScopeProvider extends ImportUriGlobalScopePr
 
           private void resolveImport(LinkedHashSet<URI> importedUris, Import singleImport) {
             if (imports.isResolved(singleImport)) {
-              importedUris.add(imports.resolvedUriOf(singleImport));
               Protobuf root = resources.rootOf(imports.importedResource(singleImport));
               if (root != null) {
+                importedUris.add(imports.resolvedUriOf(singleImport));
                 addPublicImportedUris(root, importedUris);
               }
             } else if (imports.hasUnresolvedDescriptorUri(singleImport)) {
