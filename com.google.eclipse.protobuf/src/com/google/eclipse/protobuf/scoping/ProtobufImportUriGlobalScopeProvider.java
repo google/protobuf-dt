@@ -75,7 +75,9 @@ public class ProtobufImportUriGlobalScopeProvider extends ImportUriGlobalScopePr
 
           private void addPublicImportedUris(Protobuf protobuf, LinkedHashSet<URI> importedUris) {
             for (Import singleImport : protobufs.publicImportsIn(protobuf)) {
-              resolveImport(importedUris, singleImport);
+              if (!importedUris.contains(imports.resolvedUriOf(singleImport))) {
+                resolveImport(importedUris, singleImport);
+              }
             }
           }
 

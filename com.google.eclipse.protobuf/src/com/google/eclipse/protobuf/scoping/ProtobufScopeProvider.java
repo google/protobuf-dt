@@ -46,7 +46,6 @@ import com.google.eclipse.protobuf.protobuf.MessageField;
 import com.google.eclipse.protobuf.protobuf.NativeFieldOption;
 import com.google.eclipse.protobuf.protobuf.NativeOption;
 import com.google.eclipse.protobuf.protobuf.OneOf;
-import com.google.eclipse.protobuf.protobuf.Option;
 import com.google.eclipse.protobuf.protobuf.OptionField;
 import com.google.eclipse.protobuf.protobuf.OptionSource;
 import com.google.eclipse.protobuf.protobuf.Package;
