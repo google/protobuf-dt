@@ -2,7 +2,7 @@
 <feature
       id="com.google.eclipse.protobuf"
       label="%featureName"
-      version="2.2.1.qualifier"
+      version="2.3.0.qualifier"
       provider-name="%providerName">
 
    <description url="https://code.google.com/p/protobuf-dt/">
@@ -45,13 +45,6 @@
 
    <plugin
          id="com.google.eclipse.protobuf.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.google.eclipse.protobuf.generator"
          download-size="0"
          install-size="0"
          version="0.0.0"
