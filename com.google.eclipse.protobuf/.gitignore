@@ -1,6 +1,5 @@
 /bin
 /model/
-/src-gen/
 /xtend-gen
 /.antlr*.jar
 /plugin.xml_gen
