@@ -9,23 +9,18 @@
 package com.google.eclipse.protobuf.scoping;
 
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.OPTION_SOURCE__TARGET;
-import static com.google.eclipse.protobuf.scoping.OptionType.typeOf;
 import static com.google.eclipse.protobuf.util.Encodings.UTF_8;
 import static com.google.eclipse.protobuf.util.Tracer.DEBUG_SCOPING;
 import static com.google.eclipse.protobuf.validation.ProtobufResourceValidator.getScopeProviderTimingCollector;
-import static java.util.Collections.emptySet;
 import static java.util.Collections.singletonMap;
 import static org.eclipse.emf.ecore.resource.ContentHandler.UNSPECIFIED_CONTENT_TYPE;
 import static org.eclipse.xtext.EcoreUtil2.resolveLazyCrossReferences;
 import static org.eclipse.xtext.resource.XtextResource.OPTION_ENCODING;
 import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
 
-import com.google.eclipse.protobuf.model.util.ModelObjects;
 import com.google.eclipse.protobuf.naming.ProtobufQualifiedNameConverter;
 import com.google.eclipse.protobuf.naming.ProtobufQualifiedNameProvider;
 import com.google.eclipse.protobuf.preferences.general.PreferenceNames;
-import com.google.eclipse.protobuf.protobuf.AbstractCustomOption;
-import com.google.eclipse.protobuf.protobuf.AbstractOption;
 import com.google.eclipse.protobuf.protobuf.ComplexType;
 import com.google.eclipse.protobuf.protobuf.ComplexTypeLink;
 import com.google.eclipse.protobuf.protobuf.ComplexValue;
@@ -34,7 +29,6 @@ import com.google.eclipse.protobuf.protobuf.CustomFieldOption;
 import com.google.eclipse.protobuf.protobuf.CustomOption;
 import com.google.eclipse.protobuf.protobuf.DefaultValueFieldOption;
 import com.google.eclipse.protobuf.protobuf.Enum;
-import com.google.eclipse.protobuf.protobuf.ExtensibleType;
 import com.google.eclipse.protobuf.protobuf.FieldName;
 import com.google.eclipse.protobuf.protobuf.FieldOption;
 import com.google.eclipse.protobuf.protobuf.Group;
@@ -52,7 +46,6 @@ import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
 import com.google.eclipse.protobuf.protobuf.Rpc;
 import com.google.eclipse.protobuf.protobuf.Stream;
-import com.google.eclipse.protobuf.protobuf.TypeExtension;
 import com.google.eclipse.protobuf.protobuf.TypeLink;
 import com.google.eclipse.protobuf.protobuf.ValueField;
 import com.google.eclipse.protobuf.util.EResources;
@@ -83,25 +76,13 @@ import org.eclipse.xtext.util.IResourceScopeCache;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Collection;
 
 /**
  * A scope provider for the Protobuf language.
  *
  * @author atrookey@google.com (Alexander Rookey)
  */
-public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider
-    implements ScopeProvider {
-  @Inject private ComplexTypeFinderStrategy complexTypeFinderDelegate;
-  @Inject private CustomOptionFieldFinder customOptionFieldFinder;
-  @Inject private CustomOptionFieldNameFinder customOptionFieldNameFinder;
-  @Inject private CustomOptionFinderStrategy customOptionFinderDelegate;
-  @Inject private ExtensionFieldFinderStrategy extensionFieldFinderDelegate;
-  @Inject private ExtensionFieldNameFinderStrategy extensionFieldNameFinderDelegate;
-  @Inject private MessageFieldFinderStrategy messageFieldFinderDelegate;
-  @Inject private ModelElementFinder modelElementFinder;
-  @Inject private ModelObjects modelObjects;
-  @Inject private NormalFieldNameFinderStrategy normalFieldNameFinderDelegate;
+public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
   @Inject private LinkingHelper linkingHelper;
   @Inject private IPreferenceStoreAccess storeAccess;
   @Inject private IUriResolver uriResolver;
@@ -139,10 +120,6 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider
       return "EnumValueOptions";
     }
     return getOptionType(context.eContainer());
-  }
-
-  private Collection<IEObjectDescription> allMessages(Protobuf root) {
-    return modelElementFinder.find(root, complexTypeFinderDelegate, Message.class);
   }
 
   /**
@@ -211,7 +188,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider
     return (ProtobufImportedNamespaceAwareLocalScopeProvider) super.getDelegate();
   }
 
-  /** Returns the local scope provider. */
+  /** Returns the global scope provider. */
   private ProtobufImportUriGlobalScopeProvider getGlobalScopeProvider() {
     return getLocalScopeProvider().getGlobalScopeProvider();
   }
@@ -305,60 +282,6 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider
           getLocalScopeProvider().getLocalElementsScope(parentScope, indexedElement, reference);
     }
     return retval;
-  }
-
-  @Override
-  public Collection<IEObjectDescription> potentialComplexTypesFor(MessageField field) {
-    return modelElementFinder.find(field, complexTypeFinderDelegate, ComplexType.class);
-  }
-
-  @Override
-  public Collection<IEObjectDescription> potentialExtensibleTypesFor(TypeExtension extension) {
-    Protobuf root = modelObjects.rootOf(extension);
-    return modelElementFinder.find(root, complexTypeFinderDelegate, ExtensibleType.class);
-  }
-
-  @Override
-  public Collection<IEObjectDescription> potentialExtensionFieldNames(ComplexValue value) {
-    return customOptionFieldNameFinder.findFieldNamesSources(
-        value, extensionFieldNameFinderDelegate);
-  }
-
-  @Override
-  public Collection<IEObjectDescription> potentialExtensionFieldsFor(AbstractCustomOption option) {
-    return customOptionFieldFinder.findOptionFields(option, extensionFieldFinderDelegate);
-  }
-
-  @Override
-  public Collection<IEObjectDescription> potentialMessageFieldsFor(AbstractCustomOption option) {
-    return customOptionFieldFinder.findOptionFields(option, messageFieldFinderDelegate);
-  }
-
-  @Override
-  public Collection<IEObjectDescription> potentialMessagesFor(Rpc rpc) {
-    Protobuf root = modelObjects.rootOf(rpc);
-    return allMessages(root);
-  }
-
-  @Override
-  public Collection<IEObjectDescription> potentialMessagesFor(Stream stream) {
-    Protobuf root = modelObjects.rootOf(stream);
-    return allMessages(root);
-  }
-
-  @Override
-  public Collection<IEObjectDescription> potentialNormalFieldNames(ComplexValue value) {
-    return customOptionFieldNameFinder.findFieldNamesSources(value, normalFieldNameFinderDelegate);
-  }
-
-  @Override
-  public Collection<IEObjectDescription> potentialSourcesFor(AbstractCustomOption option) {
-    OptionType optionType = typeOf((AbstractOption) option);
-    Collection<IEObjectDescription> descriptions = emptySet();
-    if (optionType != null) {
-      descriptions = modelElementFinder.find(option, customOptionFinderDelegate, optionType);
-    }
-    return descriptions;
   }
 
   /**
