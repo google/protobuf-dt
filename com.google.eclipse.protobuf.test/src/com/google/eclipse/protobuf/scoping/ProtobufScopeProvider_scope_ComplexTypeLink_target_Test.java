@@ -28,7 +28,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import com.google.eclipse.protobuf.junit.core.XtextRule;
-import com.google.eclipse.protobuf.protobuf.ComplexType;
+import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.protobuf.ComplexTypeLink;
 import com.google.eclipse.protobuf.protobuf.MessageField;
 import com.google.inject.Inject;
@@ -234,13 +234,13 @@ public class ProtobufScopeProvider_scope_ComplexTypeLink_target_Test {
   //   optional Fruit grape = 1;
   // }
   @Test public void should_provide_nearest_ComplexType() {
+    Enum expectedEnum = xtext.find("Fruit", " {", Enum.class);
     MessageField field = xtext.find("grape", " =", MessageField.class);
-    ComplexTypeLink link = (ComplexTypeLink) field.getType();
-    ComplexType scopedEnum = link.getTarget();  // Enum inherits from ComplexType
     IScope scope = scopeProvider.getScope(field, COMPLEX_TYPE_LINK__TARGET);
-    Object expectedEnum =
-        scope.getSingleElement(
-            QualifiedName.create("sample", "proto", "foo", "Fruit")).getEObjectOrProxy();
+    Object scopedEnum =
+        scope
+            .getSingleElement(QualifiedName.create("sample", "proto", "foo", "Fruit"))
+            .getEObjectOrProxy();
     assertEquals(expectedEnum, scopedEnum);
   }
 

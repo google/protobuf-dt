@@ -8,8 +8,6 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static java.util.Collections.singletonList;
-
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +30,7 @@ import com.google.eclipse.protobuf.naming.ProtobufQualifiedNameConverter;
 import com.google.inject.Inject;
 
 /**
- * A local scope provider for the Protobuf language that
- * understands namespace imports.
+ * A local scope provider for the Protocol Buffer language based on namespace resolvers.
  *
  * @author (atrookey@google.com) Alexander Rookey
  */
@@ -115,68 +112,14 @@ public class ProtobufImportedNamespaceAwareLocalScopeProvider
     return doCreateImportNormalizer(importedNamespace, WILDCARD, ignoreCase);
   }
 
-  /**
-   * Creates a {@link ProtobufImportScope} regardless of whether or not
-   * {@code namespaceResolvers} is empty.
-   */
+  /** Makes {@code getLocalElementsScope()} visible to {@link ProtobufScopeProvider} */
   @Override
   protected IScope getLocalElementsScope(
-      IScope parent, final EObject context, final EReference reference) {
-    IScope result = parent;
-    ISelectable allDescriptions = getAllDescriptions(context.eResource());
-    QualifiedName name = getQualifiedNameOfLocalElement(context);
-    boolean ignoreCase = isIgnoreCase(reference);
-    final List<ImportNormalizer> namespaceResolvers =
-        getImportedNamespaceResolvers(context, ignoreCase);
-    if (isRelativeImport() && name != null && !name.isEmpty()) {
-      ImportNormalizer localNormalizer = doCreateImportNormalizer(name, true, ignoreCase);
-      result =
-          createImportScope(
-              result,
-              singletonList(localNormalizer),
-              allDescriptions,
-              reference.getEReferenceType(),
-              isIgnoreCase(reference));
-    }
-    result =
-        createImportScope(
-            result,
-            namespaceResolvers,
-            null,
-            reference.getEReferenceType(),
-            isIgnoreCase(reference));
-    if (name != null) {
-      ImportNormalizer localNormalizer = doCreateImportNormalizer(name, true, ignoreCase);
-      result =
-          createImportScope(
-              result,
-              singletonList(localNormalizer),
-              allDescriptions,
-              reference.getEReferenceType(),
-              isIgnoreCase(reference));
-    }
-    return result;
+      IScope parent, EObject context, EReference reference) {
+    return super.getLocalElementsScope(parent, context, reference);
   }
 
-  /** 
-   * Makes {@code getAllDescriptions()} visible to {@link ProtobufScopeProvider}
-   */
-  @Override
-  protected ISelectable getAllDescriptions(Resource resource) {
-    return super.getAllDescriptions(resource);
-  }
-  /** 
-   * Makes {@code getImportedNamespaceResolvers()} visible to
-   * {@link ProtobufScopeProvider}
-   */
-  @Override
-  protected List<ImportNormalizer> getImportedNamespaceResolvers(
-      EObject context, boolean ignoreCase) {
-    return super.getImportedNamespaceResolvers(context, ignoreCase);
-  }
-  /** 
-   * Makes {@code getResourceScope()} visible to {@link ProtobufScopeProvider}
-   */
+  /** Makes {@code getResourceScope()} visible to {@link ProtobufScopeProvider} */
   @Override
   protected IScope getResourceScope(Resource res, EReference reference) {
     return super.getResourceScope(res, reference);

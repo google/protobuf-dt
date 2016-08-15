@@ -8,7 +8,6 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.OPTION_SOURCE__TARGET;
 import static com.google.eclipse.protobuf.util.Encodings.UTF_8;
 import static com.google.eclipse.protobuf.util.Tracer.DEBUG_SCOPING;
 import static com.google.eclipse.protobuf.validation.ProtobufResourceValidator.getScopeProviderTimingCollector;
@@ -29,6 +28,7 @@ import com.google.eclipse.protobuf.protobuf.CustomFieldOption;
 import com.google.eclipse.protobuf.protobuf.CustomOption;
 import com.google.eclipse.protobuf.protobuf.DefaultValueFieldOption;
 import com.google.eclipse.protobuf.protobuf.Enum;
+import com.google.eclipse.protobuf.protobuf.ExtensionFieldName;
 import com.google.eclipse.protobuf.protobuf.FieldName;
 import com.google.eclipse.protobuf.protobuf.FieldOption;
 import com.google.eclipse.protobuf.protobuf.Group;
@@ -62,20 +62,18 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.xtext.linking.impl.LinkingHelper;
 import org.eclipse.xtext.naming.QualifiedName;
-import org.eclipse.xtext.nodemodel.ICompositeNode;
-import org.eclipse.xtext.nodemodel.util.NodeModelUtils;
-import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider;
 import org.eclipse.xtext.scoping.impl.ImportNormalizer;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 import org.eclipse.xtext.util.IResourceScopeCache;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * A scope provider for the Protobuf language.
@@ -83,13 +81,6 @@ import java.net.URL;
  * @author atrookey@google.com (Alexander Rookey)
  */
 public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
-  @Inject private LinkingHelper linkingHelper;
-  @Inject private IPreferenceStoreAccess storeAccess;
-  @Inject private IUriResolver uriResolver;
-  @Inject private IResourceScopeCache cache;
-  @Inject private ProtobufQualifiedNameConverter nameConverter;
-  @Inject private ProtobufQualifiedNameProvider nameProvider;
-
   /**
    * Returns the name of the descriptor.proto message declaring default options. The options must
    * match the option type of {@code context}. For example, if {@code context} is a file option,
@@ -122,33 +113,106 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     return getOptionType(context.eContainer());
   }
 
-  /**
-   * Returns the InputStream associated with the resource at location {@code descriptorLocation}.
-   */
-  private InputStream openFile(URI fileLocation) throws IOException {
-    URL url = new URL(fileLocation.toString());
-    return url.openConnection().getInputStream();
+  @Inject private IPreferenceStoreAccess storeAccess;
+  @Inject private IUriResolver uriResolver;
+  @Inject private IResourceScopeCache cache;
+  @Inject private ProtobufQualifiedNameConverter nameConverter;
+  @Inject private ProtobufQualifiedNameProvider nameProvider;
+
+  private ImportNormalizer createImportNormalizerForEObject(EObject element, boolean ignoreCase) {
+    QualifiedName name = nameProvider.getFullyQualifiedName(element);
+    return getLocalScopeProvider().createImportedNamespaceResolver(name.toString(), ignoreCase);
   }
 
-  // TODO (atrookey) Create utility for getting package.
-  private String getPackageOfResource(Resource resource) {
-    return cache.get(
-        "Package",
-        resource,
-        new Provider<String>() {
-          @Override
-          public String get() {
-            Protobuf protobuf;
-            if (resource != null && (protobuf = (Protobuf) resource.getContents().get(0)) != null) {
-              for (EObject content : protobuf.getElements()) {
-                if (content instanceof Package) {
-                  return ((Package) content).getImportedNamespace();
-                }
+  private List<ImportNormalizer> createImportNormalizersForComplexType(
+      ComplexType complexType, boolean ignoreCase) {
+    List<ImportNormalizer> normalizers = new ArrayList<>();
+    normalizers.add(createImportNormalizerForEObject(complexType, ignoreCase));
+    normalizers.addAll(createImportNormalizersForOneOf(complexType.eContents(), ignoreCase));
+    return normalizers;
+  }
+
+  private List<ImportNormalizer> createImportNormalizersForOneOf(
+      EList<EObject> children, boolean ignoreCase) {
+    List<ImportNormalizer> normalizers = new ArrayList<>();
+    for (EObject child : children) {
+      if (child instanceof OneOf) {
+        normalizers.add(createImportNormalizerForEObject(child, ignoreCase));
+        normalizers.addAll(createImportNormalizersForOneOf(child.eContents(), ignoreCase));
+      }
+    }
+    return normalizers;
+  }
+
+  /**
+   * An {@code IndexedElement} can be a MessageField or Group. When scoping types {@code FieldName},
+   * {@code LiteralLink}, or {@code OptionField} that are all related to protocol buffer options, a
+   * scope can be created by traversing the EMF Model to find a suitable {@code IndexedElement}, and
+   * then creating an import normalized scope for the {@code ComplexType} of the {@code
+   * MessageField} or {@code Group}.
+   *
+   * <p>For example: <pre>
+   * enum MyEnum {
+   *   FOO = 1;
+   * }
+   * extend google.protobuf.ServiceOptions {
+   *   optional MyEnum my_service_option = 50005;
+   * }
+   * service MyService {
+   *   option (my_service_option) = FOO;
+   * }
+   * </pre>
+   *
+   * To scope the {@code LiteralLink} {@code FOO} in {@code MyService}, the {@code MessageField}
+   * {@code my_service_option} is found by traversing the model. The method
+   * createNormalizedScopeForIndexedElement(IndexedElement, EReference) creates and returns an
+   * import normalized scope for the type of the {@code MessageField}, {@code MyEnum}.
+   */
+  private IScope createNormalizedScopeForIndexedElement(
+      IndexedElement indexedElement, EReference reference) {
+    HashMap<EReference, IScope> scopeMap =
+        cache.get(
+            indexedElement,
+            indexedElement.eResource(),
+            new Provider<HashMap<EReference, IScope>>() {
+              @Override
+              public HashMap<EReference, IScope> get() {
+                return new HashMap<>();
               }
-            }
-            return "";
-          }
-        });
+            });
+    if (!scopeMap.containsKey(reference)) {
+      IScope scope = null;
+      if (indexedElement instanceof MessageField) {
+        TypeLink typeLink = ((MessageField) indexedElement).getType();
+        if (typeLink instanceof ComplexTypeLink) {
+          ComplexType complexType = ((ComplexTypeLink) typeLink).getTarget();
+          scope = getGlobalScopeProvider().getScope(complexType.eResource(), reference);
+          List<ImportNormalizer> normalizers =
+              createImportNormalizersForComplexType(complexType, false);
+          scope = createProtobufImportScope(scope, complexType, reference);
+          ((ProtobufImportScope) scope).addAllNormalizers(normalizers);
+        }
+      }
+      if (indexedElement instanceof Group) {
+        Group group = (Group) indexedElement;
+        scope = getGlobalScopeProvider().getScope(group.eResource(), reference);
+        ImportNormalizer normalizer = createImportNormalizerForEObject(group, false);
+        scope = createProtobufImportScope(scope, group, reference);
+        ((ProtobufImportScope) scope).addNormalizer(normalizer);
+      }
+      scopeMap.put(reference, scope);
+    }
+    return scopeMap.get(reference);
+  }
+
+  private IScope createProtobufImportScope(IScope parent, EObject context, EReference reference) {
+    IScope scope = parent;
+    if (context.eContainer() == null) {
+      scope = getLocalScopeProvider().getResourceScope(scope, context, reference);
+    } else {
+      scope = createProtobufImportScope(scope, context.eContainer(), reference);
+    }
+    return getLocalScopeProvider().getLocalElementsScope(scope, context, reference);
   }
 
   /** Returns descriptor associated with the current project. */
@@ -176,11 +240,9 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     return null;
   }
 
-  /** Returns name of an object as a QualifiedName. */
-  private QualifiedName getEObjectName(EObject object) {
-    ICompositeNode node = NodeModelUtils.getNode(object);
-    String name = linkingHelper.getCrossRefNodeAsString(node, true);
-    return QualifiedName.create(name);
+  /** Returns the global scope provider. */
+  private ProtobufImportUriGlobalScopeProvider getGlobalScopeProvider() {
+    return getLocalScopeProvider().getGlobalScopeProvider();
   }
 
   /** Returns the local scope provider. */
@@ -188,9 +250,25 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     return (ProtobufImportedNamespaceAwareLocalScopeProvider) super.getDelegate();
   }
 
-  /** Returns the global scope provider. */
-  private ProtobufImportUriGlobalScopeProvider getGlobalScopeProvider() {
-    return getLocalScopeProvider().getGlobalScopeProvider();
+  // TODO (atrookey) Create utility for getting package.
+  private String getPackageOfResource(Resource resource) {
+    return cache.get(
+        "Package",
+        resource,
+        new Provider<String>() {
+          @Override
+          public String get() {
+            Protobuf protobuf;
+            if (resource != null && (protobuf = (Protobuf) resource.getContents().get(0)) != null) {
+              for (EObject content : protobuf.getElements()) {
+                if (content instanceof Package) {
+                  return ((Package) content).getImportedNamespace();
+                }
+              }
+            }
+            return "";
+          }
+        });
   }
 
   @Override
@@ -205,87 +283,16 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     return scope;
   }
 
-  /** Recursively scope {@code FieldName} starting with an {@code OptionSource}. */
-  private IScope getScopeOfFieldName(
-      IScope delegatedScope, OptionSource optionSource, EReference reference) {
-    IScope retval = IScope.NULLSCOPE;
-    IScope parentScope = super.getScope(optionSource, OPTION_SOURCE__TARGET);
-    QualifiedName optionSourceName = getEObjectName(optionSource);
-    IEObjectDescription indexedElementDescription = parentScope.getSingleElement(optionSourceName);
-    if (indexedElementDescription != null) {
-      EObject indexedElement = indexedElementDescription.getEObjectOrProxy();
-      retval = getLocalScopeOfMessageFieldOrGroup(delegatedScope, indexedElement, reference);
-    }
-    return retval;
-  }
-
-  /** Locally scope any children of {@code context} that are of type {@code OneOf}. */
-  private IScope getScopeOfOneOf(IScope scope, EObject context, EReference reference) {
-    IScope result = scope;
-    for (EObject element : context.eContents()) {
-      if (element instanceof OneOf) {
-        result = getLocalScopeProvider().getLocalElementsScope(result, element, reference);
-      }
-    }
-    return result;
-  }
-
-  /** Recursively scope {@code OptionField} starting with an {@code OptionSource}. */
-  private IScope getScopeOfOptionField(
-      IScope scope,
-      OptionSource optionSource,
-      EReference reference,
-      int fieldIndex,
-      EList<OptionField> fields) {
-    if (fieldIndex < 0 || fields.size() <= fieldIndex) {
-      throw new IllegalArgumentException();
-    }
-    IScope retval = scope;
-    IScope parentScope = IScope.NULLSCOPE;
-    QualifiedName name = QualifiedName.EMPTY;
-    if (fieldIndex == 0) {
-      parentScope = super.getScope(optionSource, OPTION_SOURCE__TARGET);
-      name = getEObjectName(optionSource);
-    } else {
-      OptionField parentOptionField = fields.get(fieldIndex - 1);
-      parentScope = getScopeOfOptionField(retval, optionSource, reference, fieldIndex - 1, fields);
-      name = getEObjectName(parentOptionField);
-    }
-    IEObjectDescription indexedElementDescription = parentScope.getSingleElement(name);
-    if (indexedElementDescription != null) {
-      EObject indexedElement = indexedElementDescription.getEObjectOrProxy();
-      retval = getLocalScopeOfMessageFieldOrGroup(retval, indexedElement, reference);
-    }
-    return retval;
-  }
-
   /**
-   * Recursively scope nested OptionFields and FieldNames.
-   *
-   * <p>If {@code IndexedElement} refers to an {@code MessageField}, scope the {@code Message} of
-   * that field. If it refers to a {@code Group}, return the scope of that {@code Group}.
+   * Returns the InputStream associated with the resource at location {@code descriptorLocation}.
    */
-  private IScope getLocalScopeOfMessageFieldOrGroup(
-      IScope parentScope, EObject indexedElement, EReference reference) {
-    IScope retval = IScope.NULLSCOPE;
-    if (indexedElement instanceof MessageField) {
-      TypeLink typeLink = ((MessageField) indexedElement).getType();
-      if (typeLink instanceof ComplexTypeLink) {
-        ComplexType complexType = ((ComplexTypeLink) typeLink).getTarget();
-        IScope result =
-            getLocalScopeProvider().getLocalElementsScope(parentScope, complexType, reference);
-        retval = getScopeOfOneOf(result, complexType, reference);
-      }
-    }
-    if (indexedElement instanceof Group) {
-      retval =
-          getLocalScopeProvider().getLocalElementsScope(parentScope, indexedElement, reference);
-    }
-    return retval;
+  private InputStream openFile(URI fileLocation) throws IOException {
+    URL url = new URL(fileLocation.toString());
+    return url.openConnection().getInputStream();
   }
 
   /**
-   * Recursively scopes the {@code FieldName} starting with the {@code OptionSource}.
+   * Scopes the {@code FieldName}.
    *
    * <p>For example: <pre>
    * message FooOptions {
@@ -302,40 +309,41 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
    * The {@code NormalFieldName} {@code opt1} contains a cross-reference to {@code FooOptions.opt1}.
    */
   public IScope scope_FieldName_target(FieldName fieldName, EReference reference) {
+    if (fieldName instanceof ExtensionFieldName) {
+      return getLocalScopeProvider().getResourceScope(fieldName.eResource(), reference);
+    }
+    IndexedElement indexedElement = null;
     OptionSource optionSource = null;
     EObject valueField = fieldName.eContainer();
-    if (valueField != null && valueField instanceof ValueField) {
+    if (valueField instanceof ValueField) {
       EObject complexValue = valueField.eContainer();
-      if (complexValue != null && complexValue instanceof ComplexValue) {
+      if (complexValue instanceof ComplexValue) {
         EObject unknownOption = complexValue.eContainer();
-        IScope delegatedScope = super.delegateGetScope(fieldName, reference);
-        if (unknownOption != null && unknownOption instanceof ComplexValueField) {
-          ComplexValueField complexValueField = (ComplexValueField) unknownOption;
-          IScope parentScope = scope_FieldName_target(complexValueField.getName(), reference);
-          IEObjectDescription indexedElementDescription =
-              parentScope.getSingleElement(this.getEObjectName(complexValueField.getName()));
-          // TODO (atrookey) This is only necessary because of ExtensionFieldName.
-          // Could be made more specific.
-          return getLocalScopeOfMessageFieldOrGroup(
-              delegatedScope, indexedElementDescription.getEObjectOrProxy(), reference);
+        if (unknownOption instanceof ComplexValueField) {
+          indexedElement = ((ComplexValueField) unknownOption).getName().getTarget();
         }
-        if (unknownOption != null && unknownOption instanceof NativeFieldOption) {
+        if (unknownOption instanceof NativeFieldOption) {
           NativeFieldOption nativeFieldOption = (NativeFieldOption) unknownOption;
           optionSource = nativeFieldOption.getSource();
         }
-        if (unknownOption != null && unknownOption instanceof CustomFieldOption) {
+        if (unknownOption instanceof CustomFieldOption) {
           CustomFieldOption customFieldOption = (CustomFieldOption) unknownOption;
           optionSource = customFieldOption.getSource();
         }
-        if (unknownOption != null && unknownOption instanceof NativeOption) {
+        if (unknownOption instanceof NativeOption) {
           NativeOption option = (NativeOption) unknownOption;
           optionSource = option.getSource();
         }
-        if (unknownOption != null && unknownOption instanceof CustomOption) {
+        if (unknownOption instanceof CustomOption) {
           CustomOption option = (CustomOption) unknownOption;
           optionSource = option.getSource();
         }
-        return getScopeOfFieldName(delegatedScope, optionSource, reference);
+        if (optionSource != null) {
+          indexedElement = optionSource.getTarget();
+        }
+        if (indexedElement instanceof MessageField) {
+          return createNormalizedScopeForIndexedElement(indexedElement, reference);
+        }
       }
     }
     return null;
@@ -393,39 +401,6 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     return createNormalizedScopeForIndexedElement(indexedElement, reference);
   }
 
-  private IScope createNormalizedScopeForIndexedElement(
-      IndexedElement indexedElement, EReference reference) {
-    return cache.get(
-        indexedElement,
-        indexedElement.eResource(),
-        new Provider<IScope>() {
-          @Override
-          public IScope get() {
-            if (indexedElement instanceof MessageField) {
-              TypeLink typeLink = ((MessageField) indexedElement).getType();
-              if (typeLink instanceof ComplexTypeLink) {
-                ComplexType complexType = ((ComplexTypeLink) typeLink).getTarget();
-                if (complexType instanceof Enum) {
-                  IScope scope =
-                      getGlobalScopeProvider().getScope(complexType.eResource(), reference);
-                  ImportNormalizer normalizer = createImportNormalizer(complexType, false);
-                  scope =
-                      getLocalScopeProvider().getLocalElementsScope(scope, complexType, reference);
-                  ((ProtobufImportScope) scope).addNormalizer(normalizer);
-                  return scope;
-                }
-              }
-            }
-            return null;
-          }
-        });
-  }
-
-  private ImportNormalizer createImportNormalizer(EObject element, boolean ignoreCase) {
-    QualifiedName name = nameProvider.getFullyQualifiedName(element);
-    return getLocalScopeProvider().createImportedNamespaceResolver(name.toString(), ignoreCase);
-  }
-
   /**
    * Recursively scopes the {@code OptionField} starting with the {@code OptionSource}.
    *
@@ -462,7 +437,17 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
       }
       if (optionSource != null && fields != null) {
         int index = fields.indexOf(optionField);
-        return getScopeOfOptionField(scope, optionSource, reference, index, fields);
+        if (index < 0 || fields.size() <= index) {
+          throw new IllegalArgumentException(
+              "index is " + index + " but field.size() is " + fields.size());
+        }
+        IndexedElement indexedElement = null;
+        if (index == 0) {
+          indexedElement = optionSource.getTarget();
+        } else {
+          indexedElement = fields.get(index - 1).getTarget();
+        }
+        return createNormalizedScopeForIndexedElement(indexedElement, reference);
       }
     }
     return scope;
@@ -505,15 +490,5 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
               }
             });
     return createProtobufImportScope(descriptorScope, optionSource, reference);
-  }
-
-  private IScope createProtobufImportScope(IScope parent, EObject context, EReference reference) {
-    IScope scope = parent;
-    if (context.eContainer() == null) {
-      scope = getLocalScopeProvider().getResourceScope(scope, context, reference);
-    } else {
-      scope = createProtobufImportScope(scope, context.eContainer(), reference);
-    }
-    return getLocalScopeProvider().getLocalElementsScope(scope, context, reference);
   }
 }

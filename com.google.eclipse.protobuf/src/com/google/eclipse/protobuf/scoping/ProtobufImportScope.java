@@ -11,6 +11,8 @@ package com.google.eclipse.protobuf.scoping;
 import static com.google.eclipse.protobuf.model.util.QualifiedNames.removeLeadingDot;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EClass;
@@ -27,7 +29,7 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 
 /**
- * {@link ImportScope} that allows additional ImportNormalizers to be added after initialization.
+ * {@link ImportScope} that allows additional ImportNormalizers to be added.
  *
  * @author (atrookey@google.com) Alexander Rookey
  */
@@ -46,6 +48,10 @@ public class ProtobufImportScope extends ImportScope {
     this.normalizers = removeDuplicates(namespaceResolvers);
   }
 
+  /*
+   * Override {@link ImportScope.getAliasedElements(Iterable<IEObjectDescription>)} to use local
+   * {@link ImportNormalizer} list.
+   */
   @Override
   protected Iterable<IEObjectDescription> getAliasedElements(
       Iterable<IEObjectDescription> candidates) {
@@ -72,7 +78,10 @@ public class ProtobufImportScope extends ImportScope {
     return keyToDescription.values();
   }
 
-  // TODO (atrookey) Refactor this method for clarity
+  /*
+   * Override {@link ImportScope.getLocalElementsByName(QualifiedName)} to use local
+   * {@link ImportNormalizer} list.
+   */
   @Override
   protected Iterable<IEObjectDescription> getLocalElementsByName(QualifiedName name) {
     List<IEObjectDescription> result = new ArrayList<>();
@@ -84,11 +93,10 @@ public class ProtobufImportScope extends ImportScope {
         Iterable<IEObjectDescription> resolvedElements =
             importFrom.getExportedObjects(type, resolvedName, isIgnoreCase());
         for (IEObjectDescription resolvedElement : resolvedElements) {
-          if (resolvedQualifiedName == null) {
-            resolvedQualifiedName = resolvedName;
-          } else if (!resolvedQualifiedName.equals(resolvedName)) {
+          if (resolvedQualifiedName == null) resolvedQualifiedName = resolvedName;
+          else if (!resolvedQualifiedName.equals(resolvedName)) {
             if (result.get(0).getEObjectOrProxy() != resolvedElement.getEObjectOrProxy()) {
-              continue;
+              return Collections.emptyList();
             }
           }
           QualifiedName alias = normalizer.deresolve(resolvedElement.getName());
@@ -112,5 +120,9 @@ public class ProtobufImportScope extends ImportScope {
 
   public void addNormalizer(ImportNormalizer normalizer) {
     normalizers.add(normalizer);
+  }
+
+  public void addAllNormalizers(Collection<ImportNormalizer> normalizer) {
+    normalizers.addAll(normalizer);
   }
 }
