@@ -15,19 +15,16 @@ import com.google.eclipse.protobuf.preferences.DefaultPreservingInitializer;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 
-/**
- * @author alruiz@google.com (Alex Ruiz)
- */
+/** @author alruiz@google.com (Alex Ruiz) */
 public class GeneralPreferences {
   private final IPreferenceStore store;
 
   public GeneralPreferences(IPreferenceStoreAccess storeAccess, IProject project) {
     IPreferenceStore preferenceStore = storeAccess.getWritablePreferenceStore(project);
-    boolean enableProjectSettings =
-        preferenceStore.getBoolean(ENABLE_PROJECT_SETTINGS_PREFERENCE_NAME);
-    if (!enableProjectSettings) {
+    if (!preferenceStore.getBoolean(ENABLE_PROJECT_SETTINGS_PREFERENCE_NAME)) {
       preferenceStore = storeAccess.getWritablePreferenceStore();
     }
     this.store = preferenceStore;
@@ -39,6 +36,10 @@ public class GeneralPreferences {
 
   public String getDescriptorProtoPath() {
     return store.getString(PreferenceNames.DESCRIPTOR_PROTO_PATH);
+  }
+
+  public void addPropertyChangeListener(IPropertyChangeListener listener) {
+    store.addPropertyChangeListener(listener);
   }
 
   public static class Initializer extends DefaultPreservingInitializer {

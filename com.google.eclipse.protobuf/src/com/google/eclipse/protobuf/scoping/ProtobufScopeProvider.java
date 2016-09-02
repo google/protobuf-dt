@@ -8,18 +8,10 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
-import static com.google.eclipse.protobuf.util.Encodings.UTF_8;
 import static com.google.eclipse.protobuf.util.Tracer.DEBUG_SCOPING;
 import static com.google.eclipse.protobuf.validation.ProtobufResourceValidator.getScopeProviderTimingCollector;
-import static java.util.Collections.singletonMap;
-import static org.eclipse.emf.ecore.resource.ContentHandler.UNSPECIFIED_CONTENT_TYPE;
-import static org.eclipse.xtext.EcoreUtil2.resolveLazyCrossReferences;
-import static org.eclipse.xtext.resource.XtextResource.OPTION_ENCODING;
-import static org.eclipse.xtext.util.CancelIndicator.NullImpl;
-
 import com.google.eclipse.protobuf.naming.ProtobufQualifiedNameConverter;
 import com.google.eclipse.protobuf.naming.ProtobufQualifiedNameProvider;
-import com.google.eclipse.protobuf.preferences.general.PreferenceNames;
 import com.google.eclipse.protobuf.protobuf.ComplexType;
 import com.google.eclipse.protobuf.protobuf.ComplexTypeLink;
 import com.google.eclipse.protobuf.protobuf.ComplexValue;
@@ -27,15 +19,11 @@ import com.google.eclipse.protobuf.protobuf.ComplexValueField;
 import com.google.eclipse.protobuf.protobuf.CustomFieldOption;
 import com.google.eclipse.protobuf.protobuf.CustomOption;
 import com.google.eclipse.protobuf.protobuf.DefaultValueFieldOption;
-import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.protobuf.ExtensionFieldName;
 import com.google.eclipse.protobuf.protobuf.FieldName;
-import com.google.eclipse.protobuf.protobuf.FieldOption;
 import com.google.eclipse.protobuf.protobuf.Group;
 import com.google.eclipse.protobuf.protobuf.IndexedElement;
-import com.google.eclipse.protobuf.protobuf.Literal;
 import com.google.eclipse.protobuf.protobuf.LiteralLink;
-import com.google.eclipse.protobuf.protobuf.Message;
 import com.google.eclipse.protobuf.protobuf.MessageField;
 import com.google.eclipse.protobuf.protobuf.NativeFieldOption;
 import com.google.eclipse.protobuf.protobuf.NativeOption;
@@ -44,33 +32,24 @@ import com.google.eclipse.protobuf.protobuf.OptionField;
 import com.google.eclipse.protobuf.protobuf.OptionSource;
 import com.google.eclipse.protobuf.protobuf.Package;
 import com.google.eclipse.protobuf.protobuf.Protobuf;
-import com.google.eclipse.protobuf.protobuf.Rpc;
-import com.google.eclipse.protobuf.protobuf.Stream;
 import com.google.eclipse.protobuf.protobuf.TypeLink;
 import com.google.eclipse.protobuf.protobuf.ValueField;
 import com.google.eclipse.protobuf.util.EResources;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
-import org.apache.log4j.Level;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.jdt.annotation.Nullable;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.scoping.IScope;
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider;
 import org.eclipse.xtext.scoping.impl.ImportNormalizer;
-import org.eclipse.xtext.ui.editor.preferences.IPreferenceStoreAccess;
 import org.eclipse.xtext.util.IResourceScopeCache;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -81,40 +60,8 @@ import java.util.List;
  * @author atrookey@google.com (Alexander Rookey)
  */
 public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
-  /**
-   * Returns the name of the descriptor.proto message declaring default options. The options must
-   * match the option type of {@code context}. For example, if {@code context} is a file option,
-   * {@code FileOptions} should be returned because it contains the declarations of the default file
-   * options.
-   */
-  // TODO (atrookey) Create utility for getting the type of an Option.
-  private static String getOptionType(EObject context) {
-    if (context == null) {
-      return "FileOptions";
-    }
-    if (context instanceof Message) {
-      return "MessageOptions";
-    }
-    if (context instanceof Enum) {
-      return "EnumOptions";
-    }
-    if (context instanceof FieldOption) {
-      return "FieldOptions";
-    }
-    if (context instanceof Rpc) {
-      return "MethodOptions";
-    }
-    if (context instanceof Stream) {
-      return "StreamOptions";
-    }
-    if (context instanceof Literal) {
-      return "EnumValueOptions";
-    }
-    return getOptionType(context.eContainer());
-  }
 
-  @Inject private IPreferenceStoreAccess storeAccess;
-  @Inject private IUriResolver uriResolver;
+  @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private IResourceScopeCache cache;
   @Inject private ProtobufQualifiedNameConverter nameConverter;
   @Inject private ProtobufQualifiedNameProvider nameProvider;
@@ -217,27 +164,10 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
 
   /** Returns descriptor associated with the current project. */
   private @Nullable Resource getDescriptorResource(EObject context) {
-    URI descriptorLocation;
     IProject project = EResources.getProjectOf(context.eResource());
-    IPreferenceStore store = storeAccess.getWritablePreferenceStore(project);
-    String rawDescriptorLocation = store.getString(PreferenceNames.DESCRIPTOR_PROTO_PATH);
-    descriptorLocation =
-        URI.createURI(uriResolver.resolveUri(rawDescriptorLocation, null, project));
     ResourceSet resourceSet = context.eResource().getResourceSet();
-    Resource resource = resourceSet.getResource(descriptorLocation, true);
-    if (resource != null) {
-      return resource;
-    }
-    try {
-      InputStream contents = openFile(descriptorLocation);
-      resource = resourceSet.createResource(descriptorLocation, UNSPECIFIED_CONTENT_TYPE);
-      resource.load(contents, singletonMap(OPTION_ENCODING, UTF_8));
-      resolveLazyCrossReferences(resource, NullImpl);
-      return resource;
-    } catch (IOException e) {
-      logger.log(Level.ERROR, e);
-    }
-    return null;
+    ProtoDescriptorProvider.ProtoDescriptorInfo descriptorInfo = descriptorProvider.primaryDescriptor(project);
+    return resourceSet.getResource(descriptorInfo.location, true);
   }
 
   /** Returns the global scope provider. */
@@ -281,14 +211,6 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
       getScopeProviderTimingCollector().stopTimer();
     }
     return scope;
-  }
-
-  /**
-   * Returns the InputStream associated with the resource at location {@code descriptorLocation}.
-   */
-  private InputStream openFile(URI fileLocation) throws IOException {
-    URL url = new URL(fileLocation.toString());
-    return url.openConnection().getInputStream();
   }
 
   /**
@@ -464,7 +386,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
    * google.protobuf.FileOptions.java_package} defined in descriptor.proto.
    */
   public IScope scope_OptionSource_target(OptionSource optionSource, EReference reference) {
-    String optionType = getOptionType(optionSource);
+    String optionType = OptionType.typeOf(optionSource).messageName();
     Resource resource = optionSource.eResource();
     IScope descriptorScope =
         cache.get(

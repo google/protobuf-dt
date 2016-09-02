@@ -8,9 +8,7 @@
  */
 package com.google.eclipse.protobuf.ui.contentassist;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.CLOSING_BRACKET;
-import static com.google.eclipse.protobuf.grammar.CommonKeyword.DEFAULT;
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.EQUAL;
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.FALSE;
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.NAN;
@@ -19,12 +17,8 @@ import static com.google.eclipse.protobuf.grammar.CommonKeyword.OPENING_CURLY_BR
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.SYNTAX;
 import static com.google.eclipse.protobuf.grammar.CommonKeyword.TRUE;
 import static com.google.eclipse.protobuf.protobuf.ModifierEnum.OPTIONAL;
-import static com.google.eclipse.protobuf.protobuf.ModifierEnum.REPEATED;
 import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.LITERAL;
-import static com.google.eclipse.protobuf.protobuf.ProtobufPackage.Literals.OPTION;
-import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.DEFAULT_EQUAL;
 import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.DEFAULT_EQUAL_IN_BRACKETS;
-import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.DEFAULT_EQUAL_STRING;
 import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.DEFAULT_EQUAL_STRING_IN_BRACKETS;
 import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.EMPTY_STRING;
 import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.EQUAL_PROTO2_IN_QUOTES;
@@ -33,7 +27,6 @@ import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.PROTO2_IN_Q
 import static com.google.eclipse.protobuf.ui.grammar.CompoundElement.PROTO3_IN_QUOTES;
 import static com.google.eclipse.protobuf.util.CommonWords.space;
 import static java.lang.String.valueOf;
-import static java.util.Collections.emptyList;
 import static org.eclipse.xtext.EcoreUtil2.getAllContentsOfType;
 import static org.eclipse.xtext.util.Strings.toFirstLower;
 
@@ -49,20 +42,14 @@ import com.google.eclipse.protobuf.protobuf.CustomOption;
 import com.google.eclipse.protobuf.protobuf.DefaultValueFieldOption;
 import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.protobuf.FieldName;
-import com.google.eclipse.protobuf.protobuf.FieldOption;
 import com.google.eclipse.protobuf.protobuf.IndexedElement;
 import com.google.eclipse.protobuf.protobuf.Literal;
 import com.google.eclipse.protobuf.protobuf.MessageField;
 import com.google.eclipse.protobuf.protobuf.ModifierEnum;
-import com.google.eclipse.protobuf.protobuf.NativeFieldOption;
-import com.google.eclipse.protobuf.protobuf.NativeOption;
 import com.google.eclipse.protobuf.protobuf.Option;
 import com.google.eclipse.protobuf.protobuf.SimpleValueField;
-import com.google.eclipse.protobuf.scoping.ProtoDescriptor;
-import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider;
 import com.google.eclipse.protobuf.ui.grammar.CompoundElement;
 import com.google.eclipse.protobuf.ui.labeling.Images;
-import com.google.eclipse.protobuf.util.EResources;
 import com.google.inject.Inject;
 
 import org.eclipse.emf.ecore.EObject;
@@ -78,9 +65,6 @@ import org.eclipse.xtext.ui.editor.contentassist.ConfigurableCompletionProposal;
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor;
 
-import java.util.Collection;
-import java.util.List;
-
 
 /**
  * @author alruiz@google.com (Alex Ruiz)
@@ -88,7 +72,6 @@ import java.util.List;
  * @see <a href="http://www.eclipse.org/Xtext/documentation/310_eclipse_support.html#content-assist">Xtext Content Assist</a>
  */
 public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
-  @Inject private ProtoDescriptorProvider descriptorProvider;
   @Inject private Images images;
   @Inject private IndexedElements indexedElements;
   @Inject private PluginImageHelper imageHelper;
@@ -112,40 +95,6 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
 
     proposal = SYNTAX + space() + EQUAL_PROTO3_IN_QUOTES;
     proposeAndAccept(proposal, imageHelper.getImage(images.imageFor(SYNTAX)), context, acceptor);
-  }
-
-  @Override public void completeNativeOption_Source(EObject model, Assignment assignment,
-      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    ProtoDescriptor descriptor =
-        descriptorProvider.primaryDescriptor(EResources.getProjectOf(model.eResource()));
-    Collection<MessageField> optionProperties = descriptor.availableOptionsFor(model);
-    if (!optionProperties.isEmpty()) {
-      proposeOptions(optionProperties, context, acceptor);
-    }
-  }
-
-  private void proposeOptions(Collection<MessageField> optionSources, ContentAssistContext context,
-      ICompletionProposalAcceptor acceptor) {
-    for (MessageField source : optionSources) {
-      proposeOption(source, context, acceptor);
-    }
-  }
-
-  @Override public void completeNativeOption_Value(EObject model, Assignment assignment,
-      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    NativeOption option = (NativeOption) model;
-    MessageField optionSource = (MessageField) options.rootSourceOf(option);
-    if (optionSource == null) {
-      return;
-    }
-    ProtoDescriptor descriptor =
-        descriptorProvider.primaryDescriptor(EResources.getProjectOf(model.eResource()));
-    Enum enumType = descriptor.enumTypeOf(optionSource);
-    if (enumType != null) {
-      proposeAndAccept(enumType, context, acceptor);
-      return;
-    }
-    proposePrimitiveValues(optionSource, context, acceptor);
   }
 
   @Override public void complete_ID(EObject model, RuleCall ruleCall, ContentAssistContext context,
@@ -356,93 +305,6 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
     return imageHelper.getImage(images.defaultImage());
   }
 
-  @Override public void completeNativeFieldOption_Source(EObject model, Assignment assignment,
-      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    MessageField field = extractElementFromContext(context, MessageField.class);
-    if (field != null) {
-      proposeNativeOptions(field, context, acceptor);
-    }
-  }
-
-  private void proposeNativeOptions(MessageField field, ContentAssistContext context,
-      ICompletionProposalAcceptor acceptor) {
-    List<String> optionNames = existingFieldOptionNames(field);
-    proposeDefaultKeyword(field, optionNames, context, acceptor);
-    ProtoDescriptor descriptor =
-        descriptorProvider.primaryDescriptor(EResources.getProjectOf(context.getResource()));
-    for (MessageField optionSource : descriptor.availableOptionsFor(field)) {
-      String optionName = optionSource.getName();
-      if (optionNames.contains(optionName) || ("packed".equals(optionName) && !canBePacked(field))) {
-        continue;
-      }
-      proposeOption(optionSource, context, acceptor);
-    }
-  }
-
-  private List<String> existingFieldOptionNames(IndexedElement e) {
-    List<FieldOption> allFieldOptions = indexedElements.fieldOptionsOf(e);
-    if (allFieldOptions.isEmpty()) {
-      return emptyList();
-    }
-    List<String> optionNames = newArrayList();
-    for (FieldOption option : allFieldOptions) {
-      optionNames.add(options.nameOf(option));
-    }
-    return optionNames;
-  }
-
-  private void proposeDefaultKeyword(IndexedElement e, List<String> existingOptionNames, ContentAssistContext context,
-      ICompletionProposalAcceptor acceptor) {
-    if (e instanceof MessageField) {
-      MessageField field = (MessageField) e;
-      if (!messageFields.isOptional(field) || existingOptionNames.contains(DEFAULT.toString())) {
-        return;
-      }
-      CompoundElement display = DEFAULT_EQUAL;
-      int cursorPosition = display.charCount();
-      if (messageFields.isString(field)) {
-        display = DEFAULT_EQUAL_STRING;
-        cursorPosition++;
-      }
-      createAndAccept(display, cursorPosition, context, acceptor);
-    }
-  }
-
-  private boolean canBePacked(IndexedElement e) {
-    if (e instanceof MessageField) {
-      MessageField field = (MessageField) e;
-      return messageFields.isPrimitive(field) && REPEATED.equals(field.getModifier());
-    }
-    return false;
-  }
-
-  private void proposeOption(MessageField optionSource, ContentAssistContext context,
-      ICompletionProposalAcceptor acceptor) {
-    String displayString = optionSource.getName();
-    String proposalText = displayString + space() + EQUAL + space();
-    Object value = defaultValueOf(optionSource);
-    if (value != null) {
-      proposalText = proposalText + value;
-    }
-    ICompletionProposal proposal = createCompletionProposal(proposalText, displayString, imageForOption(), context);
-    if (value == EMPTY_STRING && proposal instanceof ConfigurableCompletionProposal) {
-      // set cursor between the proposal's quotes
-      ConfigurableCompletionProposal configurable = (ConfigurableCompletionProposal) proposal;
-      configurable.setCursorPosition(proposalText.length() - 1);
-    }
-    acceptor.accept(proposal);
-  }
-
-  private Object defaultValueOf(MessageField field) {
-    if (messageFields.isBool(field)) {
-      return TRUE;
-    }
-    if (messageFields.isString(field)) {
-      return EMPTY_STRING;
-    }
-    return null;
-  }
-
   @Override public void completeDefaultValueFieldOption_Value(EObject model, Assignment assignment,
       ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
     MessageField field = null;
@@ -456,22 +318,6 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       return;
     }
     proposeFieldValue(field, context, acceptor);
-  }
-
-  @Override public void completeNativeFieldOption_Value(EObject model, Assignment assignment,
-      ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-    if (model instanceof NativeFieldOption) {
-      NativeFieldOption option = (NativeFieldOption) model;
-      ProtoDescriptor descriptor =
-          descriptorProvider.primaryDescriptor(EResources.getProjectOf(context.getResource()));
-      MessageField field = (MessageField) options.rootSourceOf(option);
-      Enum enumType = descriptor.enumTypeOf(field);
-      if (enumType != null) {
-        proposeAndAccept(enumType, context, acceptor);
-        return;
-      }
-      proposePrimitiveValues(field, context, acceptor);
-    }
   }
 
   private boolean proposePrimitiveValues(MessageField field, ContentAssistContext context,
@@ -511,10 +357,6 @@ public class ProtobufProposalProvider extends AbstractProtobufProposalProvider {
       configurable.setCursorPosition(cursorPosition);
     }
     acceptor.accept(proposal);
-  }
-
-  private Image imageForOption() {
-    return imageHelper.getImage(images.imageFor(OPTION));
   }
 
   @Override public void completeOptionSource_Target(EObject model, Assignment assignment,

@@ -37,8 +37,6 @@ import com.google.eclipse.protobuf.protobuf.ModifierEnum;
 import com.google.eclipse.protobuf.protobuf.ScalarType;
 import com.google.eclipse.protobuf.protobuf.ScalarTypeLink;
 import com.google.eclipse.protobuf.protobuf.TypeLink;
-import com.google.eclipse.protobuf.scoping.ProtoDescriptorProvider;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
@@ -46,11 +44,12 @@ import com.google.inject.Singleton;
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
-@Singleton public class MessageFields {
-  @Inject private ProtoDescriptorProvider descriptorProvider;
-
+@Singleton
+public class MessageFields {
   /**
-   * Indicates whether the modifier of the given field is <code>{@link ModifierEnum#OPTIONAL}</code>.
+   * Indicates whether the modifier of the given field is <code>{@link
+   * ModifierEnum#OPTIONAL}</code>.
+   *
    * @param field the given field.
    * @return {@code true} if the modifier of the given field is "optional," {@code false} otherwise.
    */
@@ -59,9 +58,11 @@ import com.google.inject.Singleton;
   }
 
   /**
-   * Indicates whether the type of the given field is primitive. Primitive types include: {@code double}, {@code float},
-   * {@code int32}, {@code int64}, {@code uint32}, {@code uint64}, {@code sint32}, {@code sint64}, {@code fixed32},
-   * {@code fixed64}, {@code sfixed32}, {@code sfixed64} and {@code bool}.
+   * Indicates whether the type of the given field is primitive. Primitive types include: {@code
+   * double}, {@code float}, {@code int32}, {@code int64}, {@code uint32}, {@code uint64}, {@code
+   * sint32}, {@code sint64}, {@code fixed32}, {@code fixed64}, {@code sfixed32}, {@code sfixed64}
+   * and {@code bool}.
+   *
    * @param field the given field.
    * @return {@code true} if the type of the given field is primitive, {@code false} otherwise.
    */
@@ -76,6 +77,7 @@ import com.google.inject.Singleton;
 
   /**
    * Indicates whether the given field is of type {@code bool}.
+   *
    * @param field the given field.
    * @return {@code true} if the given field is of type {@code bool}, {@code false} otherwise.
    */
@@ -85,6 +87,7 @@ import com.google.inject.Singleton;
 
   /**
    * Indicates whether the given field is of type {@code bytes}.
+   *
    * @param field the given field.
    * @return {@code true} if the given field is of type {@code bytes}, {@code false} otherwise.
    */
@@ -94,6 +97,7 @@ import com.google.inject.Singleton;
 
   /**
    * Indicates whether the given field is of type {@code float} or {@code double}.
+   *
    * @param field the given field.
    * @return {@code true} if the given field is a floating point number, {@code false} otherwise.
    */
@@ -102,17 +106,21 @@ import com.google.inject.Singleton;
   }
 
   /**
-   * Indicates whether the given field is of type {@code fixed32}, {@code fixed64}, {@code int32}, {@code int64},
-   * {@code sfixed32}, {@code sfixed64}, {@code sint32}, {@code sint64}, {@code uint32} or {@code uint64}.
+   * Indicates whether the given field is of type {@code fixed32}, {@code fixed64}, {@code int32},
+   * {@code int64}, {@code sfixed32}, {@code sfixed64}, {@code sint32}, {@code sint64}, {@code
+   * uint32} or {@code uint64}.
+   *
    * @param field the given field.
    * @return {@code true} if the given field is an integer, {@code false} otherwise.
    */
   public boolean isInteger(MessageField field) {
-    return isScalarType(field, FIXED32, FIXED64, INT32, INT64, SFIXED32, SFIXED64, SINT32, SINT64, UINT32, UINT64);
+    return isScalarType(
+        field, FIXED32, FIXED64, INT32, INT64, SFIXED32, SFIXED64, SINT32, SINT64, UINT32, UINT64);
   }
 
   /**
    * Indicates whether the given field is of type {@code string}.
+   *
    * @param field the given field.
    * @return {@code true} if the given field is of type {@code string}, {@code false} otherwise.
    */
@@ -121,7 +129,9 @@ import com.google.inject.Singleton;
   }
 
   /**
-   * Indicates whether the given field is of type {@code fixed32}, {@code fixed64}, {@code uint32} or {@code uint64}.
+   * Indicates whether the given field is of type {@code fixed32}, {@code fixed64}, {@code uint32}
+   * or {@code uint64}.
+   *
    * @param field the given field.
    * @return {@code true} if the given field is an unsigned integer, {@code false} otherwise.
    */
@@ -144,6 +154,7 @@ import com.google.inject.Singleton;
 
   /**
    * Returns the name of the type of the given field.
+   *
    * @param field the given field.
    * @return the name of the type of the given field.
    */
@@ -173,8 +184,10 @@ import com.google.inject.Singleton;
 
   /**
    * Returns the message type of the given field, only if the type of the given field is a message.
+   *
    * @param field the given field.
-   * @return the message type of the given field or {@code null} if the type of the given field is not message.
+   * @return the message type of the given field or {@code null} if the type of the given field is
+   *     not message.
    */
   public Message messageTypeOf(MessageField field) {
     ComplexType fieldType = complexTypeOf(field.getType());
@@ -183,8 +196,10 @@ import com.google.inject.Singleton;
 
   /**
    * Returns the enum type of the given field, only if the type of the given field is an enum.
+   *
    * @param field the given field.
-   * @return the enum type of the given field or {@code null} if the type of the given field is not enum.
+   * @return the enum type of the given field or {@code null} if the type of the given field is not
+   *     enum.
    */
   public Enum enumTypeOf(MessageField field) {
     ComplexType fieldType = complexTypeOf(field.getType());
@@ -197,8 +212,10 @@ import com.google.inject.Singleton;
 
   /**
    * Returns the scalar type of the given field, only if the type of the given field is a scalar.
+   *
    * @param field the given field.
-   * @return the scalar type of the given field or {@code null} if the type of the given field is not a scalar.
+   * @return the scalar type of the given field or {@code null} if the type of the given field is
+   *     not a scalar.
    */
   public ScalarType scalarTypeOf(MessageField field) {
     return scalarTypeOf(field.getType());
@@ -210,16 +227,5 @@ import com.google.inject.Singleton;
 
   private MapType mapTypeOf(TypeLink typeLink) {
     return typeLink instanceof MapTypeLink ? ((MapTypeLink) typeLink).getTarget() : null;
-  }
-
-  /**
-   * Returns a Message representing an entry in a map of the given field's type, or null if the
-   * given field is not of map type.
-   */
-  public Message mapEntryTypeOf(MessageField field) {
-    // TODO(jogl): Dynamically create and return a message type with key and value fields matching
-    // the key and value types of the target MapType.
-    return field.getType() instanceof MapTypeLink
-        ? (Message) descriptorProvider.mapEntryDescriptor().allTypes().get(0) : null;
   }
 }

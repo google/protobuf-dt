@@ -10,7 +10,6 @@ package com.google.eclipse.protobuf.scoping;
 
 import static com.google.common.collect.Maps.newHashMap;
 
-import com.google.eclipse.protobuf.protobuf.AbstractOption;
 import com.google.eclipse.protobuf.protobuf.Enum;
 import com.google.eclipse.protobuf.protobuf.IndexedElement;
 import com.google.eclipse.protobuf.protobuf.Literal;
@@ -23,14 +22,22 @@ import com.google.eclipse.protobuf.protobuf.Stream;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.eclipse.emf.ecore.EObject;
+
 /**
  * Types of options (by location.)
  *
  * @author alruiz@google.com (Alex Ruiz)
  */
 enum OptionType {
-  FILE("FileOptions"), MESSAGE("MessageOptions"), FIELD("FieldOptions"), ENUM("EnumOptions"),
-  LITERAL("EnumValueOptions"), SERVICE("ServiceOptions"), RPC("MethodOptions"), STREAM("StreamOptions");
+  FILE("FileOptions"),
+  MESSAGE("MessageOptions"),
+  FIELD("FieldOptions"),
+  ENUM("EnumOptions"),
+  LITERAL("EnumValueOptions"),
+  SERVICE("ServiceOptions"),
+  RPC("MethodOptions"),
+  STREAM("StreamOptions");
 
   private static final Map<Class<?>, OptionType> OPTION_TYPES_BY_CONTAINER = newHashMap();
 
@@ -54,6 +61,7 @@ enum OptionType {
 
   /**
    * Returns the name of the message in descriptor.proto that specifies the type of an option.
+   *
    * @return the name of the message in descriptor.proto that specifies the type of an option.
    */
   String messageName() {
@@ -62,20 +70,20 @@ enum OptionType {
 
   /**
    * Returns the type of the given option.
-   * @param option the given option.
+   *
+   * @param container the {@code OptionSource}, {@code Option}, or container of an {@code Option}.
    * @return the type of the given option or {@code null} if a type cannot be found.
    */
-  static OptionType typeOf(AbstractOption option) {
-    return findOptionTypeForLevelOf(option.eContainer());
-  }
-
-  static OptionType findOptionTypeForLevelOf(Object container) {
-    for (Entry<Class<?>, OptionType> optionTypeByContainer : OPTION_TYPES_BY_CONTAINER.entrySet()) {
-      if (optionTypeByContainer.getKey().isInstance(container)) {
-        return optionTypeByContainer.getValue();
+  static OptionType typeOf(EObject container) {
+    if (container != null) {
+      for (Entry<Class<?>, OptionType> optionTypeByContainer :
+          OPTION_TYPES_BY_CONTAINER.entrySet()) {
+        if (optionTypeByContainer.getKey().isInstance(container)) {
+          return optionTypeByContainer.getValue();
+        }
       }
+      return typeOf(container.eContainer());
     }
-
     return null;
   }
 }
