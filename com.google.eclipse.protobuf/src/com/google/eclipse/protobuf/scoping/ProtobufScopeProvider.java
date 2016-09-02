@@ -221,7 +221,7 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
     IPreferenceStore store = storeAccess.getWritablePreferenceStore(project);
     String rawDescriptorLocation = store.getString(PreferenceNames.DESCRIPTOR_PROTO_PATH);
     String resolvedUri = null;
-    if (PreferenceNames.DESCRIPTOR_PROTO_PATH.equals(rawDescriptorLocation)) {
+    if (PreferenceNames.DEFAULT_DESCRIPTOR_PATH.equals(rawDescriptorLocation)) {
       resolvedUri = PreferenceNames.DEFAULT_DESCRIPTOR_LOCATION.toString();
     } else {
       resolvedUri = uriResolver.resolveUri(rawDescriptorLocation, null, project);
