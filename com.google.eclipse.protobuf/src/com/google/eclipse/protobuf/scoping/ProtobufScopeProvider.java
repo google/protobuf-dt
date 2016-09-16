@@ -217,31 +217,25 @@ public class ProtobufScopeProvider extends AbstractDeclarativeScopeProvider {
 
   /** Returns descriptor associated with the current project. */
   private @Nullable Resource getDescriptorResource(EObject context) {
+    URI descriptorLocation;
     IProject project = EResources.getProjectOf(context.eResource());
     IPreferenceStore store = storeAccess.getWritablePreferenceStore(project);
     String rawDescriptorLocation = store.getString(PreferenceNames.DESCRIPTOR_PROTO_PATH);
-    String resolvedUri = null;
-    if (PreferenceNames.DESCRIPTOR_PROTO_PATH.equals(rawDescriptorLocation)) {
-      resolvedUri = PreferenceNames.DEFAULT_DESCRIPTOR_LOCATION.toString();
-    } else {
-      resolvedUri = uriResolver.resolveUri(rawDescriptorLocation, null, project);
+    descriptorLocation =
+        URI.createURI(uriResolver.resolveUri(rawDescriptorLocation, null, project));
+    ResourceSet resourceSet = context.eResource().getResourceSet();
+    Resource resource = resourceSet.getResource(descriptorLocation, true);
+    if (resource != null) {
+      return resource;
     }
-    if (resolvedUri != null) {
-      URI descriptorLocation = URI.createURI(resolvedUri);
-      ResourceSet resourceSet = context.eResource().getResourceSet();
-      Resource resource = resourceSet.getResource(descriptorLocation, true);
-      if (resource != null) {
-        return resource;
-      }
-      try {
-        InputStream contents = openFile(descriptorLocation);
-        resource = resourceSet.createResource(descriptorLocation, UNSPECIFIED_CONTENT_TYPE);
-        resource.load(contents, singletonMap(OPTION_ENCODING, UTF_8));
-        resolveLazyCrossReferences(resource, NullImpl);
-        return resource;
-      } catch (IOException e) {
-        logger.log(Level.ERROR, e);
-      }
+    try {
+      InputStream contents = openFile(descriptorLocation);
+      resource = resourceSet.createResource(descriptorLocation, UNSPECIFIED_CONTENT_TYPE);
+      resource.load(contents, singletonMap(OPTION_ENCODING, UTF_8));
+      resolveLazyCrossReferences(resource, NullImpl);
+      return resource;
+    } catch (IOException e) {
+      logger.log(Level.ERROR, e);
     }
     return null;
   }

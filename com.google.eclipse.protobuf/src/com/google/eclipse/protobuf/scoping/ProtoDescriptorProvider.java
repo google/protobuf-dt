@@ -8,6 +8,8 @@
  */
 package com.google.eclipse.protobuf.scoping;
 
+import static com.google.eclipse.protobuf.preferences.general.PreferenceNames.DESCRIPTOR_PROTO_PATH;
+
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -39,8 +41,7 @@ import java.util.logging.Logger;
  *
  * @author Alex Ruiz
  */
-@Singleton
-public class ProtoDescriptorProvider {
+@Singleton public class ProtoDescriptorProvider {
   private static final String EXTENSION_ID = "com.google.eclipse.protobuf.descriptorSource";
 
   private final IPreferenceStoreAccess storeAccess;
@@ -50,7 +51,7 @@ public class ProtoDescriptorProvider {
   private final IUriResolver resolver;
 
   private static final URI DEFAULT_DESCRIPTOR_LOCATION =
-      URI.createURI(PreferenceNames.DEFAULT_DESCRIPTOR_LOCATION);
+      URI.createURI("platform:/plugin/com.google.eclipse.protobuf/descriptor.proto");
   private final ProtoDescriptorInfo openSourceProtoDescriptorInfo;
   private final ProtoDescriptorInfo extensionPointDescriptorInfo;
 
@@ -62,23 +63,18 @@ public class ProtoDescriptorProvider {
   private static final Logger LOG =
       Logger.getLogger(ProtoDescriptorProvider.class.getCanonicalName());
 
-  private final LoadingCache<IProject, Map<String, ProtoDescriptorInfo>> descriptorCache =
-      CacheBuilder.newBuilder()
-          .build(
-              new CacheLoader<IProject, Map<String, ProtoDescriptorInfo>>() {
-                @Override
-                public Map<String, ProtoDescriptorInfo> load(final IProject project) {
-                  return loadDescriptorInfos(project);
-                }
-              });
+  private final
+      LoadingCache<IProject, Map<String, ProtoDescriptorInfo>> descriptorCache = CacheBuilder
+          .newBuilder().build(new CacheLoader<IProject, Map<String, ProtoDescriptorInfo>>() {
+        @Override
+        public Map<String, ProtoDescriptorInfo> load(final IProject project) {
+          return loadDescriptorInfos(project);
+        }
+      });
 
   @Inject
-  ProtoDescriptorProvider(
-      IPreferenceStoreAccess storeAccess,
-      IExtensionRegistry registry,
-      IParser parser,
-      INodes nodes,
-      IUriResolver resolver) {
+  ProtoDescriptorProvider(IPreferenceStoreAccess storeAccess, IExtensionRegistry registry,
+      IParser parser, INodes nodes, IUriResolver resolver) {
     this.storeAccess = storeAccess;
     this.registry = registry;
     this.parser = parser;
@@ -153,8 +149,7 @@ public class ProtoDescriptorProvider {
           descriptorInfos.put(descriptorProtoUri, descriptorInfo);
         }
       } else {
-        LOG.log(
-            Level.WARNING,
+        LOG.log(Level.WARNING,
             "Unable to resolve URI for descriptor proto location: " + descriptorProtoUri);
       }
     }
@@ -168,27 +163,27 @@ public class ProtoDescriptorProvider {
 
     // Add the open source descriptor proto
     if (!descriptorInfos.containsKey(PreferenceNames.DEFAULT_DESCRIPTOR_PATH)) {
-      descriptorInfos.put(PreferenceNames.DEFAULT_DESCRIPTOR_PATH, openSourceProtoDescriptorInfo);
+      descriptorInfos.put(PreferenceNames.DEFAULT_DESCRIPTOR_PATH,
+          openSourceProtoDescriptorInfo);
     }
 
     // Set property change listener for this project
-    storeAccess
-        .getContextPreferenceStore(project)
-        .addPropertyChangeListener(
-            new IPropertyChangeListener() {
-              @Override
-              public void propertyChange(PropertyChangeEvent event) {
-                if (event.getProperty().contains(PreferenceNames.DESCRIPTOR_PROTO_PATH)) {
-                  descriptorCache.invalidate(project);
-                }
-              }
-            });
+    storeAccess.getContextPreferenceStore(project).addPropertyChangeListener(
+        new IPropertyChangeListener() {
+          @Override
+          public void propertyChange(PropertyChangeEvent event) {
+            if (event.getProperty().contains(DESCRIPTOR_PROTO_PATH)) {
+              descriptorCache.invalidate(project);
+            }
+          }
+        });
     return descriptorInfos;
   }
 
   private Map<String, ProtoDescriptorInfo> getDescriptorInfosFor(IProject project) {
     if (project == null) {
-      Map<String, ProtoDescriptorInfo> descriptorInfos = new LinkedHashMap<>();
+      Map<String, ProtoDescriptorInfo> descriptorInfos =
+          new LinkedHashMap<>();
       descriptorInfos.put(PreferenceNames.DEFAULT_DESCRIPTOR_PATH, openSourceProtoDescriptorInfo);
       return descriptorInfos;
     }
@@ -201,17 +196,15 @@ public class ProtoDescriptorProvider {
   }
 
   private ProtoDescriptorInfo getOpenSourceProtoDescriptorInfo() {
-    ProtoDescriptor descriptor =
-        new ProtoDescriptor(
-            PreferenceNames.DEFAULT_DESCRIPTOR_PATH, DEFAULT_DESCRIPTOR_LOCATION, parser, nodes);
-    return new ProtoDescriptorInfo(
-        PreferenceNames.DEFAULT_DESCRIPTOR_PATH, DEFAULT_DESCRIPTOR_LOCATION, descriptor);
+    ProtoDescriptor descriptor = new ProtoDescriptor(PreferenceNames.DEFAULT_DESCRIPTOR_PATH,
+        DEFAULT_DESCRIPTOR_LOCATION, parser, nodes);
+    return new ProtoDescriptorInfo(PreferenceNames.DEFAULT_DESCRIPTOR_PATH,
+        DEFAULT_DESCRIPTOR_LOCATION, descriptor);
   }
 
   private ProtoDescriptorInfo getMapEntryDescriptorInfo() {
-    ProtoDescriptor descriptor =
-        new ProtoDescriptor(
-            MAP_ENTRY_DESCRIPTOR_PATH, MAP_ENTRY_DESCRIPTOR_LOCATION, parser, nodes);
+    ProtoDescriptor descriptor = new ProtoDescriptor(
+        MAP_ENTRY_DESCRIPTOR_PATH, MAP_ENTRY_DESCRIPTOR_LOCATION, parser, nodes);
     return new ProtoDescriptorInfo(
         MAP_ENTRY_DESCRIPTOR_PATH, MAP_ENTRY_DESCRIPTOR_LOCATION, descriptor);
   }
@@ -240,12 +233,10 @@ public class ProtoDescriptorProvider {
       return null;
     }
     try {
-      return new ProtoDescriptorInfo(
-          importUri, location, new ProtoDescriptor(importUri, location, parser, nodes));
+      return new ProtoDescriptorInfo(importUri, location,
+          new ProtoDescriptor(importUri, location, parser, nodes));
     } catch (IllegalStateException exception) {
-      LOG.log(
-          Level.WARNING,
-          "Error when initializing descriptor proto from extension point",
+      LOG.log(Level.WARNING, "Error when initializing descriptor proto from extension point",
           exception);
       return null;
     }

@@ -14,7 +14,6 @@ package com.google.eclipse.protobuf.preferences.general;
 public final class PreferenceNames {
   public static final String DEFAULT_DESCRIPTOR_PATH = "google/protobuf/descriptor.proto";
   public static final String DESCRIPTOR_PROTO_PATH = "general.descriptorPath";
-  public static final String DEFAULT_DESCRIPTOR_LOCATION = "platform:/plugin/com.google.eclipse.protobuf/descriptor.proto";
   public static final String ENABLE_PROJECT_SETTINGS_PREFERENCE_NAME =
       "general.enableProjectSettings";
   public static final String VALIDATE_FILES_ON_ACTIVATION = "general.validateFilesOnActivation";
