@@ -18,10 +18,10 @@
    <feature url="features/com.google.eclipse.protobuf_2.2.1.201601041517.jar" id="com.google.eclipse.protobuf" version="2.2.1.201601041517">
       <category name="google"/>
    </feature>
-   <feature url="features/com.google.eclipse.protobuf_2.3.1.201609021714.jar" id="com.google.eclipse.protobuf" version="2.3.1.201609021714">
+   <feature url="features/com.google.eclipse.protobuf_2.3.1.201609021856.jar" id="com.google.eclipse.protobuf" version="2.3.1.201609021856">
       <category name="google"/>
    </feature>
-   <feature url="features/com.google.eclipse.protobuf_2.3.2.201609091919.jar" id="com.google.eclipse.protobuf" version="2.3.2.201609091919">
+   <feature url="features/com.google.eclipse.protobuf_2.3.2.201609161849.jar" id="com.google.eclipse.protobuf" version="2.3.2.201609161849">
       <category name="google"/>
    </feature>
    <category-def name="google" label="Google Inc."/>
