@@ -16,6 +16,8 @@ can be found in com.eclipse.protobuf.feature.
 The update site for protobuf-dt is
 http://google.github.io/protobuf-dt/updates/latest/.
 
+As of version 2.3.0, the Protocol Buffer requires Eclipse Neon or greater.
+
 ### Install using Eclipse Install tool
 Navigate to "Help" > "Install New Software...".
 
